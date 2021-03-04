@@ -27,6 +27,7 @@ void Play::update()
 
 void Play::draw()
 {
+	Library::setPipeline(PIPELINE_NORMAL);
 	Library::drawGraphic(v, h, 0);
 }
 

@@ -102,7 +102,7 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 	//スプライトフォント300を作るのでカウントを増やしておく
 	createSpriteConter = 300;
 
-	//べた塗用テクスチャを0にするため(DrawBoxなどに使う)
+	//べた塗用テクスチャを0にするために1にする(DrawBoxなどに使う)
 	loadTextureCounter = 1;
 
 }

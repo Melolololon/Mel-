@@ -2,7 +2,6 @@
 #include"DirectInput.h"
 
 
-float fNum = 40;
 MouseCursor::MouseCursor()
 {
 	nearPos = 0;

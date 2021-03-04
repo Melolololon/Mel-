@@ -115,7 +115,7 @@ private:
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC spriteGpipeline;
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pointGpipeline;
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc;
-	const int startPipelineCreateNum = 7;//Initialize時に作る3Dのパイプライン数
+	int startPipelineCreateNum;//Initialize時に作る3Dのパイプライン数
 
 	int pipelineNum;
 	int spritePipelineNum;
@@ -345,12 +345,17 @@ private:
 
 
 
-#pragma region バッファ作成private関数
+#pragma region private関数
 	void resizeObjectData(int objectNum);
 
 	void createHeap();
 
 	void createCommonBuffer(const int& texNum);
+
+	/// <summary>
+	/// ライブラリがパイプラインを作成します
+	/// </summary>
+	void create3DObjectPipeline();
 #pragma endregion
 
 

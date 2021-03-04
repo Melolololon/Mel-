@@ -37,7 +37,7 @@ DirectX12::DirectX12(HWND hwnd, int windouWidth, int windowHeight)
 	createHeapCount = 0;
 	loadTextureCounter = 0;
 	createSpriteCounter = 0;
-
+	startPipelineCreateNum = 0;
 
 
 #pragma region カメラ初期化
@@ -91,7 +91,7 @@ DirectX12::DirectX12(HWND hwnd, int windouWidth, int windowHeight)
 	spriteGpipeline = {};
 	blenddesc = {};
 
-	pipelineNum = 0;
+	pipelineNum = 3;
 	spritePipelineNum = 0;
 	currentPostEffectPipeline = 0;
 	spriteFontDrawCounter = 0;
@@ -472,93 +472,8 @@ void DirectX12::initialize()
 #pragma endregion
 
 #pragma region パイプライン生成
-
-	pipelineStates.resize(startPipelineCreateNum);
-	createPipeline->createPipeline(1, gpipeline, &pipelineStates[0]);
-
-	//グレースケール
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"LIB","","" },
-		{ L"LIB","","" },
-		{ L"../MyLibrary/GrayPixelShader.hlsl", "PSmain", "ps_5_0" },
-		gpipeline,
-		&pipelineStates[1],
-		false
-	);
-
-
-	//深度テスト無し
-	gpipeline.DepthStencilState.DepthEnable = false;
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"LIB","","" },
-		{ L"LIB","","" },
-		{ L"LIB","","" },
-		gpipeline,
-		&pipelineStates[2],
-		false
-	);
-
-	//背面カリングしない
-	gpipeline.DepthStencilState.DepthEnable = true;
-	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリング設定
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"LIB","","" },
-		{ L"LIB","","" },
-		{ L"LIB","","" },
-		gpipeline,
-		&pipelineStates[3],
-		false
-	);
-
-	//透明部分の深度値を書き込まない
-	gpipeline.DepthStencilState.DepthEnable = true;
-	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
-	gpipeline.BlendState.AlphaToCoverageEnable = true;
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"LIB","","" },
-		{ L"LIB","","" },
-		{ L"LIB","","" },
-		gpipeline,
-		&pipelineStates[4],
-		false
-	);
-
-	//gpipeline.BlendState.AlphaToCoverageEnable = true;
-	//透過がおかしくならないようにする処理(これtrueにすると水しぶき消えちゃうからパイプライン分ける?)
-	//深度が100%じゃないと無視される?テクスチャで深度設定してたら問題ない?それとも描画順で変わる?
-	gpipeline.BlendState.AlphaToCoverageEnable = false;
-
-	//影無し
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"../MyLibrary/NotShadowVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"../MyLibrary/NotShadowGeometryShader.hlsl","GSmain","gs_5_0" },
-		{ L"../MyLibrary/NotShadowPixelShader.hlsl","PSmain","ps_5_0" },
-		gpipeline,
-		&pipelineStates[5],
-		false
-	);
-
-	//マテリアル読み込み可能版
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
-		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
-		gpipeline,
-		&pipelineStates[6],
-		false
-	);
+	create3DObjectPipeline();
+	
 #pragma endregion
 
 #pragma region スプライト用設定生成
@@ -1361,6 +1276,82 @@ void DirectX12::deleteInputLayout()
 	createPipeline->deleteInputLayout();
 }
 
+void DirectX12::create3DObjectPipeline()
+{
+
+	pipelineStates.reserve(99);
+	ComPtr<ID3D12PipelineState> pState;
+
+	auto pushPipeline = [&]()
+	{
+		pipelineStates.push_back(pState);
+	};
+	
+	//深度テスト無し
+	gpipeline.DepthStencilState.DepthEnable = false;
+	createPipeline->createUserPipeline
+	(
+		1,
+		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		gpipeline,
+		&pState,
+		false
+	);
+	pushPipeline();
+
+	//背面カリングしない
+	gpipeline.DepthStencilState.DepthEnable = true;
+	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリング設定
+	createPipeline->createUserPipeline
+	(
+		1,
+		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		gpipeline,
+		&pState,
+		false
+	);
+	pushPipeline();
+
+	//透明部分の深度値を書き込まない
+	gpipeline.DepthStencilState.DepthEnable = true;
+	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+	gpipeline.BlendState.AlphaToCoverageEnable = true;
+	createPipeline->createUserPipeline
+	(
+		1,
+		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		gpipeline,
+		&pState,
+		false
+	);
+	pushPipeline();
+
+	//gpipeline.BlendState.AlphaToCoverageEnable = true;
+	//透過がおかしくならないようにする処理(これtrueにすると水しぶき消えちゃうからパイプライン分ける?)
+	//深度が100%じゃないと無視される?テクスチャで深度設定してたら問題ない?それとも描画順で変わる?
+	gpipeline.BlendState.AlphaToCoverageEnable = false;
+
+	//マテリアル読み込み可能版
+	createPipeline->createUserPipeline
+	(
+		1,
+		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		gpipeline,
+		&pState,
+		false
+	);
+	pushPipeline();
+
+	startPipelineCreateNum = pipelineStates.size();
+}
 
 #pragma region ポストエフェクト
 void DirectX12::setPostEffectPipeline(const int& num)
