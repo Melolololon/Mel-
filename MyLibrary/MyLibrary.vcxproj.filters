@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\DirectX">
+      <UniqueIdentifier>{2c93d515-f1b4-400c-9153-86425d3f9099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\DirectX">
+      <UniqueIdentifier>{361a3039-c792-4977-bf89-7b8b3b0e1bb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Loader">
+      <UniqueIdentifier>{d9c4a78d-2633-40d8-a0c3-30ed60131414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Struct">
+      <UniqueIdentifier>{4700b40f-0a55-4003-912e-b638094649af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Struct">
+      <UniqueIdentifier>{2af8f812-3fda-4a5d-9614-fcdf95707280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Object">
+      <UniqueIdentifier>{9154e14e-073c-4402-8eab-3fb261da21b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Object">
+      <UniqueIdentifier>{df9284ec-96d0-4b31-861f-8465ae554034}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{3a51d6af-f59c-4635-9050-29c89be0f67e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scene">
+      <UniqueIdentifier>{9f62ab05-bff9-4cc3-89e6-543c6ec40589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Loader">
+      <UniqueIdentifier>{fb63133a-3a85-42ca-9cfb-e2badc981d0e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DirectInput.cpp">
+      <Filter>ソース ファイル\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateBuffer.cpp">
+      <Filter>ソース ファイル\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatePolygon.cpp">
+      <Filter>ソース ファイル\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoad.cpp">
+      <Filter>ソース ファイル\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatePipeline.cpp">
+      <Filter>ソース ファイル\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX12.cpp">
+      <Filter>ソース ファイル\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXTexLoader.cpp">
+      <Filter>ソース ファイル\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoaer.cpp">
+      <Filter>ソース ファイル\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Library.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLoader.cpp">
+      <Filter>ソース ファイル\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="LibMath.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateCamera.cpp">
+      <Filter>ソース ファイル\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>ソース ファイル\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>ソース ファイル\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="PolygonManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="XInputManager.cpp">
+      <Filter>ソース ファイル\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseCursor.cpp">
+      <Filter>ソース ファイル\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="BasicVertexShader.hlsl" />
+    <FxCompile Include="BasicPixelShader.hlsl" />
+    <FxCompile Include="BasicGeometryShader.hlsl" />
+    <FxCompile Include="SpritePixelShader.hlsl" />
+    <FxCompile Include="SpriteVertexShader.hlsl" />
+    <FxCompile Include="GrayPixelShader.hlsl" />
+    <FxCompile Include="PointVertexShader.hlsl" />
+    <FxCompile Include="PointPixelShader.hlsl" />
+    <FxCompile Include="PointGeometryShader.hlsl" />
+    <FxCompile Include="ObjVertexShader.hlsl" />
+    <FxCompile Include="ObjPixelShader.hlsl" />
+    <FxCompile Include="NotShadowVertexShader.hlsl" />
+    <FxCompile Include="NotShadowPixelShader.hlsl" />
+    <FxCompile Include="NotShadowGeometryShader.hlsl" />
+    <FxCompile Include="ObjGeometryShader.hlsl" />
+    <FxCompile Include="PostEffectVertexShader.hlsl" />
+    <FxCompile Include="PostEffectPixelShader.hlsl" />
+    <FxCompile Include="ToonPixelShader.hlsl" />
+    <FxCompile Include="ToonVertexShader.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DirectInput.h">
+      <Filter>ヘッダー ファイル\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateBuffer.h">
+      <Filter>ヘッダー ファイル\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXStruct.h">
+      <Filter>ヘッダー ファイル\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX12.h">
+      <Filter>ヘッダー ファイル\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatePipeline.h">
+      <Filter>ヘッダー ファイル\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTexLoader.h">
+      <Filter>ヘッダー ファイル\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLoader.h">
+      <Filter>ヘッダー ファイル\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatePolygon.h">
+      <Filter>ヘッダー ファイル\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawGraphicStruct.h">
+      <Filter>ヘッダー ファイル\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Library.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateCamera.h">
+      <Filter>ヘッダー ファイル\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderData.h">
+      <Filter>ヘッダー ファイル\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoad.h">
+      <Filter>ヘッダー ファイル\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="TextLoader.h">
+      <Filter>ヘッダー ファイル\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="LibMath.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionType.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PolygonManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="XInputManager.h">
+      <Filter>ヘッダー ファイル\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseCursor.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BasicShaderHeader.hlsli" />
+    <None Include="SpriteShaderHeader.hlsli" />
+    <None Include="PointShaderHeader.hlsli" />
+    <None Include="OBJShaderHeader.hlsli" />
+    <None Include="NotShadowShaderHeader.hlsli" />
+    <None Include="PostEffectShaderHeader.hlsli" />
+    <None Include="ToonShaderHeader.hlsli" />
+  </ItemGroup>
+</Project>
