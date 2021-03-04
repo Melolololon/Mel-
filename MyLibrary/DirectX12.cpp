@@ -62,7 +62,7 @@ DirectX12::DirectX12(HWND hwnd, int windouWidth, int windowHeight)
 
 #pragma region ƒ‰ƒCƒg‰Šú‰»
 
-	lightVector = { 0,-0.5,0.5 };
+	lightVector = { 0,0,1};
 	lightColor = { 1,1,1 };
 #pragma endregion
 

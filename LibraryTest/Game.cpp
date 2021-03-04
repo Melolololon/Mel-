@@ -32,7 +32,7 @@ void Game::run()
 
 void Game::initialize()
 {
-	Library::initialize(1280, 720, {0,0,0,255},L"Lib");
+	Library::initialize(1280, 720, {0,0,0,255},L"MEL Magical_Engene_Library(仮)");
 
 #pragma region マネージャー初期化
 	SceneManager::getInstace()->initialize();
