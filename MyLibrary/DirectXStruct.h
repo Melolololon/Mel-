@@ -8,13 +8,20 @@ using namespace Microsoft::WRL;
 //DirectX12で描画するために使用する構造体
 #pragma region シェーダーに送る情報
 //頂点バッファで送る情報
+#pragma region 頂点構造体
+
 struct Vertex
 {
 	DirectX::XMFLOAT3 pos;
-
 	DirectX::XMFLOAT2 uv;//ポリゴンのどこら辺かをあらわすもの　ポリゴン上の座標
 	DirectX::XMFLOAT3 normal;
 };
+
+struct OBJAnimationVertex : public Vertex
+{
+
+};
+
 
 struct SpriteVertex
 {
@@ -31,10 +38,42 @@ struct PointVertex
 
 };
 
+
+
+#pragma region PMD
+
+
+struct PMDVertex
+{
+#pragma pack(2)
+
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT2 uv;
+	unsigned short bone[2];
+	unsigned char boneWeight;
+	unsigned char edgeFlg;
+
+#pragma pack()
+};
+
+struct PMDHeader
+{
+	float version;
+	char modelName[20];
+	char comment[256];
+};
+#pragma endregion
+
+#pragma endregion
+
+
 //定数バッファで送る情報
 //色を今より明るくしたい場合、元々白い状態の画像を用意
 //それで面倒だったらaddとsubを実装する
 //だが、加算差算乗算の順により結果が変わるから注意
+#pragma region 定数構造体
+
 struct ConstBufferData
 {
 	DirectX::XMFLOAT4 color;
@@ -69,42 +108,6 @@ struct PointConstBufferData
 	DirectX::XMMATRIX billboardMat;
 };
 
-//テクスチャバッファで送る情報
-struct RGBA
-{
-	unsigned char r, g, b, a;
-};
-
-
-#pragma endregion
-
-
-#pragma region モデル類
-
-#pragma region PMD
-
-
-struct PMDVertex
-{
-#pragma pack(2)
-
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT3 normal;
-	DirectX::XMFLOAT2 uv;
-	unsigned short bone[2];
-	unsigned char boneWeight;
-	unsigned char edgeFlg;
-
-#pragma pack()
-};
-
-struct PMDHeader
-{
-	float version;
-	char modelName[20];
-	char comment[256];
-};
-#pragma endregion
 
 #pragma region OBJ
 
@@ -137,6 +140,18 @@ struct MaterialConstBuffData
 	float alpha;
 };
 #pragma endregion
+
+
+
+#pragma endregion
+
+#pragma region テクスチャ
+
+//テクスチャバッファで送る情報
+struct RGBA
+{
+	unsigned char r, g, b, a;
+};
 
 #pragma endregion
 

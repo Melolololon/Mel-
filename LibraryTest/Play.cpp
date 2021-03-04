@@ -1,10 +1,13 @@
 #include "Play.h"
 
 
+vertex v;
+heap h;
 
 Play::Play()
 {
-	
+	Library::createBoard({ 1,1 }, dimention3D, &v);
+	Library::createHeapData2({ 255,255,255,255 }, 1, &h);
 }
 
 
@@ -24,7 +27,7 @@ void Play::update()
 
 void Play::draw()
 {
-
+	Library::drawGraphic(v, h, 0);
 }
 
 void Play::end()

@@ -83,7 +83,6 @@ bool CreateBuffer::createUserVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D
 
 	if (result != S_OK)return false;
 
-	//‚È‚º‚©ƒGƒ‰[
 	result = set.vertexBuffer->Map(0, nullptr, vertexData);
 
 

@@ -2412,6 +2412,7 @@ void DirectX12::createPolygonData(PolyData polygonData)
 	}
 
 	//ここで、drawBox、drawCircleかを判別する
+	//Libraryで頂点用意すれば、PolyData送る必要ない
 
 	if (polygonData.katatiNum == box)
 	{
@@ -2612,11 +2613,11 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	if (!setConstDataFlag)
 	{
-		descHeapDesc.NumDescriptors = 1 + despData.objectNum + 1;//	テクスチャ + obj数+共通(common)
+		descHeapDesc.NumDescriptors = 1 + despData.objectNum * 2 + 1;//	テクスチャ + obj数 * 2(addColorなどのバッファとマテリアル) +共通(common)
 	}
 	else
 	{
-		descHeapDesc.NumDescriptors = 1 + despData.objectNum * 2 + 1;
+		descHeapDesc.NumDescriptors = 1 + despData.objectNum * 3 + 1;
 	}
 
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -2679,19 +2680,61 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 
 	ConstBufferSet constSet;
 
-	//生成と移動
+
 	std::vector<ConstBufferSet> constSetV;
+
+	//マテリアルバッファ作成ラムダ式
+	auto createMaterialBuffer = [&](const int& handleNum,const int& objectNum,const bool& setUserConstData)
+	{
+		int num = handleNum;
+		basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
+			num,
+			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+
+		int arrayNum = 0;
+		if (!setUserConstData)
+			arrayNum = 1;
+		else 
+			arrayNum = 2;
+
+		createBuffer->createConstBufferSet
+		(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstBuffData) + 0xff)&~0xff),
+			basicHeapHandle,
+			(void**)&materialData,
+			constSetV[objectNum],
+			arrayNum
+		);
+
+		materialData->ambient = materials[materials.size() - 1][0].ambient;
+		materialData->diffuse = materials[materials.size() - 1][0].diffuse;
+		materialData->specular = materials[materials.size() - 1][0].specular;
+		materialData->alpha = materials[materials.size() - 1][0].alpha;
+
+		constSetV[objectNum].constBuffer[arrayNum].Get()->Unmap(0, nullptr);
+		heapTags[heapTags.size() - 1].push_back(MATERIAL_CONST_BUFFER);
+	};
+
+
 	for (int i = 0; i < despData.objectNum; i++)
 	{
 		constSetV.push_back(constSet);
 		if (!setConstDataFlag)
 		{
 
-			constSetV[i].constBuffer.resize(1);
+			constSetV[i].constBuffer.resize(2);
 			
 
 			basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-			(basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(), i + 1 + 1, dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
+			(
+				basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(), 
+				i + 1 + 1, //オブジェクト数 + テクスチャ数 + 1(1つ目の定数バッファ)
+				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			);
 
 			createBuffer->createConstBufferSet(
 				CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
@@ -2711,14 +2754,17 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 			constSetV[i].constBuffer[0].Get()->Unmap(0, nullptr);
 
 			heapTags[heapTags.size() - 1].push_back(LIBRARY_CONST_BUFFER);
+
+			//マテリアルバッファ作成
+			createMaterialBuffer(i + 2 + 1, i, setConstDataFlag);
 		}
 		else
 		{
-			constSetV[i].constBuffer.resize(2);
+			constSetV[i].constBuffer.resize(3);
 			basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 			(
 				basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
-				i * 2 + 1 + 1,
+				i * 3 + 1 + 1,//オブジェクト数 * 1つのオブジェクトに必要なバッファ数 + テクスチャ数 + 1(1つ目のバッファ)
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
 
@@ -2746,7 +2792,7 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 			basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 			(
 				basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
-				i * 2 + 2 + 1,
+				i * 3 + 2 + 1,
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
 
@@ -2763,6 +2809,9 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 
 			constSetV[i].constBuffer[0].Get()->Unmap(0, nullptr);
 			heapTags[heapTags.size() - 1].push_back(USER_CONST_BUFFER);
+
+			//マテリアルバッファ作成
+			createMaterialBuffer(i * 3 + 3 + 1, i, setConstDataFlag);
 		}
 
 
@@ -3405,7 +3454,7 @@ void DirectX12::setCmdList(int polyNum, int despNum, int number)
 
 				//ユーザー定数セット
 
-				//要素数を超えた数字をセットしないようにするためのif
+				//要素数を超えてアクセスしないようにするためのif
 				if (heapTags[despNum].size() > handleNum + 1)
 				{
 					//ユーザー定数があったら、セットする
