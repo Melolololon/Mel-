@@ -32,6 +32,24 @@ using pipeline = int;
 using font = int;
 #pragma endregion
 
+#pragma region 頂点
+
+//これDirectXStructに移して、モデルの頂点バッファ作るところでこのenumセットしてもいいかも
+enum VertexType
+{
+	VERTEX_TYPE_NORMAL,//座標、uv、法線のみ
+	VERTEX_TYPE_OBJ_ANIMATION,//座標、uv、法線、ボーン番号
+
+};
+
+struct VertexData
+{
+	vertex handle;//ハンドル(stringに変更予定あり)
+	VertexType typr;//(頂点構造体の種類)
+};
+#pragma endregion
+
+
 enum LibraryPipeline
 {
 	PIPELINE_NOT_DEPTH_TEST,//深度テスト無し(zにかかわらず、関数の呼び出した順番で描画されます)

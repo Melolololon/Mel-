@@ -102,7 +102,7 @@ DirectX12::DirectX12(HWND hwnd, int windouWidth, int windowHeight)
 
 	materialData = {};
 
-	postEffectCametaFlag = false;
+	postEffectCametaFlag  = false;
 }
 
 
