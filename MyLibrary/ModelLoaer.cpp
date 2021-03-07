@@ -413,7 +413,7 @@ bool  ModelLoader::loadOBJModel
 			loopCount = 0;
 			for(auto& num : temporaryBoneNumVec)
 			{
-				num.resize(vertices[loopCount].size());
+				num.reserve(vertices[loopCount].size());
 				loopCount++;
 			}
 		}
