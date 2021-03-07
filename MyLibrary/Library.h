@@ -34,13 +34,6 @@ using font = int;
 
 #pragma region 頂点
 
-//これDirectXStructに移して、モデルの頂点バッファ作るところでこのenumセットしてもいいかも
-enum VertexType
-{
-	VERTEX_TYPE_NORMAL,//座標、uv、法線のみ
-	VERTEX_TYPE_OBJ_ANIMATION,//座標、uv、法線、ボーン番号
-
-};
 
 struct VertexData
 {

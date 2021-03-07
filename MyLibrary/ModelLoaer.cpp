@@ -50,33 +50,83 @@ bool ModelLoader::loadPMDModel(const char* path, std::vector<PMDVertex>& vertex,
 bool  ModelLoader::loadOBJModel
 (
 	const char* path, bool loadUV, bool loadNormal, 
-	std::vector<std::vector<Vertex>>& vertices, std::vector<std::vector<unsigned short>>& indices,
-	std::string* materialFileName, std::vector<std::string>&materialName, 
+	std::vector<std::vector<Vertex>>& vertices, 
+	std::vector<std::vector<unsigned short>>& indices,
+	std::string* materialFileName,
+	std::vector<std::string>&materialName, 
 	std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
-	int* loadNum
+	int* loadNum,
+	std::vector<DirectX::XMFLOAT3>* bonePosVector,
+	std::vector<std::vector<int>>* boneNumVector
 )
 {
+	//読み込みながらだとresizeできないから、
+	//先にstringの配列に格納して全部見てから、stringの配列見てデータ格納したほうがいい?
+
+	auto deleteSizeZero = [&]()
+	{
+		//size0は消す(MAYAモデル読み込みによる無駄な配列を削除)
+		int num = vertices.size();
+		for (int i = 0; i < num; i++)
+		{
+			if (vertices[i].size() == 0)
+			{
+				vertices.erase(vertices.begin() + i);
+				num--;
+				i--;
+			}
+		}
+		vertices.shrink_to_fit();
+
+		num = indices.size();
+		for (int i = 0; i < num; i++)
+		{
+			if (indices[i].size() == 0)
+			{
+				indices.erase(indices.begin() + i);
+				num--;
+				i--;
+			}
+		}
+		indices.shrink_to_fit();
+
+	};
+
 	//何個読み込んだか
 	int loadCount = 0;
 
-	for (int i = 0; i < vertices.size(); i++)vertices[i].clear();
-	for (int i = 0; i < indices.size(); i++)indices[i].clear();
-	if (vertices.size() != 0)vertices.clear();
-	if (indices.size() != 0)indices.clear();
-
+	//リセット
+	vertices.clear();
+	indices.clear();
 	smoothNormalCalcData.clear();
+
+	//reserve
+	vertices.reserve(5);
+	indices.reserve(5);
+	smoothNormalCalcData.reserve(5);
+
 
 	DirectX::XMFLOAT3 pos = { 0,0,0 };
 	DirectX::XMFLOAT2 uv = { 0,0 };
 	DirectX::XMFLOAT3 normal = { 0,0,0 };
+	DirectX::XMFLOAT3 bonePos = { 0,0,0 };
 	std::vector<DirectX::XMFLOAT3 >vecPos;
+	vecPos.reserve(9999);
 	std::vector<DirectX::XMFLOAT2 >vecUV;
+	vecUV.reserve(9999);
 	std::vector<DirectX::XMFLOAT3 >vecNormal;
+	vecNormal.reserve(9999);
 
+	std::vector< std::vector<int>>temporaryBoneNumVec;//temporary は　仮
 
 	//std::vector<std::string>data;
 	char slush;
 	char top[20];
+	char boneTopStr[2];
+	int boneObjectNum = 0;//何個目のオブジェクトのデータかを入れる変数
+	int boneNum = 0;//ボーンの番号
+	int loopCount = 0;//ループ数(2次元以上の配列を拡張forでまわした時の添え字用)
+	bool loadBoneData = false;
 	int index = 0;
 	std::string vertexData;
 	std::ifstream obj;
@@ -100,6 +150,8 @@ bool  ModelLoader::loadOBJModel
 		//先頭文字を入れる(vとかvtのこと)
 		lineStream >> top;
 
+#pragma region 行の最初の文字を見て読み込み
+
 		//マテリアルファイル読み込み
 		if (vertexData[0] == 'm')
 		{
@@ -114,13 +166,15 @@ bool  ModelLoader::loadOBJModel
 			lineStream >> materialName[loadCount - 1];
 		}
 
-		//別のやつが来たらカウント増やす&resize
+		//別のオブジェクトが来たらカウント増やす&resize
 		if (vertexData[0] == 'o' || vertexData[0] == 'g')
 		{
 			loadCount++;
 			loadFCount = 0;
 			loadFLine = 0;
 			index = 0;
+
+			//毎回resizeするから遅くなる
 			vertices.resize(loadCount);
 			indices.resize(loadCount);
 			materialName.resize(loadCount);
@@ -345,7 +399,65 @@ bool  ModelLoader::loadOBJModel
 
 
 		}
+
+#pragma region ボーン読み込み
+		//読み込み準備
+		if (vertexData.find("BoneData") != std::string::npos)
+		{
+			deleteSizeZero();
+			loadBoneData = true;
+
+			if (bonePosVector)bonePosVector->reserve(999);
+			if (boneNumVector)temporaryBoneNumVec.resize(vertices.size());
+			
+			loopCount = 0;
+			for(auto& num : temporaryBoneNumVec)
+			{
+				num.resize(vertices[loopCount].size());
+				loopCount++;
+			}
+		}
+	
+
+		//bpあったらボーン座標追加
+		if(vertexData.find("bp") != std::string::npos && bonePosVector)
+		{
+			//文字格納
+			lineStream >> boneTopStr;
+
+			lineStream >> bonePos.x;
+			lineStream >> bonePos.y;
+			lineStream >> bonePos.z;
+			bonePosVector->push_back(bonePos);
+		}
+
+		if(vertexData.find("bd") != std::string::npos && boneNumVector)
+		{
+			//文字格納
+			lineStream >> boneTopStr;
+
+			//何個目のオブジェクトのデータか確認
+			lineStream >> boneObjectNum;
+
+			lineStream >> boneNum;
+
+			temporaryBoneNumVec[boneObjectNum].push_back(boneNum);
+				
+		}
+
+#pragma endregion
+
+#pragma endregion
+
+
 	}
+
+	//仮配列から移動
+	if(boneNumVector)
+		*boneNumVector = temporaryBoneNumVec;
+	
+	//ボーン読まなかったらここで無駄を消す
+	if(!loadBoneData)deleteSizeZero();
 
 	obj.close();
 #pragma endregion
@@ -383,33 +495,13 @@ bool  ModelLoader::loadOBJModel
 	
 #pragma endregion
 
-	//size0は消す
-	int num = vertices.size();
-	for (int i = 0; i < num ; i++) 
-	{
-		if (vertices[i].size() == 0) 
-		{
-			vertices.erase(vertices.begin() + i);
-			num--;
-			i--;
-		}
-	}
-	vertices.shrink_to_fit();
 
-	num = indices.size();
-	for (int i = 0; i < num; i++)
-	{
-		if (indices[i].size() == 0)
-		{
-			indices.erase(indices.begin() + i); 
-			num--;
-			i--;
-		}
-	}
-	indices.shrink_to_fit();
-
+	//objの中身のモデル数を代入
 	if (loadNum)
 		*loadNum = vertices.size();
+
+
+
 	return true;
 }
 

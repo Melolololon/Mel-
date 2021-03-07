@@ -10,6 +10,8 @@ using namespace Microsoft::WRL;
 //頂点バッファで送る情報
 #pragma region 頂点構造体
 
+
+
 struct Vertex
 {
 	DirectX::XMFLOAT3 pos;
@@ -17,9 +19,12 @@ struct Vertex
 	DirectX::XMFLOAT3 normal;
 };
 
-struct OBJAnimationVertex : public Vertex
+struct OBJAnimationVertex
 {
-
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
+	DirectX::XMFLOAT3 normal;
+	int boneNumber;
 };
 
 
@@ -29,7 +34,7 @@ struct SpriteVertex
 	DirectX::XMFLOAT2 uv;
 };
 
-
+ 
 struct PointVertex
 {
 	DirectX::XMFLOAT3 pos;

@@ -33,7 +33,7 @@ DirectX12::DirectX12(HWND hwnd, int windouWidth, int windowHeight)
 	heapDesc = {};
 	barrierDesc = {};
 
-	createVertexBufferCount = 0;
+	createNormalVertexBufferCount = 0;
 	createHeapCount = 0;
 	loadTextureCounter = 0;
 	createSpriteCounter = 0;
@@ -1090,7 +1090,7 @@ void DirectX12::draw()
 
 CreateNumberSet DirectX12::getCreateNumber()
 {
-	return { createVertexBufferCount,createHeapCount };
+	return { createNormalVertexBufferCount,createHeapCount };
 }
 
 
@@ -1785,9 +1785,9 @@ void DirectX12::setLightColor(Color lightColor)
 #pragma endregion
 
 #pragma region モデル読み込み
-void  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNormal, std::string* materialFireName, PolyData data)
+VertexType  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNormal, std::string* materialFireName, PolyData data)
 {
-	createVertexBufferCount++;
+	createNormalVertexBufferCount++;
 	vertices.resize(vertices.size() + 1);
 	indices.resize(indices.size() + 1);
 
@@ -1882,11 +1882,11 @@ void  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNormal, s
 		createBuffer->createVertexBufferSet
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[createVertexBufferCount - 1][i].size()),
-			vertices[createVertexBufferCount - 1][i],
-			vertexBuffSet[createVertexBufferCount - 1][i]
+			CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[createNormalVertexBufferCount - 1][i].size()),
+			vertices[createNormalVertexBufferCount - 1][i],
+			vertexBuffSet[createNormalVertexBufferCount - 1][i]
 		);
-		vertexBuffSet[createVertexBufferCount - 1][i].materialName = materialName[i];
+		vertexBuffSet[createNormalVertexBufferCount - 1][i].materialName = materialName[i];
 	}
 
 
@@ -1901,9 +1901,9 @@ void  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNormal, s
 		createBuffer->createIndexBufferSet
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer(sizeof(unsigned short) * indices[createVertexBufferCount - 1][i].size()),
-			indices[createVertexBufferCount - 1][i],
-			indexBufferSet[createVertexBufferCount - 1][i]
+			CD3DX12_RESOURCE_DESC::Buffer(sizeof(unsigned short) * indices[createNormalVertexBufferCount - 1][i].size()),
+			indices[createNormalVertexBufferCount - 1][i],
+			indexBufferSet[createNormalVertexBufferCount - 1][i]
 		);
 	}
 
@@ -1916,6 +1916,8 @@ void  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNormal, s
 
 	polyDatas.push_back(data);
 
+	//ボーンなかったらこれ返す
+	return VertexType::VERTEX_TYPE_NORMAL;
 }
 
 void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string materialFileName, HeapData heapData, bool setConstDataFlag)
@@ -2392,9 +2394,9 @@ void DirectX12::loadOBJ(const char* path, std::string materialDirectoryPath, boo
 
 #pragma region バッファ作成
 
-void DirectX12::createPolygonData(PolyData polygonData)
+void DirectX12::createPolygonData(PolyData polygonData, const VertexType& vertexType)
 {
-	createVertexBufferCount++;
+	createNormalVertexBufferCount++;
 
 	if (polygonData.katatiNum != -1)
 	{
@@ -2475,7 +2477,7 @@ void DirectX12::createPolygonData(PolyData polygonData)
 	//行列で動かした後に法線ベクトルを書き換えないといけない?
 	//頂点多いcreateで作らないとちゃんと法線を求められない
 
-	int num = createVertexBufferCount - 1;
+	int num = createNormalVertexBufferCount - 1;
 	for (int j = 0; j < (int)indices[num][0].size() / 3; j++)
 	{
 		calculationNormal
@@ -2519,9 +2521,9 @@ void DirectX12::createPolygonData(PolyData polygonData)
 	createBuffer->createVertexBufferSet
 	(
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[createVertexBufferCount - 1][0].size()),
-		vertices[createVertexBufferCount - 1][0],
-		vertexBuffSet[createVertexBufferCount - 1][0]
+		CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[createNormalVertexBufferCount - 1][0].size()),
+		vertices[createNormalVertexBufferCount - 1][0],
+		vertexBuffSet[createNormalVertexBufferCount - 1][0]
 	);
 
 
@@ -2532,7 +2534,7 @@ void DirectX12::createPolygonData(PolyData polygonData)
 	indexBufferSet.resize(indexBufferSet.size() + 1);
 	indexBufferSet[indexBufferSet.size() - 1].push_back(indexSet);
 
-	createBuffer->createIndexBufferSet(CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), CD3DX12_RESOURCE_DESC::Buffer(sizeof(unsigned short) * indices[createVertexBufferCount - 1][0].size()), indices[createVertexBufferCount - 1][0], indexBufferSet[createVertexBufferCount - 1][0]);
+	createBuffer->createIndexBufferSet(CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), CD3DX12_RESOURCE_DESC::Buffer(sizeof(unsigned short) * indices[createNormalVertexBufferCount - 1][0].size()), indices[createNormalVertexBufferCount - 1][0], indexBufferSet[createNormalVertexBufferCount - 1][0]);
 
 
 #pragma endregion
@@ -3152,10 +3154,10 @@ void DirectX12::addUserIndex(std::vector<unsigned short>& index)
 
 void DirectX12::createUserPolygon(void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, std::vector<unsigned short>&index, PolyData polyData)
 {
-	createVertexBufferCount++;
+	createNormalVertexBufferCount++;
 
 	vertices.resize(vertices.size() + 1);
-	vertices[createVertexBufferCount - 1][0].push_back({ {0,0,0},{0,0},{0,0,0} });
+	vertices[createNormalVertexBufferCount - 1][0].push_back({ {0,0,0},{0,0},{0,0,0} });
 
 	indices[0].push_back(index);
 
@@ -3173,7 +3175,7 @@ void DirectX12::createUserPolygon(void** vertexData, unsigned int vertexDataSize
 		vertexData,
 		vertexDataSize,
 		vertexSumDataSize,
-		vertexBuffSet[createVertexBufferCount - 1][0]
+		vertexBuffSet[createNormalVertexBufferCount - 1][0]
 	);
 
 
@@ -3187,9 +3189,9 @@ void DirectX12::createUserPolygon(void** vertexData, unsigned int vertexDataSize
 	createBuffer->createIndexBufferSet
 	(
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		CD3DX12_RESOURCE_DESC::Buffer(sizeof(unsigned short) * indices[createVertexBufferCount - 1].size()),
-		indices[createVertexBufferCount - 1][0],
-		indexBufferSet[createVertexBufferCount - 1][0]
+		CD3DX12_RESOURCE_DESC::Buffer(sizeof(unsigned short) * indices[createNormalVertexBufferCount - 1].size()),
+		indices[createNormalVertexBufferCount - 1][0],
+		indexBufferSet[createNormalVertexBufferCount - 1][0]
 	);
 
 
@@ -3232,7 +3234,7 @@ void DirectX12::deletePolygonData(int polyNum)
 		vertexBuffSet.shrink_to_fit();
 		indexBufferSet.shrink_to_fit();
 
-		createVertexBufferCount--;
+		createNormalVertexBufferCount--;
 	}
 }
 

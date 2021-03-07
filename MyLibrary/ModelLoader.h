@@ -35,9 +35,17 @@ public:
 		std::string* materialFileName,
 		std::vector<std::string>&materialName,
 		std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
-		int* loadNum
+		int* loadNum,
+		std::vector<DirectX::XMFLOAT3>* bonePosVector,
+		std::vector<std::vector<int>>* boneNumVector
 	);
 	
-	bool loadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<Material>& material,int* loadCount);
+	bool loadObjMaterial
+	(
+		std::string materialDirectoryPath, 
+		std::string materialFileName, 
+		std::vector<Material>& material,
+		int* loadCount
+	);
 };
 

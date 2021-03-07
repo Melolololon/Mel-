@@ -36,9 +36,22 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
+
+//これDirectXStructに移して、モデルの頂点バッファ作るところでこのenumセットしてもいいかも
+//これパイプラインセットするときに設定するようにする?
+//その場合、ヒープの構造体も作ったほうがいい?
+enum VertexType
+{
+	VERTEX_TYPE_NORMAL,//座標、uv、法線のみ
+	VERTEX_TYPE_OBJ_ANIMATION,//座標、uv、法線、ボーン番号
+	VERTEX_TYPE_USER_VERTEX,//利用者の自作データ
+
+};
+
 using namespace Microsoft::WRL;
 class DirectX12
 {
+
 	enum DrawType
 	{
 		none,
@@ -158,16 +171,26 @@ private:
 	//自作パイプライン作成時に使用するdesc
 	D3D12_INPUT_ELEMENT_DESC* userDesc;
 
+#pragma region バッファ作成などのクラス
 
 	CreateBuffer* createBuffer;
 	CreatePipeline* createPipeline;
 	CreatePolygon* createPolygon;
 	CreateCamera* mainCamera;
 
+#pragma endregion
 
-	//頂点データ
+
+#pragma region 頂点
+
+#pragma region 3D
+
 	std::vector<std::vector<std::vector<Vertex>>> vertices;//[モデルごと][モデルにある複数のオブジェクトごと][頂点ごと]
+	std::vector<std::vector<std::vector<OBJAnimationVertex>>> objAniVertices;//Vertexに加え、ボーン番号を追加
+
 	std::vector<std::vector<std::vector<unsigned short>>> indices;
+#pragma endregion
+
 	std::vector<std::vector<Vertex>> spriteVertices;
 	std::vector<std::vector<unsigned short>> spriteIndices;
 	std::vector<std::vector<PointVertex>>pointVertices;//[点の番号ごと][点ごと]
@@ -183,6 +206,13 @@ private:
 	/// </summary>
 	void calcSmoothingNormals();
 
+
+#pragma endregion
+
+
+#pragma region ヒープ関係
+
+#pragma region 定数バッファ関係
 
 	//定数バッファデータ
 	ConstBufferData* constData3D;
@@ -215,11 +245,19 @@ private:
 	};
 	std::vector<std::vector<ConstBufferTag>>heapTags;
 
+#pragma endregion
 
-
+#pragma region テクスチャ関係
 	//画像データ
 	std::vector<DirectX::TexMetadata> textureData;
 	std::vector<DirectX::TexMetadata> spriteTextureData;
+
+#pragma endregion
+
+
+#pragma endregion
+
+
 
 	//送られてきた情報
 	std::vector<PolyData> polyDatas;
@@ -231,14 +269,30 @@ private:
 	//これいらない
 	std::vector<DirectX::XMFLOAT2>spriteSizes;
 
-	//create○○した回数
-	//これいらないかも
-	//配列に入れる前のやつ渡せばこの番号でvectorにアクセスしなくていいし、識別番号もLibraryで計算すればいい
-	int createVertexBufferCount;
+#pragma region カウント変数
+
+#pragma region 頂点
+
+
+	//struct Vertexでバッファを作った回数
+	int createNormalVertexBufferCount;
+
+	//struct OBJAnimationVertexでバッファを作った回数
+	int createOBJAnimationVertexBufferCounter;
+
+#pragma endregion
+
+#pragma region それ以外
+
+
 	int createHeapCount;
 	int loadTextureCounter;
 	int createSpriteCounter;
 	int spriteFontDrawCounter;
+
+#pragma endregion
+
+#pragma endregion
 
 
 #pragma region カメラ
@@ -365,12 +419,28 @@ private:
 public:
 	DirectX12(HWND hwnd, int windouWidth, int windowHeight);
 	~DirectX12();
+
+#pragma region 初期化などの必須処理
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void initialize();
+
+	/// <summary>
+	/// 描画コマンドなどを呼び出す前に呼ぶ処理
+	/// </summary>
 	void preparationToDraw();
+
+	//描画処理。コマンドリストの命令を実行したりする
 	void draw();
 
 	//番号取得
+	//これ引数でどのクリエイト番号取得するか選べるようにする
 	CreateNumberSet getCreateNumber();
+
+#pragma endregion
+
 
 	//画面の色受け取り
 	void setScreenColor(Color screenColor);
@@ -378,6 +448,8 @@ public:
 	//スプライトのサイズ取得
 	DirectX::XMFLOAT2 getTextureSize(int textureHandle);
 
+
+	//これいらん
 #pragma region パイプラインの設定
 
 	void setDespTestFlag(bool flag);
@@ -438,11 +510,11 @@ public:
 
 #pragma endregion
 
-
 #pragma region バッファ作成
 	void createPoint(int createNum, int* point);
-
-	void createPolygonData(PolyData polygonData);
+	
+	//typeに応じてどのcountを++するか決める
+	void createPolygonData(PolyData polygonData,const VertexType& vertexType);
 	void createHeapData(HeapData despData, bool setConstDataFlag);
 
 #pragma region ユーザー
@@ -467,7 +539,14 @@ public:
 #pragma endregion
 
 #pragma region モデル
-	void loadOBJVertex(const char* path, bool loadUV, bool loadNormal, std::string* materialFireName, PolyData data);
+	VertexType loadOBJVertex
+	(
+		const char* path, 
+		bool loadUV,
+		bool loadNormal,
+		std::string* materialFireName,
+		PolyData data
+	);
 
 	void loadOBJMaterial(std::string materialDirectoryPath, std::string materialFileName, HeapData heapData, bool setConstDataFlag);
 

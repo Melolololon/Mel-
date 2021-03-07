@@ -327,7 +327,8 @@ void  Library::loadOBJVertex
 )
 {
 	PolyData pData;
-
+	
+	p.typr = VERTEX_TYPE_NORMAL;
 	p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
@@ -355,6 +356,7 @@ void Library::createBoard(Vector2 size, int dimention, VertexData& p)
 
 	//pData.sikibetuNum = createPolygonNumber;
 
+	p.typr = VERTEX_TYPE_NORMAL;
 	p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;
 
@@ -370,6 +372,7 @@ void Library::createCircle(float r, int dimention, VertexData& p)
 	pData.fNum1 = r;
 	pData.katatiNum = 2;
 
+	p.typr = VERTEX_TYPE_NORMAL;
 	p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention;
@@ -387,6 +390,7 @@ void Library::create3DBox(Vector3 size, VertexData& p)
 
 	//pData.sikibetuNum = createPolygonNumber;
 
+	p.typr = VERTEX_TYPE_NORMAL;
 	p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
@@ -415,6 +419,7 @@ void Library::createTriangularPyramid
 
 	//pData.sikibetuNum = createPolygonNumber;
 
+	p.typr = VERTEX_TYPE_NORMAL;
 	p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
@@ -431,6 +436,7 @@ void Library::createManyVertex3DBox(Vector3 size, VertexData& p)
 	pData.katatiNum = 100;
 
 
+	p.typr = VERTEX_TYPE_NORMAL;
 	p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
@@ -450,6 +456,7 @@ void Library::createUserObject(std::vector<Vector3>& vertexPos, std::vector<Vect
 	PolyData pData;
 	pData.katatiNum = -1;
 
+	p.typr = VERTEX_TYPE_NORMAL;
 	p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
