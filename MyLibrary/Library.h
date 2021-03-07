@@ -256,7 +256,7 @@ public:
 	/// <param name="loadNormal">法線ベクトルを読み込むかどうか</param>
 	/// <param name="materialFireName">読み取ったマテリアルのファイル(.mtl)名を入れるstring型の変数(読み取らない場合、nullptr)</param>
 	/// <param name="p"></param>
-	static void loadOBJVertex(const char* path, bool loadUV, bool loadNormal, std::string* materialFireName, vertex* p);
+	static void loadOBJVertex(const char* path, bool loadUV, bool loadNormal, std::string* materialFireName, VertexData& p);
 #pragma endregion
 
 #pragma region ライブラリ実装オブジェクト
@@ -275,7 +275,7 @@ public:
 	/// <param name="dimention">次元</param>
 	/// <param name="p">データを入れる変数のポインタ</param>
 	/// <returns></returns>
-	static void createBoard(Vector2 size, int dimention, vertex* p);
+	static void createBoard(Vector2 size, int dimention, VertexData& p);
 
 	/// <summary>
 	/// 円の頂点情報を作成します
@@ -284,7 +284,7 @@ public:
 	/// <param name="dimention"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createCircle(float r, int dimention, vertex* p);
+	static void createCircle(float r, int dimention, VertexData& p);
 
 	/// <summary>
 	/// 立方体の頂点情報を作成します
@@ -292,7 +292,7 @@ public:
 	/// <param name="size">辺の長さ</param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void create3DBox(Vector3 size, vertex* p);
+	static void create3DBox(Vector3 size, VertexData& p);
 
 	/// <summary>
 	/// 三角錐の頂点情報を作成します
@@ -303,7 +303,7 @@ public:
 	/// <param name="upVertex"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createTriangularPyramid(float r, int vertexNumber, Vector3 centerPosition, float upVertex, vertex* p);
+	static void createTriangularPyramid(float r, int vertexNumber, Vector3 centerPosition, float upVertex, VertexData& p);
 
 	/// <summary>
 	/// テクスチャを綺麗に貼れる立方体の頂点情報を作成します
@@ -311,7 +311,7 @@ public:
 	/// <param name="size"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createManyVertex3DBox(Vector3 size, vertex* p);
+	static void createManyVertex3DBox(Vector3 size, VertexData& p);
 
 #pragma endregion
 
@@ -325,7 +325,13 @@ public:
 	/// <param name="vertex">頂点データ(法線ベクトルは計算しなくてよい)</param>
 	/// <param name="index">インデックス</param>
 	/// <param name="p"></param>
-	static void createUserObject(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV, std::vector<unsigned short>& index, vertex* p);
+	static void createUserObject
+	(
+		std::vector<Vector3>& vertexPos, 
+		std::vector<Vector2>& vertexUV, 
+		std::vector<unsigned short>& index, 
+		VertexData& p
+	);
 
 
 	/// <summary>
@@ -336,7 +342,14 @@ public:
 	/// <param name="vertexSumDataSize">頂点データ * 要素数のデータサイズ</param>
 	/// <param name="index">インデックス</param>
 	/// <param name="p"></param>
-	static void createUserObject2(void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, std::vector<unsigned short>&index, vertex* p);
+	static void createUserObject2
+	(
+		void** vertexData,
+		unsigned int vertexDataSize, 
+		unsigned int vertexSumDataSize, 
+		std::vector<unsigned short>&index, 
+		VertexData& p
+	);
 
 
 

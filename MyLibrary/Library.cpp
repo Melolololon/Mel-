@@ -317,12 +317,19 @@ void Library::setFramesPerSecond60(bool flag)
 #pragma region 頂点_インデックスバッファ作成
 
 #pragma region モデル読み込み
-void  Library::loadOBJVertex(const char* path, bool loadUV, bool loadNormal, std::string* materialFireName, vertex* p)
+void  Library::loadOBJVertex
+(
+	const char* path, 
+	bool loadUV, 
+	bool loadNormal, 
+	std::string* materialFireName,
+	VertexData& p
+)
 {
 	PolyData pData;
 
-	*p = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = *p;
+	p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
 
 	directx12->loadOBJVertex(path, loadUV, loadNormal, materialFireName, pData);
@@ -338,7 +345,7 @@ void Library::createPoint(int createNum, point* p)
 	createPointCount++;
 }
 
-void Library::createBoard(Vector2 size, int dimention, vertex* p)
+void Library::createBoard(Vector2 size, int dimention, VertexData& p)
 {
 	PolyData pData;
 
@@ -348,30 +355,30 @@ void Library::createBoard(Vector2 size, int dimention, vertex* p)
 
 	//pData.sikibetuNum = createPolygonNumber;
 
-	*p = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = *p;
+	p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;
 
 	pData.dimention = dimention;
 	directx12->createPolygonData(pData);
 
 }
 
-void Library::createCircle(float r, int dimention, vertex* p)
+void Library::createCircle(float r, int dimention, VertexData& p)
 {
 	PolyData pData;
 
 	pData.fNum1 = r;
 	pData.katatiNum = 2;
 
-	*p = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = *p;
+	p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention;
 	directx12->createPolygonData(pData);
 
 }
 
 
-void Library::create3DBox(Vector3 size, vertex* p)
+void Library::create3DBox(Vector3 size, VertexData& p)
 {
 	PolyData pData;
 
@@ -380,8 +387,8 @@ void Library::create3DBox(Vector3 size, vertex* p)
 
 	//pData.sikibetuNum = createPolygonNumber;
 
-	*p = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = *p;
+	p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
 
 	directx12->createPolygonData(pData);
@@ -389,7 +396,14 @@ void Library::create3DBox(Vector3 size, vertex* p)
 
 
 
-void Library::createTriangularPyramid(float r, int vertexNumber, Vector3 centerPosition, float upVertex, vertex* p)
+void Library::createTriangularPyramid
+(
+	float r,
+	int vertexNumber, 
+	Vector3 centerPosition, 
+	float upVertex, 
+	VertexData& p
+)
 {
 	PolyData pData;
 
@@ -401,15 +415,15 @@ void Library::createTriangularPyramid(float r, int vertexNumber, Vector3 centerP
 
 	//pData.sikibetuNum = createPolygonNumber;
 
-	*p = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = *p;
+	p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
 	directx12->createPolygonData(pData);
 
 }
 
 
-void Library::createManyVertex3DBox(Vector3 size, vertex* p)
+void Library::createManyVertex3DBox(Vector3 size, VertexData& p)
 {
 	PolyData pData;
 
@@ -417,8 +431,8 @@ void Library::createManyVertex3DBox(Vector3 size, vertex* p)
 	pData.katatiNum = 100;
 
 
-	*p = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = *p;
+	p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
 
 	directx12->createPolygonData(pData);
@@ -428,7 +442,7 @@ void Library::createManyVertex3DBox(Vector3 size, vertex* p)
 
 #pragma region ユーザー
 
-void Library::createUserObject(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV, std::vector<unsigned short>& index, vertex* p)
+void Library::createUserObject(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV, std::vector<unsigned short>& index, VertexData& p)
 {
 	directx12->addUserVertex(vertexPos, vertexUV);
 	directx12->addUserIndex(index);
@@ -436,18 +450,18 @@ void Library::createUserObject(std::vector<Vector3>& vertexPos, std::vector<Vect
 	PolyData pData;
 	pData.katatiNum = -1;
 
-	*p = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = *p;
+	p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
 
 	directx12->createPolygonData(pData);
 }
 
-void Library::createUserObject2(void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, std::vector<unsigned short>&index, vertex* p)
+void Library::createUserObject2(void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, std::vector<unsigned short>&index, VertexData& p)
 {
 	PolyData pData;
-	*p = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = *p;
+	p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
 
 
