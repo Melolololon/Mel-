@@ -328,12 +328,19 @@ void  Library::loadOBJVertex
 {
 	PolyData pData;
 	
-	p.typr = VERTEX_TYPE_NORMAL;
 	p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
 
-	directx12->loadOBJVertex(path, loadUV, loadNormal, materialFireName, pData);
+	//読み込みと頂点タイプ取得
+	p.typr = directx12->loadOBJVertex
+	(
+		path, 
+		loadUV,
+		loadNormal, 
+		materialFireName, 
+		pData
+	);
 
 }
 #pragma endregion
@@ -468,6 +475,7 @@ void Library::createUserObject2(void** vertexData, unsigned int vertexDataSize, 
 {
 	PolyData pData;
 	p.handle = new int(directx12->getCreateNumber().polyNum);
+	p.typr = VERTEX_TYPE_USER_VERTEX;
 	pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
 

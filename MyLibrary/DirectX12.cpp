@@ -1787,14 +1787,16 @@ void DirectX12::setLightColor(Color lightColor)
 #pragma region モデル読み込み
 VertexType  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNormal, std::string* materialFireName, PolyData data)
 {
+	vertices.resize(createNormalVertexBufferCount + 1);
+	indices.resize(createNormalVertexBufferCount + 1);
 	createNormalVertexBufferCount++;
-	vertices.resize(vertices.size() + 1);
-	indices.resize(indices.size() + 1);
 
 	//objにあるモデル数
 	int loadNum = 0;
 
 	std::vector<std::string>materialName;
+	std::vector<DirectX::XMFLOAT3>bonePos;
+	std::vector<std::vector<int>>boneNum;
 
 	ModelLoader::getInstance()->loadOBJModel
 	(
@@ -1806,7 +1808,9 @@ VertexType  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNor
 		materialFireName,
 		materialName,
 		smoothData,
-		&loadNum
+		&loadNum,
+		&bonePos,
+		&boneNum
 	);
 
 	//面の左右反転用
@@ -1915,6 +1919,9 @@ VertexType  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNor
 
 
 	polyDatas.push_back(data);
+
+	if (bonePos.size() != 0)
+		return VERTEX_TYPE_OBJ_ANIMATION;
 
 	//ボーンなかったらこれ返す
 	return VertexType::VERTEX_TYPE_NORMAL;
@@ -2394,7 +2401,7 @@ void DirectX12::loadOBJ(const char* path, std::string materialDirectoryPath, boo
 
 #pragma region バッファ作成
 
-void DirectX12::createPolygonData(PolyData polygonData, const VertexType& vertexType)
+void DirectX12::createPolygonData(PolyData polygonData)
 {
 	createNormalVertexBufferCount++;
 

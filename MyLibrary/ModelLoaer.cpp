@@ -439,8 +439,10 @@ bool  ModelLoader::loadOBJModel
 			//何個目のオブジェクトのデータか確認
 			lineStream >> boneObjectNum;
 
+			//番号取得
 			lineStream >> boneNum;
 
+			//仮配列にボーン番号追加
 			temporaryBoneNumVec[boneObjectNum].push_back(boneNum);
 				
 		}

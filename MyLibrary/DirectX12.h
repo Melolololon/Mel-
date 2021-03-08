@@ -514,7 +514,7 @@ public:
 	void createPoint(int createNum, int* point);
 	
 	//type‚É‰‚¶‚Ä‚Ç‚Ìcount‚ğ++‚·‚é‚©Œˆ‚ß‚é
-	void createPolygonData(PolyData polygonData,const VertexType& vertexType);
+	void createPolygonData(PolyData polygonData);
 	void createHeapData(HeapData despData, bool setConstDataFlag);
 
 #pragma region ƒ†[ƒU[
