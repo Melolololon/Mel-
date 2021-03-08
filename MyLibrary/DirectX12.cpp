@@ -1787,9 +1787,6 @@ void DirectX12::setLightColor(Color lightColor)
 #pragma region モデル読み込み
 VertexType  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNormal, std::string* materialFireName, PolyData data)
 {
-	vertices.resize(createNormalVertexBufferCount + 1);
-	indices.resize(createNormalVertexBufferCount + 1);
-	createNormalVertexBufferCount++;
 
 	//objにあるモデル数
 	int loadNum = 0;
@@ -1798,13 +1795,17 @@ VertexType  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNor
 	std::vector<DirectX::XMFLOAT3>bonePos;
 	std::vector<std::vector<int>>boneNum;
 
+	//仮配列
+	std::vector<std::vector<Vertex>>temporaryVertex;
+	std::vector<std::vector<USHORT>>temporaryIndex;
+
 	ModelLoader::getInstance()->loadOBJModel
 	(
 		path,
 		loadUV,
 		loadNormal,
-		vertices[vertices.size() - 1],
-		indices[indices.size() - 1],
+		temporaryVertex,
+		temporaryIndex,
 		materialFireName,
 		materialName,
 		smoothData,
@@ -1812,6 +1813,11 @@ VertexType  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNor
 		&bonePos,
 		&boneNum
 	);
+
+	//ボーンデータがあるかどうかでどの配列に入れるか決める
+	createNormalVertexBufferCount++;
+	vertices.push_back(temporaryVertex);
+	indices.push_back(temporaryIndex);
 
 	//面の左右反転用
 	int count = 0;

@@ -49,12 +49,14 @@ bool ModelLoader::loadPMDModel(const char* path, std::vector<PMDVertex>& vertex,
 //三角形ポリゴンと四角形ポリゴン混ざってたらエラー出るかも
 bool  ModelLoader::loadOBJModel
 (
-	const char* path, bool loadUV, bool loadNormal, 
+	const char* path,
+	bool loadUV, 
+	bool loadNormal, 
 	std::vector<std::vector<Vertex>>& vertices, 
-	std::vector<std::vector<unsigned short>>& indices,
+	std::vector<std::vector<USHORT>>& indices,
 	std::string* materialFileName,
 	std::vector<std::string>&materialName, 
-	std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
+	std::vector<std::unordered_map<USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
 	int* loadNum,
 	std::vector<DirectX::XMFLOAT3>* bonePosVector,
 	std::vector<std::vector<int>>* boneNumVector
@@ -422,9 +424,6 @@ bool  ModelLoader::loadOBJModel
 		//bpあったらボーン座標追加
 		if(vertexData.find("bp") != std::string::npos && bonePosVector)
 		{
-			//文字格納
-			lineStream >> boneTopStr;
-
 			lineStream >> bonePos.x;
 			lineStream >> bonePos.y;
 			lineStream >> bonePos.z;
@@ -433,8 +432,6 @@ bool  ModelLoader::loadOBJModel
 
 		if(vertexData.find("bd") != std::string::npos && boneNumVector)
 		{
-			//文字格納
-			lineStream >> boneTopStr;
 
 			//何個目のオブジェクトのデータか確認
 			lineStream >> boneObjectNum;

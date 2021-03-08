@@ -137,8 +137,18 @@ private:
 #pragma endregion
 
 #pragma region バッファ
-	std::vector< std::vector<VertexBufferSet>> vertexBuffSet;
-	std::vector< std::vector<IndexBufferSet>>indexBufferSet;
+
+#pragma region 頂点 インデックス
+
+	std::vector<std::vector<VertexBufferSet>> vertexBuffSet;
+	std::vector<std::vector<VertexBufferSet>> objAniVertesBuffSet;
+	std::vector<std::vector<IndexBufferSet>>indexBufferSet;
+	std::vector<std::vector<IndexBufferSet>>objAniIndexBufferSet;
+
+
+#pragma endregion
+
+
 	std::vector<std::vector<ConstBufferSet>> constBufferSet;
 	std::vector<ComPtr<ID3D12Resource>>commonBuffer;
 	std::vector<TextureBufferSet> textureBufferSet;
@@ -188,7 +198,8 @@ private:
 	std::vector<std::vector<std::vector<Vertex>>> vertices;//[モデルごと][モデルにある複数のオブジェクトごと][頂点ごと]
 	std::vector<std::vector<std::vector<OBJAnimationVertex>>> objAniVertices;//Vertexに加え、ボーン番号を追加
 
-	std::vector<std::vector<std::vector<unsigned short>>> indices;
+	std::vector<std::vector<std::vector<USHORT>>> indices;
+	std::vector<std::vector<std::vector<USHORT>>> objAniIndices;
 #pragma endregion
 
 	std::vector<std::vector<Vertex>> spriteVertices;

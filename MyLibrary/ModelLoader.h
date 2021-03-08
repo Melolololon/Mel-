@@ -31,7 +31,7 @@ public:
 		bool loadUV,
 		bool loadNormal,
 		std::vector<std::vector<Vertex>>& vertices,
-		std::vector<std::vector<unsigned short>>& indices,
+		std::vector<std::vector<USHORT>>& indices,
 		std::string* materialFileName,
 		std::vector<std::string>&materialName,
 		std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
