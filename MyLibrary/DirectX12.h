@@ -6,6 +6,7 @@
 #include<random>
 #include<ctime>
 #include<string>
+#include<unordered_map>
 #include<wrl.h>
 
 
@@ -139,15 +140,14 @@ private:
 #pragma region バッファ
 
 #pragma region 頂点 インデックス
-
-	std::vector<std::vector<VertexBufferSet>> vertexBuffSet;
-	std::vector<std::vector<VertexBufferSet>> objAniVertesBuffSet;
-	std::vector<std::vector<IndexBufferSet>>indexBufferSet;
-	std::vector<std::vector<IndexBufferSet>>objAniIndexBufferSet;
+	//[モデルごと][objの中のモデルごと]
+	std::unordered_map<std::string,std::vector<VertexBufferSet>> vertexBufferSet;
+	std::unordered_map<std::string,std::vector<IndexBufferSet>>indexBufferSet;
 
 
 #pragma endregion
 
+#pragma region ヒープに入れるバッファ
 
 	std::vector<std::vector<ConstBufferSet>> constBufferSet;
 	std::vector<ComPtr<ID3D12Resource>>commonBuffer;
@@ -163,6 +163,8 @@ private:
 	std::vector<TextureBufferSet> pointTextureBufferSet;
 
 	std::vector<TextureBufferSet>spriteFontTextureBufferSet;
+
+#pragma endregion
 
 	DepthBufferSet depthBufferSet;
 #pragma endregion
@@ -195,11 +197,15 @@ private:
 
 #pragma region 3D
 
-	std::vector<std::vector<std::vector<Vertex>>> vertices;//[モデルごと][モデルにある複数のオブジェクトごと][頂点ごと]
-	std::vector<std::vector<std::vector<OBJAnimationVertex>>> objAniVertices;//Vertexに加え、ボーン番号を追加
+	//std::vector<std::vector<std::vector<Vertex>>> vertices;//[モデルごと][objにあるモデルごと][頂点ごと]
+	//std::vector<std::vector<std::vector<OBJAnimationVertex>>> objAniVertices;//Vertexに加え、ボーン番号を追加
+	//std::vector<std::vector<std::vector<USHORT>>> indices;
 
-	std::vector<std::vector<std::vector<USHORT>>> indices;
-	std::vector<std::vector<std::vector<USHORT>>> objAniIndices;
+
+	std::unordered_map<std::string, std::vector<std::vector<Vertex>>> vertices;//[モデルごと(keyでアクセス)][objにあるモデルごと][頂点ごと]
+	std::unordered_map<std::string, std::vector<std::vector<OBJAnimationVertex>>> objAniVertices;//Vertexに加え、ボーン番号を追加
+
+	std::unordered_map<std::string, std::vector<std::vector<USHORT>>> indices;
 #pragma endregion
 
 	std::vector<std::vector<Vertex>> spriteVertices;
@@ -208,14 +214,16 @@ private:
 	PointVertex* pointVertexMapData;
 
 	//スムースシェーディング用データ
-	std::vector<std::vector<std::vector<DirectX::XMFLOAT3>>> smoothNormal;//法線を平均した頂点データ
+	std::unordered_map<std::string, std::vector<std::vector<DirectX::XMFLOAT3>>> smoothNormal;//法線を平均した頂点データ
+	
+	//[obj内のオブジェクト分]
 	std::vector< std::unordered_map < USHORT, std::vector<USHORT> >>smoothData;
 
 	//スムースシェーディング用関数
 	/// <summary>
 	/// スムースシェーディングを行うための計算をします
 	/// </summary>
-	void calcSmoothingNormals();
+	void calcSmoothingNormals(const std::string key);
 
 
 #pragma endregion
@@ -525,7 +533,7 @@ public:
 	void createPoint(int createNum, int* point);
 	
 	//typeに応じてどのcountを++するか決める
-	void createPolygonData(PolyData polygonData);
+	void createPolygonData(PolyData polygonData,const std::string& key);
 	void createHeapData(HeapData despData, bool setConstDataFlag);
 
 #pragma region ユーザー
@@ -534,9 +542,9 @@ public:
 	/// </summary>
 	/// <param name="vertex"></param>
 	/// <param name="p"></param>
-	void addUserVertex(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV);
+	void addUserVertex(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV, const std::string& key);
 
-	void addUserIndex(std::vector<unsigned short>& index);
+	void addUserIndex(std::vector<unsigned short>& index, const std::string& key);
 
 	/// <summary>
 	/// 
@@ -546,7 +554,15 @@ public:
 	/// <param name="vertexDataSize"></param>
 	/// <param name="index"></param>
 	/// <param name="polyData"></param>
-	void createUserPolygon(void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, std::vector<unsigned short>&index, PolyData polyData);
+	void createUserPolygon
+	(
+		void** vertexData,
+		unsigned int vertexDataSize,
+		unsigned int vertexSumDataSize,
+		std::vector<unsigned short>&index, 
+		PolyData polyData, 
+		const std::string& key
+	);
 #pragma endregion
 
 #pragma region モデル
@@ -556,7 +572,8 @@ public:
 		bool loadUV,
 		bool loadNormal,
 		std::string* materialFireName,
-		PolyData data
+		PolyData data, 
+		const std::string& key
 	);
 
 	void loadOBJMaterial(std::string materialDirectoryPath, std::string materialFileName, HeapData heapData, bool setConstDataFlag);

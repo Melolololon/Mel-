@@ -1416,7 +1416,7 @@ void DirectX12::setAnimation(int polyNum, int maxWidth, int maxHeight, int anima
 	//マップしてもポリゴンのサイズは変わりません
 	for (int i = 0; i < 4; i++)
 	{
-		vertexBuffSet[polyNum][0].vertexMap[i].uv = vertices[polyNum][0][i].uv;
+		vertexBufferSet[polyNum][0].vertexMap[i].uv = vertices[polyNum][0][i].uv;
 	}
 
 }
@@ -1434,7 +1434,7 @@ void DirectX12::setAnimation2(int vertexNum, int dataNum, int startAreaX, int st
 
 	for (int i = 0; i < 4; i++)
 	{
-		vertexBuffSet[vertexNum][0].vertexMap[i].uv = vertices[vertexNum][0][i].uv;
+		vertexBufferSet[vertexNum][0].vertexMap[i].uv = vertices[vertexNum][0][i].uv;
 	}
 }
 
@@ -1784,14 +1784,28 @@ void DirectX12::setLightColor(Color lightColor)
 //}
 #pragma endregion
 
+
+#pragma region バッファ作成
+
+
 #pragma region モデル読み込み
-VertexType  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNormal, std::string* materialFireName, PolyData data)
+
+VertexType  DirectX12::loadOBJVertex
+(
+	const char* path,
+	bool loadUV,
+	bool loadNormal,
+	std::string* materialFireName,
+	PolyData data,
+	const std::string& key)
 {
 
 	//objにあるモデル数
 	int loadNum = 0;
 
+	//マテリアル
 	std::vector<std::string>materialName;
+
 	std::vector<DirectX::XMFLOAT3>bonePos;
 	std::vector<std::vector<int>>boneNum;
 
@@ -1816,104 +1830,75 @@ VertexType  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNor
 
 	//ボーンデータがあるかどうかでどの配列に入れるか決める
 	createNormalVertexBufferCount++;
-	vertices.push_back(temporaryVertex);
-	indices.push_back(temporaryIndex);
+	vertices.emplace(key, temporaryVertex);
+	indices.emplace(key,temporaryIndex);
 
-	//面の左右反転用
+#pragma region テクスチャ反転
+
 	int count = 0;
 	float upx = 0;
 	float upy = 0;
 	float downx = 0;
 	float downy = 0;
-	for (int i = 0; i < vertices[vertices.size() - 1].size(); i++)
+	for (int i = 0; i < vertices[key].size(); i++)
 	{
-		for (int j = 0; j < vertices[vertices.size() - 1][i].size(); j++)
+		for (int j = 0; j < vertices[key][i].size(); j++)
 		{
-
-			//反転(ブレンダーは2次元でも下が0)
-			//モデルのテクスチャが左右反転するのは、ブレンダーの出力するときのモデルの向きか、上と前の設定が悪い?
-			vertices[vertices.size() - 1][i][j].uv.y = (vertices[vertices.size() - 1][i][j].uv.y - 1)*-1;
-
-			/*if (count == 0)
-			{
-				downx = vertices[vertices.size() - 1][i][j].uv.x;
-				downy = vertices[vertices.size() - 1][i][j].uv.y;
-
-				vertices[vertices.size() - 1][i][j].uv.x = vertices[vertices.size() - 1][i][j + 2].uv.x;
-				vertices[vertices.size() - 1][i][j].uv.y = vertices[vertices.size() - 1][i][j + 2].uv.y;
-
-				vertices[vertices.size() - 1][i][j+2].uv.x = downx;
-				vertices[vertices.size() - 1][i][j+2].uv.y = downy;
-			}
-			if (count == 1)
-			{
-				upx = vertices[vertices.size() - 1][i][j].uv.x;
-				upy = vertices[vertices.size() - 1][i][j].uv.y;
-
-				vertices[vertices.size() - 1][i][j].uv.x = vertices[vertices.size() - 1][i][j + 2].uv.x;
-				vertices[vertices.size() - 1][i][j].uv.y = vertices[vertices.size() - 1][i][j + 2].uv.y;
-
-				vertices[vertices.size() - 1][i][j + 2].uv.x = upx;
-				vertices[vertices.size() - 1][i][j + 2].uv.y = upy;
-			}*/
-
+			//反転(ブレンダー、MAYAは2次元でも下が0で上に行くほど1に近づく)
+			vertices[key][i][j].uv.y = (vertices[key][i][j].uv.y - 1) * -1;
 
 			count++;
 			count = count >= 4 ? 0 : count;
 
-			//左右入れ替え
-			//vertices[vertices.size() - 1][i][j].
-
-
-			//vertices[vertices.size() - 1][i][j].uv.x *= -1;
 		}
 	}
+#pragma endregion
+
 
 
 	//スムースシェーディング法線計算
-	smoothNormal.resize(smoothNormal.size() + 1);
-	smoothNormal[smoothNormal.size() - 1].resize(vertices[vertices.size() - 1].size());
-	for (int i = 0; i < vertices[vertices.size() - 1].size(); i++)
+	smoothNormal.emplace(std::vector<std::vector<DirectX::XMFLOAT3>>(0));
+	smoothNormal[key].resize(vertices[key].size());
+	for (int i = 0; i < vertices[key].size(); i++)
 	{
-		smoothNormal[smoothNormal.size() - 1][i].resize(vertices[vertices.size() - 1][i].size());
+		smoothNormal[key][i].resize(vertices[key][i].size());
 	}
 
-	calcSmoothingNormals();
+	calcSmoothingNormals(key);
 
 #pragma region 頂点 インデックスバッファ作成
 
 #pragma region 頂点バッファ
 
-	vertexBuffSet.resize(vertexBuffSet.size() + 1);
-	vertexBuffSet[vertexBuffSet.size() - 1].resize(loadNum);
+	//size 0 の配列を追加(resizeみたいな感じ)
+	vertexBufferSet.emplace(key, std::vector<VertexBufferSet>(loadNum));
 
 	for (int i = 0; i < loadNum; i++)
 	{
 		createBuffer->createVertexBufferSet
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[createNormalVertexBufferCount - 1][i].size()),
-			vertices[createNormalVertexBufferCount - 1][i],
-			vertexBuffSet[createNormalVertexBufferCount - 1][i]
+			CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[key][i].size()),
+			vertices[key][i],
+			vertexBufferSet[key][i]
 		);
-		vertexBuffSet[createNormalVertexBufferCount - 1][i].materialName = materialName[i];
+		vertexBufferSet[key][i].materialName = materialName[i];
 	}
 
 
 #pragma endregion
 
 #pragma region インデックスバッファ
-	indexBufferSet.resize(indexBufferSet.size() + 1);
-	indexBufferSet[indexBufferSet.size() - 1].resize(loadNum);
+	indexBufferSet.emplace(key, std::vector<IndexBufferSet>(loadNum));
 
 	for (int i = 0; i < loadNum; i++)
 	{
 		createBuffer->createIndexBufferSet
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer(sizeof(unsigned short) * indices[createNormalVertexBufferCount - 1][i].size()),
-			indices[createNormalVertexBufferCount - 1][i],
-			indexBufferSet[createNormalVertexBufferCount - 1][i]
+			CD3DX12_RESOURCE_DESC::Buffer(sizeof(unsigned short) * indices[key][i].size()),
+			indices[key][i],
+			indexBufferSet[key][i]
 		);
 	}
 
@@ -1926,7 +1911,8 @@ VertexType  DirectX12::loadOBJVertex(const char* path, bool loadUV, bool loadNor
 
 	polyDatas.push_back(data);
 
-	if (bonePos.size() != 0)
+	if (bonePos.size() != 0 && 
+		boneNum.size() != 0)
 		return VERTEX_TYPE_OBJ_ANIMATION;
 
 	//ボーンなかったらこれ返す
@@ -2405,17 +2391,12 @@ void DirectX12::loadOBJ(const char* path, std::string materialDirectoryPath, boo
 }
 #pragma endregion
 
-#pragma region バッファ作成
-
-void DirectX12::createPolygonData(PolyData polygonData)
+void DirectX12::createPolygonData(PolyData polygonData,const std::string& key)
 {
 	createNormalVertexBufferCount++;
-
-	if (polygonData.katatiNum != -1)
-	{
-		vertices.resize(vertices.size() + 1);
-		indices.resize(indices.size() + 1);
-	}
+	vertices.emplace(key, std::vector<std::vector<Vertex>>(0));
+	indices.emplace(key, std::vector<std::vector<USHORT>>(0));
+	
 
 	//ここで、drawBox、drawCircleかを判別する
 	//Libraryで頂点用意すれば、PolyData送る必要ない
@@ -2436,38 +2417,38 @@ void DirectX12::createPolygonData(PolyData polygonData)
 		height /= 2;
 
 
-		vertices[vertices.size() - 1].push_back(createPolygon->setBoardPolygonVertex
+		vertices[key].push_back(createPolygon->setBoardPolygonVertex
 		(
 			{ 0 - width,polygonData.pos1.y - height,0 },//左下
 			{ 0 - width,0 - height, 0 },//左上
 			{ polygonData.pos1.x - width,polygonData.pos1.y - height,0 },//右下
 			{ polygonData.pos1.x - width,0 - height,0 }//右上
 		));
-		indices[indices.size() - 1].push_back(createPolygon->setBoardPolygonIndex());
+		indices[key].push_back(createPolygon->setBoardPolygonIndex());
 
 	}
 	if (polygonData.katatiNum == circle)
 	{
-		vertices[vertices.size() - 1].push_back(createPolygon->setPolygonVertex
+		vertices[key].push_back(createPolygon->setPolygonVertex
 		(
 			polygonData.fNum1,
 			50,
 			{ 0,0 }
 		));
-		indices[indices.size() - 1].push_back(createPolygon->setPolygonIndex(50));
+		indices[key].push_back(createPolygon->setPolygonIndex(50));
 	}
 
 	if (polygonData.katatiNum == 10)
 	{
 		//MyLibraryでdimentionを設定してなかったから表示できていなかった
-		vertices[vertices.size() - 1].push_back(createPolygon->get3DBox({ polygonData.pos1.x,polygonData.pos1.y,polygonData.pos1.z }));
-		indices[indices.size() - 1].push_back(createPolygon->get3DBoxIndex());
+		vertices[key].push_back(createPolygon->get3DBox({ polygonData.pos1.x,polygonData.pos1.y,polygonData.pos1.z }));
+		indices[key].push_back(createPolygon->get3DBoxIndex());
 
 	}
 
 	if (polygonData.katatiNum == 11)
 	{
-		vertices[vertices.size() - 1].push_back(createPolygon->getTriangularPyramidVertex
+		vertices[key].push_back(createPolygon->getTriangularPyramidVertex
 		(
 			polygonData.fNum1,
 			polygonData.num1,
@@ -2475,14 +2456,14 @@ void DirectX12::createPolygonData(PolyData polygonData)
 			polygonData.fNum2
 		));
 
-		indices[indices.size() - 1].push_back(createPolygon->setTriangularPyramidIndex(polygonData.num1));
+		indices[key].push_back(createPolygon->setTriangularPyramidIndex(polygonData.num1));
 	}
 
 
 	if (polygonData.katatiNum == 100)
 	{
-		vertices[vertices.size() - 1].push_back(createPolygon->getVertexMany3DBox({ polygonData.pos1.x,polygonData.pos1.y,polygonData.pos1.z }));
-		indices[indices.size() - 1].push_back(createPolygon->getVertexMany3DBoxIndex());
+		vertices[key].push_back(createPolygon->getVertexMany3DBox({ polygonData.pos1.x,polygonData.pos1.y,polygonData.pos1.z }));
+		indices[key].push_back(createPolygon->getVertexMany3DBoxIndex());
 	}
 
 #pragma region 法線ベクトル計算
@@ -2490,34 +2471,35 @@ void DirectX12::createPolygonData(PolyData polygonData)
 	//行列で動かした後に法線ベクトルを書き換えないといけない?
 	//頂点多いcreateで作らないとちゃんと法線を求められない
 
-	int num = createNormalVertexBufferCount - 1;
-	for (int j = 0; j < (int)indices[num][0].size() / 3; j++)
+	for (int j = 0; j < (int)indices[key][0].size() / 3; j++)
 	{
 		calculationNormal
 		(
-			vertices[num][0][indices[num][0][j * 3 + 0]].pos,
-			vertices[num][0][indices[num][0][j * 3 + 1]].pos,
-			vertices[num][0][indices[num][0][j * 3 + 2]].pos,
-			vertices[num][0][indices[num][0][j * 3 + 0]].normal,
-			vertices[num][0][indices[num][0][j * 3 + 1]].normal,
-			vertices[num][0][indices[num][0][j * 3 + 2]].normal
+			vertices[key][0][indices[key][0][j * 3 + 0]].pos,
+			vertices[key][0][indices[key][0][j * 3 + 1]].pos,
+			vertices[key][0][indices[key][0][j * 3 + 2]].pos,
+			vertices[key][0][indices[key][0][j * 3 + 0]].normal,
+			vertices[key][0][indices[key][0][j * 3 + 1]].normal,
+			vertices[key][0][indices[key][0][j * 3 + 2]].normal
 		);
 
 	}
 
 	//smoothNOrmalにverticesの法線を移す
-	smoothNormal.resize(smoothNormal.size() + 1);
-	smoothNormal[smoothNormal.size() - 1].resize(vertices[vertices.size() - 1].size());
-	for (int i = 0; i < vertices[vertices.size() - 1].size(); i++)
+	//スムースシェーディング法線計算
+	smoothNormal.emplace(std::vector<std::vector<DirectX::XMFLOAT3>>(0));
+	smoothNormal[key].resize(vertices[key].size());
+	for (int i = 0; i < vertices[key].size(); i++)
 	{
-		smoothNormal[smoothNormal.size() - 1][i].resize(vertices[vertices.size() - 1][i].size());
+		smoothNormal[key][i].resize(vertices[key][i].size());
 	}
 
-	for (int i = 0; i < vertices[vertices.size() - 1].size(); i++)
+	//ライブラリ作成オブジェクトはスムースシェーディングしないため、同じのを入れる
+	for (int i = 0; i < vertices[key].size(); i++)
 	{
-		for (int j = 0; j < vertices[vertices.size() - 1][i].size(); j++)
+		for (int j = 0; j < vertices[key][i].size(); j++)
 		{
-			smoothNormal[smoothNormal.size() - 1][i][j] = vertices[vertices.size() - 1][i][j].normal;
+			smoothNormal[key][i][j] = vertices[key][i][j].normal;
 		}
 	}
 
@@ -2528,26 +2510,29 @@ void DirectX12::createPolygonData(PolyData polygonData)
 
 #pragma region 頂点バッファ
 
-	VertexBufferSet vertSet;
-	vertexBuffSet.resize(vertexBuffSet.size() + 1);
-	vertexBuffSet[vertexBuffSet.size() - 1].push_back(vertSet);
+	
+	vertexBufferSet.emplace(std::vector<VertexBufferSet>(1));
 	createBuffer->createVertexBufferSet
 	(
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[createNormalVertexBufferCount - 1][0].size()),
-		vertices[createNormalVertexBufferCount - 1][0],
-		vertexBuffSet[createNormalVertexBufferCount - 1][0]
+		CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[key][0].size()),
+		vertices[key][0],
+		vertexBufferSet[key][0]
 	);
 
 
 #pragma endregion
 
 #pragma region インデックスバッファ
-	IndexBufferSet indexSet;
-	indexBufferSet.resize(indexBufferSet.size() + 1);
-	indexBufferSet[indexBufferSet.size() - 1].push_back(indexSet);
-
-	createBuffer->createIndexBufferSet(CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), CD3DX12_RESOURCE_DESC::Buffer(sizeof(unsigned short) * indices[createNormalVertexBufferCount - 1][0].size()), indices[createNormalVertexBufferCount - 1][0], indexBufferSet[createNormalVertexBufferCount - 1][0]);
+	
+	indexBufferSet.emplace(std::vector<USHORT>(1));
+	createBuffer->createIndexBufferSet
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 
+		CD3DX12_RESOURCE_DESC::Buffer(sizeof(USHORT) * indices[key][0].size()),
+		indices[key][0],
+		indexBufferSet[key][0]
+	);
 
 
 #pragma endregion
@@ -3136,7 +3121,7 @@ void DirectX12::createPoint(int createNum, int* point)
 }
 
 #pragma region ユーザー
-void DirectX12::addUserVertex(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV)
+void DirectX12::addUserVertex(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV, const std::string& key)
 {
 	std::vector<Vertex>vertex;
 	vertex.resize(vertexPos.size());
@@ -3159,13 +3144,21 @@ void DirectX12::addUserVertex(std::vector<Vector3>& vertexPos, std::vector<Vecto
 	vertices[vertices.size() - 1].push_back(vertex);
 }
 
-void DirectX12::addUserIndex(std::vector<unsigned short>& index)
+void DirectX12::addUserIndex(std::vector<unsigned short>& index, const std::string& key)
 {
 	indices.resize(indices.size() + 1);
 	indices[indices.size() - 1].push_back(index);
 }
 
-void DirectX12::createUserPolygon(void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, std::vector<unsigned short>&index, PolyData polyData)
+void DirectX12::createUserPolygon
+(
+	void** vertexData, 
+	unsigned int vertexDataSize,
+	unsigned int vertexSumDataSize, 
+	std::vector<unsigned short>&index,
+	PolyData polyData, 
+	const std::string& key
+)
 {
 	createNormalVertexBufferCount++;
 
@@ -3179,8 +3172,8 @@ void DirectX12::createUserPolygon(void** vertexData, unsigned int vertexDataSize
 #pragma region 頂点バッファ
 
 	VertexBufferSet vertSet;
-	vertexBuffSet.resize(vertexBuffSet.size() + 1);
-	vertexBuffSet[vertexBuffSet.size() - 1].push_back(vertSet);
+	vertexBufferSet.resize(vertexBufferSet.size() + 1);
+	vertexBufferSet[vertexBufferSet.size() - 1].push_back(vertSet);
 	createBuffer->createUserVertexBufferSet
 	(
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
@@ -3188,7 +3181,7 @@ void DirectX12::createUserPolygon(void** vertexData, unsigned int vertexDataSize
 		vertexData,
 		vertexDataSize,
 		vertexSumDataSize,
-		vertexBuffSet[createNormalVertexBufferCount - 1][0]
+		vertexBufferSet[createNormalVertexBufferCount - 1][0]
 	);
 
 
@@ -3233,7 +3226,7 @@ void DirectX12::deletePolygonData(int polyNum)
 		indices.erase(indices.begin() + polyNum);
 		smoothNormal.erase(smoothNormal.begin() + polyNum);
 
-		vertexBuffSet.erase(vertexBuffSet.begin() + polyNum);
+		vertexBufferSet.erase(vertexBufferSet.begin() + polyNum);
 		indexBufferSet.erase(indexBufferSet.begin() + polyNum);
 
 		for (int i = polyNum; i < (int)polyDatas.size(); i++)
@@ -3244,7 +3237,7 @@ void DirectX12::deletePolygonData(int polyNum)
 		vertices.shrink_to_fit();
 		indices.shrink_to_fit();
 		smoothNormal.shrink_to_fit();
-		vertexBuffSet.shrink_to_fit();
+		vertexBufferSet.shrink_to_fit();
 		indexBufferSet.shrink_to_fit();
 
 		createNormalVertexBufferCount--;
@@ -3422,7 +3415,7 @@ void DirectX12::setCmdList(int polyNum, int despNum, int number)
 			cmdList->SetGraphicsRootDescriptorTable(4, gpuDescHandle);
 
 			//頂点バッファ分ループ
-			for (int i = 0; i < vertexBuffSet[polyNum].size(); i++)
+			for (int i = 0; i < vertexBufferSet[polyNum].size(); i++)
 			{
 				handleNum = 0;
 
@@ -3430,11 +3423,11 @@ void DirectX12::setCmdList(int polyNum, int despNum, int number)
 				for (int j = 0; j < materials[despNum].size(); j++)
 				{
 					//マテリアル紐づけ
-					if (vertexBuffSet[polyNum][i].materialName == materials[despNum][j].materialName)handleNum = j;
+					if (vertexBufferSet[polyNum][i].materialName == materials[despNum][j].materialName)handleNum = j;
 				}
 
 				cmdList->IASetIndexBuffer(&indexBufferSet[polyNum][i].indexBufferView);
-				cmdList->IASetVertexBuffers(0, 1, &vertexBuffSet[polyNum][i].vertexBufferView);
+				cmdList->IASetVertexBuffers(0, 1, &vertexBufferSet[polyNum][i].vertexBufferView);
 
 				//テクスチャ
 				gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
@@ -3677,24 +3670,24 @@ void DirectX12::map(int polyNum, int despNumber, int number)
 			//オブジェクト分ループ
 			for (int i = 0; i < vertices[polyNum].size(); i++)
 			{
-				vertexBuffSet[polyNum][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBuffSet[polyNum][i].vertexMap);
+				vertexBufferSet[polyNum][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBufferSet[polyNum][i].vertexMap);
 
 				//スムージングを行うか
 				if (smoothing)
 				{
 					for (int j = 0; j < smoothNormal[polyNum][i].size(); j++)
 					{
-						vertexBuffSet[polyNum][i].vertexMap[j].normal = smoothNormal[polyNum][i][j];
+						vertexBufferSet[polyNum][i].vertexMap[j].normal = smoothNormal[polyNum][i][j];
 					}
 				}
 				else
 				{
 					for (int j = 0; j < vertices[polyNum][i].size(); j++)
 					{
-						vertexBuffSet[polyNum][i].vertexMap[j].normal = vertices[polyNum][i][j].normal;
+						vertexBufferSet[polyNum][i].vertexMap[j].normal = vertices[polyNum][i][j].normal;
 					}
 				}
-				vertexBuffSet[polyNum][i].vertexBuffer.Get()->Unmap(0, nullptr);
+				vertexBufferSet[polyNum][i].vertexBuffer.Get()->Unmap(0, nullptr);
 			}
 			//constData3D->mat = constData3D->mat * DirectX::XMMatrixInverse(nullptr, mainCamera->get3DCameraMatrix(mainCameraData));
 
@@ -4123,7 +4116,7 @@ bool DirectX12::overrideWriteVertexPosition(std::vector<std::vector<DirectX::XMF
 	num = vertPos.size();
 	for (int i = 0; i < num; i++)
 	{
-		vertexBuffSet[vertNum][i].vertexBuffer.Get()->Map(0, nullptr, (void**)vertexBuffSet[vertNum][i].vertexMap);
+		vertexBufferSet[vertNum][i].vertexBuffer.Get()->Map(0, nullptr, (void**)vertexBufferSet[vertNum][i].vertexMap);
 	}
 
 	num = vertPos.size();
@@ -4132,11 +4125,11 @@ bool DirectX12::overrideWriteVertexPosition(std::vector<std::vector<DirectX::XMF
 		num2 = vertPos[i].size();
 		for (int j = 0; j < num2; j++)
 		{
-			vertexBuffSet[vertNum][i].vertexMap[j] = vertices[vertNum][i][j];
+			vertexBufferSet[vertNum][i].vertexMap[j] = vertices[vertNum][i][j];
 		}
 	}
 
-	vertexBuffSet[vertNum][0].vertexBuffer.Get()->Unmap(0, nullptr);
+	vertexBufferSet[vertNum][0].vertexBuffer.Get()->Unmap(0, nullptr);
 
 	return true;
 }
@@ -4357,14 +4350,14 @@ void DirectX12::calculationNormal
 	DirectX::XMStoreFloat3(&normal3, normal);
 }
 
-void DirectX12::calcSmoothingNormals()
+void DirectX12::calcSmoothingNormals(const std::string key)
 {
 
-	for (int i = 0; i < vertices[vertices.size() - 1].size(); i++)
+	for (int i = 0; i < vertices[key].size(); i++)
 	{
-		for (int j = 0; j < vertices[vertices.size() - 1][i].size(); j++)
+		for (int j = 0; j < vertices[key][i].size(); j++)
 		{
-			smoothNormal[smoothNormal.size() - 1][i][j] = vertices[vertices.size() - 1][i][j].normal;
+			smoothNormal[key][i][j] = vertices[key][i][j].normal;
 		}
 	}
 
@@ -4382,7 +4375,7 @@ void DirectX12::calcSmoothingNormals()
 			for (auto& v : ver)
 			{
 				//一気に24個入ってるし、clearしてないからおかしかった
-				sNor.push_back(vertices[vertices.size() - 1][i][v].normal);
+				sNor.push_back(vertices[key][i][v].normal);
 			}
 
 			//法線平均化
@@ -4399,7 +4392,7 @@ void DirectX12::calcSmoothingNormals()
 			aveNormal = DirectX::XMVector3Normalize(aveNormal);
 			for (auto& v : ver)
 			{
-				smoothNormal[smoothNormal.size() - 1][i][v] = { aveNormal.m128_f32[0],aveNormal.m128_f32[1], aveNormal.m128_f32[2] };
+				smoothNormal[key][i][v] = { aveNormal.m128_f32[0],aveNormal.m128_f32[1], aveNormal.m128_f32[2] };
 			}
 			sNor.clear();
 		}

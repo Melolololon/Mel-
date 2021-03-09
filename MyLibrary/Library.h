@@ -38,7 +38,8 @@ using font = int;
 struct VertexData
 {
 	vertex handle;//ハンドル(stringに変更予定あり)
-	VertexType typr;//(頂点構造体の種類)
+	std::string key;//ハンドルに代わるアクセスするための変数。バッファを作る前に自分で設定する
+	VertexType typr;//(頂点構造体の種類)(これだけconstにする?)
 };
 #pragma endregion
 
@@ -249,7 +250,14 @@ public:
 	/// <param name="loadNormal">法線ベクトルを読み込むかどうか</param>
 	/// <param name="materialFireName">読み取ったマテリアルのファイル(.mtl)名を入れるstring型の変数(読み取らない場合、nullptr)</param>
 	/// <param name="p"></param>
-	static void loadOBJVertex(const char* path, bool loadUV, bool loadNormal, std::string* materialFireName, VertexData& p);
+	static void loadOBJVertex
+	(
+		const char* path, 
+		bool loadUV, 
+		bool loadNormal,
+		std::string* materialFireName, 
+		VertexData& p
+	);
 #pragma endregion
 
 #pragma region ライブラリ実装オブジェクト
