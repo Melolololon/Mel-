@@ -196,12 +196,6 @@ private:
 #pragma region 頂点
 
 #pragma region 3D
-
-	//std::vector<std::vector<std::vector<Vertex>>> vertices;//[モデルごと][objにあるモデルごと][頂点ごと]
-	//std::vector<std::vector<std::vector<OBJAnimationVertex>>> objAniVertices;//Vertexに加え、ボーン番号を追加
-	//std::vector<std::vector<std::vector<USHORT>>> indices;
-
-
 	std::unordered_map<std::string, std::vector<std::vector<Vertex>>> vertices;//[モデルごと(keyでアクセス)][objにあるモデルごと][頂点ごと]
 	std::unordered_map<std::string, std::vector<std::vector<OBJAnimationVertex>>> objAniVertices;//Vertexに加え、ボーン番号を追加
 
@@ -221,7 +215,7 @@ private:
 
 	//スムースシェーディング用関数
 	/// <summary>
-	/// スムースシェーディングを行うための計算をします
+	/// スムースシェーディングを行うために法線を計算します
 	/// </summary>
 	void calcSmoothingNormals(const std::string key);
 
@@ -257,7 +251,7 @@ private:
 	enum ConstBufferTag
 	{
 		TEXTURE_BUFFER,
-		COMMON_BUFFER,
+		COMMON_CONST_BUFFER,
 		LIBRARY_CONST_BUFFER,
 		USER_CONST_BUFFER,
 		MATERIAL_CONST_BUFFER

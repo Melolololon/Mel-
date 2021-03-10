@@ -31,14 +31,19 @@ using pipeline = int;
 using font = int;
 #pragma endregion
 
-#pragma region 頂点
-
-
-struct VertexData
+#pragma region バッファデータ
+struct VertexDataKey
 {
 	std::string key;//ハンドルに代わるアクセスするための変数。バッファを作る前に自分で設定する
 	VertexType typr;//(頂点構造体の種類)(これだけconstにする?)
 };
+
+struct HeapDataKey
+{
+	std::string key;
+	heap h;
+};
+
 #pragma endregion
 
 
@@ -254,7 +259,7 @@ public:
 		bool loadUV, 
 		bool loadNormal,
 		std::string* materialFireName, 
-		VertexData& p
+		VertexDataKey& p
 	);
 #pragma endregion
 
@@ -274,7 +279,7 @@ public:
 	/// <param name="dimention">次元</param>
 	/// <param name="p">データを入れる変数のポインタ</param>
 	/// <returns></returns>
-	static void createBoard(Vector2 size, int dimention, VertexData& p);
+	static void createBoard(Vector2 size, int dimention, VertexDataKey& p);
 
 	/// <summary>
 	/// 円の頂点情報を作成します
@@ -283,7 +288,7 @@ public:
 	/// <param name="dimention"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createCircle(float r, int dimention, VertexData& p);
+	static void createCircle(float r, int dimention, VertexDataKey& p);
 
 	/// <summary>
 	/// 立方体の頂点情報を作成します
@@ -291,7 +296,7 @@ public:
 	/// <param name="size">辺の長さ</param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void create3DBox(Vector3 size, VertexData& p);
+	static void create3DBox(Vector3 size, VertexDataKey& p);
 
 	/// <summary>
 	/// 三角錐の頂点情報を作成します
@@ -302,7 +307,7 @@ public:
 	/// <param name="upVertex"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createTriangularPyramid(float r, int vertexNumber, Vector3 centerPosition, float upVertex, VertexData& p);
+	static void createTriangularPyramid(float r, int vertexNumber, Vector3 centerPosition, float upVertex, VertexDataKey& p);
 
 	/// <summary>
 	/// テクスチャを綺麗に貼れる立方体の頂点情報を作成します
@@ -310,7 +315,7 @@ public:
 	/// <param name="size"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createManyVertex3DBox(Vector3 size, VertexData& p);
+	static void createManyVertex3DBox(Vector3 size, VertexDataKey& p);
 
 #pragma endregion
 
@@ -329,7 +334,7 @@ public:
 		std::vector<Vector3>& vertexPos, 
 		std::vector<Vector2>& vertexUV, 
 		std::vector<unsigned short>& index, 
-		VertexData& p
+		VertexDataKey& p
 	);
 
 
@@ -347,7 +352,7 @@ public:
 		unsigned int vertexDataSize, 
 		unsigned int vertexSumDataSize, 
 		std::vector<unsigned short>&index, 
-		VertexData& p
+		VertexDataKey& p
 	);
 
 
@@ -396,7 +401,13 @@ public:
 	/// <param name="materialFileName">objのファイル名(拡張子含む)</param>
 	/// <param name="objectNum">生成数</param>
 	/// <param name="heapP"></param>
-	static void loadOBJMaterial(std::string materialDirectoryPath, std::string materialFileName, int objectNum, heap* heapP);
+	static void loadOBJMaterial
+	(
+		std::string materialDirectoryPath, 
+		std::string materialFileName, 
+		int objectNum,
+		HeapDataKey& heapData
+	);
 
 	/// <summary>
 	/// マテリアルを読み込み、かつ自作のシェーダーに送るデータを渡します
@@ -413,8 +424,8 @@ public:
 		std::string materialFileName,
 		int objectNum,
 		void** dataP,
-		unsigned int dataSize,
-		heap* heapP
+		UINT dataSize,
+		HeapDataKey& heapData
 	);
 
 	/// <summary>
@@ -424,7 +435,12 @@ public:
 	/// <param name="objectNum">オブジェクト生成数</param>
 	/// <param name="setConstDataFlag">自作した変数、構造体を使うかどうか</param>
 	/// <param name="p"></param>
-	static void createHeapData(const wchar_t* texturePath, int objectNum, heap* p);
+	static void createHeapData
+	(
+		const wchar_t* texturePath, 
+		int objectNum,
+		HeapDataKey& heapData
+	);
 
 	/// <summary>
 	/// 単色でポリゴンを染めます
@@ -433,7 +449,12 @@ public:
 	/// <param name="objectNum">オブジェクト生成数</param>
 	/// <param name="setConstDataFlag">自作した変数、構造体を使うかどうか</param>
 	/// <param name="p"></param>
-	static void createHeapData2(Color color, int objectNum, heap* p);
+	static void createHeapData2
+	(
+		Color color, 
+		int objectNum, 
+		HeapDataKey& heapData
+	);
 
 
 	//static void setConstMapData(void** dataP, unsigned int dataSize);
@@ -446,7 +467,14 @@ public:
 	/// <param name="dataP">データのポインタ(void**に変換する)</param>
 	/// <param name="dataSize">データサイズ(sizeofで求めて渡す)</param>
 	/// <param name="p"></param>
-	static void createUserHeapData(const wchar_t* texturePath, int objectNum, void** dataP, unsigned int dataSize, heap* p);
+	static void createUserHeapData
+	(
+		const wchar_t* texturePath, 
+		int objectNum, 
+		void** dataP, 
+		UINT dataSize, 
+		HeapDataKey& heapData
+	);
 
 #pragma endregion
 
@@ -488,7 +516,7 @@ public:
 	/// <param name="dataNum">createDataで生成したデータの番号</param>
 	/// <param name="number">何個目のやつを描画するか(ヒープの何個目のCBVを指定するか)</param>
 	/// <returns></returns>
-	static void drawGraphic(const VertexData& vertexData, heap heapData, int numbe);
+	static void drawGraphic(const VertexDataKey& vertexData, heap heapData, int numbe);
 
 #pragma region スプライト
 
@@ -548,7 +576,7 @@ public:
 	/// ポリゴン情報を削除します
 	/// </summary>
 	/// <param name="polyNum"></param>
-	static void deleteVertexData(const VertexData& vertexData);
+	static void deleteVertexData(const VertexDataKey& vertexData);
 
 	/// <summary>
 	/// ポリゴンデータを削除します
@@ -789,7 +817,7 @@ public:
 	/// </summary>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static std::vector<std::vector<Vector3>> getVertexPosition(const VertexData& vertexData );
+	static std::vector<std::vector<Vector3>> getVertexPosition(const VertexDataKey& vertexData );
 
 	/// <summary>
 	/// オブジェクトの頂点座標を上書きします
@@ -797,7 +825,7 @@ public:
 	/// <param name="vertPos"></param>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static bool overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const VertexData& vertexData);
+	static bool overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const VertexDataKey& vertexData);
 
 #pragma region スプライト
 	static Vector2 getTextureSize(texture textureHandle);

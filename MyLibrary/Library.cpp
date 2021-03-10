@@ -323,7 +323,7 @@ void  Library::loadOBJVertex
 	bool loadUV, 
 	bool loadNormal, 
 	std::string* materialFireName,
-	VertexData& p
+	VertexDataKey& p
 )
 {
 	PolyData pData;
@@ -354,7 +354,7 @@ void Library::createPoint(int createNum, point* p)
 	createPointCount++;
 }
 
-void Library::createBoard(Vector2 size, int dimention, VertexData& p)
+void Library::createBoard(Vector2 size, int dimention, VertexDataKey& p)
 {
 	PolyData pData;
 
@@ -373,7 +373,7 @@ void Library::createBoard(Vector2 size, int dimention, VertexData& p)
 
 }
 
-void Library::createCircle(float r, int dimention, VertexData& p)
+void Library::createCircle(float r, int dimention, VertexDataKey& p)
 {
 	PolyData pData;
 
@@ -389,7 +389,7 @@ void Library::createCircle(float r, int dimention, VertexData& p)
 }
 
 
-void Library::create3DBox(Vector3 size, VertexData& p)
+void Library::create3DBox(Vector3 size, VertexDataKey& p)
 {
 	PolyData pData;
 
@@ -414,7 +414,7 @@ void Library::createTriangularPyramid
 	int vertexNumber, 
 	Vector3 centerPosition, 
 	float upVertex, 
-	VertexData& p
+	VertexDataKey& p
 )
 {
 	PolyData pData;
@@ -436,7 +436,7 @@ void Library::createTriangularPyramid
 }
 
 
-void Library::createManyVertex3DBox(Vector3 size, VertexData& p)
+void Library::createManyVertex3DBox(Vector3 size, VertexDataKey& p)
 {
 	PolyData pData;
 
@@ -461,7 +461,7 @@ void Library::createUserObject
 	std::vector<Vector3>& vertexPos, 
 	std::vector<Vector2>& vertexUV,
 	std::vector<unsigned short>& index, 
-	VertexData& p
+	VertexDataKey& p
 )
 {
 	directx12->addUserVertex(vertexPos, vertexUV, p.key);
@@ -484,7 +484,7 @@ void Library::createUserObject2
 	unsigned int vertexDataSize, 
 	unsigned int vertexSumDataSize, 
 	std::vector<unsigned short>&index, 
-	VertexData& p
+	VertexDataKey& p
 )
 {
 	PolyData pData;
@@ -507,12 +507,18 @@ void Library::createUserObject2
 
 #pragma region ヒープ作成
 
-void Library::loadOBJMaterial(std::string materialDirectoryPath, std::string materialFileName, int objectNum, heap* heapP)
+void Library::loadOBJMaterial
+(
+	std::string materialDirectoryPath, 
+	std::string materialFileName, 
+	int objectNum, 
+	HeapDataKey& heapData
+)
 {
 	HeapData hData;
 	hData.objectNum = objectNum;
-	*heapP = new int(directx12->getCreateNumber().despNum);
-	hData.sikibetuNumP = *heapP;
+	heapData.h = new int(directx12->getCreateNumber().despNum);
+	hData.sikibetuNumP = heapData.h;
 
 	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, hData, false);
 }
@@ -523,34 +529,34 @@ void Library::loadObjMaterialUseUserData
 	std::string materialFileName,
 	int objectNum,
 	void** dataP,
-	unsigned int dataSize,
-	heap* heapP
+	UINT dataSize,
+	HeapDataKey& heapData
 )
 {
 	HeapData hData;
 	hData.objectNum = objectNum;
 	directx12->setConstMapData(dataP, dataSize);
-	*heapP = new int(directx12->getCreateNumber().despNum);
-	hData.sikibetuNumP = *heapP;
+	heapData.h = new int(directx12->getCreateNumber().despNum);
+	hData.sikibetuNumP = heapData.h;
 
 	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, hData, true);
 }
 
-void Library::createHeapData(const wchar_t* texturePath, int objectNum, heap* p)
+void Library::createHeapData(const wchar_t* texturePath, int objectNum, HeapDataKey& heapData)
 {
 	//テクスチャかべた塗かの識別方法も考える
 	HeapData dData;
 	dData.path = texturePath;
 	dData.objectNum = objectNum;
 
-	*p = new int(directx12->getCreateNumber().despNum);
-	dData.sikibetuNumP = *p;
+	heapData.h = new int(directx12->getCreateNumber().despNum);
+	dData.sikibetuNumP = heapData.h;
 	directx12->createHeapData(dData, false);
 
 
 }
 
-void Library::createHeapData2(Color color, int objectNum, heap* p)
+void Library::createHeapData2(Color color, int objectNum, HeapDataKey& heapData)
 {
 	HeapData dData;
 	dData.path = L"";
@@ -559,14 +565,21 @@ void Library::createHeapData2(Color color, int objectNum, heap* p)
 	dData.objectNum = objectNum;
 
 
-	*p = new int(directx12->getCreateNumber().despNum);
-	dData.sikibetuNumP = *p;
+	heapData.h = new int(directx12->getCreateNumber().despNum);
+	dData.sikibetuNumP = heapData.h;
 	directx12->createHeapData(dData, false);
 
 
 }
 
-void Library::createUserHeapData(const wchar_t* texturePath, int objectNum, void** dataP, unsigned int dataSize, heap* p)
+void Library::createUserHeapData
+(
+	const wchar_t* texturePath, 
+	int objectNum, 
+	void** dataP, 
+	UINT dataSize,
+	HeapDataKey& heapData
+)
 {
 	HeapData dData;
 	dData.path = texturePath;
@@ -575,8 +588,8 @@ void Library::createUserHeapData(const wchar_t* texturePath, int objectNum, void
 
 	directx12->setConstMapData(dataP, dataSize);
 
-	*p = new int(directx12->getCreateNumber().despNum);
-	dData.sikibetuNumP = *p;
+	heapData.h = new int(directx12->getCreateNumber().despNum);
+	dData.sikibetuNumP = heapData.h;
 	directx12->createHeapData(dData, true);
 }
 
@@ -655,7 +668,7 @@ void Library::createSprite(sprite* sprite)
 
 #pragma region 描画
 
-void Library::drawGraphic(const VertexData& vertexData, heap heapData, int number)
+void Library::drawGraphic(const VertexDataKey& vertexData, heap heapData, int number)
 {
 	directx12->map(vertexData.key, *heapData, number);
 	directx12->setCmdList(vertexData.key, *heapData, number);
@@ -714,7 +727,7 @@ void Library::drawBox(const Vector2 position, const Vector2& size, const Color& 
 #pragma endregion
 
 #pragma region 削除
-void Library::deleteVertexData(const VertexData& vertexData)
+void Library::deleteVertexData(const VertexDataKey& vertexData)
 {
 	
 	directx12->deletePolygonData(vertexData.key);
@@ -940,7 +953,7 @@ void Library::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
 #pragma endregion
 
 #pragma region 頂点座標取得など
-std::vector<std::vector<Vector3>> Library::getVertexPosition(const VertexData& vertexData)
+std::vector<std::vector<Vector3>> Library::getVertexPosition(const VertexDataKey& vertexData)
 {
 	std::vector<std::vector<Vector3>>kariV;
 	std::vector<std::vector<DirectX::XMFLOAT3>> kariXM;
@@ -969,7 +982,7 @@ std::vector<std::vector<Vector3>> Library::getVertexPosition(const VertexData& v
 	return kariV;
 }
 
-bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const VertexData& vertexData)
+bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const VertexDataKey& vertexData)
 {
 	
 

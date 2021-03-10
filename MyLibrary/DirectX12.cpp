@@ -2855,7 +2855,7 @@ void DirectX12::createCommonBuffer(const int& texNum)
 	cbvDesc.SizeInBytes = (UINT)commonBuffer[commonBuffer.size() - 1]->GetDesc().Width;
 	dev->CreateConstantBufferView(&cbvDesc, basicHeapHandle);
 
-	heapTags[heapTags.size() - 1].push_back(COMMON_BUFFER);
+	heapTags[heapTags.size() - 1].push_back(COMMON_CONST_BUFFER);
 }
 
 #pragma endregion
