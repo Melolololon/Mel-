@@ -328,8 +328,8 @@ void  Library::loadOBJVertex
 {
 	PolyData pData;
 	
-	p.handle = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;
+	/*p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
 	//読み込みと頂点タイプ取得
@@ -339,7 +339,8 @@ void  Library::loadOBJVertex
 		loadUV,
 		loadNormal, 
 		materialFireName, 
-		pData
+		pData,
+		p.key
 	);
 
 }
@@ -364,11 +365,11 @@ void Library::createBoard(Vector2 size, int dimention, VertexData& p)
 	//pData.sikibetuNum = createPolygonNumber;
 
 	p.typr = VERTEX_TYPE_NORMAL;
-	p.handle = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;
+	/*p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;*/
 
 	pData.dimention = dimention;
-	directx12->createPolygonData(pData);
+	directx12->createPolygonData(pData, p.key);
 
 }
 
@@ -380,10 +381,10 @@ void Library::createCircle(float r, int dimention, VertexData& p)
 	pData.katatiNum = 2;
 
 	p.typr = VERTEX_TYPE_NORMAL;
-	p.handle = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;
+	/*p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention;
-	directx12->createPolygonData(pData);
+	directx12->createPolygonData(pData, p.key);
 
 }
 
@@ -398,11 +399,11 @@ void Library::create3DBox(Vector3 size, VertexData& p)
 	//pData.sikibetuNum = createPolygonNumber;
 
 	p.typr = VERTEX_TYPE_NORMAL;
-	p.handle = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;
+	/*p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
-	directx12->createPolygonData(pData);
+	directx12->createPolygonData(pData, p.key);
 }
 
 
@@ -427,10 +428,10 @@ void Library::createTriangularPyramid
 	//pData.sikibetuNum = createPolygonNumber;
 
 	p.typr = VERTEX_TYPE_NORMAL;
-	p.handle = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;
+	//p.handle = new int(directx12->getCreateNumber().polyNum);
+	//pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
-	directx12->createPolygonData(pData);
+	directx12->createPolygonData(pData, p.key);
 
 }
 
@@ -444,45 +445,59 @@ void Library::createManyVertex3DBox(Vector3 size, VertexData& p)
 
 
 	p.typr = VERTEX_TYPE_NORMAL;
-	p.handle = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;
+	/*p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
-	directx12->createPolygonData(pData);
+	directx12->createPolygonData(pData, p.key);
 
 
 }
 
 #pragma region ユーザー
 
-void Library::createUserObject(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV, std::vector<unsigned short>& index, VertexData& p)
+void Library::createUserObject
+(
+	std::vector<Vector3>& vertexPos, 
+	std::vector<Vector2>& vertexUV,
+	std::vector<unsigned short>& index, 
+	VertexData& p
+)
 {
-	directx12->addUserVertex(vertexPos, vertexUV);
-	directx12->addUserIndex(index);
+	directx12->addUserVertex(vertexPos, vertexUV, p.key);
+	directx12->addUserIndex(index, p.key);
 
 	PolyData pData;
 	pData.katatiNum = -1;
 
 	p.typr = VERTEX_TYPE_NORMAL;
-	p.handle = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;
+	/*p.handle = new int(directx12->getCreateNumber().polyNum);
+	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
-	directx12->createPolygonData(pData);
+	directx12->createPolygonData(pData, p.key);
 }
 
-void Library::createUserObject2(void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, std::vector<unsigned short>&index, VertexData& p)
+void Library::createUserObject2
+(
+	void** vertexData, 
+	unsigned int vertexDataSize, 
+	unsigned int vertexSumDataSize, 
+	std::vector<unsigned short>&index, 
+	VertexData& p
+)
 {
 	PolyData pData;
-	p.handle = new int(directx12->getCreateNumber().polyNum);
+	//p.handle = new int(directx12->getCreateNumber().polyNum);
+	//pData.sikibetuNumP = p.handle;
 	p.typr = VERTEX_TYPE_USER_VERTEX;
-	pData.sikibetuNumP = p.handle;
+	
 	pData.dimention = dimention3D;
 
 
 	//クリエイトする!!
 	//クリエイトする関数作ってー
-	directx12->createUserPolygon(vertexData, vertexDataSize, vertexSumDataSize, index, pData);
+	directx12->createUserPolygon(vertexData, vertexDataSize, vertexSumDataSize, index, pData, p.key);
 }
 #pragma endregion
 
@@ -568,31 +583,31 @@ void Library::createUserHeapData(const wchar_t* texturePath, int objectNum, void
 #pragma endregion
 
 #pragma region 同時作成
-void Library::loadOBJ(const char* path, std::string materialDirectoryPath, bool loadUV, bool loadNormal, int objectNum, vertex* vertP, heap* heapP)
-{
-	//頂点読み込み時にファイル名取得して、heap作成時にマテリアルを読み込むようにする
-	//マテリアル名は、loadしたら受け取れるようにする
-	//同じような処理(ヒープ作成など)は関数化する
-	PolyData pData;
-	*vertP = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = *vertP;
-	pData.dimention = dimention3D;
-
-	HeapData hData;
-	hData.objectNum = objectNum;
-	*heapP = new int(directx12->getCreateNumber().despNum);
-	hData.sikibetuNumP = *heapP
-		;
-	directx12->loadOBJ
-	(
-		path,
-		materialDirectoryPath,
-		loadUV,
-		loadNormal,
-		pData,
-		hData
-	);
-}
+//void Library::loadOBJ(const char* path, std::string materialDirectoryPath, bool loadUV, bool loadNormal, int objectNum, vertex* vertP, heap* heapP)
+//{
+//	//頂点読み込み時にファイル名取得して、heap作成時にマテリアルを読み込むようにする
+//	//マテリアル名は、loadしたら受け取れるようにする
+//	//同じような処理(ヒープ作成など)は関数化する
+//	PolyData pData;
+//	*vertP = new int(directx12->getCreateNumber().polyNum);
+//	pData.sikibetuNumP = *vertP;
+//	pData.dimention = dimention3D;
+//
+//	HeapData hData;
+//	hData.objectNum = objectNum;
+//	*heapP = new int(directx12->getCreateNumber().despNum);
+//	hData.sikibetuNumP = *heapP
+//		;
+//	directx12->loadOBJ
+//	(
+//		path,
+//		materialDirectoryPath,
+//		loadUV,
+//		loadNormal,
+//		pData,
+//		hData
+//	);
+//}
 #pragma endregion
 
 
@@ -640,11 +655,10 @@ void Library::createSprite(sprite* sprite)
 
 #pragma region 描画
 
-void Library::drawGraphic(vertex polygonVertexNumber, heap polygonDataNumber, int number)
+void Library::drawGraphic(const VertexData& vertexData, heap heapData, int number)
 {
-	if (!polygonVertexNumber || !polygonDataNumber)return;
-	directx12->map(*polygonVertexNumber, *polygonDataNumber, number);
-	directx12->setCmdList(*polygonVertexNumber, *polygonDataNumber, number);
+	directx12->map(vertexData.key, *heapData, number);
+	directx12->setCmdList(vertexData.key, *heapData, number);
 }
 
 void Library::drawSprite(Vector2 position, sprite spriteNumber, texture* textureNumber)
@@ -700,10 +714,10 @@ void Library::drawBox(const Vector2 position, const Vector2& size, const Color& 
 #pragma endregion
 
 #pragma region 削除
-void Library::deleteVertexData(vertex polygonVertexNumber)
+void Library::deleteVertexData(const VertexData& vertexData)
 {
-	if (!polygonVertexNumber)return;
-	directx12->deletePolygonData(*polygonVertexNumber);
+	
+	directx12->deletePolygonData(vertexData.key);
 }
 
 void Library::deleteHeapData(heap polygonDataNumber)
@@ -900,18 +914,18 @@ void Library::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
 #pragma endregion
 
 #pragma region アニメーション
-
-void Library::changeAnimation(vertex createNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY)
-{
-	if (!createNum)return;
-	directx12->setAnimation(*createNum, maxWidth, maxHeight, animationNumX, animationNumY);
-}
-
-void Library::changeAnimation2(vertex vertexNum, heap dataNum, int startAreaX, int startAreaY, int endAreaX, int endAreaY)
-{
-	if (!vertexNum || !dataNum)return;
-	directx12->setAnimation2(*vertexNum, *dataNum, startAreaX, startAreaY, endAreaX, endAreaY);
-}
+//
+//void Library::changeAnimation(vertex createNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY)
+//{
+//	if (!createNum)return;
+//	directx12->setAnimation(*createNum, maxWidth, maxHeight, animationNumX, animationNumY);
+//}
+//
+//void Library::changeAnimation2(vertex vertexNum, heap dataNum, int startAreaX, int startAreaY, int endAreaX, int endAreaY)
+//{
+//	if (!vertexNum || !dataNum)return;
+//	directx12->setAnimation2(*vertexNum, *dataNum, startAreaX, startAreaY, endAreaX, endAreaY);
+//}
 
 //void Library::spriteChangeAnimation(int* spriteNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY)
 //{
@@ -926,17 +940,11 @@ void Library::changeAnimation2(vertex vertexNum, heap dataNum, int startAreaX, i
 #pragma endregion
 
 #pragma region 頂点座標取得など
-std::vector<std::vector<Vector3>> Library::getVertexPosition(int* vertData)
+std::vector<std::vector<Vector3>> Library::getVertexPosition(const VertexData& vertexData)
 {
-	if (!vertData)
-	{
-		std::vector<std::vector<Vector3>> ret;
-		return ret;
-	}
-
 	std::vector<std::vector<Vector3>>kariV;
 	std::vector<std::vector<DirectX::XMFLOAT3>> kariXM;
-	kariXM = directx12->getObjectVertexPosition(*vertData);
+	kariXM = directx12->getObjectVertexPosition(vertexData.key);
 	kariV.resize(kariXM.size());
 
 	int num = kariV.size();
@@ -961,9 +969,9 @@ std::vector<std::vector<Vector3>> Library::getVertexPosition(int* vertData)
 	return kariV;
 }
 
-bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, int* vertNum)
+bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const VertexData& vertexData)
 {
-	if (!vertNum)return false;
+	
 
 	std::vector<std::vector<DirectX::XMFLOAT3>> kariXM;
 	kariXM.resize(vertPos.size());
@@ -985,7 +993,7 @@ bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertP
 			kariXM[i][j].z = vertPos[i][j].z;
 		}
 	}
-	return directx12->overrideWriteVertexPosition(kariXM, *vertNum);
+	return directx12->overrideWriteVertexPosition(kariXM, vertexData.key);
 }
 #pragma endregion
 

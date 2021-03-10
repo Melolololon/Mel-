@@ -24,7 +24,6 @@ const int dimention3D = 1;
 
 #pragma region typedef
 using point = int*;
-using vertex = int*;
 using heap = int*;
 using sprite = int*;
 using texture = int;
@@ -37,7 +36,6 @@ using font = int;
 
 struct VertexData
 {
-	vertex handle;//ハンドル(stringに変更予定あり)
 	std::string key;//ハンドルに代わるアクセスするための変数。バッファを作る前に自分で設定する
 	VertexType typr;//(頂点構造体の種類)(これだけconstにする?)
 };
@@ -357,6 +355,37 @@ public:
 #pragma endregion
 
 
+#pragma region スプライト
+	//テクスチャの番号を返す
+	/// <summary>
+	/// テクスチャを読み込みます
+	/// </summary>
+	/// <param name="texturePath">テクスチャのパス</param>
+	/// <returns></returns>
+	static texture loadTexture(const wchar_t* texturePath);
+
+	//static int createSpriteTexture(Color color);
+
+	/// <summary>
+	/// スプライトを作成します
+	/// </summary>
+	/// <param name="size">spriteのポインタ</param>
+	/// <returns></returns>
+	static void createSprite(sprite* sprite);
+
+	/// <summary>
+	/// スプライトフォントを読み込みます
+	/// </summary>
+	/// <param name="texturePath"></param>
+	/// <param name="lineNum">横、縦の文字数</param>
+	/// <param name="fontSize">文字サイズ</param>
+	/// <returns></returns>
+	static font loadSpriteFont(const wchar_t* texturePath, Vector2 lineNum, Vector2 fontSize);
+
+
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma region 定数 テクスチャ作成
@@ -435,7 +464,7 @@ public:
 	/// <param name="objectNum"></param>
 	/// <param name="vertP"></param>
 	/// <param name="heapP"></param>
-	static void loadOBJ(const char* path, std::string materialDirectoryPath, bool loadUV, bool loadNormal, int objectNum, vertex* vertP, heap* heapP);
+	//static void loadOBJ(const char* path, std::string materialDirectoryPath, bool loadUV, bool loadNormal, int objectNum, vertex* vertP, heap* heapP);
 	//これいらん(無駄な頂点読み込みがあるから)
 
 	//static void loadOBJAndCreateUserData
@@ -450,39 +479,6 @@ public:
 
 #pragma endregion
 
-
-
-
-#pragma region スプライト
-	//テクスチャの番号を返す
-	/// <summary>
-	/// テクスチャを読み込みます
-	/// </summary>
-	/// <param name="texturePath">テクスチャのパス</param>
-	/// <returns></returns>
-	static texture loadTexture(const wchar_t* texturePath);
-
-	//static int createSpriteTexture(Color color);
-
-	/// <summary>
-	/// スプライトを作成します
-	/// </summary>
-	/// <param name="size">spriteのポインタ</param>
-	/// <returns></returns>
-	static void createSprite(sprite* sprite);
-
-	/// <summary>
-	/// スプライトフォントを読み込みます
-	/// </summary>
-	/// <param name="texturePath"></param>
-	/// <param name="lineNum">横、縦の文字数</param>
-	/// <param name="fontSize">文字サイズ</param>
-	/// <returns></returns>
-	static font loadSpriteFont(const wchar_t* texturePath, Vector2 lineNum, Vector2 fontSize);
-
-	static Vector2 getTextureSize(texture textureHandle);
-#pragma endregion
-
 #pragma region 描画
 
 	/// <summary>
@@ -492,7 +488,7 @@ public:
 	/// <param name="dataNum">createDataで生成したデータの番号</param>
 	/// <param name="number">何個目のやつを描画するか(ヒープの何個目のCBVを指定するか)</param>
 	/// <returns></returns>
-	static void drawGraphic(vertex polygonVertexNumber, heap polygonDataNum, int numbe);
+	static void drawGraphic(const VertexData& vertexData, heap heapData, int numbe);
 
 #pragma region スプライト
 
@@ -552,7 +548,7 @@ public:
 	/// ポリゴン情報を削除します
 	/// </summary>
 	/// <param name="polyNum"></param>
-	static void deleteVertexData(vertex polygonVertexNumber);
+	static void deleteVertexData(const VertexData& vertexData);
 
 	/// <summary>
 	/// ポリゴンデータを削除します
@@ -707,10 +703,10 @@ public:
 
 #pragma endregion
 
-#pragma region アニメーション(ここxとyを同じにする)
+#pragma region アニメーション(定数で変えるようにする)
 
 
-	/// <summary>
+	/*/// <summary>
 	/// アニメーションさせます(四角のサイズ固定)
 	/// </summary>
 	/// <param name="vertexNum">頂点データナンバー</param>
@@ -730,7 +726,7 @@ public:
 	/// <param name="endAreaX"></param>
 	/// <param name="endAreaY"></param>
 	static void changeAnimation2(vertex vertexNum, heap dataNum, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
-
+*/
 
 #pragma endregion
 
@@ -785,7 +781,7 @@ public:
 	static void setLightColor(Color lightColor);
 #pragma endregion
 
-#pragma region 頂点情報取得
+#pragma region 情報取得
 	//この二ついらない?
 
 	/// /// <summary>
@@ -793,7 +789,7 @@ public:
 	/// </summary>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static std::vector<std::vector<Vector3>> getVertexPosition(int* vertNum);
+	static std::vector<std::vector<Vector3>> getVertexPosition(const VertexData& vertexData );
 
 	/// <summary>
 	/// オブジェクトの頂点座標を上書きします
@@ -801,8 +797,11 @@ public:
 	/// <param name="vertPos"></param>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static bool overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, int* vertNum);
+	static bool overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const VertexData& vertexData);
 
+#pragma region スプライト
+	static Vector2 getTextureSize(texture textureHandle);
+#pragma endregion
 
 
 #pragma endregion

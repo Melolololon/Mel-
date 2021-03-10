@@ -6,6 +6,7 @@ heap h;
 
 Play::Play()
 {
+	d.key = "Board";
 	Library::createBoard({ 1,1 }, dimention3D, d);
 	Library::createHeapData2({ 255,255,255,255 }, 1, &h);
 	Library::loadOBJVertex("Resources/Obj/test.obj", true, true, nullptr, model);
@@ -29,7 +30,7 @@ void Play::update()
 void Play::draw()
 {
 	Library::setPipeline(PIPELINE_NORMAL);
-	Library::drawGraphic(d.handle, h, 0);
+	Library::drawGraphic(d, h, 0);
 }
 
 void Play::end()

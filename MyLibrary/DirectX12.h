@@ -279,8 +279,8 @@ private:
 
 
 	//送られてきた情報
-	std::vector<PolyData> polyDatas;
-	std::vector<HeapData> despDatas;
+	std::unordered_map<std::string,PolyData> polyDatas;
+	std::vector<HeapData> heapDatas;
 	//取得したスプライトのポインタ
 	std::vector<int*>spriteP;
 	std::vector<int*>pointP;
@@ -596,8 +596,8 @@ public:
 #pragma region 描画
 	//描画時じゃなくて座標とかセットしたときに毎回マップする?
 //そうすると処理が遅くなる?
-	void setCmdList(int polyNum, int despNum, int number);
-	void map(int polyNum, int despNumber, int number);
+	void setCmdList(const std::string key, int despNum, int number);
+	void map(const std::string key, int despNumber, int number);
 
 	void spriteSetCmdList(int spriteNum, int textureNum);
 
@@ -608,7 +608,7 @@ public:
 #pragma endregion
 
 #pragma region 削除
-	void deletePolygonData(int polyNum);
+	void deletePolygonData(const std::string key);
 	void deleteHeapData(int despNum);
 
 	void deleteSprite(int sprite);
@@ -694,16 +694,16 @@ public:
 #pragma endregion
 
 #pragma region 頂座標取得
-	std::vector<std::vector<DirectX::XMFLOAT3>> getObjectVertexPosition(int vertData);
+	std::vector<std::vector<DirectX::XMFLOAT3>> getObjectVertexPosition(const std::string& key);
 
-	bool overrideWriteVertexPosition(std::vector<std::vector<DirectX::XMFLOAT3>> vertPos, int vertNum);
+	bool overrideWriteVertexPosition(std::vector<std::vector<DirectX::XMFLOAT3>> vertPos, const std::string& key);
 #pragma endregion
 
 
 #pragma region アニメーション
 
-	void setAnimation(int polyNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY);
-	void setAnimation2(int polyNum, int dataNum, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
+	//void setAnimation(int polyNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY);
+	//void setAnimation2(int polyNum, int dataNum, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
 
 	void setSpriteAnimationVertex(int spriteNum, int textureNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY);
 	void setSpriteAnimationVertex2(int spriteNum, int textureNum, int posX, int posY, int areaWidth, int areaHeight, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
