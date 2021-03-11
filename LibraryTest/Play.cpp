@@ -8,7 +8,7 @@ Play::Play()
 {
 	d.key = "Board";
 	h.key = "Board";
-	Library::createBoard({ 9999,9999 }, dimention3D, d);
+	Library::createBoard({ 1,1 }, dimention3D, d);
 	Library::createHeapData2({ 255,255,255,255 }, 1, h);
 }
 

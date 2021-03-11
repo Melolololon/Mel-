@@ -2609,7 +2609,7 @@ void DirectX12::resizeObjectData(int objectNum,const std::string& key)
 	ObjectConstData objConstData;
 	objConstData.addColor.resize(objectNum, { 0,0,0,0 });
 	objConstData.subColor.resize(objectNum, { 0,0,0,0 });
-	objConstData.mulColor.resize(objectNum, { 0,0,0,0 });
+	objConstData.mulColor.resize(objectNum, { 1,1,1,1 });
 	objConstData.angle.resize(objectNum, { 0,0,0 });
 	objConstData.scale.resize(objectNum, {1,1,1 });
 	objConstData.position.resize(objectNum, { 0,0,0 });
