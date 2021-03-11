@@ -264,9 +264,9 @@ void Library::getCameraMatrix(float matrix[4][4])
 }
 
 
-void Library::setInputLayout(const char* semantics, int num)
+void Library::setInputLayout(const std::vector<InputLayoutData>& inputLayoutData)
 {
-	directx12->setInputLayout(semantics, num);
+	directx12->setInputLayout(inputLayoutData);
 }
 
 void Library::deleteInputLayout()

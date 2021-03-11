@@ -547,7 +547,7 @@ public:
 /// </summary>
 /// <param name="semantics">セマンティクス名</param>
 /// <param name="num">データ数(Vector3の場合、三次元なので3を入力)</param>
-	void setInputLayout(const char* semantics, int num);
+	void setInputLayout(const std::vector<InputLayoutData>& inputLayoutData);
 
 	/// <summary>
 /// 現在のインプットレイアウトを削除します
@@ -580,6 +580,7 @@ public:
 	/// <param name="p"></param>
 	void addUserVertex(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV, const std::string& key);
 
+	
 	void addUserIndex(std::vector<unsigned short>& index, const std::string& key);
 
 	/// <summary>

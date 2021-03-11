@@ -184,7 +184,7 @@ public:
 	/// </summary>
 	/// <param name="semantics">セマンティクス名</param>
 	/// <param name="num">データ数(Vector3の場合、三次元なので3を入力)</param>
-	static void setInputLayout(const char* semantics, int num);
+	static void setInputLayout(const std::vector<InputLayoutData>& inputLayoutData);
 
 	//InputLayoutもパイプラインみたいに番号取得できるようにして生成時に渡すようにする?
 

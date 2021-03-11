@@ -465,6 +465,7 @@ void DirectX12::initialize()
 #pragma region パイプライン生成
 	create3DObjectPipeline();
 	
+	std::vector<InputLayoutData>ilData;
 #pragma endregion
 
 #pragma region スプライト用設定生成
@@ -516,9 +517,15 @@ void DirectX12::initialize()
 	pointGpipeline.pRootSignature = pointRootsignature.Get();
 	pointPipelineStates.resize(1);
 
-	createPipeline->setInputLayout("POSITION", 3);
-	createPipeline->setInputLayout("TEXCOORD", 2);
-	createPipeline->setInputLayout("COLOR", 4);
+
+	ilData.resize(3);
+	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT };
+	ilData[1] = { "TEXCOORD", 2,FORMAT_TYPE_FLOAT };
+	ilData[2] = { "COLOR", 4 ,FORMAT_TYPE_FLOAT };
+	createPipeline->setInputLayout(ilData);
+	ilData.clear();
+
+
 	pointGpipeline.BlendState.AlphaToCoverageEnable = true;
 	pointGpipeline.DepthStencilState.DepthEnable = true;
 	createPipeline->createUserPipeline
@@ -758,8 +765,12 @@ void DirectX12::initialize()
 	createPipeline->createRootSigneture(rootSignatureDesc, &postEffectRootSigneture);
 
 	////パイプライン
-	createPipeline->setInputLayout("POSITION", 3);
-	createPipeline->setInputLayout("TEXCOORD", 2);
+	
+	ilData.resize(2);
+	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT };
+	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE_FLOAT };
+	createPipeline->setInputLayout(ilData);
+	ilData.clear();
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pePLDesc = spriteGpipeline;
 	pePLDesc.pRootSignature = postEffectRootSigneture.Get();
@@ -793,95 +804,99 @@ void DirectX12::initialize()
 
 
 #pragma region トゥーンレンダリング用レンダーターゲット(仮)
-	toonShaderPipeline.resize(1);
-	toonShaderPipeline.reserve(20);
+	//アプリケーション側でレンダーターゲットの上に描画して、
+	//その上に線を入れようとして作ったやつ
+	
 
-	D3D12_CLEAR_VALUE tsClesrValue;
-
-
-	tsClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
-	//リソース作成
-	toonShaderResources.resize(1);
-
-	dev->CreateCommittedResource
-	(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-		D3D12_HEAP_FLAG_NONE,
-		&backBuffer[0].Get()->GetDesc(),
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-		&peClesrValue,
-		IID_PPV_ARGS(&toonShaderResources[0])
-	);
-
-
-#pragma region ヒープとビュー作成
-	//テクスチャ
-
-	//ヒープ作成
-	D3D12_DESCRIPTOR_HEAP_DESC tsHeapDesc{};
-	tsHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	tsHeapDesc.NumDescriptors = 10;
-	tsHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	tsHeapDesc.NodeMask = 0;
-	dev->CreateDescriptorHeap(&tsHeapDesc, IID_PPV_ARGS(&toonShaderHeap));
-
-	//ビュー作成
-	D3D12_SHADER_RESOURCE_VIEW_DESC tsSrvDesc{};
-
-	tsSrvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	tsSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	tsSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	tsSrvDesc.Texture2D.MipLevels = 1;
-
-	dev->CreateShaderResourceView
-	(
-		toonShaderResources[0].Get(),
-		&tsSrvDesc,
-		toonShaderHeap.Get()->GetCPUDescriptorHandleForHeapStart()
-	);
-
-
-	//レンダーターゲット
-
-	//ヒープ作成
-	tsHeapDesc = {};
-	tsHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	tsHeapDesc.NumDescriptors = 10;
-	dev->CreateDescriptorHeap(&tsHeapDesc, IID_PPV_ARGS(&toonShaderRTVHeap));
-
-	//ビュー作成
-	D3D12_RENDER_TARGET_VIEW_DESC tsRTVDesc = {};
-	tsRTVDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-	tsRTVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	dev.Get()->CreateRenderTargetView
-	(
-		toonShaderResources[0].Get(),
-		&tsRTVDesc,
-		toonShaderRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart()
-	);
-#pragma endregion
-
-	////パイプライン
-	createPipeline->setInputLayout("POSITION", 3);
-	createPipeline->setInputLayout("TEXCOORD", 2);
-
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC tsPLDesc = spriteGpipeline;
-	tsPLDesc.pRootSignature = postEffectRootSigneture.Get();
-
-	//ここ変更する
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"../MyLibrary/PostEffectVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"NULL","","" },
-		{ L"../MyLibrary/PostEffectPixelShader.hlsl","PSmain","ps_5_0" },
-		tsPLDesc,
-		&toonShaderPipeline[0],
-		true
-	);
-
-	createPipeline->deleteInputLayout();
+//	toonShaderPipeline.resize(1);
+//	toonShaderPipeline.reserve(20);
+//
+//	D3D12_CLEAR_VALUE tsClesrValue;
+//
+//
+//	tsClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
+//	//リソース作成
+//	toonShaderResources.resize(1);
+//
+//	dev->CreateCommittedResource
+//	(
+//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+//		D3D12_HEAP_FLAG_NONE,
+//		&backBuffer[0].Get()->GetDesc(),
+//		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+//		&peClesrValue,
+//		IID_PPV_ARGS(&toonShaderResources[0])
+//	);
+//
+//
+//#pragma region ヒープとビュー作成
+//	//テクスチャ
+//
+//	//ヒープ作成
+//	D3D12_DESCRIPTOR_HEAP_DESC tsHeapDesc{};
+//	tsHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+//	tsHeapDesc.NumDescriptors = 10;
+//	tsHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+//	tsHeapDesc.NodeMask = 0;
+//	dev->CreateDescriptorHeap(&tsHeapDesc, IID_PPV_ARGS(&toonShaderHeap));
+//
+//	//ビュー作成
+//	D3D12_SHADER_RESOURCE_VIEW_DESC tsSrvDesc{};
+//
+//	tsSrvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+//	tsSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+//	tsSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+//	tsSrvDesc.Texture2D.MipLevels = 1;
+//
+//	dev->CreateShaderResourceView
+//	(
+//		toonShaderResources[0].Get(),
+//		&tsSrvDesc,
+//		toonShaderHeap.Get()->GetCPUDescriptorHandleForHeapStart()
+//	);
+//
+//
+//	//レンダーターゲット
+//
+//	//ヒープ作成
+//	tsHeapDesc = {};
+//	tsHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+//	tsHeapDesc.NumDescriptors = 10;
+//	dev->CreateDescriptorHeap(&tsHeapDesc, IID_PPV_ARGS(&toonShaderRTVHeap));
+//
+//	//ビュー作成
+//	D3D12_RENDER_TARGET_VIEW_DESC tsRTVDesc = {};
+//	tsRTVDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+//	tsRTVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+//
+//	dev.Get()->CreateRenderTargetView
+//	(
+//		toonShaderResources[0].Get(),
+//		&tsRTVDesc,
+//		toonShaderRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart()
+//	);
+//#pragma endregion
+//
+//	////パイプライン
+//	createPipeline->setInputLayout("POSITION", 3);
+//	createPipeline->setInputLayout("TEXCOORD", 2);
+//
+//	D3D12_GRAPHICS_PIPELINE_STATE_DESC tsPLDesc = spriteGpipeline;
+//	tsPLDesc.pRootSignature = postEffectRootSigneture.Get();
+//
+//	//ここ変更する
+//	createPipeline->createUserPipeline
+//	(
+//		1,
+//		{ L"../MyLibrary/PostEffectVertexShader.hlsl","VSmain","vs_5_0" },
+//		{ L"NULL","","" },
+//		{ L"../MyLibrary/PostEffectPixelShader.hlsl","PSmain","ps_5_0" },
+//		tsPLDesc,
+//		&toonShaderPipeline[0],
+//		true
+//	);
+//
+//	createPipeline->deleteInputLayout();
 
 #pragma endregion
 
@@ -1108,6 +1123,93 @@ void DirectX12::setDespTestFlag(bool flag)
 #pragma endregion
 
 #pragma region パイプライン作成
+
+void DirectX12::create3DObjectPipeline()
+{
+
+	pipelineStates.reserve(99);
+	ComPtr<ID3D12PipelineState> pState;
+
+	auto pushPipeline = [&]()
+	{
+		pipelineStates.push_back(pState);
+	};
+
+	//深度テスト無し
+	gpipeline.DepthStencilState.DepthEnable = false;
+	createPipeline->createUserPipeline
+	(
+		1,
+		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		gpipeline,
+		&pState,
+		false
+	);
+	pushPipeline();
+
+	//背面カリングしない
+	gpipeline.DepthStencilState.DepthEnable = true;
+	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリング設定
+	createPipeline->createUserPipeline
+	(
+		1,
+		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		gpipeline,
+		&pState,
+		false
+	);
+	pushPipeline();
+
+	//透明部分の深度値を書き込まない
+	gpipeline.DepthStencilState.DepthEnable = true;
+	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+	gpipeline.BlendState.AlphaToCoverageEnable = true;
+	createPipeline->createUserPipeline
+	(
+		1,
+		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		gpipeline,
+		&pState,
+		false
+	);
+	pushPipeline();
+
+	//gpipeline.BlendState.AlphaToCoverageEnable = true;
+	//透過がおかしくならないようにする処理(これtrueにすると水しぶき消えちゃうからパイプライン分ける?)
+	//深度が100%じゃないと無視される?テクスチャで深度設定してたら問題ない?それとも描画順で変わる?
+	gpipeline.BlendState.AlphaToCoverageEnable = false;
+
+	//マテリアル読み込み可能版
+	createPipeline->createUserPipeline
+	(
+		1,
+		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		gpipeline,
+		&pState,
+		false
+	);
+	pushPipeline();
+
+	//ボーン読み込み可能
+	std::vector<InputLayoutData>ilData(4);
+	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT };
+	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE_FLOAT };
+	ilData[2] = { "NORMAL", 3,FORMAT_TYPE_FLOAT };
+	ilData[3] = { "BONENUM", 1,FORMAT_TYPE_UINT };
+	//setInputLayout(ilData);
+	//setInputLayout()
+
+	startPipelineCreateNum = pipelineStates.size();
+}
+
 int DirectX12::getStartPipelineCreateNum()
 {
 	return startPipelineCreateNum;
@@ -1262,9 +1364,9 @@ void DirectX12::getCameraMatrix(float matrix[4][4])
 	}
 }
 
-void DirectX12::setInputLayout(const char* semantics, int num)
+void DirectX12::setInputLayout(const std::vector<InputLayoutData>& inputLayoutData)
 {
-	createPipeline->setInputLayout(semantics, num);
+	createPipeline->setInputLayout(inputLayoutData);
 }
 
 void DirectX12::deleteInputLayout()
@@ -1272,82 +1374,6 @@ void DirectX12::deleteInputLayout()
 	createPipeline->deleteInputLayout();
 }
 
-void DirectX12::create3DObjectPipeline()
-{
-
-	pipelineStates.reserve(99);
-	ComPtr<ID3D12PipelineState> pState;
-
-	auto pushPipeline = [&]()
-	{
-		pipelineStates.push_back(pState);
-	};
-	
-	//深度テスト無し
-	gpipeline.DepthStencilState.DepthEnable = false;
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
-		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
-		gpipeline,
-		&pState,
-		false
-	);
-	pushPipeline();
-
-	//背面カリングしない
-	gpipeline.DepthStencilState.DepthEnable = true;
-	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリング設定
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
-		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
-		gpipeline,
-		&pState,
-		false
-	);
-	pushPipeline();
-
-	//透明部分の深度値を書き込まない
-	gpipeline.DepthStencilState.DepthEnable = true;
-	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
-	gpipeline.BlendState.AlphaToCoverageEnable = true;
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
-		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
-		gpipeline,
-		&pState,
-		false
-	);
-	pushPipeline();
-
-	//gpipeline.BlendState.AlphaToCoverageEnable = true;
-	//透過がおかしくならないようにする処理(これtrueにすると水しぶき消えちゃうからパイプライン分ける?)
-	//深度が100%じゃないと無視される?テクスチャで深度設定してたら問題ない?それとも描画順で変わる?
-	gpipeline.BlendState.AlphaToCoverageEnable = false;
-
-	//マテリアル読み込み可能版
-	createPipeline->createUserPipeline
-	(
-		1,
-		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
-		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
-		gpipeline,
-		&pState,
-		false
-	);
-	pushPipeline();
-
-	startPipelineCreateNum = pipelineStates.size();
-}
 
 #pragma region ポストエフェクト
 void DirectX12::setPostEffectPipeline(const int& num)
@@ -1360,8 +1386,10 @@ bool DirectX12::createUserPostEffectPipelineState(const ShaderData& pShaderData)
 	postEffectPipeline.resize(postEffectPipeline.size() + 1);
 
 	////パイプライン
-	createPipeline->setInputLayout("POSITION", 3);
-	createPipeline->setInputLayout("TEXCOORD", 2);
+	std::vector<InputLayoutData>ilData(2);
+	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT};
+	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE_FLOAT};
+	createPipeline->setInputLayout(ilData);
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pePLDesc = spriteGpipeline;
 	pePLDesc.pRootSignature = postEffectRootSigneture.Get();
@@ -2745,7 +2773,7 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag, const s
 		heapTags[key].push_back(MATERIAL_CONST_BUFFER);
 	};
 
-
+	
 	for (int i = 0; i < despData.objectNum; i++)
 	{
 		constSetV.push_back(cSet);

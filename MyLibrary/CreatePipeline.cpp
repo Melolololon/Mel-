@@ -518,44 +518,73 @@ bool CreatePipeline::createUserPipeline(
 }
 
 
-void CreatePipeline::setInputLayout(const char* semantics, int num)
+void CreatePipeline::setInputLayout(const std::vector<InputLayoutData>& inputLayoutData)
 {
-	if (num <= 0 || num >= 5)return;
-
-	D3D12_INPUT_ELEMENT_DESC inputLayout;
-	DXGI_FORMAT format;
-
-	switch (num)
+	inputLayoutVector.reserve(inputLayoutData.size());
+	for (auto& ilData : inputLayoutData) 
 	{
-	case 1:
-		format = DXGI_FORMAT_R32_FLOAT;
-		break;
-	case 2:
-		format = DXGI_FORMAT_R32G32_FLOAT;
-		break;
-	case 3:
-		format = DXGI_FORMAT_R32G32B32_FLOAT;
-		break;
-	case 4:
-		format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		break;
+
+		if (ilData.number >= 5)return;
+
+		D3D12_INPUT_ELEMENT_DESC inputLayout;
+		DXGI_FORMAT dxgiFormat;
+
+		switch (ilData.formatType)
+		{
+		case FORMAT_TYPE_FLOAT:
+			switch (ilData.number)
+			{
+			case 1:
+				dxgiFormat = DXGI_FORMAT_R32_FLOAT;
+				break;
+			case 2:
+				dxgiFormat = DXGI_FORMAT_R32G32_FLOAT;
+				break;
+			case 3:
+				dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+				break;
+			case 4:
+				dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+				break;
+			}
+			break;
+
+		case FORMAT_TYPE_UINT:
+			switch (ilData.number)
+			{
+			case 1:
+				dxgiFormat = DXGI_FORMAT_R32_UINT;
+				break;
+			case 2:
+				dxgiFormat = DXGI_FORMAT_R32G32_UINT;
+				break;
+			case 3:
+				dxgiFormat = DXGI_FORMAT_R32G32B32_UINT;
+				break;
+			case 4:
+				dxgiFormat = DXGI_FORMAT_R32G32B32A32_UINT;
+				break;
+			}
+			break;
+		}
+
+		inputLayout =
+		{
+			ilData.semantics,
+			0,
+			dxgiFormat,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0
+		};
+
+		inputLayoutVector.push_back(inputLayout);
 	}
-
-	inputLayout =
-	{
-		semantics,
-		0,
-		format,
-		0,
-		D3D12_APPEND_ALIGNED_ELEMENT,
-		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-		0
-	};
-
-	inputLayoutVector.push_back(inputLayout);
 }
 
 void CreatePipeline::deleteInputLayout() 
 {
 	inputLayoutVector.clear();
+	inputLayoutVector.shrink_to_fit();
 }
