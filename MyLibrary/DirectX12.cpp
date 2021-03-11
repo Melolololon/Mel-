@@ -115,12 +115,6 @@ DirectX12::~DirectX12()
 	delete mainCamera;
 
 
-
-	for (auto& p : heapDatas)
-	{
-		delete p.sikibetuNumP;
-	}
-
 	//#ifdef _DEBUG
 	//
 	//	ComPtr<ID3D12DebugDevice> debugDevice;
@@ -957,15 +951,15 @@ void DirectX12::preparationToDraw()
 void DirectX12::draw()
 {
 	//共通バッファのMap
-	for (auto& cBuf : commonBuffer)
+	for (auto& cBuf : commonBuffers)
 	{
-		cBuf->Map(0, nullptr, (void**)&commonConstData3D);
+		cBuf.second->Map(0, nullptr, (void**)&commonConstData3D);
 		commonConstData3D->lightColor = { lightColor.x,lightColor.y,lightColor.z,1 };
 		commonConstData3D->light = { lightVector.x,lightVector.y,lightVector.z,1 };
 		commonConstData3D->lightMat = cameraMat;
 		commonConstData3D->cameraPos = { mainCameraData.nowEye.x,mainCameraData.nowEye.y,mainCameraData.nowEye.z,1 };
 
-		cBuf->Unmap(0, nullptr);
+		cBuf.second->Unmap(0, nullptr);
 	}
 
 
@@ -1226,19 +1220,24 @@ void DirectX12::setConstMapData(void** dataP, unsigned int dataSize)
 	userConstDataSize3D = dataSize;
 }
 
-void DirectX12::getMatrix(float matrix[4][4], int heapNum, int number)
+void DirectX12::getMatrix(float matrix[4][4], const std::string& key, int number)
 {
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-	matWorld *= DirectX::XMMatrixScaling(scale[heapNum][number].x, scale[heapNum][number].y, scale[heapNum][number].z);
-	matWorld *= DirectX::XMMatrixRotationZ(angle[heapNum][number].z);
-	matWorld *= DirectX::XMMatrixRotationX(angle[heapNum][number].x);
-	DirectX::XMMATRIX y = DirectX::XMMatrixRotationY(angle[heapNum][number].y);
-	matWorld *= y;
+	matWorld *= DirectX::XMMatrixScaling
+	(
+		objectConstData[key].scale[number].x,
+		objectConstData[key].scale[number].y,
+		objectConstData[key].scale[number].z
+	);
+	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[key].angle[number].z));
+	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[key].angle[number].x));
+	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[key].angle[number].y));
+	
 	matWorld *= DirectX::XMMatrixTranslation
 	(
-		position[heapNum][number].x,
-		position[heapNum][number].y,
-		position[heapNum][number].z
+		objectConstData[key].position[number].x,
+		objectConstData[key].position[number].y,
+		objectConstData[key].position[number].z
 	);
 
 	DirectX::XMMATRIX sumMatrix = matWorld * mainCamera->get3DCameraMatrix(mainCameraData);
@@ -1621,9 +1620,9 @@ void DirectX12::setSmoothingFlag(bool flag)
 #pragma endregion
 
 
-void DirectX12::setMulColor(Color color, int despNum, int number)
+void DirectX12::setMulColor(Color color, const std::string& key, int number)
 {
-	mulColor[despNum][number] =
+	objectConstData[key].mulColor[number] =
 	{
 	(float)color.r / (float)255,
 		(float)color.g / (float)255,
@@ -1647,9 +1646,9 @@ void DirectX12::setMulColor(Color color, int despNum, int number)
 
 }
 
-void DirectX12::setAddColor(Color color, int despNum, int number)
+void DirectX12::setAddColor(Color color, const std::string& key, int number)
 {
-	addColor[despNum][number] =
+	objectConstData[key].addColor[number] =
 	{
 		(float)color.r / (float)255,
 		(float)color.g / (float)255,
@@ -1672,9 +1671,9 @@ void DirectX12::setAddColor(Color color, int despNum, int number)
 	}*/
 }
 
-void DirectX12::setSubColor(Color color, int despNum, int number)
+void DirectX12::setSubColor(Color color, const std::string& key, int number)
 {
-	subColor[despNum][number] =
+	objectConstData[key].subColor[number] =
 	{
 		(float)color.r / (float)255,
 		(float)color.g / (float)255,
@@ -1784,10 +1783,40 @@ void DirectX12::setLightColor(Color lightColor)
 
 #pragma region バッファ作成
 
+bool DirectX12::createConstBuffer
+(
+	ComPtr<ID3D12DescriptorHeap>&  heap,
+	const int& heapHandleNum,
+	ConstBufferSet* cBufferSet, 
+	void** constData,
+	const UINT& constDataSize
+)
+{
+	if (!cBufferSet)return false;
+
+	D3D12_CPU_DESCRIPTOR_HANDLE basicHeapHandle = 
+		CD3DX12_CPU_DESCRIPTOR_HANDLE
+	(
+		heap.Get()->GetCPUDescriptorHandleForHeapStart(),
+		heapHandleNum,
+		dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+
+
+	createBuffer->createConstBufferSet
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		CD3DX12_RESOURCE_DESC::Buffer((constDataSize + 0xff)&~0xff),
+		basicHeapHandle,
+		(void**)&constData,
+		*cBufferSet,
+		0
+	);
+}
 
 #pragma region モデル読み込み
 
-VertexType  DirectX12::loadOBJVertex
+VertexType DirectX12::loadOBJVertex
 (
 	const char* path,
 	bool loadUV,
@@ -1918,21 +1947,22 @@ VertexType  DirectX12::loadOBJVertex
 	return VertexType::VERTEX_TYPE_NORMAL;
 }
 
-void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string materialFileName, HeapData heapData, bool setConstDataFlag)
+void DirectX12::loadOBJMaterial
+(
+	std::string materialDirectoryPath, 
+	std::string materialFileName, 
+	HeapData heapData, 
+	bool setConstDataFlag,
+	const std::string& key
+)
 {
-
-#pragma region ヒープ
 
 	createHeapCount++;
 
-	resizeObjectData(heapData.objectNum);
-
-
-	//パスがobjからスタートするから、exeからobjのパスを入力できるようにする
-
+	resizeObjectData(heapData.objectNum,key);
 
 	//テクスチャ名
-	wchar_t texturePathW[10][256];
+	wchar_t texturePathW[20][256];
 
 	//マテリアル読み込み&テクスチャ名取得
 	int loadNum = 0;
@@ -1940,17 +1970,25 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 	(
 		materialDirectoryPath,
 		materialFileName,
-		materials[materials.size() - 1],
+		materials[key],
 		&loadNum
 	);
 
 	for (int i = 0; i < loadNum; i++)
 	{
 		//mbsrtowcs_s(&size, texturePathW, 256, &texturePath, 256, nullptr);
-		MultiByteToWideChar(CP_ACP, 0, materials[materials.size() - 1][i].textureName.c_str(), -1, texturePathW[i], _countof(texturePathW[i]));
+		MultiByteToWideChar
+		(
+			CP_ACP, 
+			0, 
+			materials[key][i].textureName.c_str(), 
+			-1, 
+			texturePathW[i], 
+			_countof(texturePathW[i])
+		);
 	}
 
-
+	
 #pragma region ヒープ作成
 
 	//basicHeaps.resize(vertices.size());
@@ -1970,32 +2008,31 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	descHeapDesc.NodeMask = 0;
 
-	basicHeaps.resize(basicHeaps.size() + 1);
-	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&basicHeaps[createHeapCount - 1]));
-
+	ComPtr<ID3D12DescriptorHeap>heap;
+	basicHeaps.emplace(key, heap);
+	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&basicHeaps[key]));
+	
 	D3D12_CPU_DESCRIPTOR_HANDLE basicHeapHandle;
-	basicHeapHandle = basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart();
+	basicHeapHandle = basicHeaps[key]->GetCPUDescriptorHandleForHeapStart();
 
-
-
+	
 #pragma endregion
 
 #pragma region テクスチャバッファ
 
 
-#pragma region テクスチャ読み込み
-
 	DirectX::TexMetadata metadata{};
 	DirectX::ScratchImage scratchimage{};
 
 	const DirectX::Image* imgs;
-	textureBufferSet.resize(textureBufferSet.size() + 1);
-	textureBufferSet[createHeapCount - 1].textureBuff.resize(loadNum);
+	TextureBufferSet tSet;
+	textureBufferSet.emplace(key, tSet);
+	textureBufferSet[key].textureBuff.resize(loadNum);
 	for (int i = 0; i < loadNum; i++)
 	{
 		basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
-			basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
+			basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
 			i,
 			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
@@ -2006,15 +2043,18 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 		//uvの設定を頂点バッファ生成後にしていた
 		/*TextureBufferSet textureSet;
 		textureBufferSet.push_back(textureSet);*/
-		createBuffer->createTextureBufferSet(basicHeapHandle, metadata, imgs, textureBufferSet[createHeapCount - 1],
+		createBuffer->createTextureBufferSet
+		(
+			basicHeapHandle,
+			metadata, 
+			imgs, 
+			textureBufferSet[key],
 			i);
 
-		heapTags[heapTags.size() - 1].push_back(TEXTURE_BUFFER);
+		heapTags[key].push_back(TEXTURE_BUFFER);
 	}
 	//一旦複数マテリアルのテクスチャを追加しない(今は最後に読み込んだ奴だけ追加)
-	textureData.push_back(metadata);
-
-#pragma endregion
+	textureData.emplace(key,metadata);
 
 
 #pragma endregion
@@ -2022,14 +2062,16 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 #pragma region 定数バッファ
 	//バッファを2個作る場合は、ハンドルのポインタをずらしてから生成する
 	//resizeObjectData(heapData.objectNum);
-
-	createCommonBuffer(loadNum);
+	
+	createCommonBuffer(loadNum,key);
 
 	//これいらんresizeにする
 	ConstBufferSet constSet;
 
 	//生成と移動
 	std::vector<ConstBufferSet> constSetV;
+
+	
 
 	int createUserConstBuffCount = 0;
 	for (int i = 0; i < heapData.objectNum; i++)
@@ -2045,9 +2087,11 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 			constSetV[constSetV.size() - 1].constBuffer.resize(loadNum + 2);
 		}
 
+		
+
 		basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
-			basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
+			basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
 			loadNum + i + i * loadNum + createUserConstBuffCount + 1,
 			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
@@ -2063,6 +2107,16 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 			0
 		);
 
+
+		/*createConstBuffer
+		(
+			basicHeaps[key],
+			loadNum + i + i * loadNum + createUserConstBuffCount + 1,
+			&constSetV[i],
+			(void**)&constData3D,
+			sizeof(ConstBufferData)
+		);*/
+
 		constData3D->mulColor = { 1,1,1,1 };
 		constData3D->addColor = { 0,0,0,0 };
 		constData3D->subColor = { 0,0,0,0 };
@@ -2070,7 +2124,7 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 		constData3D->color = { 1,1,1,1 };
 		constData3D->mat = DirectX::XMMatrixIdentity();
 
-		heapTags[heapTags.size() - 1].push_back(LIBRARY_CONST_BUFFER);
+		heapTags[key].push_back(LIBRARY_CONST_BUFFER);
 
 		int num = 0;
 		if (!setConstDataFlag)
@@ -2085,7 +2139,7 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 				num = loadNum + i + i * loadNum + j + 1 + createUserConstBuffCount + 1;
 				basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 				(
-					basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
+					basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
 					num,
 					dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 				);
@@ -2100,13 +2154,13 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 					j + 1
 				);
 
-				materialData->ambient = materials[materials.size() - 1][j].ambient;
-				materialData->diffuse = materials[materials.size() - 1][j].diffuse;
-				materialData->specular = materials[materials.size() - 1][j].specular;
-				materialData->alpha = materials[materials.size() - 1][j].alpha;
+				materialData->ambient = materials[key][j].ambient;
+				materialData->diffuse = materials[key][j].diffuse;
+				materialData->specular = materials[key][j].specular;
+				materialData->alpha = materials[key][j].alpha;
 
 				constSetV[i].constBuffer[j + 1].Get()->Unmap(0, nullptr);
-				heapTags[heapTags.size() - 1].push_back(MATERIAL_CONST_BUFFER);
+				heapTags[key].push_back(MATERIAL_CONST_BUFFER);
 			}
 		}
 		else
@@ -2116,7 +2170,7 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 			//ここでユーザー定数セット(オブジェクト数と同じ数作る)
 			basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 			(
-				basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
+				basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
 				num,
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
@@ -2131,7 +2185,7 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 				1
 			);
 
-			heapTags[heapTags.size() - 1].push_back(USER_CONST_BUFFER);
+			heapTags[key].push_back(USER_CONST_BUFFER);
 
 
 
@@ -2141,7 +2195,7 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 				num = loadNum + i + i * loadNum + j + 1 + createUserConstBuffCount + 1;
 				basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 				(
-					basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
+					basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
 					num,
 					dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 				);
@@ -2156,13 +2210,13 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 					j + 1 + 1
 				);
 
-				materialData->ambient = materials[materials.size() - 1][j].ambient;
-				materialData->diffuse = materials[materials.size() - 1][j].diffuse;
-				materialData->specular = materials[materials.size() - 1][j].specular;
-				materialData->alpha = materials[materials.size() - 1][j].alpha;
+				materialData->ambient = materials[key][j].ambient;
+				materialData->diffuse = materials[key][j].diffuse;
+				materialData->specular = materials[key][j].specular;
+				materialData->alpha = materials[key][j].alpha;
 
 				constSetV[i].constBuffer[j + 1 + 1].Get()->Unmap(0, nullptr);
-				heapTags[heapTags.size() - 1].push_back(MATERIAL_CONST_BUFFER);
+				heapTags[key].push_back(MATERIAL_CONST_BUFFER);
 			}
 
 			createUserConstBuffCount++;
@@ -2173,13 +2227,12 @@ void DirectX12::loadOBJMaterial(std::string materialDirectoryPath, std::string m
 
 
 	}
-	constBufferSet.push_back(constSetV);
+	constBufferSet.emplace(key,constSetV);
 #pragma endregion
 
-	heapDatas.push_back(heapData);
+	heapDatas.emplace(key,heapData);
 
 
-#pragma endregion
 
 
 }
@@ -2551,55 +2604,38 @@ void DirectX12::createPolygonData(PolyData polygonData,const std::string& key)
 
 #pragma region ヒープ
 
-void DirectX12::resizeObjectData(int objectNum)
+void DirectX12::resizeObjectData(int objectNum,const std::string& key)
 {
-	int size = addColor.size();
+	ObjectConstData objConstData;
+	objConstData.addColor.resize(objectNum, { 0,0,0,0 });
+	objConstData.subColor.resize(objectNum, { 0,0,0,0 });
+	objConstData.mulColor.resize(objectNum, { 0,0,0,0 });
+	objConstData.angle.resize(objectNum, { 0,0,0 });
+	objConstData.scale.resize(objectNum, {1,1,1 });
+	objConstData.position.resize(objectNum, { 0,0,0 });
+	objConstData.pushPolygonNum.resize(objectNum, 0.0f);
 
-	addColor.resize(size + 1);
-	addColor[size].resize(objectNum);
-	subColor.resize(size + 1);
-	subColor[size].resize(objectNum);
-	mulColor.resize(size + 1);
-	mulColor[size].resize(objectNum);
-	for (auto& mul : mulColor[size])
-	{
-		mul = { 1,1,1,1 };
-	}
+	objectConstData.emplace(key, objConstData);
 
-	exs.resize(size + 1);
-	exs[size].resize(objectNum);
+	std::vector<Material>m(1);
+	materials.emplace(key, m);
+	materials[key].resize(1);
+	materials[key][0].materialName = "NULL";
+	
+	std::vector<std::string>parentHeapVector(objectNum, "NONE");
+	std::vector<int>parentNumberVector(objectNum, -1);
+	parentHeaps.emplace(key, parentHeapVector);
+	parentNums.emplace(key, parentNumberVector);
 
-	materials.resize(size + 1);
-	materials[size].resize(1);
-	materials[size][0].materialName = "NULL";
-
-	position.resize(size + 1);
-	position[size].resize(objectNum);
-	angle.resize(size + 1);
-	angle[size].resize(objectNum);
-	scale.resize(size + 1);
-	scale[size].resize(objectNum);
-	parentHeaps.resize(size + 1);
-	parentHeaps[size].resize(objectNum);
-	parentNums.resize(size + 1);
-	parentNums[size].resize(objectNum);
-	for (int i = 0; i < objectNum; i++)
-	{
-		position[position.size() - 1][i] = { 0,0,0 };
-		angle[angle.size() - 1][i] = { 0,0,0 };
-		scale[scale.size() - 1][i] = { 1,1,1 };
-		parentHeaps[parentHeaps.size() - 1][i] = -1;
-		parentNums[parentNums.size() - 1][i] = -1;
-	}
-
-	heapTags.resize(size + 1);
+	std::vector<ConstBufferTag>tags;
+	heapTags.emplace(key, tags);
 }
 
 
-void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
+void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag, const std::string& key)
 {
 	//バッファを2個作る場合は、ハンドルのポインタをずらしてから生成する
-	resizeObjectData(despData.objectNum);
+	resizeObjectData(despData.objectNum,key);
 
 	createHeapCount++;
 
@@ -2620,63 +2656,56 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	descHeapDesc.NodeMask = 0;
 
-	basicHeaps.resize(basicHeaps.size() + 1);
-	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&basicHeaps[createHeapCount - 1]));
+	ComPtr<ID3D12DescriptorHeap> heap;
+	basicHeaps.emplace(key, heap);
+	result = dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&basicHeaps[key]));
+	
 
 	D3D12_CPU_DESCRIPTOR_HANDLE basicHeapHandle;
-	basicHeapHandle = basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart();
+	basicHeapHandle = basicHeaps[key]->GetCPUDescriptorHandleForHeapStart();
 
 #pragma endregion
 
 #pragma region テクスチャバッファ
 
+	TextureBufferSet tSet;
+	tSet.textureBuff.resize(1);
 	//単色
 	if (despData.path == L"")
 	{
 
 
-		TextureBufferSet textureSet2;
-		textureBufferSet.push_back(textureSet2);
-		textureBufferSet[createHeapCount - 1].textureBuff.resize(1);
-		createBuffer->createTextureBufferSet2(basicHeapHandle, despData.color, textureBufferSet[createHeapCount - 1], 0);
-
+		createBuffer->createTextureBufferSet2(basicHeapHandle, despData.color, tSet, 0);
+		textureBufferSet.emplace(key, tSet);
 
 		//空データを入れる
 		DirectX::TexMetadata metadata;
-		textureData.push_back(metadata);
+		textureData.emplace(key,metadata);
 
-		heapTags[heapTags.size() - 1].push_back(TEXTURE_BUFFER);
+		heapTags[key].push_back(TEXTURE_BUFFER);
 	}
 	else
 	{
-#pragma region テクスチャ読み込み
-
 		DirectX::TexMetadata metadata{};
 		DirectX::ScratchImage scratchimage{};
 
 		const DirectX::Image* imgs = DirectXTexLoader::loadTexture(despData.path, &metadata, &scratchimage);
 
-		//ここDrawBox書いてないときに処理すると下のやつでエラー出る
-		//6/1 なぜかテクスチャが出なくなった
-		//uvの設定を頂点バッファ生成後にしていた
-		TextureBufferSet textureSet;
-		textureBufferSet.push_back(textureSet);
-		textureBufferSet[createHeapCount - 1].textureBuff.resize(1);
-		createBuffer->createTextureBufferSet(basicHeapHandle, metadata, imgs, textureBufferSet[createHeapCount - 1], 0);
+		createBuffer->createTextureBufferSet(basicHeapHandle, metadata, imgs, tSet, 0);
+		textureBufferSet.emplace(key, tSet);
+		textureData.emplace(key,metadata);
 
-		textureData.push_back(metadata);
+		heapTags[key].push_back(TEXTURE_BUFFER);
 
-		heapTags[heapTags.size() - 1].push_back(TEXTURE_BUFFER);
-#pragma endregion
 	}
 
 #pragma endregion
 
 #pragma region 定数バッファ
-	createCommonBuffer(1);
+	createCommonBuffer(1, key);
 
-	ConstBufferSet constSet;
-
+	ConstBufferSet cSet;
+	cSet.constBuffer.resize(1);
 
 	std::vector<ConstBufferSet> constSetV;
 
@@ -2686,7 +2715,7 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 		int num = handleNum;
 		basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
-			basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
+			basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
 			num,
 			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
@@ -2707,19 +2736,19 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 			arrayNum
 		);
 
-		materialData->ambient = materials[materials.size() - 1][0].ambient;
-		materialData->diffuse = materials[materials.size() - 1][0].diffuse;
-		materialData->specular = materials[materials.size() - 1][0].specular;
-		materialData->alpha = materials[materials.size() - 1][0].alpha;
+		materialData->ambient = materials[key][0].ambient;
+		materialData->diffuse = materials[key][0].diffuse;
+		materialData->specular = materials[key][0].specular;
+		materialData->alpha = materials[key][0].alpha;
 
 		constSetV[objectNum].constBuffer[arrayNum].Get()->Unmap(0, nullptr);
-		heapTags[heapTags.size() - 1].push_back(MATERIAL_CONST_BUFFER);
+		heapTags[key].push_back(MATERIAL_CONST_BUFFER);
 	};
 
 
 	for (int i = 0; i < despData.objectNum; i++)
 	{
-		constSetV.push_back(constSet);
+		constSetV.push_back(cSet);
 		if (!setConstDataFlag)
 		{
 
@@ -2728,7 +2757,7 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 
 			basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 			(
-				basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(), 
+				basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
 				i + 1 + 1, //オブジェクト数 + テクスチャ数 + 1(1つ目の定数バッファ)
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
@@ -2750,7 +2779,7 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 
 			constSetV[i].constBuffer[0].Get()->Unmap(0, nullptr);
 
-			heapTags[heapTags.size() - 1].push_back(LIBRARY_CONST_BUFFER);
+			heapTags[key].push_back(LIBRARY_CONST_BUFFER);
 
 			//マテリアルバッファ作成
 			createMaterialBuffer(i + 2 + 1, i, setConstDataFlag);
@@ -2760,7 +2789,7 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 			constSetV[i].constBuffer.resize(3);
 			basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 			(
-				basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
+				basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
 				i * 3 + 1 + 1,//オブジェクト数 * 1つのオブジェクトに必要なバッファ数 + テクスチャ数 + 1(1つ目のバッファ)
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
@@ -2780,7 +2809,7 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 			constData3D->color = { 1,1,1,1 };
 			constData3D->mat = DirectX::XMMatrixIdentity();
 
-			heapTags[heapTags.size() - 1].push_back(LIBRARY_CONST_BUFFER);
+			heapTags[key].push_back(LIBRARY_CONST_BUFFER);
 
 			//ユーザー定数がおかしい
 			//通常とユーザー定数の生成順を入れ替えたが、ユーザー定数でエラー出た
@@ -2788,7 +2817,7 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 			//i * 2 + 2じゃダメ?
 			basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 			(
-				basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
+				basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
 				i * 3 + 2 + 1,
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
@@ -2805,7 +2834,7 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 			);
 
 			constSetV[i].constBuffer[0].Get()->Unmap(0, nullptr);
-			heapTags[heapTags.size() - 1].push_back(USER_CONST_BUFFER);
+			heapTags[key].push_back(USER_CONST_BUFFER);
 
 			//マテリアルバッファ作成
 			createMaterialBuffer(i * 3 + 3 + 1, i, setConstDataFlag);
@@ -2813,49 +2842,55 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag)
 
 
 	}
-	constBufferSet.push_back(constSetV);
+	constBufferSet.emplace(key,constSetV);
 #pragma endregion
 
-	heapDatas.push_back(despData);
-
-
+	heapDatas.emplace(key,despData);
 
 }
 
-void DirectX12::createCommonBuffer(const int& texNum)
+void DirectX12::createCommonBuffer(const int& texNum, const std::string& key)
 {
 	auto basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 	(
-		basicHeaps[createHeapCount - 1]->GetCPUDescriptorHandleForHeapStart(),
+		basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
 		texNum,
 		dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 	);
+	
+	ComPtr<ID3D12Resource>commonBuffer;
+	commonBuffers.emplace(key, commonBuffer);
 
-	commonBuffer.resize(commonBuffer.size() + 1);
-	auto result = dev->CreateCommittedResource(
-
+	auto result = dev->CreateCommittedResource
+	(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(CommonConstData) + 0xff)&~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&commonBuffer[commonBuffer.size() - 1]));
+		IID_PPV_ARGS(&commonBuffers[key])
+	);
 
-	result = commonBuffer[commonBuffer.size() - 1]->Map(0, nullptr, (void**)&commonConstData3D);
+
+	//Map
+	result = commonBuffers[key]->Map(0, nullptr, (void**)&commonConstData3D);
 
 	commonConstData3D->lightColor = { 1,1,1 ,1 };
 	commonConstData3D->light = { 1,1,1,1 };
 	commonConstData3D->lightMat = DirectX::XMMatrixIdentity();
 	commonConstData3D->cameraPos = { mainCameraData.nowEye.x,mainCameraData.nowEye.y,mainCameraData.nowEye.z,1 };
-	commonBuffer[commonBuffer.size() - 1]->Unmap(0, nullptr);
+	
+	commonBuffers[key]->Unmap(0, nullptr);
 
+
+	//ビュー
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
 
-	cbvDesc.BufferLocation = commonBuffer[commonBuffer.size() - 1]->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = (UINT)commonBuffer[commonBuffer.size() - 1]->GetDesc().Width;
+	cbvDesc.BufferLocation = commonBuffers[key]->GetGPUVirtualAddress();
+	cbvDesc.SizeInBytes = (UINT)commonBuffers[key]->GetDesc().Width;
 	dev->CreateConstantBufferView(&cbvDesc, basicHeapHandle);
 
-	heapTags[heapTags.size() - 1].push_back(COMMON_CONST_BUFFER);
+	heapTags[key].push_back(COMMON_CONST_BUFFER);
 }
 
 #pragma endregion
@@ -3228,65 +3263,28 @@ void DirectX12::deletePolygonData(const std::string key)
 
 }
 
-void DirectX12::deleteHeapData(int despNum)
+void DirectX12::deleteHeapData(const std::string& key)
 {
 
-	if (despNum != -1)
+	//if (despNum != -1)
 	{
-		textureBufferSet.erase(textureBufferSet.begin() + despNum);
-		constBufferSet.erase(constBufferSet.begin() + despNum);
-		basicHeaps.erase(basicHeaps.begin() + despNum);
-		textureData.erase(textureData.begin() + despNum);
+		textureBufferSet.erase(key);
+		constBufferSet.erase(key);
+		basicHeaps.erase(key);
+		textureData.erase(key);
 
+		objectConstData.erase(key);
 
-		addColor.erase(addColor.begin() + despNum);
-		subColor.erase(subColor.begin() + despNum);
-		mulColor.erase(mulColor.begin() + despNum);
-		exs.erase(exs.begin() + despNum);
+		materials.erase(key);
 
-		materials.erase(materials.begin() + despNum);
+		parentHeaps.erase(key);
+		parentNums.erase(key);
 
-		position.erase(position.begin() + despNum);
-		angle.erase(angle.begin() + despNum);
-		scale.erase(scale.begin() + despNum);
-		parentHeaps.erase(parentHeaps.begin() + despNum);
-		parentNums.erase(parentNums.begin() + despNum);
+		commonBuffers.erase(key);
 
-		commonBuffer.erase(commonBuffer.begin() + despNum);
-
-		heapTags.erase(heapTags.begin() + despNum);
-
-		delete heapDatas[despNum].sikibetuNumP;
-		heapDatas.erase(heapDatas.begin() + despNum);
-		for (int i = despNum; i < (int)heapDatas.size(); i++)
-		{
-			*heapDatas[i].sikibetuNumP += -1;
-		}
-
-		heapDatas.shrink_to_fit();
-		textureBufferSet.shrink_to_fit();
-		constBufferSet.shrink_to_fit();
-		basicHeaps.shrink_to_fit();
-		textureData.shrink_to_fit();
-
-		position.shrink_to_fit();
-		angle.shrink_to_fit();
-		scale.shrink_to_fit();
-		parentHeaps.shrink_to_fit();
-		parentNums.shrink_to_fit();
-
-		commonBuffer.shrink_to_fit();
-
-		heapTags.shrink_to_fit();
-
-		addColor.shrink_to_fit();
-		subColor.shrink_to_fit();
-		mulColor.shrink_to_fit();
-		exs.shrink_to_fit();
-		materials.shrink_to_fit();
-
-
-
+		heapTags.erase(key);
+		heapDatas.erase(key);
+		
 		createHeapCount--;
 	}
 }
@@ -3328,9 +3326,9 @@ void DirectX12::deleteSprite(int sprite)
 #pragma region 描画関数
 
 //バッファをセット
-void DirectX12::setCmdList(const std::string key, int despNum, int number)
+void DirectX12::setCmdList(const std::string& vKey, const std::string& hKey, int number)
 {
-	if ( despNum >= 0 && number >= 0)
+	//if ( despNum >= 0 && number >= 0)
 	{
 		cmdList->SetGraphicsRootSignature(rootSignature.Get());
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -3342,7 +3340,7 @@ void DirectX12::setCmdList(const std::string key, int despNum, int number)
 		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 
 		//2D
-		if (polyDatas[key].dimention == Dimension::dimention2D)//2D
+		if (polyDatas[vKey].dimention == Dimension::dimention2D)//2D
 		{
 
 			//	cmdList->IASetVertexBuffers(0, 1, &vertexBuffSet[polyNum].vertexBufferView);
@@ -3372,15 +3370,15 @@ void DirectX12::setCmdList(const std::string key, int despNum, int number)
 		}
 
 		//3D
-		if (polyDatas[key].dimention == Dimension::dimention3D)//3D
+		if (polyDatas[vKey].dimention == Dimension::dimention3D)//3D
 		{
 
-			ppHeaps.push_back(basicHeaps[despNum].Get());
+			ppHeaps.push_back(basicHeaps[hKey].Get());
 			cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
 			gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 			(
-				basicHeaps[despNum]->GetGPUDescriptorHandleForHeapStart(),
+				basicHeaps[hKey]->GetGPUDescriptorHandleForHeapStart(),
 				0,
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
@@ -3389,34 +3387,34 @@ void DirectX12::setCmdList(const std::string key, int despNum, int number)
 
 
 			//共通
-			handleNum = textureBufferSet[despNum].textureBuff.size();
+			handleNum = textureBufferSet[hKey].textureBuff.size();
 			gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 			(
-				basicHeaps[despNum]->GetGPUDescriptorHandleForHeapStart(),
+				basicHeaps[hKey]->GetGPUDescriptorHandleForHeapStart(),
 				handleNum,
 				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
 			cmdList->SetGraphicsRootDescriptorTable(4, gpuDescHandle);
 
 			//頂点バッファ分ループ
-			for (int i = 0; i < vertexBufferSet[key].size(); i++)
+			for (int i = 0; i < vertexBufferSet[hKey].size(); i++)
 			{
 				handleNum = 0;
 
 				//マテリアル名がobjに書かれてるのにmtl読まなかった場合、最初のテクスチャが選ばれる
-				for (int j = 0; j < materials[despNum].size(); j++)
+				for (int j = 0; j < materials[hKey].size(); j++)
 				{
 					//マテリアル紐づけ
-					if (vertexBufferSet[key][i].materialName == materials[despNum][j].materialName)handleNum = j;
+					if (vertexBufferSet[vKey][i].materialName == materials[hKey][j].materialName)handleNum = j;
 				}
 
-				cmdList->IASetIndexBuffer(&indexBufferSet[key][i].indexBufferView);
-				cmdList->IASetVertexBuffers(0, 1, &vertexBufferSet[key][i].vertexBufferView);
+				cmdList->IASetIndexBuffer(&indexBufferSet[vKey][i].indexBufferView);
+				cmdList->IASetVertexBuffers(0, 1, &vertexBufferSet[vKey][i].vertexBufferView);
 
 				//テクスチャ
 				gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 				(
-					basicHeaps[despNum]->GetGPUDescriptorHandleForHeapStart(),
+					basicHeaps[hKey]->GetGPUDescriptorHandleForHeapStart(),
 					handleNum,
 					dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 				);
@@ -3424,12 +3422,12 @@ void DirectX12::setCmdList(const std::string key, int despNum, int number)
 
 				//定数バッファセット
 				handleNum = 0;
-				handleNum += textureBufferSet[despNum].textureBuff.size() + 1;//テクスチャと共通分ずらす
-				handleNum += constBufferSet[despNum][number].constBuffer.size() * number;//オブジェクトの場所までずらす
+				handleNum += textureBufferSet[hKey].textureBuff.size() + 1;//テクスチャと共通分ずらす
+				handleNum += constBufferSet[hKey][number].constBuffer.size() * number;//オブジェクトの場所までずらす
 
 				gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 				(
-					basicHeaps[despNum]->GetGPUDescriptorHandleForHeapStart(),
+					basicHeaps[hKey]->GetGPUDescriptorHandleForHeapStart(),
 					handleNum,
 					dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 				);
@@ -3438,15 +3436,15 @@ void DirectX12::setCmdList(const std::string key, int despNum, int number)
 				//ユーザー定数セット
 
 				//要素数を超えてアクセスしないようにするためのif
-				if (heapTags[despNum].size() > handleNum + 1)
+				if (heapTags[hKey].size() > handleNum + 1)
 				{
 					//ユーザー定数があったら、セットする
-					if (heapTags[despNum][handleNum + 1] == USER_CONST_BUFFER)
+					if (heapTags[hKey][handleNum + 1] == USER_CONST_BUFFER)
 					{
 						handleNum++;
 						gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 						(
-							basicHeaps[despNum]->GetGPUDescriptorHandleForHeapStart(),
+							basicHeaps[hKey]->GetGPUDescriptorHandleForHeapStart(),
 							handleNum,
 							dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 						);
@@ -3455,15 +3453,15 @@ void DirectX12::setCmdList(const std::string key, int despNum, int number)
 				}
 
 				//マテリアルセット
-				if (heapTags[despNum].size() > handleNum + 1)
+				if (heapTags[hKey].size() > handleNum + 1)
 				{
 					//マテリアルがあったら、テクスチャ分ずらして、マテリアル定数をセット
-					if (heapTags[despNum][handleNum + 1] == MATERIAL_CONST_BUFFER)
+					if (heapTags[hKey][handleNum + 1] == MATERIAL_CONST_BUFFER)
 					{
 						handleNum += i + 1;
 						gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 						(
-							basicHeaps[despNum]->GetGPUDescriptorHandleForHeapStart(),
+							basicHeaps[hKey]->GetGPUDescriptorHandleForHeapStart(),
 							handleNum,
 							dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 						);
@@ -3472,8 +3470,7 @@ void DirectX12::setCmdList(const std::string key, int despNum, int number)
 				}
 
 				//描画
-				cmdList->DrawIndexedInstanced(indices[key][i].size(), 1, 0, 0, 0);
-
+				cmdList->DrawIndexedInstanced(indices[vKey][i].size(), 1, 0, 0, 0);
 
 			}
 
@@ -3483,43 +3480,51 @@ void DirectX12::setCmdList(const std::string key, int despNum, int number)
 }
 
 //Map処理
-void DirectX12::map(const std::string key, int despNumber, int number)
+void DirectX12::map(const std::string& vKey, const std::string& hKey, int number)
 {
 
 
-	if (despNumber >= 0)
+	//if (despNumber >= 0)
 	{
 
 		//constBufferSet[despNumber][number].constBuffer.Get()->Unmap(0, nullptr);
-		result = constBufferSet[despNumber][number].constBuffer[0].Get()->Map(0, nullptr, (void**)&constData3D);
+		result = constBufferSet[hKey][number].constBuffer[0].Get()->Map(0, nullptr, (void**)&constData3D);
 
-		if (polyDatas[key].dimention == Dimension::dimention2D)
+		if (polyDatas[vKey].dimention == Dimension::dimention2D)
 		{
 
 			DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-			matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(angle[despNumber][number].z));
-			matWorld *= DirectX::XMMatrixScaling(scale[despNumber][number].x, scale[despNumber][number].y, scale[despNumber][number].z);
+			matWorld *= DirectX::XMMatrixRotationZ
+			(
+				DirectX::XMConvertToRadians(objectConstData[hKey].angle[number].z)
+			);
+			matWorld *= DirectX::XMMatrixScaling
+			(
+				objectConstData[hKey].scale[number].x,
+				objectConstData[hKey].scale[number].y,
+				objectConstData[hKey].scale[number].z
+			);
 			matWorld *= DirectX::XMMatrixTranslation
 			(
-				position[despNumber][number].x,
-				position[despNumber][number].y,
-				position[despNumber][number].z
+				objectConstData[hKey].position[number].x,
+				objectConstData[hKey].position[number].y,
+				objectConstData[hKey].position[number].z
 			);
 
 			constData3D->mat = matWorld * mainCamera->get2DCameraMatrix();
 		}
 
-		if (this->polyDatas[key].dimention == Dimension::dimention3D)
+		if (this->polyDatas[vKey].dimention == Dimension::dimention3D)
 		{
-			constData3D->addColor = addColor[despNumber][number];
-			constData3D->subColor = subColor[despNumber][number];
-			constData3D->mulColor = mulColor[despNumber][number];
-			constData3D->ex = exs[despNumber][number];
+			constData3D->addColor = objectConstData[hKey].addColor[number];
+			constData3D->subColor = objectConstData[hKey].subColor[number];
+			constData3D->mulColor = objectConstData[hKey].mulColor[number];
+			constData3D->ex = objectConstData[hKey].pushPolygonNum[number];
 
 			DirectX::XMMATRIX normalMat;
-			normalMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(angle[despNumber][number].z));
-			normalMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(angle[despNumber][number].x));
-			normalMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(angle[despNumber][number].y));
+			normalMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[hKey].angle[number].z));
+			normalMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[hKey].angle[number].x));
+			normalMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[hKey].angle[number].y));
 			constData3D->normalMat = normalMat * cameraMat;
 
 			DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
@@ -3573,23 +3578,28 @@ void DirectX12::map(const std::string key, int despNumber, int number)
 				matWorld *= billboardMatrix;
 			}
 
-			matWorld *= DirectX::XMMatrixScaling(scale[despNumber][number].x, scale[despNumber][number].y, scale[despNumber][number].z);
-			matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(angle[despNumber][number].z));
-			matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(angle[despNumber][number].x));
-			matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(angle[despNumber][number].y));
+			matWorld *= DirectX::XMMatrixScaling
+			(
+				objectConstData[hKey].scale[number].x,
+				objectConstData[hKey].scale[number].y,
+				objectConstData[hKey].scale[number].z
+			);
+			matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[hKey].angle[number].z));
+			matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[hKey].angle[number].x));
+			matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[hKey].angle[number].y));
 
 			matWorld *= DirectX::XMMatrixTranslation
 			(
-				position[despNumber][number].x,
-				position[despNumber][number].y,
-				position[despNumber][number].z
+				objectConstData[hKey].position[number].x,
+				objectConstData[hKey].position[number].y,
+				objectConstData[hKey].position[number].z
 			);
 
-			int parentHeap = parentHeaps[despNumber][number];
-			int parentNum = parentNums[despNumber][number];
+			std::string parentHeap = parentHeaps[hKey][number];
+			int parentNum = parentNums[hKey][number];
 			while (1)
 			{
-				if (parentHeap == -1 || parentNum == -1)
+				if ( parentNum == -1 || parentHeap == "NONE")
 				{
 					break;
 				}
@@ -3606,21 +3616,26 @@ void DirectX12::map(const std::string key, int despNumber, int number)
 				//			-position[parentHeap][parentNum].z,
 				//			1.0f)));
 
-				matWorld *= DirectX::XMMatrixScaling(scale[parentHeap][parentNum].x, scale[parentHeap][parentNum].y, scale[parentHeap][parentNum].z);
-				matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(angle[parentHeap][parentNum].z));
-				matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(angle[parentHeap][parentNum].x));
-				matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(angle[parentHeap][parentNum].y));
+				matWorld *= DirectX::XMMatrixScaling
+				(
+					objectConstData[parentHeap].scale[parentNum].x, 
+					objectConstData[parentHeap].scale[parentNum].y,
+					objectConstData[parentHeap].scale[parentNum].z
+				);
+				matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[parentHeap].angle[parentNum].z));
+				matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[parentHeap].angle[parentNum].x));
+				matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[parentHeap].angle[parentNum].y));
 
 				matWorld *= DirectX::XMMatrixTranslation
 				(
-					position[parentHeap][parentNum].x,
-					position[parentHeap][parentNum].y,
-					position[parentHeap][parentNum].z
+					objectConstData[parentHeap].position[parentNum].x,
+					objectConstData[parentHeap].position[parentNum].y,
+					objectConstData[parentHeap].position[parentNum].z
 				);
 
 
 
-				int kariParentHeap = parentHeaps[parentHeap][parentNum];
+				std::string kariParentHeap = parentHeaps[parentHeap][parentNum];
 				int kariParentNum = parentNums[parentHeap][parentNum];
 
 				parentHeap = kariParentHeap;
@@ -3652,26 +3667,26 @@ void DirectX12::map(const std::string key, int despNumber, int number)
 			constData3D->worldMat = matWorld;
 
 			//オブジェクト分ループ
-			for (int i = 0; i < vertices[key].size(); i++)
+			for (int i = 0; i < vertices[vKey].size(); i++)
 			{
-				vertexBufferSet[key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBufferSet[key][i].vertexMap);
+				vertexBufferSet[vKey][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBufferSet[vKey][i].vertexMap);
 
 				//スムージングを行うか
 				if (smoothing)
 				{
-					for (int j = 0; j < smoothNormal[key][i].size(); j++)
+					for (int j = 0; j < smoothNormal[vKey][i].size(); j++)
 					{
-						vertexBufferSet[key][i].vertexMap[j].normal = smoothNormal[key][i][j];
+						vertexBufferSet[vKey][i].vertexMap[j].normal = smoothNormal[vKey][i][j];
 					}
 				}
 				else
 				{
-					for (int j = 0; j < vertices[key][i].size(); j++)
+					for (int j = 0; j < vertices[vKey][i].size(); j++)
 					{
-						vertexBufferSet[key][i].vertexMap[j].normal = vertices[key][i][j].normal;
+						vertexBufferSet[vKey][i].vertexMap[j].normal = vertices[vKey][i][j].normal;
 					}
 				}
-				vertexBufferSet[key][i].vertexBuffer.Get()->Unmap(0, nullptr);
+				vertexBufferSet[vKey][i].vertexBuffer.Get()->Unmap(0, nullptr);
 			}
 			//constData3D->mat = constData3D->mat * DirectX::XMMatrixInverse(nullptr, mainCamera->get3DCameraMatrix(mainCameraData));
 
@@ -3679,7 +3694,7 @@ void DirectX12::map(const std::string key, int despNumber, int number)
 
 		}
 
-		constBufferSet[despNumber][number].constBuffer[0].Get()->Unmap(0, nullptr);
+		constBufferSet[hKey][number].constBuffer[0].Get()->Unmap(0, nullptr);
 
 
 	}
@@ -3891,65 +3906,26 @@ void DirectX12::pointSetCmdList(DirectX::XMFLOAT3 pos, int pointNum, int texture
 
 #pragma region 操作関数
 
-void DirectX12::setObjectPosition(DirectX::XMFLOAT3 position, int despNum, int number)
+void DirectX12::setObjectPosition(DirectX::XMFLOAT3 position, const std::string& key, int number)
 {
-	if (despNum != -1)
-	{
-		////座標が左上にあるので、中心に
-		//if (polyDatas[polyNum].dimention == dimention2D && polyDatas[polyNum].katatiNum == DrawType::box) 
-		//{
-		//	float width = polyDatas[polyNum].pos1.x;
-		//	float height = polyDatas[polyNum].pos1.y;
-		//	width /= 2;
-		//	height /= 2;
-
-		//	position.x += width;
-		//	position.y += height;
-		//}
-
-		//this->position[despNum][number] = DirectX::XMVECTOR(DirectX::XMVectorSet(position.x, position.y, position.z, 1.0f));
-
-		if (despNum == 38)
-		{
-			int a = 0;
-		}
-		this->position[despNum][number] = position;
-	}
+	objectConstData[key].position[number] = position;
 }
 
-void DirectX12::setObjectAngle(DirectX::XMFLOAT3 angle, int despNum, int number)
-{
-	if (despNum != -1)
-	{
-		this->angle[despNum][number] = angle;
-	}
+void DirectX12::setObjectAngle(DirectX::XMFLOAT3 angle, const std::string& key, int number)
+{	
+	objectConstData[key].angle[number] = angle;
 }
 
-void DirectX12::setObjectScale(DirectX::XMFLOAT3 scale, int despNum, int number)
+void DirectX12::setObjectScale(DirectX::XMFLOAT3 scale, const std::string& key, int number)
 {
-	if (despNum != -1)
-	{
-		this->scale[despNum][number] = scale;
-	}
+	
+	objectConstData[key].scale[number] = scale;
+	
 }
 
-void DirectX12::setObjectEX(float objectEX, int despNum, int number)
+void DirectX12::setObjectPushNum(float objectEX, const std::string& key, int number)
 {
-	//-1以下に変える
-	if (despNum != -1)
-	{
-		exs[despNum][number] = objectEX;
-
-		/*int size = constBufferSet[despNum][number].constBuffer.size();
-		for (int i = 0; i < size; i++)
-		{
-			constBufferSet[despNum][number].constBuffer[i].Get()->Map(0, nullptr, (void**)&constData3D);
-			constData3D->ex = objectEX;
-			constBufferSet[despNum][number].constBuffer[i].Get()->Unmap(0, nullptr);
-		}*/
-	}
-
-
+	objectConstData[key].pushPolygonNum[number] = objectEX;
 }
 
 
@@ -4304,10 +4280,10 @@ void DirectX12::drawSpriteFontString(DirectX::XMFLOAT2 position, DirectX::XMFLOA
 
 #pragma region 親子構造
 
-void DirectX12::setParent(int heapNum, int number, int parentObjHeapNum, int parentNum)
+void DirectX12::setParent(const std::string& key, const int& number, const std::string& parentKey, const int& parentNum)
 {
-	parentHeaps[heapNum][number] = parentObjHeapNum;
-	parentNums[heapNum][number] = parentNum;
+	parentHeaps[key][number] = parentKey;
+	parentNums[key][number] = parentNum;
 }
 #pragma endregion
 
@@ -4380,8 +4356,6 @@ void DirectX12::calcSmoothingNormals(const std::string key)
 			}
 			sNor.clear();
 		}
-
-
 	}
 
 

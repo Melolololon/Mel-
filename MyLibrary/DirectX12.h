@@ -144,21 +144,22 @@ private:
 	std::unordered_map<std::string,std::vector<VertexBufferSet>> vertexBufferSet;
 	std::unordered_map<std::string,std::vector<IndexBufferSet>>indexBufferSet;
 
+	std::vector<VertexBufferSet> spriteVertexBuffSet;
+	std::vector<IndexBufferSet> spriteIndexBufferSet;//これ固定だから複数いらない?
 
+	std::vector< std::vector<VertexBufferSet>> pointVertexBuffSet;
 #pragma endregion
 
 #pragma region ヒープに入れるバッファ
 
-	std::vector<std::vector<ConstBufferSet>> constBufferSet;
-	std::vector<ComPtr<ID3D12Resource>>commonBuffer;
-	std::vector<TextureBufferSet> textureBufferSet;
+	std::unordered_map<std::string, std::vector<ConstBufferSet>> constBufferSet;
+	std::unordered_map<std::string, ComPtr<ID3D12Resource>>commonBuffers;
+	std::unordered_map<std::string, TextureBufferSet> textureBufferSet;
 
-	std::vector<VertexBufferSet> spriteVertexBuffSet;
-	std::vector<IndexBufferSet> spriteIndexBufferSet;//これ固定だから複数いらない?
+
 	std::vector<ConstBufferSet> spriteConstBufferSet;
 	std::vector<TextureBufferSet> spriteTextureBufferSet;
 
-	std::vector< std::vector<VertexBufferSet>> pointVertexBuffSet;
 	std::vector<ConstBufferSet> pointConstBufferSet;
 	std::vector<TextureBufferSet> pointTextureBufferSet;
 
@@ -171,7 +172,7 @@ private:
 
 #pragma region ヒープ
 
-	std::vector<ComPtr<ID3D12DescriptorHeap>> basicHeaps;
+	std::unordered_map<std::string, ComPtr<ID3D12DescriptorHeap>> basicHeaps;
 	ComPtr<ID3D12DescriptorHeap> spriteHeap;
 	ComPtr<ID3D12DescriptorHeap> pointHeap;
 	ComPtr<ID3D12DescriptorHeap> spriteFontHeap;
@@ -256,13 +257,13 @@ private:
 		USER_CONST_BUFFER,
 		MATERIAL_CONST_BUFFER
 	};
-	std::vector<std::vector<ConstBufferTag>>heapTags;
+	std::unordered_map<std::string, std::vector<ConstBufferTag>>heapTags;
 
 #pragma endregion
 
 #pragma region テクスチャ関係
 	//画像データ
-	std::vector<DirectX::TexMetadata> textureData;
+	std::unordered_map<std::string, DirectX::TexMetadata> textureData;
 	std::vector<DirectX::TexMetadata> spriteTextureData;
 
 #pragma endregion
@@ -274,7 +275,7 @@ private:
 
 	//送られてきた情報
 	std::unordered_map<std::string,PolyData> polyDatas;
-	std::vector<HeapData> heapDatas;
+	std::unordered_map<std::string, HeapData> heapDatas;
 	//取得したスプライトのポインタ
 	std::vector<int*>spriteP;
 	std::vector<int*>pointP;
@@ -336,17 +337,21 @@ private:
 
 
 #pragma region オブジェクト情報
+	struct ObjectConstData
+	{
+		std::vector<DirectX::XMFLOAT3>position;
+		std::vector<DirectX::XMFLOAT3>scale;
+		std::vector<DirectX::XMFLOAT3>angle;
+		std::vector<DirectX::XMFLOAT4>addColor;
+		std::vector<DirectX::XMFLOAT4>subColor;
+		std::vector<DirectX::XMFLOAT4>mulColor;
+		std::vector<float>pushPolygonNum;
+	};
+	std::unordered_map < std::string, ObjectConstData>objectConstData;
 
 
-	std::vector<std::vector<DirectX::XMFLOAT3>>position;
-	std::vector<std::vector<DirectX::XMFLOAT3>>scale;
-	std::vector<std::vector<DirectX::XMFLOAT3>>angle;
-	std::vector<std::vector<DirectX::XMFLOAT4>>addColor;
-	std::vector<std::vector<DirectX::XMFLOAT4>>subColor;
-	std::vector<std::vector<DirectX::XMFLOAT4>>mulColor;
-	std::vector<std::vector<float>>exs;
-	std::vector< std::vector<Material>>materials;
-
+	std::unordered_map<std::string,std::vector<Material>>materials;
+	 
 
 	//std::vector<DirectX::XMVECTOR> spritePosition;
 	std::vector<DirectX::XMFLOAT2> spriteScale;
@@ -363,8 +368,8 @@ private:
 #pragma region 親子構造
 
 	//オブジェクトの親を保存する配列
-	std::vector<std::vector<int>>parentHeaps;
-	std::vector<std::vector<int>>parentNums;
+	std::unordered_map < std::string, std::vector < std::string >> parentHeaps;
+	std::unordered_map < std::string, std::vector<int>>parentNums;
 #pragma endregion
 
 #pragma region ポストエフェクト
@@ -413,11 +418,47 @@ private:
 
 
 #pragma region private関数
-	void resizeObjectData(int objectNum);
+	void resizeObjectData(int objectNum,const std::string& key);
 
 	void createHeap();
 
-	void createCommonBuffer(const int& texNum);
+#pragma region 定数バッファ
+
+	//共通バッファ作成部分もcreateConstBufferみたいに
+	//好きなヒープに作成できるようにする
+
+	/// <summary>
+	/// 共通バッファ作成
+	/// </summary>
+	/// <param name="texNum">テクスチャバッファ数</param>
+	/// <param name="key"></param>
+	void createCommonBuffer
+	(
+		const int& texNum, 
+		const std::string& key
+	);
+	
+	/// <summary>
+	/// 定数バッファ作成
+	/// </summary>
+	/// <param name="heap"></param>
+	/// <param name="heapHandleNum"></param>
+	/// <param name="cBufferSet"></param>
+	/// <param name="constData"></param>
+	/// <param name="constDataSize"></param>
+	/// <returns></returns>
+	bool createConstBuffer
+	(
+		ComPtr<ID3D12DescriptorHeap>& heap, 
+		const int& heapHandleNum,
+		ConstBufferSet* cBufferSet,
+		void** constData,
+		const UINT& constDataSize
+	);
+
+#pragma endregion
+
+
 
 	/// <summary>
 	/// ライブラリがパイプラインを作成します
@@ -496,7 +537,7 @@ public:
 	void setConstMapData(void** dataP, unsigned int dataSize);
 
 	//ワールド、ビュー、プロジェクション行列を乗算したものを受け取ります
-	void getMatrix(float matrix[4][4], int heapNum, int number);
+	void getMatrix(float matrix[4][4],const std::string& key, int number);
 
 	//ワールドは乗算しない
 	void getCameraMatrix(float matrix[4][4]);
@@ -528,7 +569,8 @@ public:
 	
 	//typeに応じてどのcountを++するか決める
 	void createPolygonData(PolyData polygonData,const std::string& key);
-	void createHeapData(HeapData despData, bool setConstDataFlag);
+	
+	void createHeapData(HeapData despData, bool setConstDataFlag,const std::string& key);
 
 #pragma region ユーザー
 	/// <summary>
@@ -570,7 +612,15 @@ public:
 		const std::string& key
 	);
 
-	void loadOBJMaterial(std::string materialDirectoryPath, std::string materialFileName, HeapData heapData, bool setConstDataFlag);
+	void loadOBJMaterial
+	(
+		std::string materialDirectoryPath,
+		std::string materialFileName, 
+		HeapData heapData, 
+		bool setConstDataFlag, 
+		const std::string& key
+
+	);
 
 	//これいらない
 	void loadOBJ(const char* path, std::string materialDirectoryPath, bool loadUV, bool loadNormal, PolyData vertData, HeapData heapData);
@@ -590,8 +640,8 @@ public:
 #pragma region 描画
 	//描画時じゃなくて座標とかセットしたときに毎回マップする?
 //そうすると処理が遅くなる?
-	void setCmdList(const std::string key, int despNum, int number);
-	void map(const std::string key, int despNumber, int number);
+	void setCmdList(const std::string& vKey, const std::string& hKey, int number);
+	void map(const std::string& vKey, const std::string& hKey, int number);
 
 	void spriteSetCmdList(int spriteNum, int textureNum);
 
@@ -603,7 +653,7 @@ public:
 
 #pragma region 削除
 	void deletePolygonData(const std::string key);
-	void deleteHeapData(int despNum);
+	void deleteHeapData(const std::string& key);
 
 	void deleteSprite(int sprite);
 #pragma endregion
@@ -627,9 +677,9 @@ public:
 #pragma endregion
 
 
-	void setMulColor(Color color, int despNum, int number);
-	void setAddColor(Color color, int despNum, int number);
-	void setSubColor(Color color, int despNum, int number);
+	void setMulColor(Color color, const std::string& key ,int number);
+	void setAddColor(Color color, const std::string& key ,int number);
+	void setSubColor(Color color, const std::string& key ,int number);
 
 	void setIsPlane(bool flag);
 	void setIsBillboard(bool x, bool y, bool z);
@@ -652,11 +702,11 @@ public:
 	void setLightColor(Color lightColor);
 #pragma endregion
 
-#pragma region 操作
-	void setObjectPosition(DirectX::XMFLOAT3 position, int despNum, int number);
-	void setObjectScale(DirectX::XMFLOAT3 angle, int despNum, int number);
-	void setObjectAngle(DirectX::XMFLOAT3 angle, int despNum, int number);
-	void setObjectEX(float objectEX, int despNum, int number);
+#pragma region 操作関数
+	void setObjectPosition(DirectX::XMFLOAT3 position, const std::string& key, int number);
+	void setObjectScale(DirectX::XMFLOAT3 angle,  const std::string& key , int number);
+	void setObjectAngle(DirectX::XMFLOAT3 angle,  const std::string& key , int number);
+	void setObjectPushNum(float objectEX, const std::string& key, int number);
 
 	void spriteSetObjectPosition(DirectX::XMFLOAT2 position, int spriteNum);
 	void spriteSetObjectScale(DirectX::XMFLOAT2 scale, int spriteNum);
@@ -736,7 +786,13 @@ public:
 	//ルートオブジェクトの子の子にルートオブジェクトと子の行列を乗算するために、
 	//親のオブジェクトを記録する配列作る?
 
-	void setParent(int heapNum, int number, int parentObjHeapNum, int parentNum);
+	void setParent
+	(
+		const std::string& key,
+		const int& number, 
+		const std::string& parentKey ,
+		const int& parentNum
+	);
 
 #pragma endregion
 

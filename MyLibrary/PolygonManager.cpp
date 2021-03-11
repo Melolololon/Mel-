@@ -41,29 +41,29 @@ PolygonManager* PolygonManager::getInstance()
 //	}
 //}
 
-
-void PolygonManager::addPolygonHeap(std::string keyName, int* heap)
-{
-	heaps.emplace(keyName, heap);
-}
-void PolygonManager::deletePolygonHeap(std::string keyName)
-{
-	Library::deleteHeapData(heaps[keyName]);
-	heaps.erase(keyName);
-}
-int*  PolygonManager::getPolygonHeap(std::string keyName)
-{
-	return heaps[keyName];
-}
-void PolygonManager::clearPolygonHeap()
-{
-	for (std::unordered_map<std::string, int*>::iterator it = heaps.begin();
-		it != heaps.end();
-		it++)
-	{
-		Library::deleteHeapData(it->second);
-	}
-}
+//
+//void PolygonManager::addPolygonHeap(std::string keyName, int* heap)
+//{
+//	heaps.emplace(keyName, heap);
+//}
+//void PolygonManager::deletePolygonHeap(std::string keyName)
+//{
+//	Library::deleteHeapData(heaps[keyName]);
+//	heaps.erase(keyName);
+//}
+//int*  PolygonManager::getPolygonHeap(std::string keyName)
+//{
+//	return heaps[keyName];
+//}
+//void PolygonManager::clearPolygonHeap()
+//{
+//	for (std::unordered_map<std::string, int*>::iterator it = heaps.begin();
+//		it != heaps.end();
+//		it++)
+//	{
+//		Library::deleteHeapData(it->second);
+//	}
+//}
 
 
 void PolygonManager::addSprite(std::string keyName, sprite sprite) 
@@ -125,17 +125,17 @@ void PolygonManager::clear()
 		Library::deleteVertexData(it->second);
 	}*/
 
-	for (std::unordered_map<std::string, int*>::iterator it = heaps.begin();
-		it != heaps.end();
-		it++)
-	{
-		Library::deleteHeapData(it->second);
-	}
+	//for (std::unordered_map<std::string, int*>::iterator it = heaps.begin();
+	//	it != heaps.end();
+	//	it++)
+	//{
+	//	Library::deleteHeapData(it->second);
+	//}
 
-	for (std::unordered_map<std::string, int*>::iterator it = points.begin();
+	/*for (std::unordered_map<std::string, int*>::iterator it = points.begin();
 		it != points.end();
 		it++)
 	{
 		Library::deleteHeapData(it->second);
-	}
+	}*/
 }

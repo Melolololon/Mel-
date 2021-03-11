@@ -253,9 +253,9 @@ void Library::setPipeline(pipeline num)
 //	directx12->setConstMapData(dataP, dataSize);
 //}
 
-void Library::getMatrix(float matrix[4][4], int* heapNum, int number)
+void Library::getMatrix(float matrix[4][4], HeapDataKey& heapData, int number)
 {
-	directx12->getMatrix(matrix, *heapNum, number);
+	directx12->getMatrix(matrix, heapData.key, number);
 }
 
 void Library::getCameraMatrix(float matrix[4][4])
@@ -517,10 +517,10 @@ void Library::loadOBJMaterial
 {
 	HeapData hData;
 	hData.objectNum = objectNum;
-	heapData.h = new int(directx12->getCreateNumber().despNum);
-	hData.sikibetuNumP = heapData.h;
+	
 
-	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, hData, false);
+
+	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, hData, false,heapData.key);
 }
 
 void Library::loadObjMaterialUseUserData
@@ -536,10 +536,10 @@ void Library::loadObjMaterialUseUserData
 	HeapData hData;
 	hData.objectNum = objectNum;
 	directx12->setConstMapData(dataP, dataSize);
-	heapData.h = new int(directx12->getCreateNumber().despNum);
-	hData.sikibetuNumP = heapData.h;
+	
 
-	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, hData, true);
+
+	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, hData, true,heapData.key);
 }
 
 void Library::createHeapData(const wchar_t* texturePath, int objectNum, HeapDataKey& heapData)
@@ -549,9 +549,7 @@ void Library::createHeapData(const wchar_t* texturePath, int objectNum, HeapData
 	dData.path = texturePath;
 	dData.objectNum = objectNum;
 
-	heapData.h = new int(directx12->getCreateNumber().despNum);
-	dData.sikibetuNumP = heapData.h;
-	directx12->createHeapData(dData, false);
+	directx12->createHeapData(dData, false,heapData.key);
 
 
 }
@@ -565,9 +563,8 @@ void Library::createHeapData2(Color color, int objectNum, HeapDataKey& heapData)
 	dData.objectNum = objectNum;
 
 
-	heapData.h = new int(directx12->getCreateNumber().despNum);
-	dData.sikibetuNumP = heapData.h;
-	directx12->createHeapData(dData, false);
+
+	directx12->createHeapData(dData, false,heapData.key);
 
 
 }
@@ -588,9 +585,8 @@ void Library::createUserHeapData
 
 	directx12->setConstMapData(dataP, dataSize);
 
-	heapData.h = new int(directx12->getCreateNumber().despNum);
-	dData.sikibetuNumP = heapData.h;
-	directx12->createHeapData(dData, true);
+
+	directx12->createHeapData(dData, true,heapData.key);
 }
 
 #pragma endregion
@@ -668,10 +664,15 @@ void Library::createSprite(sprite* sprite)
 
 #pragma region •`‰æ
 
-void Library::drawGraphic(const VertexDataKey& vertexData, heap heapData, int number)
+void Library::drawGraphic
+(
+	const VertexDataKey& vertexData, 
+	HeapDataKey& heapData, 
+	int number
+)
 {
-	directx12->map(vertexData.key, *heapData, number);
-	directx12->setCmdList(vertexData.key, *heapData, number);
+	directx12->map(vertexData.key, heapData.key, number);
+	directx12->setCmdList(vertexData.key, heapData.key, number);
 }
 
 void Library::drawSprite(Vector2 position, sprite spriteNumber, texture* textureNumber)
@@ -733,10 +734,9 @@ void Library::deleteVertexData(const VertexDataKey& vertexData)
 	directx12->deletePolygonData(vertexData.key);
 }
 
-void Library::deleteHeapData(heap polygonDataNumber)
+void Library::deleteHeapData(HeapDataKey& heapData)
 {
-	if (!polygonDataNumber)return;
-	directx12->deleteHeapData(*polygonDataNumber);
+	directx12->deleteHeapData(heapData.key);
 }
 
 
@@ -756,20 +756,20 @@ void Library::setSmoothingFlag(bool flag)
 }
 #pragma endregion
 
-void Library::setMulColor(Color color, heap polygonDataNum, int number)
+void Library::setMulColor(Color color, HeapDataKey& heapData, int number)
 {
-	if (!polygonDataNum)return;
-	directx12->setMulColor(color, *polygonDataNum, number);
+	
+	directx12->setMulColor(color, heapData.key, number);
 }
-void Library::setAddColor(Color color, heap polygonDataNum, int number)
+void Library::setAddColor(Color color, HeapDataKey& heapData, int number)
 {
-	if (!polygonDataNum)return;
-	directx12->setAddColor(color, *polygonDataNum, number);
+
+	directx12->setAddColor(color,heapData.key, number);
 }
-void Library::setSubColor(Color color, heap polygonDataNum, int number)
+void Library::setSubColor(Color color, HeapDataKey& heapData, int number)
 {
-	if (!polygonDataNum)return;
-	directx12->setSubColor(color, *polygonDataNum, number);
+	
+	directx12->setSubColor(color, heapData.key, number);
 }
 
 void Library::setIsPlane(bool flag)
@@ -848,29 +848,27 @@ void Library::setLightColor(Color lightColor)
 #pragma endregion
 
 #pragma region ‘€ì
-void Library::setPosition(Vector3 position, heap dataNum, int number)
+void Library::setPosition(Vector3 position, HeapDataKey& heapData, int number)
 {
-	if (!dataNum)return;
-	directx12->setObjectPosition({ position.x,position.y,position.z }, *dataNum, number);
+	
+	directx12->setObjectPosition({ position.x,position.y,position.z }, heapData.key, number);
 }
 
 
-void Library::setAngle(Vector3 angle, heap dataNum, int number)
+void Library::setAngle(Vector3 angle, HeapDataKey& heapData, int number)
 {
-	if (!dataNum)return;
-	directx12->setObjectAngle({ angle.x,angle.y,angle.z }, *dataNum, number);
+
+	directx12->setObjectAngle({ angle.x,angle.y,angle.z }, heapData.key, number);
 }
 
-void Library::setScale(Vector3 scale, heap dataNum, int number)
+void Library::setScale(Vector3 scale, HeapDataKey& heapData, int number)
 {
-	if (!dataNum)return;
-	directx12->setObjectScale({ scale.x,scale.y,scale.z }, *dataNum, number);
+	directx12->setObjectScale({ scale.x,scale.y,scale.z }, heapData.key, number);
 }
 
-void Library::pushPolygon(float ex, heap polygonDataNumber, int number)
+void Library::setPushPorigonNumber(float ex, HeapDataKey& heapData, int number)
 {
-	if (!polygonDataNumber)return;
-	directx12->setObjectEX(ex, *polygonDataNumber, number);
+	directx12->setObjectPushNum(ex, heapData.key, number);
 }
 
 
@@ -1051,11 +1049,10 @@ bool Library::loadTextIntVector(const char* path, std::vector<std::vector<int>>&
 #pragma endregion
 
 #pragma region eŽq\‘¢
-void Library::setParent(heap heapNum, int number, heap parentObjHeapNum, int parentNum)
+void Library::setParent(HeapDataKey& heapData, int number, HeapDataKey& parentHeapData, int parentNum)
 {
-	if (!heapNum || !parentObjHeapNum)return;
 
-	directx12->setParent(*heapNum, number, *parentObjHeapNum, parentNum);
+	directx12->setParent(heapData.key, number, parentHeapData.key, parentNum);
 }
 
 #pragma endregion

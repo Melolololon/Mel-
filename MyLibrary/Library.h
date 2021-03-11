@@ -24,7 +24,6 @@ const int dimention3D = 1;
 
 #pragma region typedef
 using point = int*;
-using heap = int*;
 using sprite = int*;
 using texture = int;
 using pipeline = int;
@@ -41,7 +40,6 @@ struct VertexDataKey
 struct HeapDataKey
 {
 	std::string key;
-	heap h;
 };
 
 #pragma endregion
@@ -172,7 +170,7 @@ public:
 	/// <param name="matrix"></param>
 	/// <param name="heapNum"></param>
 	/// <param name="number"></param>
-	static void getMatrix(float matrix[4][4], int* heapNum, int number);
+	static void getMatrix(float matrix[4][4], HeapDataKey& heapData, int number);
 
 	/// <summary>
 	/// ビュー、プロジェクション行列を乗算した行列を取得します
@@ -516,7 +514,7 @@ public:
 	/// <param name="dataNum">createDataで生成したデータの番号</param>
 	/// <param name="number">何個目のやつを描画するか(ヒープの何個目のCBVを指定するか)</param>
 	/// <returns></returns>
-	static void drawGraphic(const VertexDataKey& vertexData, heap heapData, int numbe);
+	static void drawGraphic(const VertexDataKey& vertexData, HeapDataKey& heapData, int numbe);
 
 #pragma region スプライト
 
@@ -582,7 +580,7 @@ public:
 	/// ポリゴンデータを削除します
 	/// </summary>
 	/// <param name="dataNum"></param>
-	static void deleteHeapData(heap polygonDataNum);
+	static void deleteHeapData(HeapDataKey& heapData);
 
 	/// <summary>
 	/// スプライトを削除します
@@ -604,7 +602,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void setMulColor(Color color, heap polygonDataNum, int number);
+	static void setMulColor(Color color, HeapDataKey& heapData, int number);
 
 	/// <summary>
 	/// 色を加算します
@@ -612,7 +610,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void setAddColor(Color color, heap polygonDataNum, int number);
+	static void setAddColor(Color color, HeapDataKey& heapData, int number);
 
 	/// <summary>
 	/// 色を減算します
@@ -620,7 +618,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void setSubColor(Color color, heap polygonDataNum, int number);
+	static void setSubColor(Color color, HeapDataKey& heapData, int number);
 
 
 	/// <summary>
@@ -651,7 +649,7 @@ public:
 	/// <param name="position">座標</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void setPosition(Vector3 position, heap polygonDataNum, int number);
+	static void setPosition(Vector3 position, HeapDataKey& heapData, int number);
 
 
 	/// <summary>
@@ -660,7 +658,7 @@ public:
 	/// <param name="scale">サイズ((1,1,1)で等倍)</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void setScale(Vector3 scale, heap polygonDataNum, int number);
+	static void setScale(Vector3 scale, HeapDataKey& heapData, int number);
 
 	/// <summary>
 	/// オブジェクトをZ、X、Yの順に回転させます
@@ -668,7 +666,7 @@ public:
 	/// <param name="angle">角度</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void setAngle(Vector3 angle, heap polygonDataNum, int number);
+	static void setAngle(Vector3 angle, HeapDataKey& heapData, int number);
 
 	/// <summary>
 	/// ポリゴンを法線ベクトルの方向に押し出します
@@ -676,7 +674,7 @@ public:
 	/// <param name="ex">押し出し具合(0で通常のモデルを表示)</param>
 	/// <param name="polygonDataNumber"></param>
 	/// <param name="number"></param>
-	static void pushPolygon(float ex, heap polygonDataNumber, int number);
+	static void setPushPorigonNumber(float ex, HeapDataKey& heapData, int number);
 
 	/// <summary>
 	/// これ消す
@@ -886,7 +884,7 @@ public:
 	/// <param name="number"></param>
 	/// <param name="parentObjHeapNum"></param>
 	/// <param name="parentNum"></param>
-	static void setParent(heap heapNum, int number, heap parentObjHeapNum, int parentNum);
+	static void setParent(HeapDataKey& heapData,  int number, HeapDataKey& parentHeapData, int parentNum);
 
 #pragma endregion
 
