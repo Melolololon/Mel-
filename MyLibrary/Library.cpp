@@ -319,11 +319,12 @@ void Library::setFramesPerSecond60(bool flag)
 #pragma region モデル読み込み
 void  Library::loadOBJVertex
 (
-	const char* path, 
-	bool loadUV, 
-	bool loadNormal, 
+	const char* path,
+	bool loadUV,
+	bool loadNormal,
 	std::string* materialFireName,
-	VertexDataKey& p
+	const std::string& key,
+	VertexDataKey& vDataKey
 )
 {
 	PolyData pData;
@@ -332,16 +333,17 @@ void  Library::loadOBJVertex
 	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
-	//読み込みと頂点タイプ取得
-	p.typr = directx12->loadOBJVertex
+	vDataKey.typr = directx12->loadOBJVertex
 	(
-		path, 
+		path,
 		loadUV,
-		loadNormal, 
-		materialFireName, 
+		loadNormal,
+		materialFireName,
 		pData,
-		p.key
+		key
 	);
+	vDataKey.key = key;
+
 
 }
 #pragma endregion
@@ -354,7 +356,7 @@ void Library::createPoint(int createNum, point* p)
 	createPointCount++;
 }
 
-void Library::createBoard(Vector2 size, int dimention, VertexDataKey& p)
+void Library::createBoard(Vector2 size, int dimention, const std::string& key, VertexDataKey& vDataKey)
 {
 	PolyData pData;
 
@@ -364,47 +366,49 @@ void Library::createBoard(Vector2 size, int dimention, VertexDataKey& p)
 
 	//pData.sikibetuNum = createPolygonNumber;
 
-	p.typr = VERTEX_TYPE_NORMAL;
 	/*p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;*/
 
 	pData.dimention = dimention;
-	directx12->createPolygonData(pData, p.key);
+	directx12->createPolygonData(pData, key);
 
+	vDataKey.key = key;
+	vDataKey.typr = VERTEX_TYPE_NORMAL;
 }
 
-void Library::createCircle(float r, int dimention, VertexDataKey& p)
+void Library::createCircle(float r, int dimention, const std::string& key, VertexDataKey& vDataKey)
 {
 	PolyData pData;
 
 	pData.fNum1 = r;
 	pData.katatiNum = 2;
 
-	p.typr = VERTEX_TYPE_NORMAL;
 	/*p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention;
-	directx12->createPolygonData(pData, p.key);
+	directx12->createPolygonData(pData, key);
 
+	vDataKey.key = key;
+	vDataKey.typr = VERTEX_TYPE_NORMAL;
 }
 
-
-void Library::create3DBox(Vector3 size, VertexDataKey& p)
-{
-	PolyData pData;
-
-	pData.pos1 = { size.x,size.y,size.z };
-	pData.katatiNum = 10;
-
-	//pData.sikibetuNum = createPolygonNumber;
-
-	p.typr = VERTEX_TYPE_NORMAL;
-	/*p.handle = new int(directx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;*/
-	pData.dimention = dimention3D;
-
-	directx12->createPolygonData(pData, p.key);
-}
+//
+//void Library::create3DBox(Vector3 size, VertexDataKey& p)
+//{
+//	PolyData pData;
+//
+//	pData.pos1 = { size.x,size.y,size.z };
+//	pData.katatiNum = 10;
+//
+//	//pData.sikibetuNum = createPolygonNumber;
+//
+//	p.typr = VERTEX_TYPE_NORMAL;
+//	/*p.handle = new int(directx12->getCreateNumber().polyNum);
+//	pData.sikibetuNumP = p.handle;*/
+//	pData.dimention = dimention3D;
+//
+//	directx12->createPolygonData(pData, p.key);
+//}
 
 
 
@@ -414,7 +418,8 @@ void Library::createTriangularPyramid
 	int vertexNumber, 
 	Vector3 centerPosition, 
 	float upVertex, 
-	VertexDataKey& p
+	const std::string& key, 
+	VertexDataKey& vDataKey
 )
 {
 	PolyData pData;
@@ -427,16 +432,17 @@ void Library::createTriangularPyramid
 
 	//pData.sikibetuNum = createPolygonNumber;
 
-	p.typr = VERTEX_TYPE_NORMAL;
 	//p.handle = new int(directx12->getCreateNumber().polyNum);
 	//pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
-	directx12->createPolygonData(pData, p.key);
+	directx12->createPolygonData(pData, key);
 
+	vDataKey.key = key;
+	vDataKey.typr = VERTEX_TYPE_NORMAL;
 }
 
 
-void Library::createManyVertex3DBox(Vector3 size, VertexDataKey& p)
+void Library::create3DBox(Vector3 size, const std::string& key, VertexDataKey& vDataKey)
 {
 	PolyData pData;
 
@@ -444,14 +450,14 @@ void Library::createManyVertex3DBox(Vector3 size, VertexDataKey& p)
 	pData.katatiNum = 100;
 
 
-	p.typr = VERTEX_TYPE_NORMAL;
 	/*p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
-	directx12->createPolygonData(pData, p.key);
+	directx12->createPolygonData(pData, key);
 
-
+	vDataKey.key = key;
+	vDataKey.typr = VERTEX_TYPE_NORMAL;
 }
 
 #pragma region ユーザー
@@ -460,22 +466,26 @@ void Library::createUserObject
 (
 	std::vector<Vector3>& vertexPos, 
 	std::vector<Vector2>& vertexUV,
-	std::vector<unsigned short>& index, 
-	VertexDataKey& p
+	std::vector<unsigned short>& index,
+	const std::string& key,
+	VertexDataKey& vDataKey
 )
 {
-	directx12->addUserVertex(vertexPos, vertexUV, p.key);
-	directx12->addUserIndex(index, p.key);
+	directx12->addUserVertex(vertexPos, vertexUV, key);
+	directx12->addUserIndex(index, key);
 
 	PolyData pData;
 	pData.katatiNum = -1;
 
-	p.typr = VERTEX_TYPE_NORMAL;
+
 	/*p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
-	directx12->createPolygonData(pData, p.key);
+	directx12->createPolygonData(pData, key);
+	
+	vDataKey.key = key;
+	vDataKey.typr = VERTEX_TYPE_NORMAL;
 }
 
 void Library::createUserObject2
@@ -484,20 +494,23 @@ void Library::createUserObject2
 	unsigned int vertexDataSize, 
 	unsigned int vertexSumDataSize, 
 	std::vector<unsigned short>&index, 
-	VertexDataKey& p
+	const std::string& key,
+	VertexDataKey& vDataKey
 )
 {
 	PolyData pData;
 	//p.handle = new int(directx12->getCreateNumber().polyNum);
 	//pData.sikibetuNumP = p.handle;
-	p.typr = VERTEX_TYPE_USER_VERTEX;
+	
 	
 	pData.dimention = dimention3D;
 
 
-	//クリエイトする!!
-	//クリエイトする関数作ってー
-	directx12->createUserPolygon(vertexData, vertexDataSize, vertexSumDataSize, index, pData, p.key);
+	directx12->createUserPolygon(vertexData, vertexDataSize, vertexSumDataSize, index, pData, key);
+	
+
+	vDataKey.key = key;
+	vDataKey.typr = VERTEX_TYPE_USER_VERTEX;
 }
 #pragma endregion
 
@@ -512,15 +525,17 @@ void Library::loadOBJMaterial
 	std::string materialDirectoryPath, 
 	std::string materialFileName, 
 	int objectNum, 
-	HeapDataKey& heapData
+	const std::string& key,
+	HeapDataKey& hDataKey
 )
 {
 	HeapData hData;
 	hData.objectNum = objectNum;
 	
 
-
-	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, hData, false,heapData.key);
+	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, hData, false,key);
+	
+	hDataKey.key = key;
 }
 
 void Library::loadObjMaterialUseUserData
@@ -530,7 +545,8 @@ void Library::loadObjMaterialUseUserData
 	int objectNum,
 	void** dataP,
 	UINT dataSize,
-	HeapDataKey& heapData
+	const std::string& key,
+	HeapDataKey& hDataKey
 )
 {
 	HeapData hData;
@@ -539,22 +555,24 @@ void Library::loadObjMaterialUseUserData
 	
 
 
-	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, hData, true,heapData.key);
+	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, hData, true,key);
+	
+	hDataKey.key = key;
 }
 
-void Library::createHeapData(const wchar_t* texturePath, int objectNum, HeapDataKey& heapData)
+void Library::createHeapData(const wchar_t* texturePath, int objectNum,const std::string& key,HeapDataKey& hDataKey)
 {
 	//テクスチャかべた塗かの識別方法も考える
 	HeapData dData;
 	dData.path = texturePath;
 	dData.objectNum = objectNum;
 
-	directx12->createHeapData(dData, false,heapData.key);
-
-
+	directx12->createHeapData(dData, false,key);
+	
+	hDataKey.key = key;
 }
 
-void Library::createHeapData2(Color color, int objectNum, HeapDataKey& heapData)
+void Library::createHeapData2(Color color, int objectNum, const std::string& key, HeapDataKey& hDataKey)
 {
 	HeapData dData;
 	dData.path = L"";
@@ -564,9 +582,9 @@ void Library::createHeapData2(Color color, int objectNum, HeapDataKey& heapData)
 
 
 
-	directx12->createHeapData(dData, false,heapData.key);
+	directx12->createHeapData(dData, false,key);
 
-
+	hDataKey.key = key;
 }
 
 void Library::createUserHeapData
@@ -575,7 +593,8 @@ void Library::createUserHeapData
 	int objectNum, 
 	void** dataP, 
 	UINT dataSize,
-	HeapDataKey& heapData
+	const std::string& key,
+	HeapDataKey& hDataKey
 )
 {
 	HeapData dData;
@@ -586,7 +605,9 @@ void Library::createUserHeapData
 	directx12->setConstMapData(dataP, dataSize);
 
 
-	directx12->createHeapData(dData, true,heapData.key);
+	directx12->createHeapData(dData, true,key);
+
+	hDataKey.key = key;
 }
 
 #pragma endregion

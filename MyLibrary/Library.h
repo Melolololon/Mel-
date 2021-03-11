@@ -257,7 +257,8 @@ public:
 		bool loadUV, 
 		bool loadNormal,
 		std::string* materialFireName, 
-		VertexDataKey& p
+		const std::string& key,
+		VertexDataKey& vDataKey
 	);
 #pragma endregion
 
@@ -277,7 +278,7 @@ public:
 	/// <param name="dimention">次元</param>
 	/// <param name="p">データを入れる変数のポインタ</param>
 	/// <returns></returns>
-	static void createBoard(Vector2 size, int dimention, VertexDataKey& p);
+	static void createBoard(Vector2 size, int dimention, const std::string& key, VertexDataKey& vDataKey);
 
 	/// <summary>
 	/// 円の頂点情報を作成します
@@ -286,15 +287,15 @@ public:
 	/// <param name="dimention"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createCircle(float r, int dimention, VertexDataKey& p);
+	static void createCircle(float r, int dimention, const std::string& key, VertexDataKey& vDataKey);
 
-	/// <summary>
+	/*/// <summary>
 	/// 立方体の頂点情報を作成します
 	/// </summary>
 	/// <param name="size">辺の長さ</param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void create3DBox(Vector3 size, VertexDataKey& p);
+	static VertexDataKey create3DBox(Vector3 size, std::string& key);*/
 
 	/// <summary>
 	/// 三角錐の頂点情報を作成します
@@ -305,7 +306,15 @@ public:
 	/// <param name="upVertex"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createTriangularPyramid(float r, int vertexNumber, Vector3 centerPosition, float upVertex, VertexDataKey& p);
+	static void createTriangularPyramid
+	(
+		float r, 
+		int vertexNumber, 
+		Vector3 centerPosition, 
+		float upVertex, 
+		const std::string& key,
+		VertexDataKey& vDataKey
+	);
 
 	/// <summary>
 	/// テクスチャを綺麗に貼れる立方体の頂点情報を作成します
@@ -313,7 +322,7 @@ public:
 	/// <param name="size"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createManyVertex3DBox(Vector3 size, VertexDataKey& p);
+	static void create3DBox(Vector3 size, const std::string& key, VertexDataKey& vDataKey);
 
 #pragma endregion
 
@@ -332,7 +341,8 @@ public:
 		std::vector<Vector3>& vertexPos, 
 		std::vector<Vector2>& vertexUV, 
 		std::vector<unsigned short>& index, 
-		VertexDataKey& p
+		const std::string& key,
+		VertexDataKey& vDataKey
 	);
 
 
@@ -350,7 +360,8 @@ public:
 		unsigned int vertexDataSize, 
 		unsigned int vertexSumDataSize, 
 		std::vector<unsigned short>&index, 
-		VertexDataKey& p
+		const std::string& key,
+		VertexDataKey& vDataKey
 	);
 
 
@@ -404,7 +415,8 @@ public:
 		std::string materialDirectoryPath, 
 		std::string materialFileName, 
 		int objectNum,
-		HeapDataKey& heapData
+		const std::string& key,
+		HeapDataKey& hDataKey
 	);
 
 	/// <summary>
@@ -423,7 +435,8 @@ public:
 		int objectNum,
 		void** dataP,
 		UINT dataSize,
-		HeapDataKey& heapData
+		const std::string& key,
+		HeapDataKey& hDataKey
 	);
 
 	/// <summary>
@@ -437,7 +450,8 @@ public:
 	(
 		const wchar_t* texturePath, 
 		int objectNum,
-		HeapDataKey& heapData
+		const std::string& key,
+		HeapDataKey& hDataKey
 	);
 
 	/// <summary>
@@ -451,7 +465,8 @@ public:
 	(
 		Color color, 
 		int objectNum, 
-		HeapDataKey& heapData
+		const std::string& key,
+		HeapDataKey& hDataKey
 	);
 
 
@@ -471,7 +486,8 @@ public:
 		int objectNum, 
 		void** dataP, 
 		UINT dataSize, 
-		HeapDataKey& heapData
+		const std::string& key,
+		HeapDataKey& hDataKey
 	);
 
 #pragma endregion
