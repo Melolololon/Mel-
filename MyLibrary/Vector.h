@@ -4,6 +4,14 @@ struct Vector2
 {
 	float x, y;
 
+	Vector2();
+	Vector2(const float& x, const float& y);
+	Vector2(const DirectX::XMFLOAT2& f);
+
+	DirectX::XMFLOAT2 toXMFLOAT2()
+	{
+		return { x,y };
+	}
 #pragma region ‰‰ŽZŽq
 
 	Vector2 operator+(Vector2 vector);
@@ -46,6 +54,14 @@ struct Vector3
 {
 	float x, y, z;
 
+	Vector3();
+	Vector3(const float& x, const float& y,const float& z);
+	Vector3(const DirectX::XMFLOAT3& f);
+
+	DirectX::XMFLOAT3 toXMFLOAT3()
+	{
+		return { x,y ,z };
+	}
 #pragma region ‰‰ŽZŽq
 
 	Vector3 operator+(Vector3 vector);
@@ -111,6 +127,15 @@ struct Vector3
 struct Vector4 
 {
 	float x, y, z, w;
+
+	Vector4();
+	Vector4(const float& x, const float& y, const float& z, const float& w);
+	Vector4(const DirectX::XMFLOAT4& f);
+
+	DirectX::XMFLOAT4 toXMFLOAT4()
+	{
+		return { x,y ,z ,w};
+	}
 
 #pragma region ‰‰ŽZŽq
 

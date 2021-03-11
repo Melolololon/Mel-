@@ -1808,7 +1808,7 @@ bool DirectX12::createConstBuffer
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		CD3DX12_RESOURCE_DESC::Buffer((constDataSize + 0xff)&~0xff),
 		basicHeapHandle,
-		(void**)&constData,
+		constData,
 		*cBufferSet,
 		0
 	);
@@ -2755,20 +2755,29 @@ void DirectX12::createHeapData(HeapData despData, bool setConstDataFlag, const s
 			constSetV[i].constBuffer.resize(2);
 			
 
-			basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-			(
-				basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
-				i + 1 + 1, //オブジェクト数 + テクスチャ数 + 1(1つ目の定数バッファ)
-				dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-			);
+			//basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+			//(
+			//	basicHeaps[key]->GetCPUDescriptorHandleForHeapStart(),
+			//	i + 1 + 1, //オブジェクト数 + テクスチャ数 + 1(1つ目の定数バッファ)
+			//	dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			//);
 
-			createBuffer->createConstBufferSet(
-				CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-				CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff)&~0xff),
-				basicHeapHandle,
+			//createBuffer->createConstBufferSet(
+			//	CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			//	CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff)&~0xff),
+			//	basicHeapHandle,
+			//	(void**)&constData3D,
+			//	constSetV[i],
+			//	0);
+
+			createConstBuffer
+			(
+				basicHeaps[key],
+				i + 1 + 1,
+				&constSetV[i],
 				(void**)&constData3D,
-				constSetV[i],
-				0);
+				sizeof(ConstBufferData)
+			);
 
 			constData3D->mulColor = { 1,1,1,1 };
 			constData3D->addColor = { 0,0,0,0 };

@@ -3,6 +3,21 @@
 
 #pragma region Vector2
 
+Vector2::Vector2(){}
+
+Vector2::Vector2(const float& x, const float& y)
+{
+	this->x = x;
+	this->y = y;
+}
+
+Vector2::Vector2(const DirectX::XMFLOAT2& f)
+{
+	x = f.x;
+	y = f.y;
+}
+
+
 #pragma region ‰‰ŽZŽq
 
 Vector2 Vector2::operator+(Vector2 vector)
@@ -75,6 +90,24 @@ float Vector2::dot(Vector2 vector1, Vector2 vector2)
 
 
 #pragma region Vector3
+
+Vector3::Vector3()
+{
+}
+
+Vector3::Vector3(const float& x, const float& y, const float& z)
+{
+	this->x = x;
+	this->y = y;
+	this->z = z;
+}
+
+Vector3::Vector3(const DirectX::XMFLOAT3& f)
+{
+	x = f.x;
+	y = f.y;
+	z = f.z;
+}
 
 #pragma region ‰‰ŽZŽq
 
@@ -178,6 +211,26 @@ float Vector3::dot(Vector3 vector1, Vector3 vector2)
 
 
 #pragma region Vector4
+
+Vector4::Vector4()
+{
+}
+
+Vector4::Vector4(const float& x, const float& y, const float& z, const float& w)
+{
+	this->x = x;
+	this->y = y;
+	this->z = z;
+	this->w = w;
+}
+
+Vector4::Vector4(const DirectX::XMFLOAT4& f) 
+{
+	x = f.x;
+	y = f.y;
+	z = f.z;
+	w = f.w;
+}
 
 #pragma region ‰‰ŽZŽq
 

@@ -16,6 +16,7 @@ Play::Play()
 	modelH.key = "biru";
 	Library::loadOBJVertex("Resources/Obj/test.obj", true, true, &material,"biru", modelV);
 	Library::loadOBJMaterial("Resources/Obj/", material, 1,"biru", modelH);
+	Library::setAngle({ 0,180,0 }, modelH, 0);
 }
 
 
@@ -36,7 +37,8 @@ void Play::update()
 void Play::draw()
 {
 	Library::setPipeline(PIPELINE_NORMAL);
-	Library::drawGraphic(modelV, modelH, 0);
+	//Library::drawGraphic(modelV, modelH, 0);
+	Library::drawGraphic(d, h, 0);
 }
 
 void Play::end()
