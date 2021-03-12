@@ -48,6 +48,28 @@ enum VertexType
 	VERTEX_TYPE_USER_VERTEX,//利用者の自作データ
 
 };
+//各データにアクセスするためのもの
+#pragma region バッファデータキー
+struct VertexDataKey
+{
+	std::string key;//ハンドルに代わるアクセスするための変数。バッファを作る前に自分で設定する
+	VertexType typr;//頂点構造体の種類
+};
+
+struct HeapDataKey
+{
+	std::string key;
+};
+
+struct ObjectData3D
+{
+	VertexDataKey vertexBufferData;
+	HeapDataKey heapDataKey;
+};
+
+#pragma endregion
+
+
 
 using namespace Microsoft::WRL;
 class DirectX12
@@ -198,7 +220,9 @@ private:
 
 #pragma region 3D
 	std::unordered_map<std::string, std::vector<std::vector<Vertex>>> vertices;//[モデルごと(keyでアクセス)][objにあるモデルごと][頂点ごと]
-	std::unordered_map<std::string, std::vector<std::vector<OBJAnimationVertex>>> objAniVertices;//Vertexに加え、ボーン番号を追加
+	//std::unordered_map<std::string, std::vector<std::vector<OBJAnimationVertex>>> objAnimationVertices;//Vertexに加え、ボーン番号を追加
+	std::unordered_map<std::string, std::vector<std::vector<int>>> objAnimationBoneNums;//ボーン番号
+
 
 	std::unordered_map<std::string, std::vector<std::vector<USHORT>>> indices;
 #pragma endregion

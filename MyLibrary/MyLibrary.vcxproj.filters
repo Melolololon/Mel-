@@ -135,6 +135,7 @@
     <FxCompile Include="PostEffectPixelShader.hlsl" />
     <FxCompile Include="ToonPixelShader.hlsl" />
     <FxCompile Include="ToonVertexShader.hlsl" />
+    <FxCompile Include="ObjAnimationVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectInput.h">
@@ -227,5 +228,6 @@
     <None Include="NotShadowShaderHeader.hlsli" />
     <None Include="PostEffectShaderHeader.hlsli" />
     <None Include="ToonShaderHeader.hlsli" />
+    <None Include="OBJAnimationShaderHeader.hlsli" />
   </ItemGroup>
 </Project>

@@ -37,8 +37,8 @@ void Play::update()
 void Play::draw()
 {
 	Library::setPipeline(PIPELINE_NORMAL);
-	//Library::drawGraphic(modelV, modelH, 0);
-	Library::drawGraphic(d, h, 0);
+	Library::drawGraphic(modelV, modelH, 0);
+	//Library::drawGraphic(d, h, 0);
 }
 
 void Play::end()

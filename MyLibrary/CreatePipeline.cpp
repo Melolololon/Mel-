@@ -289,9 +289,11 @@ bool CreatePipeline::createUserPipeline(
 		{
 			userInputLayout = new D3D12_INPUT_ELEMENT_DESC[inputLayoutVector.size()];
 
-			for (UINT i = 0; i < inputLayoutVector.size(); i++) 
+			int count = 0;
+			for (auto& il: inputLayoutVector)
 			{
-				userInputLayout[i] = inputLayoutVector[i];
+				userInputLayout[count] = il;
+				count++;
 			}
 
 			pDesc.InputLayout.pInputElementDescs = userInputLayout;
@@ -506,7 +508,7 @@ bool CreatePipeline::createUserPipeline(
 	//パイプラインの生成
 	result = dev->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(pipeline));
 
-
+	//パイプライン作成後に解放
 	if (useUserInputLayout)delete[] userInputLayout;
 
 	if (result != S_OK) 
@@ -520,6 +522,12 @@ bool CreatePipeline::createUserPipeline(
 
 void CreatePipeline::setInputLayout(const std::vector<InputLayoutData>& inputLayoutData)
 {
+	//TYPELESS 1つ4バイトの型指定なし?
+	//FLOAT float
+	//UINT unsigned int
+	//SINT signed int(int)
+	
+
 	inputLayoutVector.reserve(inputLayoutData.size());
 	for (auto& ilData : inputLayoutData) 
 	{
@@ -549,7 +557,7 @@ void CreatePipeline::setInputLayout(const std::vector<InputLayoutData>& inputLay
 			}
 			break;
 
-		case FORMAT_TYPE_UINT:
+		case FORMAT_TYPE_UNSIGNED_INT:
 			switch (ilData.number)
 			{
 			case 1:
@@ -563,6 +571,23 @@ void CreatePipeline::setInputLayout(const std::vector<InputLayoutData>& inputLay
 				break;
 			case 4:
 				dxgiFormat = DXGI_FORMAT_R32G32B32A32_UINT;
+				break;
+			}
+
+		case FORMAT_TYPE_SIGNED_INT:
+			switch (ilData.number)
+			{
+			case 1:
+				dxgiFormat = DXGI_FORMAT_R32_SINT;
+				break;
+			case 2:
+				dxgiFormat = DXGI_FORMAT_R32G32_SINT;
+				break;
+			case 3:
+				dxgiFormat = DXGI_FORMAT_R32G32B32_SINT;
+				break;
+			case 4:
+				dxgiFormat = DXGI_FORMAT_R32G32B32A32_SINT;
 				break;
 			}
 			break;

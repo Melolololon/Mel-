@@ -1130,10 +1130,6 @@ void DirectX12::create3DObjectPipeline()
 	pipelineStates.reserve(99);
 	ComPtr<ID3D12PipelineState> pState;
 
-	auto pushPipeline = [&]()
-	{
-		pipelineStates.push_back(pState);
-	};
 
 	//深度テスト無し
 	gpipeline.DepthStencilState.DepthEnable = false;
@@ -1147,7 +1143,7 @@ void DirectX12::create3DObjectPipeline()
 		&pState,
 		false
 	);
-	pushPipeline();
+	pipelineStates.push_back(pState);
 
 	//背面カリングしない
 	gpipeline.DepthStencilState.DepthEnable = true;
@@ -1162,7 +1158,7 @@ void DirectX12::create3DObjectPipeline()
 		&pState,
 		false
 	);
-	pushPipeline();
+	pipelineStates.push_back(pState);
 
 	//透明部分の深度値を書き込まない
 	gpipeline.DepthStencilState.DepthEnable = true;
@@ -1178,7 +1174,7 @@ void DirectX12::create3DObjectPipeline()
 		&pState,
 		false
 	);
-	pushPipeline();
+	pipelineStates.push_back(pState);
 
 	//gpipeline.BlendState.AlphaToCoverageEnable = true;
 	//透過がおかしくならないようにする処理(これtrueにすると水しぶき消えちゃうからパイプライン分ける?)
@@ -1196,16 +1192,25 @@ void DirectX12::create3DObjectPipeline()
 		&pState,
 		false
 	);
-	pushPipeline();
+	pipelineStates.push_back(pState);
 
 	//ボーン読み込み可能
 	std::vector<InputLayoutData>ilData(4);
 	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT };
 	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE_FLOAT };
 	ilData[2] = { "NORMAL", 3,FORMAT_TYPE_FLOAT };
-	ilData[3] = { "BONENUM", 1,FORMAT_TYPE_UINT };
-	//setInputLayout(ilData);
-	//setInputLayout()
+	ilData[3] = { "BONENUM", 1,FORMAT_TYPE_UNSIGNED_INT };
+	createPipeline->createUserPipeline
+	(
+		1,
+		{ L"../MyLibrary/ObjAnimationVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		gpipeline,
+		&pState,
+		false
+	);
+	pipelineStates.push_back(pState);
 
 	startPipelineCreateNum = pipelineStates.size();
 }
@@ -1884,8 +1889,21 @@ VertexType DirectX12::loadOBJVertex
 
 	//ボーンデータがあるかどうかでどの配列に入れるか決める
 	createNormalVertexBufferCount++;
+
+
 	vertices.emplace(key, temporaryVertex);
-	indices.emplace(key,temporaryIndex);
+
+	//ボーンあったら入れる
+	bool loadBone = false;
+	if (bonePos.size() != 0)
+	{
+		loadBone = true;
+		objAnimationBoneNums.emplace(key, boneNum);
+		
+	}
+
+	indices.emplace(key, temporaryIndex);
+	
 
 #pragma region テクスチャ反転
 
@@ -1925,21 +1943,59 @@ VertexType DirectX12::loadOBJVertex
 
 #pragma region 頂点バッファ
 
-	//size 0 の配列を追加(resizeみたいな感じ)
 	std::vector<VertexBufferSet> vBuffs(loadNum);
 
-
-	for (int i = 0; i < loadNum; i++)
+	//バッファ作成
+	if (!loadBone) //ボーンなし
 	{
-		createBuffer->createVertexBufferSet
-		(
-			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[key][i].size()),
-			vertices[key][i],
-			vBuffs[i]
-		);
-		vBuffs[i].materialName = materialName[i];
+		for (int i = 0; i < loadNum; i++)
+		{
+			createBuffer->createVertexBufferSet
+			(
+				CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+				CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[key][i].size()),
+				vertices[key][i],
+				vBuffs[i]
+			);
+			vBuffs[i].materialName = materialName[i];
+		}
 	}
+	else//ボーンあり
+	{
+		for (int i = 0; i < loadNum; i++)
+		{
+			UINT vertexSize = sizeof(OBJAnimationVertex) * vertices[key][i].size();
+			auto result = dev->CreateCommittedResource(
+				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+				D3D12_HEAP_FLAG_NONE,
+				&CD3DX12_RESOURCE_DESC::Buffer(vertexSize),
+				D3D12_RESOURCE_STATE_GENERIC_READ,
+				nullptr,
+				IID_PPV_ARGS(&vBuffs[i].vertexBuffer)
+			);
+
+			OBJAnimationVertex* aniVertex;
+			result = vBuffs[i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
+			
+			UINT size = vertices[key][i].size();
+			for (UINT j = 0; j < size; j++)
+			{
+				aniVertex[j].pos = vertices[key][i][j].pos;
+				aniVertex[j].uv = vertices[key][i][j].uv;
+				aniVertex[j].normal = vertices[key][i][j].normal;
+				aniVertex[j].boneNumber = objAnimationBoneNums[key][i][j];
+			}
+
+			vBuffs[i].vertexBuffer->Unmap(0, nullptr);
+
+			vBuffs[i].vertexBufferView.BufferLocation = vBuffs[i].vertexBuffer->GetGPUVirtualAddress();
+			vBuffs[i].vertexBufferView.SizeInBytes = vertexSize;
+			vBuffs[i].vertexBufferView.StrideInBytes = sizeof(OBJAnimationVertex);
+
+			vBuffs[i].materialName = materialName[i];
+		}
+	}
+
 	vertexBufferSet.emplace(key, vBuffs);
 #pragma endregion
 
@@ -3553,6 +3609,17 @@ void DirectX12::map(const std::string& vKey, const std::string& hKey, int number
 
 		if (this->polyDatas[vKey].dimention == Dimension::dimention3D)
 		{
+			//指定したキーで登録されているか確認
+			auto mapCheckKeyOBJBone = [&](const std::string& key)
+			{
+				for (const auto& bNum : objAnimationBoneNums)
+				{
+					if (bNum.first == key)return true;
+				}
+				return false;
+			};
+
+
 			constData3D->addColor = objectConstData[hKey].addColor[number];
 			constData3D->subColor = objectConstData[hKey].subColor[number];
 			constData3D->mulColor = objectConstData[hKey].mulColor[number];
@@ -3631,7 +3698,7 @@ void DirectX12::map(const std::string& vKey, const std::string& hKey, int number
 				objectConstData[hKey].position[number].y,
 				objectConstData[hKey].position[number].z
 			);
-
+			
 			std::string parentHeap = parentHeaps[hKey][number];
 			int parentNum = parentNums[hKey][number];
 			while (1)
@@ -3703,30 +3770,65 @@ void DirectX12::map(const std::string& vKey, const std::string& hKey, int number
 
 			constData3D->worldMat = matWorld;
 
+			
 			//オブジェクト分ループ
-			for (int i = 0; i < vertices[vKey].size(); i++)
+			UINT size = vertices[vKey].size();
+			UINT size2 = 0;
+			
+			//ボーンデータがあるかどうか
+			if (!mapCheckKeyOBJBone(vKey)) 
 			{
-				vertexBufferSet[vKey][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBufferSet[vKey][i].vertexMap);
+				for (UINT i = 0; i < size; i++)
+				{
+					vertexBufferSet[vKey][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBufferSet[vKey][i].vertexMap);
 
-				//スムージングを行うか
-				if (smoothing)
-				{
-					for (int j = 0; j < smoothNormal[vKey][i].size(); j++)
+					//スムージングを行うか
+					if (smoothing)
 					{
-						vertexBufferSet[vKey][i].vertexMap[j].normal = smoothNormal[vKey][i][j];
+						size2 = smoothNormal[vKey][i].size();
+						for (int j = 0; j < size2; j++)
+						{
+							vertexBufferSet[vKey][i].vertexMap[j].normal = smoothNormal[vKey][i][j];
+						}
 					}
-				}
-				else
-				{
-					for (int j = 0; j < vertices[vKey][i].size(); j++)
+					else
 					{
-						vertexBufferSet[vKey][i].vertexMap[j].normal = vertices[vKey][i][j].normal;
+						size2 = vertices[vKey][i].size();
+						for (int j = 0; j < size2; j++)
+						{
+							vertexBufferSet[vKey][i].vertexMap[j].normal = vertices[vKey][i][j].normal;
+						}
 					}
+					vertexBufferSet[vKey][i].vertexBuffer.Get()->Unmap(0, nullptr);
 				}
-				vertexBufferSet[vKey][i].vertexBuffer.Get()->Unmap(0, nullptr);
 			}
-			//constData3D->mat = constData3D->mat * DirectX::XMMatrixInverse(nullptr, mainCamera->get3DCameraMatrix(mainCameraData));
+			else//ボーンがあったら
+			{
+				for (UINT i = 0; i < size; i++)
+				{
+					OBJAnimationVertex* aniVertex;
+					vertexBufferSet[vKey][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
 
+					//スムージングを行うか
+					if (smoothing)
+					{
+						size2 = smoothNormal[vKey][i].size();
+						for (int j = 0; j < size2; j++)
+						{
+							aniVertex[j].normal = smoothNormal[vKey][i][j];
+						}
+					}
+					else
+					{
+						size2 = vertices[vKey][i].size();
+						for (int j = 0; j < size2; j++)
+						{
+							aniVertex[j].normal = vertices[vKey][i][j].normal;
+						}
+					}
+					vertexBufferSet[vKey][i].vertexBuffer.Get()->Unmap(0, nullptr);
+				}
+			}
 
 
 		}

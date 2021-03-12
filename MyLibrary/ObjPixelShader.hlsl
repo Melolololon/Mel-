@@ -19,7 +19,6 @@ float4 PSmain(GSOutput input) : SV_TARGET
 	//eyeDir‚ªfloat3‚¶‚á‚È‚­‚Äfloat‚É‚È‚Á‚Ä‚½
 	//GPU‚É‚Ífloat4Œ^‚µ‚©‘—‚ê‚È‚¢‚Ì‚Éfloat3‚É‚µ‚Ä‚½‚©‚ç
 	const float3 eyeDir = normalize(cameraPos - input.worldPos.xyz);
-	//const float eyeDir = normalize(float3(0,11,-6) - input.worldPos.xyz);
 
 
 	float3 dotlightnormal = dot(-lightDir, input.normal);

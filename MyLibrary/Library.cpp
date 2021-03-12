@@ -526,6 +526,7 @@ void Library::loadOBJMaterial
 	std::string materialFileName, 
 	int objectNum, 
 	const std::string& key,
+	const VertexDataKey& vDataKey,
 	HeapDataKey& hDataKey
 )
 {
@@ -546,6 +547,7 @@ void Library::loadObjMaterialUseUserData
 	void** dataP,
 	UINT dataSize,
 	const std::string& key,
+	const VertexDataKey& vDataKey,
 	HeapDataKey& hDataKey
 )
 {
@@ -560,7 +562,14 @@ void Library::loadObjMaterialUseUserData
 	hDataKey.key = key;
 }
 
-void Library::createHeapData(const wchar_t* texturePath, int objectNum,const std::string& key,HeapDataKey& hDataKey)
+void Library::createHeapData
+(
+	const wchar_t* texturePath, 
+	int objectNum,
+	const std::string& key,
+	const VertexDataKey& vDataKey,
+	HeapDataKey& hDataKey
+)
 {
 	//テクスチャかべた塗かの識別方法も考える
 	HeapData dData;
@@ -572,7 +581,14 @@ void Library::createHeapData(const wchar_t* texturePath, int objectNum,const std
 	hDataKey.key = key;
 }
 
-void Library::createHeapData2(Color color, int objectNum, const std::string& key, HeapDataKey& hDataKey)
+void Library::createHeapData2
+(
+	Color color, 
+	int objectNum,
+	const std::string& key,
+	const VertexDataKey& vDataKey,
+	HeapDataKey& hDataKey
+)
 {
 	HeapData dData;
 	dData.path = L"";
@@ -594,6 +610,7 @@ void Library::createUserHeapData
 	void** dataP, 
 	UINT dataSize,
 	const std::string& key,
+	const VertexDataKey& vDataKey,
 	HeapDataKey& hDataKey
 )
 {

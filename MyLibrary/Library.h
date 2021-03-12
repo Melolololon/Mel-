@@ -7,6 +7,7 @@
 #include"TextLoader.h"
 #include"DirectX12.h"
 #include"Audio.h"
+#include"DirectXStruct.h"
 
 
 #pragma region 定数
@@ -28,20 +29,6 @@ using sprite = int*;
 using texture = int;
 using pipeline = int;
 using font = int;
-#pragma endregion
-
-#pragma region バッファデータ
-struct VertexDataKey
-{
-	std::string key;//ハンドルに代わるアクセスするための変数。バッファを作る前に自分で設定する
-	VertexType typr;//(頂点構造体の種類)(これだけconstにする?)
-};
-
-struct HeapDataKey
-{
-	std::string key;
-};
-
 #pragma endregion
 
 
@@ -416,6 +403,7 @@ public:
 		std::string materialFileName, 
 		int objectNum,
 		const std::string& key,
+		const VertexDataKey& vDataKey,
 		HeapDataKey& hDataKey
 	);
 
@@ -436,6 +424,7 @@ public:
 		void** dataP,
 		UINT dataSize,
 		const std::string& key,
+		const VertexDataKey& vDataKey,
 		HeapDataKey& hDataKey
 	);
 
@@ -451,6 +440,7 @@ public:
 		const wchar_t* texturePath, 
 		int objectNum,
 		const std::string& key,
+		const VertexDataKey& vDataKey,
 		HeapDataKey& hDataKey
 	);
 
@@ -466,6 +456,7 @@ public:
 		Color color, 
 		int objectNum, 
 		const std::string& key,
+		const VertexDataKey& vDataKey,
 		HeapDataKey& hDataKey
 	);
 
@@ -487,6 +478,7 @@ public:
 		void** dataP, 
 		UINT dataSize, 
 		const std::string& key,
+		const VertexDataKey& vDataKey,
 		HeapDataKey& hDataKey
 	);
 

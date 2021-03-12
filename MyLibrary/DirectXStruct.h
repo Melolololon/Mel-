@@ -5,6 +5,9 @@
 #include<wrl.h>
 using namespace Microsoft::WRL;
 
+
+
+
 //DirectX12で描画するために使用する構造体
 #pragma region シェーダーに送る情報
 //頂点バッファで送る情報
@@ -24,7 +27,7 @@ struct OBJAnimationVertex
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT3 normal;
-	int boneNumber;
+	UINT boneNumber;
 };
 
 
