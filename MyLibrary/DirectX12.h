@@ -50,21 +50,12 @@ enum VertexType
 };
 //各データにアクセスするためのもの
 #pragma region バッファデータキー
-struct VertexDataKey
-{
-	std::string key;//ハンドルに代わるアクセスするための変数。バッファを作る前に自分で設定する
-	VertexType typr;//頂点構造体の種類
-};
-
-struct HeapDataKey
-{
-	std::string key;
-};
 
 struct ObjectData3D
 {
-	VertexDataKey vertexBufferData;
-	HeapDataKey heapDataKey;
+	std::string key;
+
+	VertexType typr;//頂点構造体の種類
 };
 
 #pragma endregion
@@ -279,7 +270,8 @@ private:
 		COMMON_CONST_BUFFER,
 		LIBRARY_CONST_BUFFER,
 		USER_CONST_BUFFER,
-		MATERIAL_CONST_BUFFER
+		MATERIAL_CONST_BUFFER,
+		OBJ_BONE_MATRIX_CONST_BUFFER
 	};
 	std::unordered_map<std::string, std::vector<ConstBufferTag>>heapTags;
 
@@ -298,8 +290,7 @@ private:
 
 
 	//送られてきた情報
-	std::unordered_map<std::string,PolyData> polyDatas;
-	std::unordered_map<std::string, HeapData> heapDatas;
+	std::unordered_map<std::string,PolygonData> polyDatas;
 	//取得したスプライトのポインタ
 	std::vector<int*>spriteP;
 	std::vector<int*>pointP;
@@ -592,9 +583,16 @@ public:
 	void createPoint(int createNum, int* point);
 	
 	//typeに応じてどのcountを++するか決める
-	void createPolygonData(PolyData polygonData,const std::string& key);
+	void createPolygonData(PolygonData polygonData,const std::string& key);
 	
-	void createHeapData(HeapData despData, bool setConstDataFlag,const std::string& key);
+	void createHeapData
+	(
+		bool setConstDataFlag,
+		const std::string& key,
+		const int& objectNumber,
+		const wchar_t* texPath ,
+		const Color* color
+	);
 
 #pragma region ユーザー
 	/// <summary>
@@ -621,7 +619,7 @@ public:
 		unsigned int vertexDataSize,
 		unsigned int vertexSumDataSize,
 		std::vector<unsigned short>&index, 
-		PolyData polyData, 
+		PolygonData polyData, 
 		const std::string& key
 	);
 #pragma endregion
@@ -633,7 +631,7 @@ public:
 		bool loadUV,
 		bool loadNormal,
 		std::string* materialFireName,
-		PolyData data, 
+		PolygonData data, 
 		const std::string& key
 	);
 
@@ -641,14 +639,13 @@ public:
 	(
 		std::string materialDirectoryPath,
 		std::string materialFileName, 
-		HeapData heapData, 
 		bool setConstDataFlag, 
-		const std::string& key
-
+		const std::string& key,
+		const int& objectNumber
 	);
 
 	//これいらない
-	void loadOBJ(const char* path, std::string materialDirectoryPath, bool loadUV, bool loadNormal, PolyData vertData, HeapData heapData);
+	//void loadOBJ(const char* path, std::string materialDirectoryPath, bool loadUV, bool loadNormal, PolygonData vertData, HeapData heapData);
 #pragma endregion
 
 
@@ -665,8 +662,8 @@ public:
 #pragma region 描画
 	//描画時じゃなくて座標とかセットしたときに毎回マップする?
 //そうすると処理が遅くなる?
-	void setCmdList(const std::string& vKey, const std::string& hKey, int number);
-	void map(const std::string& vKey, const std::string& hKey, int number);
+	void setCmdList(const std::string& key, int number);
+	void map(const std::string& key, int number);
 
 	void spriteSetCmdList(int spriteNum, int textureNum);
 

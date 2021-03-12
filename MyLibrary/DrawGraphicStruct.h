@@ -9,7 +9,7 @@ enum SikibetuNumber
 	Circle,
 };
 
-struct PolyData
+struct PolygonData
 {
 	//\‘¢‘Ì‚É\‘¢‘Ì‚Í–³—?
 	//int‚ªg‚¦‚È‚¢?
@@ -27,16 +27,3 @@ struct PolyData
 
 };
 
-struct HeapData
-{
-	const wchar_t* path;
-
-	int objectNum;
-
-	Color color;
-	Vector3 angle;
-
-
-	int sikibetuNum;
-	int* sikibetuNumP;
-};

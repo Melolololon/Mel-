@@ -1,22 +1,20 @@
 #include "Play.h"
 
-VertexDataKey d;
-VertexDataKey modelV;
-HeapDataKey h;
-HeapDataKey modelH;
-
+ObjectData3D d;
+ObjectData3D modelD;
 Play::Play()
 {
 	
-	Library::createBoard({ 1,1 }, dimention3D,"board", d);
-	Library::createHeapData2({ 255,255,255,255 }, 1, "board", h);
+	d.key = "board";
+	Library::createBoard({ 1,1 }, dimention3D, d);
+	Library::createHeapData2({ 255,255,255,255 }, 1, d);
 
 	std::string material;
-	modelV.key = "biru";
-	modelH.key = "biru";
-	Library::loadOBJVertex("Resources/Obj/test.obj", true, true, &material,"biru", modelV);
-	Library::loadOBJMaterial("Resources/Obj/", material, 1,"biru", modelH);
-	Library::setAngle({ 0,180,0 }, modelH, 0);
+	modelD.key = "biru";
+	
+	Library::loadOBJVertex("Resources/Obj/test.obj", true, true, &material, modelD);
+	Library::loadOBJMaterial("Resources/Obj/", material, 1, modelD);
+	Library::setAngle({ 0,180,0 }, modelD, 0);
 }
 
 
@@ -37,7 +35,7 @@ void Play::update()
 void Play::draw()
 {
 	Library::setPipeline(PIPELINE_NORMAL);
-	Library::drawGraphic(modelV, modelH, 0);
+	Library::drawGraphic(modelD, 0);
 	//Library::drawGraphic(d, h, 0);
 }
 
