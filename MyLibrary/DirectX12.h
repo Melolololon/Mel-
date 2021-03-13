@@ -261,7 +261,7 @@ private:
 	struct BoneData
 	{
 		//読み込んだときの位置から、どのくらい動かすかを表したfloat3
-		std::vector<std::vector<DirectX::XMFLOAT3>>moveNum;
+		std::vector<std::vector<DirectX::XMFLOAT3>>moveVector;
 
 		std::vector<std::vector<DirectX::XMFLOAT3>>scale;
 		std::vector<std::vector<DirectX::XMFLOAT3>>angle;
@@ -682,7 +682,7 @@ public:
 	//描画時じゃなくて座標とかセットしたときに毎回マップする?
 //そうすると処理が遅くなる?
 	void setCmdList(const std::string& key, int number);
-	void map(const std::string& key, int number);
+	void map(const ModelData& modelData, int number);
 
 	void spriteSetCmdList(int spriteNum, int textureNum);
 
@@ -783,7 +783,13 @@ public:
 	/// <param name="vector">移動量</param>
 	/// <param name="boneNum">操作するボーン番号</param>
 	/// <param name="key">キー</param>
-	 static void setOBJBoneMoveVector(const DirectX::XMFLOAT3& vector, const int& boneNum, const std::string& key, const int& objectNum);
+	  void setOBJBoneMoveVector
+	  (
+		  const DirectX::XMFLOAT3& vector, 
+		  const int& boneNum, 
+		  const std::string& key, 
+		  const int& objectNum
+	  );
 
 	 /// <summary>
 	 /// ボーンに対応している部分をどのくらい拡大させるかを指定し、拡大します
@@ -791,7 +797,13 @@ public:
 	 /// <param name="scale"></param>
 	 /// <param name="boneNum"></param>
 	 /// <param name="key"></param>
-	 static void setOBJBoneScale(const DirectX::XMFLOAT3& scale, const int& boneNum, const std::string& key, const int& objectNum);
+	  void setOBJBoneScale
+	  (
+		  const DirectX::XMFLOAT3& scale,
+		  const int& boneNum, 
+		  const std::string& key,
+		  const int& objectNum
+	  );
 
 	 /// <summary>
 	 /// ボーンに対応している部分をどのくらい回転させるかを指定し、回転します
@@ -799,7 +811,13 @@ public:
 	 /// <param name="angle"></param>
 	 /// <param name="boneNum"></param>
 	 /// <param name="key"></param>
-	 static void setOBJBoneAngle(const DirectX::XMFLOAT3& angle, const int& boneNum, const std::string& key, const int& objectNum);
+	  void setOBJBoneAngle
+	  (
+		  const DirectX::XMFLOAT3& angle, 
+		  const int& boneNum, 
+		  const std::string& key, 
+		  const int& objectNum
+	  );
 #pragma endregion
 
 

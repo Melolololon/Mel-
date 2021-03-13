@@ -464,7 +464,6 @@
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli" />
     <None Include="NotShadowShaderHeader.hlsli" />
-    <None Include="OBJAnimationShaderHeader.hlsli" />
     <None Include="OBJShaderHeader.hlsli" />
     <None Include="PointShaderHeader.hlsli" />
     <None Include="PostEffectShaderHeader.hlsli" />

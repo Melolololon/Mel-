@@ -2168,11 +2168,11 @@ void DirectX12::loadOBJMaterial
 		//ボーン用意
 		BoneData bData;
 		
-		//objAnimationBonePositions[key].size() + 1(ボーン数 + ボーン未セットに適応する行列を作るための値を格納するための+1)
-		std::vector<DirectX::XMFLOAT3> xmFloat3Vector(objAnimationBonePositions[key].size() + 1, { 0,0,0 });
+		
+		std::vector<DirectX::XMFLOAT3> xmFloat3Vector(objAnimationBonePositions[key].size(), { 0,0,0 });
 		std::vector<std::vector<DirectX::XMFLOAT3>>xmFloat3Vector2(objectNumber, xmFloat3Vector);
 		bData.angle = xmFloat3Vector2;
-		bData.moveNum = xmFloat3Vector2;
+		bData.moveVector = xmFloat3Vector2;
 
 		for (auto& vector : xmFloat3Vector)
 			vector = { 1,1,1 };
@@ -3621,7 +3621,7 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 }
 
 //Map処理
-void DirectX12::map(const std::string& key, int number)
+void DirectX12::map(const ModelData& modelData,int number )
 {
 
 
@@ -3629,57 +3629,50 @@ void DirectX12::map(const std::string& key, int number)
 	{
 
 		//constBufferSet[despNumber][number].constBuffer.Get()->Unmap(0, nullptr);
-		result = constBufferSet[key][number].constBuffer[0].Get()->Map(0, nullptr, (void**)&constData3D);
+		result = constBufferSet[modelData.key][number].constBuffer[0].Get()->Map(0, nullptr, (void**)&constData3D);
 
-		if (polyDatas[key].dimention == Dimension::dimention2D)
+		if (polyDatas[modelData.key].dimention == Dimension::dimention2D)
 		{
 
 			DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
 			matWorld *= DirectX::XMMatrixRotationZ
 			(
-				DirectX::XMConvertToRadians(objectConstData[key].angle[number].z)
+				DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].z)
 			);
 			matWorld *= DirectX::XMMatrixScaling
 			(
-				objectConstData[key].scale[number].x,
-				objectConstData[key].scale[number].y,
-				objectConstData[key].scale[number].z
+				objectConstData[modelData.key].scale[number].x,
+				objectConstData[modelData.key].scale[number].y,
+				objectConstData[modelData.key].scale[number].z
 			);
 			matWorld *= DirectX::XMMatrixTranslation
 			(
-				objectConstData[key].position[number].x,
-				objectConstData[key].position[number].y,
-				objectConstData[key].position[number].z
+				objectConstData[modelData.key].position[number].x,
+				objectConstData[modelData.key].position[number].y,
+				objectConstData[modelData.key].position[number].z
 			);
 
 			constData3D->mat = matWorld * mainCamera->get2DCameraMatrix();
 		}
 
-		if (this->polyDatas[key].dimention == Dimension::dimention3D)
+		if (this->polyDatas[modelData.key].dimention == Dimension::dimention3D)
 		{
-			//指定したキーで登録されているか確認
-			auto mapCheckKeyOBJBone = [&](const std::string& key)
-			{
-				for (const auto& bNum : objAnimationBoneNums)
-				{
-					if (bNum.first == key)return true;
-				}
-				return false;
-			};
+			
 
-
-			constData3D->addColor = objectConstData[key].addColor[number];
-			constData3D->subColor = objectConstData[key].subColor[number];
-			constData3D->mulColor = objectConstData[key].mulColor[number];
-			constData3D->ex = objectConstData[key].pushPolygonNum[number];
+			constData3D->addColor = objectConstData[modelData.key].addColor[number];
+			constData3D->subColor = objectConstData[modelData.key].subColor[number];
+			constData3D->mulColor = objectConstData[modelData.key].mulColor[number];
+			constData3D->ex = objectConstData[modelData.key].pushPolygonNum[number];
 
 			DirectX::XMMATRIX normalMat;
-			normalMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[key].angle[number].z));
-			normalMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[key].angle[number].x));
-			normalMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[key].angle[number].y));
+			normalMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].z));
+			normalMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].x));
+			normalMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].y));
 			constData3D->normalMat = normalMat * cameraMat;
 
 			DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
+
+
 
 			//ビルボード行列作成
 		//通常の板ポリのスケールを変えた時にビルボードするとおかしくなる
@@ -3732,23 +3725,23 @@ void DirectX12::map(const std::string& key, int number)
 
 			matWorld *= DirectX::XMMatrixScaling
 			(
-				objectConstData[key].scale[number].x,
-				objectConstData[key].scale[number].y,
-				objectConstData[key].scale[number].z
+				objectConstData[modelData.key].scale[number].x,
+				objectConstData[modelData.key].scale[number].y,
+				objectConstData[modelData.key].scale[number].z
 			);
-			matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[key].angle[number].z));
-			matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[key].angle[number].x));
-			matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[key].angle[number].y));
+			matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].z));
+			matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].x));
+			matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].y));
 
 			matWorld *= DirectX::XMMatrixTranslation
 			(
-				objectConstData[key].position[number].x,
-				objectConstData[key].position[number].y,
-				objectConstData[key].position[number].z
+				objectConstData[modelData.key].position[number].x,
+				objectConstData[modelData.key].position[number].y,
+				objectConstData[modelData.key].position[number].z
 			);
 			
-			std::string parentHeap = parentHeaps[key][number];
-			int parentNum = parentNums[key][number];
+			std::string parentHeap = parentHeaps[modelData.key][number];
+			int parentNum = parentNums[modelData.key][number];
 			while (1)
 			{
 				if ( parentNum == -1 || parentHeap == "NONE")
@@ -3819,35 +3812,36 @@ void DirectX12::map(const std::string& key, int number)
 			constData3D->worldMat = matWorld;
 
 			
+			
 			//オブジェクト分ループ
-			UINT size = vertices[key].size();
+			UINT size = vertices[modelData.key].size();
 			UINT size2 = 0;
 			
 			//ボーンデータがあるかどうか
-			if (!mapCheckKeyOBJBone(key))
+			if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 			{
 				for (UINT i = 0; i < size; i++)
 				{
-					vertexBufferSet[key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBufferSet[key][i].vertexMap);
+					vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBufferSet[modelData.key][i].vertexMap);
 
 					//スムージングを行うか
 					if (smoothing)
 					{
-						size2 = smoothNormal[key][i].size();
+						size2 = smoothNormal[modelData.key][i].size();
 						for (int j = 0; j < size2; j++)
 						{
-							vertexBufferSet[key][i].vertexMap[j].normal = smoothNormal[key][i][j];
+							vertexBufferSet[modelData.key][i].vertexMap[j].normal = smoothNormal[modelData.key][i][j];
 						}
 					}
 					else
 					{
-						size2 = vertices[key][i].size();
+						size2 = vertices[modelData.key][i].size();
 						for (int j = 0; j < size2; j++)
 						{
-							vertexBufferSet[key][i].vertexMap[j].normal = vertices[key][i][j].normal;
+							vertexBufferSet[modelData.key][i].vertexMap[j].normal = vertices[modelData.key][i][j].normal;
 						}
 					}
-					vertexBufferSet[key][i].vertexBuffer.Get()->Unmap(0, nullptr);
+					vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Unmap(0, nullptr);
 				}
 			}
 			else//ボーンがあったら
@@ -3855,33 +3849,59 @@ void DirectX12::map(const std::string& key, int number)
 				for (UINT i = 0; i < size; i++)
 				{
 					OBJAnimationVertex* aniVertex;
-					vertexBufferSet[key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
+					vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
 
 					//スムージングを行うか
 					if (smoothing)
 					{
-						size2 = smoothNormal[key][i].size();
+						size2 = smoothNormal[modelData.key][i].size();
 						for (int j = 0; j < size2; j++)
 						{
-							aniVertex[j].normal = smoothNormal[key][i][j];
+							aniVertex[j].normal = smoothNormal[modelData.key][i][j];
 						}
 					}
 					else
 					{
-						size2 = vertices[key][i].size();
+						size2 = vertices[modelData.key][i].size();
 						for (int j = 0; j < size2; j++)
 						{
-							aniVertex[j].normal = vertices[key][i][j].normal;
+							aniVertex[j].normal = vertices[modelData.key][i][j].normal;
 						}
 					}
-					vertexBufferSet[key][i].vertexBuffer.Get()->Unmap(0, nullptr);
+					vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Unmap(0, nullptr);
 				}
+
+				//ボーンの値マップ
+				DirectX::XMMATRIX boneMat;
+				DirectX::XMFLOAT3 boneScale;
+				DirectX::XMFLOAT3 boneAngle;
+				DirectX::XMFLOAT3 boneMoveVector;
+				int size = boneConstData[modelData.key].moveVector[number].size();
+				for(int i = 0; i < size;i++)//0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
+				{
+					boneMat = DirectX::XMMatrixIdentity();
+
+					boneScale = boneConstData[modelData.key].scale[number][i];
+					boneMat *= DirectX::XMMatrixScaling(boneScale.x, boneScale.y, boneScale.z);
+
+					boneAngle = boneConstData[modelData.key].angle[number][i];
+					boneMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(boneAngle.z));
+					boneMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(boneAngle.x));
+					boneMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(boneAngle.y));
+
+					boneMoveVector = boneConstData[modelData.key].moveVector[number][i];
+					//なぜかxとzが+-逆になってる
+					boneMat *= DirectX::XMMatrixTranslation(boneMoveVector.x, boneMoveVector.y, boneMoveVector.z);
+
+					constData3D->boneMat[i + 1] = boneMat;
+				}
+					
 			}
 
 
 		}
 
-		constBufferSet[key][number].constBuffer[0].Get()->Unmap(0, nullptr);
+		constBufferSet[modelData.key][number].constBuffer[0].Get()->Unmap(0, nullptr);
 
 
 	}
@@ -4201,6 +4221,43 @@ void DirectX12::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
 	postEffectCametaFlag = flag;
 }
 #pragma endregion
+
+#pragma region アニメーション
+void DirectX12::setOBJBoneMoveVector
+(
+	const DirectX::XMFLOAT3& vector,
+	const int& boneNum,
+	const std::string& key,
+	const int& objectNum
+)
+{
+	boneConstData[key].moveVector[objectNum][boneNum] = vector;
+}
+
+void DirectX12::setOBJBoneScale
+(
+	const DirectX::XMFLOAT3& scale,
+	const int& boneNum,
+	const std::string& key,
+	const int& objectNum
+)
+{
+	boneConstData[key].scale[objectNum][boneNum] = scale;
+}
+
+void DirectX12::setOBJBoneAngle
+(
+	const DirectX::XMFLOAT3& angle,
+	const int& boneNum,
+	const std::string& key,
+	const int& objectNum
+)
+{
+	boneConstData[key].angle[objectNum][boneNum] = angle;
+}
+
+#pragma endregion
+
 
 #pragma endregion
 

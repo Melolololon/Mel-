@@ -722,7 +722,7 @@ void Library::drawGraphic
 	int number
 )
 {
-	directx12->map(modelData.key, number);
+	directx12->map(modelData, number);
 	directx12->setCmdList(modelData.key, number);
 }
 
@@ -980,7 +980,7 @@ void Library::setOBJBoneMoveVector
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
 
-	//directx12->setOBJBoneMoveVector(vector.toXMFLOAT3(), boneNum, modelData.key, objectNum);
+	directx12->setOBJBoneMoveVector(vector.toXMFLOAT3(), boneNum, modelData.key, objectNum);
 
 }
 
@@ -994,6 +994,7 @@ void Library::setOBJBoneScale
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
+	directx12->setOBJBoneScale(scale.toXMFLOAT3(), boneNum, modelData.key, objectNum);
 }
 
 void Library::setOBJBoneAngle
@@ -1006,6 +1007,7 @@ void Library::setOBJBoneAngle
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
+	directx12->setOBJBoneAngle(angle.toXMFLOAT3(), boneNum, modelData.key, objectNum);
 }
 
 #pragma endregion

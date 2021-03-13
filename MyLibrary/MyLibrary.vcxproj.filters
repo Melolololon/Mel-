@@ -234,6 +234,5 @@
     <None Include="NotShadowShaderHeader.hlsli" />
     <None Include="PostEffectShaderHeader.hlsli" />
     <None Include="ToonShaderHeader.hlsli" />
-    <None Include="OBJAnimationShaderHeader.hlsli" />
   </ItemGroup>
 </Project>

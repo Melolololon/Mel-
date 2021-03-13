@@ -27,17 +27,23 @@ Play::~Play()
 void Play::initialize()
 {
 }
-
+Vector3 vec(0);
 void Play::update()
 {
-	
+	if (DirectInput::keyState(DIK_A))
+		vec.y += 3.0f;
+	if (DirectInput::keyState(DIK_D))
+		vec.y -= 3.0f;
 
+
+	Library::setOBJBoneAngle(vec, 0, modelD, 0);
 }
 
 void Play::draw()
 {
-	Library::setPipeline(PIPELINE_NORMAL);
-	Library::drawGraphic(d, 0);
+	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
+	//Library::drawGraphic(d, 0);
+	Library::drawGraphic(modelD, 0);
 
 }
 

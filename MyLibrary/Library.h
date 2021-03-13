@@ -38,6 +38,7 @@ enum LibraryPipeline
 	PIPELINE_CULL_NONE,//ƒJƒŠƒ“ƒO‚È‚µ(ƒ‚ƒfƒ‹‚Ì— ‘¤‚à•`‰æ‚µ‚Ü‚·)
 	PIPELINE_NO_WRITE_ALPHA,//“§–¾•”•ª‚ð‘‚«ž‚Ü‚È‚¢
 	PIPELINE_NORMAL,
+	PIPELINE_OBJ_ANIMATION,
 };
 
 class Library

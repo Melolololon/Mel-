@@ -1,5 +1,4 @@
 #include"ObjShaderHeader.hlsli"
-#include"ObjAnimationShaderHeader.hlsli"
 
 VSOutput VSmain
 (
@@ -23,7 +22,11 @@ VSOutput VSmain
 	output.svpos = mul(mat, output.svpos);
 
 	//法線にもボーンの行列掛けないといけないのでは
-	output.normal = normalize(mul(normalMat, normal));
+	//正規化するからnormalMatいらないのでは
+	//normalMatはビュープロジェクション掛けてないけど
+	//matは掛けてるから違う?
+	output.normal = normalize(mul(boneMat, normal));
+	output.normal = normalize(mul(normalMat, output.normal));
 	output.uv = uv;
 
 	return output;
