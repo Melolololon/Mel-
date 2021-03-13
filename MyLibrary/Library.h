@@ -163,7 +163,7 @@ public:
 	/// <param name="matrix"></param>
 	/// <param name="heapNum"></param>
 	/// <param name="number"></param>
-	static void getMatrix(float matrix[4][4],const ObjectData3D& objectData, int number);
+	static void getMatrix(float matrix[4][4],const Object3DData& objectData, int number);
 
 	/// <summary>
 	/// ビュー、プロジェクション行列を乗算した行列を取得します
@@ -250,7 +250,7 @@ public:
 		bool loadUV, 
 		bool loadNormal,
 		std::string* materialFireName, 
-		ObjectData3D& objectData
+		Object3DData& objectData
 	);
 #pragma endregion
 
@@ -270,7 +270,7 @@ public:
 	/// <param name="dimention">次元</param>
 	/// <param name="p">データを入れる変数のポインタ</param>
 	/// <returns></returns>
-	static void createBoard(Vector2 size, int dimention,  ObjectData3D& objectData);
+	static void createBoard(Vector2 size, int dimention,  Object3DData& objectData);
 
 	/// <summary>
 	/// 円の頂点情報を作成します
@@ -279,7 +279,7 @@ public:
 	/// <param name="dimention"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createCircle(float r, int dimention,  ObjectData3D& objectData);
+	static void createCircle(float r, int dimention,  Object3DData& objectData);
 
 	/*/// <summary>
 	/// 立方体の頂点情報を作成します
@@ -304,7 +304,7 @@ public:
 		int vertexNumber, 
 		Vector3 centerPosition, 
 		float upVertex, 
-		ObjectData3D& objectData
+		Object3DData& objectData
 	);
 
 	/// <summary>
@@ -313,7 +313,7 @@ public:
 	/// <param name="size"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void create3DBox(Vector3 size,  ObjectData3D& objectData);
+	static void create3DBox(Vector3 size,  Object3DData& objectData);
 
 #pragma endregion
 
@@ -332,7 +332,7 @@ public:
 		std::vector<Vector3>& vertexPos, 
 		std::vector<Vector2>& vertexUV, 
 		std::vector<unsigned short>& index, 
-		ObjectData3D& objectData
+		Object3DData& objectData
 	);
 
 
@@ -350,7 +350,7 @@ public:
 		unsigned int vertexDataSize, 
 		unsigned int vertexSumDataSize, 
 		std::vector<unsigned short>&index, 
-		ObjectData3D& objectData
+		Object3DData& objectData
 	);
 
 
@@ -404,7 +404,7 @@ public:
 		std::string materialDirectoryPath, 
 		std::string materialFileName, 
 		int objectNum,
-		ObjectData3D& objectData
+		Object3DData& objectData
 	);
 
 	/// <summary>
@@ -423,7 +423,7 @@ public:
 		int objectNum,
 		void** dataP,
 		UINT dataSize,
-		ObjectData3D& objectData
+		Object3DData& objectData
 	);
 
 	/// <summary>
@@ -437,7 +437,7 @@ public:
 	(
 		const wchar_t* texturePath, 
 		int objectNum,
-		ObjectData3D& objectData
+		Object3DData& objectData
 	);
 
 	/// <summary>
@@ -451,7 +451,7 @@ public:
 	(
 		Color color, 
 		int objectNum, 
-		ObjectData3D& objectData
+		Object3DData& objectData
 	);
 
 
@@ -471,7 +471,7 @@ public:
 		int objectNum, 
 		void** dataP, 
 		UINT dataSize, 
-		ObjectData3D& objectData
+		Object3DData& objectData
 	);
 
 	static void createUserHeapData2
@@ -480,7 +480,7 @@ public:
 		int objectNum,
 		void** dataP,
 		UINT dataSize,
-		ObjectData3D& objectData
+		Object3DData& objectData
 	);
 
 
@@ -524,7 +524,7 @@ public:
 	/// <param name="dataNum">createDataで生成したデータの番号</param>
 	/// <param name="number">何個目のやつを描画するか(ヒープの何個目のCBVを指定するか)</param>
 	/// <returns></returns>
-	static void drawGraphic(const ObjectData3D& objectData, int numbe);
+	static void drawGraphic(const Object3DData& objectData, int numbe);
 
 #pragma region スプライト
 
@@ -580,17 +580,7 @@ public:
 #pragma endregion
 
 #pragma region 削除
-	/// <summary>
-	/// ポリゴン情報を削除します
-	/// </summary>
-	/// <param name="polyNum"></param>
-	static void deleteVertexData(const ObjectData3D& objectData);
-
-	/// <summary>
-	/// ポリゴンデータを削除します
-	/// </summary>
-	/// <param name="dataNum"></param>
-	static void deleteHeapData(const ObjectData3D& objectData);
+	static void deleteObject3DData(const Object3DData& objectData);
 
 	/// <summary>
 	/// スプライトを削除します
@@ -612,7 +602,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void setMulColor(Color color, const ObjectData3D& objectData, int number);
+	static void setMulColor(Color color, const Object3DData& objectData, int number);
 
 	/// <summary>
 	/// 色を加算します
@@ -620,7 +610,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void setAddColor(Color color, const ObjectData3D& objectData, int number);
+	static void setAddColor(Color color, const Object3DData& objectData, int number);
 
 	/// <summary>
 	/// 色を減算します
@@ -628,7 +618,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void setSubColor(Color color, const ObjectData3D& objectData, int number);
+	static void setSubColor(Color color, const Object3DData& objectData, int number);
 
 
 	/// <summary>
@@ -659,7 +649,7 @@ public:
 	/// <param name="position">座標</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void setPosition(Vector3 position, const ObjectData3D& objectData, int number);
+	static void setPosition(Vector3 position, const Object3DData& objectData, int number);
 
 
 	/// <summary>
@@ -668,7 +658,7 @@ public:
 	/// <param name="scale">サイズ((1,1,1)で等倍)</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void setScale(Vector3 scale, const ObjectData3D& objectData, int number);
+	static void setScale(Vector3 scale, const Object3DData& objectData, int number);
 
 	/// <summary>
 	/// オブジェクトをZ、X、Yの順に回転させます
@@ -676,7 +666,7 @@ public:
 	/// <param name="angle">角度</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void setAngle(Vector3 angle, const ObjectData3D& objectData, int number);
+	static void setAngle(Vector3 angle, const Object3DData& objectData, int number);
 
 	/// <summary>
 	/// ポリゴンを法線ベクトルの方向に押し出します
@@ -684,7 +674,7 @@ public:
 	/// <param name="ex">押し出し具合(0で通常のモデルを表示)</param>
 	/// <param name="polygonDataNumber"></param>
 	/// <param name="number"></param>
-	static void setPushPorigonNumber(float ex, const ObjectData3D& objectData, int number);
+	static void setPushPorigonNumber(float ex, const Object3DData& objectData, int number);
 
 	/// <summary>
 	/// これ消す
@@ -825,7 +815,7 @@ public:
 	/// </summary>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static std::vector<std::vector<Vector3>> getVertexPosition(const ObjectData3D& objectData);
+	static std::vector<std::vector<Vector3>> getVertexPosition(const Object3DData& objectData);
 
 	/// <summary>
 	/// オブジェクトの頂点座標を上書きします
@@ -833,7 +823,7 @@ public:
 	/// <param name="vertPos"></param>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static bool overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const ObjectData3D& objectData);
+	static bool overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const Object3DData& objectData);
 
 #pragma region スプライト
 	static Vector2 getTextureSize(texture textureHandle);
@@ -894,7 +884,7 @@ public:
 	/// <param name="number"></param>
 	/// <param name="parentObjHeapNum"></param>
 	/// <param name="parentNum"></param>
-	static void setParent(const ObjectData3D& objectData,  int number, const ObjectData3D& parentObjectData, int parentNum);
+	static void setParent(const Object3DData& objectData,  int number, const Object3DData& parentObjectData, int parentNum);
 
 #pragma endregion
 

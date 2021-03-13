@@ -182,6 +182,7 @@
     <ClCompile Include="DirectX12.cpp" />
     <ClCompile Include="DirectXTexLoader.cpp" />
     <ClCompile Include="LibMath.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="ModelLoaer.cpp" />
     <ClCompile Include="Library.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
@@ -444,6 +445,7 @@
     <ClInclude Include="DirectXTexLoader.h" />
     <ClInclude Include="DrawGraphicStruct.h" />
     <ClInclude Include="LibMath.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Library.h" />
     <ClInclude Include="MouseCursor.h" />

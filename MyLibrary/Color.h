@@ -13,15 +13,17 @@ struct Color
 	Color operator*(Color color);
 	Color operator/(Color color);
 
-	/// <summary>
-	/// パーセントを0～255の数値に変換します
-	/// </summary>
-	/// <param name="par">パーセント</param>
-	/// <returns></returns>
-	static unsigned char alphaChangePar(float par);
+
 
 	//Color operator+=(Color color);
 	//Color operator-=(Color color);
 	//Color operator*=(Color color);
 	//Color operator/=(Color color);
 };
+
+/// <summary>
+/// パーセントを0～255の数値に変換します
+/// </summary>
+/// <param name="par">パーセント</param>
+/// <returns></returns>
+unsigned char alphaChangePar(float par);

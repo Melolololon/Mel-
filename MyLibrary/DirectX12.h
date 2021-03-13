@@ -52,7 +52,7 @@ enum VertexType
 //各データにアクセスするためのもの
 #pragma region バッファデータキー
 
-struct ObjectData3D
+struct Object3DData
 {
 	std::string key;
 
@@ -211,9 +211,13 @@ private:
 #pragma region 頂点
 
 #pragma region 3D
-	std::unordered_map<std::string, std::vector<std::vector<Vertex>>> vertices;//[モデルごと(keyでアクセス)][objにあるモデルごと][頂点ごと]
+	//[モデルごと(keyでアクセス)][objにあるモデルごと][頂点ごと]
+	std::unordered_map<std::string, std::vector<std::vector<Vertex>>> vertices;
 	//std::unordered_map<std::string, std::vector<std::vector<OBJAnimationVertex>>> objAnimationVertices;//Vertexに加え、ボーン番号を追加
 	std::unordered_map<std::string, std::vector<std::vector<int>>> objAnimationBoneNums;//ボーン番号
+
+	//[モデルごと(keyでアクセス)][ボーンごと]
+	std::unordered_map<std::string, std::vector<DirectX::XMFLOAT3>> objAnimationBonePositions;//ボーン番号
 
 
 	std::unordered_map<std::string, std::vector<std::vector<USHORT>>> indices;
@@ -235,6 +239,44 @@ private:
 	/// スムースシェーディングを行うために法線を計算します
 	/// </summary>
 	void calcSmoothingNormals(const std::string key);
+
+
+#pragma endregion
+
+
+#pragma region オブジェクト情報
+	struct ObjectConstData
+	{
+		std::vector<DirectX::XMFLOAT3>position;
+		std::vector<DirectX::XMFLOAT3>scale;
+		std::vector<DirectX::XMFLOAT3>angle;
+		std::vector<DirectX::XMFLOAT4>addColor;
+		std::vector<DirectX::XMFLOAT4>subColor;
+		std::vector<DirectX::XMFLOAT4>mulColor;
+		std::vector<float>pushPolygonNum;
+
+	};
+	std::unordered_map < std::string, ObjectConstData>objectConstData;
+
+	struct BoneData
+	{
+		//読み込んだときの位置から、どのくらい動かすかを表したfloat3
+		std::vector<std::vector<DirectX::XMFLOAT3>>moveNum;
+
+		std::vector<std::vector<DirectX::XMFLOAT3>>scale;
+		std::vector<std::vector<DirectX::XMFLOAT3>>angle;
+	};
+	//[key モデルごと][オブジェクトの番号ごと][ボーンごと]
+	std::unordered_map < std::string, BoneData> boneConstData;
+
+
+	std::unordered_map<std::string, std::vector<Material>>materials;
+
+
+	//std::vector<DirectX::XMVECTOR> spritePosition;
+	std::vector<DirectX::XMFLOAT2> spriteScale;
+	std::vector<float> spriteAngle;
+
 
 
 #pragma endregion
@@ -351,31 +393,6 @@ private:
 	bool smoothing;
 #pragma endregion
 
-
-#pragma region オブジェクト情報
-	struct ObjectConstData
-	{
-		std::vector<DirectX::XMFLOAT3>position;
-		std::vector<DirectX::XMFLOAT3>scale;
-		std::vector<DirectX::XMFLOAT3>angle;
-		std::vector<DirectX::XMFLOAT4>addColor;
-		std::vector<DirectX::XMFLOAT4>subColor;
-		std::vector<DirectX::XMFLOAT4>mulColor;
-		std::vector<float>pushPolygonNum;
-	};
-	std::unordered_map < std::string, ObjectConstData>objectConstData;
-
-
-	std::unordered_map<std::string,std::vector<Material>>materials;
-	 
-
-	//std::vector<DirectX::XMVECTOR> spritePosition;
-	std::vector<DirectX::XMFLOAT2> spriteScale;
-	std::vector<float> spriteAngle;
-
-
-
-#pragma endregion
 
 #pragma region スプライトフォント
 	std::vector<SpriteFontData>spriteFontData;
@@ -642,7 +659,8 @@ public:
 		std::string materialFileName, 
 		bool setConstDataFlag, 
 		const std::string& key,
-		const int& objectNumber
+		const int& objectNumber,
+		const VertexType& vType
 	);
 
 	//これいらない

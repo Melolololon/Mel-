@@ -1914,7 +1914,7 @@ VertexType DirectX12::loadOBJVertex
 	{
 		loadBone = true;
 		objAnimationBoneNums.emplace(key, boneNum);
-		
+		objAnimationBonePositions.emplace(key, bonePos);
 	}
 
 	indices.emplace(key, temporaryIndex);
@@ -2052,7 +2052,8 @@ void DirectX12::loadOBJMaterial
 	std::string materialFileName, 
 	bool setConstDataFlag,
 	const std::string& key,
-	const int& objectNumber
+	const int& objectNumber,
+	const VertexType& vType
 )
 {
 
@@ -2159,9 +2160,29 @@ void DirectX12::loadOBJMaterial
 #pragma endregion
 
 #pragma region 定数バッファ
-	//バッファを2個作る場合は、ハンドルのポインタをずらしてから生成する
-	//resizeObjectData(heapData.objectNum);
-	
+
+	//ボーン準備
+
+	if(vType == VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+	{
+		//ボーン用意
+		BoneData bData;
+		
+		//objAnimationBonePositions[key].size() + 1(ボーン数 + ボーン未セットに適応する行列を作るための値を格納するための+1)
+		std::vector<DirectX::XMFLOAT3> xmFloat3Vector(objAnimationBonePositions[key].size() + 1, { 0,0,0 });
+		std::vector<std::vector<DirectX::XMFLOAT3>>xmFloat3Vector2(objectNumber, xmFloat3Vector);
+		bData.angle = xmFloat3Vector2;
+		bData.moveNum = xmFloat3Vector2;
+
+		for (auto& vector : xmFloat3Vector)
+			vector = { 1,1,1 };
+		for (auto& vector : xmFloat3Vector2)
+			vector = xmFloat3Vector;
+		bData.scale = xmFloat3Vector2;
+
+		//objAnimationBoneNums.emplace(key, bData);
+	}
+
 	createCommonBuffer(loadNum,key);
 
 	//これいらんresizeにする
@@ -3367,6 +3388,7 @@ void DirectX12::createUserPolygon
 
 void DirectX12::deletePolygonData(const std::string key)
 {
+
 		polyDatas.erase(key);
 		vertices.erase(key);
 		indices.erase(key);

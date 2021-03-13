@@ -5,6 +5,7 @@ struct Vector2
 	float x, y;
 
 	Vector2();
+	Vector2(const float& num);
 	Vector2(const float& x, const float& y);
 	Vector2(const DirectX::XMFLOAT2& f);
 
@@ -55,6 +56,7 @@ struct Vector3
 	float x, y, z;
 
 	Vector3();
+	Vector3(const float& num);
 	Vector3(const float& x, const float& y,const float& z);
 	Vector3(const DirectX::XMFLOAT3& f);
 
@@ -129,6 +131,7 @@ struct Vector4
 	float x, y, z, w;
 
 	Vector4();
+	Vector4(const float& num);
 	Vector4(const float& x, const float& y, const float& z, const float& w);
 	Vector4(const DirectX::XMFLOAT4& f);
 

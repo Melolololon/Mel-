@@ -114,6 +114,9 @@
     <ClCompile Include="Vector.cpp">
       <Filter>ソース ファイル\Struct</Filter>
     </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>ソース ファイル\Struct</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
@@ -217,6 +220,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Vector.h">
+      <Filter>ヘッダー ファイル\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
       <Filter>ヘッダー ファイル\Struct</Filter>
     </ClInclude>
   </ItemGroup>

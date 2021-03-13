@@ -4,7 +4,11 @@
 #pragma region Vector2
 
 Vector2::Vector2(){}
-
+Vector2::Vector2(const float& num)
+{
+	x = num;
+	y = num;
+}
 Vector2::Vector2(const float& x, const float& y)
 {
 	this->x = x;
@@ -93,6 +97,13 @@ float Vector2::dot(Vector2 vector1, Vector2 vector2)
 
 Vector3::Vector3()
 {
+}
+
+Vector3::Vector3(const float& num)
+{
+	x = num;
+	y = num;
+	z = num;
 }
 
 Vector3::Vector3(const float& x, const float& y, const float& z)
@@ -214,6 +225,13 @@ float Vector3::dot(Vector3 vector1, Vector3 vector2)
 
 Vector4::Vector4()
 {
+}
+Vector4::Vector4(const float& num)
+{
+	x = num;
+	y = num;
+	z = num;
+	w = num;
 }
 
 Vector4::Vector4(const float& x, const float& y, const float& z, const float& w)

@@ -1,11 +1,13 @@
 #include "Play.h"
 
-ObjectData3D d;
-ObjectData3D modelD;
+#include"Matrix.h"
+
+Object3DData d;
+Object3DData modelD;
 Play::Play()
 {
-	
-	d.key = "";
+
+	d.key = "Board";
 	Library::createBoard({ 1,1 }, dimention3D, d);
 	Library::createHeapData2({ 255,255,255,255 }, 1, d);
 
@@ -35,7 +37,7 @@ void Play::update()
 void Play::draw()
 {
 	Library::setPipeline(PIPELINE_NORMAL);
-	Library::drawGraphic(modelD, 0);
+	Library::drawGraphic(d, 0);
 
 }
 
