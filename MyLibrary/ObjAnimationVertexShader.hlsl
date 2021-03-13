@@ -22,8 +22,31 @@ VSOutput VSmain
 	output.svpos = mul(boneMat, pos);
 	output.svpos = mul(mat, output.svpos);
 
+	//法線にもボーンの行列掛けないといけないのでは
 	output.normal = normalize(mul(normalMat, normal));
 	output.uv = uv;
 
 	return output;
+
+/*
+	VSOutput output;
+	output.worldPos = mul(worldMat, pos);
+	output.svpos = mul(mat, pos);
+	output.normal = normalize(mul(normalMat, normal));
+	output.uv = uv;
+
+	return output;*/
 }
+
+//
+//VSOutput VSmain(float4 pos : POSITION, float2 uv : TEXCOORD, float3 normal : NORMAL)
+//{
+//
+//	VSOutput output;
+//	output.worldPos = mul(worldMat, pos);
+//	output.svpos = mul(mat, pos);
+//	output.normal = normalize(mul(normalMat, normal));
+//	output.uv = uv;
+//
+//	return output;
+//}

@@ -358,6 +358,13 @@ void DirectX12::initialize()
 	commonRangeCSV.BaseShaderRegister = 3;
 	commonRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
+	//D3D12_DESCRIPTOR_RANGE boneRangeCRV{};
+	//boneRangeCRV.NumDescriptors = 1;
+	//boneRangeCRV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	//boneRangeCRV.BaseShaderRegister = 5;
+	//boneRangeCRV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+
 	D3D12_DESCRIPTOR_RANGE descRangeSRV{};
 	descRangeSRV.NumDescriptors = 1;
 	descRangeSRV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
@@ -390,13 +397,19 @@ void DirectX12::initialize()
 	rootparam[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootparam[3].DescriptorTable.pDescriptorRanges = &materialDescRangeCSV;
 	rootparam[3].DescriptorTable.NumDescriptorRanges = 1;
-	rootparam[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootparam[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	//共通
 	rootparam[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootparam[4].DescriptorTable.pDescriptorRanges = &commonRangeCSV;
 	rootparam[4].DescriptorTable.NumDescriptorRanges = 1;
 	rootparam[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	//ボーンデータ
+	/*rootparam[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[5].DescriptorTable.pDescriptorRanges = &boneRangeCRV;
+	rootparam[5].DescriptorTable.NumDescriptorRanges = 1;
+	rootparam[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;*/
 
 	rootSignatureDesc.pParameters = rootparam;
 	rootSignatureDesc.NumParameters = _countof(rootparam);
@@ -1200,6 +1213,7 @@ void DirectX12::create3DObjectPipeline()
 	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE_FLOAT };
 	ilData[2] = { "NORMAL", 3,FORMAT_TYPE_FLOAT };
 	ilData[3] = { "BONENUM", 1,FORMAT_TYPE_UNSIGNED_INT };
+	setInputLayout(ilData);
 	createPipeline->createUserPipeline
 	(
 		1,
@@ -1208,9 +1222,10 @@ void DirectX12::create3DObjectPipeline()
 		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
 		gpipeline,
 		&pState,
-		false
+		true
 	);
 	pipelineStates.push_back(pState);
+	createPipeline->deleteInputLayout();
 
 	startPipelineCreateNum = pipelineStates.size();
 }

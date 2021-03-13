@@ -513,7 +513,7 @@ bool CreatePipeline::createUserPipeline(
 
 	if (result != S_OK) 
 	{
-		OutputDebugString(L"パイプラインの生成に失敗しました");
+		OutputDebugString(L"パイプラインの生成に失敗しました\n");
 		return false;
 	}
 	return true;
@@ -573,6 +573,7 @@ void CreatePipeline::setInputLayout(const std::vector<InputLayoutData>& inputLay
 				dxgiFormat = DXGI_FORMAT_R32G32B32A32_UINT;
 				break;
 			}
+			break;
 
 		case FORMAT_TYPE_SIGNED_INT:
 			switch (ilData.number)

@@ -8,6 +8,7 @@ cbuffer cbuff0 : register(b0)
 	float4 subColor;
 	float ex;
 	matrix worldMat;
+	matrix boneMatArray[20];
 };
 
 cbuffer cbuff3 : register(b3)
@@ -25,6 +26,8 @@ cbuffer cbuff2 : register(b2)
 	float3 m_specular : packoffset(c2);
 	float m_alpha : packoffset(c2.w);
 };
+
+
 
 struct VSOutput
 {

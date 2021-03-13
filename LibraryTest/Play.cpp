@@ -5,7 +5,7 @@ ObjectData3D modelD;
 Play::Play()
 {
 	
-	d.key = "board";
+	d.key = "";
 	Library::createBoard({ 1,1 }, dimention3D, d);
 	Library::createHeapData2({ 255,255,255,255 }, 1, d);
 
@@ -36,7 +36,7 @@ void Play::draw()
 {
 	Library::setPipeline(PIPELINE_NORMAL);
 	Library::drawGraphic(modelD, 0);
-	//Library::drawGraphic(d, h, 0);
+
 }
 
 void Play::end()

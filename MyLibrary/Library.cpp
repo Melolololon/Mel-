@@ -197,6 +197,29 @@ float Library::getRandomNumberFloat(int number)
 	return (float)(rand() % number);
 }
 
+#pragma region プライベート関数
+bool Library::checkSetKeyName(const std::string& key)
+{
+	if (key == "")
+	{
+		OutputDebugString(L"キーの名前が設定されていません\n");
+		return false;
+	}
+	return true;
+}
+
+bool Library::checkCreateVertexBuffer(const VertexType& vertexType)
+{
+	if (vertexType == VERTEX_TYPE_NONE)
+	{
+		OutputDebugString(L"オブジェクトの生成、またはモデルの読み込みがされていません\n");
+		return false;
+	}
+	return true;
+}
+#pragma endregion
+
+
 #pragma region WinAPI関係
 HWND Library::getHWND()
 {
@@ -326,13 +349,15 @@ void  Library::loadOBJVertex
 	ObjectData3D& objectData
 )
 {
+	if (!checkSetKeyName(objectData.key))return;
+
 	PolygonData pData;
 	
 	/*p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
-	objectData.typr = directx12->loadOBJVertex
+	objectData.type = directx12->loadOBJVertex
 	(
 		path,
 		loadUV,
@@ -357,6 +382,7 @@ void Library::createPoint(int createNum, point* p)
 
 void Library::createBoard(Vector2 size, int dimention,  ObjectData3D& objectData)
 {
+	if (!checkSetKeyName(objectData.key))return;
 	PolygonData pData;
 
 	pData.pos1 = { size.x,size.y,0 };
@@ -370,11 +396,12 @@ void Library::createBoard(Vector2 size, int dimention,  ObjectData3D& objectData
 
 	pData.dimention = dimention;
 	directx12->createPolygonData(pData, objectData.key);
-	objectData.typr = VERTEX_TYPE_NORMAL;
+	objectData.type = VERTEX_TYPE_NORMAL;
 }
 
 void Library::createCircle(float r, int dimention, ObjectData3D& objectData)
 {
+	if (!checkSetKeyName(objectData.key))return;
 	PolygonData pData;
 
 	pData.fNum1 = r;
@@ -386,7 +413,7 @@ void Library::createCircle(float r, int dimention, ObjectData3D& objectData)
 	directx12->createPolygonData(pData, objectData.key);
 
 	
-	objectData.typr = VERTEX_TYPE_NORMAL;
+	objectData.type = VERTEX_TYPE_NORMAL;
 }
 
 //
@@ -418,6 +445,7 @@ void Library::createTriangularPyramid
 	ObjectData3D& objectData
 )
 {
+	if (!checkSetKeyName(objectData.key))return;
 	PolygonData pData;
 
 	pData.fNum1 = r;
@@ -434,12 +462,13 @@ void Library::createTriangularPyramid
 	directx12->createPolygonData(pData, objectData.key);
 
 	
-	objectData.typr = VERTEX_TYPE_NORMAL;
+	objectData.type = VERTEX_TYPE_NORMAL;
 }
 
 
 void Library::create3DBox(Vector3 size,  ObjectData3D& objectData)
 {
+	if (!checkSetKeyName(objectData.key))return;
 	PolygonData pData;
 
 	pData.pos1 = { size.x,size.y,size.z };
@@ -453,7 +482,7 @@ void Library::create3DBox(Vector3 size,  ObjectData3D& objectData)
 	directx12->createPolygonData(pData, objectData.key);
 
 	
-	objectData.typr = VERTEX_TYPE_NORMAL;
+	objectData.type = VERTEX_TYPE_NORMAL;
 }
 
 #pragma region ユーザー
@@ -466,6 +495,7 @@ void Library::createUserObject
 	ObjectData3D& objectData
 )
 {
+	if (!checkSetKeyName(objectData.key))return;
 	directx12->addUserVertex(vertexPos, vertexUV, objectData.key);
 	directx12->addUserIndex(index, objectData.key);
 
@@ -480,7 +510,7 @@ void Library::createUserObject
 	directx12->createPolygonData(pData, objectData.key);
 	
 	
-	objectData.typr = VERTEX_TYPE_NORMAL;
+	objectData.type = VERTEX_TYPE_NORMAL;
 }
 
 void Library::createUserObject2
@@ -492,6 +522,7 @@ void Library::createUserObject2
 	ObjectData3D& objectData
 )
 {
+	if (!checkSetKeyName(objectData.key))return;
 	PolygonData pData;
 	//p.handle = new int(directx12->getCreateNumber().polyNum);
 	//pData.sikibetuNumP = p.handle;
@@ -500,7 +531,7 @@ void Library::createUserObject2
 	pData.dimention = dimention3D;
 	directx12->createUserPolygon(vertexData, vertexDataSize, vertexSumDataSize, index, pData, objectData.key);
 	
-	objectData.typr = VERTEX_TYPE_USER_VERTEX;
+	objectData.type = VERTEX_TYPE_USER_VERTEX;
 }
 #pragma endregion
 
@@ -518,6 +549,7 @@ void Library::loadOBJMaterial
 	 ObjectData3D& objectData
 )
 {
+	if (!checkCreateVertexBuffer(objectData.type))return;
 	
 
 	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, false, objectData.key, objectNum);
@@ -534,10 +566,9 @@ void Library::loadObjMaterialUseUserData
 	 ObjectData3D& objectData
 )
 {
+	if (!checkCreateVertexBuffer(objectData.type))return;
 	directx12->setConstMapData(dataP, dataSize);
 	
-
-
 	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, true, objectData.key, objectNum);
 	
 }
@@ -550,6 +581,9 @@ void Library::createHeapData
 )
 {
 	
+
+
+	if (!checkCreateVertexBuffer(objectData.type))return;
 
 	directx12->createHeapData(false, objectData.key, objectNum, texturePath, nullptr);
 	
@@ -564,6 +598,7 @@ void Library::createHeapData2
 )
 {
 
+	if (!checkCreateVertexBuffer(objectData.type))return;
 
 	directx12->createHeapData(false, objectData.key, objectNum, L"", &color);
 
@@ -579,6 +614,7 @@ void Library::createUserHeapData
 )
 {
 
+	if (!checkCreateVertexBuffer(objectData.type))return;
 	directx12->setConstMapData(dataP, dataSize);
 
 
@@ -596,6 +632,7 @@ void Library::createUserHeapData2
 )
 {
 
+	if (!checkCreateVertexBuffer(objectData.type))return;
 	directx12->setConstMapData(dataP, dataSize);
 
 

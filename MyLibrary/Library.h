@@ -74,6 +74,12 @@ private:
 	static DWORD startProsessTime;//計測開始時の時間
 	static DWORD nowTime;//現在の時間
 
+#pragma region プライベート関数
+	static bool checkSetKeyName(const std::string& key);
+	static bool checkCreateVertexBuffer(const VertexType& vertexType);
+#pragma endregion
+
+
 public:
 
 

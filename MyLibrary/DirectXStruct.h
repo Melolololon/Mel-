@@ -92,11 +92,12 @@ struct ConstBufferData
 	DirectX::XMFLOAT4 subColor;
 	float ex;
 	DirectX::XMMATRIX worldMat;
+	DirectX::XMMATRIX boneMat[20];
 };
 
 struct CommonConstData
 {
-	//float4にするかパック詰めないと送れないからfloat4にしてる
+	//float4にするかパック詰めないと送れない(float4以外の変数と次の変数の間に入り込む)からfloat4にしてる
 	DirectX::XMFLOAT4 lightColor;
 	DirectX::XMFLOAT4 light;
 	DirectX::XMFLOAT4 cameraPos;

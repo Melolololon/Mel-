@@ -43,6 +43,7 @@
 //その場合、ヒープの構造体も作ったほうがいい?
 enum VertexType
 {
+	VERTEX_TYPE_NONE,//未設定(まだ頂点バッファを生成していない)
 	VERTEX_TYPE_NORMAL,//座標、uv、法線のみ
 	VERTEX_TYPE_OBJ_ANIMATION,//座標、uv、法線、ボーン番号
 	VERTEX_TYPE_USER_VERTEX,//利用者の自作データ
@@ -55,7 +56,7 @@ struct ObjectData3D
 {
 	std::string key;
 
-	VertexType typr;//頂点構造体の種類
+	VertexType type;//頂点構造体の種類
 };
 
 #pragma endregion
