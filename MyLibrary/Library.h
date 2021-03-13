@@ -32,15 +32,6 @@ using font = int;
 #pragma endregion
 
 
-enum LibraryPipeline
-{
-	PIPELINE_NOT_DEPTH_TEST,//深度テスト無し(zにかかわらず、関数の呼び出した順番で描画されます)
-	PIPELINE_CULL_NONE,//カリングなし(モデルの裏側も描画します)
-	PIPELINE_NO_WRITE_ALPHA,//透明部分を書き込まない
-	PIPELINE_NORMAL,
-	PIPELINE_OBJ_ANIMATION,
-};
-
 class Library
 {
 private:

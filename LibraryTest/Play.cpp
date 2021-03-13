@@ -6,7 +6,6 @@ ModelData d;
 ModelData modelD;
 Play::Play()
 {
-
 	d.key = "Board";
 	Library::createBoard({ 1,1 }, dimention3D, d);
 	Library::createHeapData2({ 255,255,255,255 }, 1, d);
@@ -14,7 +13,7 @@ Play::Play()
 	std::string material;
 	modelD.key = "biru";
 	
-	Library::loadOBJVertex("Resources/Obj/test.obj", true, true, &material, modelD);
+	Library::loadOBJVertex("Resources/Obj/player.obj", true, true, &material, modelD);
 	Library::loadOBJMaterial("Resources/Obj/", material, 1, modelD);
 	Library::setAngle({ 0,180,0 }, modelD, 0);
 }
@@ -30,13 +29,17 @@ void Play::initialize()
 Vector3 vec(0);
 void Play::update()
 {
+	//ç°ÅAxÇ∆zÇÃ+-Ç™ãtÇ…Ç»Ç¡ÇƒÇÈÇ©ÇÁÅAÇ«Ç±Ç™Ç®Ç©ÇµÇ¢Ç©íTÇ∑ 
 	if (DirectInput::keyState(DIK_A))
-		vec.y += 3.0f;
+		vec.z+= 3.0f;
 	if (DirectInput::keyState(DIK_D))
-		vec.y -= 3.0f;
+		vec.z -= 3.0f;
 
 
-	Library::setOBJBoneAngle(vec, 0, modelD, 0);
+	Library::setOBJBoneMoveVector(vec, 0, modelD, 0);
+	Library::setOBJBoneMoveVector(vec, 1, modelD, 0);
+	/*Library::setOBJBoneAngle(vec, 0, modelD, 0);
+	Library::setOBJBoneAngle(vec * -1, 1, modelD, 0);*/
 }
 
 void Play::draw()

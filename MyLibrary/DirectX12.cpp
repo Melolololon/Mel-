@@ -3623,7 +3623,12 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 //Map処理
 void DirectX12::map(const ModelData& modelData,int number )
 {
-
+	//パイプライン誤セット防止
+	if(modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION &&
+		pipelineNum == PIPELINE_OBJ_ANIMATION)
+	{
+		pipelineNum = PIPELINE_NORMAL;
+	}
 
 	//if (despNumber >= 0)
 	{
