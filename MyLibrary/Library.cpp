@@ -882,7 +882,7 @@ void Library::setCameraNearAndFar(float nearNum, float farNum)
 
 void Library::setLightVector(Vector3 vector)
 {
-	Vector3 v = Vector3::normalize(vector);
+	Vector3 v = normalize(vector);
 	directx12->setLightVector({ v.x,v.y,v.z });
 }
 //
@@ -967,6 +967,49 @@ void Library::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
 	directx12->setPostEffectCameraFlag(true, rtNum);
 }
 #pragma endregion
+
+#pragma region アニメーション
+void Library::setOBJBoneMoveVector
+(
+	const Vector3& vector, 
+	const int& boneNum, 
+	const ModelData& modelData,
+	const int& objectNum
+)
+{
+	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+		return;
+
+	//directx12->setOBJBoneMoveVector(vector.toXMFLOAT3(), boneNum, modelData.key, objectNum);
+
+}
+
+void Library::setOBJBoneScale
+(
+	const Vector3& scale,
+	const int& boneNum, 
+	const ModelData& modelData,
+	const int& objectNum
+)
+{
+	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+		return;
+}
+
+void Library::setOBJBoneAngle
+(
+	const Vector3& angle, 
+	const int& boneNum, 
+	const ModelData& modelData,
+	const int& objectNum
+)
+{
+	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+		return;
+}
+
+#pragma endregion
+
 
 #pragma endregion
 

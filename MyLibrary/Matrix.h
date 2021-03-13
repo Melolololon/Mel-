@@ -1,9 +1,12 @@
 #pragma once
 #include<array>
 #include"Vector.h"
+
 struct Matrix
 {
 	std::array<std::array<float,4>,4> matrix;
+
+	//Matrix operator*(const Matrix& mat);
 };
 
 

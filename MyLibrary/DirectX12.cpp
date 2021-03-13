@@ -2180,7 +2180,7 @@ void DirectX12::loadOBJMaterial
 			vector = xmFloat3Vector;
 		bData.scale = xmFloat3Vector2;
 
-		//objAnimationBoneNums.emplace(key, bData);
+		boneConstData.emplace(key, bData);
 	}
 
 	createCommonBuffer(loadNum,key);
@@ -2236,6 +2236,7 @@ void DirectX12::loadOBJMaterial
 			(void**)&constData3D,
 			sizeof(ConstBufferData)
 		);*/
+		if (!constData3D)return;
 
 		constData3D->mulColor = { 1,1,1,1 };
 		constData3D->addColor = { 0,0,0,0 };
@@ -2243,6 +2244,10 @@ void DirectX12::loadOBJMaterial
 		constData3D->ex = 0.0f;
 		constData3D->color = { 1,1,1,1 };
 		constData3D->mat = DirectX::XMMatrixIdentity();
+		
+		for (int i = 0; i < _countof(constData3D->boneMat); i++)
+			constData3D->boneMat[i] = DirectX::XMMatrixIdentity();
+		
 
 		heapTags[key].push_back(LIBRARY_CONST_BUFFER);
 

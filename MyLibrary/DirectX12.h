@@ -776,6 +776,33 @@ public:
 	 void setPostEffectCameraFlag(const bool& flag, const int& rtNum);
 #pragma endregion
 
+#pragma region アニメーション
+	 /// <summary>
+	/// ボーンを初期位置からどのくらい動かすかを指定し、動かします
+	/// </summary>
+	/// <param name="vector">移動量</param>
+	/// <param name="boneNum">操作するボーン番号</param>
+	/// <param name="key">キー</param>
+	 static void setOBJBoneMoveVector(const DirectX::XMFLOAT3& vector, const int& boneNum, const std::string& key, const int& objectNum);
+
+	 /// <summary>
+	 /// ボーンに対応している部分をどのくらい拡大させるかを指定し、拡大します
+	 /// </summary>
+	 /// <param name="scale"></param>
+	 /// <param name="boneNum"></param>
+	 /// <param name="key"></param>
+	 static void setOBJBoneScale(const DirectX::XMFLOAT3& scale, const int& boneNum, const std::string& key, const int& objectNum);
+
+	 /// <summary>
+	 /// ボーンに対応している部分をどのくらい回転させるかを指定し、回転します
+	 /// </summary>
+	 /// <param name="angle"></param>
+	 /// <param name="boneNum"></param>
+	 /// <param name="key"></param>
+	 static void setOBJBoneAngle(const DirectX::XMFLOAT3& angle, const int& boneNum, const std::string& key, const int& objectNum);
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma region 頂座標取得
