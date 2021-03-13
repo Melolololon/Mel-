@@ -2,8 +2,8 @@
 
 #include"Matrix.h"
 
-Object3DData d;
-Object3DData modelD;
+ModelData d;
+ModelData modelD;
 Play::Play()
 {
 

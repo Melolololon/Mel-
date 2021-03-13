@@ -52,7 +52,7 @@ enum VertexType
 //各データにアクセスするためのもの
 #pragma region バッファデータキー
 
-struct Object3DData
+struct ModelData
 {
 	std::string key;
 

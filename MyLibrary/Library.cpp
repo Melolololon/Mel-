@@ -276,9 +276,9 @@ void Library::setPipeline(pipeline num)
 //	directx12->setConstMapData(dataP, dataSize);
 //}
 
-void Library::getMatrix(float matrix[4][4], const Object3DData& objectData, int number)
+void Library::getMatrix(float matrix[4][4], const ModelData& modelData, int number)
 {
-	directx12->getMatrix(matrix, objectData.key, number);
+	directx12->getMatrix(matrix, modelData.key, number);
 }
 
 void Library::getCameraMatrix(float matrix[4][4])
@@ -346,10 +346,10 @@ void  Library::loadOBJVertex
 	bool loadUV,
 	bool loadNormal,
 	std::string* materialFireName,
-	Object3DData& objectData
+	ModelData& modelData
 )
 {
-	if (!checkSetKeyName(objectData.key))return;
+	if (!checkSetKeyName(modelData.key))return;
 
 	PolygonData pData;
 	
@@ -357,14 +357,14 @@ void  Library::loadOBJVertex
 	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
-	objectData.type = directx12->loadOBJVertex
+	modelData.type = directx12->loadOBJVertex
 	(
 		path,
 		loadUV,
 		loadNormal,
 		materialFireName,
 		pData,
-		objectData.key
+		modelData.key
 	);
 	
 
@@ -380,9 +380,9 @@ void Library::createPoint(int createNum, point* p)
 	createPointCount++;
 }
 
-void Library::createBoard(Vector2 size, int dimention,  Object3DData& objectData)
+void Library::createBoard(Vector2 size, int dimention,  ModelData& modelData)
 {
-	if (!checkSetKeyName(objectData.key))return;
+	if (!checkSetKeyName(modelData.key))return;
 	PolygonData pData;
 
 	pData.pos1 = { size.x,size.y,0 };
@@ -395,13 +395,13 @@ void Library::createBoard(Vector2 size, int dimention,  Object3DData& objectData
 	pData.sikibetuNumP = p.handle;*/
 
 	pData.dimention = dimention;
-	directx12->createPolygonData(pData, objectData.key);
-	objectData.type = VERTEX_TYPE_NORMAL;
+	directx12->createPolygonData(pData, modelData.key);
+	modelData.type = VERTEX_TYPE_NORMAL;
 }
 
-void Library::createCircle(float r, int dimention, Object3DData& objectData)
+void Library::createCircle(float r, int dimention, ModelData& modelData)
 {
-	if (!checkSetKeyName(objectData.key))return;
+	if (!checkSetKeyName(modelData.key))return;
 	PolygonData pData;
 
 	pData.fNum1 = r;
@@ -410,10 +410,10 @@ void Library::createCircle(float r, int dimention, Object3DData& objectData)
 	/*p.handle = new int(directx12->getCreateNumber().polyNum);
 	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention;
-	directx12->createPolygonData(pData, objectData.key);
+	directx12->createPolygonData(pData, modelData.key);
 
 	
-	objectData.type = VERTEX_TYPE_NORMAL;
+	modelData.type = VERTEX_TYPE_NORMAL;
 }
 
 //
@@ -442,10 +442,10 @@ void Library::createTriangularPyramid
 	int vertexNumber, 
 	Vector3 centerPosition, 
 	float upVertex, 
-	Object3DData& objectData
+	ModelData& modelData
 )
 {
-	if (!checkSetKeyName(objectData.key))return;
+	if (!checkSetKeyName(modelData.key))return;
 	PolygonData pData;
 
 	pData.fNum1 = r;
@@ -459,16 +459,16 @@ void Library::createTriangularPyramid
 	//p.handle = new int(directx12->getCreateNumber().polyNum);
 	//pData.sikibetuNumP = p.handle;
 	pData.dimention = dimention3D;
-	directx12->createPolygonData(pData, objectData.key);
+	directx12->createPolygonData(pData, modelData.key);
 
 	
-	objectData.type = VERTEX_TYPE_NORMAL;
+	modelData.type = VERTEX_TYPE_NORMAL;
 }
 
 
-void Library::create3DBox(Vector3 size,  Object3DData& objectData)
+void Library::create3DBox(Vector3 size,  ModelData& modelData)
 {
-	if (!checkSetKeyName(objectData.key))return;
+	if (!checkSetKeyName(modelData.key))return;
 	PolygonData pData;
 
 	pData.pos1 = { size.x,size.y,size.z };
@@ -479,10 +479,10 @@ void Library::create3DBox(Vector3 size,  Object3DData& objectData)
 	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
-	directx12->createPolygonData(pData, objectData.key);
+	directx12->createPolygonData(pData, modelData.key);
 
 	
-	objectData.type = VERTEX_TYPE_NORMAL;
+	modelData.type = VERTEX_TYPE_NORMAL;
 }
 
 #pragma region ユーザー
@@ -492,12 +492,12 @@ void Library::createUserObject
 	std::vector<Vector3>& vertexPos, 
 	std::vector<Vector2>& vertexUV,
 	std::vector<unsigned short>& index,
-	Object3DData& objectData
+	ModelData& modelData
 )
 {
-	if (!checkSetKeyName(objectData.key))return;
-	directx12->addUserVertex(vertexPos, vertexUV, objectData.key);
-	directx12->addUserIndex(index, objectData.key);
+	if (!checkSetKeyName(modelData.key))return;
+	directx12->addUserVertex(vertexPos, vertexUV, modelData.key);
+	directx12->addUserIndex(index, modelData.key);
 
 	PolygonData pData;
 	pData.katatiNum = -1;
@@ -507,10 +507,10 @@ void Library::createUserObject
 	pData.sikibetuNumP = p.handle;*/
 	pData.dimention = dimention3D;
 
-	directx12->createPolygonData(pData, objectData.key);
+	directx12->createPolygonData(pData, modelData.key);
 	
 	
-	objectData.type = VERTEX_TYPE_NORMAL;
+	modelData.type = VERTEX_TYPE_NORMAL;
 }
 
 void Library::createUserObject2
@@ -519,19 +519,19 @@ void Library::createUserObject2
 	unsigned int vertexDataSize, 
 	unsigned int vertexSumDataSize, 
 	std::vector<unsigned short>&index, 
-	Object3DData& objectData
+	ModelData& modelData
 )
 {
-	if (!checkSetKeyName(objectData.key))return;
+	if (!checkSetKeyName(modelData.key))return;
 	PolygonData pData;
 	//p.handle = new int(directx12->getCreateNumber().polyNum);
 	//pData.sikibetuNumP = p.handle;
 	
 	
 	pData.dimention = dimention3D;
-	directx12->createUserPolygon(vertexData, vertexDataSize, vertexSumDataSize, index, pData, objectData.key);
+	directx12->createUserPolygon(vertexData, vertexDataSize, vertexSumDataSize, index, pData, modelData.key);
 	
-	objectData.type = VERTEX_TYPE_USER_VERTEX;
+	modelData.type = VERTEX_TYPE_USER_VERTEX;
 }
 #pragma endregion
 
@@ -546,13 +546,13 @@ void Library::loadOBJMaterial
 	std::string materialDirectoryPath, 
 	std::string materialFileName, 
 	int objectNum, 
-	 Object3DData& objectData
+	 ModelData& modelData
 )
 {
-	if (!checkCreateVertexBuffer(objectData.type))return;
+	if (!checkCreateVertexBuffer(modelData.type))return;
 	
 
-	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, false, objectData.key, objectNum, objectData.type);
+	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, false, modelData.key, objectNum, modelData.type);
 	
 }
 
@@ -563,13 +563,13 @@ void Library::loadObjMaterialUseUserData
 	int objectNum,
 	void** dataP,
 	UINT dataSize,
-	 Object3DData& objectData
+	 ModelData& modelData
 )
 {
-	if (!checkCreateVertexBuffer(objectData.type))return;
+	if (!checkCreateVertexBuffer(modelData.type))return;
 	directx12->setConstMapData(dataP, dataSize);
 	
-	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, true, objectData.key, objectNum, objectData.type);
+	directx12->loadOBJMaterial(materialDirectoryPath, materialFileName, true, modelData.key, objectNum, modelData.type);
 	
 }
 
@@ -577,15 +577,15 @@ void Library::createHeapData
 (
 	const wchar_t* texturePath, 
 	int objectNum,
-	Object3DData& objectData
+	ModelData& modelData
 )
 {
 	
 
 
-	if (!checkCreateVertexBuffer(objectData.type))return;
+	if (!checkCreateVertexBuffer(modelData.type))return;
 
-	directx12->createHeapData(false, objectData.key, objectNum, texturePath, nullptr);
+	directx12->createHeapData(false, modelData.key, objectNum, texturePath, nullptr);
 	
 	
 }
@@ -594,13 +594,13 @@ void Library::createHeapData2
 (
 	Color color, 
 	int objectNum,
-	Object3DData& objectData
+	ModelData& modelData
 )
 {
 
-	if (!checkCreateVertexBuffer(objectData.type))return;
+	if (!checkCreateVertexBuffer(modelData.type))return;
 
-	directx12->createHeapData(false, objectData.key, objectNum, L"", &color);
+	directx12->createHeapData(false, modelData.key, objectNum, L"", &color);
 
 }
 
@@ -610,15 +610,15 @@ void Library::createUserHeapData
 	int objectNum, 
 	void** dataP, 
 	UINT dataSize,
-	Object3DData& objectData
+	ModelData& modelData
 )
 {
 
-	if (!checkCreateVertexBuffer(objectData.type))return;
+	if (!checkCreateVertexBuffer(modelData.type))return;
 	directx12->setConstMapData(dataP, dataSize);
 
 
-	directx12->createHeapData(true, objectData.key, objectNum, texturePath, nullptr);
+	directx12->createHeapData(true, modelData.key, objectNum, texturePath, nullptr);
 
 }
 
@@ -628,15 +628,15 @@ void Library::createUserHeapData2
 	int objectNum,
 	void** dataP,
 	UINT dataSize,
-	Object3DData& objectData
+	ModelData& modelData
 )
 {
 
-	if (!checkCreateVertexBuffer(objectData.type))return;
+	if (!checkCreateVertexBuffer(modelData.type))return;
 	directx12->setConstMapData(dataP, dataSize);
 
 
-	directx12->createHeapData(true, objectData.key, objectNum, L"", &color);
+	directx12->createHeapData(true, modelData.key, objectNum, L"", &color);
 
 }
 
@@ -718,12 +718,12 @@ void Library::createSprite(sprite* sprite)
 
 void Library::drawGraphic
 (
-	const Object3DData& objectData,
+	const ModelData& modelData,
 	int number
 )
 {
-	directx12->map(objectData.key, number);
-	directx12->setCmdList(objectData.key, number);
+	directx12->map(modelData.key, number);
+	directx12->setCmdList(modelData.key, number);
 }
 
 void Library::drawSprite(Vector2 position, sprite spriteNumber, texture* textureNumber)
@@ -779,10 +779,10 @@ void Library::drawBox(const Vector2 position, const Vector2& size, const Color& 
 #pragma endregion
 
 #pragma region 削除
-void Library::deleteObject3DData(const Object3DData& objectData)
+void Library::deleteObject3DData(const ModelData& modelData)
 {
-	directx12->deletePolygonData(objectData.key);
-	directx12->deleteHeapData(objectData.key);
+	directx12->deletePolygonData(modelData.key);
+	directx12->deleteHeapData(modelData.key);
 }
 
 
@@ -802,20 +802,20 @@ void Library::setSmoothingFlag(bool flag)
 }
 #pragma endregion
 
-void Library::setMulColor(Color color,const Object3DData& objectData, int number)
+void Library::setMulColor(Color color,const ModelData& modelData, int number)
 {
 	
-	directx12->setMulColor(color, objectData.key, number);
+	directx12->setMulColor(color, modelData.key, number);
 }
-void Library::setAddColor(Color color,const Object3DData& objectData, int number)
+void Library::setAddColor(Color color,const ModelData& modelData, int number)
 {
 
-	directx12->setAddColor(color, objectData.key, number);
+	directx12->setAddColor(color, modelData.key, number);
 }
-void Library::setSubColor(Color color,const Object3DData& objectData, int number)
+void Library::setSubColor(Color color,const ModelData& modelData, int number)
 {
 	
-	directx12->setSubColor(color, objectData.key, number);
+	directx12->setSubColor(color, modelData.key, number);
 }
 
 void Library::setIsPlane(bool flag)
@@ -894,27 +894,27 @@ void Library::setLightColor(Color lightColor)
 #pragma endregion
 
 #pragma region 操作
-void Library::setPosition(Vector3 position, const Object3DData& objectData , int number)
+void Library::setPosition(Vector3 position, const ModelData& modelData , int number)
 {
 	
-	directx12->setObjectPosition({ position.x,position.y,position.z }, objectData.key, number);
+	directx12->setObjectPosition({ position.x,position.y,position.z }, modelData.key, number);
 }
 
 
-void Library::setAngle(Vector3 angle, const Object3DData& objectData,  int number)
+void Library::setAngle(Vector3 angle, const ModelData& modelData,  int number)
 {
 
-	directx12->setObjectAngle({ angle.x,angle.y,angle.z }, objectData.key, number);
+	directx12->setObjectAngle({ angle.x,angle.y,angle.z }, modelData.key, number);
 }
 
-void Library::setScale(Vector3 scale, const Object3DData& objectData , int number)
+void Library::setScale(Vector3 scale, const ModelData& modelData , int number)
 {
-	directx12->setObjectScale({ scale.x,scale.y,scale.z }, objectData.key, number);
+	directx12->setObjectScale({ scale.x,scale.y,scale.z }, modelData.key, number);
 }
 
-void Library::setPushPorigonNumber(float ex, const Object3DData& objectData, int number)
+void Library::setPushPorigonNumber(float ex, const ModelData& modelData, int number)
 {
-	directx12->setObjectPushNum(ex, objectData.key, number);
+	directx12->setObjectPushNum(ex, modelData.key, number);
 }
 
 
@@ -997,11 +997,11 @@ void Library::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
 #pragma endregion
 
 #pragma region 頂点座標取得など
-std::vector<std::vector<Vector3>> Library::getVertexPosition(const Object3DData& objectData)
+std::vector<std::vector<Vector3>> Library::getVertexPosition(const ModelData& modelData)
 {
 	std::vector<std::vector<Vector3>>vector3VertexPos;
 	std::vector<std::vector<DirectX::XMFLOAT3>> xmFloat3VertexPos;
-	xmFloat3VertexPos = directx12->getObjectVertexPosition(objectData.key);
+	xmFloat3VertexPos = directx12->getObjectVertexPosition(modelData.key);
 	vector3VertexPos.resize(xmFloat3VertexPos.size());
 
 	int num = xmFloat3VertexPos.size();
@@ -1021,7 +1021,7 @@ std::vector<std::vector<Vector3>> Library::getVertexPosition(const Object3DData&
 
 }
 
-bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const Object3DData& objectData)
+bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const ModelData& modelData)
 {
 	
 
@@ -1044,7 +1044,7 @@ bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertP
 			
 		}
 	}
-	return directx12->overrideWriteVertexPosition(kariXM, objectData.key);
+	return directx12->overrideWriteVertexPosition(kariXM, modelData.key);
 }
 #pragma endregion
 
@@ -1089,10 +1089,10 @@ bool Library::loadTextIntVector(const char* path, std::vector<std::vector<int>>&
 #pragma endregion
 
 #pragma region 親子構造
-void Library::setParent(const Object3DData& objectData, int number, const Object3DData& parentObjectData, int parentNum)
+void Library::setParent(const ModelData& modelData, int number, const ModelData& parentmodelData, int parentNum)
 {
 
-	directx12->setParent(objectData.key, number, parentObjectData.key, parentNum);
+	directx12->setParent(modelData.key, number, parentmodelData.key, parentNum);
 }
 
 #pragma endregion
