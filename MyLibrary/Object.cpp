@@ -21,14 +21,14 @@ void Object::draw()
 
 }
 
-void Object::hit(Object* object, const CollisionType& collisionType, const int& arrayNum)
+void Object::hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
 {
 }
 
-bool Object::getIsDead() { return isDead; }
+bool Object::getEraseManager() { return eraseManager; }
 void Object::initializeObject() 
 {
-	isDead = false;
+	eraseManager = false;
 }
 
 CollisionFlag Object::getCollisionFlag() 
@@ -46,7 +46,7 @@ void* Object::getPtr()
 	return this;
 }
 
-std::vector<LineSegmentData>& Object::getLineSegmentData()
+std::vector<LineSegmentData> Object::getLineSegmentData()
 {
 	return lineSegmentData;
 }
@@ -56,9 +56,19 @@ std::vector<PlaneData> Object::getPlaneData()
 	return planeData;
 }
 
-std::vector<BoardData>& Object::getBoardData()
+std::vector<BoardData> Object::getBoardData()
 {
 	return boardData;
+}
+
+Vector3& Object::getLineSegmentHitPosition(const int & num)
+{
+	return lineSegmentData[num].hitPos;
+}
+
+Vector3& Object::getBoardHitPosition(const int & num)
+{
+	return boardData[num].hitPos;
 }
 
 

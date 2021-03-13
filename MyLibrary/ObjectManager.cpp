@@ -146,8 +146,8 @@ void ObjectManager::update()
 						))
 						{
 
-							c1.hitPos = hitPos;
-							c2.hitPos = hitPos;
+							o1->getLineSegmentHitPosition(collisionCount[0]) = hitPos;
+							o2->getBoardHitPosition(collisionCount[1]) = hitPos;
 
 							o1->hit(o2, CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
 							o2->hit(o1, CollisionType::COLLISION_BOARD, collisionCount[1]);
@@ -192,7 +192,7 @@ void ObjectManager::update()
 						&hitPos
 						))
 					{
-						c1.hitPos = hitPos;
+						o1->getBoardHitPosition(collisionCount[0]) = hitPos;
 					
 						o1->hit(cursor.get(), CollisionType::COLLISION_BOARD, collisionCount[0]);
 					}
@@ -221,7 +221,7 @@ void ObjectManager::isDeadCheck()
 	int size = objects.size();
 	for (int i = 0; i < size; i++)
 	{
-		if (objects[i]->getIsDead())
+		if (objects[i]->getEraseManager())
 		{
 			delete objects[i];
 			objects.erase(objects.begin() + i);
