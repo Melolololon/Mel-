@@ -73,6 +73,7 @@ enum LibraryPipeline
 
 
 using namespace Microsoft::WRL;
+
 class DirectX12
 {
 
@@ -267,16 +268,30 @@ private:
 	};
 	std::unordered_map < std::string, ObjectConstData>objectConstData;
 
+#pragma region ボーン
+
 	struct BoneData
 	{
 		//読み込んだときの位置から、どのくらい動かすかを表したfloat3
 		std::vector<std::vector<DirectX::XMFLOAT3>>moveVector;
-
 		std::vector<std::vector<DirectX::XMFLOAT3>>scale;
 		std::vector<std::vector<DirectX::XMFLOAT3>>angle;
 	};
 	//[key モデルごと][オブジェクトの番号ごと][ボーンごと]
 	std::unordered_map < std::string, BoneData> boneConstData;
+
+	//ボーンの親をセットするときにセットする値
+	struct ParentBoneData
+	{
+		int parentBoneNum;//-1は未セット
+		DirectX::XMFLOAT3 angleImpact;
+		DirectX::XMFLOAT3 scaleImpact;
+		DirectX::XMFLOAT3 moveVectorImpact;
+	};
+	//[モデルごと][ボーンごと](オブジェクトごとに変える必要なさそうなので、こうしてる)
+	std::unordered_map<std::string, std::vector<ParentBoneData>> parentBoneData;
+
+#pragma endregion
 
 
 	std::unordered_map<std::string, std::vector<Material>>materials;
@@ -795,9 +810,9 @@ public:
 	  void setOBJBoneMoveVector
 	  (
 		  const DirectX::XMFLOAT3& vector, 
-		  const int& boneNum, 
+		  const UINT& boneNum,
 		  const std::string& key, 
-		  const int& objectNum
+		  const UINT& objectNum
 	  );
 
 	 /// <summary>
@@ -809,9 +824,9 @@ public:
 	  void setOBJBoneScale
 	  (
 		  const DirectX::XMFLOAT3& scale,
-		  const int& boneNum, 
+		  const UINT& boneNum,
 		  const std::string& key,
-		  const int& objectNum
+		  const UINT& objectNum
 	  );
 
 	 /// <summary>
@@ -823,10 +838,43 @@ public:
 	  void setOBJBoneAngle
 	  (
 		  const DirectX::XMFLOAT3& angle, 
-		  const int& boneNum, 
+		  const UINT& boneNum,
 		  const std::string& key, 
-		  const int& objectNum
+		  const UINT& objectNum
 	  );
+
+	  /// <summary>
+  /// ボーンに親ボーンをセットします
+  /// </summary>
+  /// <param name="boneNum">ボーン番号</param>
+  /// <param name="parentBoneNum">親ボーン番号</param>
+  /// <param name="modelData">モデルデータ</param>
+	  void setParentOBJBone
+	  (
+		  const UINT& boneNum,
+		  const UINT& parentBoneNum,
+		  const std::string& key
+	  );
+
+	  void setParentOBJBoneScaleImpact
+	  (
+		  const UINT& boneNum,
+		  const DirectX::XMFLOAT3& scaleImpact,
+		  const std::string& key
+	  );
+	  void setParentOBJBoneAngleImpact
+	  (
+		  const UINT& boneNum,
+		  const DirectX::XMFLOAT3& angleImpact,
+		  const std::string& key
+	  );
+	  void setParentOBJBoneMoveVectorImpact
+	  (
+		  const UINT& boneNum,
+		  const DirectX::XMFLOAT3& moveVectorImpact,
+		  const std::string& key
+	  );
+
 #pragma endregion
 
 

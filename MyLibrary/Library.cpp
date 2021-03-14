@@ -972,9 +972,9 @@ void Library::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
 void Library::setOBJBoneMoveVector
 (
 	const Vector3& vector, 
-	const int& boneNum, 
+	const UINT& boneNum,
 	const ModelData& modelData,
-	const int& objectNum
+	const UINT& objectNum
 )
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
@@ -987,9 +987,9 @@ void Library::setOBJBoneMoveVector
 void Library::setOBJBoneScale
 (
 	const Vector3& scale,
-	const int& boneNum, 
+	const UINT& boneNum,
 	const ModelData& modelData,
-	const int& objectNum
+	const UINT& objectNum
 )
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
@@ -1000,14 +1000,83 @@ void Library::setOBJBoneScale
 void Library::setOBJBoneAngle
 (
 	const Vector3& angle, 
-	const int& boneNum, 
+	const UINT& boneNum,
 	const ModelData& modelData,
-	const int& objectNum
+	const UINT& objectNum
 )
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
 	directx12->setOBJBoneAngle(angle.toXMFLOAT3(), boneNum, modelData.key, objectNum);
+}
+
+void Library::setParentOBJBone
+(
+	const UINT& boneNum,
+	const UINT& parentBoneNum,
+	const ModelData& modelData
+)
+{
+	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+		return;
+
+	directx12->setParentOBJBone
+	(
+		boneNum, 
+		parentBoneNum,
+		modelData.key
+	);
+}
+
+void Library::setParentOBJBoneScaleImpact
+(
+	const UINT& boneNum,
+	const Vector3& scaleImpact,
+	const ModelData& modelData
+)
+{
+	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+		return;
+	directx12->setParentOBJBoneScaleImpact
+	(
+		boneNum,
+		scaleImpact.toXMFLOAT3(),
+		modelData.key
+	);
+}
+
+void Library::setParentOBJBoneAngleImpact
+(
+	const UINT& boneNum,
+	const Vector3& angleImpact,
+	const ModelData& modelData
+)
+{
+	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+		return;
+	directx12->setParentOBJBoneAngleImpact
+	(
+		boneNum,
+		angleImpact.toXMFLOAT3(),
+		modelData.key
+	);
+}
+
+void Library::setParentOBJBoneMoveVectorImpact
+(
+	const UINT& boneNum,
+	const Vector3& moveVectorImpact,
+	const ModelData& modelData
+)
+{
+	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+		return;
+	directx12->setParentOBJBoneMoveVectorImpact
+	(
+		boneNum,
+		moveVectorImpact.toXMFLOAT3(),
+		modelData.key
+	);
 }
 
 #pragma endregion

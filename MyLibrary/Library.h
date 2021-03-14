@@ -729,9 +729,9 @@ public:
 	static void setOBJBoneMoveVector
 	(
 		const Vector3& vector,
-		const int& boneNum ,
+		const UINT& boneNum ,
 		const ModelData& modelData,
-		const int& objectNum
+		const UINT& objectNum
 	);
 
 	/// <summary>
@@ -743,9 +743,9 @@ public:
 	static void setOBJBoneScale
 	(
 		const Vector3& scale, 
-		const int& boneNum, 
+		const UINT& boneNum,
 		const ModelData& modelData, 
-		const int& objectNum
+		const UINT& objectNum
 	);
 
 	/// <summary>
@@ -754,7 +754,59 @@ public:
 	/// <param name="angle"></param>
 	/// <param name="boneNum"></param>
 	/// <param name="modelData"></param>
-	static void setOBJBoneAngle(const Vector3& angle, const int& boneNum, const ModelData& modelData, const int& objectNum);
+	static void setOBJBoneAngle
+	(
+		const Vector3& angle, 
+		const UINT& boneNum,
+		const ModelData& modelData, 
+		const UINT& objectNum
+	);
+
+	/// <summary>
+	/// ボーンに親ボーンをセットします
+	/// </summary>
+	/// <param name="boneNum">ボーン番号</param>
+	/// <param name="parentBoneNum">親ボーン番号</param>
+	/// <param name="modelData">モデルデータ</param>
+	static void setParentOBJBone
+	(
+		const UINT& boneNum,
+		const UINT& parentBoneNum,
+		const ModelData& modelData
+	);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="scaleImpact">拡縮影響度(倍率)</param>
+	static void setParentOBJBoneScaleImpact
+	(
+		const UINT& boneNum, 
+		const Vector3& scaleImpact,
+		const ModelData& modelData
+	);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="angleImpact">角度影響度(倍率)</param>
+	static void setParentOBJBoneAngleImpact
+	(
+		const UINT& boneNum,
+		const Vector3& angleImpact,
+		const ModelData& modelData
+	);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="moveVectorImpact">移動量影響度(倍率)</param>
+	static void setParentOBJBoneMoveVectorImpact
+	(
+		const UINT& boneNum, 
+		const Vector3& moveVectorImpact,
+		const ModelData& modelData
+	);
 
 #pragma endregion
 

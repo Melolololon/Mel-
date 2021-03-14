@@ -2167,8 +2167,6 @@ void DirectX12::loadOBJMaterial
 	{
 		//ボーン用意
 		BoneData bData;
-		
-		
 		std::vector<DirectX::XMFLOAT3> xmFloat3Vector(objAnimationBonePositions[key].size(), { 0,0,0 });
 		std::vector<std::vector<DirectX::XMFLOAT3>>xmFloat3Vector2(objectNumber, xmFloat3Vector);
 		bData.angle = xmFloat3Vector2;
@@ -2181,6 +2179,14 @@ void DirectX12::loadOBJMaterial
 		bData.scale = xmFloat3Vector2;
 
 		boneConstData.emplace(key, bData);
+
+		ParentBoneData pBoneData;
+		pBoneData.angleImpact = { 1.0f,1.0f,1.0f };
+		pBoneData.scaleImpact = { 1.0f,1.0f,1.0f };
+		pBoneData.angleImpact = { 1.0f,1.0f,1.0f };
+		pBoneData.parentBoneNum = -1;
+		std::vector<ParentBoneData>pBoneDatas(objAnimationBonePositions[key].size(), pBoneData);
+		parentBoneData.emplace(key, pBoneDatas);
 	}
 
 	createCommonBuffer(loadNum,key);
@@ -3851,6 +3857,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 			}
 			else//ボーンがあったら
 			{
+				//スムースシェーディング
 				for (UINT i = 0; i < size; i++)
 				{
 					OBJAnimationVertex* aniVertex;
@@ -3877,12 +3884,21 @@ void DirectX12::map(const ModelData& modelData,int number )
 				}
 
 				//ボーンの値マップ
-				DirectX::XMMATRIX boneMat;
+				DirectX::XMMATRIX boneMat = DirectX::XMMatrixIdentity();
 				DirectX::XMFLOAT3 boneScale;
 				DirectX::XMFLOAT3 boneAngle;
 				DirectX::XMFLOAT3 boneMoveVector;
-				int size = boneConstData[modelData.key].moveVector[number].size();
-				for(int i = 0; i < size;i++)//0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
+				UINT boneNum = boneConstData[modelData.key].moveVector[number].size();
+				
+				//親ボーンの行列乗算
+				int parentBoneNum = 0;
+				int bone = 0;
+
+				DirectX::XMFLOAT3 parentBoneAngleImpact = { 0.0f,0.0f,0.0f };
+				DirectX::XMFLOAT3 parentBoneScaleImpact = { 1.0f,1.0f,1.0f };
+				DirectX::XMFLOAT3 parentBoneMoveVectorImpact = { 0.0f,0.0f,0.0f };
+
+				for(int i = 0; i < boneNum;i++)//0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
 				{
 					boneMat = DirectX::XMMatrixIdentity();
 
@@ -3895,11 +3911,66 @@ void DirectX12::map(const ModelData& modelData,int number )
 					boneMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(boneAngle.y));
 
 					boneMoveVector = boneConstData[modelData.key].moveVector[number][i];
+					
 					//なぜかxとzが+-逆になってる
+					//シェーダーでモデルの行列を乗算する前にボーンの行列を乗算してたからだった
+					//(モデルはY軸基準で180度回転してた)
 					boneMat *= DirectX::XMMatrixTranslation(boneMoveVector.x, boneMoveVector.y, boneMoveVector.z);
 
+
+					//親のボーン番号代入
+					parentBoneNum = parentBoneData[modelData.key][i].parentBoneNum;
+					parentBoneAngleImpact = parentBoneData[modelData.key][i].angleImpact;
+					parentBoneScaleImpact = parentBoneData[modelData.key][i].scaleImpact;
+					parentBoneMoveVectorImpact = parentBoneData[modelData.key][i].moveVectorImpact;
+					//親の値を乗算
+					while (1)
+					{
+						//-1だったら(親がセットされてなかったら)抜ける
+						if (parentBoneNum == -1)break;
+
+					
+						//親ボーンの値乗算
+						boneScale = boneConstData[modelData.key].scale[number][parentBoneNum] ;
+						boneMat *= DirectX::XMMatrixScaling
+						(
+							boneScale.x * parentBoneScaleImpact.x,
+							boneScale.y * parentBoneScaleImpact.y,
+							boneScale.z * parentBoneScaleImpact.z
+						);
+
+						boneAngle = boneConstData[modelData.key].angle[number][parentBoneNum];
+						boneMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(boneAngle.z * parentBoneAngleImpact.z));
+						boneMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(boneAngle.x * parentBoneAngleImpact.x));
+						boneMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(boneAngle.y * parentBoneAngleImpact.y));
+
+						boneMoveVector = boneConstData[modelData.key].moveVector[number][parentBoneNum];
+						boneMat *= DirectX::XMMatrixTranslation
+						(
+							boneMoveVector.x * parentBoneMoveVectorImpact.x,
+							boneMoveVector.y * parentBoneMoveVectorImpact.y,
+							boneMoveVector.z * parentBoneMoveVectorImpact.z
+						);
+
+						//親のボーン番号代入
+						parentBoneNum = parentBoneData[modelData.key][parentBoneNum].parentBoneNum;
+					
+						//影響度代入
+					//影響度は、アングル、スケール、座標で分けたほうがいい(スケールだけは100.0fで影響しなくなるので、分けたほうがいい)
+					//親は1つでいいので、親のボーン番号を格納する部分は配列にしなくていい
+						if (parentBoneNum != -1) 
+						{
+							parentBoneAngleImpact = parentBoneData[modelData.key][parentBoneNum].angleImpact;
+							parentBoneScaleImpact = parentBoneData[modelData.key][parentBoneNum].scaleImpact;
+							parentBoneMoveVectorImpact = parentBoneData[modelData.key][parentBoneNum].moveVectorImpact;
+						}
+					}
+
+
 					constData3D->boneMat[i + 1] = boneMat;
+					
 				}
+
 					
 			}
 
@@ -4231,9 +4302,9 @@ void DirectX12::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
 void DirectX12::setOBJBoneMoveVector
 (
 	const DirectX::XMFLOAT3& vector,
-	const int& boneNum,
+	const UINT& boneNum,
 	const std::string& key,
-	const int& objectNum
+	const UINT& objectNum
 )
 {
 	boneConstData[key].moveVector[objectNum][boneNum] = vector;
@@ -4242,9 +4313,9 @@ void DirectX12::setOBJBoneMoveVector
 void DirectX12::setOBJBoneScale
 (
 	const DirectX::XMFLOAT3& scale,
-	const int& boneNum,
+	const UINT& boneNum,
 	const std::string& key,
-	const int& objectNum
+	const UINT& objectNum
 )
 {
 	boneConstData[key].scale[objectNum][boneNum] = scale;
@@ -4253,13 +4324,54 @@ void DirectX12::setOBJBoneScale
 void DirectX12::setOBJBoneAngle
 (
 	const DirectX::XMFLOAT3& angle,
-	const int& boneNum,
+	const UINT& boneNum,
 	const std::string& key,
-	const int& objectNum
+	const UINT& objectNum
 )
 {
 	boneConstData[key].angle[objectNum][boneNum] = angle;
 }
+
+void DirectX12::setParentOBJBone
+(
+	const UINT& boneNum,
+	const UINT& parentBoneNum,
+	const std::string& key
+)
+{
+	parentBoneData[key][boneNum].parentBoneNum = parentBoneNum;
+}
+
+void DirectX12::setParentOBJBoneScaleImpact
+(
+	const UINT& boneNum,
+	const DirectX::XMFLOAT3& scaleImpact,
+	const std::string& key
+)
+{
+	parentBoneData[key][boneNum].scaleImpact = scaleImpact;
+}
+
+void DirectX12::setParentOBJBoneAngleImpact
+(
+	const UINT& boneNum,
+	const DirectX::XMFLOAT3& angleImpact,
+	const std::string& key
+)
+{
+	parentBoneData[key][boneNum].angleImpact = angleImpact;
+}
+
+void DirectX12::setParentOBJBoneMoveVectorImpact
+(
+	const UINT& boneNum,
+	const DirectX::XMFLOAT3& moveVectorImpact,
+	const std::string& key
+)
+{
+	parentBoneData[key][boneNum].moveVectorImpact = moveVectorImpact;
+}
+
 
 #pragma endregion
 
