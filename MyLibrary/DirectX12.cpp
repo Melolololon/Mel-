@@ -4227,14 +4227,6 @@ void DirectX12::map(const ModelData& modelData,int number )
 
 	constBufferSet[modelData.key][number].constBuffer[0].Get()->Unmap(0, nullptr);
 
-	float mag = 0.5f;
-	float mag2 = 0.5f;
-	float num = 50 * mag;
-	DirectX::XMMATRIX test = DirectX::XMMatrixIdentity();
-	DirectX::XMMATRIX test2 = DirectX::XMMatrixIdentity();
-	test = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(25));
-	test2 = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(12.5));
-
 }
 
 

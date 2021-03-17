@@ -55,13 +55,8 @@ void Play::update()
 	Vector3 addVec(0, 0, addAngleY);
 	Library::setOBJBoneAngle(addVec, 2, modelD, 0);
 
-	addVec = { 0, 0, addAngleY + 20 };
-	Library::setOBJBoneAngle(addVec, 3, modelD, 0);
-
-	addVec = {0, 0, addAngleY + 40};
-	Library::setOBJBoneAngle(addVec, 4, modelD, 0);
-	/*Library::setParentOBJBone(3, 2, modelD);
-	Library::setParentOBJBone(4, 3, modelD);*/
+	Library::setParentOBJBone(3, 2, modelD);
+	Library::setParentOBJBone(4, 3, modelD);
 
 	//3がアングルとか設定してなくて0になってたから、4の影響度いじっても0掛けちゃって変化なかった
 	//行列格納してそれ掛けてもダメ(自分の影響度を計算できなくなる)
@@ -93,8 +88,14 @@ void Play::update()
 	//回転位置調整したほうがいい?
 	//なぜか影響度0でも曲がる
 	//親の数値しかかけてないから
-	/*Library::setParentOBJBoneAngleImpact(4, {2,2,2}, modelD);
-	Library::setParentOBJBoneAngleImpact(3, {2,2,2}, modelD);*/
+
+	//できた
+	//OKなのにできてないと思い込んでた
+	//全て自分のボーンを基準に回すなら全部足してまとめずに拡縮、回転、平行移動を繰り返さないといけないけど、
+	//子ボーンに対応してるオブジェクトをすべて一番上の親(親が-1のボーン)基準で回すなら、まとめてしまっていい
+	//MMDなどで3Dモデル動かしたら、子は一番上の親基準で回ってたのでこれで良し
+	Library::setParentOBJBoneAngleImpact(4, {1,1,1}, modelD);
+	Library::setParentOBJBoneAngleImpact(3, {1,1,1}, modelD);
 
 
 	//Library::setParentOBJBone(4, 5, modelD);
