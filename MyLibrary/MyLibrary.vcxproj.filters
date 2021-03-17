@@ -117,6 +117,9 @@
     <ClCompile Include="Matrix.cpp">
       <Filter>ソース ファイル\Struct</Filter>
     </ClCompile>
+    <ClCompile Include="ModelBone.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
@@ -224,6 +227,9 @@
     </ClInclude>
     <ClInclude Include="Matrix.h">
       <Filter>ヘッダー ファイル\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelBone.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

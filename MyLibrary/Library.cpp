@@ -12,12 +12,12 @@ HWND  Library::hwnd;
 bool Library::isEnd;
 
 bool Library::isDestroy;
-int Library::count;
+UINT Library::count;
 
 int Library::createPointCount;
 
 bool Library::isSetFPS60;
-unsigned int Library::fps;
+UINT Library::fps;
 
 int Library::loadFontTextureCounter;
 int Library::loadTextureCounter;
@@ -882,7 +882,7 @@ void Library::setCameraNearAndFar(float nearNum, float farNum)
 
 void Library::setLightVector(Vector3 vector)
 {
-	Vector3 v = normalize(vector);
+	Vector3 v = vector3Normalize(vector);
 	directx12->setLightVector({ v.x,v.y,v.z });
 }
 //
@@ -969,6 +969,31 @@ void Library::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
 #pragma endregion
 
 #pragma region アニメーション
+
+std::vector<Vector3> Library::getBonePosition(const ModelData& modelData)
+{
+	std::vector<DirectX::XMFLOAT3>getVector = directx12->getBonePosition(modelData.key);
+	std::vector<Vector3>returnVector(getVector.size());
+
+	int count = 0;
+	for(auto& retV : returnVector)
+	{
+		retV = getVector[count];
+		count++;
+	}
+	return returnVector;
+}
+
+//void setOBJModelPoint
+//(
+//	const Vector3& position, 
+//	const UINT& boneNum,
+//	const ModelData& modelData
+//)
+//{
+//
+//}
+
 void Library::setOBJBoneMoveVector
 (
 	const Vector3& vector, 
@@ -1118,13 +1143,13 @@ std::vector<std::vector<Vector3>> Library::getVertexPosition(const ModelData& mo
 	xmFloat3VertexPos = directx12->getObjectVertexPosition(modelData.key);
 	vector3VertexPos.resize(xmFloat3VertexPos.size());
 
-	int num = xmFloat3VertexPos.size();
-	int xmSize = 0;
-	for (int i = 0; i < num; i++) 
+	size_t num = xmFloat3VertexPos.size();
+	size_t xmSize = 0;
+	for (size_t i = 0; i < num; i++)
 	{
 		xmSize = xmFloat3VertexPos[i].size();
 		vector3VertexPos[i].resize(xmSize);
-		for(int j = 0; j < xmSize;j++)
+		for(size_t j = 0; j < xmSize;j++)
 		{
 			vector3VertexPos[i][j] = xmFloat3VertexPos[i][j];
 		}
@@ -1141,18 +1166,18 @@ bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertP
 
 	std::vector<std::vector<DirectX::XMFLOAT3>> kariXM;
 	kariXM.resize(vertPos.size());
-	int num = vertPos.size();
-	for (int i = 0; i < num; i++)
+	size_t num = vertPos.size();
+	for (size_t i = 0; i < num; i++)
 	{
 		kariXM[i].resize(vertPos[i].size());
 	}
 
 	num = kariXM.size();
-	int num2 = 0;
-	for (int i = 0; i < num; i++)
+	size_t num2 = 0;
+	for (size_t i = 0; i < num; i++)
 	{
 		num2 = kariXM[i].size();
-		for (int j = 0; j < num2; j++) 
+		for (size_t j = 0; j < num2; j++)
 		{
 			kariXM[i][j] = vertPos[i][j].toXMFLOAT3();
 			

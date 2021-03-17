@@ -88,7 +88,7 @@ void Vector2::operator=(const float& num)
 /// <param name="vector1"></param>
 /// <param name="vector2"></param>
 /// <returns></returns>
-float dot(const Vector2& vector1, const Vector2& vector2)
+float vector2Dot(const Vector2& vector1, const Vector2& vector2)
 {
 	return vector1.x *vector2.x + vector1.y*vector2.y;
 }
@@ -197,7 +197,7 @@ void Vector3::operator=(const float& num)
 /// </summary>
 /// <param name="vector"></param>
 /// <returns></returns>
-Vector3 normalize(const Vector3& vector)
+Vector3 vector3Normalize(const Vector3& vector)
 {
 	if (vector.x == 0 && vector.y == 0 && vector.z == 0)return { 0,0,0 };
 	float size = (float)(sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z));
@@ -210,7 +210,7 @@ Vector3 normalize(const Vector3& vector)
 /// <param name="vector1"></param>
 /// <param name="vector2"></param>
 /// <returns></returns>
-Vector3 cross(const Vector3& vector1, const Vector3& vector2)
+Vector3 vector3Cross(const Vector3& vector1, const Vector3& vector2)
 {
 	Vector3 cross;
 	cross.x = vector1.y *vector2.z - vector1.z * vector2.y;
@@ -225,7 +225,7 @@ Vector3 cross(const Vector3& vector1, const Vector3& vector2)
 /// <param name="vector1"></param>
 /// <param name="vector2"></param>
 /// <returns></returns>
-float dot(const Vector3& vector1, const Vector3& vector2)
+float vector3dot(const Vector3& vector1, const Vector3& vector2)
 {
 	return vector1.x *vector2.x + vector1.y*vector2.y + vector1.z *vector2.z;
 }

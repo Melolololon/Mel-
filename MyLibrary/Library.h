@@ -37,7 +37,7 @@ class Library
 private:
 	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-	static int count;
+	static UINT count;
 	static int createPointCount;
 
 	static std::unique_ptr<Audio> audio;
@@ -61,7 +61,7 @@ private:
 	static HDC hdc;//dcのハンドル
 
 	static bool isSetFPS60;
-	static unsigned int fps;//現在設定されているfps
+	static UINT fps;//現在設定されているfps
 	static int refReat;//リフレッシュレート
 	static DWORD startProsessTime;//計測開始時の時間
 	static DWORD nowTime;//現在の時間
@@ -720,6 +720,23 @@ public:
 #pragma endregion
 
 #pragma region アニメーション
+	
+
+	//行列で回転させたボーンも取得できたほうがいい?
+	static std::vector<Vector3> getBonePosition(const ModelData& modelData);
+
+	/// <summary>
+	/// ボーンを回転させるときの基準座標をセットします。ボーンを操作してモデルを動かすとき、この座標を基準に回転します。
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="modelData"></param>
+	//static void setOBJModelRotatePoint
+	//(
+	//	const Vector3& position, 
+	//	const UINT& boneNum,
+	//	const ModelData& modelData
+	//);
+
 	/// <summary>
 	/// ボーンを初期位置からどのくらい動かすかを指定し、動かします
 	/// </summary>
@@ -776,7 +793,7 @@ public:
 	);
 
 	/// <summary>
-	/// 
+	/// 親オブジェクトの拡縮の影響度を設定します
 	/// </summary>
 	/// <param name="scaleImpact">拡縮影響度(倍率)</param>
 	static void setParentOBJBoneScaleImpact
@@ -787,9 +804,9 @@ public:
 	);
 
 	/// <summary>
-	/// 
+	/// 親オブジェクトの回転の影響度を設定します
 	/// </summary>
-	/// <param name="angleImpact">角度影響度(倍率)</param>
+	/// <param name="angleImpact">回転影響度(倍率)</param>
 	static void setParentOBJBoneAngleImpact
 	(
 		const UINT& boneNum,
@@ -798,7 +815,7 @@ public:
 	);
 
 	/// <summary>
-	/// 
+	/// 親オブジェクトの移動量の影響度を設定します
 	/// </summary>
 	/// <param name="moveVectorImpact">移動量影響度(倍率)</param>
 	static void setParentOBJBoneMoveVectorImpact

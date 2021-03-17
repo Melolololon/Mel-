@@ -15,6 +15,7 @@ public:
 	MouseCursor();
 	~MouseCursor();
 
+	void initialize()override;
 	void update()override;
 	
 	Vector2 getPosition2D() { return position2D; }

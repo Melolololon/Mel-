@@ -12,6 +12,10 @@ Object::~Object()
 {
 }
 
+void Object::initialize()
+{
+}
+
 void Object::update() 
 {
 }
@@ -26,7 +30,7 @@ void Object::hit(const Object* const object, const CollisionType& collisionType,
 }
 
 bool Object::getEraseManager() { return eraseManager; }
-void Object::initializeObject() 
+void Object::objectInitialize() 
 {
 	eraseManager = false;
 }

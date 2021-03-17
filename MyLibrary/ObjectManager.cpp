@@ -28,7 +28,8 @@ void ObjectManager::initialize()
 
 	checkMouseCollision = false;
 	cameraPosition = 0.0f;
-	cursor = std::unique_ptr<MouseCursor>(new MouseCursor());
+	cursor = std::make_unique<MouseCursor>();
+	cursor.get()->initialize();
 
 	addObjectSort = OBJECT_SORT_NONE;
 	addObjectSortOrderType = false;
@@ -43,7 +44,7 @@ void ObjectManager::update()
 	//拡張for文は、途中でサイズ変えるとダメ
 	//変数用意してsize入れるか、一時的に別の配列に入れて、update終了後に追加
 	std::vector<Object*>o = objects;
-	for (auto& obj : o) 
+	for (auto& obj : o)
 	{
 		obj->update();
 	}
@@ -83,9 +84,9 @@ void ObjectManager::update()
 				sphere1 = o1->getSphereData();
 				sphere2 = o2->getSphereData();
 
-				for (auto& c1 : sphere1)
+				for (const auto& c1 : sphere1)
 				{
-					for (auto& c2 : sphere2)
+					for (const auto& c2 : sphere2)
 					{
 						if (LibMath::sphereCollision
 						(
@@ -123,9 +124,9 @@ void ObjectManager::update()
 
 				segmentData1 = o1->getLineSegmentData();
 				boardData1 = o2->getBoardData();
-				for (auto& c1 : segmentData1)
+				for (const auto& c1 : segmentData1)
 				{
-					for (auto& c2 : boardData1)
+					for (const auto& c2 : boardData1)
 					{
 						std::vector<Vector3>p(4);
 						p[0] = c2.leftDownPos;
@@ -174,7 +175,7 @@ void ObjectManager::update()
 			if(o1->getCollisionFlag().board)
 			{
 				boardData1 = o1->getBoardData();
-				for (auto& c1 : boardData1)
+				for (const auto& c1 : boardData1)
 				{
 					std::vector<Vector3>p(4);
 					p[0] = c1.leftDownPos;
@@ -218,8 +219,8 @@ void ObjectManager::draw()
 
 void ObjectManager::isDeadCheck()
 {
-	int size = objects.size();
-	for (int i = 0; i < size; i++)
+	size_t size = objects.size();
+	for (size_t i = 0; i < size; i++)
 	{
 		if (objects[i]->getEraseManager())
 		{
@@ -246,9 +247,11 @@ void ObjectManager::reserveObjectArray(const int& reserveNum)
 
 void ObjectManager::addObject(Object* object)
 {
+
 	if (object)
 	{
-		object->initializeObject();
+		object->objectInitialize();
+		object->initialize();
 		objects.push_back(object);
 	}
 

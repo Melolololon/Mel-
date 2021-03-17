@@ -8,7 +8,7 @@ cbuffer cbuff0 : register(b0)
 	float4 subColor;
 	float ex;
 	matrix worldMat;
-	matrix boneMatArray[20];
+	matrix boneMatArray[64];
 };
 
 cbuffer cbuff3 : register(b3)

@@ -224,10 +224,7 @@ private:
 	//[モデルごと(keyでアクセス)][objにあるモデルごと][頂点ごと]
 	std::unordered_map<std::string, std::vector<std::vector<Vertex>>> vertices;
 	//std::unordered_map<std::string, std::vector<std::vector<OBJAnimationVertex>>> objAnimationVertices;//Vertexに加え、ボーン番号を追加
-	std::unordered_map<std::string, std::vector<std::vector<int>>> objAnimationBoneNums;//ボーン番号
-
-	//[モデルごと(keyでアクセス)][ボーンごと]
-	std::unordered_map<std::string, std::vector<DirectX::XMFLOAT3>> objAnimationBonePositions;//ボーン番号
+	
 
 
 	std::unordered_map<std::string, std::vector<std::vector<USHORT>>> indices;
@@ -270,20 +267,38 @@ private:
 
 #pragma region ボーン
 
+	//表示してるモデル1つ1つが違う値の構造体
 	struct BoneData
 	{
-		//読み込んだときの位置から、どのくらい動かすかを表したfloat3
+		//0,0,0から、どのくらい動かすかを表したfloat3
 		std::vector<std::vector<DirectX::XMFLOAT3>>moveVector;
+
 		std::vector<std::vector<DirectX::XMFLOAT3>>scale;
 		std::vector<std::vector<DirectX::XMFLOAT3>>angle;
 	};
 	//[key モデルごと][オブジェクトの番号ごと][ボーンごと]
 	std::unordered_map < std::string, BoneData> boneConstData;
 
+
+	////モデルごとに違うデータ(同じモデルだったらいっしょ)
+	//[モデルごと(keyでアクセス)][.obj内のオブジェクトごと][頂点ごと]
+	std::unordered_map<std::string, std::vector<std::vector<int>>> objBoneNums;//ボーン番号
+	//[モデルごと(keyでアクセス)][ボーンごと]
+	std::unordered_map<std::string, std::vector<DirectX::XMFLOAT3>> objBonePositions;//ボーン番号
+
+
+
+	//struct ModelBoneData
+	//{
+	//	std::vector<DirectX::XMFLOAT3>bonePos;//ボーン座方
+	//	//DirectX::XMFLOAT3 rotatePoint;//回転するときの基準座標
+	//};
+	//std::unordered_map<std::string, ModelBoneData>modelBoneData;
+
 	//ボーンの親をセットするときにセットする値
 	struct ParentBoneData
 	{
-		int parentBoneNum;//-1は未セット
+		int parentBoneNum;//-1を未セットにするため、int型
 		DirectX::XMFLOAT3 angleImpact;
 		DirectX::XMFLOAT3 scaleImpact;
 		DirectX::XMFLOAT3 moveVectorImpact;
@@ -801,6 +816,16 @@ public:
 #pragma endregion
 
 #pragma region アニメーション
+
+	 std::vector<DirectX::XMFLOAT3> getBonePosition(const std::string& key);
+
+	 void setOBJModelRotatePoint
+	 (
+		 const DirectX::XMFLOAT3& position,
+		 const UINT& boneNum,
+		 const ModelData& modelData
+	 );
+
 	 /// <summary>
 	/// ボーンを初期位置からどのくらい動かすかを指定し、動かします
 	/// </summary>

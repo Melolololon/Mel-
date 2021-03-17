@@ -39,6 +39,8 @@ public:
 	Object();
 	//デストラクタ
 	virtual ~Object();
+
+	virtual void initialize();
 	//処理
 	virtual void update();
 	//描画処理
@@ -53,7 +55,7 @@ public:
 	virtual void hit(const Object* const object,const CollisionType& collisionType,const int& arrayNum);
 
 	bool getEraseManager();
-	void initializeObject();
+	void objectInitialize();
 	
 	Vector3 getPosition() { return position; };
 

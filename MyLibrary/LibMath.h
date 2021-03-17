@@ -15,14 +15,13 @@ private:
 public:
 
 	/// <summary>
-	/// num1とnum2の値の差を求め、trueかfalseを返します
+	/// num1とnum2の値の差を求め、差 <= 基準の値だったらtrueを返します
 	/// </summary>
 	/// <param name="num1">値1</param>
 	/// <param name="num2">値2</param>
 	/// <param name="difference">基準の値</param>
-	/// <param name="type">0 基準の値以内でtrue  1 基準の値以上でtrue</param>
 	/// <returns></returns>
-	static bool difference(float num1, float num2, float difference, int type);
+	static bool difference(const float& num1, const float& num2, const float& difference);
 
 	/// <summary>
 		/// 度数法の角度をラジアンに　ラジアンを度数法の角度に
@@ -201,7 +200,7 @@ public:
 	/// <param name="distance"></param>
 	/// <param name="crossPos"></param>
 	/// <returns></returns>
-	static bool layAndPlaneCollision
+	static bool rayAndPlaneCollision
 	(
 		Vector3 layStartPos,
 		Vector3 layDirection,
@@ -211,7 +210,7 @@ public:
 		Vector3* crossPos
 	);
 
-	static bool layAndTryangleCollision
+	static bool rayAndTryangleCollision
 	(
 		Vector3 layStartPos,
 		Vector3 layDirection,
@@ -226,7 +225,7 @@ public:
 	/// <summary>
 	/// 半直線と球の当たり判定
 	/// </summary>
-	static bool layAndSphereCollision
+	static bool rayAndSphereCollision
 	(
 		Vector3 layStartPos,
 		Vector3 layDirection,
