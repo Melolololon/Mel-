@@ -3897,6 +3897,12 @@ void DirectX12::map(const ModelData& modelData,int number )
 			DirectX::XMFLOAT3 boneScaleImpact = { 1.0f,1.0f,1.0f };
 			DirectX::XMFLOAT3 boneMoveVectorImpact = { 0.0f,0.0f,0.0f };
 			DirectX::XMFLOAT3 bonePos;
+
+			auto mulRotateOrTrans = [](const float& num , const float& mag)
+			{
+				return num * mag - num;
+			};
+
 			for (int i = 0; i < boneNum; i++)//0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
 			{
 				boneMat = DirectX::XMMatrixIdentity();
@@ -3968,105 +3974,246 @@ void DirectX12::map(const ModelData& modelData,int number )
 				if (parentNums.size() != 0)
 				{
 					//乗算
-					DirectX::XMFLOAT3 parentAngleImpact = boneAngleImpact;
-					DirectX::XMFLOAT3 parentScaleImpact = boneScaleImpact;
-					DirectX::XMFLOAT3 parentMoveVectorImpact = boneMoveVectorImpact;
+					DirectX::XMFLOAT3 mulAngleImpact = {0,0,0};
+					DirectX::XMFLOAT3 mulScaleImpact = {1,1,1};
+					DirectX::XMFLOAT3 mulMoveVectorImpact = { 0,0,0 };
 
-					DirectX::XMFLOAT3 parentAngle = { 0,0,0 };
-					DirectX::XMFLOAT3 parentScale = { 0,0,0 };
-					DirectX::XMFLOAT3 parentMoveVector = { 0,0,0 };
-					DirectX::XMFLOAT3 parentBonePos = { 0,0,0 };
+					DirectX::XMFLOAT3 mulAngle = { 0,0,0 };
+					DirectX::XMFLOAT3 mulScale = { 0,0,0 };
+					DirectX::XMFLOAT3 mulMoveVector = { 0,0,0 };
+					DirectX::XMFLOAT3 currentBonePos = { 0,0,0 };
 
 					DirectX::XMMATRIX mulMat = DirectX::XMMatrixIdentity();
 					int currentNum = static_cast<int>(parentNums.size());
 					const int maxParentSize = static_cast<int>(parentNums.size());
 
+					DirectX::XMFLOAT3 allAngle = { 0,0,0 };
+					DirectX::XMFLOAT3 allScale = { 1,1,1 };
+					DirectX::XMFLOAT3 allMoveVector = { 0,0,0 };
+
+					DirectX::XMFLOAT3 pAngle = {0,0,0};
+					DirectX::XMFLOAT3 pScale = { 1,1,1 };
+					DirectX::XMFLOAT3 pMoveVector = { 0,0,0 };
+					DirectX::XMFLOAT3 pPos = { 0,0,0 };
+
+					std::vector<DirectX::XMFLOAT3>pAngleImpact;
+					std::vector<DirectX::XMFLOAT3>pScaleImpact;
+					std::vector<DirectX::XMFLOAT3>pMoveVectorImpact;
 					
-					
-					for (int j = maxParentSize - 1; j > -1; j--)
+					mulMat = DirectX::XMMatrixIdentity();
+
+					for(auto& num : parentNums)
 					{
+						pAngle.x += boneConstData[modelData.key].angle[number][num].x;
+						pAngle.y += boneConstData[modelData.key].angle[number][num].y;
+						pAngle.z += boneConstData[modelData.key].angle[number][num].z;
 
-						mulMat = DirectX::XMMatrixIdentity();
+						pScale.x *= boneConstData[modelData.key].scale[number][num].x;
+						pScale.y *= boneConstData[modelData.key].scale[number][num].y;
+						pScale.z *= boneConstData[modelData.key].scale[number][num].z;
 
-						//ここ逆?(どんどん増やさないといけない?)大丈夫そう -1じゃだめ?
-						//現在計算中から、一番上の親までループするようにする
-						//最大(一番上の親)から現在-2までループ
-						for (int k = currentNum - 1; k > -1 ;k--)
-						{
-							//値入れる
-							parentAngle = boneConstData[modelData.key].angle[number][parentNums[k]];
-							parentScale = boneConstData[modelData.key].scale[number][parentNums[k]];
-							parentMoveVector = boneConstData[modelData.key].moveVector[number][parentNums[k]];
+						pMoveVector.x += boneConstData[modelData.key].moveVector[number][num].x;
+						pMoveVector.y += boneConstData[modelData.key].moveVector[number][num].y;
+						pMoveVector.z += boneConstData[modelData.key].moveVector[number][num].z;
 
-							parentBonePos = objBonePositions[modelData.key][parentNums[k]];
-							//影響度取得ループ
-							//一番上の親の影響度掛けないから0で終了
-							//現在から0(子)までループ
-							//変更 一番親の一個下から現在-3までループ
-							for (int l = maxParentSize - 2; l > currentNum - 2; l--)
-							{
+						pPos.x += objBonePositions[modelData.key][num].x;
+						pPos.y += objBonePositions[modelData.key][num].y;
+						pPos.z += objBonePositions[modelData.key][num].z;
 
-									parentAngleImpact.x *= parentBoneData[modelData.key][parentNums[l]].angleImpact.x;
-									parentAngleImpact.y *= parentBoneData[modelData.key][parentNums[l]].angleImpact.y;
-									parentAngleImpact.z *= parentBoneData[modelData.key][parentNums[l]].angleImpact.z;
-
-									parentScaleImpact.x *= parentBoneData[modelData.key][parentNums[l]].scaleImpact.x;
-									parentScaleImpact.y *= parentBoneData[modelData.key][parentNums[l]].scaleImpact.y;
-									parentScaleImpact.z *= parentBoneData[modelData.key][parentNums[l]].scaleImpact.z;
-
-									parentMoveVectorImpact.x *= parentBoneData[modelData.key][parentNums[l]].moveVectorImpact.x;
-									parentMoveVectorImpact.y *= parentBoneData[modelData.key][parentNums[l]].moveVectorImpact.y;
-									parentMoveVectorImpact.z *= parentBoneData[modelData.key][parentNums[l]].moveVectorImpact.z;
-								
-							}
-
-							mulMat *= DirectX::XMMatrixTranslation
-							(
-								-parentBonePos.x,
-								-parentBonePos.y,
-								-parentBonePos.z
-							);
-
-							mulMat *= DirectX::XMMatrixScaling
-							(
-								parentScale.x * parentScaleImpact.x,
-								parentScale.y * parentScaleImpact.y,
-								parentScale.z * parentScaleImpact.z
-							);
-
-							mulMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(parentAngle.z * parentAngleImpact.z));
-							mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(parentAngle.x * parentAngleImpact.x));
-							mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(parentAngle.y * parentAngleImpact.y));
-
-							mulMat *= DirectX::XMMatrixTranslation
-							(
-								boneMoveVector.x * parentMoveVectorImpact.x,
-								boneMoveVector.y * parentMoveVectorImpact.y,
-								boneMoveVector.z * parentMoveVectorImpact.z
-							);
-
-							mulMat *= DirectX::XMMatrixTranslation
-							(
-								parentBonePos.x,
-								parentBonePos.y,
-								parentBonePos.z
-							);
-						}
-
-						//親のボーン番号代入
-						//parentBoneNum = parentBoneData[modelData.key][parentBoneNum].parentBoneNum;
-
-						parentMat.push_back(mulMat);
-						parentAngleImpact = boneAngleImpact;
-						parentScaleImpact = boneScaleImpact;
-						parentMoveVectorImpact = boneMoveVectorImpact;
-						currentNum--;
-
+						pAngleImpact.push_back(parentBoneData[modelData.key][num + 1].angleImpact);
+						pScaleImpact.push_back(parentBoneData[modelData.key][num+1].scaleImpact);
+						pMoveVectorImpact.push_back(parentBoneData[modelData.key][num+1].moveVectorImpact);
 					}
-					std::reverse(parentMat.begin(), parentMat.end());
+					int impactSize = static_cast<int>(pAngleImpact.size());
+					for (int i = 0; i < impactSize;i++)
+					{
+						pAngle.x *= pAngleImpact[i].x;
+						pAngle.y *= pAngleImpact[i].y;
+						pAngle.z *= pAngleImpact[i].z;
+
+						pScale.x *= pScaleImpact[i].x;
+						pScale.y *= pScaleImpact[i].y;
+						pScale.z *= pScaleImpact[i].z;
+
+						pMoveVector.x *= pMoveVectorImpact[i].x;
+						pMoveVector.y *= pMoveVectorImpact[i].y;
+						pMoveVector.z *= pMoveVectorImpact[i].z;
+					}
+
+					//ボーンから頂点の距離分移動
+					mulMat *= DirectX::XMMatrixTranslation(-pPos.x, -pPos.y, -pPos.z);
+
+					mulMat *= DirectX::XMMatrixScaling(pScale.x, pScale.y, pScale.z);
+
+					mulMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(pAngle.z));
+					mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(pAngle.x));
+					mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(pAngle.y));
+
+					mulMat *= DirectX::XMMatrixTranslation(pMoveVector.x, pMoveVector.y, pMoveVector.z);
+
+					//回転させたら戻す
+					mulMat *= DirectX::XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
+
+
+
+
+
+					//ここのループいらない?
+//					for (int j = maxParentSize - 1; j > -1; j--)
+//					{
+//
+//						
+//
+//						//ここ逆?(どんどん増やさないといけない?)大丈夫そう -1じゃだめ?
+//						//現在計算中から、一番上の親までループするようにする
+//						//最大(一番上の親)から現在-2までループ
+//						//for (int k = currentNum - 1; k > -1 ;k--)
+//						for (int k = maxParentSize - 1; k > -1 ;k--)
+//						{
+//
+//
+//
+//#pragma region 前の
+//
+//
+//							////値入れる
+//							//mulAngle = boneConstData[modelData.key].angle[number][parentNums[k]];
+//							//mulScale = boneConstData[modelData.key].scale[number][parentNums[k]];
+//							//mulMoveVector = boneConstData[modelData.key].moveVector[number][parentNums[k]];
+//
+//							//currentBonePos = objBonePositions[modelData.key][parentNums[k]];
+//							////影響度取得ループ
+//							////一番上の親の影響度掛けないから0で終了
+//							////現在から0(子)までループ
+//							////変更 一番親の一個下から現在-3までループ
+//							///*for (int l = maxParentSize - 2; l > currentNum - 2; l--)
+//							//{
+//
+//							//		parentAngleImpact.x *= parentBoneData[modelData.key][parentNums[l]].angleImpact.x;
+//							//		parentAngleImpact.y *= parentBoneData[modelData.key][parentNums[l]].angleImpact.y;
+//							//		parentAngleImpact.z *= parentBoneData[modelData.key][parentNums[l]].angleImpact.z;
+//
+//							//		parentScaleImpact.x *= parentBoneData[modelData.key][parentNums[l]].scaleImpact.x;
+//							//		parentScaleImpact.y *= parentBoneData[modelData.key][parentNums[l]].scaleImpact.y;
+//							//		parentScaleImpact.z *= parentBoneData[modelData.key][parentNums[l]].scaleImpact.z;
+//
+//							//		parentMoveVectorImpact.x *= parentBoneData[modelData.key][parentNums[l]].moveVectorImpact.x;
+//							//		parentMoveVectorImpact.y *= parentBoneData[modelData.key][parentNums[l]].moveVectorImpact.y;
+//							//		parentMoveVectorImpact.z *= parentBoneData[modelData.key][parentNums[l]].moveVectorImpact.z;
+//							//	
+//							//}*/
+//							//if (k - 1 != -1) 
+//							//{
+//							//	mulAngleImpact = parentBoneData[modelData.key][parentNums[k - 1]].angleImpact;
+//							//	mulScaleImpact = parentBoneData[modelData.key][parentNums[k -1]].scaleImpact;
+//							//	mulMoveVectorImpact = parentBoneData[modelData.key][parentNums[k -1]].moveVectorImpact;
+//							//}
+//							//else
+//							//{
+//							//	mulAngleImpact = boneAngleImpact;
+//							//	mulScaleImpact = boneScaleImpact;
+//							//	mulMoveVectorImpact = boneMoveVectorImpact;
+//
+//							//}
+//							//mulMat *= DirectX::XMMatrixTranslation
+//							//(
+//							//	-currentBonePos.x,
+//							//	-currentBonePos.y,
+//							//	-currentBonePos.z
+//							//);
+//
+//
+//							//allScale.x += mulScale.x;
+//							//allScale.y += mulScale.y;
+//							//allScale.z += mulScale.z;
+//							//mulMat *= DirectX::XMMatrixScaling
+//							//(
+//							//	mulScale.x ,
+//							//	mulScale.y ,
+//							//	mulScale.z 
+//							//); 
+//							//mulMat *= DirectX::XMMatrixScaling
+//							//(
+//							//	mulScaleImpact.x,
+//							//	mulScaleImpact.y,
+//							//	mulScaleImpact.z
+//							//);
+//
+//							////親のすべての回転角度を保存して、その分mulRotateOrTransで掛けて、
+//							////全ての角度を
+//							//allAngle.x += mulAngle.x;
+//							//allAngle.y += mulAngle.y;
+//							//allAngle.z += mulAngle.z;
+//							////allAngle.z *= mulAngleImpact.z;
+//							//mulMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(allAngle.z *mulAngleImpact.z));
+//							//
+//							//mulMat *= DirectX::XMMatrixRotationZ
+//							//(
+//							//	mulRotateOrTrans(DirectX::XMConvertToRadians(allAngle.z), mulAngleImpact.z)
+//							//); 
+//							//
+//
+//							//mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(mulAngle.x ));
+//							//mulMat *= DirectX::XMMatrixRotationX
+//							//(
+//							//	mulRotateOrTrans(DirectX::XMConvertToRadians(allAngle.x), mulAngleImpact.x)
+//							//);
+//							//
+//							//mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(mulAngle.y ));
+//							//mulMat *= DirectX::XMMatrixRotationY
+//							//(
+//							//	mulRotateOrTrans(DirectX::XMConvertToRadians(allAngle.y), mulAngleImpact.y)
+//							//);
+//							//
+//						
+//						 //   allMoveVector.x += mulMoveVector.x;
+//							//allMoveVector.y += mulMoveVector.y;
+//							//allMoveVector.z += mulMoveVector.z;
+//							//mulMat *= DirectX::XMMatrixTranslation
+//							//(
+//							//	mulMoveVector.x,
+//							//	mulMoveVector.y,
+//							//	mulMoveVector.z
+//							//);
+//
+//							////ここもmulRotateOrTransやる
+//							//mulMat *= DirectX::XMMatrixScaling
+//							//(
+//							//	 mulMoveVectorImpact.x,
+//							//	 mulMoveVectorImpact.y,
+//							//	 mulMoveVectorImpact.z
+//							//);
+//					
+//
+//							//mulMat *= DirectX::XMMatrixTranslation
+//							//(
+//							//	currentBonePos.x,
+//							//	currentBonePos.y,
+//							//	currentBonePos.z
+//							//);
+//#pragma endregion
+//						}
+//
+//						//親のボーン番号代入
+//						//parentBoneNum = parentBoneData[modelData.key][parentBoneNum].parentBoneNum;
+//
+//						/*parentMat.push_back(mulMat);
+//						mulAngleImpact = boneAngleImpact;
+//						mulScaleImpact = boneScaleImpact;
+//						mulMoveVectorImpact = boneMoveVectorImpact;
+//						currentNum--;*/
+//
+//					}
+					//逆にして順番に掛ける
+
+			/*		std::reverse(parentMat.begin(), parentMat.end());
 					for (const auto& mat : parentMat)
 						boneMat *= mat;
-					parentMat.clear();
+					parentMat.clear();*/
+
+
+
+                     boneMat *= mulMat;
 				}
 				constData3D->boneMat[i + 1] = boneMat;
 
@@ -4080,7 +4227,13 @@ void DirectX12::map(const ModelData& modelData,int number )
 
 	constBufferSet[modelData.key][number].constBuffer[0].Get()->Unmap(0, nullptr);
 
-
+	float mag = 0.5f;
+	float mag2 = 0.5f;
+	float num = 50 * mag;
+	DirectX::XMMATRIX test = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX test2 = DirectX::XMMatrixIdentity();
+	test = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(25));
+	test2 = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(12.5));
 
 }
 

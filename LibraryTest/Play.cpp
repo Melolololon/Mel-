@@ -44,7 +44,7 @@ void Play::update()
 	if (DirectInput::keyState(DIK_A))
 		modelZ += 2.0f;
 	if (DirectInput::keyState(DIK_S))
-		modelZ -= 2.0f; 
+		modelZ -= 2.0f;
 	Library::setAngle({ 0,0,modelZ }, modelD, 0);*/
 
 	if (DirectInput::keyState(DIK_Z))
@@ -54,8 +54,14 @@ void Play::update()
 
 	Vector3 addVec(0, 0, addAngleY);
 	Library::setOBJBoneAngle(addVec, 2, modelD, 0);
-	Library::setParentOBJBone(3, 2, modelD);
-	Library::setParentOBJBone(4, 3, modelD);
+
+	addVec = { 0, 0, addAngleY + 20 };
+	Library::setOBJBoneAngle(addVec, 3, modelD, 0);
+
+	addVec = {0, 0, addAngleY + 40};
+	Library::setOBJBoneAngle(addVec, 4, modelD, 0);
+	/*Library::setParentOBJBone(3, 2, modelD);
+	Library::setParentOBJBone(4, 3, modelD);*/
 
 	//3がアングルとか設定してなくて0になってたから、4の影響度いじっても0掛けちゃって変化なかった
 	//行列格納してそれ掛けてもダメ(自分の影響度を計算できなくなる)
@@ -82,8 +88,13 @@ void Play::update()
 	//親の行列を計算する(あとでやるため、ここで親 * 親の親をする必要はない)(この時、子に影響度を掛ける)
 	//子の行列を計算する
 	//子 * 親 * 親の親 の順で計算
-	Library::setParentOBJBoneAngleImpact(4, { 1.5,1.5,1.5 }, modelD);
-	Library::setParentOBJBoneAngleImpact(3, { 1.5,1.5,1.5 }, modelD);
+
+	//回転させるのはできたけどモデルがつぶれる
+	//回転位置調整したほうがいい?
+	//なぜか影響度0でも曲がる
+	//親の数値しかかけてないから
+	/*Library::setParentOBJBoneAngleImpact(4, {2,2,2}, modelD);
+	Library::setParentOBJBoneAngleImpact(3, {2,2,2}, modelD);*/
 
 
 	//Library::setParentOBJBone(4, 5, modelD);
