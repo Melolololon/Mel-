@@ -4002,6 +4002,10 @@ void DirectX12::map(const ModelData& modelData,int number )
 					
 					mulMat = DirectX::XMMatrixIdentity();
 
+					pPos.x = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].x;
+					pPos.y = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].y;
+					pPos.z = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].z;
+
 					for(auto& num : parentNums)
 					{
 						pAngle.x += boneConstData[modelData.key].angle[number][num].x;
@@ -4016,9 +4020,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 						pMoveVector.y += boneConstData[modelData.key].moveVector[number][num].y;
 						pMoveVector.z += boneConstData[modelData.key].moveVector[number][num].z;
 
-						pPos.x += objBonePositions[modelData.key][num].x;
-						pPos.y += objBonePositions[modelData.key][num].y;
-						pPos.z += objBonePositions[modelData.key][num].z;
+					
 
 						pAngleImpact.push_back(parentBoneData[modelData.key][num + 1].angleImpact);
 						pScaleImpact.push_back(parentBoneData[modelData.key][num+1].scaleImpact);
