@@ -1,12 +1,15 @@
 #pragma once
 #include<array>
 #include"Vector.h"
-
+#include<DirectXMath.h>
 struct Matrix
 {
+	Matrix();
+	Matrix(const DirectX::XMMATRIX& m);
+
 	std::array<std::array<float,4>,4> matrix;
 
-	Matrix operator*(const Matrix& mat);
+	Matrix operator*(const Matrix& mat)const;
 	void operator*=(const Matrix& mat);
 };
 

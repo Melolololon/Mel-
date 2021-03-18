@@ -79,7 +79,17 @@ void Play::draw()
 	Quaternion p(10,10,10,10);
 	Quaternion q(10,10,10,10);
 	p = p * q;
+	Quaternion r = getRotateQuaternion({ 10,0,0 }, { 0,1,0 }, 180);
+
+	Vector2 v;
+	v = LibMath::angleToVector2(90);
+	
+	Matrix m1 = getIdentityMatrix();
+	Matrix m2 = m1;
+
 	int z = 0;
+
+
 }
 
 void Play::end()

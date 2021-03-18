@@ -1,9 +1,21 @@
 #include "Matrix.h"
 #include<cmath>
 
+Matrix::Matrix()
+{
+}
+
+Matrix::Matrix(const DirectX::XMMATRIX& m)
+{
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
+			matrix[i][j] = m.r[i].m128_f32[j];
+}
+
+
 #pragma region 演算子
 
-Matrix Matrix::operator*(const Matrix& mat)
+Matrix Matrix::operator*(const Matrix& mat)const
 {
 	Matrix m = getZeroMatrix();
 
@@ -30,39 +42,33 @@ void Matrix::operator*=(const Matrix& mat)
 
 
 /// <summary>
-/// 零行列を返します
+/// 零行列を作成します 
 /// </summary>
 Matrix getZeroMatrix()
 {
 	Matrix m;
 	for(auto& mat : m.matrix)
-	{
 		for(auto& mat2 : mat)
-		{
 			mat2 = 0;
-		}
-	}
 	return m;
 }
 
 /// <summary>
-/// 単位行列を返します
+/// 単位行列を作成します
 /// </summary>
 /// <returns></returns>
 Matrix getIdentityMatrix()
 {
 	Matrix m = getZeroMatrix();
 
-	m.matrix[0][0] = 1;
-	m.matrix[1][1] = 1;
-	m.matrix[2][2] = 1;
-	m.matrix[3][3] = 1;
+	for(int i = 0; i < 4;i++)
+	m.matrix[i][i] = 1;
 
 	return m;
 }
 
 /// <summary>
-/// X軸を基準に回転する行列を返します
+/// X軸を基準に回転する行列を作成します
 /// </summary>
 /// <returns></returns>
 Matrix getRotateXMatrix(const float& angle)

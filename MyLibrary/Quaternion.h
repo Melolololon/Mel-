@@ -1,9 +1,17 @@
 #pragma once
+#include"Vector.h"
 struct Quaternion
 {
-	float x, y, z, w;
+	float w, x, y, z;
 
-	Quaternion(const float& x, const float& y, const float& z, const float& w);
-	Quaternion operator* (const Quaternion& q);
+	Quaternion();
+	Quaternion(const float& w,const float& x, const float& y, const float& z);
+	Quaternion(const float& w,const Vector3& v);
+	Quaternion operator* (const Quaternion& q)const;
+	
+	void operator*= (const Quaternion& q);
+
+	
 };
 
+Quaternion getRotateQuaternion(const Vector3& pos, const Vector3& vector, const float& angle);

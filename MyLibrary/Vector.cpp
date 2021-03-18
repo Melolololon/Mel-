@@ -24,19 +24,19 @@ Vector2::Vector2(const DirectX::XMFLOAT2& f)
 
 #pragma region ‰‰ŽZŽq
 
-Vector2 Vector2::operator+(const Vector2& vector)
+Vector2 Vector2::operator+(const Vector2& vector)const
 {
 	return { x + vector.x, y + vector.y };
 }
-Vector2 Vector2::operator-(const Vector2& vector)
+Vector2 Vector2::operator-(const Vector2& vector)const
 {
 	return { x - vector.x, y - vector.y };
 }
-Vector2 Vector2::operator*(const Vector2& vector)
+Vector2 Vector2::operator*(const Vector2& vector)const
 {
 	return { x * vector.x, y * vector.y };
 }
-Vector2 Vector2::operator/(const Vector2& vector)
+Vector2 Vector2::operator/(const Vector2& vector)const
 {
 	return { x / vector.x, y / vector.y };
 }
@@ -66,9 +66,21 @@ void Vector2::operator/= (const Vector2& vector)
 }
 
 
-Vector2 Vector2::operator*(const float& f)
+Vector2 Vector2::operator*(const float& f)const
 {
 	return { x * f, y * f };
+}
+Vector2 Vector2::operator+(const float& f)const
+{
+	return { x + f, y + f };
+}
+Vector2 Vector2::operator-(const float& f)const
+{
+	return { x - f, y - f };
+}
+Vector2 Vector2::operator/(const float& f)const
+{
+	return { x / f, y / f };
 }
 
 void Vector2::operator=(const float& num)
@@ -129,19 +141,19 @@ Vector3::Vector3(const DirectX::XMFLOAT3& f)
 
 #pragma region ‰‰ŽZŽq
 
-Vector3 Vector3::operator+(const Vector3&  vector)
+Vector3 Vector3::operator+(const Vector3&  vector)const
 {
 	return { x + vector.x, y + vector.y, z + vector.z };
 }
-Vector3 Vector3::operator-(const Vector3&  vector)
+Vector3 Vector3::operator-(const Vector3&  vector)const
 {
 	return { x - vector.x, y - vector.y, z - vector.z };
 }
-Vector3 Vector3::operator*(const Vector3&  vector)
+Vector3 Vector3::operator*(const Vector3&  vector)const
 {
 	return { x * vector.x, y * vector.y, z * vector.z };
 }
-Vector3 Vector3::operator/(const Vector3&  vector)
+Vector3 Vector3::operator/(const Vector3&  vector)const
 {
 	return { x / vector.x, y / vector.y, z / vector.z };
 }
@@ -176,9 +188,21 @@ void Vector3::operator/= (const Vector3&  vector)
 }
 
 
-Vector3 Vector3::operator*(const float& f)
+Vector3 Vector3::operator+(const float& f)const
+{
+	return { x + f, y + f, z +f };
+}
+Vector3 Vector3::operator-(const float& f)const
+{
+	return { x - f, y - f, z -f };
+}
+Vector3 Vector3::operator*(const float& f)const
 {
 	return { x * f, y * f, z *f };
+}
+Vector3 Vector3::operator/(const float& f)const
+{
+	return { x / f, y / f, z /f };
 }
 
 void Vector3::operator=(const float& num)

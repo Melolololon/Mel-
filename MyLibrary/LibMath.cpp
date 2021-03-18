@@ -51,18 +51,17 @@ float LibMath::calcDistance3D(Vector3 pos1, Vector3 pos2)
 	);
 }
 
-Vector3 LibMath::otherVector(Vector3 myPos, Vector3 otherPos)
+Vector3 LibMath::otherVector(const Vector3& vec1, const Vector3& vec2)
 {
 	Vector3 vec;
-	vec.x = (otherPos.x - myPos.x);
-	vec.y = (otherPos.y - myPos.y);
-	vec.z = (otherPos.z - myPos.z);
-	float size = sqrt(vec.x *vec.x + vec.y *vec.y + vec.z *vec.z);
-	return{ vec.x / size ,vec.y / size  ,vec.z / size };
+	vec = vec2 - vec1;
+	return vector3Normalize(vec);
 }
 
+#pragma region vector2
 
-float LibMath::twoVector2Angle(Vector2 v1, Vector2 v2)
+
+float LibMath::twoVector2Angle(const Vector2& v1, const Vector2& v2)
 {
 
 	float f = vector2Dot(v1, v2);
@@ -75,31 +74,35 @@ float LibMath::twoVector2Angle(Vector2 v1, Vector2 v2)
 	return f;
 }
 
-float LibMath::vecto2rToAngle(Vector2 v)
+float LibMath::vecto2ToAngle(const Vector2& v)
 {
-
 	float f = twoVector2Angle({ 1,0 }, v);
 	return f;
 }
 
 
-Vector2 LibMath::angleToVector2(float angle)
+Vector2 LibMath::angleToVector2(const float& angle)
 {
-	DirectX::XMMATRIX vMat = DirectX::XMMatrixIdentity();
-	vMat.r[3].m128_f32[0] = 1.0f;
-
-	DirectX::XMMATRIX aMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(angle));
-	vMat *= aMat;
-	return { vMat.r[3].m128_f32[0] , vMat.r[3].m128_f32[1] };
-
+	Quaternion q = getRotateQuaternion({ 1,0,0 }, { 0,0,1 }, angle);
+	return { q.x,q.y };
 }
 
 
-Vector2 LibMath::rotateVector2(Vector2 v, float angle)
+Vector2 LibMath::rotateVector2(const Vector2& v,const float& angle)
 {
-	float vAngle = vecto2rToAngle(v);
-	return angleToVector2(vAngle + angle);
+	Quaternion q = getRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
+	return { q.x,q.y };
 }
+#pragma endregion
+
+#pragma region Vector3
+Vector3 LibMath::rotateVector3(const Vector3& rotateV, const Vector3& vec, const float& angle)
+{
+	Quaternion q = getRotateQuaternion(rotateV, vec, angle);
+	return { q.x, q.y, q.z };
+}
+#pragma endregion
+
 
 #pragma endregion
 
