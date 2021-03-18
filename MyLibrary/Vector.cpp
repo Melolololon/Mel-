@@ -225,7 +225,7 @@ Vector3 vector3Cross(const Vector3& vector1, const Vector3& vector2)
 /// <param name="vector1"></param>
 /// <param name="vector2"></param>
 /// <returns></returns>
-float vector3dot(const Vector3& vector1, const Vector3& vector2)
+float vector3Dot(const Vector3& vector1, const Vector3& vector2)
 {
 	return vector1.x *vector2.x + vector1.y*vector2.y + vector1.z *vector2.z;
 }
@@ -233,100 +233,3 @@ float vector3dot(const Vector3& vector1, const Vector3& vector2)
 
 #pragma endregion
 
-
-#pragma region Vector4
-
-Vector4::Vector4()
-{
-}
-Vector4::Vector4(const float& num)
-{
-	x = num;
-	y = num;
-	z = num;
-	w = num;
-}
-
-Vector4::Vector4(const float& x, const float& y, const float& z, const float& w)
-{
-	this->x = x;
-	this->y = y;
-	this->z = z;
-	this->w = w;
-}
-
-Vector4::Vector4(const DirectX::XMFLOAT4& f) 
-{
-	x = f.x;
-	y = f.y;
-	z = f.z;
-	w = f.w;
-}
-
-#pragma region ‰‰ŽZŽq
-
-Vector4 Vector4::operator+(const Vector4&  vector)
-{
-	return { x + vector.x, y + vector.y, z + vector.z,w + vector.w };
-}
-Vector4 Vector4::operator-(const Vector4&  vector)
-{
-	return { x - vector.x, y - vector.y, z - vector.z ,w - vector.w };
-}
-Vector4 Vector4::operator*(const Vector4&  vector)
-{
-	return { x * vector.x, y * vector.y, z * vector.z ,w * vector.w };
-}
-Vector4 Vector4::operator/(const Vector4&  vector)
-{
-	return { x / vector.x, y / vector.y, z / vector.z ,w / vector.w };
-}
-
-void Vector4::operator+= (const Vector4&  vector)
-{
-	x = x + vector.x;
-	y = y + vector.y;
-	z = z + vector.z;
-	w = w + vector.w;
-}
-
-void Vector4::operator-= (const Vector4&  vector)
-{
-	x = x - vector.x;
-	y = y - vector.y;
-	z = z - vector.z;
-	w = w - vector.w;
-}
-
-void Vector4::operator*= (const Vector4&  vector)
-{
-	x = x * vector.x;
-	y = y * vector.y;
-	z = z * vector.z;
-	w = w * vector.w;
-}
-
-void Vector4::operator/= (const Vector4&  vector)
-{
-	x = x / vector.x;
-	y = y / vector.y;
-	z = z / vector.z;
-	w = w / vector.w;
-}
-
-
-Vector4 Vector4::operator*(const float&  f)
-{
-	return { x * f, y * f, z *f ,w * f };
-}
-
-void Vector4::operator=(const float&  num)
-{
-	x = num;
-	y = num;
-	z = num;
-	w = num;
-}
-#pragma endregion
-
-#pragma endregion

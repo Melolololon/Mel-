@@ -191,6 +191,7 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="PipelineManager.cpp" />
     <ClCompile Include="PolygonManager.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="TextLoader.cpp" />
@@ -455,6 +456,7 @@
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="PipelineManager.h" />
     <ClInclude Include="PolygonManager.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderData.h" />

@@ -1,6 +1,34 @@
 #include "Matrix.h"
 #include<cmath>
 
+#pragma region ‰‰Zq
+
+Matrix Matrix::operator*(const Matrix& mat)
+{
+	Matrix m = getZeroMatrix();
+
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
+			for (int k = 0; k < 4; k++)
+				m.matrix[i][j] += matrix[i][k] * mat.matrix[k][j];
+
+	return m;
+}
+
+
+void Matrix::operator*=(const Matrix& mat)
+{
+	Matrix m;
+	m.matrix = matrix;
+	m = m * mat;
+	matrix = m.matrix;
+}
+
+#pragma endregion
+
+
+
+
 /// <summary>
 /// —ës—ñ‚ğ•Ô‚µ‚Ü‚·
 /// </summary>

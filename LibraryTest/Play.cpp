@@ -1,6 +1,7 @@
 #include "Play.h"
 
 #include"Matrix.h"
+#include"Quaternion.h"
 
 ModelData d;
 ModelData modelD;
@@ -58,37 +59,7 @@ void Play::update()
 	Library::setParentOBJBone(3, 2, modelD);
 	Library::setParentOBJBone(4, 3, modelD);
 
-	//3がアングルとか設定してなくて0になってたから、4の影響度いじっても0掛けちゃって変化なかった
-	//行列格納してそれ掛けてもダメ(自分の影響度を計算できなくなる)
-	//親の角度とか格納して自分にセットされてる親をかけるときだけ、計算する?それでも無理
-	//自分の親や、親の親(-1になるまで)の角度や影響度をすべて格納して、計算するしかない?
 	
-	//2行目(行列格納してそれ掛けてもダメ(自分の影響度を計算できなくなる))
-	//の方法を行い、回転影響度は回転行列にかかわるところだけ影響度掛けるなどすればいい?
-	//ビュー行列とかかけないからその辺心配する必要ない。かかわるところ掛けて大丈夫だと思う
-	//乗算後じゃなくて、乗算前のを個別に格納すればいける?
-
-	//必要なもの
-	//-1になるまでに掛けるボーンのスケール、角度、移動量とそれらの影響度
-	//行列にする前に、先に計算する(スケールの場合、全ての角度と影響度をかけて、その数値を利用して、行列を作る)
-	//無理でした
-
-	//親の親の行列取得して、
-	//親 *= 親の親にすればいい?
-	//親の作るときに影響度掛けて、
-	//自分 *= 親にする?
-	//無理
-
-	//親の親の行列を計算する(この時、親と子の影響度を掛ける)
-	//親の行列を計算する(あとでやるため、ここで親 * 親の親をする必要はない)(この時、子に影響度を掛ける)
-	//子の行列を計算する
-	//子 * 親 * 親の親 の順で計算
-
-	//回転させるのはできたけどモデルがつぶれる
-	//回転位置調整したほうがいい?
-	//なぜか影響度0でも曲がる
-	//親の数値しかかけてないから
-
 	//できた
 	//OKなのにできてないと思い込んでた
 	//全て自分のボーンを基準に回すなら全部足してまとめずに拡縮、回転、平行移動を繰り返さないといけないけど、
@@ -97,23 +68,6 @@ void Play::update()
 	Library::setParentOBJBoneAngleImpact(4, {1,1,1}, modelD);
 	Library::setParentOBJBoneAngleImpact(3, {1,1,1}, modelD);
 
-
-	//Library::setParentOBJBone(4, 5, modelD);
-	//Library::setParentOBJBone(3, 4, modelD);
-	///*Library::setParentOBJBone(2, 3, modelD);
-	//Library::setParentOBJBone(1, 2, modelD);
-	//Library::setParentOBJBone(0, 1, modelD);*/
-
-	///*Library::setParentOBJBoneAngleImpact(0, { 2,2,2 }, modelD);
-	//Library::setParentOBJBoneAngleImpact(1, { 2,2,2 }, modelD);
-	//Library::setParentOBJBoneAngleImpact(2, { 2,2,2 }, modelD);*/
-	//Library::setParentOBJBoneAngleImpact(3, { 2,2,2 }, modelD);
-	//Library::setParentOBJBoneAngleImpact(4, { 2,2,2 }, modelD);
-	////Library::setParentOBJBoneAngleImpact(1, { 2,2,2 }, modelD);
-	////Library::setParentOBJBoneAngleImpact(2, { 2,2,2 }, modelD);
-	///*Library::setParentOBJBone(0, 1, modelD);
-	//Library::setParentOBJBone(1, 2, modelD);
-	//Library::setParentOBJBone(2, 3, modelD);*/
 }
 
 void Play::draw()
@@ -122,6 +76,10 @@ void Play::draw()
 	//Library::drawGraphic(d, 0);
 	Library::drawGraphic(modelD, 0);
 
+	Quaternion p(10,10,10,10);
+	Quaternion q(10,10,10,10);
+	p = p * q;
+	int z = 0;
 }
 
 void Play::end()

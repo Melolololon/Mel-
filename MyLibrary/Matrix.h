@@ -6,7 +6,8 @@ struct Matrix
 {
 	std::array<std::array<float,4>,4> matrix;
 
-	//Matrix operator*(const Matrix& mat);
+	Matrix operator*(const Matrix& mat);
+	void operator*=(const Matrix& mat);
 };
 
 
