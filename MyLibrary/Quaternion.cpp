@@ -47,21 +47,22 @@ void Quaternion::operator*= (const Quaternion& q)
 Quaternion getRotateQuaternion(const Vector3& pos, const Vector3& vector, const float& angle)
 {
 	float rad = LibMath::angleConversion(0, angle);
+	Vector3 nVector = vector3Normalize(vector);//ê≥ãKâª
 	Quaternion p(0.0f, pos);
 	Quaternion q
 	(
 		std::cos(rad / 2),
-		vector.x * std::sin(rad / 2),
-		vector.y * std::sin(rad / 2),
-		vector.z * std::sin(rad / 2)
+		nVector.x * std::sin(rad / 2),
+		nVector.y * std::sin(rad / 2),
+		nVector.z * std::sin(rad / 2)
 	);
 
 	Quaternion r
 	(
 		std::cos(rad / 2),
-		-vector.x * std::sin(rad / 2),
-		-vector.y * std::sin(rad / 2),
-		-vector.z * std::sin(rad / 2)
+		-nVector.x * std::sin(rad / 2),
+		-nVector.y * std::sin(rad / 2),
+		-nVector.z * std::sin(rad / 2)
 	);
 	return r * p * q;
 
