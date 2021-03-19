@@ -111,7 +111,7 @@ public:
 /// </summary>
 /// <param name="sort">ソートの仕方</param>
 /// <param name="orderType">true 昇順  false 降順</param>
-	void setObjectSort(const ObjectSort& sort,const bool& orderType);
+	void objectSort(const ObjectSort& sort,const bool& orderType);
 #pragma endregion
 
 	/// <summary>

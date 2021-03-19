@@ -252,7 +252,7 @@ private:
 
 
 #pragma region オブジェクト情報
-	struct ObjectConstData
+	struct ModelConstData
 	{
 		std::vector<DirectX::XMFLOAT3>position;
 		std::vector<DirectX::XMFLOAT3>scale;
@@ -263,7 +263,7 @@ private:
 		std::vector<float>pushPolygonNum;
 
 	};
-	std::unordered_map < std::string, ObjectConstData>objectConstData;
+	std::unordered_map < std::string, ModelConstData>modelConstData;
 
 #pragma region ボーン
 
@@ -973,6 +973,10 @@ public:
 	);
 #pragma endregion
 
+#pragma region ライブラリ使用関数
+	
+	void sortModelData(std::vector<std::tuple<ModelData, int>>& modelDatas);
+#pragma endregion
 
 };
 

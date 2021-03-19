@@ -256,7 +256,7 @@ void ObjectManager::addObject(Object* object)
 	}
 
 	if (addObjectSort != OBJECT_SORT_NONE)
-		setObjectSort(addObjectSort, addObjectSortOrderType);
+		objectSort(addObjectSort, addObjectSortOrderType);
 }
 
 void ObjectManager::setAddObjectSortState(const ObjectManager::ObjectSort& sort, const bool& orderType)
@@ -265,7 +265,7 @@ void ObjectManager::setAddObjectSortState(const ObjectManager::ObjectSort& sort,
 	addObjectSortOrderType = orderType;
 }
 
-void ObjectManager::setObjectSort(const ObjectManager::ObjectSort& sort, const bool& orderType)
+void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool& orderType)
 {
 	switch (sort)
 	{

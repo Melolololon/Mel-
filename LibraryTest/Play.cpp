@@ -2,12 +2,15 @@
 
 #include"Matrix.h"
 #include"Quaternion.h"
-
+#include"ObjectManager.h"
 ModelData d;
+ModelData d2;
 ModelData modelD;
+font f;
 Play::Play()
 {
 
+	
 	std::string material;
 	modelD.key = "biru";
 	
@@ -23,10 +26,14 @@ Play::Play()
 
 	d.key = "Board";
 	Library::createBoard({ 1,1 }, dimention3D, d);
-	Library::createHeapData2({ 255,255,255,255 }, 2, d);
+	Library::createHeapData2({ 0,255,255,255 }, 1, d);
+
+	d2.key = "Board2";
+	Library::createBoard({ 5,5 }, dimention3D, d2);
+	Library::createHeapData2({ 255,0,0,255 }, 1, d2);
 	//Library::loadOBJMaterial("Resources/Obj/", material, 2, d);
 
-	Library::setPosition({ 3,0,0.1 }, d, 1);
+	f = Library::loadSpriteFont(L"Resources/Font/font.png", { 14,7 }, { 20,20 });
 }
 
 
@@ -36,14 +43,26 @@ Play::~Play()
 
 void Play::initialize()
 {
+
 }
 Vector3 vec(1);
 
 float addAngleY = 0.0f;
 int bairituNum = -3;
 float modelZ = 0;
+
+UCHAR subAlpha = 0;
+
 void Play::update()
 {
+	if (DirectInput::keyState(DIK_W))
+		subAlpha++;
+	if (DirectInput::keyState(DIK_S))
+		subAlpha--;
+
+
+	Library::setSubColor({ 0,0,0,subAlpha }, d, 0);
+
 //	//今、xとzの+-が逆になってるから、どこがおかしいか探す
 //	//モデル自身の回転のせいだった(ボーン適応させた後にモデル回転させたから)
 //
@@ -78,11 +97,20 @@ void Play::update()
 
 void Play::draw()
 {
-	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
-	Library::drawGraphic(d, 0);
-	Library::drawGraphic(d, 1);
-	Library::setPosition({ 4,0,0 }, modelD, 0);
 
+
+	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
+	Library::setPosition({ 0,0,-0.5 }, d, 0);
+
+
+	//d2の描画コマンドを先にセットしないと。dのコマンドセット時に自分の後ろに板ポリがない(DirectXが気が付いてない)ので
+	//αブレンドできてなかった
+	Library::drawGraphic(d, 0);
+	Library::drawGraphic(d2, 0);
+	
+
+	std::string s = std::to_string(subAlpha);
+	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, s, &f);
 	/*Library::drawGraphic(modelD, 0);
 	Library::drawGraphic(modelD, 1);*/
 

@@ -1,5 +1,5 @@
 #include "DirectX12.h"
-
+#include"LibMath.h"
 
 
 
@@ -452,7 +452,7 @@ void DirectX12::initialize()
 	gpipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
 	//ブレンド
-	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;//どの色をブレンドできるようにするかの設定?ALLだと全ての色とαがブレンド対象?
 	blenddesc.BlendEnable = true;//ブレンドを有効にするかのフラグ
 	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算(不透明度が100%以外の時自分と後ろの色を足す)
 	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
@@ -789,6 +789,8 @@ void DirectX12::initialize()
 	pePLDesc.pRootSignature = postEffectRootSigneture.Get();
 
 
+	//パイプラインの設定
+	pePLDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	pePLDesc.BlendState.AlphaToCoverageEnable = false;
 
 
@@ -921,7 +923,7 @@ void DirectX12::preparationToDraw()
 	DirectInput::update();
 #pragma endregion
 
-#pragma region バリア生成_PRESENTからRTVへ
+#pragma region バリア生成_PSResourceからRTVへ
 
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 
@@ -1015,11 +1017,12 @@ void DirectX12::draw()
 
 
 	//Mapここまで
-
+	
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	cmdList->ResourceBarrier(1, &barrierDesc);
 
+	//板ポリをバックバッファーに描画する準備
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 	barrierDesc.Transition.pResource = backBuffer[bbIndex].Get();
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
@@ -1056,12 +1059,22 @@ void DirectX12::draw()
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
 	gpuDescHandle = postEffectHeap->GetGPUDescriptorHandleForHeapStart();
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(gpuDescHandle, 0, dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
+	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	(
+		gpuDescHandle, 
+		0, 
+		dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
 	//////テクスチャ
 	cmdList->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
 
 	//定数
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(gpuDescHandle, 1, dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
+	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	(
+		gpuDescHandle, 
+		1,
+		dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
 	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
 
 	cmdList->DrawInstanced(4, 1, 0, 0);
@@ -1347,19 +1360,19 @@ void DirectX12::getMatrix(float matrix[4][4], const std::string& key, int number
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
 	matWorld *= DirectX::XMMatrixScaling
 	(
-		objectConstData[key].scale[number].x,
-		objectConstData[key].scale[number].y,
-		objectConstData[key].scale[number].z
+		modelConstData[key].scale[number].x,
+		modelConstData[key].scale[number].y,
+		modelConstData[key].scale[number].z
 	);
-	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[key].angle[number].z));
-	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[key].angle[number].x));
-	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[key].angle[number].y));
+	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[key].angle[number].z));
+	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[key].angle[number].x));
+	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[key].angle[number].y));
 	
 	matWorld *= DirectX::XMMatrixTranslation
 	(
-		objectConstData[key].position[number].x,
-		objectConstData[key].position[number].y,
-		objectConstData[key].position[number].z
+		modelConstData[key].position[number].x,
+		modelConstData[key].position[number].y,
+		modelConstData[key].position[number].z
 	);
 
 	DirectX::XMMATRIX sumMatrix = matWorld * mainCamera->get3DCameraMatrix(mainCameraData);
@@ -1670,7 +1683,7 @@ void DirectX12::setSmoothingFlag(bool flag)
 
 void DirectX12::setMulColor(Color color, const std::string& key, int number)
 {
-	objectConstData[key].mulColor[number] =
+	modelConstData[key].mulColor[number] =
 	{
 	(float)color.r / (float)255,
 		(float)color.g / (float)255,
@@ -1696,7 +1709,7 @@ void DirectX12::setMulColor(Color color, const std::string& key, int number)
 
 void DirectX12::setAddColor(Color color, const std::string& key, int number)
 {
-	objectConstData[key].addColor[number] =
+	modelConstData[key].addColor[number] =
 	{
 		(float)color.r / (float)255,
 		(float)color.g / (float)255,
@@ -1721,7 +1734,7 @@ void DirectX12::setAddColor(Color color, const std::string& key, int number)
 
 void DirectX12::setSubColor(Color color, const std::string& key, int number)
 {
-	objectConstData[key].subColor[number] =
+	modelConstData[key].subColor[number] =
 	{
 		(float)color.r / (float)255,
 		(float)color.g / (float)255,
@@ -2738,7 +2751,7 @@ void DirectX12::createPolygonData(PolygonData polygonData,const std::string& key
 
 void DirectX12::resizeObjectData(int objectNum,const std::string& key)
 {
-	ObjectConstData objConstData;
+	ModelConstData objConstData;
 	objConstData.addColor.resize(objectNum, { 0,0,0,0 });
 	objConstData.subColor.resize(objectNum, { 0,0,0,0 });
 	objConstData.mulColor.resize(objectNum, { 1,1,1,1 });
@@ -2747,7 +2760,7 @@ void DirectX12::resizeObjectData(int objectNum,const std::string& key)
 	objConstData.position.resize(objectNum, { 0,0,0 });
 	objConstData.pushPolygonNum.resize(objectNum, 0.0f);
 
-	objectConstData.emplace(key, objConstData);
+	modelConstData.emplace(key, objConstData);
 
 	std::vector<Material>m(1);
 	materials.emplace(key, m);
@@ -3425,7 +3438,7 @@ void DirectX12::deleteHeapData(const std::string& key)
 		basicHeaps.erase(key);
 		textureData.erase(key);
 
-		objectConstData.erase(key);
+		modelConstData.erase(key);
 
 		materials.erase(key);
 
@@ -3650,19 +3663,19 @@ void DirectX12::map(const ModelData& modelData,int number )
 		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
 		matWorld *= DirectX::XMMatrixRotationZ
 		(
-			DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].z)
+			DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].z)
 		);
 		matWorld *= DirectX::XMMatrixScaling
 		(
-			objectConstData[modelData.key].scale[number].x,
-			objectConstData[modelData.key].scale[number].y,
-			objectConstData[modelData.key].scale[number].z
+			modelConstData[modelData.key].scale[number].x,
+			modelConstData[modelData.key].scale[number].y,
+			modelConstData[modelData.key].scale[number].z
 		);
 		matWorld *= DirectX::XMMatrixTranslation
 		(
-			objectConstData[modelData.key].position[number].x,
-			objectConstData[modelData.key].position[number].y,
-			objectConstData[modelData.key].position[number].z
+			modelConstData[modelData.key].position[number].x,
+			modelConstData[modelData.key].position[number].y,
+			modelConstData[modelData.key].position[number].z
 		);
 
 		constData3D->mat = matWorld * mainCamera->get2DCameraMatrix();
@@ -3672,15 +3685,15 @@ void DirectX12::map(const ModelData& modelData,int number )
 	{
 
 
-		constData3D->addColor = objectConstData[modelData.key].addColor[number];
-		constData3D->subColor = objectConstData[modelData.key].subColor[number];
-		constData3D->mulColor = objectConstData[modelData.key].mulColor[number];
-		constData3D->ex = objectConstData[modelData.key].pushPolygonNum[number];
+		constData3D->addColor = modelConstData[modelData.key].addColor[number];
+		constData3D->subColor = modelConstData[modelData.key].subColor[number];
+		constData3D->mulColor = modelConstData[modelData.key].mulColor[number];
+		constData3D->ex = modelConstData[modelData.key].pushPolygonNum[number];
 
 		DirectX::XMMATRIX normalMat;
-		normalMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].z));
-		normalMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].x));
-		normalMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].y));
+		normalMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].z));
+		normalMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].x));
+		normalMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].y));
 		constData3D->normalMat = normalMat * cameraMat;
 
 		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
@@ -3738,19 +3751,19 @@ void DirectX12::map(const ModelData& modelData,int number )
 
 		matWorld *= DirectX::XMMatrixScaling
 		(
-			objectConstData[modelData.key].scale[number].x,
-			objectConstData[modelData.key].scale[number].y,
-			objectConstData[modelData.key].scale[number].z
+			modelConstData[modelData.key].scale[number].x,
+			modelConstData[modelData.key].scale[number].y,
+			modelConstData[modelData.key].scale[number].z
 		);
-		matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].z));
-		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].x));
-		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[modelData.key].angle[number].y));
+		matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].z));
+		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].x));
+		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].y));
 
 		matWorld *= DirectX::XMMatrixTranslation
 		(
-			objectConstData[modelData.key].position[number].x,
-			objectConstData[modelData.key].position[number].y,
-			objectConstData[modelData.key].position[number].z
+			modelConstData[modelData.key].position[number].x,
+			modelConstData[modelData.key].position[number].y,
+			modelConstData[modelData.key].position[number].z
 		);
 
 		std::string parentHeap = parentHeaps[modelData.key][number];
@@ -3776,19 +3789,19 @@ void DirectX12::map(const ModelData& modelData,int number )
 
 			matWorld *= DirectX::XMMatrixScaling
 			(
-				objectConstData[parentHeap].scale[parentNum].x,
-				objectConstData[parentHeap].scale[parentNum].y,
-				objectConstData[parentHeap].scale[parentNum].z
+				modelConstData[parentHeap].scale[parentNum].x,
+				modelConstData[parentHeap].scale[parentNum].y,
+				modelConstData[parentHeap].scale[parentNum].z
 			);
-			matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(objectConstData[parentHeap].angle[parentNum].z));
-			matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(objectConstData[parentHeap].angle[parentNum].x));
-			matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(objectConstData[parentHeap].angle[parentNum].y));
+			matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[parentHeap].angle[parentNum].z));
+			matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[parentHeap].angle[parentNum].x));
+			matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[parentHeap].angle[parentNum].y));
 
 			matWorld *= DirectX::XMMatrixTranslation
 			(
-				objectConstData[parentHeap].position[parentNum].x,
-				objectConstData[parentHeap].position[parentNum].y,
-				objectConstData[parentHeap].position[parentNum].z
+				modelConstData[parentHeap].position[parentNum].x,
+				modelConstData[parentHeap].position[parentNum].y,
+				modelConstData[parentHeap].position[parentNum].z
 			);
 
 
@@ -4290,24 +4303,24 @@ void DirectX12::setOBJModelRotatePoint
 
 void DirectX12::setObjectPosition(DirectX::XMFLOAT3 position, const std::string& key, int number)
 {
-	objectConstData[key].position[number] = position;
+	modelConstData[key].position[number] = position;
 }
 
 void DirectX12::setObjectAngle(DirectX::XMFLOAT3 angle, const std::string& key, int number)
 {	
-	objectConstData[key].angle[number] = angle;
+	modelConstData[key].angle[number] = angle;
 }
 
 void DirectX12::setObjectScale(DirectX::XMFLOAT3 scale, const std::string& key, int number)
 {
 	
-	objectConstData[key].scale[number] = scale;
+	modelConstData[key].scale[number] = scale;
 	
 }
 
 void DirectX12::setObjectPushNum(float objectEX, const std::string& key, int number)
 {
-	objectConstData[key].pushPolygonNum[number] = objectEX;
+	modelConstData[key].pushPolygonNum[number] = objectEX;
 }
 
 
@@ -4821,3 +4834,33 @@ void DirectX12::calcSmoothingNormals(const std::string key)
 
 }
 #pragma endregion
+
+#pragma region ライブラリ使用関数
+void DirectX12::sortModelData(std::vector<std::tuple<ModelData, int>>& modelDatas)
+{
+	std::sort(modelDatas.begin(), modelDatas.end(), [&]
+	(
+		const std::tuple<ModelData, int>& m1,
+		const std::tuple<ModelData, int>& m2
+		)
+	{
+		ModelData m1Data = std::get<0>(m1);
+		ModelData m2Data = std::get<0>(m2);
+		int m1Num = std::get<1>(m1);
+		int m2Num = std::get<1>(m2);
+
+		DirectX::XMFLOAT3 m1Pos = modelConstData[m1Data.key].position[m1Num];
+		DirectX::XMFLOAT3 m2Pos = modelConstData[m2Data.key].position[m2Num];
+
+		Vector3 nearPos;
+		Vector3 farPos;
+		DirectInput::getMouse3DLine(nearPos, farPos);
+		float dis1 = LibMath::calcDistance3D(m1Pos, nearPos);
+		float dis2 = LibMath::calcDistance3D(m2Pos, nearPos);
+
+		return dis1 > dis2;
+
+	});
+}
+#pragma endregion
+

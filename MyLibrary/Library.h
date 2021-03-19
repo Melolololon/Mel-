@@ -66,6 +66,10 @@ private:
 	static DWORD startProsessTime;//計測開始時の時間
 	static DWORD nowTime;//現在の時間
 
+	//描画用(これにモデルデータ入れて、カメラから遠い順に並び替えて、これを拡張forで回して描画コマンドをセットすることで、
+    //関数の呼び出し順にかかわらず、αブレンドが適切に行うことができる)
+	static std::vector<std::tuple<ModelData,int>>modelDatas;
+
 #pragma region プライベート関数
 	static bool checkSetKeyName(const std::string& key);
 	static bool checkCreateVertexBuffer(const VertexType& vertexType);
