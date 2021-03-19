@@ -4,6 +4,11 @@
 #pragma region Vector2
 
 Vector2::Vector2(){}
+Vector2::Vector2(const Vector3& v)
+{
+	x = v.x;
+	y = v.y;
+}
 Vector2::Vector2(const float& num)
 {
 	x = num;
@@ -21,6 +26,11 @@ Vector2::Vector2(const DirectX::XMFLOAT2& f)
 	y = f.y;
 }
 
+Vector2::Vector2(const DirectX::XMVECTOR& v)
+{
+	x = v.m128_f32[0];
+	y = v.m128_f32[1];
+}
 
 #pragma region ‰‰ŽZŽq
 
@@ -118,6 +128,13 @@ Vector3::Vector3()
 {
 }
 
+Vector3::Vector3(const Vector2& v)
+{
+	x = v.x;
+	y = v.y;
+	z = 0;
+}
+
 Vector3::Vector3(const float& num)
 {
 	x = num;
@@ -137,6 +154,15 @@ Vector3::Vector3(const DirectX::XMFLOAT3& f)
 	x = f.x;
 	y = f.y;
 	z = f.z;
+}
+
+
+Vector3::Vector3(const DirectX::XMVECTOR& v)
+{
+	x = v.m128_f32[0];
+	y = v.m128_f32[1];
+	z = v.m128_f32[2];
+	
 }
 
 #pragma region ‰‰ŽZŽq
