@@ -6,6 +6,8 @@
 
 std::unique_ptr<Audio> Library::audio;
 DirectX12* Library::dx12;
+CreatePolygon* Library::createPolygon;
+
 WNDCLASSEX Library::w;
 MSG  Library::msg;
 HWND  Library::hwnd;
@@ -48,6 +50,8 @@ LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 void Library::initialize(int windowWidth, int windowHeight, const Color& screenColor, const wchar_t* windowName)
 {
 	dx12 = DirectX12::getInstance();
+	createPolygon = CreatePolygon::getInstance();
+	createPolygon->initialize(windowWidth, windowHeight);
 
 	srand((unsigned int)time(NULL));
 	count = 0;
@@ -96,6 +100,11 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 	refReat = GetDeviceCaps(hdc, VREFRESH);
 #pragma endregion
 
+#pragma region Input
+	DirectInput::initialize(hwnd, windowWidth, windowHeight);
+#pragma endregion
+
+
 	audio = std::unique_ptr<Audio>(new Audio());
 
 
@@ -134,7 +143,12 @@ void Library::roopStartProcess()
 
 	dx12->preparationToDraw();
 
+#pragma region Input
+
+	DirectInput::update();
 	XInputManager::update();
+#pragma endregion
+
 }
 
 void Library::roopEndProcess()
@@ -199,6 +213,9 @@ bool Library::getIsEnd()
 void Library::end()
 {
 	dx12->end();
+
+	DirectInput::release();
+
 	if (!isDestroy)
 	{
 		DestroyWindow(hwnd);
@@ -214,7 +231,7 @@ int Library::getRandomNumber(int number)
 
 float Library::getRandomNumberFloat(int number)
 {
-	return (float)(rand() % number);
+	return static_cast<float>((rand() % number));
 }
 
 #pragma region プライベート関数
@@ -371,11 +388,6 @@ void  Library::loadOBJVertex
 {
 	if (!checkSetKeyName(modelData.key))return;
 
-	PolygonData pData;
-	
-	/*p.handle = new int(dx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;*/
-	pData.dimention = dimention3D;
 
 	modelData.type = dx12->loadOBJVertex
 	(
@@ -383,7 +395,6 @@ void  Library::loadOBJVertex
 		loadUV,
 		loadNormal,
 		materialFireName,
-		pData,
 		modelData.key
 	);
 	
@@ -400,41 +411,60 @@ void Library::createPoint(int createNum, point* p)
 	createPointCount++;
 }
 
-void Library::createBoard(Vector2 size, int dimention,  ModelData& modelData)
+void Library::createBoard(const Vector2& size, ModelData& modelData)
 {
 	if (!checkSetKeyName(modelData.key))return;
-	PolygonData pData;
 
-	pData.pos1 = { size.x,size.y,0 };
-	pData.katatiNum = 1;
+	Vector2 boardSize = { size.x,size.y};
 
+	boardSize.y *= -1;
+	float width = boardSize.x;
+	float height = boardSize.y;
+	width /= 2;
+	height /= 2;
 
-	//pData.sikibetuNum = createPolygonNumber;
-
-	/*p.handle = new int(dx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;*/
-
-	pData.dimention = dimention;
-	dx12->createPolygonData(pData, modelData.key);
+	dx12->createPolygonData
+	(
+		createPolygon->setBoardPolygonVertex
+		(
+			{ 0 - width,boardSize.y - height,0 },//左下
+			{ 0 - width,0 - height, 0 },//左上
+			{ boardSize.x - width,boardSize.y - height,0 },//右下
+			{ boardSize.x - width,0 - height,0 }//右上
+		),
+		createPolygon->setBoardPolygonIndex(),
+		modelData.key
+	);
 	modelData.type = VERTEX_TYPE_NORMAL;
 }
 
-void Library::createCircle(float r, int dimention, ModelData& modelData)
-{
-	if (!checkSetKeyName(modelData.key))return;
-	PolygonData pData;
-
-	pData.fNum1 = r;
-	pData.katatiNum = 2;
-
-	/*p.handle = new int(dx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;*/
-	pData.dimention = dimention;
-	dx12->createPolygonData(pData, modelData.key);
-
-	
-	modelData.type = VERTEX_TYPE_NORMAL;
-}
+//void Library::createCircle(float r, int dimention, ModelData& modelData)
+//{
+//	if (!checkSetKeyName(modelData.key))return;
+//	PolygonData pData;
+//
+//	pData.fNum1 = r;
+//	pData.katatiNum = 2;
+//
+//	/*p.handle = new int(dx12->getCreateNumber().polyNum);
+//	pData.sikibetuNumP = p.handle;*/
+//	pData.dimention = dimention;
+//	dx12->createPolygonData(pData, modelData.key);
+//
+//
+//	//円の頂点取得プログラム
+//	/*temporaryVertices.push_back(createPolygon->setPolygonVertex
+//	(
+//		polygonData.fNum1,
+//		50,
+//		{ 0,0 }
+//	));
+//	temporaryIndices.push_back(createPolygon->setPolygonIndex(50));*/
+//
+//
+//	
+//	modelData.type = VERTEX_TYPE_NORMAL;
+//}
 
 //
 //void Library::create3DBox(Vector3 size, VertexDataKey& p)
@@ -458,48 +488,43 @@ void Library::createCircle(float r, int dimention, ModelData& modelData)
 
 void Library::createTriangularPyramid
 (
-	float r,
-	int vertexNumber, 
-	Vector3 centerPosition, 
-	float upVertex, 
+	const float& r,
+	const int& vertexNumber,
+	const Vector3& centerPosition,
+	const float& upVertex,
 	ModelData& modelData
 )
 {
 	if (!checkSetKeyName(modelData.key))return;
-	PolygonData pData;
-
-	pData.fNum1 = r;
-	pData.fNum2 = upVertex;
-	pData.num1 = vertexNumber;
-	pData.pos1 = centerPosition;
-	pData.katatiNum = 11;
-
-	//pData.sikibetuNum = createPolygonNumber;
-
-	//p.handle = new int(dx12->getCreateNumber().polyNum);
-	//pData.sikibetuNumP = p.handle;
-	pData.dimention = dimention3D;
-	dx12->createPolygonData(pData, modelData.key);
+	
+	dx12->createPolygonData
+	(
+		createPolygon->getTriangularPyramidVertex
+		(
+			r,
+			vertexNumber,
+			centerPosition.toXMFLOAT3(),
+			upVertex
+		),
+		createPolygon->setTriangularPyramidIndex(vertexNumber),
+		modelData.key
+	);
 
 	
 	modelData.type = VERTEX_TYPE_NORMAL;
 }
 
 
-void Library::create3DBox(Vector3 size,  ModelData& modelData)
+void Library::create3DBox(const Vector3& size,  ModelData& modelData)
 {
 	if (!checkSetKeyName(modelData.key))return;
-	PolygonData pData;
-
-	pData.pos1 = { size.x,size.y,size.z };
-	pData.katatiNum = 100;
-
-
-	/*p.handle = new int(dx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;*/
-	pData.dimention = dimention3D;
-
-	dx12->createPolygonData(pData, modelData.key);
+	
+	dx12->createPolygonData
+	(
+		createPolygon->getVertexMany3DBox({ size.x,size.y,size.z }),
+		createPolygon->getVertexMany3DBoxIndex(),
+		modelData.key
+	);
 
 	
 	modelData.type = VERTEX_TYPE_NORMAL;
@@ -509,25 +534,36 @@ void Library::create3DBox(Vector3 size,  ModelData& modelData)
 
 void Library::createUserObject
 (
-	std::vector<Vector3>& vertexPos, 
-	std::vector<Vector2>& vertexUV,
-	std::vector<unsigned short>& index,
+	const std::vector<Vector3>& vertexPos,
+	const std::vector<Vector2>& vertexUV,
+	const std::vector<USHORT>& indices,
 	ModelData& modelData
 )
 {
+	size_t posSize = vertexPos.size();
+	size_t uvSize = vertexUV.size();
+
 	if (!checkSetKeyName(modelData.key))return;
-	dx12->addUserVertex(vertexPos, vertexUV, modelData.key);
-	dx12->addUserIndex(index, modelData.key);
+	if (posSize != uvSize)
+	{
+		OutputDebugString(L"生成に失敗しました。頂点とUVのサイズが違います。\n");
+		return;
+	}
+	
+	std::vector<Vertex>vertices(posSize);
+	for(int i = 0; i < posSize;i++)
+	{
+		vertices[i].pos = vertexPos[i].toXMFLOAT3();
+		vertices[i].uv = vertexUV[i].toXMFLOAT2();
+	}
 
-	PolygonData pData;
-	pData.katatiNum = -1;
+	dx12->createPolygonData
+	(
+		vertices,
+		indices,
+		modelData.key
 
-
-	/*p.handle = new int(dx12->getCreateNumber().polyNum);
-	pData.sikibetuNumP = p.handle;*/
-	pData.dimention = dimention3D;
-
-	dx12->createPolygonData(pData, modelData.key);
+	);
 	
 	
 	modelData.type = VERTEX_TYPE_NORMAL;
@@ -536,20 +572,22 @@ void Library::createUserObject
 void Library::createUserObject2
 (
 	void** vertexData, 
-	unsigned int vertexDataSize, 
-	unsigned int vertexSumDataSize, 
-	std::vector<unsigned short>&index, 
+	UINT vertexDataSize,
+	UINT vertexSumDataSize,
+	std::vector<USHORT>&index,
 	ModelData& modelData
 )
 {
 	if (!checkSetKeyName(modelData.key))return;
-	PolygonData pData;
-	//p.handle = new int(dx12->getCreateNumber().polyNum);
-	//pData.sikibetuNumP = p.handle;
-	
-	
-	pData.dimention = dimention3D;
-	dx12->createUserPolygon(vertexData, vertexDataSize, vertexSumDataSize, index, pData, modelData.key);
+
+	dx12->createUserPolygon
+	(
+		vertexData,
+		vertexDataSize, 
+		vertexSumDataSize, 
+		index, 
+		modelData.key
+	);
 	
 	modelData.type = VERTEX_TYPE_USER_VERTEX;
 }

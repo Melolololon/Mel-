@@ -210,9 +210,9 @@ private:
 
 #pragma region バッファ作成などのクラス
 
+	CreatePolygon* createPolygon;
 	CreateBuffer* createBuffer;
 	CreatePipeline* createPipeline;
-	CreatePolygon* createPolygon;
 	CreateCamera* mainCamera;
 
 #pragma endregion
@@ -371,8 +371,6 @@ private:
 
 
 
-	//送られてきた情報
-	std::unordered_map<std::string, PolygonData> polyDatas;
 	//取得したスプライトのポインタ
 	std::vector<int*>spriteP;
 	std::vector<int*>pointP;
@@ -535,7 +533,8 @@ private:
 
 public:
 
-
+	DirectX12(DirectX12& d) = delete;
+	DirectX12 operator=(DirectX12& d) = delete;
 	static DirectX12* getInstance();
 
 #pragma region 初期化などの必須処理
@@ -629,7 +628,12 @@ public:
 	void createPoint(int createNum, int* point);
 
 	//typeに応じてどのcountを++するか決める
-	void createPolygonData(PolygonData polygonData, const std::string& key);
+	void createPolygonData
+	(
+		const std::vector<Vertex>& vertex, 
+		const std::vector<USHORT>& index,
+		const std::string& key
+	);
 
 	void createHeapData
 	(
@@ -662,10 +666,9 @@ public:
 	void createUserPolygon
 	(
 		void** vertexData,
-		unsigned int vertexDataSize,
-		unsigned int vertexSumDataSize,
-		std::vector<unsigned short>&index,
-		PolygonData polyData,
+		UINT vertexDataSize,
+		UINT vertexSumDataSize,
+		std::vector<USHORT>&index,
 		const std::string& key
 	);
 #pragma endregion
@@ -677,7 +680,6 @@ public:
 		bool loadUV,
 		bool loadNormal,
 		std::string* materialFireName,
-		PolygonData data,
 		const std::string& key
 	);
 

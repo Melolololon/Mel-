@@ -4,7 +4,7 @@
 #include"Vector.h"
 #include"DirectXStruct.h"
 //ポリゴンの頂点情報や、インデックスを取得するためのクラス
-class CreatePolygon
+class CreatePolygon final
 {
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT2 = DirectX::XMFLOAT2;
@@ -14,9 +14,14 @@ private:
 	int windowWidth;
 	int windowHeight;
 
-public:
-	CreatePolygon(int window_width, int window_height);
+	CreatePolygon();
 	~CreatePolygon();
+public:
+	CreatePolygon(CreatePolygon& c) = delete;
+	CreatePolygon operator= (CreatePolygon& c) = delete;
+	static CreatePolygon* getInstance();
+
+	void initialize(const int& winWidth, const int& winHeight);
 
 #pragma region 式を使った多角形作成
 	/// <summary>

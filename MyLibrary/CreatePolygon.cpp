@@ -1,12 +1,22 @@
 #include "CreatePolygon.h"
 
 
-CreatePolygon::CreatePolygon(int window_width, int window_height) 
+CreatePolygon::CreatePolygon() 
 {
-	windowWidth = window_width;
-	windowHeight = window_height;
 }
 CreatePolygon::~CreatePolygon() {}
+
+CreatePolygon* CreatePolygon::getInstance()
+{
+	static CreatePolygon c;
+	return &c;
+}
+
+void CreatePolygon::initialize(const int& winWidth, const int& winHeight)
+{
+	windowWidth = winWidth;
+	windowHeight = winHeight;
+}
 
 std::vector<Vertex> CreatePolygon::setPolygonVertex(float r, int vertexNum, XMFLOAT2 tyusin)
 {

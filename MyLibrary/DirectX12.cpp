@@ -105,8 +105,8 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 	smoothing = false;
 #pragma endregion
 
+	createPolygon = CreatePolygon::getInstance();
 
-	createPolygon = new CreatePolygon(winWidth, winHeight);
 	mainCamera = new CreateCamera(winWidth, winHeight);
 	DirectInput::setMatrixAndNearFar
 	(
@@ -560,10 +560,6 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 #pragma endregion
 
 
-#pragma region DInput
-	DirectInput::initialize(hwnd, winWidth, winHeight);
-#pragma endregion
-
 
 #pragma region スプライト用ヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC spriteHeapDesc = {};
@@ -925,7 +921,6 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 void DirectX12::preparationToDraw()
 {
 #pragma region DInput
-	DirectInput::update();
 #pragma endregion
 
 #pragma region バリア生成_PSResourceからRTVへ
@@ -1126,10 +1121,8 @@ void DirectX12::draw()
 
 void DirectX12::end()
 {
-	DirectInput::release();
 	delete createBuffer;
 	delete createPipeline;
-	delete createPolygon;
 	delete mainCamera;
 
 }
@@ -1892,8 +1885,8 @@ VertexType DirectX12::loadOBJVertex
 	bool loadUV,
 	bool loadNormal,
 	std::string* materialFireName,
-	PolygonData data,
-	const std::string& key)
+	const std::string& key
+)
 {
 
 	//objにあるモデル数
@@ -2056,7 +2049,6 @@ VertexType DirectX12::loadOBJVertex
 #pragma endregion
 
 
-	polyDatas.emplace(key, data);
 
 	if (bonePos.size() != 0 && 
 		boneNum.size() != 0)
@@ -2437,7 +2429,6 @@ void DirectX12::loadOBJMaterial
 //	//
 //	//#pragma endregion
 //	//
-//	//	polyDatas.push_back(vertData);
 //	//#pragma endregion
 //	//
 //	//#pragma region ヒープ
@@ -2592,80 +2583,16 @@ void DirectX12::loadOBJMaterial
 //}
 #pragma endregion
 
-void DirectX12::createPolygonData(PolygonData polygonData,const std::string& key)
+void DirectX12::createPolygonData
+(
+	const std::vector<Vertex>& vertex,
+	const std::vector<USHORT>& index,
+	const std::string& key
+)
 {
-	std::vector<std::vector<Vertex>>temporaryVertices;
-	std::vector<std::vector<USHORT>>temporaryIndices;
+	std::vector<std::vector<Vertex>>temporaryVertices = { vertex };
+	std::vector<std::vector<USHORT>>temporaryIndices = { index };
 	
-
-	//ここで、drawBox、drawCircleかを判別する
-	//Libraryで頂点用意すれば、PolyData送る必要ない
-
-	if (polygonData.katatiNum == box)
-	{
-		if (polygonData.dimention == 1)
-		{
-			//辺の長さを2DはYを+にして3DはYを-しないといけないのは面倒なので、どちらも+に統一するため
-			//辺の長さを入れるようにしたいのに、3Dだと+で入力したときに表示されないから
-			//*= -1して+にする
-			polygonData.pos1.y *= -1;
-		}
-
-		float width = polygonData.pos1.x;
-		float height = polygonData.pos1.y;
-		width /= 2;
-		height /= 2;
-
-
-		temporaryVertices.push_back(createPolygon->setBoardPolygonVertex
-		(
-			{ 0 - width,polygonData.pos1.y - height,0 },//左下
-			{ 0 - width,0 - height, 0 },//左上
-			{ polygonData.pos1.x - width,polygonData.pos1.y - height,0 },//右下
-			{ polygonData.pos1.x - width,0 - height,0 }//右上
-		));
-		temporaryIndices.push_back(createPolygon->setBoardPolygonIndex());
-
-	}
-	if (polygonData.katatiNum == circle)
-	{
-		temporaryVertices.push_back(createPolygon->setPolygonVertex
-		(
-			polygonData.fNum1,
-			50,
-			{ 0,0 }
-		));
-		temporaryIndices.push_back(createPolygon->setPolygonIndex(50));
-	}
-
-	if (polygonData.katatiNum == 10)
-	{
-		//MyLibraryでdimentionを設定してなかったから表示できていなかった
-		temporaryVertices.push_back(createPolygon->get3DBox({ polygonData.pos1.x,polygonData.pos1.y,polygonData.pos1.z }));
-		temporaryIndices.push_back(createPolygon->get3DBoxIndex());
-
-	}
-
-	if (polygonData.katatiNum == 11)
-	{
-		temporaryVertices.push_back(createPolygon->getTriangularPyramidVertex
-		(
-			polygonData.fNum1,
-			polygonData.num1,
-			{ polygonData.pos1.x, polygonData.pos1.y,polygonData.pos1.z },
-			polygonData.fNum2
-		));
-
-		temporaryIndices.push_back(createPolygon->setTriangularPyramidIndex(polygonData.num1));
-	}
-
-
-	if (polygonData.katatiNum == 100)
-	{
-		temporaryVertices.push_back(createPolygon->getVertexMany3DBox({ polygonData.pos1.x,polygonData.pos1.y,polygonData.pos1.z }));
-		temporaryIndices.push_back(createPolygon->getVertexMany3DBoxIndex());
-	}
-
 
 	vertices.emplace(key,temporaryVertices);
 	indices.emplace(key, temporaryIndices);
@@ -2747,7 +2674,6 @@ void DirectX12::createPolygonData(PolygonData polygonData,const std::string& key
 
 #pragma endregion
 
-	polyDatas.emplace(key,polygonData);
 }
 
 #pragma region ヒープ
@@ -3365,18 +3291,14 @@ void DirectX12::addUserIndex(std::vector<unsigned short>& index, const std::stri
 
 void DirectX12::createUserPolygon
 (
-	void** vertexData, 
-	unsigned int vertexDataSize,
-	unsigned int vertexSumDataSize, 
-	std::vector<unsigned short>&index,
-	PolygonData polyData, 
+	void** vertexData,
+	UINT vertexDataSize,
+	UINT vertexSumDataSize,
+	std::vector<USHORT>&index,
 	const std::string& key
 )
 {
 	
-
-
-
 #pragma region 頂点バッファ
 	std::vector<VertexBufferSet>vBuffs(1);
 
@@ -3421,7 +3343,6 @@ void DirectX12::createUserPolygon
 void DirectX12::deletePolygonData(const std::string key)
 {
 
-		polyDatas.erase(key);
 		vertices.erase(key);
 		indices.erase(key);
 		smoothNormal.erase(key);
@@ -3508,8 +3429,8 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 
 		//2D
-		if (polyDatas[key].dimention == Dimension::dimention2D)//2D
-		{
+		//if (polyDatas[key].dimention == Dimension::dimention2D)//2D
+		//{
 
 			//	cmdList->IASetVertexBuffers(0, 1, &vertexBuffSet[polyNum].vertexBufferView);
 			//	cmdList->IASetIndexBuffer(&indexBufferSet[polyNum].indexBufferView);
@@ -3535,10 +3456,10 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 			//	cmdList->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
 
 			//	cmdList->DrawIndexedInstanced(indices[polyNum].size(), 1, 0, 0, 0);
-		}
+	//	}
 
 		//3D
-		if (polyDatas[key].dimention == Dimension::dimention3D)//3D
+		//if (polyDatas[key].dimention == Dimension::dimention3D)//3D
 		{
 
 			ppHeaps.push_back(basicHeaps[key].Get());
@@ -3660,31 +3581,31 @@ void DirectX12::map(const ModelData& modelData,int number )
 	//constBufferSet[despNumber][number].constBuffer.Get()->Unmap(0, nullptr);
 	result = constBufferSet[modelData.key][number].constBuffer[0].Get()->Map(0, nullptr, (void**)&constData3D);
 
-	if (polyDatas[modelData.key].dimention == Dimension::dimention2D)
-	{
+	//if (polyDatas[modelData.key].dimention == Dimension::dimention2D)
+	//{
 
-		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-		matWorld *= DirectX::XMMatrixRotationZ
-		(
-			DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].z)
-		);
-		matWorld *= DirectX::XMMatrixScaling
-		(
-			modelConstData[modelData.key].scale[number].x,
-			modelConstData[modelData.key].scale[number].y,
-			modelConstData[modelData.key].scale[number].z
-		);
-		matWorld *= DirectX::XMMatrixTranslation
-		(
-			modelConstData[modelData.key].position[number].x,
-			modelConstData[modelData.key].position[number].y,
-			modelConstData[modelData.key].position[number].z
-		);
+	//	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
+	//	matWorld *= DirectX::XMMatrixRotationZ
+	//	(
+	//		DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].z)
+	//	);
+	//	matWorld *= DirectX::XMMatrixScaling
+	//	(
+	//		modelConstData[modelData.key].scale[number].x,
+	//		modelConstData[modelData.key].scale[number].y,
+	//		modelConstData[modelData.key].scale[number].z
+	//	);
+	//	matWorld *= DirectX::XMMatrixTranslation
+	//	(
+	//		modelConstData[modelData.key].position[number].x,
+	//		modelConstData[modelData.key].position[number].y,
+	//		modelConstData[modelData.key].position[number].z
+	//	);
 
-		constData3D->mat = matWorld * mainCamera->get2DCameraMatrix();
-	}
+	//	constData3D->mat = matWorld * mainCamera->get2DCameraMatrix();
+	//}
 
-	if (this->polyDatas[modelData.key].dimention == Dimension::dimention3D)
+	//if (this->polyDatas[modelData.key].dimention == Dimension::dimention3D)
 	{
 
 

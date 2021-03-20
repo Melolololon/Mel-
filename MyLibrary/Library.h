@@ -8,6 +8,7 @@
 #include"DirectX12.h"
 #include"Audio.h"
 #include"DirectXStruct.h"
+#include"CreatePolygon.h"
 
 
 #pragma region 定数
@@ -32,12 +33,14 @@ using font = int;
 #pragma endregion
 
 
+
 class Library
 {
 private:
 	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 	static DirectX12* dx12;
+	static CreatePolygon* createPolygon;
 
 	static UINT count;
 	static int createPointCount;
@@ -268,7 +271,7 @@ public:
 	/// <param name="dimention">次元</param>
 	/// <param name="p">データを入れる変数のポインタ</param>
 	/// <returns></returns>
-	static void createBoard(Vector2 size, int dimention,  ModelData& modelData);
+	static void createBoard(const Vector2& size,   ModelData& modelData);
 
 	/// <summary>
 	/// 円の頂点情報を作成します
@@ -277,7 +280,7 @@ public:
 	/// <param name="dimention"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createCircle(float r, int dimention,  ModelData& modelData);
+	//static void createCircle(float r, int dimention,  ModelData& modelData);
 
 	/*/// <summary>
 	/// 立方体の頂点情報を作成します
@@ -298,10 +301,10 @@ public:
 	/// <returns></returns>
 	static void createTriangularPyramid
 	(
-		float r, 
-		int vertexNumber, 
-		Vector3 centerPosition, 
-		float upVertex, 
+		const float& r, 
+		const int& vertexNumber, 
+		const Vector3& centerPosition, 
+		const float& upVertex, 
 		ModelData& modelData
 	);
 
@@ -311,7 +314,7 @@ public:
 	/// <param name="size"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void create3DBox(Vector3 size,  ModelData& modelData);
+	static void create3DBox(const Vector3& size,  ModelData& modelData);
 
 #pragma endregion
 
@@ -327,9 +330,9 @@ public:
 	/// <param name="p"></param>
 	static void createUserObject
 	(
-		std::vector<Vector3>& vertexPos, 
-		std::vector<Vector2>& vertexUV, 
-		std::vector<unsigned short>& index, 
+		const std::vector<Vector3>& vertexPos, 
+		const std::vector<Vector2>& vertexUV,
+		const std::vector<USHORT>& indices,
 		ModelData& modelData
 	);
 
@@ -345,9 +348,9 @@ public:
 	static void createUserObject2
 	(
 		void** vertexData,
-		unsigned int vertexDataSize, 
-		unsigned int vertexSumDataSize, 
-		std::vector<unsigned short>&index, 
+		UINT vertexDataSize, 
+		UINT vertexSumDataSize,
+		std::vector<USHORT>&index, 
 		ModelData& modelData
 	);
 

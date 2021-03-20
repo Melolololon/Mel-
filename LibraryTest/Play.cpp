@@ -25,11 +25,11 @@ Play::Play()
 	//これでボックス出たからcreateHeapが悪い
 
 	d.key = "Board";
-	Library::createBoard({ 1,1 }, dimention3D, d);
+	Library::createBoard({ 1,1 }, d);
 	Library::createHeapData2({ 0,255,255,255 }, 1, d);
 
 	d2.key = "Board2";
-	Library::createBoard({ 5,5 }, dimention3D, d2);
+	Library::createBoard({ 5,5 },  d2);
 	Library::createHeapData2({ 255,0,0,255 }, 1, d2);
 	//Library::loadOBJMaterial("Resources/Obj/", material, 2, d);
 
