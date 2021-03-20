@@ -105,8 +105,8 @@ void Play::draw()
 
 	//d2の描画コマンドを先にセットしないと。dのコマンドセット時に自分の後ろに板ポリがない(DirectXが気が付いてない)ので
 	//αブレンドできてなかった
-	Library::drawGraphic(d, 0);
 	Library::drawGraphic(d2, 0);
+	Library::drawGraphic(d, 0);
 	
 
 	std::string s = std::to_string(subAlpha);

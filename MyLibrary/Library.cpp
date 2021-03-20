@@ -138,10 +138,10 @@ void Library::roopStartProcess()
 void Library::roopEndProcess()
 {
 	//ソート
-	directx12->sortModelData(modelDatas);
+	//directx12->sortModelData(modelDatas);
 
 	//コマンドセット
-	ModelData mData;
+	/*ModelData mData;
 	int number;
 	for(const auto& m : modelDatas)
 	{
@@ -149,8 +149,9 @@ void Library::roopEndProcess()
 		number = std::get<1>(m);
 		directx12->map(mData, number);
 		directx12->setCmdList(mData.key, number);
-	}
+	}*/
 
+	//modelDatas.clear();
 
 	directx12->draw();
 
@@ -180,7 +181,6 @@ void Library::roopEndProcess()
 		timeEndPeriod(1);
 	}
 
-	modelDatas.clear();
 }
 
 void Library::endFlagTrue()
@@ -741,11 +741,11 @@ void Library::drawGraphic
 	int number
 )
 {
-	std::tuple<ModelData, int> mData = std::make_tuple(modelData, number);
-	modelDatas.push_back(mData);
+	/*std::tuple<ModelData, int> mData = std::make_tuple(modelData, number);
+	modelDatas.push_back(mData);*/
 
-	/*directx12->map(modelData, number);
-	directx12->setCmdList(modelData.key, number);*/
+	directx12->map(modelData, number);
+	directx12->setCmdList(modelData.key, number);
 }
 
 void Library::drawSprite(Vector2 position, sprite spriteNumber, texture* textureNumber)
