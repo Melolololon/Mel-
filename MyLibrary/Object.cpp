@@ -47,7 +47,7 @@ std::vector<SphereData> Object::getSphereData()
 
 void* Object::getPtr() 
 {
-	return this;
+	return nullptr;
 }
 
 std::vector<LineSegmentData> Object::getLineSegmentData()

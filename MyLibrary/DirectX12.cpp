@@ -1497,30 +1497,36 @@ bool DirectX12::createUserPostEffectPipelineState(const ShaderData& pShaderData)
 //	}
 //}
 
-void DirectX12::setSpriteAnimationVertex(int spriteNum, int textureNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY)
+void DirectX12::setSpriteAnimationVertex
+(
+	const int& spriteNum,
+	const int& textureNum,
+	const DirectX::XMFLOAT2& maxSize,
+	const DirectX::XMFLOAT2& currentNumber
+)
 {
 	if (textureNum != -1)
 	{
-		float texX = (float)spriteTextureData[textureNum].width;
-		float texY = (float)spriteTextureData[textureNum].height;
-		float vertWidth = texX / maxWidth;
-		float vertHeight = texY / maxHeight;
+		float texX = static_cast<float>(spriteTextureData[textureNum].width);
+		float texY = static_cast<float>(spriteTextureData[textureNum].height);
+		float vertWidth = texX / maxSize.x;
+		float vertHeight = texY / maxSize.y;
 		spriteVertices[spriteNum] = createPolygon->setBoardPolygonVertex
 		(
-			{ (float)-vertWidth / 2,  (float)vertHeight / 2 ,0 },
-			{ (float)-vertWidth / 2 ,(float)-vertHeight / 2,0 },
-			{ (float)vertWidth / 2,  (float)vertHeight / 2 ,0 },
-			{ (float)vertWidth / 2 ,(float)-vertHeight / 2,0 }
+			{ -vertWidth / 2.0f,  vertHeight / 2.0f ,0.0f },
+			{ -vertWidth / 2.0f , -vertHeight / 2.0f,0.0f },
+			{ vertWidth / 2.0f,   vertHeight / 2.0f ,0.0f },
+			{ vertWidth / 2.0f ,  -vertHeight / 2.0f,0.0f }
 		);
 	}
 
 	//1つの四角形のサイズ(uv用)
-	float oneWidth = 1.0f / (float)maxWidth;
-	float oneHeight = 1.0f / (float)maxHeight;
+	float oneWidth = 1.0f / maxSize.x;
+	float oneHeight = 1.0f / maxSize.y;
 
 
-	float width = 1.0f / (float)maxWidth *  (float)animationNumX;
-	float height = 1.0f / (float)maxHeight *  (float)animationNumY;
+	float width = 1.0f / maxSize.x * currentNumber.x;
+	float height = 1.0f / maxSize.y *  currentNumber.y;
 
 	//範囲指定
 	spriteVertices[spriteNum][1].uv = { width - oneWidth,height - oneHeight };
@@ -1530,16 +1536,24 @@ void DirectX12::setSpriteAnimationVertex(int spriteNum, int textureNum, int maxW
 
 
 	//マップ
-	//なぜかマップできてない
-	//単色だとマップしても変わらない
-	//UVだけマップしてもポリゴンのサイズは変わりません
 	for (int i = 0; i < 4; i++)
-	{
 		spriteVertexBuffSet[spriteNum].vertexMap[i] = spriteVertices[spriteNum][i];
-	}
+	
 }
 
-void DirectX12::setSpriteAnimationVertex2(int spriteNum, int textureNum, int posX, int posY, int areaWidth, int areaHeight, int startAreaX, int startAreaY, int endAreaX, int endAreaY)
+void DirectX12::setSpriteAnimationVertex2
+(
+	int spriteNum, 
+	int textureNum, 
+	int posX, 
+	int posY, 
+	int areaWidth, 
+	int areaHeight, 
+	int startAreaX, 
+	int startAreaY, 
+	int endAreaX, 
+	int endAreaY
+)
 {
 	spriteMap({ (float)posX,(float)posY }, { (float)areaWidth,(float)areaHeight }, spriteNum, 0);
 
@@ -2989,7 +3003,7 @@ void DirectX12::createCommonBuffer(const int& texNum, const std::string& key)
 #pragma endregion
 
 
-void DirectX12::loadSpriteFont(const wchar_t* texturePath, DirectX::XMFLOAT2 lineNum, DirectX::XMFLOAT2 fontSize)
+void DirectX12::loadSpriteFont(const wchar_t const*& texturePath, const DirectX::XMFLOAT2& lineNum)
 {
 	//10種類まで読み込める
 
@@ -3018,8 +3032,6 @@ void DirectX12::loadSpriteFont(const wchar_t* texturePath, DirectX::XMFLOAT2 lin
 	SpriteFontData data;
 	data.widthLineNum = (int)lineNum.x;
 	data.heightLineNum = (int)lineNum.y;
-	data.fontSizeX = (int)fontSize.x;
-	data.fontSizeY = (int)fontSize.y;
 	spriteFontData.push_back(data);
 
 }

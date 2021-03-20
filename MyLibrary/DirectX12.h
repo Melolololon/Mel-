@@ -698,7 +698,7 @@ public:
 #pragma endregion
 
 
-	void loadSpriteFont(const wchar_t* texturePath, DirectX::XMFLOAT2 lineNum, DirectX::XMFLOAT2 fontSize);
+	void loadSpriteFont(const wchar_t const*& texturePath,const DirectX::XMFLOAT2& lineNum);
 
 	void loadTexture(const wchar_t* texturePath, Color color);
 
@@ -908,7 +908,13 @@ public:
 	//void setAnimation(int polyNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY);
 	//void setAnimation2(int polyNum, int dataNum, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
 
-	void setSpriteAnimationVertex(int spriteNum, int textureNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY);
+	void setSpriteAnimationVertex
+	(
+		const int& spriteNum, 
+		const int& textureNum, 
+		const DirectX::XMFLOAT2& maxSize, 
+		const DirectX::XMFLOAT2& currentNumber
+	);
 	void setSpriteAnimationVertex2(int spriteNum, int textureNum, int posX, int posY, int areaWidth, int areaHeight, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
 #pragma endregion
 

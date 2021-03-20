@@ -359,37 +359,6 @@ public:
 #pragma endregion
 
 
-#pragma region スプライト
-	//テクスチャの番号を返す
-	/// <summary>
-	/// テクスチャを読み込みます
-	/// </summary>
-	/// <param name="texturePath">テクスチャのパス</param>
-	/// <returns></returns>
-	static texture loadTexture(const wchar_t* texturePath);
-
-	//static int createSpriteTexture(Color color);
-
-	/// <summary>
-	/// スプライトを作成します
-	/// </summary>
-	/// <param name="size">spriteのポインタ</param>
-	/// <returns></returns>
-	static void createSprite(sprite* sprite);
-
-	/// <summary>
-	/// スプライトフォントを読み込みます
-	/// </summary>
-	/// <param name="texturePath"></param>
-	/// <param name="lineNum">横、縦の文字数</param>
-	/// <param name="fontSize">文字サイズ</param>
-	/// <returns></returns>
-	static font loadSpriteFont(const wchar_t* texturePath, Vector2 lineNum, Vector2 fontSize);
-
-
-#pragma endregion
-
-
 #pragma endregion
 
 #pragma region 定数 テクスチャ作成
@@ -485,6 +454,9 @@ public:
 	);
 
 
+
+
+
 #pragma endregion
 
 #pragma region vertexとheap同時生成
@@ -514,6 +486,42 @@ public:
 
 #pragma endregion
 
+
+#pragma region スプライト
+	//テクスチャの番号を返す
+	/// <summary>
+	/// テクスチャを読み込みます
+	/// </summary>
+	/// <param name="texturePath">テクスチャのパス</param>
+	/// <returns></returns>
+	static texture loadTexture(const wchar_t* texturePath);
+
+	//static int createSpriteTexture(Color color);
+
+	/// <summary>
+	/// スプライトを作成します
+	/// </summary>
+	/// <param name="size">spriteのポインタ</param>
+	/// <returns></returns>
+	static void createSprite(sprite* sprite);
+
+	/// <summary>
+	/// スプライトフォントを読み込みます
+	/// </summary>
+	/// <param name="texturePath"></param>
+	/// <param name="lineNum">横、縦の文字数</param>
+	/// <param name="fontSize">文字サイズ</param>
+	/// <returns></returns>
+	static font loadSpriteFont
+	(
+		const wchar_t const*& texturePath, 
+		const Vector2& lineNum
+	);
+
+
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma region 描画
@@ -537,7 +545,13 @@ public:
 	/// <param name="size">大きさ</param>
 	/// <param name="color">色</param>
 	/// <param name="spriteHandle">スプライトハンドル</param>
-	static void drawBox(const Vector2 position, const Vector2& size, const Color& color, sprite spriteHandle);
+	static void drawBox
+	(
+		const Vector2& position, 
+		const Vector2& size, 
+		const Color& color, 
+		const sprite& spriteHandle
+	);
 #pragma endregion
 
 
@@ -547,7 +561,12 @@ public:
 	/// <param name="position">座標</param>
 	/// <param name="spriteNumber"></param>
 	/// <param name="textureNumber"></param>
-	static void drawSprite(Vector2 position, sprite spriteNumber, texture* textureNumber);
+	static void drawSprite
+	(
+		const Vector2& position, 
+		const sprite& spriteNumber, 
+		const texture& textureNumber
+	);
 	/// <summary>
 	/// 
 	/// </summary>
@@ -556,7 +575,14 @@ public:
 	/// <param name="currentNum">1から開始</param>
 	/// <param name="spriteNumber"></param>
 	/// <param name="textureNumber"></param>
-	static void drawSpriteAnimation(Vector2 position, Vector2 maxSqare, Vector2 currentNum, sprite spriteNumber, texture* textureNumber);
+	static void drawSpriteAnimation
+	(
+		const Vector2& position,
+		const Vector2& maxSqare,
+		const Vector2& currentNum,
+		const sprite& spriteNumber,
+		const texture& textureNumber
+	);
 
 	/// <summary>
 	/// アニメーションさせるために関数です
@@ -566,7 +592,14 @@ public:
 	/// <param name="currentEndNum">右下の位置</param>
 	/// <param name="spriteNumber">スプライト番号</param>
 	/// <param name="textureNumber">テクスチャ番号</param>
-	static void drawSpriteAnimation2(Vector2 position, Vector2 currentStartNum, Vector2 currentEndNum, sprite spriteNumber, texture* textureNumber);
+	static void drawSpriteAnimation2
+	(
+		const Vector2& position, 
+		const Vector2& currentStartNum, 
+		const Vector2& currentEndNum, 
+		const sprite& spriteNumber, 
+		const texture& textureNumber
+	);
 #pragma endregion
 
 	/// <summary>
@@ -576,7 +609,7 @@ public:
 	/// <param name="point"></param>
 	/// <param name="texture"></param>
 	/// <param name="num">番号</param>
-	static void drawPointAndTexture(Vector3 pos, point point, texture texture, int num);
+	static void drawPointTexture(Vector3 pos, point point, texture texture, int num);
 
 #pragma endregion
 
@@ -972,7 +1005,13 @@ public:
 	/// <param name="size">文字サイズ</param>
 	/// <param name="text">表示する文字</param>
 	/// <param name="spriteTextureNum"></param>
-	static void drawsSpriteFontString(Vector2 position, Vector2 size, std::string text, font* spriteTextureNum);
+	static void drawsSpriteFontString
+	(
+		Vector2 position, 
+		Vector2 size, 
+		std::string text, 
+		font* spriteTextureNum
+	);
 
 #pragma endregion
 

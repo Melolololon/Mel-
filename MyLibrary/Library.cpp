@@ -732,10 +732,14 @@ void Library::createUserHeapData2
 
 #pragma region スプライト
 
-font Library::loadSpriteFont(const wchar_t* texturePath, Vector2 lineNum, Vector2 fontSize)
+font Library::loadSpriteFont
+(
+	const wchar_t const*& texturePath,
+	const Vector2& lineNum
+)
 {
 	loadFontTextureCounter++;
-	dx12->loadSpriteFont(texturePath, { lineNum.x,lineNum.y }, { fontSize.x,fontSize.y });
+	dx12->loadSpriteFont(texturePath,lineNum.toXMFLOAT2());
 
 	return loadFontTextureCounter - 1;
 
@@ -787,28 +791,47 @@ void Library::drawGraphic
 	dx12->setCmdList(modelData.key, number);
 }
 
-void Library::drawSprite(Vector2 position, sprite spriteNumber, texture* textureNumber)
+void Library::drawSprite
+(
+	const Vector2& position,
+	const sprite& spriteNumber,
+	const texture& textureNumber
+)
 {
 	//dx12->spriteSetObjectPosition({ position.x,position.y }, *spriteNumber);
-	dx12->spriteMap({ position.x,position.y }, { 0,0 }, *spriteNumber, *textureNumber);
-	dx12->spriteSetCmdList(*spriteNumber, *textureNumber);
+	dx12->spriteMap(position.toXMFLOAT2(), { 0,0 }, *spriteNumber, textureNumber);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
 }
 
-void Library::drawSpriteAnimation(Vector2 position, Vector2 maxSqare, Vector2 currentNum, sprite spriteNumber, texture* textureNumber)
+void Library::drawSpriteAnimation
+(
+	const Vector2& position,
+	const Vector2& maxSqare,
+	const Vector2& currentNum,
+	const sprite& spriteNumber,
+	const texture& textureNumber
+)
 {
 	//この順番じゃないとuvがちゃんとセットされない
-	dx12->spriteMap({ position.x,position.y }, { 0,0 }, *spriteNumber, *textureNumber);
-	dx12->setSpriteAnimationVertex(*spriteNumber, *textureNumber, maxSqare.x, maxSqare.y, currentNum.x, currentNum.y);
-	dx12->spriteSetCmdList(*spriteNumber, *textureNumber);
+	dx12->spriteMap({ position.x,position.y }, { 0,0 }, *spriteNumber, textureNumber);
+	dx12->setSpriteAnimationVertex(*spriteNumber, textureNumber, maxSqare.toXMFLOAT2(), currentNum.toXMFLOAT2());
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
 }
 
-void Library::drawSpriteAnimation2(Vector2 position, Vector2 currentStartNum, Vector2 currentEndNum, sprite spriteNumber, texture* textureNumber)
+void Library::drawSpriteAnimation2
+(
+	const Vector2& position,
+	const Vector2& currentStartNum,
+	const Vector2& currentEndNum,
+	const sprite& spriteNumber,
+	const texture& textureNumber
+)
 {
 	//dx12->spriteMap({ position.x,position.y }, { 0,0 }, *spriteNumber, *textureNumber);
 	dx12->setSpriteAnimationVertex2
 	(
 		*spriteNumber,
-		*textureNumber,
+		textureNumber,
 		position.x,
 		position.y,
 		currentEndNum.x - currentStartNum.x,
@@ -819,19 +842,25 @@ void Library::drawSpriteAnimation2(Vector2 position, Vector2 currentStartNum, Ve
 		currentEndNum.y
 	);
 
-	dx12->spriteSetCmdList(*spriteNumber, *textureNumber);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
 }
 
-void Library::drawPointAndTexture(Vector3 pos, point point, texture texture, int num)
+void Library::drawPointTexture(Vector3 pos, point point, texture texture, int num)
 {
 	dx12->pointSetCmdList({ pos.x,pos.y,pos.z }, *point, texture, num);
 }
 
 #pragma region べた塗
-void Library::drawBox(const Vector2 position, const Vector2& size, const Color& color, sprite spriteHandle)
+void Library::drawBox
+(
+	const Vector2& position,
+	const Vector2& size,
+	const Color& color,
+	const sprite& spriteHandle
+)
 {
 	setSpriteAddColor(color, spriteHandle);
-	dx12->spriteMap({ position.x,position.y }, { size.x,size.y }, *spriteHandle, 0);
+	dx12->spriteMap(position.toXMFLOAT2(), size.toXMFLOAT2(), *spriteHandle, 0);
 	dx12->spriteSetCmdList(*spriteHandle, 0);
 }
 #pragma endregion
