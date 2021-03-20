@@ -3,8 +3,38 @@
 
 
 
-DirectX12::DirectX12(HWND hwnd, int windouWidth, int windowHeight)
+DirectX12::DirectX12()
 {
+}
+
+
+DirectX12::~DirectX12()
+{
+
+
+	//#ifdef _DEBUG
+	//
+	//	ComPtr<ID3D12DebugDevice> debugDevice;
+	//	//デバッグデバイスの作成
+	//	dev->QueryInterface(IID_PPV_ARGS(&debugDevice));
+	//	//出力
+	//	debugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY);
+	//#endif // _DEBUG
+
+
+}
+
+DirectX12* DirectX12::getInstance()
+{
+	static DirectX12 dx12;
+	return &dx12;
+}
+
+
+void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
+{
+#pragma region 変数初期化
+
 	cameraMat = DirectX::XMMatrixIdentity();
 #pragma region Windows
 
@@ -33,8 +63,7 @@ DirectX12::DirectX12(HWND hwnd, int windouWidth, int windowHeight)
 	heapDesc = {};
 	barrierDesc = {};
 
-	createNormalVertexBufferCount = 0;
-	createHeapCount = 0;
+
 	loadTextureCounter = 0;
 	createSpriteCounter = 0;
 	startPipelineCreateNum = 0;
@@ -62,7 +91,7 @@ DirectX12::DirectX12(HWND hwnd, int windouWidth, int windowHeight)
 
 #pragma region ライト初期化
 
-	lightVector = { 0,0,1};
+	lightVector = { 0,0,1 };
 	lightColor = { 1,1,1 };
 #pragma endregion
 
@@ -102,33 +131,9 @@ DirectX12::DirectX12(HWND hwnd, int windouWidth, int windowHeight)
 
 	materialData = {};
 
-	postEffectCametaFlag  = false;
-}
+	postEffectCametaFlag = false;
+#pragma endregion
 
-
-DirectX12::~DirectX12()
-{
-	DirectInput::release();
-	delete createBuffer;
-	delete createPipeline;
-	delete createPolygon;
-	delete mainCamera;
-
-
-	//#ifdef _DEBUG
-	//
-	//	ComPtr<ID3D12DebugDevice> debugDevice;
-	//	//デバッグデバイスの作成
-	//	dev->QueryInterface(IID_PPV_ARGS(&debugDevice));
-	//	//出力
-	//	debugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY);
-	//#endif // _DEBUG
-
-
-}
-
-void DirectX12::initialize()
-{
 
 #pragma region デバッグレイヤー
 #ifdef _DEBUG
@@ -1119,10 +1124,14 @@ void DirectX12::draw()
 
 }
 
-
-CreateNumberSet DirectX12::getCreateNumber()
+void DirectX12::end()
 {
-	return { createNormalVertexBufferCount,createHeapCount };
+	DirectInput::release();
+	delete createBuffer;
+	delete createPipeline;
+	delete createPolygon;
+	delete mainCamera;
+
 }
 
 
@@ -1915,9 +1924,7 @@ VertexType DirectX12::loadOBJVertex
 		&boneNum
 	);
 
-	//ボーンデータがあるかどうかでどの配列に入れるか決める
-	createNormalVertexBufferCount++;
-
+	
 
 	vertices.emplace(key, temporaryVertex);
 
@@ -2069,9 +2076,6 @@ void DirectX12::loadOBJMaterial
 	const VertexType& vType
 )
 {
-
-	createHeapCount++;
-
 	resizeObjectData(objectNumber,key);
 
 	//テクスチャ名
@@ -2590,7 +2594,6 @@ void DirectX12::loadOBJMaterial
 
 void DirectX12::createPolygonData(PolygonData polygonData,const std::string& key)
 {
-	createNormalVertexBufferCount++;
 	std::vector<std::vector<Vertex>>temporaryVertices;
 	std::vector<std::vector<USHORT>>temporaryIndices;
 	
@@ -2792,7 +2795,7 @@ void DirectX12::createHeapData
 	//バッファを2個作る場合は、ハンドルのポインタをずらしてから生成する
 	resizeObjectData(objectNumber,key);
 
-	createHeapCount++;
+	
 
 #pragma region ヒープ作成
 
@@ -3450,7 +3453,7 @@ void DirectX12::deleteHeapData(const std::string& key)
 		heapTags.erase(key);
 		
 		
-		createHeapCount--;
+		
 	}
 }
 

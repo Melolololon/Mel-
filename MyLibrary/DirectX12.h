@@ -74,7 +74,7 @@ enum LibraryPipeline
 
 using namespace Microsoft::WRL;
 
-class DirectX12
+class DirectX12 final
 {
 
 	enum DrawType
@@ -165,8 +165,8 @@ private:
 
 #pragma region 頂点 インデックス
 	//[モデルごと][objの中のモデルごと]
-	std::unordered_map<std::string,std::vector<VertexBufferSet>> vertexBufferSet;
-	std::unordered_map<std::string,std::vector<IndexBufferSet>>indexBufferSet;
+	std::unordered_map<std::string, std::vector<VertexBufferSet>> vertexBufferSet;
+	std::unordered_map<std::string, std::vector<IndexBufferSet>>indexBufferSet;
 
 	std::vector<VertexBufferSet> spriteVertexBuffSet;
 	std::vector<IndexBufferSet> spriteIndexBufferSet;//これ固定だから複数いらない?
@@ -224,7 +224,7 @@ private:
 	//[モデルごと(keyでアクセス)][objにあるモデルごと][頂点ごと]
 	std::unordered_map<std::string, std::vector<std::vector<Vertex>>> vertices;
 	//std::unordered_map<std::string, std::vector<std::vector<OBJAnimationVertex>>> objAnimationVertices;//Vertexに加え、ボーン番号を追加
-	
+
 
 
 	std::unordered_map<std::string, std::vector<std::vector<USHORT>>> indices;
@@ -237,7 +237,7 @@ private:
 
 	//スムースシェーディング用データ
 	std::unordered_map<std::string, std::vector<std::vector<DirectX::XMFLOAT3>>> smoothNormal;//法線を平均した頂点データ
-	
+
 	//[obj内のオブジェクト分]
 	std::vector< std::unordered_map < USHORT, std::vector<USHORT> >>smoothData;
 
@@ -372,7 +372,7 @@ private:
 
 
 	//送られてきた情報
-	std::unordered_map<std::string,PolygonData> polyDatas;
+	std::unordered_map<std::string, PolygonData> polyDatas;
 	//取得したスプライトのポインタ
 	std::vector<int*>spriteP;
 	std::vector<int*>pointP;
@@ -382,21 +382,10 @@ private:
 
 #pragma region カウント変数
 
-#pragma region 頂点
-
-
-	//struct Vertexでバッファを作った回数
-	int createNormalVertexBufferCount;
-
-	//struct OBJAnimationVertexでバッファを作った回数
-	int createOBJAnimationVertexBufferCounter;
-
-#pragma endregion
 
 #pragma region それ以外
 
 
-	int createHeapCount;
 	int loadTextureCounter;
 	int createSpriteCounter;
 	int spriteFontDrawCounter;
@@ -471,7 +460,7 @@ private:
 	//Map用
 	PostEffectConstData* postEffectConstDataP;
 	std::vector<ConstBufferSet>postEfectConstBuffers;//行列とか送る用
-	
+
 #pragma endregion
 
 #pragma region 2枚目のポストエフェクト用レンダーターゲット(仮)
@@ -490,7 +479,7 @@ private:
 
 
 #pragma region private関数
-	void resizeObjectData(int objectNum,const std::string& key);
+	void resizeObjectData(int objectNum, const std::string& key);
 
 	void createHeap();
 
@@ -506,10 +495,10 @@ private:
 	/// <param name="key"></param>
 	void createCommonBuffer
 	(
-		const int& texNum, 
+		const int& texNum,
 		const std::string& key
 	);
-	
+
 	/// <summary>
 	/// 定数バッファ作成
 	/// </summary>
@@ -521,7 +510,7 @@ private:
 	/// <returns></returns>
 	bool createConstBuffer
 	(
-		ComPtr<ID3D12DescriptorHeap>& heap, 
+		ComPtr<ID3D12DescriptorHeap>& heap,
 		const int& heapHandleNum,
 		ConstBufferSet* cBufferSet,
 		void** constData,
@@ -541,17 +530,20 @@ private:
 
 
 
+	DirectX12();
+	~DirectX12();
 
 public:
-	DirectX12(HWND hwnd, int windouWidth, int windowHeight);
-	~DirectX12();
+
+
+	static DirectX12* getInstance();
 
 #pragma region 初期化などの必須処理
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void initialize();
+	void initialize(HWND hwnd, int windouWidth, int windowHeight);
 
 	/// <summary>
 	/// 描画コマンドなどを呼び出す前に呼ぶ処理
@@ -561,10 +553,7 @@ public:
 	//描画処理。コマンドリストの命令を実行したりする
 	void draw();
 
-	//番号取得
-	//これ引数でどのクリエイト番号取得するか選べるようにする
-	CreateNumberSet getCreateNumber();
-
+	void end();
 #pragma endregion
 
 
@@ -609,7 +598,7 @@ public:
 	void setConstMapData(void** dataP, unsigned int dataSize);
 
 	//ワールド、ビュー、プロジェクション行列を乗算したものを受け取ります
-	void getMatrix(float matrix[4][4],const std::string& key, int number);
+	void getMatrix(float matrix[4][4], const std::string& key, int number);
 
 	//ワールドは乗算しない
 	void getCameraMatrix(float matrix[4][4]);
@@ -638,16 +627,16 @@ public:
 
 #pragma region バッファ作成
 	void createPoint(int createNum, int* point);
-	
+
 	//typeに応じてどのcountを++するか決める
-	void createPolygonData(PolygonData polygonData,const std::string& key);
-	
+	void createPolygonData(PolygonData polygonData, const std::string& key);
+
 	void createHeapData
 	(
 		bool setConstDataFlag,
 		const std::string& key,
 		const int& objectNumber,
-		const wchar_t* texPath ,
+		const wchar_t* texPath,
 		const Color* color
 	);
 
@@ -659,7 +648,7 @@ public:
 	/// <param name="p"></param>
 	void addUserVertex(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV, const std::string& key);
 
-	
+
 	void addUserIndex(std::vector<unsigned short>& index, const std::string& key);
 
 	/// <summary>
@@ -675,8 +664,8 @@ public:
 		void** vertexData,
 		unsigned int vertexDataSize,
 		unsigned int vertexSumDataSize,
-		std::vector<unsigned short>&index, 
-		PolygonData polyData, 
+		std::vector<unsigned short>&index,
+		PolygonData polyData,
 		const std::string& key
 	);
 #pragma endregion
@@ -684,19 +673,19 @@ public:
 #pragma region モデル
 	VertexType loadOBJVertex
 	(
-		const char* path, 
+		const char* path,
 		bool loadUV,
 		bool loadNormal,
 		std::string* materialFireName,
-		PolygonData data, 
+		PolygonData data,
 		const std::string& key
 	);
 
 	void loadOBJMaterial
 	(
 		std::string materialDirectoryPath,
-		std::string materialFileName, 
-		bool setConstDataFlag, 
+		std::string materialFileName,
+		bool setConstDataFlag,
 		const std::string& key,
 		const int& objectNumber,
 		const VertexType& vType
@@ -757,9 +746,9 @@ public:
 #pragma endregion
 
 
-	void setMulColor(Color color, const std::string& key ,int number);
-	void setAddColor(Color color, const std::string& key ,int number);
-	void setSubColor(Color color, const std::string& key ,int number);
+	void setMulColor(Color color, const std::string& key, int number);
+	void setAddColor(Color color, const std::string& key, int number);
+	void setSubColor(Color color, const std::string& key, int number);
 
 	void setIsPlane(bool flag);
 	void setIsBillboard(bool x, bool y, bool z);
@@ -784,8 +773,8 @@ public:
 
 #pragma region 操作関数
 	void setObjectPosition(DirectX::XMFLOAT3 position, const std::string& key, int number);
-	void setObjectScale(DirectX::XMFLOAT3 angle,  const std::string& key , int number);
-	void setObjectAngle(DirectX::XMFLOAT3 angle,  const std::string& key , int number);
+	void setObjectScale(DirectX::XMFLOAT3 angle, const std::string& key, int number);
+	void setObjectAngle(DirectX::XMFLOAT3 angle, const std::string& key, int number);
 	void setObjectPushNum(float objectEX, const std::string& key, int number);
 
 	void spriteSetObjectPosition(DirectX::XMFLOAT2 position, int spriteNum);
@@ -806,99 +795,99 @@ public:
 	/// </summary>
 	/// <param name="pos">座標</param>
 	/// <param name="rtNum">どのレンダーターゲットを指定するか(今は意味なし)</param>
-	 void setRenderTargerPosition(const DirectX::XMFLOAT3& pos, const int& rtNum);
+	void setRenderTargerPosition(const DirectX::XMFLOAT3& pos, const int& rtNum);
 
-	 void setRenderTargetAngle(const DirectX::XMFLOAT3& angle, const int& rtNum);
+	void setRenderTargetAngle(const DirectX::XMFLOAT3& angle, const int& rtNum);
 
-	 void setRenderTargetScale(const DirectX::XMFLOAT3& scale, const int& rtNum);
+	void setRenderTargetScale(const DirectX::XMFLOAT3& scale, const int& rtNum);
 
-	 void setPostEffectCameraFlag(const bool& flag, const int& rtNum);
+	void setPostEffectCameraFlag(const bool& flag, const int& rtNum);
 #pragma endregion
 
 #pragma region アニメーション
 
-	 std::vector<DirectX::XMFLOAT3> getBonePosition(const std::string& key);
+	std::vector<DirectX::XMFLOAT3> getBonePosition(const std::string& key);
 
-	 void setOBJModelRotatePoint
-	 (
-		 const DirectX::XMFLOAT3& position,
-		 const UINT& boneNum,
-		 const ModelData& modelData
-	 );
+	void setOBJModelRotatePoint
+	(
+		const DirectX::XMFLOAT3& position,
+		const UINT& boneNum,
+		const ModelData& modelData
+	);
 
-	 /// <summary>
-	/// ボーンを初期位置からどのくらい動かすかを指定し、動かします
+	/// <summary>
+   /// ボーンを初期位置からどのくらい動かすかを指定し、動かします
+   /// </summary>
+   /// <param name="vector">移動量</param>
+   /// <param name="boneNum">操作するボーン番号</param>
+   /// <param name="key">キー</param>
+	void setOBJBoneMoveVector
+	(
+		const DirectX::XMFLOAT3& vector,
+		const UINT& boneNum,
+		const std::string& key,
+		const UINT& objectNum
+	);
+
+	/// <summary>
+	/// ボーンに対応している部分をどのくらい拡大させるかを指定し、拡大します
 	/// </summary>
-	/// <param name="vector">移動量</param>
-	/// <param name="boneNum">操作するボーン番号</param>
-	/// <param name="key">キー</param>
-	  void setOBJBoneMoveVector
-	  (
-		  const DirectX::XMFLOAT3& vector, 
-		  const UINT& boneNum,
-		  const std::string& key, 
-		  const UINT& objectNum
-	  );
+	/// <param name="scale"></param>
+	/// <param name="boneNum"></param>
+	/// <param name="key"></param>
+	void setOBJBoneScale
+	(
+		const DirectX::XMFLOAT3& scale,
+		const UINT& boneNum,
+		const std::string& key,
+		const UINT& objectNum
+	);
 
-	 /// <summary>
-	 /// ボーンに対応している部分をどのくらい拡大させるかを指定し、拡大します
-	 /// </summary>
-	 /// <param name="scale"></param>
-	 /// <param name="boneNum"></param>
-	 /// <param name="key"></param>
-	  void setOBJBoneScale
-	  (
-		  const DirectX::XMFLOAT3& scale,
-		  const UINT& boneNum,
-		  const std::string& key,
-		  const UINT& objectNum
-	  );
+	/// <summary>
+	/// ボーンに対応している部分をどのくらい回転させるかを指定し、回転します
+	/// </summary>
+	/// <param name="angle"></param>
+	/// <param name="boneNum"></param>
+	/// <param name="key"></param>
+	void setOBJBoneAngle
+	(
+		const DirectX::XMFLOAT3& angle,
+		const UINT& boneNum,
+		const std::string& key,
+		const UINT& objectNum
+	);
 
-	 /// <summary>
-	 /// ボーンに対応している部分をどのくらい回転させるかを指定し、回転します
-	 /// </summary>
-	 /// <param name="angle"></param>
-	 /// <param name="boneNum"></param>
-	 /// <param name="key"></param>
-	  void setOBJBoneAngle
-	  (
-		  const DirectX::XMFLOAT3& angle, 
-		  const UINT& boneNum,
-		  const std::string& key, 
-		  const UINT& objectNum
-	  );
+	/// <summary>
+/// ボーンに親ボーンをセットします
+/// </summary>
+/// <param name="boneNum">ボーン番号</param>
+/// <param name="parentBoneNum">親ボーン番号</param>
+/// <param name="modelData">モデルデータ</param>
+	void setParentOBJBone
+	(
+		const UINT& boneNum,
+		const UINT& parentBoneNum,
+		const std::string& key
+	);
 
-	  /// <summary>
-  /// ボーンに親ボーンをセットします
-  /// </summary>
-  /// <param name="boneNum">ボーン番号</param>
-  /// <param name="parentBoneNum">親ボーン番号</param>
-  /// <param name="modelData">モデルデータ</param>
-	  void setParentOBJBone
-	  (
-		  const UINT& boneNum,
-		  const UINT& parentBoneNum,
-		  const std::string& key
-	  );
-
-	  void setParentOBJBoneScaleImpact
-	  (
-		  const UINT& boneNum,
-		  const DirectX::XMFLOAT3& scaleImpact,
-		  const std::string& key
-	  );
-	  void setParentOBJBoneAngleImpact
-	  (
-		  const UINT& boneNum,
-		  const DirectX::XMFLOAT3& angleImpact,
-		  const std::string& key
-	  );
-	  void setParentOBJBoneMoveVectorImpact
-	  (
-		  const UINT& boneNum,
-		  const DirectX::XMFLOAT3& moveVectorImpact,
-		  const std::string& key
-	  );
+	void setParentOBJBoneScaleImpact
+	(
+		const UINT& boneNum,
+		const DirectX::XMFLOAT3& scaleImpact,
+		const std::string& key
+	);
+	void setParentOBJBoneAngleImpact
+	(
+		const UINT& boneNum,
+		const DirectX::XMFLOAT3& angleImpact,
+		const std::string& key
+	);
+	void setParentOBJBoneMoveVectorImpact
+	(
+		const UINT& boneNum,
+		const DirectX::XMFLOAT3& moveVectorImpact,
+		const std::string& key
+	);
 
 #pragma endregion
 
@@ -957,8 +946,8 @@ public:
 	void setParent
 	(
 		const std::string& key,
-		const int& number, 
-		const std::string& parentKey ,
+		const int& number,
+		const std::string& parentKey,
 		const int& parentNum
 	);
 
@@ -974,7 +963,7 @@ public:
 #pragma endregion
 
 #pragma region ライブラリ使用関数
-	
+
 	void sortModelData(std::vector<std::tuple<ModelData, int>>& modelDatas);
 #pragma endregion
 

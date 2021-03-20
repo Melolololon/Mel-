@@ -37,6 +37,8 @@ class Library
 private:
 	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+	static DirectX12* dx12;
+
 	static UINT count;
 	static int createPointCount;
 

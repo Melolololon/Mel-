@@ -366,10 +366,3 @@ struct CameraData
 //};
 #pragma endregion
 
-
-struct CreateNumberSet
-{
-	int polyNum;
-	int despNum;
-};
-
