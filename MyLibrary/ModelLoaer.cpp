@@ -107,12 +107,17 @@ bool  ModelLoader::loadOBJModel
 	//スムースシェーディング用データ格納用
 	std::vector<std::unordered_map<int, DirectX::XMFLOAT3>>smoothVertexPos(1);
 
-	
-
 	//頂点読み込み数
 	int vertexLoadCount = 0;
 
 
+	//ボーン用
+		DirectX::XMFLOAT3 bonePos = { 0,0,0 };
+		int boneObjectNum = 0;//何個目のオブジェクトのデータかを入れる変数
+		int boneNum = 0;//ボーンの番号
+		bool loadBoneData = false;
+		std::vector< std::vector<int>>temporaryBoneNumVec;//temporary は　仮
+	
 
 	while (std::getline(obj, objText))
 	{
@@ -248,11 +253,57 @@ bool  ModelLoader::loadOBJModel
 #pragma endregion
 
 
+#pragma region ボーン読み込み
+		//読み込み準備
+		if (objText.find("BoneData") != std::string::npos)
+		{
+			loadBoneData = true;
+
+			if (bonePosVector)bonePosVector->reserve(999);
+			if (boneNumVector)temporaryBoneNumVec.resize(vertices.size());
+
+			int loopCount = 0;
+			for (auto& num : temporaryBoneNumVec)
+			{
+				num.reserve(vertices[loopCount].size());
+				loopCount++;
+			}
+		}
+
+
+		//bpあったらボーン座標追加
+		if (objText.find("bp") != std::string::npos && bonePosVector)
+		{
+			lineStream >> bonePos.x;
+			lineStream >> bonePos.y;
+			lineStream >> bonePos.z;
+			bonePosVector->push_back(bonePos);
+		}
+
+		if (objText.find("bd") != std::string::npos && boneNumVector)
+		{
+
+			//何個目のオブジェクトのデータか確認
+			lineStream >> boneObjectNum;
+
+			//番号取得
+			lineStream >> boneNum;
+
+			//仮配列にボーン番号追加
+			temporaryBoneNumVec[boneObjectNum].push_back(boneNum);
+
+		}
+
+#pragma endregion
+
 	}
 
 	if(loadNum)
 	*loadNum = loadModel;
 
+	//仮配列から移動
+	if (boneNumVector)
+		*boneNumVector = temporaryBoneNumVec;
 
 	obj.close();
 
