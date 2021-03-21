@@ -61,12 +61,13 @@ bool  ModelLoader::loadOBJModel
 	std::vector<std::vector<int>>* boneNumVector
 )
 {
+
 	//とりあえず、マテリアル読み込みは強制
 #pragma region 新読み込み
 	vertices.clear();
 	indices.clear();
 	smoothNormalCalcData.clear();
-	smoothNormalCalcData.resize(1);
+	
 
 	//読み取って一時的に入れる配列
 	std::vector<DirectX::XMFLOAT3>loadPosVector;
@@ -93,19 +94,28 @@ bool  ModelLoader::loadOBJModel
 	std::string topStr = "";
 
 	//ファイルストリーム
-	std::ifstream obj(path);
+	std::ifstream obj;
+	obj.open(path);
+	if(!obj)
+	{
+		OutputDebugString(L"読み込みに失敗しました。.objファイルが見つかりませんでした。\n");
+		return false;
+	}
 
 	//マテリアル読み込みでtrueにし、座標読み込み時にtrueだったら配列clear
-	bool clearVector = true;
+	bool loadProcess = false;
 
 	//読み込んだ.obj内のモデル数
 	int loadModel = 0;
+
+	//ポリゴンの枚数
+	int polygonCount = 0;
 
 	//マテリアルを読み込んだかどうか
 	bool loadMtlFile = false;
 
 	//スムースシェーディング用データ格納用
-	std::vector<std::unordered_map<int, DirectX::XMFLOAT3>>smoothVertexPos(1);
+	std::vector<std::unordered_map<int, DirectX::XMFLOAT3>>smoothVertexPos;
 
 	//頂点読み込み数
 	int vertexLoadCount = 0;
@@ -124,6 +134,7 @@ bool  ModelLoader::loadOBJModel
 		std::istringstream lineStream(objText);
 
 		//先頭文字取得
+		topStr.clear();
 		lineStream >> topStr;
 		
 #pragma region 頂点データ取得
@@ -153,12 +164,31 @@ bool  ModelLoader::loadOBJModel
 				return false;
 			}
 
-			if(!clearVector)
+			if(!loadProcess)
 			{
+
+				loadProcess = true;
+
 				loadPosVector.clear();
 				loadUvVector.clear();
 				loadNormalVector.clear();
-				clearVector = true;
+
+
+				smoothNormalCalcData.resize(smoothNormalCalcData.size() + 1);
+				smoothVertexPos.resize(smoothVertexPos.size() + 1);
+
+
+				//読み込み数カウントなど
+				loadModel++;
+				vertexLoadCount = 0;
+				polygonCount = 0;
+
+				//参照した配列のメモリ確保
+				vertices.resize(vertices.size() + 1);
+				vertices[vertices.size() - 1].reserve(9999);
+				indices.resize(indices.size() + 1);
+				indices[indices.size() - 1].reserve(99999);
+
 			}
 
 			lineStream >> pos.x;
@@ -168,8 +198,8 @@ bool  ModelLoader::loadOBJModel
 
 
 			std::vector<USHORT>u;
-			smoothNormalCalcData[loadModel].emplace(vertexLoadCount, u);
-			smoothVertexPos[loadModel].emplace(vertexLoadCount, pos);
+			smoothNormalCalcData[loadModel - 1].emplace(vertexLoadCount, u);
+			smoothVertexPos[loadModel - 1].emplace(vertexLoadCount, pos);
 			vertexLoadCount++;
 		}
 
@@ -190,24 +220,15 @@ bool  ModelLoader::loadOBJModel
 			lineStream >> mtlNama;
 			materialName.push_back(mtlNama);
 			
-			//読み込み数カウントなど
-			clearVector = false;
-			loadModel++;
-			vertexLoadCount = 0;
-
-			//参照した配列のメモリ確保
-			vertices.resize(vertices.size() + 1);
-			vertices[vertices.size() - 1].reserve(9999);
-			indices.resize(indices.size() + 1);
-			indices[indices.size() - 1].reserve(99999);
-
-			smoothNormalCalcData.resize(smoothNormalCalcData.size() + 1);
-			smoothVertexPos.resize(smoothVertexPos.size() + 1);
+			
+			loadProcess = false;
+			
 		}
 
 #pragma endregion
 
 #pragma region 割り当て
+		
 		if (topStr.find("f") != std::string::npos)
 		{
 			//アルゴリズムメモ
@@ -245,54 +266,54 @@ bool  ModelLoader::loadOBJModel
 
 				//格納
 				vertices[loadModel - 1].push_back(vertex);
-				indices[loadModel - 1].push_back(index[0] - 1);
+				indices[loadModel - 1].push_back(polygonCount);
+				polygonCount++;
 			}
 			
 
 		}
 #pragma endregion
-
-
+		
 #pragma region ボーン読み込み
-		//読み込み準備
-		if (objText.find("BoneData") != std::string::npos)
-		{
-			loadBoneData = true;
+		////読み込み準備
+		//if (objText.find("BoneData") != std::string::npos)
+		//{
+		//	loadBoneData = true;
 
-			if (bonePosVector)bonePosVector->reserve(999);
-			if (boneNumVector)temporaryBoneNumVec.resize(vertices.size());
+		//	if (bonePosVector)bonePosVector->reserve(999);
+		//	if (boneNumVector)temporaryBoneNumVec.resize(vertices.size());
 
-			int loopCount = 0;
-			for (auto& num : temporaryBoneNumVec)
-			{
-				num.reserve(vertices[loopCount].size());
-				loopCount++;
-			}
-		}
+		//	int loopCount = 0;
+		//	for (auto& num : temporaryBoneNumVec)
+		//	{
+		//		num.reserve(vertices[loopCount].size());
+		//		loopCount++;
+		//	}
+		//}
 
 
-		//bpあったらボーン座標追加
-		if (objText.find("bp") != std::string::npos && bonePosVector)
-		{
-			lineStream >> bonePos.x;
-			lineStream >> bonePos.y;
-			lineStream >> bonePos.z;
-			bonePosVector->push_back(bonePos);
-		}
+		////bpあったらボーン座標追加
+		//if (objText.find("bp") != std::string::npos && bonePosVector)
+		//{
+		//	lineStream >> bonePos.x;
+		//	lineStream >> bonePos.y;
+		//	lineStream >> bonePos.z;
+		//	bonePosVector->push_back(bonePos);
+		//}
 
-		if (objText.find("bd") != std::string::npos && boneNumVector)
-		{
+		//if (objText.find("bd") != std::string::npos && boneNumVector)
+		//{
 
-			//何個目のオブジェクトのデータか確認
-			lineStream >> boneObjectNum;
+		//	//何個目のオブジェクトのデータか確認
+		//	lineStream >> boneObjectNum;
 
-			//番号取得
-			lineStream >> boneNum;
+		//	//番号取得
+		//	lineStream >> boneNum;
 
-			//仮配列にボーン番号追加
-			temporaryBoneNumVec[boneObjectNum].push_back(boneNum);
+		//	//仮配列にボーン番号追加
+		//	temporaryBoneNumVec[boneObjectNum].push_back(boneNum);
 
-		}
+		//}
 
 #pragma endregion
 
@@ -303,7 +324,16 @@ bool  ModelLoader::loadOBJModel
 
 	//仮配列から移動
 	if (boneNumVector)
-		*boneNumVector = temporaryBoneNumVec;
+	{//*boneNumVector = temporaryBoneNumVec;
+	}
+	
+	vertices.shrink_to_fit();
+	for(auto& v : vertices)
+		v.shrink_to_fit();
+	
+	indices.shrink_to_fit();
+	for (auto& i : indices)
+		i.shrink_to_fit();
 
 	obj.close();
 
@@ -340,8 +370,13 @@ bool  ModelLoader::loadOBJModel
 
 #pragma endregion
 
+
+
+	return true;
 #pragma endregion
 
+
+	
 
 #pragma region 旧読み込み
 

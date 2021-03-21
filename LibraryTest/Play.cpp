@@ -14,7 +14,8 @@ Play::Play()
 	std::string material;
 	modelD.key = "biru";
 	
-	Library::loadOBJVertex("Resources/Obj/konnyakuBone.obj", true, true, &material, modelD);
+	//Library::loadOBJVertex("Resources/Obj/konnyakuBone.obj", true, true, &material, modelD);
+	Library::loadOBJVertex("Resources/Obj/test.obj", true, true, &material, modelD);
 	Library::loadOBJMaterial("Resources/Obj/", material, 2, modelD);
 	//Library::setAngle({ 0,180,0 }, modelD, 0);
 
@@ -67,11 +68,11 @@ void Play::update()
 //	//モデル自身の回転のせいだった(ボーン適応させた後にモデル回転させたから)
 //
 ///*
-//	if (DirectInput::keyState(DIK_A))
-//		modelZ += 2.0f;
-//	if (DirectInput::keyState(DIK_S))
-//		modelZ -= 2.0f;
-//	Library::setAngle({ 0,0,modelZ }, modelD, 0);*/
+	if (DirectInput::keyState(DIK_A))
+		modelZ += 2.0f;
+	if (DirectInput::keyState(DIK_S))
+		modelZ -= 2.0f;
+	Library::setAngle({ 0,modelZ,0 }, modelD, 0);
 //
 //	if (DirectInput::keyState(DIK_Z))
 //		addAngleY += 2.0f;
@@ -105,14 +106,14 @@ void Play::draw()
 
 	//d2の描画コマンドを先にセットしないと。dのコマンドセット時に自分の後ろに板ポリがない(DirectXが気が付いてない)ので
 	//αブレンドできてなかった
-	Library::drawGraphic(d2, 0);
-	Library::drawGraphic(d, 0);
+	//Library::drawGraphic(d2, 0);
+	//Library::drawGraphic(d, 0);
 	
 
 	std::string s = std::to_string(subAlpha);
 	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, s, &f);
-	/*Library::drawGraphic(modelD, 0);
-	Library::drawGraphic(modelD, 1);*/
+	Library::drawGraphic(modelD, 0);
+	//Library::drawGraphic(modelD, 1);*/
 
 
 }

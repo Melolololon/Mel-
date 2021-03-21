@@ -107,9 +107,9 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 
 	audio = std::unique_ptr<Audio>(new Audio());
 
-
-	dx12->initialize(hwnd, windowWidth, windowHeight);
 	dx12->setScreenColor(screenColor);
+	dx12->initialize(hwnd, windowWidth, windowHeight);
+	
 
 	createPipelineCounter = dx12->getStartPipelineCreateNum();
 	//スプライトフォント300を作るのでカウントを増やしておく

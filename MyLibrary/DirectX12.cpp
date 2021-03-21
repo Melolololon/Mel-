@@ -1979,7 +1979,7 @@ VertexType DirectX12::loadOBJVertex
 		normals[i].resize(vertices[key][i].size());
 	}
 	smoothNormal.emplace(key, normals);
-	calcSmoothingNormals(key);
+	//calcSmoothingNormals(key);
 
 #pragma region 頂点 インデックスバッファ作成
 
@@ -2050,7 +2050,7 @@ VertexType DirectX12::loadOBJVertex
 		createBuffer->createIndexBufferSet
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer(sizeof(unsigned short) * indices[key][i].size()),
+			CD3DX12_RESOURCE_DESC::Buffer(sizeof(USHORT) * indices[key][i].size()),
 			indices[key][i],
 			iBuffs[i]
 		);
