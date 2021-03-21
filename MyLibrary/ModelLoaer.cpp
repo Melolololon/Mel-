@@ -71,11 +71,11 @@ bool  ModelLoader::loadOBJModel
 
 	//読み取って一時的に入れる配列
 	std::vector<DirectX::XMFLOAT3>loadPosVector;
-	loadPosVector.reserve(9999);
+	loadPosVector.reserve(1000);
 	std::vector<DirectX::XMFLOAT2>loadUvVector;
-	loadUvVector.reserve(9999);
+	loadUvVector.reserve(1000);
 	std::vector<DirectX::XMFLOAT3>loadNormalVector;
-	loadNormalVector.reserve(9999);
+	loadNormalVector.reserve(1000);
 
 
 	//添え字
@@ -103,7 +103,7 @@ bool  ModelLoader::loadOBJModel
 	}
 
 	//マテリアル読み込みでtrueにし、座標読み込み時にtrueだったら配列clear
-	bool loadProcess = false;
+	bool loadPreparation = false;
 
 	//読み込んだ.obj内のモデル数
 	int loadModel = 0;
@@ -164,30 +164,33 @@ bool  ModelLoader::loadOBJModel
 				return false;
 			}
 
-			if(!loadProcess)
+			if(!loadPreparation)
 			{
 
-				loadProcess = true;
+				loadPreparation = true;
 
+				//初期化
 				loadPosVector.clear();
 				loadUvVector.clear();
 				loadNormalVector.clear();
 
-
+				//スムーズシェーディング用配列修正
 				smoothNormalCalcData.resize(smoothNormalCalcData.size() + 1);
 				smoothVertexPos.resize(smoothVertexPos.size() + 1);
 
 
-				//読み込み数カウントなど
+				//読み込み数カウントインクリメント
 				loadModel++;
+
+				//カウント初期化
 				vertexLoadCount = 0;
 				polygonCount = 0;
 
 				//参照した配列のメモリ確保
 				vertices.resize(vertices.size() + 1);
-				vertices[vertices.size() - 1].reserve(9999);
+				vertices[vertices.size() - 1].reserve(1000);
 				indices.resize(indices.size() + 1);
-				indices[indices.size() - 1].reserve(99999);
+				indices[indices.size() - 1].reserve(1000);
 
 			}
 
@@ -221,7 +224,7 @@ bool  ModelLoader::loadOBJModel
 			materialName.push_back(mtlNama);
 			
 			
-			loadProcess = false;
+			loadPreparation = false;
 			
 		}
 
@@ -275,45 +278,45 @@ bool  ModelLoader::loadOBJModel
 #pragma endregion
 		
 #pragma region ボーン読み込み
-		////読み込み準備
-		//if (objText.find("BoneData") != std::string::npos)
-		//{
-		//	loadBoneData = true;
+		//読み込み準備
+		if (objText.find("BoneData") != std::string::npos)
+		{
+			loadBoneData = true;
 
-		//	if (bonePosVector)bonePosVector->reserve(999);
-		//	if (boneNumVector)temporaryBoneNumVec.resize(vertices.size());
+			if (bonePosVector)bonePosVector->reserve(99);
+			if (boneNumVector)temporaryBoneNumVec.resize(vertices.size());
 
-		//	int loopCount = 0;
-		//	for (auto& num : temporaryBoneNumVec)
-		//	{
-		//		num.reserve(vertices[loopCount].size());
-		//		loopCount++;
-		//	}
-		//}
+			int loopCount = 0;
+			for (auto& num : temporaryBoneNumVec)
+			{
+				num.reserve(vertices[loopCount].size());
+				loopCount++;
+			}
+		}
 
 
-		////bpあったらボーン座標追加
-		//if (objText.find("bp") != std::string::npos && bonePosVector)
-		//{
-		//	lineStream >> bonePos.x;
-		//	lineStream >> bonePos.y;
-		//	lineStream >> bonePos.z;
-		//	bonePosVector->push_back(bonePos);
-		//}
+		//bpあったらボーン座標追加
+		if (objText.find("bp") != std::string::npos && bonePosVector)
+		{
+			lineStream >> bonePos.x;
+			lineStream >> bonePos.y;
+			lineStream >> bonePos.z;
+			bonePosVector->push_back(bonePos);
+		}
 
-		//if (objText.find("bd") != std::string::npos && boneNumVector)
-		//{
+		if (objText.find("bd") != std::string::npos && boneNumVector)
+		{
 
-		//	//何個目のオブジェクトのデータか確認
-		//	lineStream >> boneObjectNum;
+			//何個目のオブジェクトのデータか確認
+			lineStream >> boneObjectNum;
 
-		//	//番号取得
-		//	lineStream >> boneNum;
+			//番号取得
+			lineStream >> boneNum;
 
-		//	//仮配列にボーン番号追加
-		//	temporaryBoneNumVec[boneObjectNum].push_back(boneNum);
+			//仮配列にボーン番号追加
+			temporaryBoneNumVec[boneObjectNum].push_back(boneNum);
 
-		//}
+		}
 
 #pragma endregion
 
@@ -324,8 +327,8 @@ bool  ModelLoader::loadOBJModel
 
 	//仮配列から移動
 	if (boneNumVector)
-	{//*boneNumVector = temporaryBoneNumVec;
-	}
+		*boneNumVector = temporaryBoneNumVec;
+	
 	
 	vertices.shrink_to_fit();
 	for(auto& v : vertices)
@@ -334,6 +337,11 @@ bool  ModelLoader::loadOBJModel
 	indices.shrink_to_fit();
 	for (auto& i : indices)
 		i.shrink_to_fit();
+
+	smoothNormalCalcData.shrink_to_fit();
+	for (auto& s : smoothNormalCalcData)
+		for (auto& s2 : s)
+			s2.second.shrink_to_fit();
 
 	obj.close();
 

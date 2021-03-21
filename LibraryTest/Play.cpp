@@ -67,20 +67,20 @@ void Play::update()
 //	//今、xとzの+-が逆になってるから、どこがおかしいか探す
 //	//モデル自身の回転のせいだった(ボーン適応させた後にモデル回転させたから)
 //
-///*
-	if (DirectInput::keyState(DIK_A))
+/*
+	/*if (DirectInput::keyState(DIK_A))
 		modelZ += 2.0f;
 	if (DirectInput::keyState(DIK_S))
 		modelZ -= 2.0f;
-	Library::setAngle({ 0,modelZ,0 }, modelD, 0);
-//
-//	if (DirectInput::keyState(DIK_Z))
-//		addAngleY += 2.0f;
-//	if (DirectInput::keyState(DIK_X))
-//		addAngleY -= 2.0f;
-//
-//	Vector3 addVec(0, 0, addAngleY);
-//	Library::setOBJBoneAngle(addVec, 2, modelD, 0);
+	Library::setAngle({ 0,modelZ,0 }, modelD, 0);*/
+
+	if (DirectInput::keyState(DIK_Z))
+		addAngleY += 2.0f;
+	if (DirectInput::keyState(DIK_X))
+		addAngleY -= 2.0f;
+
+	Vector3 addVec(0, 0, addAngleY);
+	Library::setOBJBoneAngle(addVec, 0, modelD, 0);
 //
 //	Library::setParentOBJBone(3, 2, modelD);
 //	Library::setParentOBJBone(4, 3, modelD);
