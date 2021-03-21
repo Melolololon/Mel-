@@ -3003,7 +3003,7 @@ void DirectX12::createCommonBuffer(const int& texNum, const std::string& key)
 #pragma endregion
 
 
-void DirectX12::loadSpriteFont(const wchar_t const*& texturePath, const DirectX::XMFLOAT2& lineNum)
+void DirectX12::loadSpriteFont(const wchar_t const* texturePath, const DirectX::XMFLOAT2& lineNum)
 {
 	//10éÌóﬁÇ‹Ç≈ì«Ç›çûÇﬂÇÈ
 
@@ -4643,10 +4643,11 @@ void DirectX12::drawSpriteFontString(DirectX::XMFLOAT2 position, DirectX::XMFLOA
 		(
 			spriteFontDrawCounter,
 			-1,
-			spriteFontData[spriteTextureNum].widthLineNum,
-			spriteFontData[spriteTextureNum].heightLineNum,
-			width + 1,
-			height + 1
+			{ 
+				static_cast<float>(spriteFontData[spriteTextureNum].widthLineNum ),
+			static_cast<float>(spriteFontData[spriteTextureNum].heightLineNum)
+			},
+			{ static_cast<float>(width + 1),static_cast<float>(height + 1) }
 		);
 
 

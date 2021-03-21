@@ -40,6 +40,7 @@ public:
 	//デストラクタ
 	virtual ~Object();
 
+	//初期化
 	virtual void initialize();
 	//処理
 	virtual void update();
@@ -52,13 +53,24 @@ public:
 	/// <param name="object">相手オブジェトのポインタ</param>
 	/// <param name="collisionType">自分のどの判定に当たったか</param>
 	/// <param name="arrayNum">何個目の判定に当たったか</param>
-	virtual void hit(const Object* const object,const CollisionType& collisionType,const int& arrayNum);
+	virtual void hit
+	(
+		const Object* const object,
+		const CollisionType& collisionType,
+		const int& arrayNum
+	);
 
+	virtual void* getPtr();
+
+	//オブジェクトマネージャーから削除するか同課のフラグを返す
 	bool getEraseManager();
+
+	//確実に初期値が決まっている変数(eraseManagerなど)を初期化する変数(初期化忘れ防止用)
 	void objectInitialize();
 	
 	Vector3 getPosition() { return position; };
 
+	//判定用関数
 	CollisionFlag getCollisionFlag();
 	std::vector<SphereData> getSphereData();
 	std::vector<LineSegmentData> getLineSegmentData();
@@ -67,10 +79,6 @@ public:
 	Vector3& getLineSegmentHitPosition(const int & num);
 	Vector3& getBoardHitPosition(const int & num);
 
-	/*void setLineSegmentDataHitPos(const Vector3& pos, const int& arrayNum);
-	void setBoardDataHitPos(const Vector3& pos, const int& arrayNum);*/
-
-	virtual void* getPtr();
 
 	
 };

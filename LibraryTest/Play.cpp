@@ -33,7 +33,7 @@ Play::Play()
 	Library::createHeapData2({ 255,0,0,255 }, 1, d2);
 	//Library::loadOBJMaterial("Resources/Obj/", material, 2, d);
 
-	f = Library::loadSpriteFont(L"Resources/Font/font.png", { 14,7 }, { 20,20 });
+	f = Library::loadSpriteFont(L"Resources/Font/font.png", { 14,7 });
 }
 
 
