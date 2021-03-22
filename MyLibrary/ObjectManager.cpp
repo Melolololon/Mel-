@@ -39,8 +39,12 @@ void ObjectManager::update()
 {
 #pragma region update
 	//カーソルアップデート
-	cursor.get()->update();
-	
+	if (cursor) 
+	{
+		cursor.get()->update();
+		nearPos = cursor.get()->getNearPos();
+		farPos = cursor.get()->getFarPos();
+	}
 	//拡張for文は、途中でサイズ変えるとダメ
 	//変数用意してsize入れるか、一時的に別の配列に入れて、update終了後に追加
 	std::vector<Object*>o = objects;
@@ -49,8 +53,7 @@ void ObjectManager::update()
 		obj->update();
 	}
 
-	nearPos = cursor.get()->getNearPos();
-	farPos = cursor.get()->getFarPos();
+	
 #pragma endregion
 
 #pragma region collision

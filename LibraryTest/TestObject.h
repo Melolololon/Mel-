@@ -6,6 +6,7 @@ private:
 	ModelData m;
 	int heapNum;
 	static int createCount;
+	Vector3 angle;
 public:
 	TestObject(const Vector3& pos);
 	~TestObject();

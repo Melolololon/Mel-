@@ -1,7 +1,7 @@
 #include "Game.h"
 #include<Library.h>
 #include"SceneManager.h"
-
+#include"ObjectManager.h"
 #include"Play.h"
 
 Game::Game() {}
@@ -32,9 +32,13 @@ void Game::run()
 
 void Game::initialize()
 {
+	ObjectManager::getInstance()->initialize();
+
 	Library::initialize(1280, 720, {0,0,0,255},L"MEL_Magical_Engene_Library(仮)");
 	Library::setCamera({ 0,0,-10 }, { 0,0,0 }, { 0,1,0 });
 #pragma region マネージャー初期化
+
+
 	SceneManager::getInstace()->initialize();
 	SceneManager::getInstace()->addScene("Play", new Play());
 #pragma endregion
@@ -45,6 +49,7 @@ void Game::initialize()
 void Game::end()
 {
 #pragma region マネージャー終了
+	ObjectManager::getInstance()->end();
 
 	SceneManager::getInstace()->end();
 #pragma endregion

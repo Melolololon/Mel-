@@ -41,7 +41,7 @@ Play::Play()
 
 
 	ObjectManager::getInstance()->addObject(new TestObject({ 0,0,0 }));
-	ObjectManager::getInstance()->addObject(new TestObject({ 1,0,0.5 }));
+	ObjectManager::getInstance()->addObject(new TestObject({ 10,0,10 }));
 	ObjectManager::getInstance()->objectSort(ObjectManager::OBJECT_SORT_NEAR_DISTANCE,false);
 
 }
@@ -65,13 +65,13 @@ UCHAR subAlpha = 0;
 
 void Play::update()
 {
-
+	ObjectManager::getInstance()->update();
 }
 
 void Play::draw()
 {
 
-
+	Library::setPipeline(PIPELINE_CULL_NONE);
 	ObjectManager::getInstance()->draw();
 	//Library::drawGraphic(d, 0);
 
