@@ -55,7 +55,7 @@ public:
 	/// <param name="arrayNum">‰½ŒÂ–Ú‚Ì”»’è‚É“–‚½‚Á‚½‚©</param>
 	virtual void hit
 	(
-		const Object* const object,
+		const Object const*  object,
 		const CollisionType& collisionType,
 		const int& arrayNum
 	);

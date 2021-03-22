@@ -25,7 +25,7 @@ void Object::draw()
 
 }
 
-void Object::hit(const Object* const object, const CollisionType& collisionType, const int& arrayNum)
+void Object::hit(const Object const*  const object, const CollisionType& collisionType, const int& arrayNum)
 {
 }
 
