@@ -11,6 +11,10 @@ struct Matrix
 
 	Matrix operator*(const Matrix& mat)const;
 	void operator*=(const Matrix& mat);
+	
+	std::array<float, 4>&operator[](const unsigned int& num);
+	std::array<float, 4>operator[](const unsigned int& num)const;
+
 };
 
 

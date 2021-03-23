@@ -13,11 +13,7 @@ float4 PSmain(GSOutput input) : SV_TARGET
 
 	float3 lightDir = normalize(mul(lightMat, light));
 
-	//カメラ座標ちゃんと遅れてない?
-	//なぜか突然正常に送れるようになった(cameraPosYがXに入ってたけどなぜか不明)
-	//なぜか端に行くと明るさが変わるしかも片方だけ
-	//eyeDirがfloat3じゃなくてfloatになってた
-	//GPUにはfloat4型しか送れないのにfloat3にしてたから
+	
 	const float3 eyeDir = normalize(cameraPos - input.worldPos.xyz);
 
 
@@ -27,7 +23,6 @@ float4 PSmain(GSOutput input) : SV_TARGET
 	float3 ambient = m_ambient;
 	float3 diffuse = dotlightnormal * m_diffuse;
 
-	//ここがおかしい?
 	float3 specular = pow(saturate(dot(reflect, eyeDir)), shininess) * m_specular;
 
 
@@ -38,5 +33,4 @@ float4 PSmain(GSOutput input) : SV_TARGET
 	texColor *= mulColor;
 
 	return shaderColor * texColor;
-
 }

@@ -42,6 +42,8 @@ struct Vector2
 	Vector2 operator/(const float& f)const;
 
 	void operator=(const float&  num);
+
+	float& operator[](const unsigned int& num);
 #pragma endregion
 
 
@@ -98,6 +100,7 @@ struct Vector3
 
 	void operator=(const float& num);
 
+	float& operator[](const unsigned int& num);
 #pragma endregion
 
 };
@@ -114,4 +117,34 @@ Vector3 vector3Normalize(const Vector3& vector);
  float vector3Dot(const Vector3& vector1, const Vector3& vector2);
 #pragma endregion
 
+
+ struct Vector4
+ {
+	 float x, y, z, w;
+
+#pragma region ‰‰ŽZŽq
+
+	 Vector4 operator+(Vector4 vector);
+
+	 Vector4 operator-(Vector4 vector);
+
+	 Vector4 operator*(Vector4 vector);
+
+	 Vector4 operator/(Vector4 vector);
+
+	 void operator+= (Vector4 vector);
+
+	 void operator-= (Vector4 vector);
+
+	 void operator*= (Vector4 vector);
+
+	 void operator/= (Vector4 vector);
+
+	 Vector4 operator*(float f);
+
+	 void operator=(float num);
+
+#pragma endregion
+
+ };
 

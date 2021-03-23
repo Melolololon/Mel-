@@ -445,7 +445,6 @@
     <ClInclude Include="CreatePolygon.h" />
     <ClInclude Include="DirectInput.h" />
     <ClInclude Include="DirectXTexLoader.h" />
-    <ClInclude Include="DrawGraphicStruct.h" />
     <ClInclude Include="LibMath.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="ModelBone.h" />

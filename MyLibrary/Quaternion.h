@@ -10,8 +10,6 @@ struct Quaternion
 	Quaternion operator* (const Quaternion& q)const;
 	
 	void operator*= (const Quaternion& q);
-
-	
 };
 
 Quaternion getRotateQuaternion(const Vector3& pos, const Vector3& vector, const float& angle);

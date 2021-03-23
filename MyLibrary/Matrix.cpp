@@ -12,7 +12,6 @@ Matrix::Matrix(const DirectX::XMMATRIX& m)
 			matrix[i][j] = m.r[i].m128_f32[j];
 }
 
-
 #pragma region ‰‰ŽZŽq
 
 Matrix Matrix::operator*(const Matrix& mat)const
@@ -22,7 +21,7 @@ Matrix Matrix::operator*(const Matrix& mat)const
 	for (int i = 0; i < 4; i++)
 		for (int j = 0; j < 4; j++)
 			for (int k = 0; k < 4; k++)
-				m.matrix[i][j] += matrix[i][k] * mat.matrix[k][j];
+				m[i][j] += matrix[i][k] * mat[k][j];
 
 	return m;
 }
@@ -35,6 +34,18 @@ void Matrix::operator*=(const Matrix& mat)
 	m = m * mat;
 	matrix = m.matrix;
 }
+
+std::array<float, 4>& Matrix::operator[](const unsigned int& num)
+{
+	return matrix[num];
+}
+
+std::array<float, 4> Matrix::operator[](const unsigned int& num)const
+{
+	return matrix[num];
+}
+
+
 
 #pragma endregion
 
@@ -62,7 +73,7 @@ Matrix getIdentityMatrix()
 	Matrix m = getZeroMatrix();
 
 	for(int i = 0; i < 4;i++)
-	m.matrix[i][i] = 1;
+	m[i][i] = 1;
 
 	return m;
 }
@@ -75,10 +86,10 @@ Matrix getRotateXMatrix(const float& angle)
 {
 	Matrix m = getIdentityMatrix();
 
-	m.matrix[1][1] = std::cos(angle);
-	m.matrix[1][2] = std::sin(angle);
-	m.matrix[2][1] = std::sin(-angle);
-	m.matrix[2][2] = std::cos(angle);
+	m[1][1] = std::cos(angle);
+	m[1][2] = std::sin(angle);
+	m[2][1] = std::sin(-angle);
+	m[2][2] = std::cos(angle);
 
 	return m;
 }
@@ -87,10 +98,10 @@ Matrix getRotateYMatrix(const float& angle)
 {
 	Matrix m = getIdentityMatrix();
 
-	m.matrix[0][0] = std::cos(angle);
-	m.matrix[0][2] = std::sin(-angle);
-	m.matrix[2][0] = std::sin(angle);
-	m.matrix[2][2] = std::cos(angle);
+	m[0][0] = std::cos(angle);
+	m[0][2] = std::sin(-angle);
+	m[2][0] = std::sin(angle);
+	m[2][2] = std::cos(angle);
 
 	return m;
 }
@@ -99,10 +110,10 @@ Matrix getRotateZMatrix(const float& angle)
 {
 	Matrix m = getIdentityMatrix();
 
-	m.matrix[0][0] = std::cos(angle);
-	m.matrix[0][1] = std::sin(angle);
-	m.matrix[1][0] = std::sin(-angle);
-	m.matrix[1][1] = std::cos(angle);
+	m[0][0] = std::cos(angle);
+	m[0][1] = std::sin(angle);
+	m[1][0] = std::sin(-angle);
+	m[1][1] = std::cos(angle);
 	
 	return m;
 }
@@ -111,9 +122,9 @@ Matrix getScalingMatrix(const Vector3& vector)
 {
 	Matrix m = getIdentityMatrix();
 
-	m.matrix[0][0] = vector.x;
-	m.matrix[1][1] = vector.y;
-	m.matrix[2][2] = vector.z;
+	m[0][0] = vector.x;
+	m[1][1] = vector.y;
+	m[2][2] = vector.z;
 
 	return m;
 }
@@ -122,9 +133,9 @@ Matrix getTranslationMatrix(const Vector3& vector)
 {
 	Matrix m = getIdentityMatrix();
 
-	m.matrix[3][0] = vector.x;
-	m.matrix[3][1] = vector.y;
-	m.matrix[3][2] = vector.z;
+	m[3][0] = vector.x;
+	m[3][1] = vector.y;
+	m[3][2] = vector.z;
 
 	return m;
 }

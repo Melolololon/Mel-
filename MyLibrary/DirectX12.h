@@ -19,7 +19,6 @@
 #include"Vector.h"
 #include"DirectXStruct.h"
 #include"DirectXTexLoader.h"
-#include"DrawGraphicStruct.h"
 
 #define DIRECTINPUT_VERSION 0x0800
 #include<d3d12.h>
