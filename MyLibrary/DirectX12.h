@@ -697,7 +697,7 @@ public:
 #pragma endregion
 
 
-	void loadSpriteFont(const wchar_t const* texturePath,const DirectX::XMFLOAT2& lineNum);
+	void loadSpriteFont(const wchar_t *const texturePath,const DirectX::XMFLOAT2& lineNum);
 
 	void loadTexture(const wchar_t* texturePath, Color color);
 

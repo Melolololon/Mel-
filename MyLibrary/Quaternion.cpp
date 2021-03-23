@@ -20,6 +20,30 @@ Quaternion::Quaternion(const float& w, const Vector3& v)
 	z = v.z;
 }
 
+Quaternion::Quaternion(const float& w, const Vector2& v)
+{
+	this->w = w;
+	x = v.x;
+	y = v.y;
+	z = 0;
+}
+
+Quaternion::Quaternion(const Vector3& v)
+{
+	w = 0;
+	x = v.x;
+	y = v.y;
+	z = v.z;
+}
+
+Quaternion::Quaternion(const Vector2& v)
+{
+	w = 0;
+	x = v.x;
+	y = v.y;
+	z = 0;
+}
+
 Quaternion Quaternion::operator* (const Quaternion& q)const
 {
 	return 

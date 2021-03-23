@@ -514,7 +514,7 @@ public:
 	/// <returns></returns>
 	static font loadSpriteFont
 	(
-		const wchar_t const* texturePath,
+		const wchar_t *const texturePath,
 		const Vector2& lineNum
 	);
 

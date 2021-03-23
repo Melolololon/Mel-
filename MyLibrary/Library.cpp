@@ -734,7 +734,7 @@ void Library::createUserHeapData2
 
 font Library::loadSpriteFont
 (
-	const wchar_t const* texturePath,
+	const wchar_t *const texturePath,
 	const Vector2& lineNum
 )
 {

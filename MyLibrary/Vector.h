@@ -42,6 +42,8 @@ struct Vector2
 	Vector2 operator/(const float& f)const;
 
 	void operator=(const float&  num);
+	bool operator==(const Vector2& vector);
+	bool operator!=(const Vector2& vector);
 
 	float& operator[](const unsigned int& num);
 #pragma endregion
@@ -99,7 +101,9 @@ struct Vector3
 
 
 	void operator=(const float& num);
-
+	bool operator==(const Vector3& vector);
+	bool operator!=(const Vector3& vector);
+	
 	float& operator[](const unsigned int& num);
 #pragma endregion
 

@@ -7,6 +7,9 @@ struct Quaternion
 	Quaternion();
 	Quaternion(const float& w,const float& x, const float& y, const float& z);
 	Quaternion(const float& w,const Vector3& v);
+	Quaternion(const float& w,const Vector2& v);
+	Quaternion(const Vector3& v);
+	Quaternion(const Vector2& v);
 	Quaternion operator* (const Quaternion& q)const;
 	
 	void operator*= (const Quaternion& q);

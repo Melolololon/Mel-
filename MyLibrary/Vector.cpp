@@ -99,11 +99,26 @@ void Vector2::operator=(const float& num)
 	y = num;
 }
 
+bool Vector2::operator==(const Vector2& vector)
+{
+	if (x == vector.x)
+		if (y == vector.y)
+			return true;
+	return false;
+}
+
+bool Vector2::operator!=(const Vector2& vector)
+{
+	if (x != vector.x)
+		if (y != vector.y)
+				return true;
+	return false;
+}
 
 float& Vector2::operator[](const unsigned int& num)
 {
 	if (num == 0)return x;
-	if (num == 1)return y;
+	return y;
 }
 
 #pragma endregion
@@ -245,12 +260,29 @@ void Vector3::operator=(const float& num)
 	z = num;
 }
 
+bool Vector3::operator==(const Vector3& vector)
+{
+	if (x == vector.x)
+		if (y == vector.y)
+			if (z == vector.z)
+			return true;
+	return false;
+}
+
+bool Vector3::operator!=(const Vector3& vector)
+{
+	if (x != vector.x)
+		if (y != vector.y)
+			if (z != vector.z)
+				return true;
+	return false;
+}
 
 float& Vector3::operator[](const unsigned int& num)
 {
 	if (num == 0)return x;
-	if (num == 1)return y;
-	if (num == 2)return z;
+	else if (num == 1)return y;
+	return z;	
 }
 
 #pragma endregion

@@ -1242,7 +1242,7 @@ void DirectX12::create3DObjectPipeline()
 	pipelineStates.push_back(pState);
 	createPipeline->deleteInputLayout();
 
-	startPipelineCreateNum = pipelineStates.size();
+	startPipelineCreateNum = static_cast<int>(pipelineStates.size());
 }
 
 int DirectX12::getStartPipelineCreateNum()
@@ -1889,6 +1889,7 @@ bool DirectX12::createConstBuffer
 		*cBufferSet,
 		0
 	);
+	return true;
 }
 
 #pragma region モデル読み込み
@@ -2006,7 +2007,7 @@ VertexType DirectX12::loadOBJVertex
 	{
 		for (int i = 0; i < loadNum; i++)
 		{
-			UINT vertexSize = sizeof(OBJAnimationVertex) * vertices[key][i].size();
+			size_t vertexSize = sizeof(OBJAnimationVertex) * vertices[key][i].size();
 			auto result = dev->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 				D3D12_HEAP_FLAG_NONE,
@@ -2019,8 +2020,8 @@ VertexType DirectX12::loadOBJVertex
 			OBJAnimationVertex* aniVertex;
 			result = vBuffs[i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
 			
-			UINT size = vertices[key][i].size();
-			for (UINT j = 0; j < size; j++)
+			size_t size = vertices[key][i].size();
+			for (size_t j = 0; j < size; j++)
 			{
 				aniVertex[j].pos = vertices[key][i][j].pos;
 				aniVertex[j].uv = vertices[key][i][j].uv;
@@ -3003,7 +3004,7 @@ void DirectX12::createCommonBuffer(const int& texNum, const std::string& key)
 #pragma endregion
 
 
-void DirectX12::loadSpriteFont(const wchar_t const* texturePath, const DirectX::XMFLOAT2& lineNum)
+void DirectX12::loadSpriteFont(const wchar_t *const texturePath, const DirectX::XMFLOAT2& lineNum)
 {
 	//10種類まで読み込める
 
@@ -3026,7 +3027,8 @@ void DirectX12::loadSpriteFont(const wchar_t const* texturePath, const DirectX::
 		),
 		metadata,
 		imgs,
-		spriteFontTextureBufferSet[spriteFontTextureBufferSet.size() - 1], 0
+		spriteFontTextureBufferSet[spriteFontTextureBufferSet.size() - 1],
+		0
 	);
 
 	SpriteFontData data;
@@ -3229,8 +3231,8 @@ void DirectX12::createPoint(int createNum, int* point)
 
 
 		pointVertexBuffSet[pointVertexBuffSet.size() - 1][i].vertexBufferView.BufferLocation = pointVertexBuffSet[pointVertexBuffSet.size() - 1][i].vertexBuffer->GetGPUVirtualAddress();
-		pointVertexBuffSet[pointVertexBuffSet.size() - 1][i].vertexBufferView.SizeInBytes = sizeof(PointVertex) * pointVertices.size();
-		pointVertexBuffSet[pointVertexBuffSet.size() - 1][i].vertexBufferView.StrideInBytes = sizeof(PointVertex);
+		pointVertexBuffSet[pointVertexBuffSet.size() - 1][i].vertexBufferView.SizeInBytes = static_cast<UINT>( sizeof(PointVertex) * pointVertices.size());
+		pointVertexBuffSet[pointVertexBuffSet.size() - 1][i].vertexBufferView.StrideInBytes = static_cast<UINT>(sizeof(PointVertex));
 	}
 
 #pragma endregion
@@ -3488,7 +3490,7 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 
 
 			//共通
-			handleNum = textureBufferSet[key].textureBuff.size();
+			handleNum = static_cast<int>(textureBufferSet[key].textureBuff.size());
 			gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 			(
 				basicHeaps[key]->GetGPUDescriptorHandleForHeapStart(),
@@ -3523,8 +3525,8 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 
 				//定数バッファセット
 				handleNum = 0;
-				handleNum += textureBufferSet[key].textureBuff.size() + 1;//テクスチャと共通分ずらす
-				handleNum += constBufferSet[key][number].constBuffer.size() * number;//オブジェクトの場所までずらす
+				handleNum += static_cast<int>(textureBufferSet[key].textureBuff.size()) + 1;//テクスチャと共通分ずらす
+				handleNum += static_cast<int>(constBufferSet[key][number].constBuffer.size()) * number;//オブジェクトの場所までずらす
 
 				gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 				(
@@ -3571,7 +3573,7 @@ void DirectX12::setCmdList(const std::string& key,  int number)
 				}
 
 				//描画
-				cmdList->DrawIndexedInstanced(indices[key][i].size(), 1, 0, 0, 0);
+				cmdList->DrawIndexedInstanced(static_cast<UINT>(indices[key][i].size()), 1, 0, 0, 0);
 
 			}
 
@@ -3776,13 +3778,13 @@ void DirectX12::map(const ModelData& modelData,int number )
 
 
 		//オブジェクト分ループ
-		UINT size = vertices[modelData.key].size();
-		UINT size2 = 0;
+		size_t size = vertices[modelData.key].size();
+		size_t size2 = 0;
 
 		//ボーンデータがあるかどうか
 		if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		{
-			for (UINT i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 			{
 				vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBufferSet[modelData.key][i].vertexMap);
 
@@ -3790,7 +3792,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 				if (smoothing)
 				{
 					size2 = smoothNormal[modelData.key][i].size();
-					for (int j = 0; j < size2; j++)
+					for (size_t j = 0; j < size2; j++)
 					{
 						vertexBufferSet[modelData.key][i].vertexMap[j].normal = smoothNormal[modelData.key][i][j];
 					}
@@ -3798,7 +3800,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 				else
 				{
 					size2 = vertices[modelData.key][i].size();
-					for (int j = 0; j < size2; j++)
+					for (size_t j = 0; j < size2; j++)
 					{
 						vertexBufferSet[modelData.key][i].vertexMap[j].normal = vertices[modelData.key][i][j].normal;
 					}
@@ -3809,7 +3811,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 		else//ボーンがあったら
 		{
 			//スムースシェーディング
-			for (UINT i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 			{
 				OBJAnimationVertex* aniVertex;
 				vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
@@ -3818,7 +3820,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 				if (smoothing)
 				{
 					size2 = smoothNormal[modelData.key][i].size();
-					for (int j = 0; j < size2; j++)
+					for (size_t j = 0; j < size2; j++)
 					{
 						aniVertex[j].normal = smoothNormal[modelData.key][i][j];
 					}
@@ -3826,7 +3828,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 				else
 				{
 					size2 = vertices[modelData.key][i].size();
-					for (int j = 0; j < size2; j++)
+					for (size_t j = 0; j < size2; j++)
 					{
 						aniVertex[j].normal = vertices[modelData.key][i][j].normal;
 					}
@@ -3839,7 +3841,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 			DirectX::XMFLOAT3 boneScale;
 			DirectX::XMFLOAT3 boneAngle;
 			DirectX::XMFLOAT3 boneMoveVector;
-			UINT boneNum = boneConstData[modelData.key].moveVector[number].size();
+			UINT boneNum = static_cast<UINT>(boneConstData[modelData.key].moveVector[number].size());
 
 			//親ボーンの行列乗算
 			int parentBoneNum = 0;
@@ -3855,7 +3857,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 				return num * mag - num;
 			};
 
-			for (int i = 0; i < boneNum; i++)//0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
+			for (UINT i = 0; i < boneNum; i++)//0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
 			{
 				boneMat = DirectX::XMMatrixIdentity();
 
@@ -4043,7 +4045,7 @@ void DirectX12::spriteSetCmdList(int spriteNumber, int textureNumber)
 	//定数セット
 	cmdList->SetGraphicsRootConstantBufferView(0, spriteConstBufferSet[spriteNumber].constBuffer[0]->GetGPUVirtualAddress());
 
-	cmdList->DrawIndexedInstanced(spriteIndices[spriteNumber].size(), 1, 0, 0, 0);
+	cmdList->DrawIndexedInstanced(static_cast<UINT>(spriteIndices[spriteNumber].size()), 1, 0, 0, 0);
 
 }
 
@@ -4467,12 +4469,12 @@ bool DirectX12::overrideWriteVertexPosition(std::vector<std::vector<DirectX::XMF
 	}
 
 	//vertex書き換え
-	int num, num2;
+	size_t num, num2;
 	num = vertPos.size();
-	for (int i = 0; i < num; i++)
+	for (size_t i = 0; i < num; i++)
 	{
 		num2 = vertPos[i].size();
-		for (int j = 0; j < num2; j++)
+		for (size_t j = 0; j < num2; j++)
 		{
 			vertices[key][i][j].pos.x = vertPos[i][j].x;
 			vertices[key][i][j].pos.y = vertPos[i][j].y;
@@ -4483,16 +4485,16 @@ bool DirectX12::overrideWriteVertexPosition(std::vector<std::vector<DirectX::XMF
 	//map処理
 
 	num = vertPos.size();
-	for (int i = 0; i < num; i++)
+	for (size_t i = 0; i < num; i++)
 	{
 		vertexBufferSet[key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)vertexBufferSet[key][i].vertexMap);
 	}
 
 	num = vertPos.size();
-	for (int i = 0; i < num; i++)
+	for (size_t i = 0; i < num; i++)
 	{
 		num2 = vertPos[i].size();
-		for (int j = 0; j < num2; j++)
+		for (size_t j = 0; j < num2; j++)
 		{
 			vertexBufferSet[key][i].vertexMap[j] = vertices[key][i][j];
 		}
@@ -4677,7 +4679,7 @@ void DirectX12::drawSpriteFontString(DirectX::XMFLOAT2 position, DirectX::XMFLOA
 		//定数セット
 		cmdList->SetGraphicsRootConstantBufferView(0, spriteConstBufferSet[spriteFontDrawCounter].constBuffer[0]->GetGPUVirtualAddress());
 
-		cmdList->DrawIndexedInstanced(spriteIndices[spriteFontDrawCounter].size(), 1, 0, 0, 0);
+		cmdList->DrawIndexedInstanced(static_cast<UINT>(spriteIndices[spriteFontDrawCounter].size()), 1, 0, 0, 0);
 #pragma endregion
 
 		spriteFontDrawCounter++;
