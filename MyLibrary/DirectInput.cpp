@@ -220,7 +220,10 @@ void DirectInput::update()
 
 }
 
-bool DirectInput::keyState(int keyDef)
+#pragma region キーボード
+
+
+bool DirectInput::keyState(const BYTE& keyDef)
 {
 	if (key[keyDef])
 	{
@@ -234,7 +237,7 @@ bool DirectInput::keyState(int keyDef)
 	}
 }
 
-bool DirectInput::keyTrigger(int keyDef)
+bool DirectInput::keyTrigger(const BYTE& keyDef)
 {
 	//1フレーム前がtrueかfalseか
 	bool check;
@@ -256,7 +259,7 @@ bool DirectInput::keyTrigger(int keyDef)
 	return false;
 }
 
-bool DirectInput::keyRelease(int keyDef)
+bool DirectInput::keyRelease(const BYTE& keyDef)
 {
 	bool check;
 	if (preKey[keyDef])
@@ -276,6 +279,24 @@ bool DirectInput::keyRelease(int keyDef)
 	return false;
 }
 
+float DirectInput::arrowKeyAngle()
+{
+	bool right = DirectInput::keyState(DIK_RIGHT);
+	bool left = DirectInput::keyState(DIK_LEFT);
+	bool up = DirectInput::keyState(DIK_UP);
+	bool down = DirectInput::keyState(DIK_DOWN);
+
+	if (right)return 0.0f;
+	if (right && up)return 45.0f;
+	if (up)return 90.0f;
+	if (up && left)return 135.0f;
+	if (left)return 180.0f;
+	if (left && down)return 225.0f;
+	if (down)return 270.0f;
+	if (down && right)return 315.0f;
+	return -1.0f;
+}
+#pragma endregion
 
 #pragma region パッド
 

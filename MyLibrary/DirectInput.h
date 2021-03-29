@@ -111,11 +111,17 @@ public:
 #pragma region キーボード
 
 	//押しているか
-	static bool keyState(int keyDef);
+	static bool keyState(const BYTE& keyDef);
 	//押した瞬間か
-	static bool keyTrigger(int keyDef);
+	static bool keyTrigger(const BYTE& keyDef);
 	//離した瞬間か
-	static bool keyRelease(int keyDef);
+	static bool keyRelease(const BYTE& keyDef);
+
+	/// <summary>
+	/// アローキーが何度を示しているかを角度で返します。	
+	/// </summary>
+	/// <returns></returns>
+	static float arrowKeyAngle();
 #pragma endregion
 
 #pragma region パッド
