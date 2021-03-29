@@ -28,6 +28,13 @@ private:
 	static XINPUT_STATE padPrevious[4];
 
 	static bool padConnected[4];
+
+	/// <summary>
+	/// パッド番号が3を超えていないかと、接続されているかを確認します。
+	/// </summary>
+	/// <param name="padNum"></param>
+	/// <returns></returns>
+	static bool padCheck(const UCHAR& padNum);
 public:
 	static void update();
 
@@ -63,6 +70,16 @@ public:
 	static float rightStickAngle(const UCHAR& padNum);
 #pragma endregion
 
+#pragma region 振動
+	/// <summary>
+	/// ゲームパッドを振動させます
+	/// </summary>
+	/// <param name="leftPar">左側の振動量(0%～100%)</param>
+	/// <param name="rightPar">右側の振動量(0%～100%)</param>
+	/// <param name="padNum">パッド番号(1Pや2Pのこと)</param>
+	static void padVibration(const float& leftPar,const float& rightPar,const UCHAR& padNum);
+
+#pragma endregion
 
 };
 

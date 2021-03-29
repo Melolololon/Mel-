@@ -80,6 +80,7 @@ void Play::update()
 	Library::setAngle({ 0,modelAng,0 }, modelD, 0);
 	Library::setOBJBoneAngle({ 0,addAngle ,0 }, 0, modelD, 1);
 	Library::setAngle({ 0,modelAng,0 }, modelD, 1);
+
 }
 
 void Play::draw()
