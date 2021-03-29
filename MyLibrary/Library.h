@@ -764,8 +764,6 @@ public:
 #pragma region アニメーション
 	
 
-	//行列で回転させたボーンも取得できたほうがいい?
-	static std::vector<Vector3> getBonePosition(const ModelData& modelData);
 
 	/// <summary>
 	/// ボーンを回転させるときの基準座標をセットします。ボーンを操作してモデルを動かすとき、この座標を基準に回転します。
@@ -972,6 +970,16 @@ public:
 	static Vector2 getTextureSize(texture textureHandle);
 #pragma endregion
 
+#pragma region アニメーション
+	/// <summary>
+	/// ボーンの座標を取得します
+	/// </summary>
+	/// <param name="modelData"></param>
+	/// <returns></returns>
+	static std::vector<Vector3> getBonePosition(const ModelData& modelData);
+	
+
+#pragma endregion
 
 #pragma endregion
 

@@ -45,7 +45,6 @@ struct Vector2
 	bool operator==(const Vector2& vector);
 	bool operator!=(const Vector2& vector);
 
-	float& operator[](const unsigned int& num);
 #pragma endregion
 
 
@@ -53,6 +52,8 @@ struct Vector2
 
 
 #pragma region ä÷êî
+
+Vector2 vector2Normalize(const Vector2& vector);
 
  float vector2Dot(const Vector2& vector1, const Vector2& vector2);
 #pragma endregion
@@ -104,7 +105,6 @@ struct Vector3
 	bool operator==(const Vector3& vector);
 	bool operator!=(const Vector3& vector);
 	
-	float& operator[](const unsigned int& num);
 #pragma endregion
 
 };

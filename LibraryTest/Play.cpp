@@ -6,6 +6,7 @@
 
 #include"TestObject.h"
 
+#include"XInputManager.h"
 ModelData d;
 ModelData d2;
 ModelData modelD;
@@ -89,17 +90,17 @@ void Play::draw()
 	//Library::drawGraphic(d, 0);
 
 	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
-	std::string s = std::to_string(addAngle);
-	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, s, &f);
 	Library::drawGraphic(modelD, 0);
 	Library::drawGraphic(modelD, 1);
 	//Library::drawGraphic(modelD, 1);*/
 
-	Matrix m = getScalingMatrix({ 2,2,2 });
-	Matrix m2 = getScalingMatrix({ 2,2,2 });
-	m *= m2;
-	Matrix m3 = m2;
-	int z = 0;
+
+	float stickAngle = XInputManager::leftStickAngle(1);
+	std::string s = std::to_string(stickAngle);
+	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, s, &f);
+	stickAngle = XInputManager::rightStickAngle(1);
+    s = std::to_string(stickAngle);
+	Library::drawsSpriteFontString({ 0,40 }, { 30,30 }, s, &f);
 }
 
 void Play::end()

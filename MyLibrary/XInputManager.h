@@ -27,28 +27,40 @@ private:
 	static XINPUT_STATE padState[4];
 	static XINPUT_STATE padPrevious[4];
 
-	static bool padSet[4];
+	static bool padConnected[4];
 public:
 	static void update();
 
-	static bool getPadConnectFlag(const int& padNum);
+	static bool getPadConnectedFlag(const UCHAR& padNum);
 
 #pragma region ボタン
-	static bool buttonState(const XInputButton& button,const int& padNum);
-	static bool buttonTrigger(const XInputButton& button,const int& padNum);
-	static bool buttonRelease(const XInputButton& button,const int& padNum);
+	static bool buttonState(const XInputButton& button,const UCHAR& padNum);
+	static bool buttonTrigger(const XInputButton& button,const UCHAR& padNum);
+	static bool buttonRelease(const XInputButton& button,const UCHAR& padNum);
 
 #pragma endregion
 
 #pragma region アナログスティック
-	static bool leftStickLeft(const int& lXNum , const int& padNum);
-	static bool leftStickRight(const int&  lXNum, const int& padNum);
-	static bool leftStickUp(const int&  lYNum, const int& padNum);
-	static bool leftStickDown(const int&  lYNum, const int& padNum);
-	static bool rightStickLeft(const int&  lXNum, const int& padNum);
-	static bool rightStickRight(const int&  lXNum, const int& padNum);
-	static bool rightStickUp(const int&  lYNum, const int& padNum);
-	static bool rightStickDown(const int&  lYNum, const int& padNum);
+	static bool leftStickLeft(const short& lXNum , const UCHAR& padNum);
+	static bool leftStickRight(const short&  lXNum, const UCHAR& padNum);
+	static bool leftStickUp(const short&  lYNum, const UCHAR& padNum);
+	static bool leftStickDown(const short&  lYNum, const UCHAR& padNum);
+	static bool rightStickLeft(const short&  lXNum, const UCHAR& padNum);
+	static bool rightStickRight(const short&  lXNum, const UCHAR& padNum);
+	static bool rightStickUp(const short&  lYNum, const UCHAR& padNum);
+	static bool rightStickDown(const short&  lYNum, const UCHAR& padNum);
+
+	/// <summary>
+	/// 左スティックが何度かを角度で返します。スティックが傾いていない場合、-1を返します。
+	/// </summary>
+	/// <returns></returns>
+	static float leftStickAngle(const UCHAR& padNum);
+
+	/// <summary>
+	/// 右スティックが何度かを角度で返します。スティックが傾いていない場合、-1を返します。
+	/// </summary>
+	/// <returns></returns>
+	static float rightStickAngle(const UCHAR& padNum);
 #pragma endregion
 
 

@@ -1060,20 +1060,6 @@ void Library::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
 
 #pragma region アニメーション
 
-std::vector<Vector3> Library::getBonePosition(const ModelData& modelData)
-{
-	std::vector<DirectX::XMFLOAT3>getVector = dx12->getBonePosition(modelData.key);
-	std::vector<Vector3>returnVector(getVector.size());
-
-	int count = 0;
-	for(auto& retV : returnVector)
-	{
-		retV = getVector[count];
-		count++;
-	}
-	return returnVector;
-}
-
 //void setOBJModelPoint
 //(
 //	const Vector3& position, 
@@ -1275,6 +1261,26 @@ bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertP
 	}
 	return dx12->overrideWriteVertexPosition(kariXM, modelData.key);
 }
+
+#pragma region アニメーション
+
+
+std::vector<Vector3> Library::getBonePosition(const ModelData& modelData)
+{
+	std::vector<DirectX::XMFLOAT3>getVector = dx12->getBonePosition(modelData.key);
+	std::vector<Vector3>returnVector(getVector.size());
+
+	int count = 0;
+	for (auto& retV : returnVector)
+	{
+		retV = getVector[count];
+		count++;
+	}
+	return returnVector;
+}
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma region 行列による変換

@@ -43,11 +43,14 @@
     <Filter Include="ソース ファイル\Loader">
       <UniqueIdentifier>{fb63133a-3a85-42ca-9cfb-e2badc981d0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Input">
+      <UniqueIdentifier>{7639be86-2546-4a6a-9573-a7fd63bc5827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Input">
+      <UniqueIdentifier>{70949721-ab70-469a-a147-b415eb763808}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DirectInput.cpp">
-      <Filter>ソース ファイル\DirectX</Filter>
-    </ClCompile>
     <ClCompile Include="CreateBuffer.cpp">
       <Filter>ソース ファイル\DirectX</Filter>
     </ClCompile>
@@ -99,9 +102,6 @@
     <ClCompile Include="PipelineManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="XInputManager.cpp">
-      <Filter>ソース ファイル\DirectX</Filter>
-    </ClCompile>
     <ClCompile Include="MouseCursor.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
@@ -122,6 +122,12 @@
     </ClCompile>
     <ClCompile Include="ModelBone.cpp">
       <Filter>ソース ファイル\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="XInputManager.cpp">
+      <Filter>ソース ファイル\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectInput.cpp">
+      <Filter>ソース ファイル\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -147,9 +153,6 @@
     <FxCompile Include="ObjAnimationVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectInput.h">
-      <Filter>ヘッダー ファイル\DirectX</Filter>
-    </ClInclude>
     <ClInclude Include="CreateBuffer.h">
       <Filter>ヘッダー ファイル\DirectX</Filter>
     </ClInclude>
@@ -210,9 +213,6 @@
     <ClInclude Include="PipelineManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="XInputManager.h">
-      <Filter>ヘッダー ファイル\DirectX</Filter>
-    </ClInclude>
     <ClInclude Include="MouseCursor.h">
       <Filter>ヘッダー ファイル\Object</Filter>
     </ClInclude>
@@ -233,6 +233,12 @@
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectInput.h">
+      <Filter>ヘッダー ファイル\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="XInputManager.h">
+      <Filter>ヘッダー ファイル\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -101,29 +101,30 @@ void Vector2::operator=(const float& num)
 
 bool Vector2::operator==(const Vector2& vector)
 {
-	if (x == vector.x)
-		if (y == vector.y)
-			return true;
+	if (x == vector.x &&
+		y == vector.y)
+		return true;
 	return false;
 }
 
 bool Vector2::operator!=(const Vector2& vector)
 {
-	if (x != vector.x)
-		if (y != vector.y)
-				return true;
-	return false;
-}
-
-float& Vector2::operator[](const unsigned int& num)
-{
-	if (num == 0)return x;
-	return y;
+	if (x == vector.x &&
+		y == vector.y)
+		return false;
+	return true;
 }
 
 #pragma endregion
 
 #pragma region ä÷êî
+
+Vector2 vector2Normalize(const Vector2& vector)
+{
+	if (vector.x == 0 && vector.y == 0 )return { 0,0 };
+	float size = static_cast<float>(sqrt(vector.x * vector.x + vector.y * vector.y ));
+	return{ vector.x / size ,vector.y / size };
+}
 
 
 /// <summary>
@@ -262,28 +263,22 @@ void Vector3::operator=(const float& num)
 
 bool Vector3::operator==(const Vector3& vector)
 {
-	if (x == vector.x)
-		if (y == vector.y)
-			if (z == vector.z)
+	if (x == vector.x && 
+		y == vector.y &&
+		z == vector.z )
 			return true;
 	return false;
 }
 
 bool Vector3::operator!=(const Vector3& vector)
 {
-	if (x != vector.x)
-		if (y != vector.y)
-			if (z != vector.z)
-				return true;
-	return false;
+	if (x == vector.x &&
+		y == vector.y &&
+		z == vector.z)
+		return false;
+	return true;
 }
 
-float& Vector3::operator[](const unsigned int& num)
-{
-	if (num == 0)return x;
-	else if (num == 1)return y;
-	return z;	
-}
 
 #pragma endregion
 
