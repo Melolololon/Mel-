@@ -1,5 +1,5 @@
 #include "DirectInput.h"
-
+#include"LibMath.h"
 
 HINSTANCE DirectInput::hInstance;//ƒnƒ“ƒhƒ‹
 HRESULT DirectInput::dIResult;//Œ‹‰ÊŽæ“¾
@@ -599,6 +599,17 @@ Vector2 DirectInput::getMousePosition()
 
 	return pos;
 
+}
+
+Vector2 DirectInput::getMouseVector()
+{
+	Vector2 point = { static_cast<float>(winWidth) / 2.0f, static_cast<float>(winHeight) / 2.0f };
+	return vector2Normalize(getMousePosition() - point);
+}
+
+float DirectInput::getMouseAngle()
+{
+	return LibMath::vecto2ToAngle(getMouseVector());
 }
 
 void DirectInput::getMouse3DLine( Vector3& nearPoint, Vector3& farPoint)

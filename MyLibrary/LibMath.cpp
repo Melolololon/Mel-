@@ -41,34 +41,25 @@ double LibMath::getDoublePI()
 
 #pragma region ƒxƒNƒgƒ‹
 
-float LibMath::calcDistance3D(Vector3 pos1, Vector3 pos2)
-{
-	return sqrt
-	(
-		(pos1.x - pos2.x) * (pos1.x - pos2.x) +
-		(pos1.y - pos2.y) * (pos1.y - pos2.y) +
-		(pos1.z - pos2.z) * (pos1.z - pos2.z)
-	);
-}
-
-Vector3 LibMath::otherVector(const Vector3& vec1, const Vector3& vec2)
-{
-	Vector3 vec;
-	vec = vec2 - vec1;
-	return vector3Normalize(vec);
-}
 
 #pragma region vector2
+char LibMath::pointLeftRightCheck(const Vector2& vector, const Vector2& point)
+{
+	float num = vector2Cross(vector, point);
 
+	if (num > 0)return 1;
+	if (num < 0)return -1;
+	return 0;
+}
 
 float LibMath::twoVector2Angle(const Vector2& v1, const Vector2& v2)
 {
 
-	float f = vector2Dot(v1, v2);
+	float f = vector2Dot(v1, { v2.x,-v2.y });
 	f = std::acos(f);
 	f = angleConversion(1, f);
 
-	Vector3 v = vector3Cross({ v1.x,v1.y,0 }, { v2.x,v2.y,0 });
+	Vector3 v = vector3Cross({ v1.x,v1.y,0 }, { v2.x,-v2.y,0 });
 	if (v.z < 0)f = 360 - f;
 
 	return f;
@@ -96,6 +87,24 @@ Vector2 LibMath::rotateVector2(const Vector2& v,const float& angle)
 #pragma endregion
 
 #pragma region Vector3
+
+float LibMath::calcDistance3D(Vector3 pos1, Vector3 pos2)
+{
+	return sqrt
+	(
+		(pos1.x - pos2.x) * (pos1.x - pos2.x) +
+		(pos1.y - pos2.y) * (pos1.y - pos2.y) +
+		(pos1.z - pos2.z) * (pos1.z - pos2.z)
+	);
+}
+
+Vector3 LibMath::otherVector(const Vector3& vec1, const Vector3& vec2)
+{
+	Vector3 vec;
+	vec = vec2 - vec1;
+	return vector3Normalize(vec);
+}
+
 Vector3 LibMath::rotateVector3(const Vector3& rotateV, const Vector3& vec, const float& angle)
 {
 	Quaternion q = getRotateQuaternion(rotateV, vec, angle);

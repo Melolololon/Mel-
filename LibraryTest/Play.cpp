@@ -81,6 +81,7 @@ void Play::update()
 	Library::setOBJBoneAngle({ 0,addAngle ,0 }, 0, modelD, 1);
 	Library::setAngle({ 0,modelAng,0 }, modelD, 1);
 
+
 }
 
 void Play::draw()
@@ -95,13 +96,15 @@ void Play::draw()
 	Library::drawGraphic(modelD, 1);
 	//Library::drawGraphic(modelD, 1);*/
 
+	
 
-	float stickAngle = XInputManager::leftStickAngle(1);
+	/*Vector2 stickAngle = DirectInput::getMouseVector();
+	std::string s = std::to_string(stickAngle.x) +","+ std::to_string(stickAngle.y);
+	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, s, &f);*/
+
+	float stickAngle = DirectInput::getMouseAngle();
 	std::string s = std::to_string(stickAngle);
 	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, s, &f);
-	stickAngle = XInputManager::rightStickAngle(1);
-    s = std::to_string(stickAngle);
-	Library::drawsSpriteFontString({ 0,40 }, { 30,30 }, s, &f);
 }
 
 void Play::end()

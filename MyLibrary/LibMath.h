@@ -47,23 +47,16 @@ public:
 
 #pragma region ベクトル
 
-	/// <summary>
-	/// 2つの座標の距離を取得します
-	/// </summary>
-	/// <param name="pos1">座標1</param>
-	/// <param name="pos2">座標2</param>
-	/// <returns></returns>
-	static float calcDistance3D(Vector3 pos1, Vector3 pos2);
-
-	/// <summary>
-	/// vex1からvec2のベクトルを取得します(正規化は行う)
-	/// </summary>
-	/// <param name="myPos"></param>
-	/// <param name="otherPos"></param>
-	/// <returns></returns>
-	static Vector3 otherVector(const Vector3& vec1, const Vector3& vec2);
 
 #pragma region vector2
+
+	/// <summary>
+	/// 左右判定を行います。点がベクトルより右の場合は1、左の場合は-1、ベクトル上の場合は0を返します。
+	/// </summary>
+	/// <param name="vector"></param>
+	/// <param name="point"></param>
+	/// <returns></returns>
+	static char pointLeftRightCheck(const Vector2& vector, const Vector2& point);
 
 	/// <summary>
 	/// 2つのベクトルがなす角度を求めます
@@ -97,6 +90,23 @@ public:
 #pragma endregion
 
 #pragma region Vector3
+
+	/// <summary>
+	/// 2つの座標の距離を取得します
+	/// </summary>
+	/// <param name="pos1">座標1</param>
+	/// <param name="pos2">座標2</param>
+	/// <returns></returns>
+	static float calcDistance3D(Vector3 pos1, Vector3 pos2);
+
+	/// <summary>
+	/// vex1からvec2のベクトルを取得します(正規化は行う)
+	/// </summary>
+	/// <param name="myPos"></param>
+	/// <param name="otherPos"></param>
+	/// <returns></returns>
+	static Vector3 otherVector(const Vector3& vec1, const Vector3& vec2);
+
 	/// <summary>
 	/// ベクトルを回転させます
 	/// </summary>

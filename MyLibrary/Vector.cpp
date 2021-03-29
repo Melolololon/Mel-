@@ -137,6 +137,11 @@ float vector2Dot(const Vector2& vector1, const Vector2& vector2)
 {
 	return vector1.x *vector2.x + vector1.y*vector2.y;
 }
+
+float vector2Cross(const Vector2& vector1, const Vector2& vector2)
+{
+	return vector1.x * vector2.y - vector1.y * vector2.x;
+}
 #pragma endregion
 
 

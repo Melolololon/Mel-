@@ -76,10 +76,6 @@ struct PMDHeader
 #pragma endregion
 
 
-//定数バッファで送る情報
-//色を今より明るくしたい場合、元々白い状態の画像を用意
-//それで面倒だったらaddとsubを実装する
-//だが、加算差算乗算の順により結果が変わるから注意
 #pragma region 定数構造体
 
 struct ConstBufferData

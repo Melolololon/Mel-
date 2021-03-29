@@ -108,6 +108,10 @@ public:
 	//情報取得
 	static void update();
 
+
+	//DInputの開放
+	static void release();
+
 #pragma region キーボード
 
 	//押しているか
@@ -161,11 +165,9 @@ public:
 	
 #pragma endregion
 
-
-	//DInputの開放
-	static void release();
-
 #pragma region マウス
+
+#pragma region カーソル関係
 
 	static void setMatrixAndNearFar(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX projectionMatrix,float nearNumber ,float farNumber);
 
@@ -174,6 +176,19 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	static Vector2 getMousePosition();
+
+	/// <summary>
+	/// ウィンドウの中心を基準としたカーソルのベクトルを取得します。
+	/// </summary>
+	/// <returns>ベクトル</returns>
+	static Vector2 getMouseVector();
+
+	/// <summary>
+	/// ウィンドウの中心を基準としたカーソルの角度を取得します。
+	/// </summary>
+	/// <returns>角度</returns>
+	static float getMouseAngle();
+#pragma endregion
 
 
 	/// <summary>
@@ -188,6 +203,7 @@ public:
 	static bool mouseButtonTrigger(MouseButton mouseButton);
 	
 	static bool mouseButtonRelease(MouseButton mouseButton);
+
 #pragma endregion
 
 

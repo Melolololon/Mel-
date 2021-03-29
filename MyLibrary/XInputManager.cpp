@@ -213,7 +213,7 @@ void XInputManager::padVibration(const float& leftPar, const float& rightPar, co
 		OutputDebugString(L"%‚Ì”ÍˆÍ‚ð’´‚¦‚Ä‚¢‚Ü‚·\n");
 		return;
 	}
-		if (!padCheck(padNum))return;
+	if (!padCheck(padNum))return;
 
 	const WORD MAX_VIBRATION_NUMBER = 65535;
 	XINPUT_VIBRATION v;
