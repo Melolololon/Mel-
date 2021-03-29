@@ -181,7 +181,7 @@ public:
 	/// ウィンドウの中心を基準としたカーソルのベクトルを取得します。
 	/// </summary>
 	/// <returns>ベクトル</returns>
-	static Vector2 getMouseVector();
+	static Vector2 getCenterToMouseVector();
 
 	/// <summary>
 	/// ウィンドウの中心を基準としたカーソルの角度を取得します。

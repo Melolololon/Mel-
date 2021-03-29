@@ -601,7 +601,7 @@ Vector2 DirectInput::getMousePosition()
 
 }
 
-Vector2 DirectInput::getMouseVector()
+Vector2 DirectInput::getCenterToMouseVector()
 {
 	Vector2 point = { static_cast<float>(winWidth) / 2.0f, static_cast<float>(winHeight) / 2.0f };
 	return vector2Normalize(getMousePosition() - point);
@@ -609,7 +609,7 @@ Vector2 DirectInput::getMouseVector()
 
 float DirectInput::getMouseAngle()
 {
-	return LibMath::vecto2ToAngle(getMouseVector());
+	return LibMath::vecto2ToAngle(getCenterToMouseVector(), false);
 }
 
 void DirectInput::getMouse3DLine( Vector3& nearPoint, Vector3& farPoint)

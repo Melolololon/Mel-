@@ -98,13 +98,7 @@ void Play::draw()
 
 	
 
-	/*Vector2 stickAngle = DirectInput::getMouseVector();
-	std::string s = std::to_string(stickAngle.x) +","+ std::to_string(stickAngle.y);
-	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, s, &f);*/
 
-	float stickAngle = DirectInput::getMouseAngle();
-	std::string s = std::to_string(stickAngle);
-	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, s, &f);
 }
 
 void Play::end()

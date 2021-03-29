@@ -70,15 +70,17 @@ public:
 	/// ベクトルを角度に変換します
 	/// </summary>
 	/// <param name="v"></param>
+	/// <param name="v3">3次元座標系かどうか</param>
 	/// <returns></returns>
-	static float vecto2ToAngle(const Vector2& v);
+	static float vecto2ToAngle(const Vector2& v,const bool& v3 );
 
 	/// <summary>
 	/// 角度をVector2に変換します
 	/// </summary>
 	/// <param name="angle"></param>
+	/// <param name="v3">3次元座標系かどうか</param>
 	/// <returns></returns>
-	static Vector2 angleToVector2(const float& angle);
+	static Vector2 angleToVector2(const float& angle, const bool& v3);
 
 	/// <summary>
 	/// Vector2のベクトルを指定した角度に応じて回転させます

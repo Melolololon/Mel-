@@ -188,7 +188,7 @@ float XInputManager::leftStickAngle(const UCHAR& padNum)
 	
 	if (x == 0 && y == 0)return -1.0f;
 	
-	return LibMath::vecto2ToAngle(vector2Normalize({ x,y }));
+	return LibMath::vecto2ToAngle(vector2Normalize({ x,y }),true);
 }
 
 float XInputManager::rightStickAngle(const UCHAR& padNum)
@@ -203,7 +203,7 @@ float XInputManager::rightStickAngle(const UCHAR& padNum)
 
 	if (x == 0 && y == 0)return -1.0f;
 
-	return LibMath::vecto2ToAngle(vector2Normalize({ x,y }));
+	return LibMath::vecto2ToAngle(vector2Normalize({ x,y }),true);
 }
 
 void XInputManager::padVibration(const float& leftPar, const float& rightPar, const UCHAR& padNum)

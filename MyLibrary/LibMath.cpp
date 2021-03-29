@@ -55,27 +55,34 @@ char LibMath::pointLeftRightCheck(const Vector2& vector, const Vector2& point)
 float LibMath::twoVector2Angle(const Vector2& v1, const Vector2& v2)
 {
 
-	float f = vector2Dot(v1, { v2.x,-v2.y });
+	float f = vector2Dot(v1, { v2.x,v2.y });
 	f = std::acos(f);
 	f = angleConversion(1, f);
 
-	Vector3 v = vector3Cross({ v1.x,v1.y,0 }, { v2.x,-v2.y,0 });
+	Vector3 v = vector3Cross({ v1.x,v1.y,0 }, { v2.x,v2.y,0 });
 	if (v.z < 0)f = 360 - f;
 
 	return f;
 }
 
-float LibMath::vecto2ToAngle(const Vector2& v)
+float LibMath::vecto2ToAngle(const Vector2& v, const bool& v3)
 {
-	float f = twoVector2Angle({ 1,0 }, v);
+	float f = 0.0f;
+	if(v3)
+	f = twoVector2Angle({ 1,0 }, v);
+	else
+		f = twoVector2Angle({ 1,0 }, { v.x,-v.y });
 	return f;
 }
 
 
-Vector2 LibMath::angleToVector2(const float& angle)
+Vector2 LibMath::angleToVector2(const float& angle, const bool& v3)
 {
 	Quaternion q = getRotateQuaternion({ 1,0,0 }, { 0,0,1 }, angle);
-	return { q.x,q.y };
+
+	if(v3)
+		return { q.x,q.y };
+	return { q.x,-q.y };
 }
 
 
