@@ -110,7 +110,7 @@ void Play::draw()
 	if (DirectInput::keyState(DIK_W))
 		spherePos.z += 0.2f;
 
-	LibMath::BoxHitDirection dis;
+	BoxHitDirection dis;
 	bool flag = LibMath::sphereAndBoxCollision
 	(
 		spherePos,
