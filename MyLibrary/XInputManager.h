@@ -35,6 +35,12 @@ private:
 	/// <param name="padNum"></param>
 	/// <returns></returns>
 	static bool padCheck(const UCHAR& padNum);
+
+	//軸の最高値
+    static const short MAX_AXIS_VALUE;
+	//振動の最高値
+	static const WORD MAX_VIBRATION_VALUE;
+
 public:
 	static void update();
 
@@ -45,17 +51,22 @@ public:
 	static bool buttonTrigger(const XInputButton& button,const UCHAR& padNum);
 	static bool buttonRelease(const XInputButton& button,const UCHAR& padNum);
 
+	/// <summary>
+	/// 十字ボタンが示す角度を取得します。
+	/// </summary>
+	/// <returns></returns>
+	static float crossButtonAngle(const UCHAR& padNum);
 #pragma endregion
 
 #pragma region アナログスティック
-	static bool leftStickLeft(const short& lXNum , const UCHAR& padNum);
-	static bool leftStickRight(const short&  lXNum, const UCHAR& padNum);
-	static bool leftStickUp(const short&  lYNum, const UCHAR& padNum);
-	static bool leftStickDown(const short&  lYNum, const UCHAR& padNum);
-	static bool rightStickLeft(const short&  lXNum, const UCHAR& padNum);
-	static bool rightStickRight(const short&  lXNum, const UCHAR& padNum);
-	static bool rightStickUp(const short&  lYNum, const UCHAR& padNum);
-	static bool rightStickDown(const short&  lYNum, const UCHAR& padNum);
+	static bool leftStickLeft(const float& lXPar , const UCHAR& padNum);
+	static bool leftStickRight(const float&  lXPar, const UCHAR& padNum);
+	static bool leftStickUp(const float&  lYPar, const UCHAR& padNum);
+	static bool leftStickDown(const float&  lYPar, const UCHAR& padNum);
+	static bool rightStickLeft(const float&  lXPar, const UCHAR& padNum);
+	static bool rightStickRight(const float&  lXPar, const UCHAR& padNum);
+	static bool rightStickUp(const float&  lYPar, const UCHAR& padNum);
+	static bool rightStickDown(const float&  lYPar, const UCHAR& padNum);
 
 	/// <summary>
 	/// 左スティックが何度かを角度で返します。スティックが傾いていない場合、-1を返します。

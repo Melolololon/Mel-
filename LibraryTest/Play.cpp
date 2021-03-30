@@ -97,8 +97,10 @@ void Play::draw()
 	//Library::drawGraphic(modelD, 1);*/
 
 	
-
-
+	Vector2 ang = { XInputManager::leftStickAngle(1),XInputManager::rightStickAngle(1) };
+	std::string str = std::to_string(ang.x) + ",";
+	str += std::to_string(ang.y);
+	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, str,&f);
 }
 
 void Play::end()
