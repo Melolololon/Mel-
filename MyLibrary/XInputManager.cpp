@@ -65,6 +65,7 @@ bool XInputManager::buttonTrigger(const XInputButton& button, const UCHAR& padNu
 	if (num != button &&
 		buttonState(button, padNum))
 		return true;
+
 	return false;
 }
 
@@ -76,6 +77,7 @@ bool XInputManager::buttonRelease(const XInputButton& button, const UCHAR& padNu
 	if (num == button &&
 		!buttonState(button, padNum))
 		return true;
+
 	return false;
 }
 

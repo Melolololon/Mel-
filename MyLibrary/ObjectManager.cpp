@@ -33,6 +33,8 @@ void ObjectManager::initialize()
 
 	addObjectSort = OBJECT_SORT_NONE;
 	addObjectSortOrderType = false;
+
+	addObjects.reserve(100);
 }
 
 void ObjectManager::update() 
@@ -45,15 +47,25 @@ void ObjectManager::update()
 		nearPos = cursor.get()->getNearPos();
 		farPos = cursor.get()->getFarPos();
 	}
-	//拡張for文は、途中でサイズ変えるとダメ
-	//変数用意してsize入れるか、一時的に別の配列に入れて、update終了後に追加
-	std::vector<Object*>o = objects;
-	for (auto& obj : o)
-	{
+	
+	for (auto& obj : objects)
 		obj->update();
+	
+
+	if(addObjects.size() != 0)
+	{
+		for (auto& a : addObjects) 
+		{
+			a->update();
+			objects.push_back(a);
+		}
+		
+		if (addObjectSort != OBJECT_SORT_NONE)
+			objectSort(addObjectSort, addObjectSortOrderType);
+
+		addObjects.clear();
 	}
 
-	
 #pragma endregion
 
 #pragma region collision
@@ -64,6 +76,8 @@ void ObjectManager::update()
 
 	std::vector<SphereData>sphere1;
 	std::vector<SphereData>sphere2;
+
+	std::vector<BoxData>box1;
 	
 	std::vector<BoardData>boardData1;
 
@@ -74,9 +88,9 @@ void ObjectManager::update()
 
 	if (checkCollision.sphere) 
 	{
-		for (auto& o1 : o)
+		for (auto& o1 : objects)
 		{
-			for (auto& o2 : o)
+			for (auto& o2 : objects)
 			{
 				f1 = o1->getCollisionFlag();
 				f2 = o2->getCollisionFlag();
@@ -113,12 +127,63 @@ void ObjectManager::update()
 	}
 #pragma endregion
 
+#pragma region 球と四角形
+	if (checkCollision.box)
+	{
+		for (auto& o1 : objects)
+		{
+			for (auto& o2 : objects)
+			{
+				f1 = o1->getCollisionFlag();
+				f2 = o2->getCollisionFlag();
+
+				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
+				if (o1 == o2 || !f1.sphere || !f2.box)continue;
+
+				sphere1 = o1->getSphereData();
+				box1 = o2->getBoxData();
+
+				for (const auto& c1 : sphere1)
+				{
+					for (const auto& c2 : box1)
+					{
+						BoxHitDirection dis;
+						if (LibMath::sphereAndBoxCollision
+						(
+							c1.position,
+							c1.r,
+							c2.position,
+							c2.size,
+							&dis
+						))
+						{
+							o1->getSphereBoxHitDistance(collisionCount[0]) = dis;
+							o2->getBoxBoxHitDistance(collisionCount[1]) = dis;
+
+							o1->hit(o2, CollisionType::COLLISION_SPHERE, collisionCount[0]);
+							o2->hit(o1, CollisionType::COLLISION_BOX, collisionCount[1]);
+						}
+						
+
+						collisionCount[1]++;
+					}
+					collisionCount[0]++;
+					collisionCount[1] = 0;
+				}
+				collisionCount[0] = 0;
+
+			}
+		}
+	}
+#pragma endregion
+
+
 #pragma region 線分と板
 	if (checkCollision.lineSegment && checkCollision.board)
 	{
-		for (auto& o1 : o)
+		for (auto& o1 : objects)
 		{
-			for (auto& o2 : o)
+			for (auto& o2 : objects)
 			{
 				f1 = o1->getCollisionFlag();
 				f2 = o2->getCollisionFlag();
@@ -173,7 +238,7 @@ void ObjectManager::update()
 #pragma region マウスカーソルと板ポリ
 	if (checkMouseCollision && checkCollision.board)
 	{
-		for (auto& o1 : o)
+		for (auto& o1 : objects)
 		{
 			if(o1->getCollisionFlag().board)
 			{
@@ -209,6 +274,8 @@ void ObjectManager::update()
 
 
 #pragma endregion
+
+
 
 }
 
@@ -255,11 +322,10 @@ void ObjectManager::addObject(Object* object)
 	{
 		object->objectInitialize();
 		object->initialize();
-		objects.push_back(object);
+		addObjects.push_back(object);
 	}
 
-	if (addObjectSort != OBJECT_SORT_NONE)
-		objectSort(addObjectSort, addObjectSortOrderType);
+	
 }
 
 void ObjectManager::setAddObjectSortState(const ObjectManager::ObjectSort& sort, const bool& orderType)

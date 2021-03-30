@@ -5,16 +5,21 @@
 #define _USE_MATH_DEFINES
 #include<math.h>
 #include"Library.h"
+#include"CollisionType.h"
 //GameにMathクラスがあったから名前をMathにするとエラーが出る
 //Math意外だとエラー出なかったので、Mathという名前自体がいけないのかもしれない
 //エラー出ないこともある
 //includeすると確実にエラーが出る。includeしないと出ない
 //lib(スタティックライブラリのプロジェクト)に作らなければエラー出ない?
+
+
 class LibMath
 {
 private:
 
 public:
+
+	
 
 	/// <summary>
 	/// num1とnum2の値の差を求め、差 <= 基準の値だったらtrueを返します
@@ -134,7 +139,13 @@ public:
 	/// <param name="start2">1つ目の左上座標</param>
 	/// <param name="end2">1つ目の右下座標</param>
 	/// <returns>当たったかどうか</returns>
-	static bool rectCollision(Vector2 start1, Vector2 end1, Vector2 start2, Vector2 end2);
+	static bool rectCollision
+	(
+		const Vector2& pos1,
+		const Vector2& size1, 
+		const Vector2& pos2,
+		const Vector2& size2
+	);
 
 	/// <summary>
 	/// 円の当たり判定です
@@ -188,7 +199,7 @@ public:
 	/// <param name="normal"></param>
 	/// <param name="hitPos"></param>
 	/// <returns></returns>
-	static bool sphereAndTryangleCorrision
+	static bool sphereAndTryangleCollision
 	(
 		Vector3 spherePos,
 		float r,
@@ -197,6 +208,24 @@ public:
 		Vector3 triPos3,
 		Vector3 normal,
 		Vector3* hitPos
+	);
+
+	/// <summary>
+	/// 球と立方体(AABB)の判定
+	/// </summary>
+	/// <param name="spherePos"></param>
+	/// <param name="r"></param>
+	/// <param name="minPos"></param>
+	/// <param name="maxPos"></param>
+	/// <param name="direction"></param>
+	/// <returns></returns>
+	static bool sphereAndBoxCollision
+	(
+		const Vector3& spherePos,
+		const float& r,
+		const Vector3& centerPos,
+		const Vector3& size,
+		BoxHitDirection* direction
 	);
 
 	/// <summary>

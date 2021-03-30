@@ -68,8 +68,8 @@ float LibMath::twoVector2Angle(const Vector2& v1, const Vector2& v2)
 float LibMath::vecto2ToAngle(const Vector2& v, const bool& v3)
 {
 	float f = 0.0f;
-	if(v3)
-	f = twoVector2Angle({ 1,0 }, v);
+	if (v3)
+		f = twoVector2Angle({ 1,0 }, v);
 	else
 		f = twoVector2Angle({ 1,0 }, { v.x,-v.y });
 	return f;
@@ -80,13 +80,13 @@ Vector2 LibMath::angleToVector2(const float& angle, const bool& v3)
 {
 	Quaternion q = getRotateQuaternion({ 1,0,0 }, { 0,0,1 }, angle);
 
-	if(v3)
+	if (v3)
 		return { q.x,q.y };
 	return { q.x,-q.y };
 }
 
 
-Vector2 LibMath::rotateVector2(const Vector2& v,const float& angle)
+Vector2 LibMath::rotateVector2(const Vector2& v, const float& angle)
 {
 	Quaternion q = getRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
 	return { q.x,q.y };
@@ -126,15 +126,19 @@ Vector3 LibMath::rotateVector3(const Vector3& rotateV, const Vector3& vec, const
 #pragma region 当たり判定
 #pragma region 2D
 
-bool LibMath::rectCollision(Vector2 start1, Vector2 end1, Vector2 start2, Vector2 end2)//四角判定
+bool LibMath::rectCollision
+(
+	const Vector2& pos1,
+	const Vector2& size1,
+	const Vector2& pos2,
+	const Vector2& size2
+)//四角判定
 {
-	if (end2.x + start2.x > start1.x &&
-		start2.x < end1.x + start1.x &&
-		start2.y < end1.y + start1.y &&
-		end2.y + start2.y > start1.y)
-	{
+	if (size2.x + pos2.x > pos1.x &&
+		pos2.x < size1.x + pos1.x &&
+		pos2.y < size1.y + pos1.y &&
+		size2.y + pos2.y > pos1.y)
 		return true;
-	}
 	return false;
 }
 
@@ -184,7 +188,7 @@ bool LibMath::sphereAndPlaneCollision(Vector3 spherePos, float r, Vector3 normal
 	return true;
 }
 
-bool LibMath::sphereAndTryangleCorrision
+bool LibMath::sphereAndTryangleCollision
 (
 	Vector3 spherePos,
 	float r,
@@ -373,6 +377,95 @@ bool LibMath::sphereAndTryangleCorrision
 
 }
 
+bool LibMath::sphereAndBoxCollision
+(
+	const Vector3& spherePos,
+	const float& r,
+	const Vector3& centerPos,
+	const Vector3& size,
+	BoxHitDirection* direction
+)
+{
+	float dir2 = 0.0f;
+
+	Vector3 minPos = centerPos - size / 2;
+	Vector3 maxPos = centerPos + size / 2;
+
+	//x
+	if (spherePos.x < minPos.x)
+		dir2 += (minPos.x - spherePos.x) * (minPos.x - spherePos.x);
+	if (spherePos.x > maxPos.x)
+		dir2 += (spherePos.x - maxPos.x) * (spherePos.x - maxPos.x);
+
+	//y
+	if (spherePos.y < minPos.y)
+		dir2 += (minPos.y - spherePos.y) * (minPos.y - spherePos.y);
+	if (spherePos.y > maxPos.y)
+		dir2 += (spherePos.y - maxPos.y) * (spherePos.y - maxPos.y);
+
+	//z
+	if (spherePos.z < minPos.z)
+		dir2 += (minPos.z - spherePos.z) * (minPos.z - spherePos.z);
+	if (spherePos.z > maxPos.z)
+		dir2 += (spherePos.z - maxPos.z) * (spherePos.z - maxPos.z);
+
+	bool flag = dir2 < r * r;
+
+	//ボックスのどこに当たったかを返す
+	if (direction)
+	{
+		if (!flag)
+		{
+			*direction = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+			return flag;
+		}
+
+		//1 Xが多い
+		//2 Yが多い
+		//3 Zが多い
+		char top = 0;
+		//球へのベクトル
+		Vector3 sphereToVector = centerPos - spherePos;
+
+		if (abs(sphereToVector.x) >= abs(sphereToVector.y)) 
+		{
+			top = 1;
+			if (abs(sphereToVector.z) >= abs(sphereToVector.x))
+				top = 3;
+		}
+		else
+		{
+			top = 2;
+			if (abs(sphereToVector.z) >= abs(sphereToVector.y))
+				top = 3;
+		}
+
+		if (top == 1)
+		{
+			if (sphereToVector.x >= 0)
+				*direction = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
+			else
+				*direction = BoxHitDirection::BOX_HIT_DIRECTION_RIGHT;
+		}
+		if (top == 2)
+		{
+			if (sphereToVector.y >= 0)
+				*direction = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
+			else
+				*direction = BoxHitDirection::BOX_HIT_DIRECTION_UP;
+		}
+		if (top == 3)
+		{
+			if (sphereToVector.z >= 0)
+				*direction = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
+			else
+				*direction = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
+		}
+	}
+
+	return flag;
+}
+
 bool LibMath::lineSegmentAndBoardCollision
 (
 	Vector3 linePos1,
@@ -501,15 +594,15 @@ bool LibMath::lineSegmentAndBoardCollision
 	//どちらかが同じ(板ポリの中)だったらifの中に
 	if (equal1 || equal2)
 	{
-		
+
 
 		return true;
 	}
 
 	//衝突位置と中心が同じだったらヒット
 	if (difference(crossPos.x, pointPos.x, 0.01f) &&
-		difference(crossPos.y, pointPos.y, 0.01f) && 
-		difference(crossPos.z, pointPos.z, 0.01f) )
+		difference(crossPos.y, pointPos.y, 0.01f) &&
+		difference(crossPos.z, pointPos.z, 0.01f))
 	{
 		return true;
 	}

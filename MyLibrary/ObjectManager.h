@@ -14,7 +14,9 @@ public:
 		OBJECT_SORT_X,
 		OBJECT_SORT_Y,
 		OBJECT_SORT_Z,
+		//カメラから近い順
 		OBJECT_SORT_NEAR_DISTANCE,
+		//カメラから遠い順
 		OBJECT_SORT_FAR_DISTANCE,
 
 	};
@@ -25,10 +27,12 @@ private:
 	~ObjectManager();
 
 	std::vector<Object*>objects;
+	//追加されたものを一時的に入れておく配列
+	std::vector<Object*>addObjects;
 
 	CollisionFlag checkCollision;
 
-	//追加するごとにソートするか
+	//追加したフレームごとにソートするか
 	ObjectSort addObjectSort;
 	bool addObjectSortOrderType;
 
@@ -99,7 +103,7 @@ public:
 	void addObject(Object* object);
 
 	/// <summary>
-	/// 追加するごとにソートするかを設定します。追加しない場合、orderTypeは無視されます
+	/// 追加したフレームごとにソートするかを設定します。追加しない場合、orderTypeは無視されます
 	/// </summary>
 	/// <param name="sort">ソートの仕方</param>
 	/// <param name="orderType">true 昇順  false 降順</param>

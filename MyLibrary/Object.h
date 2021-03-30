@@ -26,6 +26,7 @@ protected:
 
 #pragma region 判定データ
 	std::vector<SphereData> sphereData;
+	std::vector<BoxData> boxData;
 	std::vector<LineSegmentData> lineSegmentData;
 	std::vector<RayData> layData;
 	std::vector<PlaneData>planeData;
@@ -73,11 +74,14 @@ public:
 	//判定用関数
 	CollisionFlag getCollisionFlag();
 	std::vector<SphereData> getSphereData();
+	std::vector<BoxData> getBoxData();
 	std::vector<LineSegmentData> getLineSegmentData();
 	std::vector<PlaneData> getPlaneData();
 	std::vector<BoardData> getBoardData();
 	Vector3& getLineSegmentHitPosition(const int & num);
 	Vector3& getBoardHitPosition(const int & num);
+	BoxHitDirection& getSphereBoxHitDistance(const int & num) { return sphereData[num].boxHitDistance; }
+	BoxHitDirection& getBoxBoxHitDistance(const int & num) { return boxData[num].boxHitDistance; }
 
 
 	

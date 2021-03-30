@@ -84,6 +84,10 @@ void Play::update()
 
 }
 
+Vector3 spherePos = 0;
+Vector3 size = { 4,8,8 };
+Vector3 center = { 6,0,0 };
+
 void Play::draw()
 {
 
@@ -96,11 +100,30 @@ void Play::draw()
 	Library::drawGraphic(modelD, 1);
 	//Library::drawGraphic(modelD, 1);*/
 
-	
-	Vector2 ang = { XInputManager::leftStickAngle(1),XInputManager::rightStickAngle(1) };
-	std::string str = std::to_string(ang.x) + ",";
-	str += std::to_string(ang.y);
+
+	if (DirectInput::keyState(DIK_A))
+		spherePos.x -= 0.2f;
+	if (DirectInput::keyState(DIK_D))
+		spherePos.x += 0.2f;
+	if (DirectInput::keyState(DIK_S))
+		spherePos.z -= 0.2f;
+	if (DirectInput::keyState(DIK_W))
+		spherePos.z += 0.2f;
+
+	LibMath::BoxHitDirection dis;
+	bool flag = LibMath::sphereAndBoxCollision
+	(
+		spherePos,
+		2.0f,
+		size,
+		center,
+		&dis
+	);
+
+	std::string str = std::to_string(flag) + "_" + std::to_string(spherePos.x) + ","+std::to_string(spherePos.z);
 	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, str,&f);
+
+
 }
 
 void Play::end()

@@ -45,14 +45,20 @@ CollisionFlag Object::getCollisionFlag()
 	return collisionFlag;
 }
 
+
+void* Object::getPtr()
+{
+	return nullptr;
+}
+
 std::vector<SphereData> Object::getSphereData()
 {
 	return sphereData;
 }
 
-void* Object::getPtr() 
+std::vector<BoxData> Object::getBoxData()
 {
-	return nullptr;
+	return boxData;
 }
 
 std::vector<LineSegmentData> Object::getLineSegmentData()

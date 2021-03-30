@@ -5,6 +5,7 @@
 struct CollisionFlag
 {
 	bool sphere;
+	bool box;
 	bool ray;
 	bool lineSegment;
 	bool plane;
@@ -16,11 +17,23 @@ enum CollisionType
 	COLLISION_RECT,
 	COLLISION_CIRCLE,
 	COLLISION_SPHERE,
+	COLLISION_BOX,
 	COLLISION_PLANE,
 	COLLISION_BOARD,
 	COLLISION_LINESEGMENT,
 	COLLISION_RAY,
 
+};
+
+enum BoxHitDirection
+{
+	BOX_HIT_DIRECTION_NO_HIT,
+	BOX_HIT_DIRECTION_UP,
+	BOX_HIT_DIRECTION_DOWN,
+	BOX_HIT_DIRECTION_LEFT,
+	BOX_HIT_DIRECTION_RIGHT,
+	BOX_HIT_DIRECTION_FRONT,
+	BOX_HIT_DIRECTION_BACK,
 };
 
 #pragma region 2D
@@ -49,6 +62,18 @@ struct SphereData
 
 	//”¼Œa
 	float r;
+
+	//box‚Ì‚Ç‚±‚É‚Ô‚Â‚©‚Á‚½‚©
+	BoxHitDirection boxHitDistance;
+};
+
+struct BoxData
+{
+	Vector3 size;
+	Vector3 position;
+
+	//‹…‚ª‚Ç‚±‚É‚Ô‚Â‚©‚Á‚½‚©
+	BoxHitDirection boxHitDistance;
 };
 
 struct PlaneData
@@ -81,6 +106,8 @@ struct RayData
 	Vector3 pos;
 	Vector3 direction;
 };
+
+
 
 #pragma endregion
 
