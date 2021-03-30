@@ -20,8 +20,8 @@ public :
 		XINPUT_Y_BUTTON = 0x8000,//PSÇÃÅ¢ SwitchÇÃX
 		XINPUT_R_STICK_BUTTON = 0x0040,//PSÇÃR3
 		XINPUT_L_STICK_BUTTON = 0x0080,//PSÇÃL3
-		XINPUT_RB_BUTTON = 0x0100,//PSÇÃR1 SwitchÇÃR
-		XINPUT_LB_BUTTON = 0x0200,//PSÇÃL1 SwitchÇÃL
+		XINPUT_RB_BUTTON = 0x0200,//PSÇÃR1 SwitchÇÃR
+		XINPUT_LB_BUTTON = 0x0100,//PSÇÃL1 SwitchÇÃL
 	};
 private:
 	static XINPUT_STATE padState[4];
