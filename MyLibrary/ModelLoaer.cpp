@@ -169,10 +169,11 @@ bool  ModelLoader::loadOBJModel
 
 				loadPreparation = true;
 
-				//初期化
-				loadPosVector.clear();
+				//クリア
+				//次のモデルのインデックスが前回の途中から始まるからリセットいらない
+			/*	loadPosVector.clear();
 				loadUvVector.clear();
-				loadNormalVector.clear();
+				loadNormalVector.clear();*/
 
 				//スムーズシェーディング用配列修正
 				smoothNormalCalcData.resize(smoothNormalCalcData.size() + 1);

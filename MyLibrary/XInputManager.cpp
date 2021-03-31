@@ -190,26 +190,32 @@ bool XInputManager::rightStickDown(const float&  lYPar, const UCHAR& padNum)
 }
 
 
-float XInputManager::leftStickAngle(const UCHAR& padNum)
+float XInputManager::leftStickAngle( const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return -1.0f;
 
 	float x = static_cast<float>(padState[padNum - 1].Gamepad.sThumbLX);
 	float y = static_cast<float>(padState[padNum - 1].Gamepad.sThumbLY);
 	
-	if (x == 0 && y == 0)return -1.0f;
-	
-	return LibMath::vecto2ToAngle(vector2Normalize({ x,y }),true);
+	//ñ¢ì¸óÕÇÕÉäÉ^Å[Éì
+	if (x == 0 && y == 0)
+		return -1.0f;
+
+
+	return LibMath::vecto2ToAngle(vector2Normalize({ x,y }), true);
 }
 
-float XInputManager::rightStickAngle(const UCHAR& padNum)
+float XInputManager::rightStickAngle( const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return -1.0f;
 
 	float x = static_cast<float>(padState[padNum - 1].Gamepad.sThumbRX);
 	float y = static_cast<float>(padState[padNum - 1].Gamepad.sThumbRY);
 	
-	if (x == 0 && y == 0)return -1.0f;
+
+	if (x == 0 && y == 0 )
+		return -1.0f;
+
 
 	return LibMath::vecto2ToAngle(vector2Normalize({ x,y }),true);
 }

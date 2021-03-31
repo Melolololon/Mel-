@@ -11,6 +11,9 @@ ModelData d;
 ModelData d2;
 ModelData modelD;
 font f;
+
+ModelData tankHead;
+
 Play::Play()
 {
 
@@ -44,6 +47,9 @@ Play::Play()
 	//ObjectManager::getInstance()->addObject(new TestObject({ 10,0,10 }));
 	ObjectManager::getInstance()->objectSort(ObjectManager::OBJECT_SORT_NEAR_DISTANCE,false);
 
+	tankHead.key = "tankHead";
+	Library::loadOBJVertex("Resources/Obj/tank_head.obj", true, true, &material, tankHead);
+	Library::loadOBJMaterial("Resources/Obj/", material, 1, tankHead);
 }
 
 
@@ -95,10 +101,11 @@ void Play::draw()
 	ObjectManager::getInstance()->draw();
 	//Library::drawGraphic(d, 0);
 
-	Library::setPipeline(PIPELINE_OBJ_ANIMATION);
-	Library::drawGraphic(modelD, 0);
-	Library::drawGraphic(modelD, 1);
+	//Library::setPipeline(PIPELINE_OBJ_ANIMATION);
+	//Library::drawGraphic(modelD, 0);
+	//Library::drawGraphic(modelD, 1);
 	//Library::drawGraphic(modelD, 1);*/
+	Library::drawGraphic(tankHead, 0);
 
 
 	if (DirectInput::keyState(DIK_A))
@@ -115,14 +122,16 @@ void Play::draw()
 	(
 		spherePos,
 		2.0f,
-		size,
 		center,
+		size,
 		&dis
 	);
 
-	std::string str = std::to_string(flag) + "_" + std::to_string(spherePos.x) + ","+std::to_string(spherePos.z);
+	//std::string str = std::to_string(flag) + "_" + std::to_string(spherePos.x) + ","+std::to_string(spherePos.z);
+	std::string str = std::to_string(XInputManager::leftStickAngle(1));
 	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, str,&f);
 
+	
 
 }
 

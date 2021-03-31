@@ -4622,14 +4622,10 @@ DirectX::XMFLOAT3 DirectX12::getRotateCameraTarget()
 #pragma region •¶Žš•\Ž¦
 void DirectX12::drawSpriteFontString(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, std::string text, int spriteTextureNum)
 {
-	if (spriteFontDrawCounter > 300)
+	int loopCount = 0;
+	for (auto& t : text)
 	{
-		return;
-	}
-
-	for (int i = 0; i < (int)text.size(); i++)
-	{
-		int width = text[i] - 32;//ˆê’Uwidth‚É
+		int width = t - 32;//ˆê’Uwidth‚É
 		int height = 0;
 
 		//êŠ‚ðŠm”F‚·‚é
@@ -4640,13 +4636,13 @@ void DirectX12::drawSpriteFontString(DirectX::XMFLOAT2 position, DirectX::XMFLOA
 		}
 
 		//•`‰æˆ—
-		spriteMap({ position.x + size.x * i,position.y + size.y }, size, spriteFontDrawCounter, 0);
+		spriteMap({ position.x + size.x * loopCount,position.y + size.y }, size, spriteFontDrawCounter, 0);
 		setSpriteAnimationVertex
 		(
 			spriteFontDrawCounter,
 			-1,
-			{ 
-				static_cast<float>(spriteFontData[spriteTextureNum].widthLineNum ),
+			{
+				static_cast<float>(spriteFontData[spriteTextureNum].widthLineNum),
 			static_cast<float>(spriteFontData[spriteTextureNum].heightLineNum)
 			},
 			{ static_cast<float>(width + 1),static_cast<float>(height + 1) }
@@ -4683,8 +4679,12 @@ void DirectX12::drawSpriteFontString(DirectX::XMFLOAT2 position, DirectX::XMFLOA
 #pragma endregion
 
 		spriteFontDrawCounter++;
-	}
+		loopCount++;
+		//Å‘å•¶Žš”’´‚¦‚½‚çƒŠƒ^[ƒ“
+		if (spriteFontDrawCounter > 300)
+			return;
 
+	}
 
 
 }
