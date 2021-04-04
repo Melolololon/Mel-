@@ -121,7 +121,7 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 	//modelDatas.reserve(99999);
 }
 
-void Library::roopStartProcess()
+void Library::loopStartProcess()
 {
 	startProsessTime = timeGetTime();
 
@@ -151,7 +151,7 @@ void Library::roopStartProcess()
 
 }
 
-void Library::roopEndProcess()
+void Library::loopEndProcess()
 {
 	//ƒ\[ƒg
 	//dx12->sortModelData(modelDatas);

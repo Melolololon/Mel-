@@ -76,3 +76,8 @@ void* SceneManager::getScenePtr(std::string key)
 {
 	return scenes[key]->getPtr();
 }
+
+Scene* SceneManager::getCurrentScene()
+{
+	return scenes[currentScene];
+}

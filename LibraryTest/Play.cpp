@@ -4,7 +4,6 @@
 #include"Quaternion.h"
 #include"ObjectManager.h"
 
-#include"TestObject.h"
 
 #include"XInputManager.h"
 ModelData d;
@@ -13,6 +12,7 @@ ModelData modelD;
 font f;
 
 ModelData tankHead;
+ModelData tankBody;
 
 Play::Play()
 {
@@ -50,6 +50,10 @@ Play::Play()
 	tankHead.key = "tankHead";
 	Library::loadOBJVertex("Resources/Obj/tank_head.obj", true, true, &material, tankHead);
 	Library::loadOBJMaterial("Resources/Obj/", material, 1, tankHead);
+
+	tankBody.key = "tankBody";
+	Library::loadOBJVertex("Resources/Obj/tank_body.obj", true, true, &material, tankBody);
+	Library::loadOBJMaterial("Resources/Obj/", material, 1, tankBody);
 }
 
 
@@ -69,6 +73,7 @@ float modelAng = 0;
 
 UCHAR subAlpha = 0;
 
+float tankAngle = 0.0f;
 void Play::update()
 {
 	ObjectManager::getInstance()->update();
@@ -87,7 +92,8 @@ void Play::update()
 	Library::setOBJBoneAngle({ 0,addAngle ,0 }, 0, modelD, 1);
 	Library::setAngle({ 0,modelAng,0 }, modelD, 1);
 
-
+	tankAngle+= 10;
+	Library::setAngle({0,tankAngle ,0}, tankBody, 0);
 }
 
 Vector3 spherePos = 0;
@@ -106,6 +112,7 @@ void Play::draw()
 	//Library::drawGraphic(modelD, 1);
 	//Library::drawGraphic(modelD, 1);*/
 	Library::drawGraphic(tankHead, 0);
+	Library::drawGraphic(tankBody, 0);
 
 
 	if (DirectInput::keyState(DIK_A))

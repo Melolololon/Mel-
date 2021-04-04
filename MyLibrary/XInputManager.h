@@ -24,6 +24,9 @@ public :
 		XINPUT_LB_BUTTON = 0x0100,//PS‚ÌL1 Switch‚ÌL
 	};
 private:
+	XInputManager(){}
+	~XInputManager(){}
+
 	static XINPUT_STATE padState[4];
 	static XINPUT_STATE padPrevious[4];
 

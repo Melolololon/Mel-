@@ -184,6 +184,7 @@
     <ClCompile Include="DirectX12.cpp" />
     <ClCompile Include="DirectXTexLoader.cpp" />
     <ClCompile Include="LibMath.cpp" />
+    <ClCompile Include="LibWinAPI.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="ModelBone.cpp" />
     <ClCompile Include="ModelLoaer.cpp" />
@@ -448,6 +449,7 @@
     <ClInclude Include="DirectInput.h" />
     <ClInclude Include="DirectXTexLoader.h" />
     <ClInclude Include="LibMath.h" />
+    <ClInclude Include="LibWinAPI.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="ModelBone.h" />
     <ClInclude Include="ModelLoader.h" />

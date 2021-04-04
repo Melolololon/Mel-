@@ -2,7 +2,7 @@
 #include<string>
 #include<unordered_map>
 #include"Library.h"
-class PolygonManager//これ親クラス作って処理まとめる?(サウンドとかも同じ処理書くだろうし)(シングルトンだから無理)
+class PolygonManager final//これ親クラス作って処理まとめる?(サウンドとかも同じ処理書くだろうし)(シングルトンだから無理)
 {
 private:
 	PolygonManager();

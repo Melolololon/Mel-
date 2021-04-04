@@ -37,5 +37,8 @@ public:
 	/// <param name="key"></param>
 	/// <returns></returns>
 	void* getScenePtr(std::string key);
+
+
+	Scene* getCurrentScene();
 };
 

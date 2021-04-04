@@ -47,6 +47,9 @@ enum MouseButton
 class DirectInput
 {
 private:
+	DirectInput(){}
+	~DirectInput(){}
+
 	//列挙用コールバック
 	static BOOL CALLBACK diEnumDevicesCallBack(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
 	static BOOL CALLBACK diEnumDevicesObjectCallBack(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
