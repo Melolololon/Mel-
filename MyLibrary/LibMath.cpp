@@ -414,6 +414,7 @@ bool LibMath::sphereAndBoxCollision
 	//ボックスのどこに当たったかを返す
 	if (direction)
 	{
+
 		if (!flag)
 		{
 			*direction = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
@@ -427,16 +428,19 @@ bool LibMath::sphereAndBoxCollision
 		//球へのベクトル
 		Vector3 sphereToVector = centerPos - spherePos;
 
-		if (abs(sphereToVector.x) >= abs(sphereToVector.y)) 
+		if (abs(sphereToVector.x) > abs(sphereToVector.y) &&
+			abs(sphereToVector.x) > size.x / 2)
 		{
 			top = 1;
-			if (abs(sphereToVector.z) >= abs(sphereToVector.x))
+			if (abs(sphereToVector.z) > abs(sphereToVector.x) &&
+				abs(sphereToVector.z) > size.z / 2)
 				top = 3;
 		}
 		else
 		{
 			top = 2;
-			if (abs(sphereToVector.z) >= abs(sphereToVector.y))
+			if (abs(sphereToVector.z) > abs(sphereToVector.y) &&
+				abs(sphereToVector.z) > size.z / 2)
 				top = 3;
 		}
 
