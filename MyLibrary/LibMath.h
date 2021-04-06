@@ -217,7 +217,7 @@ public:
 	/// <param name="r"></param>
 	/// <param name="minPos"></param>
 	/// <param name="maxPos"></param>
-	/// <param name="direction"></param>
+	/// <param name="direction">‹…‚ÍA” ‚Ì‚Ç‚±‚É“–‚½‚Á‚½‚©B” ‚Í‹…‚ª©•ª‚Ì‚Ç‚±‚É‚Ô‚Â‚©‚Á‚½‚©‚ğ•Ô‚·</param>
 	/// <returns></returns>
 	static bool sphereAndBoxCollision
 	(
@@ -226,6 +226,26 @@ public:
 		const Vector3& centerPos,
 		const Vector3& size,
 		BoxHitDirection* direction
+	);
+
+	/// <summary>
+	/// —§•û‘Ì(AABB)“¯m‚Ì”»’è
+	/// </summary>
+	/// <param name="centerPos1"></param>
+	/// <param name="size1"></param>
+	/// <param name="centerPos2"></param>
+	/// <param name="size2"></param>
+	/// <param name="direction1">©•ª‚Ì‚Ç‚±‚ª‚Ô‚Â‚©‚Á‚½‚©‚ğ•Ô‚·</param>
+	/// <param name="direction2">©•ª‚Ì‚Ç‚±‚ª‚Ô‚Â‚©‚Á‚½‚©‚ğ•Ô‚·</param>
+	/// <returns></returns>
+	static bool boxAndBoxCollision
+	(
+		const Vector3& centerPos1,
+		const Vector3& size1,
+		const Vector3& centerPos2,
+		const Vector3& size2,
+		BoxHitDirection* direction1,
+		BoxHitDirection* direction2
 	);
 
 	/// <summary>

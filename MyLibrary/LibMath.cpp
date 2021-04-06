@@ -425,7 +425,7 @@ bool LibMath::sphereAndBoxCollision
 		//2 Yが多い
 		//3 Zが多い
 		char top = 0;
-		//球へのベクトル
+		//ボックスへのベクトル
 		Vector3 sphereToVector = centerPos - spherePos;
 
 		if (abs(sphereToVector.x) > abs(sphereToVector.y) &&
@@ -468,6 +468,131 @@ bool LibMath::sphereAndBoxCollision
 	}
 
 	return flag;
+}
+
+bool LibMath::boxAndBoxCollision
+(
+	const Vector3& centerPos1,
+	const Vector3& size1,
+	const Vector3& centerPos2,
+	const Vector3& size2,
+	BoxHitDirection* direction1,
+	BoxHitDirection* direction2
+)
+{
+	Vector3 minPos1 = centerPos1 - size1 / 2;
+	Vector3 maxPos1 = centerPos1 + size1 / 2;
+	Vector3 minPos2 = centerPos2 - size2 / 2;
+	Vector3 maxPos2 = centerPos2 + size2 / 2;
+	bool isHit = false;
+
+	if (minPos1.x >= minPos2.x &&
+		minPos1.x < maxPos2.x ||
+		maxPos1.x >= minPos2.x &&
+		maxPos1.x < maxPos2.x )
+	{
+
+		if (minPos1.y >= minPos2.y &&
+			minPos1.y < maxPos2.y ||
+			maxPos1.y >= minPos2.y &&
+			maxPos1.y < maxPos2.y)
+		{
+			if (minPos1.z >= minPos2.z &&
+				minPos1.z < maxPos2.z ||
+				maxPos1.z >= minPos2.z &&
+				maxPos1.z < maxPos2.z)
+				isHit = true;
+
+		}
+	}
+		
+	if (direction1 || direction2)
+	{
+
+		if (!isHit)
+		{
+			*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+			*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+			return isHit;
+		}
+
+		//1 Xが多い
+		//2 Yが多い
+		//3 Zが多い
+		char top = 0;
+		//対象へのベクトル
+		Vector3 targetToVector = centerPos2 - centerPos1;
+
+		if (abs(targetToVector.x) > abs(targetToVector.y) &&
+			abs(targetToVector.x) > size2.x / 2)
+		{
+			top = 1;
+			if (abs(targetToVector.z) > abs(targetToVector.x) &&
+				abs(targetToVector.z) > size2.z / 2)
+				top = 3;
+		}
+		else
+		{
+			top = 2;
+			if (abs(targetToVector.z) > abs(targetToVector.y) &&
+				abs(targetToVector.z) > size2.z / 2)
+				top = 3;
+		}
+
+		if (top == 1)
+		{
+			if (targetToVector.x >= 0)
+			{
+				if (direction1)
+					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_RIGHT;
+				if (direction2)
+					*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
+			}
+			else 
+			{
+				if (direction1)
+					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
+				if (direction2)
+					*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_RIGHT;
+			}
+		}
+		if (top == 2)
+		{
+			if (targetToVector.y >= 0)
+			{
+				if (direction1)
+					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_UP;
+				if (direction2)
+					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
+			}
+			else 
+			{
+				if (direction1)
+					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
+				if (direction2)
+					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_UP;
+			}
+		}
+		if (top == 3)
+		{
+			if (targetToVector.z >= 0) 
+			{
+				if(direction1)
+					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
+				if (direction2)
+					*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
+			}
+			else 
+			{
+				if (direction1)
+					*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
+				if (direction2)
+					*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
+			}
+		}
+	}
+
+	return isHit;
 }
 
 bool LibMath::lineSegmentAndBoardCollision

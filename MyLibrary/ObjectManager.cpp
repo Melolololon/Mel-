@@ -78,6 +78,7 @@ void ObjectManager::update()
 	std::vector<SphereData>sphere2;
 
 	std::vector<BoxData>box1;
+	std::vector<BoxData>box2;
 	
 	std::vector<BoardData>boardData1;
 
@@ -127,8 +128,8 @@ void ObjectManager::update()
 	}
 #pragma endregion
 
-#pragma region 球と四角形
-	if (checkCollision.box)
+#pragma region 球とAABB
+	if (checkCollision.sphere && checkCollision.box)
 	{
 		for (auto& o1 : objects)
 		{
@@ -175,6 +176,55 @@ void ObjectManager::update()
 			}
 		}
 	}
+#pragma endregion
+
+#pragma region AABBとAABB
+	if(checkCollision.box)
+	{
+		for (auto& o1 : objects)
+		{
+			for (auto& o2 : objects)
+			{
+				f1 = o1->getCollisionFlag();
+				f2 = o2->getCollisionFlag();
+
+				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
+				if (o1 == o2 || !f1.box || !f2.box)continue;
+
+				box1 = o1->getBoxData();
+				box2 = o2->getBoxData();
+
+				for (const auto& c1 : box1)
+				{
+					for (const auto& c2 : box2)
+					{
+						BoxHitDirection dis;
+						if(LibMath::boxAndBoxCollision
+						(
+							c1.position,
+							c1.size,
+							c2.position,
+							c2.size,
+							&dis,
+							nullptr
+						))
+						{
+							o1->getBoxBoxHitDistance(collisionCount[0]) = dis;
+							o1->hit(o2, CollisionType::COLLISION_BOX, collisionCount[0]);
+						}
+
+
+						collisionCount[1]++;
+					}
+					collisionCount[0]++;
+					collisionCount[1] = 0;
+				}
+				collisionCount[0] = 0;
+
+			}
+		}
+	}
+
 #pragma endregion
 
 
