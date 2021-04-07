@@ -125,17 +125,18 @@ void Play::draw()
 		spherePos.z += 0.2f;
 
 	BoxHitDirection dis;
-	bool flag = LibMath::sphereAndBoxCollision
+	bool flag = LibMath::boxAndBoxCollision
 	(
 		spherePos,
-		2.0f,
+		size,
 		center,
 		size,
-		&dis
+		&dis,
+		nullptr
 	);
 
 	//std::string str = std::to_string(flag) + "_" + std::to_string(spherePos.x) + ","+std::to_string(spherePos.z);
-	std::string str = std::to_string(XInputManager::leftStickAngle(1));
+	std::string str = std::to_string(flag);
 	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, str,&f);
 
 	

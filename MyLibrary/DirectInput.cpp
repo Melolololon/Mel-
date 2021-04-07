@@ -279,6 +279,14 @@ bool DirectInput::keyRelease(const BYTE& keyDef)
 	return false;
 }
 
+char DirectInput::keyChar()
+{
+	char returnChar = 0;
+
+	
+	return returnChar;
+}
+
 float DirectInput::arrowKeyAngle()
 {
 	bool right = DirectInput::keyState(DIK_RIGHT);

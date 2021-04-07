@@ -125,6 +125,12 @@ public:
 	static bool keyRelease(const BYTE& keyDef);
 
 	/// <summary>
+	/// キーの文字を返します
+	/// </summary>
+	/// <returns></returns>
+	static char keyChar();
+
+	/// <summary>
 	/// アローキーが何度を示しているかを角度で返します。	
 	/// </summary>
 	/// <returns></returns>

@@ -486,21 +486,34 @@ bool LibMath::boxAndBoxCollision
 	Vector3 maxPos2 = centerPos2 + size2 / 2;
 	bool isHit = false;
 
+	//1‚©2‚Ìmin‚©max‚ªXYZ‘S•”‘ŠŽè‚Ì”ÍˆÍ“à‚¾‚Á‚½‚ç“–‚½‚Á‚Ä‚é
 	if (minPos1.x >= minPos2.x &&
 		minPos1.x < maxPos2.x ||
 		maxPos1.x >= minPos2.x &&
-		maxPos1.x < maxPos2.x )
+		maxPos1.x < maxPos2.x ||
+		minPos2.x >= minPos1.x &&
+		minPos2.x < maxPos1.x ||
+		maxPos2.x >= minPos1.x &&
+		maxPos2.x < maxPos1.x)
 	{
 
 		if (minPos1.y >= minPos2.y &&
 			minPos1.y < maxPos2.y ||
 			maxPos1.y >= minPos2.y &&
-			maxPos1.y < maxPos2.y)
+			maxPos1.y < maxPos2.y ||
+			minPos2.y >= minPos1.y &&
+			minPos2.y < maxPos1.y ||
+			maxPos2.y >= minPos1.y &&
+			maxPos2.y < maxPos1.y)
 		{
 			if (minPos1.z >= minPos2.z &&
 				minPos1.z < maxPos2.z ||
 				maxPos1.z >= minPos2.z &&
-				maxPos1.z < maxPos2.z)
+				maxPos1.z < maxPos2.z ||
+				minPos2.z >= minPos1.z &&
+				minPos2.z < maxPos1.z ||
+				maxPos2.z >= minPos1.z &&
+				maxPos2.z < maxPos1.z)
 				isHit = true;
 
 		}
@@ -511,7 +524,9 @@ bool LibMath::boxAndBoxCollision
 
 		if (!isHit)
 		{
+			if(direction1)
 			*direction1 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+			if(direction2)
 			*direction2 = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
 			return isHit;
 		}

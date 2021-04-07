@@ -21,6 +21,7 @@ ObjectManager* ObjectManager::getInstance()
 void ObjectManager::initialize() 
 {
 	checkCollision.board = false;
+	checkCollision.box = false;
 	checkCollision.lineSegment = false;
 	checkCollision.plane = false;
 	checkCollision.ray = false;
@@ -371,7 +372,6 @@ void ObjectManager::addObject(Object* object)
 	if (object)
 	{
 		object->objectInitialize();
-		object->initialize();
 		addObjects.push_back(object);
 	}
 
