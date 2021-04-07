@@ -34,6 +34,7 @@ void Game::initialize()
 
 	Library::initialize(1280, 720, {0,0,0,255},L"MEL_Magical_Engene_Library(仮)");
 	Library::setCamera({ 0,0,-10 }, { 0,0,0 }, { 0,1,0 });
+
 #pragma region マネージャー初期化
 
 	ObjectManager::getInstance()->initialize();

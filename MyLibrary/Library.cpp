@@ -234,6 +234,16 @@ float Library::getRandomNumberFloat(int number)
 	return static_cast<float>((rand() % number));
 }
 
+int Library::getRandomNumberRangeSelect(const int& start, const int& end)
+{
+	return getRandomNumber(abs(end - start) + 1) + start;
+}
+
+float Library::getRandomNumberRangeSelectFloat(const int& start, const int& end)
+{
+	return static_cast<float>(getRandomNumber(abs(end - start) + 1) + start);
+}
+
 #pragma region プライベート関数
 bool Library::checkSetKeyName(const std::string& key)
 {
