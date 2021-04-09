@@ -3,6 +3,7 @@
 #include"XInputManager.h"
 #pragma comment(lib,"winmm.lib")//timeGetTimeと
 #include"ObjectManager.h"
+#include"LibWinAPI.h"
 
 std::unique_ptr<Audio> Library::audio;
 DirectX12* Library::dx12;
@@ -61,9 +62,17 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 
 #pragma region ウィンドウ処理
 
-	//OutputDebugStringA("Hello,DirectX!!\n");
+	hwnd = LibWinAPI::createParentWindow
+	(
+		windowName,
+		 windowWidth ,
+		windowHeight ,
+		WS_OVERLAPPEDWINDOW,
+		WindowProc
+	);
 
-	w.cbSize = sizeof(WNDCLASSEX);
+
+	/*w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProc;
 	w.lpszClassName = windowName;
 	w.hInstance = GetModuleHandle(nullptr);
@@ -86,7 +95,7 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 		w.hInstance,
 		nullptr);
 
-	ShowWindow(hwnd, SW_SHOW);
+	ShowWindow(hwnd, SW_SHOW);*/
 
 
 
