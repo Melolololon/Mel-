@@ -5,48 +5,46 @@
 class LibWinAPI
 {
 private:
-	static WNDCLASSEX w;
+	//static WNDCLASSEX w;
+
 
 public:
 
-
 	/// <summary>
-	/// 親ウィンドウを生成します。
+	/// ウィンドウを作成します。
 	/// </summary>
-	/// <param name="windowName">ウィンドウ名</param>
-	/// <param name="windowWidth">横幅</param>
-	/// <param name="windowHeighr">縦幅</param>
-	/// <param name="windowStyle">ウィンドウスタイル</param>
-	/// <param name="wndProc">ウィンドウプロシージャ</param>
-	/// <returns>ウィンドウハンドル</returns>
-	static HWND createParentWindow
-	(
-		const std::wstring& windowName, 
-		const int& windowWidth,
-		const int& windowHeighr,
-		const int& windowStyle,
-		const WNDPROC& wndProc
-	);
-
-	/// <summary>
-	/// 子ウィンドウを作成します
-	/// </summary>
-	/// <param name="windowName"></param>
-	/// <param name="windowWidth"></param>
-	/// <param name="windowHeighr"></param>
-	/// <param name="hwnd"></param>
-	/// <param name="windowStyle"></param>
-	/// <param name="wndProc"></param>
+	/// <param name="className">ウィンドウクラス名</param>
+	/// <param name="windowName">ウィンドウ名(ボタンなどを作成する場合、書かれている名前)</param>
+	/// <param name="windowStyle">ウィンドウのスタイル</param>
+	/// <param name="posX">縦幅</param>
+	/// <param name="posY">縦幅</param>
+	/// <param name="windowWidth">縦幅</param>
+	/// <param name="windowHeighr">横幅</param>
+	/// <param name="parentHWND">親ウィンドウのHWND。親ウィンドウを生成する場合は、nullptrを渡す。</param>
+	/// <param name="winProc">ウィンドウプロシージャ</param>
 	/// <returns></returns>
-	static HWND createChildWindow
+	static HWND createNormalWindow
 	(
+		const std::wstring& className,
 		const std::wstring& windowName,
-		const int& windowWidth,
-		const int& windowHeighr,
-		HWND& hwnd,
-		const int& windowStyle,
-		const WNDPROC& wndProc
+		const DWORD& windowStyle,
+		const DWORD& posX,
+		const DWORD& posY,
+		const int& width,
+		const int& height,
+		const HWND parentHWND,
+		const WNDPROC& winProc
 	);
+
+	//static HWND createExpansionWindow
+	//(
+	//	const std::wstring& windowName,
+	//	const int& width,
+	//	const int& heighr,
+	//	const int& windowStyle,
+	//	const HWND parentHWND,
+	//	const WNDPROC& winProc
+	//);
 
 	/// <summary>
 	/// 保存するためのウィンドウを生成し、入力したファイル名を取得します

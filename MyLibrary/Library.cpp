@@ -62,12 +62,16 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 
 #pragma region ウィンドウ処理
 
-	hwnd = LibWinAPI::createParentWindow
+	hwnd = LibWinAPI::createNormalWindow
 	(
 		windowName,
-		 windowWidth ,
-		windowHeight ,
+		windowName,
 		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		windowWidth,
+		windowHeight,
+		nullptr,
 		WindowProc
 	);
 

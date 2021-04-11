@@ -53,6 +53,7 @@ void Game::initialize()
 	SceneManager::getInstace()->addScene("Play", new Play());
 #pragma endregion
 
+
 }
 
 

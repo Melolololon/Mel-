@@ -1,42 +1,52 @@
 #include "LibWinAPI.h"
 
-//これメンバ変数にしないとHWNDがNULLになる
-WNDCLASSEX LibWinAPI::w;
+//子ウィンドウは、WNDCLASSEXを登録しちゃいけない。登録するとボタンとか作れない
 
-HWND LibWinAPI::createParentWindow
+//これメンバ変数にしないとHWNDがNULLになる
+//WNDCLASSEX LibWinAPI::w;
+
+HWND LibWinAPI::createNormalWindow
 (
+	const std::wstring& className,
 	const std::wstring& windowName,
-	const int& windowWidth,
-	const int& windowHeighr,
-	const int& windowStyle,
-	const WNDPROC& wndProc
+	const DWORD& windowStyle,
+	const DWORD& posX,
+	const DWORD& posY,
+	const int& width,
+	const int& height,
+	const HWND parentHWND,
+	const WNDPROC& winProc
 )
 {
-	
-	//WNDCLASSEX w;
-	w.cbSize = sizeof(WNDCLASSEX);
-	w.lpfnWndProc = (WNDPROC)wndProc;
-	w.lpszClassName = windowName.c_str();
-	w.hInstance = GetModuleHandle(nullptr);
-	w.hCursor = LoadCursor(NULL, IDC_ARROW);
+	WNDCLASSEX w;
+	if (!parentHWND)
+	{
+		w = {};
+		w.cbSize = sizeof(WNDCLASSEX);
+		w.lpfnWndProc = (WNDPROC)winProc;
+		w.lpszClassName = className.c_str();
+		w.hInstance = GetModuleHandle(nullptr);
+		w.hCursor = LoadCursor(NULL, IDC_ARROW);
 
-	RegisterClassEx(&w);
-	RECT wrc = { 0,0,windowWidth,windowHeighr };
+		RegisterClassEx(&w);
+	}
+	RECT wrc = { 0,0,width,height };
 	AdjustWindowRect(&wrc, windowStyle, false);
+
 
 	HWND hwnd;
 	hwnd = CreateWindow
 	(
-		w.lpszClassName,
+		className.c_str(),
 		windowName.c_str(),
 		windowStyle,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
+		posX,
+		posY,
 		wrc.right - wrc.left,
 		wrc.bottom - wrc.top,
+		parentHWND,
 		nullptr,
-		nullptr,
-		w.hInstance,
+		GetModuleHandle(nullptr),
 		nullptr);
 
 	ShowWindow(hwnd, SW_SHOW);
@@ -44,18 +54,48 @@ HWND LibWinAPI::createParentWindow
 	return hwnd;
 }
 
-HWND LibWinAPI::createChildWindow
-(
-	const std::wstring& windowName,
-	const int& windowWidth,
-	const int& windowHeighr,
-	HWND& hwnd,
-	const int& windowStyle,
-	const WNDPROC& wndProc
-)
-{
-	return nullptr;
-}
+
+
+//
+//HWND LibWinAPI::createExpansionWindow
+//(
+//	const std::wstring& windowName,
+//	const int& width,
+//	const int& heighr,
+//	const int& windowStyle,
+//	const HWND parentHWND,
+//	const WNDPROC& winProc
+//)
+//{
+//	w.cbSize = sizeof(WNDCLASSEX);
+//	w.lpfnWndProc = (WNDPROC)winProc;
+//	w.lpszClassName = windowName.c_str();
+//	w.hInstance = GetModuleHandle(nullptr);
+//	w.hCursor = LoadCursor(NULL, IDC_ARROW);
+//
+//	RegisterClassEx(&w);
+//	RECT wrc = { 0,0,width,height };
+//	AdjustWindowRect(&wrc, windowStyle, false);
+//
+//	HWND hwnd;
+//	hwnd = CreateDirectoryEx
+//	(
+//		w.lpszClassName,
+//		windowName.c_str(),
+//		windowStyle,
+//		CW_USEDEFAULT,
+//		CW_USEDEFAULT,
+//		wrc.right - wrc.left,
+//		wrc.bottom - wrc.top,
+//		parentHWND,
+//		nullptr,
+//		w.hInstance,
+//		nullptr);
+//
+//	ShowWindow(hwnd, SW_SHOW);
+//
+//	return hwnd;
+//}
 
 
 bool LibWinAPI::createSaveWindow
