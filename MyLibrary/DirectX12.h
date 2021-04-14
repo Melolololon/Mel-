@@ -710,7 +710,7 @@ public:
 #pragma region 描画
 	//描画時じゃなくて座標とかセットしたときに毎回マップする?
 //そうすると処理が遅くなる?
-	void setCmdList(const std::string& key, int number);
+	void setCmdList(const ModelData& modelData, int number);
 	void map(const ModelData& modelData, int number);
 
 	void spriteSetCmdList(int spriteNum, int textureNum);

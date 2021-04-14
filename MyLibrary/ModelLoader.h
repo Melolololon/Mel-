@@ -13,8 +13,9 @@ public:
 	ModelLoader& operator =(const ModelLoader& moder) = delete;
 	static ModelLoader* getInstance();
 
-	bool loadPMDModel(const char* path, std::vector<PMDVertex>& vertex, std::vector<unsigned short>& indices);
 
+	bool loadPMDModel(const char* path, std::vector<PMDVertex>& vertex, std::vector<unsigned short>& indices);
+	
 	/// <summary>
 	/// obj‚ğ“Ç‚İ‚İ‚Ü‚·
 	/// </summary>

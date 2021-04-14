@@ -1,6 +1,8 @@
 #include "Library.h"
 #include"LibMath.h"
+
 #include"XInputManager.h"
+
 #pragma comment(lib,"winmm.lib")//timeGetTime‚Æ
 #include"ObjectManager.h"
 #include"LibWinAPI.h"
@@ -811,7 +813,7 @@ void Library::drawGraphic
 	modelDatas.push_back(mData);*/
 
 	dx12->map(modelData, number);
-	dx12->setCmdList(modelData.key, number);
+	dx12->setCmdList(modelData, number);
 }
 
 void Library::drawSprite
