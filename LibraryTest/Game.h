@@ -12,7 +12,7 @@ private:
 
 public:
 	Game(const Game&) = delete;
-	Game& operator=(const Game) = delete;
+	Game& operator=(const Game&) = delete;
 
 	static Game* getInstance();
 	void run();

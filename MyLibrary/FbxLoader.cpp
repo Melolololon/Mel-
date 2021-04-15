@@ -63,4 +63,6 @@ void FbxLoader::loadFbxModel(const std::string& modelPath)
 	FbxScene* fbxScene = FbxScene::Create(fbxManager, "fbxScene");
 	fbxImporter->Import(fbxScene);
 
+	
 }
+
