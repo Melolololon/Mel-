@@ -115,6 +115,17 @@ bool Vector2::operator!=(const Vector2& vector)
 	return true;
 }
 
+void Vector2::operator++()
+{
+	x++;
+	y++;
+}
+void Vector2::operator--()
+{
+	x--;
+	y--;
+}
+
 #pragma endregion
 
 #pragma region ä÷êî
@@ -285,6 +296,18 @@ bool Vector3::operator!=(const Vector3& vector)
 }
 
 
+void Vector3::operator++()
+{
+	x++;
+	y++;
+	z++;
+}
+void Vector3::operator--()
+{
+	x--;
+	y--;
+	z--;
+}
 #pragma endregion
 
 #pragma region ä÷êî
@@ -330,80 +353,4 @@ float vector3Dot(const Vector3& vector1, const Vector3& vector2)
 
 #pragma endregion
 
-
-
-
-
-#pragma region Vector4
-
-#pragma region ââéZéq
-
-Vector4 Vector4::operator+(Vector4 vector)
-{
-	return { x + vector.x, y + vector.y, z + vector.z,w + vector.w };
-}
-Vector4 Vector4::operator-(Vector4 vector)
-{
-	return { x - vector.x, y - vector.y, z - vector.z ,w - vector.w };
-}
-Vector4 Vector4::operator*(Vector4 vector)
-{
-	return { x * vector.x, y * vector.y, z * vector.z ,w * vector.w };
-}
-Vector4 Vector4::operator/(Vector4 vector)
-{
-	return { x / vector.x, y / vector.y, z / vector.z ,w / vector.w };
-}
-
-void Vector4::operator+= (Vector4 vector)
-{
-	x = x + vector.x;
-	y = y + vector.y;
-	z = z + vector.z;
-	w = w + vector.w;
-}
-
-void Vector4::operator-= (Vector4 vector)
-{
-	x = x - vector.x;
-	y = y - vector.y;
-	z = z - vector.z;
-	w = w - vector.w;
-}
-
-void Vector4::operator*= (Vector4 vector)
-{
-	x = x * vector.x;
-	y = y * vector.y;
-	z = z * vector.z;
-	w = w * vector.w;
-}
-
-void Vector4::operator/= (Vector4 vector)
-{
-	x = x / vector.x;
-	y = y / vector.y;
-	z = z / vector.z;
-	w = w / vector.w;
-}
-
-
-Vector4 Vector4::operator*(float f)
-{
-	return { x * f, y * f, z *f ,w * f };
-}
-
-void Vector4::operator=(float num)
-{
-	x = num;
-	y = num;
-	z = num;
-	w = num;
-}
-
-
-
-#pragma endregion
-
-#pragma endregion
 

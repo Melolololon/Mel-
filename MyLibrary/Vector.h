@@ -21,19 +21,13 @@ struct Vector2
 #pragma region ‰‰ŽZŽq
 
 	Vector2 operator+(const Vector2& vector)const;
-
 	Vector2 operator-(const Vector2& vector)const;
-
 	Vector2 operator*(const Vector2& vector)const;
-
 	Vector2 operator/(const Vector2& vector)const;
 
 	void operator+= (const Vector2& vector);
-
 	void operator-= (const Vector2& vector);
-
 	void operator*= (const Vector2& vector);
-
 	void operator/= (const Vector2& vector);
 
 	Vector2 operator*(const float& f)const;
@@ -44,6 +38,9 @@ struct Vector2
 	void operator=(const float&  num);
 	bool operator==(const Vector2& vector);
 	bool operator!=(const Vector2& vector);
+
+	void operator++();
+	void operator--();
 
 #pragma endregion
 
@@ -108,6 +105,9 @@ struct Vector3
 	bool operator==(const Vector3& vector);
 	bool operator!=(const Vector3& vector);
 	
+
+	void operator++();
+	void operator--();
 #pragma endregion
 
 };
@@ -122,35 +122,4 @@ Vector3 vector3Normalize(const Vector3& vector);
 
  float vector3Dot(const Vector3& vector1, const Vector3& vector2);
 #pragma endregion
-
-
- struct Vector4
- {
-	 float x, y, z, w;
-
-#pragma region ‰‰ŽZŽq
-
-	 Vector4 operator+(Vector4 vector);
-
-	 Vector4 operator-(Vector4 vector);
-
-	 Vector4 operator*(Vector4 vector);
-
-	 Vector4 operator/(Vector4 vector);
-
-	 void operator+= (Vector4 vector);
-
-	 void operator-= (Vector4 vector);
-
-	 void operator*= (Vector4 vector);
-
-	 void operator/= (Vector4 vector);
-
-	 Vector4 operator*(float f);
-
-	 void operator=(float num);
-
-#pragma endregion
-
- };
 
