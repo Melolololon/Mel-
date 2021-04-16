@@ -30,7 +30,7 @@ void ObjectManager::initialize()
 	checkMouseCollision = false;
 	cameraPosition = 0.0f;
 	cursor = std::make_unique<MouseCursor>();
-	cursor.get()->initialize();
+	cursor->initialize();
 
 	addObjectSort = OBJECT_SORT_NONE;
 	addObjectSortOrderType = false;
@@ -44,9 +44,9 @@ void ObjectManager::update()
 	//カーソルアップデート
 	if (cursor) 
 	{
-		cursor.get()->update();
-		nearPos = cursor.get()->getNearPos();
-		farPos = cursor.get()->getFarPos();
+		cursor->update();
+		nearPos = cursor->getNearPos();
+		farPos = cursor->getFarPos();
 	}
 	
 	for (auto& obj : objects)
@@ -57,7 +57,7 @@ void ObjectManager::update()
 	{
 		for (auto& a : addObjects) 
 		{
-			a->update();
+			a.get()->update();
 			objects.push_back(a);
 		}
 		
@@ -115,7 +115,7 @@ void ObjectManager::update()
 							c2.r
 						))
 						{
-							o1->hit(o2, CollisionType::COLLISION_SPHERE, collisionCount[0]);
+							o1->hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0]);
 						}
 						collisionCount[1]++;
 					}
@@ -162,8 +162,8 @@ void ObjectManager::update()
 							o1->getSphereBoxHitDistance(collisionCount[0]) = dis;
 							o2->getBoxBoxHitDistance(collisionCount[1]) = dis;
 
-							o1->hit(o2, CollisionType::COLLISION_SPHERE, collisionCount[0]);
-							o2->hit(o1, CollisionType::COLLISION_BOX, collisionCount[1]);
+							o1->hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0]);
+							o2->hit(o1.get(), CollisionType::COLLISION_BOX, collisionCount[1]);
 						}
 						
 
@@ -211,7 +211,7 @@ void ObjectManager::update()
 						))
 						{
 							o1->getBoxBoxHitDistance(collisionCount[0]) = dis;
-							o1->hit(o2, CollisionType::COLLISION_BOX, collisionCount[0]);
+							o1->hit(o2.get(), CollisionType::COLLISION_BOX, collisionCount[0]);
 						}
 
 
@@ -269,8 +269,8 @@ void ObjectManager::update()
 							o1->getLineSegmentHitPosition(collisionCount[0]) = hitPos;
 							o2->getBoardHitPosition(collisionCount[1]) = hitPos;
 
-							o1->hit(o2, CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
-							o2->hit(o1, CollisionType::COLLISION_BOARD, collisionCount[1]);
+							o1->hit(o2.get(), CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
+							o2->hit(o1.get(), CollisionType::COLLISION_BOARD, collisionCount[1]);
 						}
 
 						collisionCount[1]++;
@@ -334,23 +334,25 @@ void ObjectManager::draw()
 {
 	for (auto& o : objects)
 	{
-		o->draw();
+		o.get()->draw();
 	}
 }
 
 void ObjectManager::isDeadCheck()
 {
+
 	size_t size = objects.size();
 	for (size_t i = 0; i < size; i++)
 	{
 		if (objects[i]->getEraseManager())
 		{
-			delete objects[i];
 			objects.erase(objects.begin() + i);
 			i--;
 			size--;
 		}
 	}
+
+
 	objects.shrink_to_fit();
 
 }
@@ -366,12 +368,12 @@ void ObjectManager::reserveObjectArray(const int& reserveNum)
 	objects.reserve(reserveNum);
 }
 
-void ObjectManager::addObject(Object* object)
+void ObjectManager::addObject(std::shared_ptr<Object> object)
 {
 
 	if (object)
 	{
-		object->objectInitialize();
+		object.get()->objectInitialize();
 		addObjects.push_back(object);
 	}
 
@@ -389,7 +391,7 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 	switch (sort)
 	{
 	case OBJECT_SORT_XYZ_SUM:
-		std::sort(objects.begin(), objects.end(), [&orderType]( Object* obj1,  Object* obj2)
+		std::sort(objects.begin(), objects.end(), [&orderType](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -402,7 +404,7 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 		break;
 
 	case OBJECT_SORT_X:
-		std::sort(objects.begin(), objects.end(), [&orderType](Object* obj1, Object* obj2)
+		std::sort(objects.begin(), objects.end(), [&orderType](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -413,7 +415,7 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 		break;
 
 	case OBJECT_SORT_Y:
-		std::sort(objects.begin(), objects.end(), [&orderType](Object* obj1, Object* obj2)
+		std::sort(objects.begin(), objects.end(), [&orderType](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -424,7 +426,7 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 		break;
 
 	case OBJECT_SORT_Z:
-		std::sort(objects.begin(), objects.end(), [&orderType](Object* obj1, Object* obj2)
+		std::sort(objects.begin(), objects.end(), [&orderType](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -436,7 +438,7 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 
 	case OBJECT_SORT_NEAR_DISTANCE:
 		
-		std::sort(objects.begin(), objects.end(), [&](Object* obj1, Object* obj2)
+		std::sort(objects.begin(), objects.end(), [&](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -451,7 +453,7 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 
 	case OBJECT_SORT_FAR_DISTANCE:
 
-		std::sort(objects.begin(), objects.end(), [&](Object* obj1, Object* obj2)
+		std::sort(objects.begin(), objects.end(), [&](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -482,12 +484,5 @@ void ObjectManager::setMouseCollisionFlag(const bool& flag)
 
 void ObjectManager::allDeleteObject()
 {
-	for (auto& o : objects) 
-	{
-		delete o;
-	}
 	objects.clear();
-	objects.shrink_to_fit();
-
-	
 }

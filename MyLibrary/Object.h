@@ -22,6 +22,8 @@ protected:
 
 	//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
 	bool eraseManager;
+	//これがtrueになると、オブジェクトマネージャーから除外され、かつメモリも解放される
+	bool deleteObject;
 
 
 #pragma region 判定データ
@@ -63,8 +65,9 @@ public:
 
 	virtual void* getPtr();
 
-	//オブジェクトマネージャーから削除するか同課のフラグを返す
+	//オブジェクトマネージャーから削除するかどうかのフラグを返す
 	bool getEraseManager();
+
 
 	//確実に初期値が決まっている変数(eraseManagerなど)を初期化する変数(初期化忘れ防止用)
 	void objectInitialize();

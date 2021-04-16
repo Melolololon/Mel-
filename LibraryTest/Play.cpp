@@ -5,6 +5,8 @@
 #include"ObjectManager.h"
 
 
+#include"TestObject.h"
+
 #include"XInputManager.h"
 ModelData d;
 ModelData d2;
@@ -54,6 +56,8 @@ Play::Play()
 	tankBody.key = "tankBody";
 	Library::loadOBJVertex("Resources/Obj/tank_body.obj", true, true, &material, tankBody);
 	Library::loadOBJMaterial("Resources/Obj/", material, 1, tankBody);
+
+	ObjectManager::getInstance()->addObject(std::make_shared<TestObject>());
 }
 
 
@@ -94,6 +98,11 @@ void Play::update()
 
 	tankAngle+= 10;
 	Library::setAngle({0,tankAngle ,0}, tankBody, 0);
+
+	float a = vector2Dot({ 0,1 }, { 0,-1 });
+	float r = LibMath::angleConversion(1, a);
+	int z = 0;
+
 }
 
 Vector3 spherePos = 0;
@@ -139,7 +148,7 @@ void Play::draw()
 	std::string str = std::to_string(flag);
 	Library::drawsSpriteFontString({ 0,0 }, { 30,30 }, str,&f);
 
-	
+
 
 }
 

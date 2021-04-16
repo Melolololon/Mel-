@@ -48,7 +48,7 @@ CollisionFlag Object::getCollisionFlag()
 
 void* Object::getPtr()
 {
-	return nullptr;
+	return this;
 }
 
 std::vector<SphereData> Object::getSphereData()
