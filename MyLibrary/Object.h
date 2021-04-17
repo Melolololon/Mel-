@@ -13,11 +13,8 @@ public:
 
 
 protected:
-	//座標
 	Vector3 position = { 0,0,0 };
-	//向き
 	Vector3 velocity = { 0,0,0 };
-	//移動速度
 	Vector3 speed = { 0,0,0 };
 
 	//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
