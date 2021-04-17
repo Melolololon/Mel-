@@ -3,10 +3,12 @@
 #include"Library.h"
 #include"LibMath.h"
 #include"Vector.h"
+#include"TestObject.h"
 class Play:public Scene
 {
 private:
 
+	std::shared_ptr<TestObject>t;
 public:
 	Play();
 	~Play();
@@ -15,7 +17,8 @@ public:
 	void update()override;
 	void draw()override;
 	void end()override;
-	std::string getNextScene()override;
+	Scene* getNextScene()override;
 
+	static void loadResources();
 };
 

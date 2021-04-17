@@ -359,7 +359,7 @@ void ObjectManager::isDeadCheck()
 
 void ObjectManager::end() 
 {
-	allDeleteObject();
+	allEraseObject();
 }
 
 #pragma region オブジェクト関数
@@ -522,7 +522,7 @@ void ObjectManager::setMouseCollisionFlag(const bool& flag)
 
 
 
-void ObjectManager::allDeleteObject()
+void ObjectManager::allEraseObject()
 {
 	objects.clear();
 }

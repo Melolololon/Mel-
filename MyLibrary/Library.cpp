@@ -894,10 +894,10 @@ void Library::drawBox
 #pragma endregion
 
 #pragma region íœ
-void Library::deleteObject3DData(const ModelData& modelData)
+void Library::deleteModelData(const ModelData& modelData)
 {
-	dx12->deletePolygonData(modelData.key);
-	dx12->deleteHeapData(modelData.key);
+	dx12->deletePolygonData(modelData);
+	dx12->deleteHeapData(modelData);
 }
 
 

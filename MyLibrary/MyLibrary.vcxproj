@@ -186,6 +186,7 @@
     <ClCompile Include="CreatePolygon.cpp" />
     <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="DirectX12.cpp" />
+    <ClCompile Include="DirectXStruct.cpp" />
     <ClCompile Include="DirectXTexLoader.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FbxModel.cpp" />

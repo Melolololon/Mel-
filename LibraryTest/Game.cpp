@@ -52,8 +52,7 @@ void Game::initialize()
 	ObjectManager::getInstance()->setMouseCollisionFlag(false);
 	ObjectManager::getInstance()->reserveObjectArray(100);
 
-	SceneManager::getInstace()->initialize();
-	SceneManager::getInstace()->addScene("Play", new Play());
+	SceneManager::getInstace()->initialize(new Play());
 #pragma endregion
 
 	FbxLoader::getInstance()->loadFbxModel("Resources/cube/cube.fbx");

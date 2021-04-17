@@ -8,6 +8,37 @@ using namespace Microsoft::WRL;
 
 
 
+//各データにアクセスするためのもの
+#pragma region バッファデータキー
+
+//これDirectXStructに移して、モデルの頂点バッファ作るところでこのenumセットしてもいいかも
+//これパイプラインセットするときに設定するようにする?
+//その場合、ヒープの構造体も作ったほうがいい?
+enum VertexType
+{
+	VERTEX_TYPE_NONE,//未設定(まだ頂点バッファを生成していない)
+	VERTEX_TYPE_NORMAL,//座標、uv、法線のみ
+	VERTEX_TYPE_OBJ_ANIMATION,//座標、uv、法線、ボーン番号
+	VERTEX_TYPE_USER_VERTEX,//利用者の自作データ
+
+};
+
+//モデルのデータを所持します
+struct ModelData
+{
+	std::string key;
+	VertexType type;//頂点構造体の種類
+};
+
+//モデルのデータを所持し、スコープから外れた時にモデルを自動的に削除します
+struct SmartModelData
+{
+	SmartModelData();
+	~SmartModelData();
+	ModelData modelData;
+};
+
+#pragma endregion
 
 //DirectX12で描画するために使用する構造体
 #pragma region シェーダーに送る情報

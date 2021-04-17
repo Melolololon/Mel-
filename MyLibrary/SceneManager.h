@@ -10,33 +10,23 @@ private:
 	SceneManager();
 	~SceneManager();
 
-	std::unordered_map <std::string, Scene*>scenes;//シーン
-	std::unordered_map <std::string, Scene*>smallScenes;//シーンで呼び出すシーン()
-	std::string currentScene;//現在のシーン
+	Scene* currentScene = nullptr;
 public:
 
 	SceneManager(const SceneManager& sceneManager) = delete;//コピーコンストラクタ
 	SceneManager& operator=(const SceneManager& sceneManager) = delete;//コピー代入演算子
 	static SceneManager* getInstace();
 
-	void initialize();
+	void initialize(Scene* startScene);
 	void update();
 	void draw();
 	void end();
 
 	/// <summary>
-	/// シーンの追加
+	/// シーンを切り替える処理を行います
 	/// </summary>
-	/// <param name="key">シーン名</param>
-	/// <param name="scene">シーンクラス</param>
-	void addScene(std::string key, Scene* scene);
-
-	/// <summary>
-	/// シーンを取得します
-	/// </summary>
-	/// <param name="key"></param>
-	/// <returns></returns>
-	void* getScenePtr(std::string key);
+	/// <param name="nextScene"></param>
+	void chengeScene(Scene* nextScene);
 
 
 	Scene* getCurrentScene();

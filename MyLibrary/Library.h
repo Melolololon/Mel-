@@ -617,7 +617,7 @@ public:
 #pragma endregion
 
 #pragma region 削除
-	static void deleteObject3DData(const ModelData& modelData);
+	static void deleteModelData(const ModelData& modelData);
 
 	/// <summary>
 	/// スプライトを削除します

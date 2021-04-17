@@ -123,8 +123,9 @@ public:
 	
 
 	/// <summary>
-	/// 全てのオブジェクトを解放します
+	/// 全てのオブジェクトを配列から削除します
 	/// </summary>
-	void allDeleteObject();
+	void allEraseObject();
+
 };
 

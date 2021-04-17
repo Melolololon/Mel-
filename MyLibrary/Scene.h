@@ -18,7 +18,7 @@ public:
 	virtual void update() = 0;
 	virtual void draw() = 0;
 	virtual void end() = 0;//終了処理
-	virtual std::string getNextScene() = 0;//次のシーンの指定
+	virtual Scene* getNextScene() = 0;//次のシーンの指定
 	bool getIsEnd();//シーンが終わったかどうか
 
 	void* getPtr();

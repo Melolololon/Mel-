@@ -2954,7 +2954,7 @@ void DirectX12::createHeapData
 
 	}
 	constBufferSet.emplace(key,constSetV);
-	int z = 0;
+
 #pragma endregion
 
 
@@ -3357,42 +3357,47 @@ void DirectX12::createUserPolygon
 
 #pragma region íœŠÖ”
 
-void DirectX12::deletePolygonData(const std::string key)
+void DirectX12::deletePolygonData(const ModelData& m)
 {
+	std::string key = m.key;
+	vertices.erase(key);
+	indices.erase(key);
+	smoothNormal.erase(key);
 
-		vertices.erase(key);
-		indices.erase(key);
-		smoothNormal.erase(key);
+	vertexBufferSet.erase(key);
+	indexBufferSet.erase(key);
 
-		vertexBufferSet.erase(key);
-		indexBufferSet.erase(key);
+	if(m.type == VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+	{
+		boneConstData.erase(key);
+		objBoneNums.erase(key);
+		objBonePositions.erase(key);
+		parentBoneData.erase(key);
+	}
 
 }
 
-void DirectX12::deleteHeapData(const std::string& key)
+void DirectX12::deleteHeapData(const ModelData& m)
 {
 
-	//if (despNum != -1)
-	{
-		textureBufferSet.erase(key);
-		constBufferSet.erase(key);
-		basicHeaps.erase(key);
-		textureData.erase(key);
+	std::string key = m.key;
+	textureBufferSet.erase(key);
+	constBufferSet.erase(key);
+	basicHeaps.erase(key);
+	textureData.erase(key);
 
-		modelConstData.erase(key);
+	modelConstData.erase(key);
 
-		materials.erase(key);
+	materials.erase(key);
 
-		parentHeaps.erase(key);
-		parentNums.erase(key);
+	parentHeaps.erase(key);
+	parentNums.erase(key);
 
-		commonBuffers.erase(key);
+	commonBuffers.erase(key);
 
-		heapTags.erase(key);
-		
-		
-		
-	}
+	heapTags.erase(key);
+
+
 }
 
 

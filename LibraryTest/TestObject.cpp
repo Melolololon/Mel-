@@ -1,16 +1,16 @@
 #include "TestObject.h"
 
-ModelData m;
 
 TestObject::TestObject()
 {
-	m.key = "k";
-	Library::create3DBox({ 1,1,1 }, m);
-	Library::createHeapData2({ 244,244,244,255 }, 1, m);
-	Library::setPosition({ 5,3,0 }, m, 0);
+	m.modelData.key = "k";
+	Library::create3DBox({ 1,1,1 }, m.modelData);
+	Library::createHeapData2({ 244,244,244,255 }, 1, m.modelData);
+	Library::setPosition({ 5,3,0 }, m.modelData, 0);
 }
 TestObject::~TestObject()
 {
+	int z = 0;
 }
 
 void TestObject::initialize()
@@ -18,10 +18,8 @@ void TestObject::initialize()
 }
 void TestObject::update()
 {
-	if (DirectInput::keyState(DIK_A))
-		eraseManager = true;
 }
 void TestObject::draw()
 {
-	Library::drawGraphic(m, 0);
+	Library::drawGraphic(m.modelData, 0);
 }

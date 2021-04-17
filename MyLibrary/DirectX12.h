@@ -37,28 +37,6 @@
 #pragma comment(lib,"dxguid.lib")
 
 
-//これDirectXStructに移して、モデルの頂点バッファ作るところでこのenumセットしてもいいかも
-//これパイプラインセットするときに設定するようにする?
-//その場合、ヒープの構造体も作ったほうがいい?
-enum VertexType
-{
-	VERTEX_TYPE_NONE,//未設定(まだ頂点バッファを生成していない)
-	VERTEX_TYPE_NORMAL,//座標、uv、法線のみ
-	VERTEX_TYPE_OBJ_ANIMATION,//座標、uv、法線、ボーン番号
-	VERTEX_TYPE_USER_VERTEX,//利用者の自作データ
-
-};
-//各データにアクセスするためのもの
-#pragma region バッファデータキー
-
-struct ModelData
-{
-	std::string key;
-
-	VertexType type;//頂点構造体の種類
-};
-
-#pragma endregion
 
 
 enum LibraryPipeline
@@ -722,8 +700,8 @@ public:
 #pragma endregion
 
 #pragma region 削除
-	void deletePolygonData(const std::string key);
-	void deleteHeapData(const std::string& key);
+	void deletePolygonData(const ModelData& m);
+	void deleteHeapData(const ModelData& m);
 
 	void deleteSprite(int sprite);
 #pragma endregion

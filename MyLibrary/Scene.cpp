@@ -26,9 +26,9 @@ bool Scene::getIsEnd()
 	return isEnd;
 }
 
-std::string Scene::getNextScene()
+Scene* Scene::getNextScene()
 {
-	return "";
+	return this;
 }
 
 

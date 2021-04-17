@@ -2,6 +2,8 @@
 #include"Object.h"
 class TestObject :public Object
 {
+
+	SmartModelData m;
 public:
 	TestObject();
 	~TestObject();

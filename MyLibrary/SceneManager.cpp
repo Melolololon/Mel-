@@ -18,66 +18,56 @@ SceneManager* SceneManager::getInstace()
 	return &inst;
 }
 
-void SceneManager::initialize()
+void SceneManager::initialize(Scene* startScene)
 {
-	currentScene = "";
-}
+	if (!startScene)
+		assert(0);
 
-void SceneManager::addScene(std::string key, Scene* scene)
-{
-	scenes.emplace(key, scene);
-
-	if (currentScene == "")
-	{
-		scene->falseIsEnd();
-		scene->initialize();
-		//最初に追加されたシーンのキーを代入
-		currentScene = key;
-	}
-
+	currentScene = startScene;
+	currentScene->initialize();
 }
 
 void SceneManager::update()
 {
 
-	if (scenes[currentScene]->getIsEnd())
+	if (currentScene->getIsEnd())
 	{
 		//終了処理
-		scenes[currentScene]->end();
+		currentScene->end();
 
 		//シーン切り替え
-		currentScene = scenes[currentScene]->getNextScene();
+		//シーンを保存
+		Scene* previousScene = currentScene;
+		//切り替え
+		currentScene = currentScene->getNextScene();
+		//同じポインタセット防止
+		if (currentScene == previousScene)assert(0);
+		//前のシーンを削除
+		delete previousScene;
 
 		//初期化
-		scenes[currentScene]->falseIsEnd();
-		scenes[currentScene]->initialize();
+		currentScene->falseIsEnd();
+		currentScene->initialize();
 	}
 
-	scenes[currentScene]->update();
+	currentScene->update();
+
 }
 
 void SceneManager::draw()
 {
-	scenes[currentScene]->draw();
+	currentScene->draw();
 }
 
 void SceneManager::end()
 {
-	for (std::unordered_map<std::string, Scene*>::iterator it = scenes.begin();
-		it != scenes.end();
-		it++)
-	{
-		delete it->second;
-	}
-	scenes.clear();
+	if (currentScene)
+		delete currentScene;
 }
 
-void* SceneManager::getScenePtr(std::string key)
-{
-	return scenes[key]->getPtr();
-}
+
 
 Scene* SceneManager::getCurrentScene()
 {
-	return scenes[currentScene];
+	return currentScene;
 }
