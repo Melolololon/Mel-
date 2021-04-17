@@ -3,6 +3,8 @@
 #include"CollisionType.h"
 #include<vector>
 #include"MouseCursor.h"
+#include<memory>
+
 class ObjectManager
 {
 public:
@@ -100,7 +102,7 @@ public:
 	/// オブジェクトを追加します。
 	/// </summary>
 	/// <param name="object"></param>
-	void addObject(std::shared_ptr<Object> object);
+	void addObject(const std::shared_ptr<Object>& object);
 
 	/// <summary>
 	/// 追加したフレームごとにソートするかを設定します。追加しない場合、orderTypeは無視されます

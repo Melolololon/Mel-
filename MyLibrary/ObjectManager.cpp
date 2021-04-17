@@ -368,7 +368,7 @@ void ObjectManager::reserveObjectArray(const int& reserveNum)
 	objects.reserve(reserveNum);
 }
 
-void ObjectManager::addObject(std::shared_ptr<Object> object)
+void ObjectManager::addObject(const std::shared_ptr<Object>& object)
 {
 
 	if (object)
@@ -391,7 +391,7 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 	switch (sort)
 	{
 	case OBJECT_SORT_XYZ_SUM:
-		std::sort(objects.begin(), objects.end(), [&orderType](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
+		std::sort(objects.begin(), objects.end(), [&orderType](const std::shared_ptr<Object>& obj1, const std::shared_ptr<Object>& obj2)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -404,7 +404,15 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 		break;
 
 	case OBJECT_SORT_X:
-		std::sort(objects.begin(), objects.end(), [&orderType](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
+		std::sort
+		(
+			objects.begin(),
+			objects.end(), 
+			[&orderType]
+		(
+			const std::shared_ptr<Object>& obj1, 
+			const std::shared_ptr<Object>& obj2
+		)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -415,7 +423,15 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 		break;
 
 	case OBJECT_SORT_Y:
-		std::sort(objects.begin(), objects.end(), [&orderType](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
+		std::sort
+		(
+			objects.begin(),
+			objects.end(),
+			[&orderType]
+		(
+			const std::shared_ptr<Object>& obj1,
+			const std::shared_ptr<Object>& obj2
+		)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -426,7 +442,15 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 		break;
 
 	case OBJECT_SORT_Z:
-		std::sort(objects.begin(), objects.end(), [&orderType](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
+		std::sort
+		(
+			objects.begin(),
+			objects.end(),
+			[&orderType]
+		(
+			const std::shared_ptr<Object>& obj1,
+			const std::shared_ptr<Object>& obj2
+		)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -438,7 +462,15 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 
 	case OBJECT_SORT_NEAR_DISTANCE:
 		
-		std::sort(objects.begin(), objects.end(), [&](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
+		std::sort
+		(
+			objects.begin(),
+			objects.end(),
+			[&]
+		(
+			const std::shared_ptr<Object>& obj1,
+			const std::shared_ptr<Object>& obj2
+		)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
@@ -453,7 +485,15 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 
 	case OBJECT_SORT_FAR_DISTANCE:
 
-		std::sort(objects.begin(), objects.end(), [&](std::shared_ptr<Object> obj1, std::shared_ptr<Object> obj2)
+		std::sort
+		(
+			objects.begin(),
+			objects.end(),
+			[&]
+		(
+			const std::shared_ptr<Object>& obj1,
+			const std::shared_ptr<Object>& obj2
+		)
 		{
 			Vector3 pos1 = obj1->getPosition();
 			Vector3 pos2 = obj2->getPosition();
