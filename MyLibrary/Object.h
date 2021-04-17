@@ -14,16 +14,14 @@ public:
 
 protected:
 	//座標
-	Vector3 position;
+	Vector3 position = { 0,0,0 };
 	//向き
-	Vector3 velocity;
+	Vector3 velocity = { 0,0,0 };
 	//移動速度
-	Vector3 speed;
+	Vector3 speed = { 0,0,0 };
 
 	//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
-	bool eraseManager;
-	//これがtrueになると、オブジェクトマネージャーから除外され、かつメモリも解放される
-	bool deleteObject;
+	bool eraseManager = false;
 
 
 #pragma region 判定データ
@@ -35,7 +33,7 @@ protected:
 	std::vector<BoardData>boardData;
 #pragma endregion
 
-	CollisionFlag collisionFlag;
+	CollisionFlag collisionFlag = {false,false,false,false,false,false};
 public:
 
 	//コンストラクタ

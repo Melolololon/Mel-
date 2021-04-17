@@ -18,6 +18,8 @@ void TestObject::initialize()
 }
 void TestObject::update()
 {
+	if (DirectInput::keyState(DIK_A))
+		eraseManager = true;
 }
 void TestObject::draw()
 {

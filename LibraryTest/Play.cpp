@@ -16,6 +16,7 @@ font f;
 ModelData tankHead;
 ModelData tankBody;
 
+std::shared_ptr<TestObject>t;
 Play::Play()
 {
 
@@ -57,7 +58,8 @@ Play::Play()
 	Library::loadOBJVertex("Resources/Obj/tank_body.obj", true, true, &material, tankBody);
 	Library::loadOBJMaterial("Resources/Obj/", material, 1, tankBody);
 
-	ObjectManager::getInstance()->addObject(std::make_shared<TestObject>());
+	t = std::make_shared<TestObject>();
+	ObjectManager::getInstance()->addObject(t);
 }
 
 
@@ -81,6 +83,7 @@ float tankAngle = 0.0f;
 void Play::update()
 {
 	ObjectManager::getInstance()->update();
+	ObjectManager::getInstance()->isDeadCheck();
 
 	if (DirectInput::keyState(DIK_A))
 		addAngle += 3;
