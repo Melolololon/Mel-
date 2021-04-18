@@ -764,7 +764,7 @@ public:
 	static void setPostEffectCameraFlag(const bool& flag,const int& rtNum);
 #pragma endregion
 
-#pragma region アニメーション
+#pragma region モデルアニメーション
 	
 
 

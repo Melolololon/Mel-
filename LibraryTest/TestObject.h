@@ -3,7 +3,7 @@
 class TestObject :public Object
 {
 
-	SmartModelData m;
+	ModelData m;
 public:
 	TestObject();
 	~TestObject();

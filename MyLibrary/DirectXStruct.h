@@ -14,6 +14,7 @@ using namespace Microsoft::WRL;
 //これDirectXStructに移して、モデルの頂点バッファ作るところでこのenumセットしてもいいかも
 //これパイプラインセットするときに設定するようにする?
 //その場合、ヒープの構造体も作ったほうがいい?
+//これ新しいヘッダーファイル作ってそこに書く?(DirectXに直接関わらないし)
 enum VertexType
 {
 	VERTEX_TYPE_NONE,//未設定(まだ頂点バッファを生成していない)
@@ -23,20 +24,13 @@ enum VertexType
 
 };
 
-//モデルのデータを所持します
+//モデルのデータを所持します。
 struct ModelData
 {
-	std::string key;
+	std::string key;//モデルデータを呼び出すための文字列
 	VertexType type;//頂点構造体の種類
 };
 
-//モデルのデータを所持し、スコープから外れた時にモデルを自動的に削除します
-struct SmartModelData
-{
-	SmartModelData();
-	~SmartModelData();
-	ModelData modelData;
-};
 
 #pragma endregion
 

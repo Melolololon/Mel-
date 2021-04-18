@@ -16,10 +16,10 @@ static const float4 ofset_array[vertNum] =
 
 static const float2 uvs[vertNum] =
 {
-	float2(0.0,0.0),
 	float2(0.0,1.0),
-	float2(1.0,0.0),
-	float2(1.0,1.0)
+	float2(0.0,0.0),
+	float2(1.0,1.0),
+	float2(1.0,0.0)
 
 };
 
@@ -57,8 +57,8 @@ void GSmain(
 		offset.x *= input[0].scale.x;
 		offset.y *= input[0].scale.y;
 		offset = mul(billboardMat, offset);
-		element.svpos = iPos + offset;
-		element.svpos = mul(mat, element.svpos);
+		iPos += offset;
+		element.svpos = mul(mat, iPos);
 		element.uv = uvs[i];
 		element.color = input[0].color;
 

@@ -19,12 +19,15 @@ Play::Play()
 Play::~Play()
 {
 }
+point tP;
+sprite tS;
+texture tex;
 
 void Play::initialize()
 {
-
-
-	t = std::make_shared<TestObject>();
+	Library::createPoint(1, &tP);
+	Library::createSprite(&tS);
+	tex = Library::loadTexture(L"Resources/Texture/testTexture.png");
 }
 
 void Play::update()
@@ -36,13 +39,10 @@ void Play::update()
 
 void Play::draw()
 {
-	if(t)
-	t->draw();
-	
 	ObjectManager::getInstance()->draw();
 
-	if (DirectInput::keyTrigger(DIK_A))
-		isEnd = true;
+	Library::drawSprite({ 0,0 }, tS, tex);
+	Library::drawPointTexture({ 0,0,-3 }, tP, tex, 0);
 }
 
 void Play::end()

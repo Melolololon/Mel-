@@ -569,6 +569,8 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 	spriteHeapDesc.NumDescriptors = 256 * 5;
 	dev->CreateDescriptorHeap(&spriteHeapDesc, IID_PPV_ARGS(&spriteHeap));
 
+
+
 	//べた塗テクスチャ用意
 	loadTextureCounter++;
 
@@ -1700,6 +1702,20 @@ void DirectX12::setSmoothingFlag(bool flag)
 #pragma endregion
 
 
+
+void DirectX12::setIsPlane(bool flag)
+{
+	isPlane = flag;
+}
+
+void DirectX12::setIsBillboard(bool x, bool y, bool z)
+{
+	isBillBoardX = x;
+	isBillBoardY = y;
+	isBillBoardZ = z;
+}
+
+
 void DirectX12::setMulColor(Color color, const std::string& key, int number)
 {
 	modelConstData[key].mulColor[number] =
@@ -1776,18 +1792,6 @@ void DirectX12::setSubColor(Color color, const std::string& key, int number)
 	}*/
 }
 
-
-void DirectX12::setIsPlane(bool flag)
-{
-	isPlane = flag;
-}
-
-void DirectX12::setIsBillboard(bool x, bool y, bool z)
-{
-	isBillBoardX = x;
-	isBillBoardY = y;
-	isBillBoardZ = z;
-}
 
 
 void DirectX12::setSpriteMulColor(Color color, int spriteNum)
@@ -3223,7 +3227,7 @@ void DirectX12::createPoint(int createNum, int* point)
 		vert.pos = { 0,0,0 };
 		pointVertices[pointVertices.size() - 1].push_back(vert);
 		pointVertices[pointVertices.size() - 1][i].scale = { 1,1 };
-		pointVertices[pointVertices.size() - 1][i].color = { 255,255,255,255 };
+		pointVertices[pointVertices.size() - 1][i].color = { 1,1,1,1 };
 
 		pointVertexBuffSet[pointVertexBuffSet.size() - 1][i].vertexBuffer->Map(0, nullptr, (void**)&pointVertexMapData);
 		pointVertexMapData->pos = pointVertices[pointVertices.size() - 1][i].pos;
@@ -4205,6 +4209,8 @@ void DirectX12::pointSetCmdList(DirectX::XMFLOAT3 pos, int pointNum, int texture
 	}
 	pointConstBufferSet[pointNum].constBuffer[0]->Unmap(0, nullptr);
 
+
+	//コマンドセット
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 	std::vector<ID3D12DescriptorHeap*> ppHeaps;
 
