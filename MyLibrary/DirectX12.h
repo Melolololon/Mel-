@@ -123,17 +123,20 @@ private:
 	//vectorじゃなくて普通の配列にする?
 	std::vector<ComPtr<ID3D12PipelineState>> pipelineStates;
 	std::vector<ComPtr<ID3D12PipelineState>> spritePipelineStates;
+	std::vector<ComPtr<ID3D12PipelineState>> sprite3DPipelineStates;
 	std::vector<ComPtr<ID3D12PipelineState>> pointPipelineStates;
 	std::vector<ComPtr<ID3D12PipelineState>> objPipelineStates;
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline;
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC spriteGpipeline;
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC sprite3DGpipeline;
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pointGpipeline;
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc;
 	int startPipelineCreateNum;//Initialize時に作る3Dのパイプライン数
 
 	int pipelineNum;
 	int spritePipelineNum;
+	int sprite3DPipelineNum;
 
 
 #pragma endregion
@@ -695,7 +698,7 @@ public:
 	void setCmdList(const ModelData& modelData, int number);
 	void map(const ModelData& modelData, int number);
 
-	void spriteSetCmdList(int spriteNum, int textureNum);
+	void spriteSetCmdList(int spriteNum, int textureNum,const bool& sprite3DFlag);
 
 	void spriteMap(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, int spriteNum, int textureNum);
 	void spriteMap3D
@@ -706,7 +709,13 @@ public:
 		const int& textureNumber
 	);
 
-	void pointSetCmdList(DirectX::XMFLOAT3 pos, int pointNum, int textureNum, int num);
+	void pointSetCmdList
+	(
+		DirectX::XMFLOAT3 pos, 
+		int pointNum, 
+		int textureNum, 
+		int num
+	);
 
 #pragma endregion
 

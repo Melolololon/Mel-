@@ -825,7 +825,7 @@ void Library::drawSprite
 {
 	//dx12->spriteSetObjectPosition({ position.x,position.y }, *spriteNumber);
 	dx12->spriteMap(position.toXMFLOAT2(), { 0,0 }, *spriteNumber, textureNumber);
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber,false);
 }
 
 void Library::drawSpriteAnimation
@@ -840,7 +840,7 @@ void Library::drawSpriteAnimation
 	//‚±‚Ì‡”Ô‚¶‚á‚È‚¢‚Æuv‚ª‚¿‚á‚ñ‚ÆƒZƒbƒg‚³‚ê‚È‚¢
 	dx12->spriteMap({ position.x,position.y }, { 0,0 }, *spriteNumber, textureNumber);
 	dx12->setSpriteAnimationVertex(*spriteNumber, textureNumber, maxSqare.toXMFLOAT2(), currentNum.toXMFLOAT2());
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber, false);
 }
 
 void Library::drawSpriteAnimation2
@@ -867,7 +867,7 @@ void Library::drawSpriteAnimation2
 		currentEndNum.y
 	);
 
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber, false);
 }
 
 void Library::draw3DSprite
@@ -885,7 +885,7 @@ void Library::draw3DSprite
 		*spriteNumber, 
 		textureNumber
 	);
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber,true);
 }
 
 void Library::draw3DSpriteAnimation
@@ -912,7 +912,7 @@ void Library::draw3DSpriteAnimation
 		*spriteNumber,
 		textureNumber
 	);
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber,true);
 }
 
 void Library::drawPointTexture
@@ -937,7 +937,7 @@ void Library::drawSpriteBox
 {
 	setSpriteAddColor(color, spriteHandle);
 	dx12->spriteMap(position.toXMFLOAT2(), size.toXMFLOAT2(), *spriteHandle, 0);
-	dx12->spriteSetCmdList(*spriteHandle, 0);
+	dx12->spriteSetCmdList(*spriteHandle, 0,false);
 }
 
 void Library::draw3DSpriteBox
@@ -950,7 +950,7 @@ void Library::draw3DSpriteBox
 {
 	setSpriteAddColor(color, spriteHandle);
 	dx12->spriteMap3D(position.toXMFLOAT3(), size.toXMFLOAT2(), *spriteHandle, 0);
-	dx12->spriteSetCmdList(*spriteHandle, 0);
+	dx12->spriteSetCmdList(*spriteHandle, 0,true);
 }
 
 #pragma endregion

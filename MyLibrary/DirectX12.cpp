@@ -120,8 +120,10 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 	spriteGpipeline = {};
 	blenddesc = {};
 
+	//通常パイプラインが3番なので、3
 	pipelineNum = 3;
 	spritePipelineNum = 0;
+	sprite3DPipelineNum = 0;
 	currentPostEffectPipeline = 0;
 	spriteFontDrawCounter = 0;
 
@@ -490,13 +492,18 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 	spriteGpipeline = gpipeline;
 
 	//スプライト用
+	//ラスタライザ、カリング
 	spriteGpipeline.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	spriteGpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
+	//深度
 	spriteGpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	spriteGpipeline.DepthStencilState.DepthEnable = false;
 	spriteGpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 
+
+
+	//αの書き込み
 	spriteGpipeline.BlendState.AlphaToCoverageEnable = false;
 
 	CD3DX12_DESCRIPTOR_RANGE spriteDescRangeSRV;
@@ -514,6 +521,15 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 	spriteGpipeline.pRootSignature = spriteRootsignature.Get();
 	spritePipelineStates.resize(1);
 	createPipeline->createPipeline(0, spriteGpipeline, &spritePipelineStates[0]);
+
+
+	//3Dスプライト
+	sprite3DGpipeline = spriteGpipeline;
+	sprite3DGpipeline.DepthStencilState.DepthEnable = true;
+	sprite3DGpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+
+	sprite3DPipelineStates.resize(1);
+	createPipeline->createPipeline(0, sprite3DGpipeline, &sprite3DPipelineStates[0]);
 #pragma endregion
 
 #pragma region ポイント用設定生成
@@ -4036,7 +4052,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 }
 
 
-void DirectX12::spriteSetCmdList(int spriteNumber, int textureNumber)
+void DirectX12::spriteSetCmdList(int spriteNumber, int textureNumber, const bool& sprite3DFlag)
 {
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	std::vector<ID3D12DescriptorHeap*> ppHeaps;
@@ -4045,7 +4061,10 @@ void DirectX12::spriteSetCmdList(int spriteNumber, int textureNumber)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 
 	cmdList->SetGraphicsRootSignature(spriteRootsignature.Get());
-	cmdList->SetPipelineState(spritePipelineStates[spritePipelineNum].Get());
+	if(!sprite3DFlag)
+		cmdList->SetPipelineState(spritePipelineStates[spritePipelineNum].Get());
+	else
+		cmdList->SetPipelineState(sprite3DPipelineStates[sprite3DPipelineNum].Get());
 
 	cmdList->IASetVertexBuffers(0, 1, &spriteVertexBuffSet[spriteNumber].vertexBufferView);
 	cmdList->IASetIndexBuffer(&spriteIndexBufferSet[spriteNumber].indexBufferView);
