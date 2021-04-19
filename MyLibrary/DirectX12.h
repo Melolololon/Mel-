@@ -393,7 +393,7 @@ private:
 	bool isBillBoardY;
 	bool isBillBoardZ;
 
-	bool smoothing;
+	bool smoothingFlag;
 #pragma endregion
 
 
@@ -495,6 +495,9 @@ private:
 
 #pragma endregion
 
+#pragma region mapèàóù
+	void calcBillboardMat(DirectX::XMMATRIX& matWorld);
+#pragma endregion
 
 
 	/// <summary>

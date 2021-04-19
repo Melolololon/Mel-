@@ -102,7 +102,7 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 	isBillBoardY = false;
 	isBillBoardZ = false;
 
-	smoothing = false;
+	smoothingFlag = false;
 #pragma endregion
 
 	createPolygon = CreatePolygon::getInstance();
@@ -1721,7 +1721,7 @@ void DirectX12::setNearAndFar(float nearNum, float farNum)
 #pragma region スムースシェーディング
 void DirectX12::setSmoothingFlag(bool flag)
 {
-	smoothing = flag;
+	smoothingFlag = flag;
 }
 #pragma endregion
 
@@ -3465,6 +3465,54 @@ void DirectX12::deleteSprite(int sprite)
 
 #pragma region 描画関数
 
+void DirectX12::calcBillboardMat(DirectX::XMMATRIX& matWorld)
+{//ビルボード行列作成
+//通常の板ポリのスケールを変えた時にビルボードするとおかしくなる
+	if (isBillBoardX || isBillBoardY || isBillBoardZ)
+	{
+		//回転させた座標の取得
+
+		DirectX::XMFLOAT3 cPos;
+		DirectX::XMFLOAT3 cTarget;
+		mainCamera->get3DCameraPosition(mainCameraData, cPos, cTarget);
+
+		DirectX::XMVECTOR vCPos = DirectX::XMLoadFloat3(&cPos);
+		DirectX::XMVECTOR vCTarget = DirectX::XMLoadFloat3(&cTarget);
+
+
+		DirectX::XMVECTOR upVector = DirectX::XMLoadFloat3(&mainCameraData.nowUp);
+		//Z軸を求める
+		DirectX::XMVECTOR cameraAxisZ = DirectX::XMVectorSubtract(vCTarget, vCPos);
+
+		//除外
+		assert(!DirectX::XMVector3Equal(cameraAxisZ, DirectX::XMVectorZero()));
+		assert(!DirectX::XMVector3IsInfinite(cameraAxisZ));
+		assert(!DirectX::XMVector3Equal(upVector, DirectX::XMVectorZero()));
+		assert(!DirectX::XMVector3IsInfinite(upVector));
+
+		//ベクトルを正規化
+		cameraAxisZ = DirectX::XMVector3Normalize(cameraAxisZ);
+
+		//X軸を求める
+		DirectX::XMVECTOR cameraAxisX = DirectX::XMVector3Cross(upVector, cameraAxisZ);
+
+		//正規化
+		cameraAxisX = DirectX::XMVector3Normalize(cameraAxisX);
+
+		//Y軸を求める
+		DirectX::XMVECTOR cameraAxisY = DirectX::XMVector3Cross(cameraAxisZ, cameraAxisX);
+
+		//全方位ビルボード行列の計算
+		DirectX::XMMATRIX billboardMatrix = DirectX::XMMatrixIdentity();
+		if (isBillBoardX)billboardMatrix.r[0] = cameraAxisX;
+		if (isBillBoardY)billboardMatrix.r[1] = cameraAxisY;
+		if (isBillBoardZ)billboardMatrix.r[2] = cameraAxisZ;
+		billboardMatrix.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
+
+		matWorld *= billboardMatrix;
+	}
+}
+
 //バッファをセット
 void DirectX12::setCmdList(const ModelData& modelData,  int number)
 {
@@ -3659,401 +3707,329 @@ void DirectX12::map(const ModelData& modelData,int number )
 	//	constData3D->mat = matWorld * mainCamera->get2DCameraMatrix();
 	//}
 
-	//if (this->polyDatas[modelData.key].dimention == Dimension::dimention3D)
+
+	constData3D->addColor = modelConstData[modelData.key].addColor[number];
+	constData3D->subColor = modelConstData[modelData.key].subColor[number];
+	constData3D->mulColor = modelConstData[modelData.key].mulColor[number];
+	constData3D->ex = modelConstData[modelData.key].pushPolygonNum[number];
+
+	DirectX::XMMATRIX normalMat;
+	normalMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].z));
+	normalMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].x));
+	normalMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].y));
+	constData3D->normalMat = normalMat * cameraMat;
+
+	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
+
+	//ビルボード
+	//板ポリ以外ビルボードしないしこっちに書かずに3Dspriteのほうだけでよくねってなってコメントアウト
+	//calcBillboardMat(matWorld);
+	
+
+	matWorld *= DirectX::XMMatrixScaling
+	(
+		modelConstData[modelData.key].scale[number].x,
+		modelConstData[modelData.key].scale[number].y,
+		modelConstData[modelData.key].scale[number].z
+	);
+	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].z));
+	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].x));
+	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].y));
+
+	matWorld *= DirectX::XMMatrixTranslation
+	(
+		modelConstData[modelData.key].position[number].x,
+		modelConstData[modelData.key].position[number].y,
+		modelConstData[modelData.key].position[number].z
+	);
+
+	std::string parentHeap = parentHeaps[modelData.key][number];
+	int parentNum = parentNums[modelData.key][number];
+	while (1)
 	{
-
-
-		constData3D->addColor = modelConstData[modelData.key].addColor[number];
-		constData3D->subColor = modelConstData[modelData.key].subColor[number];
-		constData3D->mulColor = modelConstData[modelData.key].mulColor[number];
-		constData3D->ex = modelConstData[modelData.key].pushPolygonNum[number];
-
-		DirectX::XMMATRIX normalMat;
-		normalMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].z));
-		normalMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].x));
-		normalMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].y));
-		constData3D->normalMat = normalMat * cameraMat;
-
-		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-
-
-
-		//ビルボード行列作成
-	//通常の板ポリのスケールを変えた時にビルボードするとおかしくなる
-		if (isBillBoardX || isBillBoardY || isBillBoardZ)
+		if (parentNum == -1 || parentHeap == "NONE")
 		{
-			//回転させた座標の取得
-
-			DirectX::XMFLOAT3 cPos;
-			DirectX::XMFLOAT3 cTarget;
-			mainCamera->get3DCameraPosition(mainCameraData, cPos, cTarget);
-
-			DirectX::XMVECTOR vCPos = DirectX::XMLoadFloat3(&cPos);
-			DirectX::XMVECTOR vCTarget = DirectX::XMLoadFloat3(&cTarget);
-
-
-			DirectX::XMVECTOR upVector = DirectX::XMLoadFloat3(&mainCameraData.nowUp);
-			//Z軸を求める
-			DirectX::XMVECTOR cameraAxisZ = DirectX::XMVectorSubtract(vCTarget, vCPos);
-
-			//除外
-			/*assert(!DirectX::XMVector3Equal(cameraAxisZ, DirectX::XMVectorZero));
-			assert(!DirectX::XMVector3IsInfinite(cameraAxisZ));
-			assert(!DirectX::XMVector3Equal(upVector, DirectX::XMVectorZero));
-			assert(!DirectX::XMVector3IsInfinite(upVector));*/
-
-			//ベクトルを正規化
-			cameraAxisZ = DirectX::XMVector3Normalize(cameraAxisZ);
-
-
-			//X軸を求める
-			DirectX::XMVECTOR cameraAxisX = DirectX::XMVector3Cross(upVector, cameraAxisZ);
-
-			//正規化
-			cameraAxisX = DirectX::XMVector3Normalize(cameraAxisX);
-
-
-			//Y軸を求める
-			DirectX::XMVECTOR cameraAxisY = DirectX::XMVector3Cross(cameraAxisZ, cameraAxisX);
-
-
-			//全方位ビルボード行列の計算
-			DirectX::XMMATRIX billboardMatrix = DirectX::XMMatrixIdentity();
-			if (isBillBoardX)billboardMatrix.r[0] = cameraAxisX;
-			if (isBillBoardY)billboardMatrix.r[1] = cameraAxisY;
-			if (isBillBoardZ)billboardMatrix.r[2] = cameraAxisZ;
-			billboardMatrix.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
-
-			matWorld *= billboardMatrix;
+			break;
 		}
+
+		//親子構造は親を動かしたら同時に子を動かすもの
+		//下のコメントアウトされている処理を行うと、setPositionに親からどのくらい離れているかではなく、
+		//通常通り座標を入力することになるが、一緒に移動させる場合、親の座標を加算したものをsetPositionに書かなければいけない
+		//連動させるものなのに、子をわざわざ動かさないといけないのはどうかと思ったので、とりあえずコメントアウトした
+		//matWorld *= DirectX::XMMatrixTranslationFromVector(
+		//	DirectX::XMVECTOR(
+		//		DirectX::XMVectorSet(
+		//			-position[parentHeap][parentNum].x,
+		//			-position[parentHeap][parentNum].y,
+		//			-position[parentHeap][parentNum].z,
+		//			1.0f)));
 
 		matWorld *= DirectX::XMMatrixScaling
 		(
-			modelConstData[modelData.key].scale[number].x,
-			modelConstData[modelData.key].scale[number].y,
-			modelConstData[modelData.key].scale[number].z
+			modelConstData[parentHeap].scale[parentNum].x,
+			modelConstData[parentHeap].scale[parentNum].y,
+			modelConstData[parentHeap].scale[parentNum].z
 		);
-		matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].z));
-		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].x));
-		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[modelData.key].angle[number].y));
+		matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[parentHeap].angle[parentNum].z));
+		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[parentHeap].angle[parentNum].x));
+		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[parentHeap].angle[parentNum].y));
 
 		matWorld *= DirectX::XMMatrixTranslation
 		(
-			modelConstData[modelData.key].position[number].x,
-			modelConstData[modelData.key].position[number].y,
-			modelConstData[modelData.key].position[number].z
+			modelConstData[parentHeap].position[parentNum].x,
+			modelConstData[parentHeap].position[parentNum].y,
+			modelConstData[parentHeap].position[parentNum].z
 		);
 
-		std::string parentHeap = parentHeaps[modelData.key][number];
-		int parentNum = parentNums[modelData.key][number];
-		while (1)
+
+
+		std::string kariParentHeap = parentHeaps[parentHeap][parentNum];
+		int kariParentNum = parentNums[parentHeap][parentNum];
+
+		parentHeap = kariParentHeap;
+		parentNum = kariParentNum;
+
+	}
+
+	if (isPlane)
+	{
+		DirectX::XMFLOAT4 shadowNormal =
+		{ 0.0f,1.0f,0.0f, 0.0f };
+
+		DirectX::XMFLOAT4 rLight = { lightVector.x * -1,lightVector.y * -1 ,lightVector.z * -1 ,0.0f };
+
+		//1つ目の引数は、平らにした時にどの方向に法線ベクトルが向いてるかを入力する
+		DirectX::XMMATRIX matShadow = DirectX::XMMatrixShadow
+		(
+			DirectX::XMLoadFloat4(&shadowNormal),
+			DirectX::XMLoadFloat4(&rLight)
+		);
+
+		constData3D->mat = matWorld * matShadow * mainCamera->get3DCameraMatrix(mainCameraData);
+	}
+	else
+	{
+		constData3D->mat = matWorld * mainCamera->get3DCameraMatrix(mainCameraData);
+	}
+
+	constData3D->worldMat = matWorld;
+
+
+
+	//オブジェクト分ループ
+	size_t size = vertices[modelData.key].size();
+	size_t size2 = 0;
+
+	//スムーズシェーディングを行うか確認し、スムーズシェーディングの処理を行います
+	auto smoothing = [&]()
+	{
+		for (size_t i = 0; i < size; i++)
 		{
-			if (parentNum == -1 || parentHeap == "NONE")
+			vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBufferSet[modelData.key][i].vertexMap);
+
+			//スムージングを行うか
+			if (smoothingFlag)
 			{
-				break;
+				size2 = smoothNormal[modelData.key][i].size();
+				for (size_t j = 0; j < size2; j++)
+				{
+					vertexBufferSet[modelData.key][i].vertexMap[j].normal = smoothNormal[modelData.key][i][j];
+				}
 			}
-
-			//親子構造は親を動かしたら同時に子を動かすもの
-			//下のコメントアウトされている処理を行うと、setPositionに親からどのくらい離れているかではなく、
-			//通常通り座標を入力することになるが、一緒に移動させる場合、親の座標を加算したものをsetPositionに書かなければいけない
-			//連動させるものなのに、子をわざわざ動かさないといけないのはどうかと思ったので、とりあえずコメントアウトした
-			//matWorld *= DirectX::XMMatrixTranslationFromVector(
-			//	DirectX::XMVECTOR(
-			//		DirectX::XMVectorSet(
-			//			-position[parentHeap][parentNum].x,
-			//			-position[parentHeap][parentNum].y,
-			//			-position[parentHeap][parentNum].z,
-			//			1.0f)));
-
-			matWorld *= DirectX::XMMatrixScaling
-			(
-				modelConstData[parentHeap].scale[parentNum].x,
-				modelConstData[parentHeap].scale[parentNum].y,
-				modelConstData[parentHeap].scale[parentNum].z
-			);
-			matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[parentHeap].angle[parentNum].z));
-			matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[parentHeap].angle[parentNum].x));
-			matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[parentHeap].angle[parentNum].y));
-
-			matWorld *= DirectX::XMMatrixTranslation
-			(
-				modelConstData[parentHeap].position[parentNum].x,
-				modelConstData[parentHeap].position[parentNum].y,
-				modelConstData[parentHeap].position[parentNum].z
-			);
-
-
-
-			std::string kariParentHeap = parentHeaps[parentHeap][parentNum];
-			int kariParentNum = parentNums[parentHeap][parentNum];
-
-			parentHeap = kariParentHeap;
-			parentNum = kariParentNum;
-
-		}
-
-		if (isPlane)
-		{
-			DirectX::XMFLOAT4 shadowNormal =
-			{ 0.0f,1.0f,0.0f, 0.0f };
-
-			DirectX::XMFLOAT4 rLight = { lightVector.x * -1,lightVector.y * -1 ,lightVector.z * -1 ,0.0f };
-
-			//1つ目の引数は、平らにした時にどの方向に法線ベクトルが向いてるかを入力する
-			DirectX::XMMATRIX matShadow = DirectX::XMMatrixShadow
-			(
-				DirectX::XMLoadFloat4(&shadowNormal),
-				DirectX::XMLoadFloat4(&rLight)
-			);
-
-			constData3D->mat = matWorld * matShadow * mainCamera->get3DCameraMatrix(mainCameraData);
-		}
-		else
-		{
-			constData3D->mat = matWorld * mainCamera->get3DCameraMatrix(mainCameraData);
-		}
-
-		constData3D->worldMat = matWorld;
-
-
-
-		//オブジェクト分ループ
-		size_t size = vertices[modelData.key].size();
-		size_t size2 = 0;
-
-		//ボーンデータがあるかどうか
-		if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
-		{
-			for (size_t i = 0; i < size; i++)
+			else
 			{
-				vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&vertexBufferSet[modelData.key][i].vertexMap);
-
-				//スムージングを行うか
-				if (smoothing)
+				size2 = vertices[modelData.key][i].size();
+				for (size_t j = 0; j < size2; j++)
 				{
-					size2 = smoothNormal[modelData.key][i].size();
-					for (size_t j = 0; j < size2; j++)
-					{
-						vertexBufferSet[modelData.key][i].vertexMap[j].normal = smoothNormal[modelData.key][i][j];
-					}
+					vertexBufferSet[modelData.key][i].vertexMap[j].normal = vertices[modelData.key][i][j].normal;
 				}
-				else
-				{
-					size2 = vertices[modelData.key][i].size();
-					for (size_t j = 0; j < size2; j++)
-					{
-						vertexBufferSet[modelData.key][i].vertexMap[j].normal = vertices[modelData.key][i][j].normal;
-					}
-				}
-				vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Unmap(0, nullptr);
 			}
+			vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Unmap(0, nullptr);
 		}
-		else//ボーンがあったら
+	};
+
+	//ボーンデータがあるかどうか
+	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
+	{
+		smoothing();
+	}
+	else//ボーンがあったら
+	{
+		smoothing();
+
+		//ボーンの値マップ
+		DirectX::XMMATRIX boneMat = DirectX::XMMatrixIdentity();
+		DirectX::XMFLOAT3 boneScale;
+		DirectX::XMFLOAT3 boneAngle;
+		DirectX::XMFLOAT3 boneMoveVector;
+		UINT boneNum = static_cast<UINT>(boneConstData[modelData.key].moveVector[number].size());
+
+		//親ボーンの行列乗算
+		int parentBoneNum = 0;
+		int bone = 0;
+
+		DirectX::XMFLOAT3 boneAngleImpact = { 0.0f,0.0f,0.0f };
+		DirectX::XMFLOAT3 boneScaleImpact = { 1.0f,1.0f,1.0f };
+		DirectX::XMFLOAT3 boneMoveVectorImpact = { 0.0f,0.0f,0.0f };
+		DirectX::XMFLOAT3 bonePos = { 0,0,0 };
+
+
+		for (UINT i = 0; i < boneNum; i++)//0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
 		{
-			//スムースシェーディング
-			for (size_t i = 0; i < size; i++)
+			boneMat = DirectX::XMMatrixIdentity();
+
+			//ボーンから頂点の距離分移動
+			bonePos = objBonePositions[modelData.key][i];
+			boneMat *= DirectX::XMMatrixTranslation(-bonePos.x, -bonePos.y, -bonePos.z);
+
+			boneScale = boneConstData[modelData.key].scale[number][i];
+			boneMat *= DirectX::XMMatrixScaling(boneScale.x, boneScale.y, boneScale.z);
+
+			boneAngle = boneConstData[modelData.key].angle[number][i];
+			boneMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(boneAngle.z));
+			boneMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(boneAngle.x));
+			boneMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(boneAngle.y));
+
+			boneMoveVector = boneConstData[modelData.key].moveVector[number][i];
+
+			//なぜかxとzが+-逆になってる
+			//シェーダーでモデルの行列を乗算する前にボーンの行列を乗算してたからだった
+			//(モデルはY軸基準で180度回転してた)
+			boneMat *= DirectX::XMMatrixTranslation(boneMoveVector.x, boneMoveVector.y, boneMoveVector.z);
+
+			//回転させたら戻す
+			boneMat *= DirectX::XMMatrixTranslation(bonePos.x, bonePos.y, bonePos.z);
+
+			boneAngleImpact = parentBoneData[modelData.key][i].angleImpact;
+			boneScaleImpact = parentBoneData[modelData.key][i].scaleImpact;
+			boneMoveVectorImpact = parentBoneData[modelData.key][i].moveVectorImpact;
+
+			//親のボーン番号代入
+			parentBoneNum = parentBoneData[modelData.key][i].parentBoneNum;
+
+			//std::vector<DirectX::XMFLOAT3>parentAngleImpacts;
+			//parentAngleImpacts.reserve(50);
+			//std::vector<DirectX::XMFLOAT3>parentScaleImpacts;
+			//parentScaleImpacts.reserve(50);
+			//std::vector<DirectX::XMFLOAT3>parentMoveVectorImpacts;
+			//parentMoveVectorImpacts.reserve(50);
+			//std::vector<DirectX::XMFLOAT3>parentPosition;
+			//parentPosition.reserve(50);
+
+			//これを使って影響度とか加算してく
+			//子　→　親の順で入れる
+			std::vector<int>parentNums;
+			parentNums.reserve(50);
+
+			//こちらは親　→　子
+			std::vector<DirectX::XMMATRIX>parentMat;
+			parentMat.reserve(50);
+
+
+			//先にすべての親を取得&影響度取得
+			while (1)
 			{
-				OBJAnimationVertex* aniVertex;
-				vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
+				//-1だったら(親がセットされてなかったら)抜ける
+				if (parentBoneNum == -1)break;
 
-				//スムージングを行うか
-				if (smoothing)
-				{
-					size2 = smoothNormal[modelData.key][i].size();
-					for (size_t j = 0; j < size2; j++)
-					{
-						aniVertex[j].normal = smoothNormal[modelData.key][i][j];
-					}
-				}
-				else
-				{
-					size2 = vertices[modelData.key][i].size();
-					for (size_t j = 0; j < size2; j++)
-					{
-						aniVertex[j].normal = vertices[modelData.key][i][j].normal;
-					}
-				}
-				vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Unmap(0, nullptr);
-			}
-
-			//ボーンの値マップ
-			DirectX::XMMATRIX boneMat = DirectX::XMMatrixIdentity();
-			DirectX::XMFLOAT3 boneScale;
-			DirectX::XMFLOAT3 boneAngle;
-			DirectX::XMFLOAT3 boneMoveVector;
-			UINT boneNum = static_cast<UINT>(boneConstData[modelData.key].moveVector[number].size());
-
-			//親ボーンの行列乗算
-			int parentBoneNum = 0;
-			int bone = 0;
-
-			DirectX::XMFLOAT3 boneAngleImpact = { 0.0f,0.0f,0.0f };
-			DirectX::XMFLOAT3 boneScaleImpact = { 1.0f,1.0f,1.0f };
-			DirectX::XMFLOAT3 boneMoveVectorImpact = { 0.0f,0.0f,0.0f };
-			DirectX::XMFLOAT3 bonePos;
-
-			auto mulRotateOrTrans = [](const float& num , const float& mag)
-			{
-				return num * mag - num;
-			};
-
-			for (UINT i = 0; i < boneNum; i++)//0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
-			{
-				boneMat = DirectX::XMMatrixIdentity();
-
-				//ボーンから頂点の距離分移動
-				bonePos = objBonePositions[modelData.key][i];
-				boneMat *= DirectX::XMMatrixTranslation(-bonePos.x, -bonePos.y, -bonePos.z);
-
-				boneScale = boneConstData[modelData.key].scale[number][i];
-				boneMat *= DirectX::XMMatrixScaling(boneScale.x, boneScale.y, boneScale.z);
-
-				boneAngle = boneConstData[modelData.key].angle[number][i];
-				boneMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(boneAngle.z));
-				boneMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(boneAngle.x));
-				boneMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(boneAngle.y));
-
-				boneMoveVector = boneConstData[modelData.key].moveVector[number][i];
-
-				//なぜかxとzが+-逆になってる
-				//シェーダーでモデルの行列を乗算する前にボーンの行列を乗算してたからだった
-				//(モデルはY軸基準で180度回転してた)
-				boneMat *= DirectX::XMMatrixTranslation(boneMoveVector.x, boneMoveVector.y, boneMoveVector.z);
-
-				//回転させたら戻す
-				boneMat *= DirectX::XMMatrixTranslation(bonePos.x, bonePos.y, bonePos.z);
-
-				boneAngleImpact = parentBoneData[modelData.key][i].angleImpact;
-				boneScaleImpact = parentBoneData[modelData.key][i].scaleImpact;
-				boneMoveVectorImpact = parentBoneData[modelData.key][i].moveVectorImpact;
+				//parentAngleImpacts.push_back(parentBoneData[modelData.key][parentBoneNum].angleImpact);
+				//parentScaleImpacts.push_back(parentBoneData[modelData.key][parentBoneNum].scaleImpact);
+				//parentMoveVectorImpacts.push_back(parentBoneData[modelData.key][parentBoneNum].moveVectorImpact);
+				//parentPosition.push_back(objBonePositions[modelData.key][parentBoneNum]);
+				parentNums.push_back(parentBoneNum);
 
 				//親のボーン番号代入
-				parentBoneNum = parentBoneData[modelData.key][i].parentBoneNum;
-
-				//std::vector<DirectX::XMFLOAT3>parentAngleImpacts;
-				//parentAngleImpacts.reserve(50);
-				//std::vector<DirectX::XMFLOAT3>parentScaleImpacts;
-				//parentScaleImpacts.reserve(50);
-				//std::vector<DirectX::XMFLOAT3>parentMoveVectorImpacts;
-				//parentMoveVectorImpacts.reserve(50);
-				//std::vector<DirectX::XMFLOAT3>parentPosition;
-				//parentPosition.reserve(50);
-
-				//これを使って影響度とか加算してく
-				//子　→　親の順で入れる
-				std::vector<int>parentNums;
-				parentNums.reserve(50);
-
-				//こちらは親　→　子
-				std::vector<DirectX::XMMATRIX>parentMat;
-				parentMat.reserve(50);
-
-
-				//先にすべての親を取得&影響度取得
-				while (1)
-				{
-					//-1だったら(親がセットされてなかったら)抜ける
-					if (parentBoneNum == -1)break;
-
-					//parentAngleImpacts.push_back(parentBoneData[modelData.key][parentBoneNum].angleImpact);
-					//parentScaleImpacts.push_back(parentBoneData[modelData.key][parentBoneNum].scaleImpact);
-					//parentMoveVectorImpacts.push_back(parentBoneData[modelData.key][parentBoneNum].moveVectorImpact);
-					//parentPosition.push_back(objBonePositions[modelData.key][parentBoneNum]);
-					parentNums.push_back(parentBoneNum);
-
-					//親のボーン番号代入
-					parentBoneNum = parentBoneData[modelData.key][parentBoneNum].parentBoneNum;
-
-				}
-				if (parentNums.size() != 0)
-				{
-			
-
-					DirectX::XMMATRIX mulMat = DirectX::XMMatrixIdentity();
-					const int maxParentSize = static_cast<int>(parentNums.size());
-
-					DirectX::XMFLOAT3 pAngle = {0,0,0};
-					DirectX::XMFLOAT3 pScale = { 1,1,1 };
-					DirectX::XMFLOAT3 pMoveVector = { 0,0,0 };
-					DirectX::XMFLOAT3 pPos = { 0,0,0 };
-
-					DirectX::XMFLOAT3 pAngleImpact = { 1,1,1 };
-					DirectX::XMFLOAT3 pScaleImpact = { 1,1,1 };
-					DirectX::XMFLOAT3 pMoveVectorImpact = { 1,1,1 };
-					
-					mulMat = DirectX::XMMatrixIdentity();
-
-					//最後にある親のボーンを基準に回すので、入れる
-					pPos.x = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].x;
-					pPos.y = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].y;
-					pPos.z = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].z;
-
-					for(auto& num : parentNums)
-					{
-						pAngle.x += boneConstData[modelData.key].angle[number][num].x;
-						pAngle.y += boneConstData[modelData.key].angle[number][num].y;
-						pAngle.z += boneConstData[modelData.key].angle[number][num].z;
-
-						pScale.x *= boneConstData[modelData.key].scale[number][num].x;
-						pScale.y *= boneConstData[modelData.key].scale[number][num].y;
-						pScale.z *= boneConstData[modelData.key].scale[number][num].z;
-
-						pMoveVector.x += boneConstData[modelData.key].moveVector[number][num].x;
-						pMoveVector.y += boneConstData[modelData.key].moveVector[number][num].y;
-						pMoveVector.z += boneConstData[modelData.key].moveVector[number][num].z;
-
-					
-
-						pAngleImpact.x *= parentBoneData[modelData.key][num + 1].angleImpact.x;
-						pAngleImpact.y *= parentBoneData[modelData.key][num + 1].angleImpact.y;
-						pAngleImpact.z *= parentBoneData[modelData.key][num + 1].angleImpact.z;
-						pScaleImpact.x *= parentBoneData[modelData.key][num+1].scaleImpact.x;
-						pScaleImpact.y *= parentBoneData[modelData.key][num+1].scaleImpact.y;
-						pScaleImpact.z *= parentBoneData[modelData.key][num+1].scaleImpact.z;
-						pMoveVectorImpact.x *= parentBoneData[modelData.key][num+1].moveVectorImpact.x;
-						pMoveVectorImpact.y *= parentBoneData[modelData.key][num+1].moveVectorImpact.y;
-						pMoveVectorImpact.z *= parentBoneData[modelData.key][num+1].moveVectorImpact.z;
-					}
-					
-						pAngle.x *= pAngleImpact.x;
-						pAngle.y *= pAngleImpact.y;
-						pAngle.z *= pAngleImpact.z;
-
-						pScale.x *= pScaleImpact.x;
-						pScale.y *= pScaleImpact.y;
-						pScale.z *= pScaleImpact.z;
-
-						pMoveVector.x *= pMoveVectorImpact.x;
-						pMoveVector.y *= pMoveVectorImpact.y;
-						pMoveVector.z *= pMoveVectorImpact.z;
-					
-
-					//ボーンから頂点の距離分移動
-					mulMat *= DirectX::XMMatrixTranslation(-pPos.x, -pPos.y, -pPos.z);
-
-					mulMat *= DirectX::XMMatrixScaling(pScale.x, pScale.y, pScale.z);
-
-					mulMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(pAngle.z));
-					mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(pAngle.x));
-					mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(pAngle.y));
-
-					mulMat *= DirectX::XMMatrixTranslation(pMoveVector.x, pMoveVector.y, pMoveVector.z);
-
-					//回転させたら戻す
-					mulMat *= DirectX::XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
-
-
-                     boneMat *= mulMat;
-				}
-				constData3D->boneMat[i + 1] = boneMat;
+				parentBoneNum = parentBoneData[modelData.key][parentBoneNum].parentBoneNum;
 
 			}
+			if (parentNums.size() != 0)
+			{
 
+
+				DirectX::XMMATRIX mulMat = DirectX::XMMatrixIdentity();
+				const int maxParentSize = static_cast<int>(parentNums.size());
+
+				DirectX::XMFLOAT3 pAngle = { 0,0,0 };
+				DirectX::XMFLOAT3 pScale = { 1,1,1 };
+				DirectX::XMFLOAT3 pMoveVector = { 0,0,0 };
+				DirectX::XMFLOAT3 pPos = { 0,0,0 };
+
+				DirectX::XMFLOAT3 pAngleImpact = { 1,1,1 };
+				DirectX::XMFLOAT3 pScaleImpact = { 1,1,1 };
+				DirectX::XMFLOAT3 pMoveVectorImpact = { 1,1,1 };
+
+				mulMat = DirectX::XMMatrixIdentity();
+
+				//最後にある親のボーンを基準に回すので、入れる
+				pPos.x = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].x;
+				pPos.y = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].y;
+				pPos.z = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].z;
+
+				for (auto& num : parentNums)
+				{
+					pAngle.x += boneConstData[modelData.key].angle[number][num].x;
+					pAngle.y += boneConstData[modelData.key].angle[number][num].y;
+					pAngle.z += boneConstData[modelData.key].angle[number][num].z;
+
+					pScale.x *= boneConstData[modelData.key].scale[number][num].x;
+					pScale.y *= boneConstData[modelData.key].scale[number][num].y;
+					pScale.z *= boneConstData[modelData.key].scale[number][num].z;
+
+					pMoveVector.x += boneConstData[modelData.key].moveVector[number][num].x;
+					pMoveVector.y += boneConstData[modelData.key].moveVector[number][num].y;
+					pMoveVector.z += boneConstData[modelData.key].moveVector[number][num].z;
+
+
+
+					pAngleImpact.x *= parentBoneData[modelData.key][num + 1].angleImpact.x;
+					pAngleImpact.y *= parentBoneData[modelData.key][num + 1].angleImpact.y;
+					pAngleImpact.z *= parentBoneData[modelData.key][num + 1].angleImpact.z;
+					pScaleImpact.x *= parentBoneData[modelData.key][num + 1].scaleImpact.x;
+					pScaleImpact.y *= parentBoneData[modelData.key][num + 1].scaleImpact.y;
+					pScaleImpact.z *= parentBoneData[modelData.key][num + 1].scaleImpact.z;
+					pMoveVectorImpact.x *= parentBoneData[modelData.key][num + 1].moveVectorImpact.x;
+					pMoveVectorImpact.y *= parentBoneData[modelData.key][num + 1].moveVectorImpact.y;
+					pMoveVectorImpact.z *= parentBoneData[modelData.key][num + 1].moveVectorImpact.z;
+				}
+
+				pAngle.x *= pAngleImpact.x;
+				pAngle.y *= pAngleImpact.y;
+				pAngle.z *= pAngleImpact.z;
+
+				pScale.x *= pScaleImpact.x;
+				pScale.y *= pScaleImpact.y;
+				pScale.z *= pScaleImpact.z;
+
+				pMoveVector.x *= pMoveVectorImpact.x;
+				pMoveVector.y *= pMoveVectorImpact.y;
+				pMoveVector.z *= pMoveVectorImpact.z;
+
+
+				//ボーンから頂点の距離分移動
+				mulMat *= DirectX::XMMatrixTranslation(-pPos.x, -pPos.y, -pPos.z);
+
+				mulMat *= DirectX::XMMatrixScaling(pScale.x, pScale.y, pScale.z);
+
+				mulMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(pAngle.z));
+				mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(pAngle.x));
+				mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(pAngle.y));
+
+				mulMat *= DirectX::XMMatrixTranslation(pMoveVector.x, pMoveVector.y, pMoveVector.z);
+
+				//回転させたら戻す
+				mulMat *= DirectX::XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
+
+
+				boneMat *= mulMat;
+			}
+			constData3D->boneMat[i + 1] = boneMat;
 
 		}
 
 
 	}
+
+
 
 	constBufferSet[modelData.key][number].constBuffer[0].Get()->Unmap(0, nullptr);
 
@@ -4215,6 +4191,8 @@ void DirectX12::spriteMap3D
 #pragma endregion
 
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
+	
+	calcBillboardMat(matWorld);
 	matWorld *= DirectX::XMMatrixScaling(spriteScale[spriteNumber].x, spriteScale[spriteNumber].y,1.0f);
 	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(spriteAngle[spriteNumber].z));
 	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(spriteAngle[spriteNumber].x));
@@ -4248,52 +4226,10 @@ void DirectX12::pointSetCmdList(DirectX::XMFLOAT3 pos, int pointNum, int texture
 	constDataPoint->billboardMat = DirectX::XMMatrixIdentity();
 
 	//ビルボード行列作成
-	if (isBillBoardX || isBillBoardY || isBillBoardZ)
-	{
-		//回転させた座標の取得
+	DirectX::XMMATRIX billboardMat = DirectX::XMMatrixIdentity();
+	calcBillboardMat(billboardMat);
+	constDataPoint->billboardMat = billboardMat;
 
-		DirectX::XMFLOAT3 cPos;
-		DirectX::XMFLOAT3 cTarget;
-		mainCamera->get3DCameraPosition(mainCameraData, cPos, cTarget);
-
-		DirectX::XMVECTOR vCPos = DirectX::XMLoadFloat3(&cPos);
-		DirectX::XMVECTOR vCTarget = DirectX::XMLoadFloat3(&cTarget);
-
-
-		DirectX::XMVECTOR upVector = DirectX::XMLoadFloat3(&mainCameraData.nowUp);
-		//Z軸を求める
-		DirectX::XMVECTOR cameraAxisZ = DirectX::XMVectorSubtract(vCTarget, vCPos);
-
-		//除外
-		/*assert(!DirectX::XMVector3Equal(cameraAxisZ, DirectX::XMVectorZero));
-		assert(!DirectX::XMVector3IsInfinite(cameraAxisZ));
-		assert(!DirectX::XMVector3Equal(upVector, DirectX::XMVectorZero));
-		assert(!DirectX::XMVector3IsInfinite(upVector));*/
-
-		//ベクトルを正規化
-		cameraAxisZ = DirectX::XMVector3Normalize(cameraAxisZ);
-
-
-		//X軸を求める
-		DirectX::XMVECTOR cameraAxisX = DirectX::XMVector3Cross(upVector, cameraAxisZ);
-
-		//正規化
-		cameraAxisX = DirectX::XMVector3Normalize(cameraAxisX);
-
-
-		//Y軸を求める
-		DirectX::XMVECTOR cameraAxisY = DirectX::XMVector3Cross(cameraAxisZ, cameraAxisX);
-
-
-		//全方位ビルボード行列の計算
-		DirectX::XMMATRIX billboardMatrix = DirectX::XMMatrixIdentity();
-		if (isBillBoardX)billboardMatrix.r[0] = cameraAxisX;
-		if (isBillBoardY)billboardMatrix.r[1] = cameraAxisY;
-		if (isBillBoardZ)billboardMatrix.r[2] = cameraAxisZ;
-		billboardMatrix.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
-
-		constDataPoint->billboardMat = billboardMatrix;
-	}
 	pointConstBufferSet[pointNum].constBuffer[0]->Unmap(0, nullptr);
 
 
@@ -4906,5 +4842,7 @@ void DirectX12::sortModelData(std::vector<std::tuple<ModelData, int>>& modelData
 
 	});
 }
+
+
 #pragma endregion
 

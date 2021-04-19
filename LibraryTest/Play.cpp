@@ -57,10 +57,10 @@ void Play::draw()
 	//Library::drawSprite({ 0,0 }, tS, tex);
 	Library::draw3DSprite({ 0,0,0 }, { 1,1 }, tS, tex);
 
-	/*if (DirectInput::keyState(DIK_SPACE))
+	if (DirectInput::keyState(DIK_SPACE))
 		Library::setIsBillboard(true, true, true);
 	else
-		Library::setIsBillboard(false, false, false);*/
+		Library::setIsBillboard(false, false, false);
 	//Library::drawPointTexture(pPos, tP, tex, 0);
 }
 
