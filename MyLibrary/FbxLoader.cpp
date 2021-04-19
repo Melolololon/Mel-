@@ -42,7 +42,12 @@ void FbxLoader::end()
 	fbxManager->Destroy();
 }
 
-void FbxLoader::parseNodeRecursive(FbxModel* model, FbxNode* fbxNode, Node* parentNode = nullptr)
+void FbxLoader::parseNodeRecursive
+(
+	FbxModel* model,
+	FbxNode* fbxNode, 
+	Node* parentNode
+)
 {
 	using namespace DirectX;
 
@@ -89,8 +94,23 @@ void FbxLoader::parseNodeRecursive(FbxModel* model, FbxNode* fbxNode, Node* pare
 	node.transform *= matRotation;
 	node.transform *= matTranslation;
 
+	node.globalTransform = node.transform;
+	if(parentNode)
+	{
+		//親ノード代入
+		node.parentNode = parentNode;
+
+		//親の行列を乗算
+		node.globalTransform = parentNode->globalTransform;
+	}
+
 	for (int i = 0; i < fbxNode->GetChildCount(); i++)
 		parseNodeRecursive(model, fbxNode->GetChild(i), &node);
+}
+
+void FbxLoader::parseMesh(FbxModel* model, FbxNode* node)
+{
+
 }
 
 void FbxLoader::loadFbxModel(const std::string& modelPath)

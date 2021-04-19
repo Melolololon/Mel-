@@ -39,6 +39,44 @@ private:
 	/// <param name="parentNode">親ノード</param>
 	void parseNodeRecursive(FbxModel* model, FbxNode* fbxNode,Node* parentNode = nullptr);
 
+#pragma region メッシュ読み込み
+
+
+	/// <summary>
+	/// メッシュ読み込み関数
+	/// </summary>
+	/// <param name="">モデル</param>
+	/// <param name="node">ノード</param>
+	void parseMesh(FbxModel* model, FbxNode* node);
+
+	/// <summary>
+	/// 頂点読み込み
+	/// </summary>
+	/// <param name="model"></param>
+	/// <param name="fbxMesh"></param>
+	void parseMeshVertices(FbxModel* model, FbxMesh* fbxMesh);
+
+	/// <summary>
+	/// 面情報読み取り
+	/// </summary>
+	/// <param name="model"></param>
+	/// <param name="fbxMesh"></param>
+	void parseMeshFaces(FbxModel* model, FbxMesh* fbxMesh);
+
+	/// <summary>
+	/// マテリアル読み取り
+	/// </summary>
+	/// <param name="model"></param>
+	/// <param name="fbxMesh"></param>
+	void parseMaterial(FbxModel* model, FbxMesh* fbxMesh);
+	
+	/// <summary>
+	/// テクスチャ読み込み
+	/// </summary>
+	/// <param name="model"></param>
+	/// <param name="path"></param>
+	void parseTexture(FbxModel* model,const std::string& path);
+#pragma endregion
 public:
 	FbxLoader(const FbxLoader& moder) = delete;
 	FbxLoader& operator =(const FbxLoader& moder) = delete;
