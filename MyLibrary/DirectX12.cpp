@@ -3836,8 +3836,10 @@ void DirectX12::map(const ModelData& modelData,int number )
 	size_t size = vertices[modelData.key].size();
 	size_t size2 = 0;
 
-	//スムーズシェーディングを行うか確認し、スムーズシェーディングの処理を行います
-	auto smoothing = [&]()
+	
+
+	//ボーンデータがあるかどうか
+	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 	{
 		for (size_t i = 0; i < size; i++)
 		{
@@ -3862,16 +3864,34 @@ void DirectX12::map(const ModelData& modelData,int number )
 			}
 			vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Unmap(0, nullptr);
 		}
-	};
-
-	//ボーンデータがあるかどうか
-	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
-	{
-		smoothing();
 	}
 	else//ボーンがあったら
 	{
-		smoothing();
+		//スムースシェーディング
+		for (size_t i = 0; i < size; i++)
+		{
+			OBJAnimationVertex* aniVertex;
+			vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
+
+			//スムージングを行うか
+			if (smoothingFlag)
+			{
+				size2 = smoothNormal[modelData.key][i].size();
+				for (size_t j = 0; j < size2; j++)
+				{
+					aniVertex[j].normal = smoothNormal[modelData.key][i][j];
+				}
+			}
+			else
+			{
+				size2 = vertices[modelData.key][i].size();
+				for (size_t j = 0; j < size2; j++)
+				{
+					aniVertex[j].normal = vertices[modelData.key][i][j].normal;
+				}
+			}
+			vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Unmap(0, nullptr);
+		}
 
 		//ボーンの値マップ
 		DirectX::XMMATRIX boneMat = DirectX::XMMatrixIdentity();
