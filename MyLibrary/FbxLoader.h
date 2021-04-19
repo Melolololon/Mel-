@@ -36,7 +36,8 @@ private:
 	/// </summary>
 	/// <param name="model">モデルのポインタ</param>
 	/// <param name="fbxNode">解析するノード</param>
-	void parseNodeRecursive(FbxModel* model, FbxNode* fbxNode);
+	/// <param name="parentNode">親ノード</param>
+	void parseNodeRecursive(FbxModel* model, FbxNode* fbxNode,Node* parentNode = nullptr);
 
 public:
 	FbxLoader(const FbxLoader& moder) = delete;
