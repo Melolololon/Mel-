@@ -65,8 +65,8 @@ void Play::draw()
 	//Library::draw3DSpriteAnimation({ 0,0,0 }, { 5,5 }, { 0,0 }, {128,128}, tS, tex);
 	//else
 	//	Library::draw3DSpriteAnimation({ 0,0,0 }, { 5,5 }, { 0,0 }, { 128,128 }, tS, tex2);
-	Library::draw3DSpriteBox({ 0,0,0 }, { 5,5 }, { 0,255,0,255 }, tS);
-	Library::draw3DSpriteBox({ 3,0,3 }, { 5,5 }, { 255,0,0,255 }, tS2);
+	Library::drawSprite3DBox({ 0,0,0 }, { 5,5 }, { 0,255,0,255 }, tS);
+	Library::drawSprite3DBox({ 3,0,3 }, { 5,5 }, { 255,0,0,255 }, tS2);
 
 	if (DirectInput::keyState(DIK_SPACE))
 		Library::setIsBillboard(true, true, true);

@@ -1615,7 +1615,7 @@ void DirectX12::setSpriteAnimationVertex2
 	
 }
 
-void DirectX12::set3DSpriteAnimation
+void DirectX12::setSprite3DAnimation
 (
     DirectX::XMFLOAT2 leftUpPosition,
 	DirectX::XMFLOAT2 rightDownPosition,

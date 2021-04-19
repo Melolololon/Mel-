@@ -870,7 +870,7 @@ void Library::drawSpriteAnimation2
 	dx12->spriteSetCmdList(*spriteNumber, textureNumber, false);
 }
 
-void Library::draw3DSprite
+void Library::drawSprite3D
 (
 	const Vector3& position,
 	const Vector2& size,
@@ -888,7 +888,7 @@ void Library::draw3DSprite
 	dx12->spriteSetCmdList(*spriteNumber, textureNumber,true);
 }
 
-void Library::draw3DSpriteAnimation
+void Library::drawSprite3DAnimation
 (
 	const Vector3& position,
 	const Vector2& size,
@@ -905,7 +905,7 @@ void Library::draw3DSpriteAnimation
 		*spriteNumber,
 		textureNumber
 	);
-	dx12->set3DSpriteAnimation
+	dx12->setSprite3DAnimation
 	(
 		leftUpPos.toXMFLOAT2(),
 		rightDownPos.toXMFLOAT2(),
@@ -940,7 +940,7 @@ void Library::drawSpriteBox
 	dx12->spriteSetCmdList(*spriteHandle, 0,false);
 }
 
-void Library::draw3DSpriteBox
+void Library::drawSprite3DBox
 (
 	const Vector3& position,
 	const Vector2& size,

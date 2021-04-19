@@ -563,7 +563,7 @@ public:
 	/// <param name="size"></param>
 	/// <param name="color"></param>
 	/// <param name="spriteHandle"></param>
-	static void draw3DSpriteBox
+	static void drawSprite3DBox
 	(
 		const Vector3& position,
 		const Vector2& size,
@@ -630,7 +630,7 @@ public:
 	/// <param name="size">スプライトのサイズ</param>
 	/// <param name="spriteNumber">スプライトを</param>
 	/// <param name="textureNumber"></param>
-	static void draw3DSprite
+	static void drawSprite3D
 	(
 		const Vector3& position,
 		const Vector2& size,
@@ -647,7 +647,7 @@ public:
 	/// <param name="rightDownPos">テクスチャ上の左上座標</param>
 	/// <param name="spriteNumber">テクスチャ上の右下座標</param>
 	/// <param name="textureNumber"></param>
-	static void draw3DSpriteAnimation
+	static void drawSprite3DAnimation
 	(
 		const Vector3& position,
 		const Vector2& size,
