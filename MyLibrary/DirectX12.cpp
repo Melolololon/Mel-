@@ -497,7 +497,7 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 	spriteGpipeline.DepthStencilState.DepthEnable = false;
 	spriteGpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 
-	spriteGpipeline.BlendState.AlphaToCoverageEnable = true;
+	spriteGpipeline.BlendState.AlphaToCoverageEnable = false;
 
 	CD3DX12_DESCRIPTOR_RANGE spriteDescRangeSRV;
 	spriteDescRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);

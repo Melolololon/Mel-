@@ -926,8 +926,8 @@ void Library::drawPointTexture
 	dx12->pointSetCmdList({ pos.x,pos.y,pos.z }, *point, texture, num);
 }
 
-#pragma region ‚×‚½“h
-void Library::drawBox
+#pragma region Œ`ó
+void Library::drawSpriteBox
 (
 	const Vector2& position,
 	const Vector2& size,
@@ -939,6 +939,20 @@ void Library::drawBox
 	dx12->spriteMap(position.toXMFLOAT2(), size.toXMFLOAT2(), *spriteHandle, 0);
 	dx12->spriteSetCmdList(*spriteHandle, 0);
 }
+
+void Library::draw3DSpriteBox
+(
+	const Vector3& position,
+	const Vector2& size,
+	const Color& color,
+	const sprite& spriteHandle
+)
+{
+	setSpriteAddColor(color, spriteHandle);
+	dx12->spriteMap3D(position.toXMFLOAT3(), size.toXMFLOAT2(), *spriteHandle, 0);
+	dx12->spriteSetCmdList(*spriteHandle, 0);
+}
+
 #pragma endregion
 
 

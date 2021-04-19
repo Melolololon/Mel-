@@ -548,13 +548,31 @@ public:
 	/// <param name="size">大きさ</param>
 	/// <param name="color">色</param>
 	/// <param name="spriteHandle">スプライトハンドル</param>
-	static void drawBox
+	static void drawSpriteBox
 	(
 		const Vector2& position, 
 		const Vector2& size, 
 		const Color& color, 
 		const sprite& spriteHandle
 	);
+
+	/// <summary>
+	/// 3Dの四角形を描画します
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="size"></param>
+	/// <param name="color"></param>
+	/// <param name="spriteHandle"></param>
+	static void draw3DSpriteBox
+	(
+		const Vector3& position,
+		const Vector2& size,
+		const Color& color,
+		const sprite& spriteHandle
+	);
+	
+		
+	
 #pragma endregion
 
 	//アニメーションと描画分離してもいい?
