@@ -1,4 +1,6 @@
 #include"PointShaderHeader.hlsli"
+
+//static‚É‚µ‚È‚¢‚Æ’¸“_•ª—pˆÓ‚µ‚¿‚á‚Á‚Äƒƒ‚ƒŠ–³‘Ê‚É‚È‚é?
 static const uint vertNum = 4;
 
 static const float4 ofset_array[vertNum] = 
@@ -16,10 +18,10 @@ static const float4 ofset_array[vertNum] =
 
 static const float2 uvs[vertNum] =
 {
-	float2(0.0,1.0),
-	float2(0.0,0.0),
-	float2(1.0,1.0),
-	float2(1.0,0.0)
+	float2(0.0f,1.0f),
+	float2(0.0f,0.0f),
+	float2(1.0f,1.0f),
+	float2(1.0f,0.0f)
 
 };
 

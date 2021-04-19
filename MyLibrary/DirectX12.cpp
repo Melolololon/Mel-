@@ -601,7 +601,7 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 #pragma region スプライトフォント準備
 	//フォント作成
-	for (int i = 0; i < 300; i++)
+	for (int i = 0; i < SPRITEFONT_MAX; i++)
 	{
 		createSprite(nullptr, true);
 	}
@@ -1283,8 +1283,10 @@ bool DirectX12::createUserPipelineState
 		break;
 	case CULL_FRONT:
 		gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;
+		break;
 	case CULL_BACK:
 		gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+		break;
 	}
 
 	switch (pipelineData.blendMode)
@@ -1589,19 +1591,41 @@ void DirectX12::setSpriteAnimationVertex2
 	vertex[3].uv = { endX ,startY };
 	spriteVertices[spriteNum] = vertex;
 
-
-	std::vector<unsigned short>index;
-	index = createPolygon->setBoardPolygonIndex();
-	spriteIndices[spriteNum] = index;
-
-	for (int i = 0; i < (int)vertex.size(); i++)
+	auto vertexSize = vertex.size();
+	for (int i = 0; i < vertexSize; i++)
 	{
 		spriteVertexBuffSet[spriteNum].vertexMap[i] = vertex[i];
 	}
-	for (int i = 0; i < (int)index.size(); i++)
+	
+}
+
+void DirectX12::setSpriteAnimation3D
+(
+    DirectX::XMFLOAT2 leftUpPosition,
+	DirectX::XMFLOAT2 rightDownPosition,
+	const int& spriteNumber,
+	const int& textureNumber
+)
+{
+	DirectX::XMFLOAT2 textureSize =
 	{
-		spriteIndexBufferSet[spriteNum].indexMap[i] = index[i];
-	}
+		static_cast<float>(spriteTextureData[textureNumber].width),
+		static_cast<float>(spriteTextureData[textureNumber].height) 
+	};
+
+	leftUpPosition.x = textureSize.x * leftUpPosition.x;
+	leftUpPosition.y = textureSize.y * leftUpPosition.y;
+	rightDownPosition.x = textureSize.x * rightDownPosition.x;
+	rightDownPosition.y = textureSize.y * rightDownPosition.y;
+
+	spriteVertices[spriteNumber][0].uv = { leftUpPosition.x,rightDownPosition.y };
+	spriteVertices[spriteNumber][1].uv = { leftUpPosition.x,leftUpPosition.y };
+	spriteVertices[spriteNumber][2].uv = { rightDownPosition.x,rightDownPosition.y };
+	spriteVertices[spriteNumber][3].uv = { rightDownPosition.x,leftUpPosition.y };
+
+	auto vertexSize = spriteVertices[spriteNumber].size();
+	for (int i = 0; i < vertexSize; i++)
+		spriteVertexBuffSet[spriteNumber].vertexMap[i].uv = spriteVertices[spriteNumber][i].uv;
 }
 
 #pragma endregion
@@ -1832,7 +1856,7 @@ void DirectX12::setPointMulColor(Color color, int pointNum, int num)
 {
 	pointVertices[pointNum][num].color =
 	{
-	(float)color.r / (float)255,
+		(float)color.r / (float)255,
 		(float)color.g / (float)255,
 		(float)color.b / (float)255,
 		(float)color.a / (float)255
@@ -3192,11 +3216,9 @@ void DirectX12::createSprite(int* sprite, bool font)
 	/*spritePosition.resize(spritePosition.size() + 1);
 	spritePosition[spritePosition.size() - 1] = { 0,0,0,0 };*/
 
-	spriteAngle.resize(spriteAngle.size() + 1);
-	spriteAngle[spriteAngle.size() - 1] = 0.0f;
+	spriteAngle.resize(spriteAngle.size() + 1, {0.0f,0.0f,0.0f});
 
-	spriteScale.resize(spriteScale.size() + 1);
-	spriteScale[spriteScale.size() - 1] = { 1,1 };
+	spriteScale.resize(spriteScale.size() + 1, { 1,1 });
 
 
 }
@@ -3204,7 +3226,6 @@ void DirectX12::createSprite(int* sprite, bool font)
 void DirectX12::createPoint(int createNum, int* point)
 {
 	pointP.push_back(point);
-
 
 
 #pragma region 頂点バッファ
@@ -3223,11 +3244,13 @@ void DirectX12::createPoint(int createNum, int* point)
 			IID_PPV_ARGS(&pointVertexBuffSet[pointVertexBuffSet.size() - 1][i].vertexBuffer)
 		);
 
-		PointVertex vert;
-		vert.pos = { 0,0,0 };
-		pointVertices[pointVertices.size() - 1].push_back(vert);
-		pointVertices[pointVertices.size() - 1][i].scale = { 1,1 };
-		pointVertices[pointVertices.size() - 1][i].color = { 1,1,1,1 };
+		PointVertex pointVertex;
+		pointVertex.pos = { 0,0,0 };
+		pointVertex.scale = { 1,1 };
+		pointVertex.color = { 1,1,1,1 };
+		//pointVertex.uv = 
+		pointVertices[pointVertices.size() - 1].push_back(pointVertex);
+		
 
 		pointVertexBuffSet[pointVertexBuffSet.size() - 1][i].vertexBuffer->Map(0, nullptr, (void**)&pointVertexMapData);
 		pointVertexMapData->pos = pointVertices[pointVertices.size() - 1][i].pos;
@@ -3267,7 +3290,7 @@ void DirectX12::createPoint(int createNum, int* point)
 
 	constDataPoint->mat = DirectX::XMMatrixIdentity();
 	constDataPoint->billboardMat = DirectX::XMMatrixIdentity();
-
+	
 	pointConstBufferSet[pointConstBufferSet.size() - 1].constBuffer[0]->Unmap(0, nullptr);
 #pragma endregion
 
@@ -3407,12 +3430,14 @@ void DirectX12::deleteHeapData(const ModelData& m)
 
 void DirectX12::deleteSprite(int sprite)
 {
-	sprite -= 300;
+	//スプライトフォント分引く
+	sprite -= SPRITEFONT_MAX;
 	delete spriteP[sprite];
 	spriteP.erase(spriteP.begin() + sprite);
-	for (UINT i = sprite; i < spriteP.size(); i++)
+	auto sprSize = spriteP.size();
+	for (size_t i = sprite; i < sprSize; i++)
 	{
-		*spriteP[i] += -1;
+		*spriteP[i]--;
 	}
 	spriteP.shrink_to_fit();
 
@@ -4131,8 +4156,9 @@ void DirectX12::spriteMap(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, in
 #pragma endregion
 
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(spriteAngle[spriteNumber]));
-	matWorld *= DirectX::XMMatrixScaling(spriteScale[spriteNumber].x, spriteScale[spriteNumber].y, 0);
+	matWorld *= DirectX::XMMatrixScaling(spriteScale[spriteNumber].x, spriteScale[spriteNumber].y, 0.0f);
+	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(spriteAngle[spriteNumber].z));
+	//左上基準にするためにサイズとか足してる
 	matWorld *= DirectX::XMMatrixTranslation
 	(
 		position.x + width * spriteScale[spriteNumber].x,
@@ -4141,6 +4167,66 @@ void DirectX12::spriteMap(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, in
 	);
 
 	spriteConstBufferDatas[spriteNumber]->mat = matWorld * mainCamera->get2DCameraMatrix();
+
+
+}
+
+void DirectX12::spriteMap3D
+(
+	const DirectX::XMFLOAT3& position,
+	const DirectX::XMFLOAT2& size,
+	const int& spriteNumber,
+	const int& textureNumber
+)
+{
+#pragma region 頂点決定
+	
+
+	float width = size.x;
+	float height = size.y;
+	width /= 2;
+	height /= 2;
+
+	std::vector<Vertex>vertex;
+	vertex = createPolygon->setBoardPolygonVertex
+	(
+		{ 0 - width,0 - height, 0, },
+		{ 0 - width,size.y - height,0, },
+		{ size.x - width,0 - height,0, },
+		{ size.x - width, size.y - height, 0 }
+	);
+
+	vertex[1].uv = { 0.0f,0.0f };
+	vertex[0].uv = { 0.0f,1.0f };
+	vertex[3].uv = { 1.0f,0.0f };
+	vertex[2].uv = { 1.0f,1.0f };
+
+	spriteVertices[spriteNumber] = vertex;
+
+	std::vector<unsigned short>index;
+	index = createPolygon->setBoardPolygonIndex();
+	spriteIndices[spriteNumber] = index;
+
+	for (int i = 0; i < (int)vertex.size(); i++)
+		spriteVertexBuffSet[spriteNumber].vertexMap[i] = vertex[i];
+	for (int i = 0; i < (int)index.size(); i++)
+		spriteIndexBufferSet[spriteNumber].indexMap[i] = index[i];
+	
+#pragma endregion
+
+	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
+	matWorld *= DirectX::XMMatrixScaling(spriteScale[spriteNumber].x, spriteScale[spriteNumber].y,1.0f);
+	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(spriteAngle[spriteNumber].z));
+	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(spriteAngle[spriteNumber].x));
+	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(spriteAngle[spriteNumber].y));
+	matWorld *= DirectX::XMMatrixTranslation
+	(
+		position.x,
+		position.y,
+		position.z
+	);
+
+	spriteConstBufferDatas[spriteNumber]->mat = matWorld * mainCamera->get3DCameraMatrix(mainCameraData);
 
 
 }
@@ -4160,6 +4246,7 @@ void DirectX12::pointSetCmdList(DirectX::XMFLOAT3 pos, int pointNum, int texture
 	matWorld = mainCamera->get3DCameraMatrix(mainCameraData);
 	constDataPoint->mat = matWorld;
 	constDataPoint->billboardMat = DirectX::XMMatrixIdentity();
+
 	//ビルボード行列作成
 	if (isBillBoardX || isBillBoardY || isBillBoardZ)
 	{
@@ -4298,7 +4385,7 @@ void DirectX12::spriteSetObjectScale(DirectX::XMFLOAT2 scale, int spriteNum)
 	spriteScale[spriteNum] = scale;
 }
 
-void DirectX12::spriteSetObjectAngle(float angle, int spriteNum)
+void DirectX12::spriteSetObjectAngle(const DirectX::XMFLOAT3& angle, const int& spriteNum)
 {
 	spriteAngle[spriteNum] = angle;
 }
@@ -4642,6 +4729,10 @@ void DirectX12::drawSpriteFontString(DirectX::XMFLOAT2 position, DirectX::XMFLOA
 	int loopCount = 0;
 	for (auto& t : text)
 	{
+		//最大文字数超えたらリターン
+		if (spriteFontDrawCounter > SPRITEFONT_MAX)
+			return;
+
 		int width = t - 32;//一旦widthに
 		int height = 0;
 
@@ -4697,9 +4788,6 @@ void DirectX12::drawSpriteFontString(DirectX::XMFLOAT2 position, DirectX::XMFLOA
 
 		spriteFontDrawCounter++;
 		loopCount++;
-		//最大文字数超えたらリターン
-		if (spriteFontDrawCounter > 300)
-			return;
 
 	}
 

@@ -557,6 +557,7 @@ public:
 	);
 #pragma endregion
 
+	//アニメーションと描画分離してもいい?
 
 	/// <summary>
 	/// スプライトを描画します
@@ -603,6 +604,21 @@ public:
 		const sprite& spriteNumber, 
 		const texture& textureNumber
 	);
+
+	/// <summary>
+	/// 3D空間上にスプライトを描画します
+	/// </summary>
+	/// <param name="position">座標</param>
+	/// <param name="size">スプライトのサイズ</param>
+	/// <param name="spriteNumber">スプライトを</param>
+	/// <param name="textureNumber"></param>
+	static void draw3DSprite
+	(
+		const Vector3& position,
+		const Vector2& size,
+		const sprite& spriteNumber,
+		const texture& textureNumber
+	);
 #pragma endregion
 
 	/// <summary>
@@ -633,6 +649,11 @@ public:
 #pragma endregion
 
 
+#pragma region 3D
+
+#pragma region モデル
+
+
 	/// <summary>
 	/// 色を乗算します
 	/// </summary>
@@ -657,13 +678,26 @@ public:
 	/// <param name="number"></param>
 	static void setSubColor(Color color, const ModelData& modelData, int number);
 
+#pragma endregion
+
+#pragma region 点
+	/// <summary>
+	/// 色を乗算します。
+	/// </summary>
+	/// <param name="color"></param>
+	/// <param name="pointNum"></param>
+	/// <param name="num"></param>
+	static void setPointMulColor(Color color, point pointNum, int num);
+
+
+#pragma endregion
+
 
 	/// <summary>
 	/// オブジェクトを平面化するかを設定します
 	/// </summary>
 	/// <param name="flag">平面化するかどうか</param>
 	static void setIsPlane(bool flag);
-
 	/// <summary>
 	/// ビルボードをするかを設定します
 	/// </summary>
@@ -671,15 +705,24 @@ public:
 	/// <param name="y"></param>
 	/// <param name="z"></param>
 	static void setIsBillboard(bool x, bool y, bool z);
+#pragma endregion
+
+#pragma region 2D
 
 	static void setSpriteMulColor(Color color, sprite spriteNum);
 	static void setSpriteAddColor(Color color, sprite spriteNum);
 	static void setSpriteSubColor(Color color, sprite spriteNum);
 
-	static void setPointMulColor(Color color, point pointNum, int num);
+#pragma endregion
+
+
+
 #pragma endregion
 
 #pragma region 操作
+#pragma region 3D
+
+
 	/// <summary>
 	/// オブジェクトの座標をセットしたり動かしたりするのに使用します
 	/// </summary>
@@ -687,7 +730,6 @@ public:
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
 	static void setPosition(Vector3 position, const ModelData& modelData, int number);
-
 
 	/// <summary>
 	/// サイズを変更します
@@ -713,6 +755,10 @@ public:
 	/// <param name="number"></param>
 	static void setPushPorigonNumber(float ex, const ModelData& modelData, int number);
 
+#pragma endregion
+
+#pragma region 2D
+
 	/// <summary>
 	/// これ消す
 	/// </summary>
@@ -733,6 +779,10 @@ public:
 	/// <param name="angle">角度(Z軸を基準)</param>
 	/// <param name="sptiteNumber"></param>
 	static void setSpriteAngle(float angle, sprite sptiteNumber);
+	static void setSpriteAngle3D(const Vector3& angle, const sprite& spriteNumber);
+
+#pragma endregion
+
 
 	/// <summary>
 	/// 点で作成した四角形のスケールの設定(元のサイズは(1,1,1))
@@ -875,6 +925,20 @@ public:
 
 #pragma region アニメーション(定数で変えるようにする)
 
+	/// <summary>
+	/// 点から生成した板ポリゴンの表示範囲を設定します。
+	/// </summary>
+	/// <param name="leftUpPos">テクスチャの左上座標</param>
+	/// <param name="rightDownPos">テクスチャの右下座標</param>
+	/// <param name="p">点</param>
+	/// <param name="num">番号</param>
+	static void setPointBoardAnimation
+	(
+		const Vector2& leftUpPos,
+		const Vector2& rightDownPos,
+		const point& p,
+		const int& num
+	);
 
 	/*/// <summary>
 	/// アニメーションさせます(四角のサイズ固定)

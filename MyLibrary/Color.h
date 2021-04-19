@@ -6,6 +6,8 @@ struct Color
 	//charだとaがわかりにくいし、
 	//floatだとrgbがわかりにくい。内部で255で割ればいいが、メモリの使用量が多い
 	//Mapするとき、ColorじゃなくてXMFLOAT4にすれば、floatとUCHARを混合できる
+
+	//色
 	unsigned char r, g, b, a;
 	
 	Color operator+(Color color);
@@ -15,10 +17,6 @@ struct Color
 
 
 
-	//Color operator+=(Color color);
-	//Color operator-=(Color color);
-	//Color operator*=(Color color);
-	//Color operator/=(Color color);
 };
 
 /// <summary>

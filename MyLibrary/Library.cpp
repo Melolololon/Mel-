@@ -870,7 +870,31 @@ void Library::drawSpriteAnimation2
 	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
 }
 
-void Library::drawPointTexture(Vector3 pos, point point, texture texture, int num)
+void Library::draw3DSprite
+(
+	const Vector3& position,
+	const Vector2& size,
+	const sprite& spriteNumber,
+	const texture& textureNumber
+)
+{
+	dx12->spriteMap3D
+	(
+		position.toXMFLOAT3(),
+		size.toXMFLOAT2(),
+		*spriteNumber, 
+		textureNumber
+	);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
+}
+
+void Library::drawPointTexture
+(
+	Vector3 pos, 
+	point point, 
+	texture texture, 
+	int num
+)
 {
 	dx12->pointSetCmdList({ pos.x,pos.y,pos.z }, *point, texture, num);
 }
@@ -1043,7 +1067,11 @@ void Library::setSpriteScale(Vector2 scale, sprite sptiteNumber)
 }
 void Library::setSpriteAngle(float angle, sprite spriteNumber)
 {
-	dx12->spriteSetObjectAngle(angle, *spriteNumber);
+	dx12->spriteSetObjectAngle({0,0,angle }, *spriteNumber);
+}
+void Library::setSpriteAngle3D(const Vector3& angle, const sprite& spriteNumber)
+{
+	dx12->spriteSetObjectAngle(angle.toXMFLOAT3(), *spriteNumber);
 }
 
 void changeSpriteSize(Vector2 size, int *spriteData)
@@ -1211,6 +1239,18 @@ void Library::setParentOBJBoneMoveVectorImpact
 #pragma endregion
 
 #pragma region アニメーション
+
+void Library::setPointBoardAnimation
+(
+	const Vector2& leftUpPos,
+	const Vector2& rightDownPos,
+	const point& p,
+	const int& num
+)
+{
+
+}
+
 //
 //void Library::changeAnimation(vertex createNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY)
 //{

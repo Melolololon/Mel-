@@ -68,6 +68,7 @@ struct PointVertex
 {
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT2 scale;
+	//DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT4 color;
 
 };
