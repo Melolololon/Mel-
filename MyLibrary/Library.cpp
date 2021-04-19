@@ -888,6 +888,33 @@ void Library::draw3DSprite
 	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
 }
 
+void Library::draw3DSpriteAnimation
+(
+	const Vector3& position,
+	const Vector2& size,
+	const Vector2& leftUpPos,
+	const Vector2& rightDownPos,
+	const sprite& spriteNumber,
+	const texture& textureNumber
+)
+{
+	dx12->spriteMap3D
+	(
+		position.toXMFLOAT3(),
+		size.toXMFLOAT2(),
+		*spriteNumber,
+		textureNumber
+	);
+	dx12->set3DSpriteAnimation
+	(
+		leftUpPos.toXMFLOAT2(),
+		rightDownPos.toXMFLOAT2(),
+		*spriteNumber,
+		textureNumber
+	);
+	dx12->spriteSetCmdList(*spriteNumber, textureNumber);
+}
+
 void Library::drawPointTexture
 (
 	Vector3 pos, 

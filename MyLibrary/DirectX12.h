@@ -920,7 +920,7 @@ public:
 	);
 	void setSpriteAnimationVertex2(int spriteNum, int textureNum, int posX, int posY, int areaWidth, int areaHeight, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
 
-	void setSpriteAnimation3D
+	void set3DSpriteAnimation
 	(
 		DirectX::XMFLOAT2 leftUpPosition,
 	    DirectX::XMFLOAT2 rightDownPosition,

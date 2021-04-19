@@ -1599,7 +1599,7 @@ void DirectX12::setSpriteAnimationVertex2
 	
 }
 
-void DirectX12::setSpriteAnimation3D
+void DirectX12::set3DSpriteAnimation
 (
     DirectX::XMFLOAT2 leftUpPosition,
 	DirectX::XMFLOAT2 rightDownPosition,
@@ -1613,10 +1613,10 @@ void DirectX12::setSpriteAnimation3D
 		static_cast<float>(spriteTextureData[textureNumber].height) 
 	};
 
-	leftUpPosition.x = textureSize.x * leftUpPosition.x;
-	leftUpPosition.y = textureSize.y * leftUpPosition.y;
-	rightDownPosition.x = textureSize.x * rightDownPosition.x;
-	rightDownPosition.y = textureSize.y * rightDownPosition.y;
+	leftUpPosition.x = 1.0f / textureSize.x * leftUpPosition.x;
+	leftUpPosition.y = 1.0f / textureSize.y * leftUpPosition.y;
+	rightDownPosition.x = 1.0f / textureSize.x * rightDownPosition.x;
+	rightDownPosition.y = 1.0f / textureSize.y * rightDownPosition.y;
 
 	spriteVertices[spriteNumber][0].uv = { leftUpPosition.x,rightDownPosition.y };
 	spriteVertices[spriteNumber][1].uv = { leftUpPosition.x,leftUpPosition.y };

@@ -22,12 +22,14 @@ Play::~Play()
 point tP;
 sprite tS;
 texture tex;
+texture tex2;
 
 void Play::initialize()
 {
 	Library::createPoint(1, &tP);
 	Library::createSprite(&tS);
 	tex = Library::loadTexture(L"Resources/Texture/testTexture.png");
+	tex2 = Library::loadTexture(L"Resources/Texture/testTexture2.png");
 	Library::setCamera({ 0,0,-10 }, { 0,0,0 }, { 0,1,0 });
 }
 
@@ -55,7 +57,11 @@ void Play::draw()
 	ObjectManager::getInstance()->draw();
 
 	//Library::drawSprite({ 0,0 }, tS, tex);
-	Library::draw3DSprite({ 0,0,0 }, { 1,1 }, tS, tex);
+	//Library::draw3DSprite({ 0,0,0 }, { 1,1 }, tS, tex);
+	if(DirectInput::keyState(DIK_Z))
+	Library::draw3DSpriteAnimation({ 0,0,0 }, { 5,5 }, { 0,0 }, {128,128}, tS, tex);
+	else
+		Library::draw3DSpriteAnimation({ 0,0,0 }, { 5,5 }, { 0,0 }, { 128,128 }, tS, tex2);
 
 	if (DirectInput::keyState(DIK_SPACE))
 		Library::setIsBillboard(true, true, true);

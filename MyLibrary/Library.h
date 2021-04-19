@@ -619,6 +619,25 @@ public:
 		const sprite& spriteNumber,
 		const texture& textureNumber
 	);
+
+	/// <summary>
+	/// 3Dスプライトの描画範囲を指定し、描画します。
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="size"></param>
+	/// <param name="leftUpPos"></param>
+	/// <param name="rightDownPos">テクスチャ上の左上座標</param>
+	/// <param name="spriteNumber">テクスチャ上の右下座標</param>
+	/// <param name="textureNumber"></param>
+	static void draw3DSpriteAnimation
+	(
+		const Vector3& position,
+		const Vector2& size,
+		const Vector2& leftUpPos,
+		const Vector2& rightDownPos,
+		const sprite& spriteNumber,
+		const texture& textureNumber
+	);
 #pragma endregion
 
 	/// <summary>
