@@ -1060,7 +1060,7 @@ public:
 	/// </summary>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static std::vector<std::vector<Vector3>> getVertexPosition(const ModelData& modelData);
+	static std::vector<std::vector<Vector3>> getModelVerticesPosition(const ModelData& modelData);
 
 	/// <summary>
 	/// オブジェクトの頂点座標を上書きします
@@ -1084,6 +1084,27 @@ public:
 	
 
 #pragma endregion
+
+#pragma region 当たり判定
+
+	/// <summary>
+	/// モデルの頂点座標からボックスの判定の値を求めます。
+	/// </summary>
+	/// <param name="modelData"></param>
+	/// <param name="pointPosition"></param>
+	/// <param name="minPosition"></param>
+	/// <param name="maxPosition"></param>
+	/// <param name="boxSize"></param>
+	static void getModelBoxCollisionData
+	(
+		const ModelData& modelData,
+		Vector3* pointPosition,
+		Vector3* minPosition,
+		Vector3* maxPosition,
+		Vector3* boxSize
+	);
+#pragma endregion
+
 
 #pragma endregion
 

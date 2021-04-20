@@ -894,7 +894,7 @@ public:
 #pragma endregion
 
 #pragma region ’¸À•Wæ“¾
-	std::vector<std::vector<DirectX::XMFLOAT3>> getObjectVertexPosition(const std::string& key);
+	std::vector<std::vector<DirectX::XMFLOAT3>> getModelVerticesPosition(const std::string& key);
 
 	bool overrideWriteVertexPosition(std::vector<std::vector<DirectX::XMFLOAT3>> vertPos, const std::string& key);
 #pragma endregion

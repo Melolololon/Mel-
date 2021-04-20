@@ -4508,7 +4508,7 @@ void DirectX12::setParentOBJBoneMoveVectorImpact
 #pragma endregion
 
 #pragma region ’¸“_À•Wæ“¾
-std::vector<std::vector<DirectX::XMFLOAT3>>  DirectX12::getObjectVertexPosition(const std::string& key)
+std::vector<std::vector<DirectX::XMFLOAT3>>  DirectX12::getModelVerticesPosition(const std::string& key)
 {
 
 	std::vector<std::vector<DirectX::XMFLOAT3>>kari(vertices[key].size());

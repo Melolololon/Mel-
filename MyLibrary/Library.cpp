@@ -1317,12 +1317,12 @@ void Library::setPointBoardAnimation
 
 #pragma endregion
 
-#pragma region ’¸“_À•Wæ“¾‚È‚Ç
-std::vector<std::vector<Vector3>> Library::getVertexPosition(const ModelData& modelData)
+#pragma region î•ñæ“¾æ“¾
+std::vector<std::vector<Vector3>> Library::getModelVerticesPosition(const ModelData& modelData)
 {
 	std::vector<std::vector<Vector3>>vector3VertexPos;
 	std::vector<std::vector<DirectX::XMFLOAT3>> xmFloat3VertexPos;
-	xmFloat3VertexPos = dx12->getObjectVertexPosition(modelData.key);
+	xmFloat3VertexPos = dx12->getModelVerticesPosition(modelData.key);
 	vector3VertexPos.resize(xmFloat3VertexPos.size());
 
 	size_t num = xmFloat3VertexPos.size();
@@ -1383,6 +1383,53 @@ std::vector<Vector3> Library::getBonePosition(const ModelData& modelData)
 		count++;
 	}
 	return returnVector;
+}
+#pragma endregion
+
+#pragma region “–‚½‚è”»’è
+void Library::getModelBoxCollisionData
+(
+	const ModelData& modelData,
+	Vector3* pointPosition,
+	Vector3* minPosition,
+	Vector3* maxPosition,
+	Vector3* boxSize
+)
+{
+	std::vector<std::vector<Vector3>> modelVertices;
+	modelVertices = getModelVerticesPosition(modelData);
+
+	Vector3 min = 999999.0f;
+	Vector3 max = -999999.0f;
+
+	for(auto& v1 : modelVertices)
+	{
+		for(auto& v2 : v1)
+		{
+			if (min.x > v2.x)
+				min.x = v2.x;
+			if (min.y > v2.y)
+				min.y = v2.y;
+			if (min.z > v2.z)
+				min.z = v2.z;
+
+			if (max.x < v2.x)
+				max.x = v2.x;
+			if (max.y < v2.y)
+				max.y = v2.y;
+			if (max.z < v2.z)
+				max.z = v2.z;
+		}
+	}
+
+	if (minPosition)
+		*minPosition = min;
+	if (maxPosition)
+		*maxPosition = max;
+	if (pointPosition) 
+		*pointPosition = (min + max) / 2;
+	if (boxSize)
+		*boxSize = max - min;
 }
 #pragma endregion
 
