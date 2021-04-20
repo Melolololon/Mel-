@@ -115,7 +115,7 @@ struct ConstBufferData
 	DirectX::XMFLOAT4 subColor;
 	float ex;
 	DirectX::XMMATRIX worldMat;
-	DirectX::XMMATRIX boneMat[20];
+	DirectX::XMMATRIX boneMat[64];
 };
 
 struct CommonConstData
