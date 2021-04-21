@@ -15,9 +15,23 @@ private:
 	//ここComPtrにするか確認する
 	ID3D12Device* dev;
 	int windowWidth, windowHeight;
-public:
-	CreateBuffer(ID3D12Device* dev, int windowWidth, int windowHeight);
+
+	CreateBuffer();
 	~CreateBuffer();
+public:
+
+	CreateBuffer(CreateBuffer& c) = delete;
+	CreateBuffer& operator=(CreateBuffer& c) = delete;
+	static CreateBuffer* getInstance();
+
+	void initialize
+	(
+		ID3D12Device* device,
+		const int& windowWidth,
+		const int& windowHeight
+	);
+
+#pragma region 旧
 
 	//ここvoidじゃなくてboolにする
 	void createVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<Vertex> vertices, VertexBufferSet& set);
@@ -39,6 +53,34 @@ public:
 
 	//void createUserConstBufferSet(D3D12_HEAP_PROPERTIES cbheapprop, D3D12_RESOURCE_DESC cbresdesc, D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, void* constBuffData, UserConstBufferSet& set);
 
+#pragma endregion
+
+#pragma endregion
+
+
+#pragma region 新
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="heapprop">プロップ</param>
+	/// <param name="resdesc">デスク</param>
+	/// <param name="verticesSize">sizeofで計算した構造体のバイト数</param>
+	/// <param name="verticesNum">頂点数</param>
+	/// <param name="set">バッファーセット</param>
+	void createVertexBuffer
+	(
+		const D3D12_HEAP_PROPERTIES& heapprop,
+		const size_t& verticesSize,
+		const size_t& verticesNum,
+		VertexBufferSet& set
+	);
+
+	void createIndexBuffer
+	(
+		const D3D12_HEAP_PROPERTIES& heapprop, 
+		const std::vector<USHORT>& indices, 
+		IndexBufferSet& set
+	);
 #pragma endregion
 
 };

@@ -42,6 +42,7 @@ protected:
 	static ID3D12Device* device;
 	static std::vector<ID3D12CommandList*>cmdLists;
 
+
 	//[objの中のモデルごと]
 	std::vector<VertexBufferSet> vertexBufferSet;
 	std::vector<IndexBufferSet>indexBufferSet;
@@ -65,6 +66,54 @@ protected:
 	std::vector <ModelConstData>modelConstData;
 
 	std::vector<Material> materials;
+
+
+#pragma region バッファ
+
+#pragma region 生成
+
+
+	/// <summary>
+	/// バッファの生成
+	/// </summary>
+	/// <param name="verticesSize"></param>
+	/// <param name="verticesNum"></param>
+	void createVertexBuffer
+	(
+		const size_t& verticesSize,
+		const size_t& verticesNum
+	);
+
+	void createIndexBuffer(const std::vector<USHORT>& indicesNum);
+
+#pragma endregion
+
+
+#pragma region マップ
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="modelNum">モデル番号(obj内のどのモデルか)</param>
+	/// <param name="vertexStruct">GPUの仮想アドレスを格納するポインタのポインタ</param>
+	void mapVertexBuffer
+	(
+		const int& modelNum,
+		void** vertexStruct
+	);
+
+	void unmapVertexBuffer(const int& modelNum);
+#pragma endregion
+
+
+#pragma endregion
+
+#pragma region スムーズシェーディング
+	void calcSmoothingNormal
+	(
+		std::vector<Vector3> normals
+	);
+#pragma endregion
+
 public:
 	Model();
 	virtual ~Model();

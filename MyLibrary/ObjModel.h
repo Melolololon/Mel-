@@ -10,7 +10,7 @@ private:
 	std::string materialFileName;
 
 	//頂点
-	std::vector<std::vector<Vertex>> vertices;
+	std::vector<std::vector<OBJAnimationVertex>> vertices;
 	std::vector<std::vector<DirectX::XMFLOAT3>> smoothNormal;
 	//インデックス
 	std::vector<std::vector<USHORT>> indices;
@@ -34,9 +34,14 @@ public:
 
 	void loadModelVertices
 	(
-		const std::wstring& path,
+		const std::string& path,
 		const bool& loadUV,
 		const bool& loadNormal
+	);
+
+	void loadModelMaterial
+	(
+		const int& createNum
 	);
 };
 
