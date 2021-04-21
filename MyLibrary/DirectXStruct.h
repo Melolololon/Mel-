@@ -192,7 +192,7 @@ struct Material
 	}
 };
 
-struct MaterialConstBuffData
+struct MaterialConstData
 {
 	DirectX::XMFLOAT3 ambient;
 	float pad1;
@@ -299,7 +299,7 @@ struct ConstBufferSet
 {
 	//書き換え多くなるから仮に配列使ってない
 
-	//objのモデルごとに変更できるようにするために配列
+	//obj内のモデルごとに変更できるようにするために配列
 	std::vector<ComPtr<ID3D12Resource>> constBuffer;
 };
 
@@ -308,7 +308,7 @@ struct TextureBufferSet
 	//書き換え多くなるから仮に配列使ってない
 
 	//.obj内のオブジェクトごとにテクスチャ違う可能性あるから配列
-	std::vector<ComPtr<ID3D12Resource>> textureBuff;
+	std::vector<ComPtr<ID3D12Resource>> textureBuffer;
 };
 
 

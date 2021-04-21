@@ -595,7 +595,7 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 	//uvの設定を頂点バッファ生成後にしていた
 	TextureBufferSet textureSet;
 	spriteTextureBufferSet.push_back(textureSet);
-	spriteTextureBufferSet[loadTextureCounter - 1].textureBuff.resize(1);
+	spriteTextureBufferSet[loadTextureCounter - 1].textureBuffer.resize(1);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE spriteHandle = spriteHeap->GetCPUDescriptorHandleForHeapStart();
 
@@ -2198,7 +2198,7 @@ void DirectX12::loadOBJMaterial
 	const DirectX::Image* imgs;
 	TextureBufferSet tSet;
 	textureBufferSet.emplace(key, tSet);
-	textureBufferSet[key].textureBuff.resize(loadNum);
+	textureBufferSet[key].textureBuffer.resize(loadNum);
 	for (int i = 0; i < loadNum; i++)
 	{
 		basicHeapHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
@@ -2351,7 +2351,7 @@ void DirectX12::loadOBJMaterial
 				createBuffer->createConstBufferSet
 				(
 					CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstBuffData) + 0xff)&~0xff),
+					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstData) + 0xff)&~0xff),
 					basicHeapHandle,
 					(void**)&materialData,
 					constSetV[i],
@@ -2407,7 +2407,7 @@ void DirectX12::loadOBJMaterial
 				createBuffer->createConstBufferSet
 				(
 					CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstBuffData) + 0xff)&~0xff),
+					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstData) + 0xff)&~0xff),
 					basicHeapHandle,
 					(void**)&materialData,
 					constSetV[i],
@@ -2815,7 +2815,7 @@ void DirectX12::createHeapData
 #pragma region テクスチャバッファ
 
 	TextureBufferSet tSet;
-	tSet.textureBuff.resize(1);
+	tSet.textureBuffer.resize(1);
 	//単色
 	if (texPath == L"")
 	{
@@ -2873,7 +2873,7 @@ void DirectX12::createHeapData
 		createBuffer->createConstBufferSet
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstBuffData) + 0xff)&~0xff),
+			CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstData) + 0xff)&~0xff),
 			basicHeapHandle,
 			(void**)&materialData,
 			constSetV[objectNum],
@@ -3060,7 +3060,7 @@ void DirectX12::loadSpriteFont(const wchar_t *const texturePath, const DirectX::
 	const DirectX::Image* imgs = DirectXTexLoader::loadTexture(texturePath, &metadata, &scratchimage);
 
 	spriteFontTextureBufferSet.resize(spriteFontTextureBufferSet.size() + 1);
-	spriteFontTextureBufferSet[spriteFontTextureBufferSet.size() - 1].textureBuff.resize(1);
+	spriteFontTextureBufferSet[spriteFontTextureBufferSet.size() - 1].textureBuffer.resize(1);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE spriteHandle = spriteFontHeap->GetCPUDescriptorHandleForHeapStart();
 
@@ -3123,7 +3123,7 @@ void DirectX12::loadTexture(const wchar_t* texturePath, Color color)
 		//uvの設定を頂点バッファ生成後にしていた
 		TextureBufferSet textureSet;
 		spriteTextureBufferSet.push_back(textureSet);
-		spriteTextureBufferSet[loadTextureCounter - 1].textureBuff.resize(1);
+		spriteTextureBufferSet[loadTextureCounter - 1].textureBuffer.resize(1);
 
 		D3D12_CPU_DESCRIPTOR_HANDLE spriteHandle = spriteHeap->GetCPUDescriptorHandleForHeapStart();
 
@@ -3599,7 +3599,7 @@ void DirectX12::setCmdList(const ModelData& modelData,  int number)
 
 
 			//共通
-			handleNum = static_cast<int>(textureBufferSet[modelData.key].textureBuff.size());
+			handleNum = static_cast<int>(textureBufferSet[modelData.key].textureBuffer.size());
 			gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 			(
 				basicHeaps[modelData.key]->GetGPUDescriptorHandleForHeapStart(),
@@ -3634,7 +3634,7 @@ void DirectX12::setCmdList(const ModelData& modelData,  int number)
 
 				//定数バッファセット
 				handleNum = 0;
-				handleNum += static_cast<int>(textureBufferSet[modelData.key].textureBuff.size()) + 1;//テクスチャと共通分ずらす
+				handleNum += static_cast<int>(textureBufferSet[modelData.key].textureBuffer.size()) + 1;//テクスチャと共通分ずらす
 				handleNum += static_cast<int>(constBufferSet[modelData.key][number].constBuffer.size()) * number;//オブジェクトの場所までずらす
 
 				gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
