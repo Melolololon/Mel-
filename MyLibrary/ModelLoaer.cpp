@@ -48,14 +48,14 @@ bool ModelLoader::loadPMDModel(const char* path, std::vector<PMDVertex>& vertex,
 
 bool  ModelLoader::loadOBJModel
 (
-	const char* path,
-	bool loadUV, 
-	bool loadNormal, 
-	std::vector<std::vector<Vertex>>& vertices, 
+	const std::string& path,
+	bool loadUV,
+	bool loadNormal,
+	std::vector<std::vector<OBJAnimationVertex>>& vertices,
 	std::vector<std::vector<USHORT>>& indices,
-	std::string* materialFileName,
-	std::vector<std::string>&materialName, 
-	std::vector<std::unordered_map<USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
+	std::string& materialFileName,
+	std::vector<std::string>& materialName,
+	std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
 	int* loadNum,
 	std::vector<DirectX::XMFLOAT3>* bonePosVector,
 	std::vector<std::vector<int>>* boneNumVector
@@ -212,10 +212,9 @@ bool  ModelLoader::loadOBJModel
 #pragma region マテリアル関係
 
 		//マテリアルのファイル名取得
-		if (topStr.find("mtllib") != std::string::npos &&
-			materialFileName) 
+		if (topStr.find("mtllib") != std::string::npos) 
 		{
-			lineStream >> *materialFileName;
+			lineStream >> materialFileName;
 			loadMtlFile = true;
 		}
 		//マテリアル名取得
@@ -245,7 +244,7 @@ bool  ModelLoader::loadOBJModel
 			char sluch;
 			
 			//頂点。これに一時的に入れてから、配列に入れる
-			Vertex vertex;
+			OBJAnimationVertex vertex;
 
 			//三角形ポリゴンを読み込むので3
 			int polygonValue = 3;

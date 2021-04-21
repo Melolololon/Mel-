@@ -1,13 +1,35 @@
 #include "CreateBuffer.h"
+#include<d3dx12.h>
+
+CreateBuffer::CreateBuffer()
+{
+}
+CreateBuffer::~CreateBuffer() {}
 
 
-CreateBuffer::CreateBuffer(ID3D12Device* dev, int windowWidth, int windowHeight)
+CreateBuffer* CreateBuffer::getInstance()
+{
+	static CreateBuffer c;
+	return &c;
+}
+
+
+void CreateBuffer::initialize
+(
+	ID3D12Device* device,
+	const int& windowWidth,
+	const int& windowHeight
+)
 {
 	this->dev = dev;
 	this->windowWidth = windowWidth;
 	this->windowHeight = windowHeight;
 }
-CreateBuffer::~CreateBuffer() {}
+
+
+#pragma region ‹Œ
+
+
 
 #pragma region ’¸“_
 
@@ -96,7 +118,6 @@ bool CreateBuffer::createUserVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D
 }
 
 #pragma endregion
-
 
 void CreateBuffer::createIndexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<unsigned short> indices, IndexBufferSet& set)
 {
@@ -309,3 +330,74 @@ void CreateBuffer::createDepthBufferSet(D3D12_HEAP_PROPERTIES depthheapprop, D3D
 		heapHandle
 	);
 }
+
+
+#pragma endregion
+
+#pragma region V
+
+
+void CreateBuffer::createVertexBuffer
+(
+	const D3D12_HEAP_PROPERTIES& heapprop,
+	const size_t& verticesSize,
+	const size_t& verticesNum,
+	VertexBufferSet& set
+)
+{
+
+	D3D12_RESOURCE_DESC resdesc;
+
+	resdesc = CD3DX12_RESOURCE_DESC::Buffer(verticesSize * verticesNum);
+
+	dev->CreateCommittedResource
+	(
+		&heapprop,
+		D3D12_HEAP_FLAG_NONE,
+		&resdesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&set.vertexBuffer)
+	);
+
+	set.vertexBufferView.BufferLocation = set.vertexBuffer->GetGPUVirtualAddress();
+	set.vertexBufferView.SizeInBytes = verticesSize * verticesNum;
+	set.vertexBufferView.StrideInBytes = verticesSize;
+
+}
+
+
+void CreateBuffer::createIndexBuffer
+(
+	const D3D12_HEAP_PROPERTIES& heapprop,
+	const std::vector<USHORT>& indices,
+	IndexBufferSet& set
+)
+{
+	auto indexNum = indices.size();
+	auto indexSize = sizeof(USHORT) * indexNum;
+
+	D3D12_RESOURCE_DESC resdesc = 
+		CD3DX12_RESOURCE_DESC::Buffer(indexSize);
+
+	dev->CreateCommittedResource(
+		&heapprop,
+		D3D12_HEAP_FLAG_NONE,
+		&resdesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&set.indexBuffer)
+	);
+
+	set.indexBuffer->Map(0, nullptr, (void**)&set.indexMap);
+	for (int j = 0; j < indexNum; j++)
+		set.indexMap[j] = indices[j];
+	set.indexBuffer->Unmap(0, nullptr);
+
+	set.indexBufferView.BufferLocation = set.indexBuffer->GetGPUVirtualAddress();
+	set.indexBufferView.Format = DXGI_FORMAT_R16_UINT;
+	set.indexBufferView.SizeInBytes = indexSize;
+}
+
+#pragma endregion
+

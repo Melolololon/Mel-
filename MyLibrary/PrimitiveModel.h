@@ -3,10 +3,6 @@
 class PrimitiveModel :public Model
 {
 protected:
-
-	
-
-
 public:
 	PrimitiveModel();
 	virtual ~PrimitiveModel();

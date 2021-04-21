@@ -28,13 +28,13 @@ public:
 	/// <returns></returns>
 	bool loadOBJModel
 	(
-		const char* path,
+		const std::string& path,
 		bool loadUV,
 		bool loadNormal,
-		std::vector<std::vector<Vertex>>& vertices,
+		std::vector<std::vector<OBJAnimationVertex>>& vertices,
 		std::vector<std::vector<USHORT>>& indices,
-		std::string* materialFileName,
-		std::vector<std::string>&materialName,
+		std::string& materialFileName,
+		std::vector<std::string>& materialName,
 		std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
 		int* loadNum,
 		std::vector<DirectX::XMFLOAT3>* bonePosVector,
