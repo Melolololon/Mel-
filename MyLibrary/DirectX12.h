@@ -36,7 +36,7 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
-
+#include"Model3D.h"
 
 
 enum LibraryPipeline
@@ -108,6 +108,8 @@ private:
 
 #pragma endregion
 
+	ComPtr<ID3D12DescriptorHeap> depthHeap;
+
 	ComPtr<ID3D12Fence> fence;
 	UINT64 fenceVal;
 
@@ -140,6 +142,10 @@ private:
 
 
 #pragma endregion
+
+	//モデル
+	//std::unordered_map<std::string,Model3D> model3D;
+
 
 #pragma region バッファ
 
@@ -180,7 +186,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap> spriteHeap;
 	ComPtr<ID3D12DescriptorHeap> pointHeap;
 	ComPtr<ID3D12DescriptorHeap> spriteFontHeap;
-	ComPtr<ID3D12DescriptorHeap> depthHeap;
+
 
 
 #pragma endregion
@@ -329,8 +335,6 @@ private:
 	std::vector<int*>spriteP;
 	std::vector<int*>pointP;
 
-	//これいらない
-	std::vector<DirectX::XMFLOAT2>spriteSizes;
 
 #pragma region カウント変数
 
