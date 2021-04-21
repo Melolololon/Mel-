@@ -6,40 +6,34 @@
 #include<vector>
 #include"DirectXStruct.h"
 
+//とりあえずこれのポインタをキーにする
 
-struct ModelVerticesData
+//これにバッファ持たせると、終了時に確実にバッファ解放できない。
+//プログラム終了時に
+
+//これをObjModelなどに継承する
+//これを引数にしても、OBJのボーンとか引き出せない。
+//セットとかの関数をここに移植するしかない
+class Model3D
 {
+private:
 	//[objにあるモデルごと][頂点ごと]
 	std::vector<std::vector<Vertex>> vertices;
-	std::vector<std::vector<DirectX::XMFLOAT3>>smoothNormal;
 	std::vector<std::vector<USHORT>> indices;
 
-	//[objの中のモデルごと]
-	std::vector<VertexBufferSet> vertexBufferSet;
-	std::vector<IndexBufferSet>indexBufferSet;
-};
 
-
-
-struct ModelHeapData
-{
 	std::vector < ModelConstData>modelConstData;
 	MaterialConstBuffData material;
-	DirectX::TexMetadata textureData;
 
-	std::vector<ConstBufferSet> constBufferSet;
-	ComPtr<ID3D12Resource>commonBuffers;
-	TextureBufferSet textureBufferSet;
-
-
-	ComPtr<ID3D12DescriptorHeap> basicHeaps;
+	std::vector <Model3D*> parentModel;
+	std::vector <int> parentModelNumbers;
 
 	//定数バッファのタグ(ルートパラメーターセット用)
-//"Texture" シェーダーリソースビュー t0
-//"LibraryConst" ライブラリ構造体 b0
-//"UserConst" ユーザー構造体 b1
-//"Material" マテリアル構造体 b2
-//COMMON_CONST_BUFFER 共通 b3
+	//"Texture" シェーダーリソースビュー t0
+	//"LibraryConst" ライブラリ構造体 b0
+	//"UserConst" ユーザー構造体 b1
+	//"Material" マテリアル構造体 b2
+	//COMMON_CONST_BUFFER 共通 b3
 	enum ConstBufferTag
 	{
 		TEXTURE_BUFFER,
@@ -51,45 +45,16 @@ struct ModelHeapData
 	};
 	std::vector<ConstBufferTag>heapTags;
 
-};
+	//[objの中のモデルごと]
+	std::vector<VertexBufferSet> vertexBufferSet;
+	std::vector<IndexBufferSet>indexBufferSet;
 
-
-
-
-
-//これにバッファ持たせると、終了時に確実にバッファ解放できない。
-//プログラム終了時に
-
-//これをObjModelなどに継承する
-//これを引数にしても、OBJのボーンとか引き出せない。
-//セットとかの関数をここに移植するしかない
-//それか、引数分描画関数を用意(オーバーロードで)
-class Model3D
-{
-private:
-	ModelVerticesData modelVerticesData;
-	ModelHeapData modelHeapData;
-	
-
-	std::vector <Model3D*> parentModel;
-	std::vector <int> parentModelNumbers;
-
-
-
+	std::vector<ConstBufferSet> constBufferSet;
+	ComPtr<ID3D12Resource>commonBuffers;
+	TextureBufferSet textureBufferSet;
 
 public:
-	/*Model3D();
-	~Model3D();*/
-
-	void setModelVerticesData(const ModelVerticesData& data)
-	{
-		modelVerticesData = data;
-	}
-	void setModelHeapData(const ModelHeapData& data)
-	{
-		modelHeapData = data;
-	}
-
-
+	Model3D();
+	~Model3D();
 };
 
