@@ -1947,7 +1947,7 @@ VertexType DirectX12::loadOBJVertex
 	bool loadUV,
 	bool loadNormal,
 	std::string* materialFireName,
-	const std::string& key
+	ObjModel* objModel
 )
 {
 

@@ -98,7 +98,7 @@ bool  ModelLoader::loadOBJModel
 	obj.open(path);
 	if(!obj)
 	{
-		OutputDebugString(L"読み込みに失敗しました。.objファイルが見つかりませんでした。\n");
+		OutputDebugString(L"読み込みに失敗しました。.objファイルが見つかりません。\n");
 		return false;
 	}
 

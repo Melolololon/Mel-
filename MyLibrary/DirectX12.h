@@ -38,6 +38,10 @@
 
 
 
+#include"Model.h"
+#include"PrimitiveModel.h"
+#include"ObjModel.h"
+#include"FbxModel.h"
 
 enum LibraryPipeline
 {
@@ -218,7 +222,7 @@ private:
 	//スムースシェーディング用データ
 	std::unordered_map<std::string, std::vector<std::vector<DirectX::XMFLOAT3>>> smoothNormal;//法線を平均した頂点データ
 
-	//[obj内のオブジェクト分]
+	//[obj内のオブジェクト分]スムーズシェーディングの計算用データ
 	std::vector< std::unordered_map < USHORT, std::vector<USHORT> >>smoothData;
 
 	//スムースシェーディング用関数
