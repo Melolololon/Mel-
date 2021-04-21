@@ -232,30 +232,11 @@ private:
 
 
 #pragma region オブジェクト情報
-	struct ModelConstData
-	{
-		std::vector<DirectX::XMFLOAT3>position;
-		std::vector<DirectX::XMFLOAT3>scale;
-		std::vector<DirectX::XMFLOAT3>angle;
-		std::vector<DirectX::XMFLOAT4>addColor;
-		std::vector<DirectX::XMFLOAT4>subColor;
-		std::vector<DirectX::XMFLOAT4>mulColor;
-		std::vector<float>pushPolygonNum;
 
-	};
 	std::unordered_map < std::string, ModelConstData>modelConstData;
 
 #pragma region ボーン
 
-	//表示してるモデル1つ1つが違う値の構造体
-	struct BoneData
-	{
-		//0,0,0から、どのくらい動かすかを表したfloat3
-		std::vector<std::vector<DirectX::XMFLOAT3>>moveVector;
-
-		std::vector<std::vector<DirectX::XMFLOAT3>>scale;
-		std::vector<std::vector<DirectX::XMFLOAT3>>angle;
-	};
 	//[key モデルごと][オブジェクトの番号ごと][ボーンごと]
 	std::unordered_map < std::string, BoneData> boneConstData;
 
@@ -275,14 +256,7 @@ private:
 	//};
 	//std::unordered_map<std::string, ModelBoneData>modelBoneData;
 
-	//ボーンの親をセットするときにセットする値
-	struct ParentBoneData
-	{
-		int parentBoneNum;//-1を未セットにするため、int型
-		DirectX::XMFLOAT3 angleImpact;
-		DirectX::XMFLOAT3 scaleImpact;
-		DirectX::XMFLOAT3 moveVectorImpact;
-	};
+	
 	//[モデルごと][ボーンごと](オブジェクトごとに変える必要なさそうなので、こうしてる)
 	std::unordered_map<std::string, std::vector<ParentBoneData>> parentBoneData;
 

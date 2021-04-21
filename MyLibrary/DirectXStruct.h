@@ -105,6 +105,36 @@ struct PMDHeader
 
 #pragma region 定数構造体
 
+struct ModelConstData
+{
+	std::vector<DirectX::XMFLOAT3>position;
+	std::vector<DirectX::XMFLOAT3>scale;
+	std::vector<DirectX::XMFLOAT3>angle;
+	std::vector<DirectX::XMFLOAT4>addColor;
+	std::vector<DirectX::XMFLOAT4>subColor;
+	std::vector<DirectX::XMFLOAT4>mulColor;
+	std::vector<float>pushPolygonNum;
+
+};
+//表示してるモデル1つ1つが違う値の構造体
+struct BoneData
+{
+	//0,0,0から、どのくらい動かすかを表したfloat3
+	std::vector<std::vector<DirectX::XMFLOAT3>>moveVector;
+
+	std::vector<std::vector<DirectX::XMFLOAT3>>scale;
+	std::vector<std::vector<DirectX::XMFLOAT3>>angle;
+};
+
+//ボーンの親をセットするときにセットする値
+struct ParentBoneData
+{
+	int parentBoneNum;//-1を未セットにするため、int型
+	DirectX::XMFLOAT3 angleImpact;
+	DirectX::XMFLOAT3 scaleImpact;
+	DirectX::XMFLOAT3 moveVectorImpact;
+};
+
 struct ConstBufferData
 {
 	DirectX::XMFLOAT4 color;
@@ -177,18 +207,12 @@ struct MaterialConstBuffData
 
 #pragma endregion
 
-#pragma region テクスチャ
-
+#pragma region テクスチャ類
 //テクスチャバッファで送る情報
 struct RGBA
 {
 	unsigned char r, g, b, a;
 };
-
-#pragma endregion
-
-#pragma region テクスチャ類
-
 #pragma region 自力読み込み
 
 #pragma pack(2)
