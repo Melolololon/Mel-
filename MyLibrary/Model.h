@@ -2,9 +2,13 @@
 #include"Library.h"
 #include"Vector.h"
 #include"Color.h"
+#include"DirectXStruct.h"
+
+
 #include<DirectXMath.h>
 #include<vector>
-#include"DirectXStruct.h"
+#include<d3d12.h>
+#include<dxgi.h>
 
 //とりあえずこれのポインタをキーにする
 
@@ -35,20 +39,8 @@ public:
 	};
 
 protected:
-	
-	////[objにあるモデルごと][頂点ごと]
-	//std::vector<std::vector<Vertex>> vertices;
-	//std::vector<std::vector<USHORT>> indices;
-
-
-	//std::vector < ModelConstData>modelConstData;
-	//MaterialConstBuffData material;
-
-	//std::vector <Model3D*> parentModel;
-	//std::vector <int> parentModelNumbers;
-
-	//ディスクリプタヒープのバッファを可視化するためのもの
-	std::vector<ConstBufferTag>heapTags;
+	static ID3D12Device* device;
+	static std::vector<ID3D12CommandList*>cmdLists;
 
 	//[objの中のモデルごと]
 	std::vector<VertexBufferSet> vertexBufferSet;
@@ -61,17 +53,22 @@ protected:
 	//[ヒープ番号]
 	std::vector<ConstBufferSet> constBufferSet;
 	TextureBufferSet textureBufferSet;
+	//ディスクリプタヒープのバッファを可視化するためのもの
+	std::vector<ConstBufferTag>heapTags;
+
 
 	std::vector <Model*> parentModel;
 	std::vector <int> parentModelNumbers;
 
 
-	//定数にセットするもの
+	//定数にセットする座標などの値
 	std::vector <ModelConstData>modelConstData;
 
 	std::vector<Material> materials;
 public:
 	Model();
 	virtual ~Model();
+
+	
 };
 
