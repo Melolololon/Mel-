@@ -49,6 +49,12 @@
     <Filter Include="ソース ファイル\Input">
       <UniqueIdentifier>{70949721-ab70-469a-a147-b415eb763808}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Model">
+      <UniqueIdentifier>{917291d3-5a22-46c3-9404-b78e4cb60f21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model">
+      <UniqueIdentifier>{98e113da-0251-46f7-94c3-dcd71844592c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CreateBuffer.cpp">
@@ -135,11 +141,17 @@
     <ClCompile Include="FbxLoader.cpp">
       <Filter>ソース ファイル\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="FbxModel.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Model.cpp">
+      <Filter>ソース ファイル\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Model3D.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="PrimitiveModel.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjModel.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxModel.cpp">
+      <Filter>ソース ファイル\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -258,11 +270,17 @@
     <ClInclude Include="FbxLoader.h">
       <Filter>ヘッダー ファイル\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="FbxModel.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Model.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model3D.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="PrimitiveModel.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjModel.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxModel.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

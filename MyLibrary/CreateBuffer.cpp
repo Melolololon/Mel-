@@ -181,9 +181,9 @@ void CreateBuffer::createTextureBufferSet(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle
 		&texResDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&set.textureBuff[num]));
+		IID_PPV_ARGS(&set.textureBuffer[num]));
 
-	auto result = set.textureBuff[num]->WriteToSubresource
+	auto result = set.textureBuffer[num]->WriteToSubresource
 	(
 		0,
 		nullptr,
@@ -212,7 +212,7 @@ void CreateBuffer::createTextureBufferSet(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle
 
 	dev->CreateShaderResourceView
 	(
-		set.textureBuff[num].Get(),
+		set.textureBuffer[num].Get(),
 		&srvDesc,
 		heapHandle
 	);
@@ -247,7 +247,7 @@ void CreateBuffer::createTextureBufferSet2(D3D12_CPU_DESCRIPTOR_HANDLE heapHandl
 		&texResDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&set.textureBuff[num]));
+		IID_PPV_ARGS(&set.textureBuffer[num]));
 
 
 
@@ -261,7 +261,7 @@ void CreateBuffer::createTextureBufferSet2(D3D12_CPU_DESCRIPTOR_HANDLE heapHandl
 
 	}
 
-	result = set.textureBuff[num]->WriteToSubresource
+	result = set.textureBuffer[num]->WriteToSubresource
 	(
 		0,
 		nullptr,
@@ -278,7 +278,7 @@ void CreateBuffer::createTextureBufferSet2(D3D12_CPU_DESCRIPTOR_HANDLE heapHandl
 
 	dev->CreateShaderResourceView
 	(
-		set.textureBuff[num].Get(),
+		set.textureBuffer[num].Get(),
 		&srvDesc,
 		heapHandle
 	);
