@@ -53,8 +53,8 @@ protected:
 	//1つだけ生成するようにしたほうがいい?
 	ComPtr<ID3D12Resource>commonBuffers;
 	
-	//[ヒープの番号ごと][obj内のモデルごと]
-	std::vector<std::vector<ComPtr<ID3D12Resource>>> constBuffer;
+	//[ヒープの番号(heapNum)ごと][obj内のモデルごと][バッファごと]
+	std::vector<std::vector<std::vector<ComPtr<ID3D12Resource>>>> constBuffer;
 	std::vector<ComPtr<ID3D12Resource>> textureBuffer;
 	//ディスクリプタヒープのバッファを可視化するためのもの
 	std::vector<HeapBufferTag>heapTags;
@@ -68,7 +68,6 @@ protected:
 	std::vector <ModelConstData>modelConstData;
 
 	std::vector<Material> materials;
-
 
 
 #pragma region バッファ
@@ -95,13 +94,21 @@ protected:
 	/// <param name="indicesNum"></param>
 	void createIndexBuffer(const std::vector<USHORT>& indicesNum);
 
-
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="modelNum">生成数</param>
+	/// <param name="modelFileObjectNum">モデルファイルに何個オブジェクトがあるか。</param>
+	/// <param name="heapTop"></param>
+	/// <param name="constDataSize"></param>
+	/// <param name="constData"></param>
 	void createConstBuffer
 	(
-		const size_t& constStructDataSize,
-		void** constData,
-		const size_t& constDataSize,
-		const int& modelNum
+		const int& modelNum,
+		const int& modelFileObjectNum,
+		const int& heapTop,
+		const std::vector<size_t>& constDataSize,
+		std::vector<void**> constData
 	);
 
 	void createTextureBuffer
@@ -125,6 +132,15 @@ protected:
 	);
 
 	void unmapVertexBuffer(const int& modelNum);
+
+
+	void mapIndexBuffer
+	(
+		const int& modelNum,
+		void** index
+	);
+
+	void unmapIndexBuffer(const int& modelNum);
 #pragma endregion
 
 

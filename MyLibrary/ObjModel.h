@@ -27,11 +27,18 @@ private:
 	//[ボーンごと](オブジェクトごとに変える必要なさそうなので、こうしてる)
 	std::vector<ParentBoneData> parentBoneData;//親ボーンと影響度
 
-
+	//モデルファイルにあるオブジェクト数
+	int loadFileObjectNum;
 public:
 	ObjModel();
 	virtual ~ObjModel();
 
+	/// <summary>
+	/// objモデルの頂点を読み込みます。
+	/// </summary>
+	/// <param name="path">モデルのパス</param>
+	/// <param name="loadUV">uvを読み込むか</param>
+	/// <param name="loadNormal">normalを読み込むか</param>
 	void loadModelVertices
 	(
 		const std::string& path,
@@ -41,7 +48,8 @@ public:
 
 	void loadModelMaterial
 	(
-		const int& createNum
+		const int& createNum,
+		void** constData
 	);
 };
 
