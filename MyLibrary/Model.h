@@ -28,7 +28,7 @@ public:
 	//"UserConst" ユーザー構造体 b1
 	//"Material" マテリアル構造体 b2
 	//COMMON_CONST_BUFFER 共通 b3
-	enum ConstBufferTag
+	enum HeapBufferTag
 	{
 		TEXTURE_BUFFER,
 		COMMON_CONST_BUFFER,
@@ -47,15 +47,17 @@ protected:
 	std::vector<VertexBufferSet> vertexBufferSet;
 	std::vector<IndexBufferSet>indexBufferSet;
 
+	ComPtr<ID3D12DescriptorHeap>desHeap;
+
 	//これスプライトみたいにヒープから呼び出さないようにして、
 	//1つだけ生成するようにしたほうがいい?
 	ComPtr<ID3D12Resource>commonBuffers;
-
-	//[ヒープ番号]
-	std::vector<ConstBufferSet> constBufferSet;
-	TextureBufferSet textureBufferSet;
+	
+	//[ヒープの番号ごと][obj内のモデルごと]
+	std::vector<std::vector<ComPtr<ID3D12Resource>>> constBuffer;
+	std::vector<ComPtr<ID3D12Resource>> textureBuffer;
 	//ディスクリプタヒープのバッファを可視化するためのもの
-	std::vector<ConstBufferTag>heapTags;
+	std::vector<HeapBufferTag>heapTags;
 
 
 	std::vector <Model*> parentModel;
@@ -68,13 +70,16 @@ protected:
 	std::vector<Material> materials;
 
 
+
 #pragma region バッファ
 
 #pragma region 生成
 
+	//生成を頂点関係、ヒープ関係で完全にまとめ、
+	//Buffer作成関数はprivateにする
 
 	/// <summary>
-	/// バッファの生成
+	/// 頂点バッファの生成
 	/// </summary>
 	/// <param name="verticesSize"></param>
 	/// <param name="verticesNum"></param>
@@ -84,10 +89,28 @@ protected:
 		const size_t& verticesNum
 	);
 
+	/// <summary>
+	/// インデックスバッファ作成
+	/// </summary>
+	/// <param name="indicesNum"></param>
 	void createIndexBuffer(const std::vector<USHORT>& indicesNum);
 
-#pragma endregion
 
+	void createConstBuffer
+	(
+		const size_t& constStructDataSize,
+		void** constData,
+		const size_t& constDataSize,
+		const int& modelNum
+	);
+
+	void createTextureBuffer
+	(
+		std::wstring path
+	);
+
+
+#pragma endregion
 
 #pragma region マップ
 	/// <summary>
@@ -106,6 +129,21 @@ protected:
 
 
 #pragma endregion
+
+#pragma region ヒープ
+
+#pragma region 生成
+	
+	void createDescriptorHeap
+	(
+		const int& arrayNum
+	);
+
+#pragma endregion
+
+
+#pragma endregion
+
 
 #pragma region スムーズシェーディング
 	void calcSmoothingNormal

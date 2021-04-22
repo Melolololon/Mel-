@@ -138,11 +138,42 @@ void ObjModel::loadModelVertices
 
 }
 
-void loadModelMaterial
+void ObjModel::loadModelMaterial
 (
 	const int& createNum
 )
 {
+#pragma region パスとファイル分離
+	std::string directoryPath;
+	std::string fileName;
+	
+	auto materialFileSize = materialFileName.size();
+	for(int i = materialFileSize - 1;;i--)
+	{
+		if (materialFileName[i] == '/' ||
+			materialFileName[i] == '\\')
+		{
+			std::copy
+			(
+				materialFileName.begin(),
+				materialFileName.begin() + i,
+				directoryPath.begin()
+			);
+			std::copy
+			(
+				materialFileName.begin() + i + 1, 
+				materialFileName.end(), 
+				fileName.begin()
+			);
+			break;
+		}
+
+	}
+
+
+#pragma endregion
+
+
 	//テクスチャ名
 	wchar_t texturePathW[20][256];
 
@@ -150,23 +181,53 @@ void loadModelMaterial
 	int loadNum = 0;
 	ModelLoader::getInstance()->loadObjMaterial
 	(
-		materialDirectoryPath,
+		directoryPath,
 		materialFileName,
-		materials[key],
+		materials,
 		&loadNum
 	);
 
+	D3D12_CPU_DESCRIPTOR_HANDLE hHandle = desHeap->GetCPUDescriptorHandleForHeapStart();
+
 	for (int i = 0; i < loadNum; i++)
 	{
-		//mbsrtowcs_s(&size, texturePathW, 256, &texturePath, 256, nullptr);
+	
 		MultiByteToWideChar
 		(
 			CP_ACP,
 			0,
-			materials[key][i].textureName.c_str(),
+			materials[i].textureName.c_str(),
 			-1,
 			texturePathW[i],
 			_countof(texturePathW[i])
 		);
+
+#pragma region テクスチャバッファ作成
+	DirectX::TexMetadata metadata{};
+	DirectX::ScratchImage scratchimage{};
+
+	const DirectX::Image* imgs;
+	imgs = DirectXTexLoader::loadTexture
+	(
+		texturePathW[i],
+		&metadata,
+		&scratchimage
+	);
+
+	CreateBuffer::getInstance()->createTextureBuffer
+	(
+		metadata,
+		imgs,
+		hHandle,
+		textureBuffer[i].Get()
+	);
+#pragma endregion
+
+#pragma region 定数バッファ作成
+
+#pragma endregion
+
+
 	}
+
 }
