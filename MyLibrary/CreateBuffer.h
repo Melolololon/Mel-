@@ -13,7 +13,7 @@ class CreateBuffer
 {
 private:
 	//‚±‚±ComPtr‚É‚·‚é‚©Šm”F‚·‚é
-	ID3D12Device* dev;
+	ID3D12Device* device;
 	int windowWidth, windowHeight;
 
 	CreateBuffer();
@@ -80,6 +80,36 @@ public:
 		const D3D12_HEAP_PROPERTIES& heapprop, 
 		const std::vector<USHORT>& indices, 
 		IndexBufferSet& set
+	);
+
+	void createConstBuffer
+	(
+		const D3D12_HEAP_PROPERTIES& cbheapprop,
+		void** constData,
+		const size_t& constStructDataSize,
+		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+		ID3D12Resource* constBuffer
+	);
+
+	void createTextureBuffer
+	(
+		const DirectX::TexMetadata& metadata,
+		const DirectX::Image* image,
+		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle, 
+		ID3D12Resource* textureBuffer
+	);
+	void createOneColorTextureBuffer
+	(
+		const Color& color,
+		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+		ID3D12Resource* textureBuffer
+	);
+
+
+	void createDescriptorHeap
+	(
+		ID3D12DescriptorHeap* heap,
+		const int& arrayNum
 	);
 #pragma endregion
 
