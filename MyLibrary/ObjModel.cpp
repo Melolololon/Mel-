@@ -1,7 +1,10 @@
 #include "ObjModel.h"
 #include"ModelLoader.h"
 
-ObjModel::ObjModel(){}
+ObjModel::ObjModel()
+{
+	loadFileObjectNum = 0;
+}
 
 ObjModel::~ObjModel(){}
 
@@ -13,8 +16,7 @@ void ObjModel::loadModelVertices
 	const bool& loadNormal
 )
 {
-	//objにあるモデル数
-	int loadNum = 0;
+	
 
 	//マテリアル
 	std::vector<std::string>materialName;
@@ -30,12 +32,12 @@ void ObjModel::loadModelVertices
 		materialFileName,
 		materialName,
 		smoothData,
-		&loadNum,
+		&loadFileObjectNum,
 		&objBonePositions,
 		&objBoneNums
 	);
-	auto size = vertices.size();
-	for (int i = 0; i < size; i++)
+	auto vertexSize = vertices.size();
+	for (int i = 0; i < vertexSize; i++)
 		vertexBufferSet[i].materialName = materialName[i];
 
 
@@ -51,12 +53,12 @@ void ObjModel::loadModelVertices
 
 #pragma region 法線計算
 
-	auto verticesSize = vertices.size();
-	smoothNormal.resize(verticesSize);
-	for (int i = 0; i < verticesSize; i++)
+	auto vertSize = vertices.size();
+	smoothNormal.resize(vertSize);
+	for (int i = 0; i < vertSize; i++)
 		smoothNormal[i].resize(vertices[i].size());
 
-	for (int i = 0; i < verticesSize; i++)
+	for (int i = 0; i < vertSize; i++)
 	{
 		for (int j = 0; j < vertices[i].size(); j++)
 		{
@@ -105,30 +107,40 @@ void ObjModel::loadModelVertices
 #pragma endregion
 
 #pragma region バッファ
-	for (int i = 0; i < loadNum; i++)
+	for (int i = 0; i < loadFileObjectNum; i++)
 	{
 		createVertexBuffer
 		(
 			sizeof(OBJAnimationVertex),
 			vertices[i].size()
-
 		);
 
 		OBJAnimationVertex* vertex;
 		mapVertexBuffer
 		(
 			i,
-			(void**)vertex
+			(void**)&vertex
 		);
 
 		
-		for (int j = 0; j < size; i++)
+		for (int j = 0; j < vertexSize; i++)
 			vertex[j] = vertices[i][j];
 
 		unmapVertexBuffer(i);
 
-		createIndexBuffer(indices[i]);
 
+		createIndexBuffer(indices[i]);
+		USHORT* index;
+		mapIndexBuffer
+		(
+			i,
+			(void**)&index
+		);
+		auto indexSize = indices.size();
+		for (int j = 0; j < indexSize; i++)
+			index[j] = indices[i][j];
+
+		unmapIndexBuffer(i);
 	}
 
 
@@ -140,7 +152,8 @@ void ObjModel::loadModelVertices
 
 void ObjModel::loadModelMaterial
 (
-	const int& createNum
+	const int& createNum,
+	void** constData
 )
 {
 #pragma region パスとファイル分離
@@ -224,6 +237,7 @@ void ObjModel::loadModelMaterial
 #pragma endregion
 
 #pragma region 定数バッファ作成
+	
 
 #pragma endregion
 
