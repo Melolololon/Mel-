@@ -111,14 +111,14 @@ void ObjModel::loadModelVertices
 	for (int i = 0; i < loadFileObjectNum; i++)
 		verticesNum[i] = vertices[i].size();
 
-	createVertexBuffer
+	createModelVertexResources
 	(
 		sizeof(OBJAnimationVertex),
-		verticesNum
+		verticesNum,
+		indices
 	);
 
-	createIndexBuffer(indices);
-
+	//マップ
 	for (int i = 0; i < loadFileObjectNum; i++)
 	{
 
@@ -158,8 +158,7 @@ void ObjModel::loadModelVertices
 void ObjModel::loadModelMaterial
 (
 	const int& createNum,
-	void** constData,
-	const size_t& constDataSize
+	const size_t& constDataSize = 0
 )
 {
 #pragma region パスとファイル分離
@@ -221,42 +220,11 @@ void ObjModel::loadModelMaterial
 		);
 	}
 
-	int heapHandleNum = 0;
-	createTextureBuffer
+	createModelHeapResources
 	(
 		texturePathW,
-		heapHandleNum
-	);
-
-	std::vector<size_t>buffersSize;
-	buffersSize =
-	{
-		sizeof(ModelConstData),
-		sizeof(Material)
-	};
-
-	std::vector<HeapBufferTag>tags;
-	tags =
-	{
-		HeapBufferTag::TAG_LIBRARY_CONST_BUFFER,
-		HeapBufferTag::TAG_MATERIAL_CONST_BUFFER
-	};
-
-	if (constData)
-	{
-		buffersSize.push_back(constDataSize); 
-		tags.push_back(HeapBufferTag::TAG_USER_CONST_BUFFER);
-	}
-
-	std::vector<size_t>bufferStructSize();
-
-	heapHandleNum = texturePathW.size();
-	createConstBuffer
-	(
 		createNum,
-		loadFileObjectNum,
-		heapHandleNum,
-		buffersSize,
-		tags
+		static_cast<int>(texturePathW.size()),
+		constDataSize
 	);
 }
