@@ -55,7 +55,7 @@ public:
 	(
 		const Object *const  object,
 		const CollisionType& collisionType,
-		const int& arrayNum
+		const int arrayNum
 	);
 
 	virtual void* getPtr();
@@ -76,10 +76,10 @@ public:
 	std::vector<LineSegmentData> getLineSegmentData();
 	std::vector<PlaneData> getPlaneData();
 	std::vector<BoardData> getBoardData();
-	Vector3& getLineSegmentHitPosition(const int & num);
-	Vector3& getBoardHitPosition(const int & num);
-	BoxHitDirection& getSphereBoxHitDistance(const int & num) { return sphereData[num].boxHitDistance; }
-	BoxHitDirection& getBoxBoxHitDistance(const int & num) { return boxData[num].boxHitDistance; }
+	Vector3& getLineSegmentHitPosition(const int num);
+	Vector3& getBoardHitPosition(const int num);
+	BoxHitDirection& getSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }
+	BoxHitDirection& getBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
 
 
 	
