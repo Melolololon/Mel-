@@ -49,7 +49,8 @@ public:
 	void loadModelMaterial
 	(
 		const int& createNum,
-		void** constData
+		void** constData = nullptr,
+		const size_t& constDataSize = 0
 	);
 };
 

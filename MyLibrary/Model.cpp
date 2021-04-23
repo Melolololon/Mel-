@@ -12,65 +12,48 @@ Model::~Model()
 
 void Model::createVertexBuffer
 (
-	const size_t& verticesSize,
-	const size_t& verticesNum
+	const size_t verticesSize,
+	const std::vector<size_t>& verticesNum
 )
 {
-	vertexBufferSet.resize(vertexBufferSet.size() + 1);
-	CreateBuffer::getInstance()->createVertexBuffer
-	(
-		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		verticesSize,
-		verticesNum,
-		vertexBufferSet[vertexBufferSet.size() - 1]
-	);
+	//オブジェクト分リサイズ
+	auto objectNum = verticesNum.size();
+	vertexBufferSet.resize(objectNum);
 
+	for (int i = 0; i < objectNum; i++) 
+	{
+		CreateBuffer::getInstance()->createVertexBuffer
+		(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			verticesSize,
+			verticesNum[i],
+			vertexBufferSet[i]
+		);
+	}
 	
 }
 
-void Model::createIndexBuffer(const std::vector<USHORT>& indicesNum)
+void Model::createIndexBuffer(const  std::vector<std::vector<USHORT>>& indicesNum)
 {
-	indexBufferSet.resize(indexBufferSet.size() + 1);
-	CreateBuffer::getInstance()->createIndexBuffer
-	(
-		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		indicesNum,
-		indexBufferSet[indexBufferSet.size() - 1]
-	);
+	auto objectNum = indicesNum.size();
+	indexBufferSet.resize(objectNum);
+
+	for (int i = 0; i < objectNum; i++)
+	{
+		CreateBuffer::getInstance()->createIndexBuffer
+		(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			indicesNum[i],
+			indexBufferSet[i]
+		);
+	}
 }
 
-void Model::mapVertexBuffer
-(
-	const int& modelNum,
-	void** vertexStruct
-)
-{
-	vertexBufferSet[modelNum].vertexBuffer->Map(0, nullptr, vertexStruct);
-}
-
-void Model::unmapVertexBuffer(const int& modelNum)
-{
-	vertexBufferSet[modelNum].vertexBuffer->Unmap(0, nullptr);
-}
-
-void Model::mapIndexBuffer
-(
-	const int& modelNum,
-	void** index
-)
-{
-	indexBufferSet[modelNum].indexBuffer->Map(0, nullptr, index);
-}
-
-void Model::unmapIndexBuffer(const int& modelNum)
-{
-	indexBufferSet[modelNum].indexBuffer->Unmap(0, nullptr);
-}
 
 
 void Model::createDescriptorHeap
 (
-	const int& arrayNum
+	const int arrayNum
 )
 {
 	
@@ -88,11 +71,11 @@ void Model::createDescriptorHeap
 
 void Model::createConstBuffer
 (
-	const int& modelNum, 
-	const int& modelFileObjectNum,
-	const int& heapTop,
+	const int modelNum, 
+	const int modelFileObjectNum,
+	const int heapTop,
 	const std::vector<size_t>& constDataSize,
-	std::vector<void**> constData
+	const std::vector<HeapBufferTag>& tags
 )
 {
 	auto oneModelBufferNum = constDataSize.size();
@@ -111,13 +94,35 @@ void Model::createConstBuffer
 	D3D12_CPU_DESCRIPTOR_HANDLE hHandle;
 	int heapNum = heapTop;
 
+	//生成時にCreateBuffer関数内でヒープのハンドル取得するようにする?
+#pragma region コモンバッファ作成
+
+	hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+	(
+		desHeap->GetCPUDescriptorHandleForHeapStart(),
+		heapNum,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+
+	CreateBuffer::getInstance()->createConstBuffer
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		sizeof(CommonConstData),
+		hHandle,
+		commonBuffers.Get()
+	);
+	heapTags.push_back(COMMON_CONST_BUFFER);
+	heapNum++;
+#pragma endregion
+
+
 	//モデル分ループ
 	for (int i = 0; i < modelNum; i++) 
 	{
 		//モデル内のオブジェクト分ループ
 		for (int j = 0; j < modelFileObjectNum; j++)
 		{
-			//1つのモデルのバッファ分ループ
+			//1つのモデル内のオブジェクトのバッファ分ループ
 			for (int k = 0; k < oneModelBufferNum; k++) 
 			{
 				hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
@@ -130,11 +135,11 @@ void Model::createConstBuffer
 				CreateBuffer::getInstance()->createConstBuffer
 				(
 					CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-					constData[j],
-					constDataSize[j],
+					constDataSize[k],
 					hHandle,
 					constBuffer[i][j][k].Get()
 				);
+				heapTags.push_back(tags[k]);
 				heapNum++;
 			}
 		}
@@ -143,25 +148,71 @@ void Model::createConstBuffer
 
 void Model::createTextureBuffer
 (
-	std::wstring path
+	const std::vector<std::wstring>& texturePath,
+	const int heapTop
 )
 {
-	//DirectX::TexMetadata metadata{};
-	//DirectX::ScratchImage scratchimage{};
+	DirectX::TexMetadata metadata{};
+	DirectX::ScratchImage scratchimage{};
+	const DirectX::Image* imgs;
 
-	//const DirectX::Image* imgs;
-	//imgs = DirectXTexLoader::loadTexture
-	//(
-	//	path.c_str(),
-	//	&metadata,
-	//	&scratchimage
-	//);
+	D3D12_CPU_DESCRIPTOR_HANDLE hHandle;
 
-	//CreateBuffer::getInstance()->createTextureBuffer
-	//(
-	//	metadata,
-	//	imgs,
-	//	,
-	//	textureBuffer
-	//);
+	auto textureNum = texturePath.size();
+	for (int i = 0; i < textureNum;i++)
+	{
+		hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			desHeap->GetCPUDescriptorHandleForHeapStart(),
+			heapTop + i,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+
+		imgs = DirectXTexLoader::loadTexture
+		(
+			texturePath[i].c_str(),
+			&metadata,
+			&scratchimage
+		);
+
+		CreateBuffer::getInstance()->createTextureBuffer
+		(
+			metadata,
+			imgs,
+			hHandle,
+			textureBuffer[i].Get()
+		);
+		heapTags.push_back(HeapBufferTag::TEXTURE_BUFFER);
+	}
 }
+
+#pragma region マップ
+
+void Model::mapVertexBuffer
+(
+	const int modelNum,
+	void** vertexStruct
+)
+{
+	vertexBufferSet[modelNum].vertexBuffer->Map(0, nullptr, vertexStruct);
+}
+
+void Model::unmapVertexBuffer(const int& modelNum)
+{
+	vertexBufferSet[modelNum].vertexBuffer->Unmap(0, nullptr);
+}
+
+void Model::mapIndexBuffer
+(
+	const int modelNum,
+	void** index
+)
+{
+	indexBufferSet[modelNum].indexBuffer->Map(0, nullptr, index);
+}
+
+void Model::unmapIndexBuffer(const int& modelNum)
+{
+	indexBufferSet[modelNum].indexBuffer->Unmap(0, nullptr);
+}
+#pragma endregion

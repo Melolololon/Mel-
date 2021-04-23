@@ -29,7 +29,7 @@ void Object::hit
 (
 	const Object* const  object,
 	const CollisionType& collisionType,
-	const int& arrayNum
+	const int arrayNum
 )
 {
 }
@@ -76,12 +76,12 @@ std::vector<BoardData> Object::getBoardData()
 	return boardData;
 }
 
-Vector3& Object::getLineSegmentHitPosition(const int & num)
+Vector3& Object::getLineSegmentHitPosition(const int  num)
 {
 	return lineSegmentData[num].hitPos;
 }
 
-Vector3& Object::getBoardHitPosition(const int & num)
+Vector3& Object::getBoardHitPosition(const int  num)
 {
 	return boardData[num].hitPos;
 }

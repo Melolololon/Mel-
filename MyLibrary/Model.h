@@ -18,6 +18,8 @@
 //これをObjModelなどに継承する
 //これを引数にしても、OBJのボーンとか引き出せない。
 //セットとかの関数をここに移植するしかない
+
+//モデルクラスに継承するためのクラス
 class Model
 {
 public:
@@ -41,7 +43,6 @@ public:
 protected:
 	static ID3D12Device* device;
 	static std::vector<ID3D12CommandList*>cmdLists;
-
 
 	//[objの中のモデルごと]
 	std::vector<VertexBufferSet> vertexBufferSet;
@@ -84,36 +85,40 @@ protected:
 	/// <param name="verticesNum"></param>
 	void createVertexBuffer
 	(
-		const size_t& verticesSize,
-		const size_t& verticesNum
+		const size_t verticesSize,
+		const std::vector<size_t>& verticesNum
 	);
 
 	/// <summary>
 	/// インデックスバッファ作成
 	/// </summary>
 	/// <param name="indicesNum"></param>
-	void createIndexBuffer(const std::vector<USHORT>& indicesNum);
+	void createIndexBuffer
+	(
+		const std::vector<std::vector<USHORT>>& indicesNum
+	);
 
 	/// <summary>
 	/// 
 	/// </summary>
-	/// <param name="modelNum">生成数</param>
-	/// <param name="modelFileObjectNum">モデルファイルに何個オブジェクトがあるか。</param>
-	/// <param name="heapTop"></param>
-	/// <param name="constDataSize"></param>
-	/// <param name="constData"></param>
+	/// <param name="modelNum">モデル生成数</param>
+	/// <param name="modelFileObjectNum">モデルファイル(.objなど)に何個オブジェクトがあるか。</param>
+	/// <param name="heapTop">ヒープのどこから生成するか</param>
+	/// <param name="constDataSize">生成するバッファの構造体のバイト数</param>
+	/// <param name="tags">生成するバッファの種類(並びはconstDataSizeと合わせること)</param>
 	void createConstBuffer
 	(
-		const int& modelNum,
-		const int& modelFileObjectNum,
-		const int& heapTop,
+		const int modelNum,
+		const int modelFileObjectNum,
+		const int heapTop,
 		const std::vector<size_t>& constDataSize,
-		std::vector<void**> constData
+		const std::vector<HeapBufferTag>&tags
 	);
 
 	void createTextureBuffer
 	(
-		std::wstring path
+		const std::vector<std::wstring>& texturePath,
+		const int heapTop
 	);
 
 
@@ -127,7 +132,7 @@ protected:
 	/// <param name="vertexStruct">GPUの仮想アドレスを格納するポインタのポインタ</param>
 	void mapVertexBuffer
 	(
-		const int& modelNum,
+		const int modelNum,
 		void** vertexStruct
 	);
 
@@ -136,11 +141,18 @@ protected:
 
 	void mapIndexBuffer
 	(
-		const int& modelNum,
+		const int modelNum,
 		void** index
 	);
 
 	void unmapIndexBuffer(const int& modelNum);
+
+
+	void mapConstBuffer
+	(
+		const int modelNum,
+		const int 
+	);
 #pragma endregion
 
 
@@ -152,7 +164,7 @@ protected:
 	
 	void createDescriptorHeap
 	(
-		const int& arrayNum
+		const int arrayNum
 	);
 
 #pragma endregion
@@ -172,6 +184,10 @@ public:
 	Model();
 	virtual ~Model();
 
-	
+	/// <summary>
+	/// マップ用
+	/// </summary>
+	/// <param name="data"></param>
+	static void setCommonConstData(const CommonConstData& data);
 };
 

@@ -107,13 +107,20 @@ void ObjModel::loadModelVertices
 #pragma endregion
 
 #pragma region バッファ
+	std::vector<size_t>verticesNum(loadFileObjectNum);
+	for (int i = 0; i < loadFileObjectNum; i++)
+		verticesNum[i] = vertices[i].size();
+
+	createVertexBuffer
+	(
+		sizeof(OBJAnimationVertex),
+		verticesNum
+	);
+
+	createIndexBuffer(indices);
+
 	for (int i = 0; i < loadFileObjectNum; i++)
 	{
-		createVertexBuffer
-		(
-			sizeof(OBJAnimationVertex),
-			vertices[i].size()
-		);
 
 		OBJAnimationVertex* vertex;
 		mapVertexBuffer
@@ -121,7 +128,6 @@ void ObjModel::loadModelVertices
 			i,
 			(void**)&vertex
 		);
-
 		
 		for (int j = 0; j < vertexSize; i++)
 			vertex[j] = vertices[i][j];
@@ -129,7 +135,6 @@ void ObjModel::loadModelVertices
 		unmapVertexBuffer(i);
 
 
-		createIndexBuffer(indices[i]);
 		USHORT* index;
 		mapIndexBuffer
 		(
@@ -153,7 +158,8 @@ void ObjModel::loadModelVertices
 void ObjModel::loadModelMaterial
 (
 	const int& createNum,
-	void** constData
+	void** constData,
+	const size_t& constDataSize
 )
 {
 #pragma region パスとファイル分離
@@ -187,61 +193,70 @@ void ObjModel::loadModelMaterial
 #pragma endregion
 
 
-	//テクスチャ名
-	wchar_t texturePathW[20][256];
 
 	//マテリアル読み込み&テクスチャ名取得
-	int loadNum = 0;
+	int loadObjectNum = 0;
 	ModelLoader::getInstance()->loadObjMaterial
 	(
 		directoryPath,
 		materialFileName,
 		materials,
-		&loadNum
+		&loadObjectNum
 	);
+	//テクスチャ名
+	std::vector<std::wstring>texturePathW(loadObjectNum);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE hHandle = desHeap->GetCPUDescriptorHandleForHeapStart();
-
-	for (int i = 0; i < loadNum; i++)
+	for (int i = 0; i < loadObjectNum; i++)
 	{
-	
+		texturePathW[i].resize(materials[i].textureName.size());
+
 		MultiByteToWideChar
 		(
 			CP_ACP,
 			0,
 			materials[i].textureName.c_str(),
 			-1,
-			texturePathW[i],
-			_countof(texturePathW[i])
+			texturePathW[i].data(),
+			texturePathW[i].size()
 		);
-
-#pragma region テクスチャバッファ作成
-	DirectX::TexMetadata metadata{};
-	DirectX::ScratchImage scratchimage{};
-
-	const DirectX::Image* imgs;
-	imgs = DirectXTexLoader::loadTexture
-	(
-		texturePathW[i],
-		&metadata,
-		&scratchimage
-	);
-
-	CreateBuffer::getInstance()->createTextureBuffer
-	(
-		metadata,
-		imgs,
-		hHandle,
-		textureBuffer[i].Get()
-	);
-#pragma endregion
-
-#pragma region 定数バッファ作成
-	
-
-#pragma endregion
-
-
 	}
 
+	int heapHandleNum = 0;
+	createTextureBuffer
+	(
+		texturePathW,
+		heapHandleNum
+	);
+
+	std::vector<size_t>buffersSize;
+	buffersSize =
+	{
+		sizeof(ModelConstData),
+		sizeof(Material)
+	};
+
+	std::vector<HeapBufferTag>tags;
+	tags =
+	{
+		HeapBufferTag::LIBRARY_CONST_BUFFER,
+		HeapBufferTag::MATERIAL_CONST_BUFFER
+	};
+
+	if (constData)
+	{
+		buffersSize.push_back(constDataSize); 
+		tags.push_back(HeapBufferTag::USER_CONST_BUFFER);
+	}
+
+	std::vector<size_t>bufferStructSize();
+
+	heapHandleNum = texturePathW.size();
+	createConstBuffer
+	(
+		createNum,
+		loadFileObjectNum,
+		heapHandleNum,
+		buffersSize,
+		tags
+	);
 }

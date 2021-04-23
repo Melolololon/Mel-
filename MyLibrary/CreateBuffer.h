@@ -85,7 +85,6 @@ public:
 	void createConstBuffer
 	(
 		const D3D12_HEAP_PROPERTIES& cbheapprop,
-		void** constData,
 		const size_t& constStructDataSize,
 		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 		ID3D12Resource* constBuffer
