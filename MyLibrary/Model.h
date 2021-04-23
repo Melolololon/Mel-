@@ -24,7 +24,7 @@ class Model
 {
 public:
 
-	//定数バッファのタグ(ルートパラメーターセット用)
+	//定数バッファのタグ
 	//"Texture" シェーダーリソースビュー t0
 	//"LibraryConst" ライブラリ構造体 b0
 	//"UserConst" ユーザー構造体 b1
@@ -32,15 +32,52 @@ public:
 	//COMMON_CONST_BUFFER 共通 b3
 	enum HeapBufferTag
 	{
-		TEXTURE_BUFFER,
-		COMMON_CONST_BUFFER,
-		LIBRARY_CONST_BUFFER,
-		USER_CONST_BUFFER,
-		MATERIAL_CONST_BUFFER,
-		OBJ_BONE_MATRIX_CONST_BUFFER
+		TAG_TEXTURE_BUFFER,
+		TAG_COMMON_CONST_BUFFER,
+		TAG_LIBRARY_CONST_BUFFER,
+		TAG_USER_CONST_BUFFER,
+		TAG_MATERIAL_CONST_BUFFER,
+		TAG_OBJ_BONE_MATRIX_CONST_BUFFER
 	};
 
+private:
+
+#pragma region 生成
+
+	void createDescriptorHeap
+	(
+		const int arrayNum
+	);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="modelNum">モデル生成数</param>
+	/// <param name="modelFileObjectNum">モデルファイル(.objなど)に何個オブジェクトがあるか。</param>
+	/// <param name="heapTop">ヒープのどこから生成するか</param>
+	/// <param name="constDataSize">生成するバッファの構造体のバイト数</param>
+	/// <param name="tags">生成するバッファの種類(並びはconstDataSizeと合わせること)</param>
+	void createConstBuffer
+	(
+		const int modelNum,
+		const int modelFileObjectNum,
+		const int heapTop,
+		const size_t userDataSize = 0
+	);
+
+	void createTextureBuffer
+	(
+		const std::vector<std::wstring>& texturePath,
+		const int heapTop
+	);
+
+
+#pragma endregion
+
 protected:
+#pragma region 変数
+
+
 	static ID3D12Device* device;
 	static std::vector<ID3D12CommandList*>cmdLists;
 
@@ -71,58 +108,46 @@ protected:
 	std::vector<Material> materials;
 
 
-#pragma region バッファ
+#pragma endregion
 
-#pragma region 生成
 
-	//生成を頂点関係、ヒープ関係で完全にまとめ、
-	//Buffer作成関数はprivateにする
+#pragma region 関数
 
+
+#pragma region バッファ生成
+
+#pragma region 生成まとめ
 	/// <summary>
-	/// 頂点バッファの生成
+	/// シェーダーに頂点情報を送るためのデータを生成します。
+	/// (頂点バッファとインデックスバッファのこと)
 	/// </summary>
-	/// <param name="verticesSize"></param>
-	/// <param name="verticesNum"></param>
-	void createVertexBuffer
+	/// <param name="verticesSize">頂点データのバイト数</param>
+	/// <param name="verticesNum">各</param>
+	/// <param name="indicesNum"></param>
+	void createModelVertexResources
 	(
 		const size_t verticesSize,
-		const std::vector<size_t>& verticesNum
-	);
-
-	/// <summary>
-	/// インデックスバッファ作成
-	/// </summary>
-	/// <param name="indicesNum"></param>
-	void createIndexBuffer
-	(
+		const std::vector<size_t>& verticesNum,
 		const std::vector<std::vector<USHORT>>& indicesNum
 	);
 
 	/// <summary>
-	/// 
+	/// シェーダーに頂点情報以外のデータを送るためのデータを作成します。
+	/// (ディスクリプタヒープとそこにビューを生成するバッファのこと)
 	/// </summary>
-	/// <param name="modelNum">モデル生成数</param>
-	/// <param name="modelFileObjectNum">モデルファイル(.objなど)に何個オブジェクトがあるか。</param>
-	/// <param name="heapTop">ヒープのどこから生成するか</param>
-	/// <param name="constDataSize">生成するバッファの構造体のバイト数</param>
-	/// <param name="tags">生成するバッファの種類(並びはconstDataSizeと合わせること)</param>
-	void createConstBuffer
-	(
-		const int modelNum,
-		const int modelFileObjectNum,
-		const int heapTop,
-		const std::vector<size_t>& constDataSize,
-		const std::vector<HeapBufferTag>&tags
-	);
-
-	void createTextureBuffer
+	/// <param name="texturePath"></param>
+	/// <param name="modelNum"></param>
+	/// <param name="modelFileObjectNum"></param>
+	/// <param name="userDataSize"></param>
+	void createModelHeapResources
 	(
 		const std::vector<std::wstring>& texturePath,
-		const int heapTop
+		const int modelNum,
+		const int modelFileObjectNum,
+		const size_t userDataSize = 0
 	);
-
-
 #pragma endregion
+
 
 #pragma region マップ
 	/// <summary>
@@ -133,7 +158,7 @@ protected:
 	void mapVertexBuffer
 	(
 		const int modelNum,
-		void** vertexStruct
+		void** vertexData
 	);
 
 	void unmapVertexBuffer(const int& modelNum);
@@ -147,30 +172,46 @@ protected:
 
 	void unmapIndexBuffer(const int& modelNum);
 
-
-	void mapConstBuffer
-	(
-		const int modelNum,
-		const int 
-	);
-#pragma endregion
-
-
-#pragma endregion
-
-#pragma region ヒープ
-
-#pragma region 生成
+	//これだと利用者がライブラリのバッファが書き換えられてしまう
+	//ずっとマップしっぱなしでもいいのでは?
+	//削除時にunmapすればいいのでは? 
+	//マップしっぱなしにする場合、バッファごとにポインタ用意しないといけない
 	
-	void createDescriptorHeap
-	(
-		const int arrayNum
-	);
+	//定数バッファの順番は固定化する。
+	//create○○はまとめる
 
+	//enum ConstBufferType
+	//{
+	//	CONSTBUFFER_LIBRARY,
+	//	CONSTBUFFER_MATERIAL,
+	//	CONSTBUFFER_USER
+	//};
+	///// <summary>
+	///// 
+	///// </summary>
+	///// <param name="modelNum">何番目のモデルか</param>
+	///// <param name="objectNum">モデルの何番目のオブジェクトか</param>
+	///// <param name="structNum">どのバッファの仮想アドレスを取得するか</param>
+	///// <param name="constData"></param>
+	//void mapConstBuffer
+	//(
+	//	const int modelNum,
+	//	const int objectNum,
+	//	const ConstBufferType type,
+	//	void** constData
+	//);
+
+	//void mapUserConstBuffer
+	//(
+	//	const int modelNum,
+	//	const int objectNum,
+	//	void** constData
+	//);
 #pragma endregion
 
 
 #pragma endregion
+
 
 
 #pragma region スムーズシェーディング
@@ -178,6 +219,8 @@ protected:
 	(
 		std::vector<Vector3> normals
 	);
+#pragma endregion
+
 #pragma endregion
 
 public:

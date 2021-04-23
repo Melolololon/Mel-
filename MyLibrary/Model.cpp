@@ -9,18 +9,20 @@ Model::~Model()
 {
 }
 
-
-void Model::createVertexBuffer
+void Model::createModelVertexResources
 (
 	const size_t verticesSize,
-	const std::vector<size_t>& verticesNum
+	const std::vector<size_t>& verticesNum,
+	const std::vector<std::vector<USHORT>>& indicesNum
 )
 {
+#pragma region 頂点バッファ
+
 	//オブジェクト分リサイズ
 	auto objectNum = verticesNum.size();
 	vertexBufferSet.resize(objectNum);
 
-	for (int i = 0; i < objectNum; i++) 
+	for (int i = 0; i < objectNum; i++)
 	{
 		CreateBuffer::getInstance()->createVertexBuffer
 		(
@@ -30,11 +32,9 @@ void Model::createVertexBuffer
 			vertexBufferSet[i]
 		);
 	}
-	
-}
+#pragma endregion
 
-void Model::createIndexBuffer(const  std::vector<std::vector<USHORT>>& indicesNum)
-{
+#pragma region インデックスバッファ
 	auto objectNum = indicesNum.size();
 	indexBufferSet.resize(objectNum);
 
@@ -47,6 +47,50 @@ void Model::createIndexBuffer(const  std::vector<std::vector<USHORT>>& indicesNu
 			indexBufferSet[i]
 		);
 	}
+#pragma endregion
+
+
+}
+
+void Model::createModelHeapResources
+(
+	const std::vector<std::wstring>& texturePath,
+	const int modelNum,
+	const int modelFileObjectNum,
+	const size_t userDataSize = 0
+)
+{
+
+	//ヒープ作成
+	int constBufferNum = 3;
+	if (userDataSize != 0)constBufferNum++;
+	int commonBufferNum = 1;
+	//テクスチャ　+ 共通バッファ + (定数バッファ - 共通バッファ) * モデル数 * モデル内のオブジェクト数
+	int heapSize = 
+		modelFileObjectNum
+		+ commonBufferNum
+		+ (constBufferNum - commonBufferNum)
+		* modelNum
+		* modelFileObjectNum;
+
+	createDescriptorHeap(heapSize);
+
+	//テクスチャバッファ作成
+	createTextureBuffer
+	(
+		texturePath,
+		0
+	);
+
+	//定数バッファ作成
+	createConstBuffer
+	(
+		modelNum,
+		modelFileObjectNum,
+		modelFileObjectNum,
+		userDataSize
+	);
+
 }
 
 
@@ -71,14 +115,19 @@ void Model::createDescriptorHeap
 
 void Model::createConstBuffer
 (
-	const int modelNum, 
+	const int modelNum,
 	const int modelFileObjectNum,
 	const int heapTop,
-	const std::vector<size_t>& constDataSize,
-	const std::vector<HeapBufferTag>& tags
+	const size_t userDataSize = 0
 )
 {
-	auto oneModelBufferNum = constDataSize.size();
+	int oneModelBufferNum;
+
+	if (userDataSize == 0)
+		oneModelBufferNum = 2;
+	else
+		oneModelBufferNum = 3;
+
 	//生成数分リサイズ
 	constBuffer.resize(modelNum);
 	//モデルファイルにあるオブジェクト分だけリサイズ
@@ -111,10 +160,23 @@ void Model::createConstBuffer
 		hHandle,
 		commonBuffers.Get()
 	);
-	heapTags.push_back(COMMON_CONST_BUFFER);
+	heapTags.push_back(TAG_COMMON_CONST_BUFFER);
 	heapNum++;
 #pragma endregion
 
+	HeapBufferTag tags[3] =
+	{
+		HeapBufferTag::TAG_LIBRARY_CONST_BUFFER,
+		HeapBufferTag::TAG_MATERIAL_CONST_BUFFER,
+		HeapBufferTag::TAG_USER_CONST_BUFFER
+	};
+
+	size_t constDataSize[3] =
+	{
+		sizeof(ModelConstData),
+		sizeof(Material),
+		userDataSize
+	};
 
 	//モデル分ループ
 	for (int i = 0; i < modelNum; i++) 
@@ -182,7 +244,7 @@ void Model::createTextureBuffer
 			hHandle,
 			textureBuffer[i].Get()
 		);
-		heapTags.push_back(HeapBufferTag::TEXTURE_BUFFER);
+		heapTags.push_back(HeapBufferTag::TAG_TEXTURE_BUFFER);
 	}
 }
 
@@ -191,10 +253,10 @@ void Model::createTextureBuffer
 void Model::mapVertexBuffer
 (
 	const int modelNum,
-	void** vertexStruct
+	void** vertexData
 )
 {
-	vertexBufferSet[modelNum].vertexBuffer->Map(0, nullptr, vertexStruct);
+	vertexBufferSet[modelNum].vertexBuffer->Map(0, nullptr, vertexData);
 }
 
 void Model::unmapVertexBuffer(const int& modelNum)
@@ -215,4 +277,70 @@ void Model::unmapIndexBuffer(const int& modelNum)
 {
 	indexBufferSet[modelNum].indexBuffer->Unmap(0, nullptr);
 }
+//
+//
+//void Model::mapConstBuffer
+//(
+//	const int modelNum,
+//	const int objectNum,
+//	const Model::ConstBufferType type,
+//	void** constData
+//)
+//{
+//	//並び確認
+//	int otherBufferNum = 0;
+//	int libraryNum = -1;
+//	int materialNum = -1;
+//	int userNum = -1;
+//	for(const auto& tag: heapTags)
+//	{
+//		switch (tag)
+//		{
+//		case HeapBufferTag::TAG_LIBRARY_CONST_BUFFER:
+//			libraryNum = otherBufferNum;
+//			break;
+//		case HeapBufferTag::TAG_MATERIAL_CONST_BUFFER:
+//			materialNum = otherBufferNum;
+//			break;
+//		case HeapBufferTag::TAG_USER_CONST_BUFFER:
+//			userNum = otherBufferNum;
+//			break;
+//
+//		default:
+//			otherBufferNum++;
+//			break;
+//
+//
+//		}
+//		if (libraryNum != -1 &&
+//			materialNum != -1 &&
+//			userNum != -1)
+//			break;
+//		
+//	}
+//
+//	//添え字計算
+//	int bufferNum = 0;
+//	switch (type)
+//	{
+//	case ConstBufferType::CONSTBUFFER_LIBRARY:
+//		bufferNum = libraryNum - otherBufferNum;
+//		break;
+//	case ConstBufferType::CONSTBUFFER_MATERIAL:
+//		bufferNum = materialNum - otherBufferNum;
+//		break;
+//	case ConstBufferType::CONSTBUFFER_USER:
+//		bufferNum = userNum - otherBufferNum;
+//		break;
+//
+//	default:
+//		otherBufferNum++;
+//		break;
+//
+//
+//	}
+//
+//	constBuffer[modelNum][objectNum][bufferNum]->Map
+//	(0, nullptr, constData);
+//}
 #pragma endregion
