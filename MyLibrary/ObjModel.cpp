@@ -238,14 +238,14 @@ void ObjModel::loadModelMaterial
 	std::vector<HeapBufferTag>tags;
 	tags =
 	{
-		HeapBufferTag::LIBRARY_CONST_BUFFER,
-		HeapBufferTag::MATERIAL_CONST_BUFFER
+		HeapBufferTag::TAG_LIBRARY_CONST_BUFFER,
+		HeapBufferTag::TAG_MATERIAL_CONST_BUFFER
 	};
 
 	if (constData)
 	{
 		buffersSize.push_back(constDataSize); 
-		tags.push_back(HeapBufferTag::USER_CONST_BUFFER);
+		tags.push_back(HeapBufferTag::TAG_USER_CONST_BUFFER);
 	}
 
 	std::vector<size_t>bufferStructSize();
