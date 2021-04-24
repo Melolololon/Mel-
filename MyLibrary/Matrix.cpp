@@ -35,12 +35,12 @@ void Matrix::operator*=(const Matrix& mat)
 	matrix = m.matrix;
 }
 
-std::array<float, 4>& Matrix::operator[](const unsigned int& num)
+std::array<float, 4>& Matrix::operator[](const unsigned int num)
 {
 	return matrix[num];
 }
 
-std::array<float, 4> Matrix::operator[](const unsigned int& num)const
+std::array<float, 4> Matrix::operator[](const unsigned int num)const
 {
 	return matrix[num];
 }
@@ -82,7 +82,7 @@ Matrix getIdentityMatrix()
 /// X²‚ğŠî€‚É‰ñ“]‚·‚és—ñ‚ğì¬‚µ‚Ü‚·
 /// </summary>
 /// <returns></returns>
-Matrix getRotateXMatrix(const float& angle)
+Matrix getRotateXMatrix(const float angle)
 {
 	Matrix m = getIdentityMatrix();
 
@@ -94,7 +94,7 @@ Matrix getRotateXMatrix(const float& angle)
 	return m;
 }
 
-Matrix getRotateYMatrix(const float& angle)
+Matrix getRotateYMatrix(const float angle)
 {
 	Matrix m = getIdentityMatrix();
 
@@ -106,7 +106,7 @@ Matrix getRotateYMatrix(const float& angle)
 	return m;
 }
 
-Matrix getRotateZMatrix(const float& angle)
+Matrix getRotateZMatrix(const float angle)
 {
 	Matrix m = getIdentityMatrix();
 

@@ -10,6 +10,8 @@
 #include<d3d12.h>
 #include<dxgi.h>
 
+#include"PipelineState.h"
+
 //とりあえずこれのポインタをキーにする
 
 //これにバッファ持たせると、終了時に確実にバッファ解放できない。
@@ -32,15 +34,21 @@ public:
 	//COMMON_CONST_BUFFER 共通 b3
 	enum HeapBufferTag
 	{
-		TAG_TEXTURE_BUFFER,
-		TAG_COMMON_CONST_BUFFER,
-		TAG_LIBRARY_CONST_BUFFER,
-		TAG_USER_CONST_BUFFER,
-		TAG_MATERIAL_CONST_BUFFER,
-		TAG_OBJ_BONE_MATRIX_CONST_BUFFER
+		HEAP_TAG_TEXTURE_BUFFER,
+		HEAP_TAG_COMMON_CONST_BUFFER,
+		HEAP_TAG_LIBRARY_CONST_BUFFER,
+		HEAP_TAG_USER_CONST_BUFFER,
+		HEAP_TAG_MATERIAL_CONST_BUFFER,
+		HEAP_TAG_OBJ_BONE_MATRIX_CONST_BUFFER
 	};
 
 private:
+
+	static ID3D12Device* device;
+	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
+	static ComPtr<ID3D12RootSignature>rootSignature;
+
+#pragma region 関数
 
 #pragma region 生成
 
@@ -74,22 +82,26 @@ private:
 
 #pragma endregion
 
+#pragma endregion
+
 protected:
 #pragma region 変数
-
-
-	static ID3D12Device* device;
-	static std::vector<ID3D12CommandList*>cmdLists;
+	ComPtr<ID3D12PipelineState> pipeline;
+	ID3D12PipelineState* currentSetPipeline;
 
 	//[objの中のモデルごと]
 	std::vector<VertexBufferSet> vertexBufferSet;
 	std::vector<IndexBufferSet>indexBufferSet;
 
+	//インデックス
+	std::vector<std::vector<USHORT>> indices;
+
 	ComPtr<ID3D12DescriptorHeap>desHeap;
 
 	//これスプライトみたいにヒープから呼び出さないようにして、
 	//1つだけ生成するようにしたほうがいい?
-	ComPtr<ID3D12Resource>commonBuffers;
+	//バッファ1つだけ作って、ビューを複数作るようにする
+	static ComPtr<ID3D12Resource>commonBuffers;
 	
 	//[ヒープの番号(heapNum)ごと][obj内のモデルごと][バッファごと]
 	std::vector<std::vector<std::vector<ComPtr<ID3D12Resource>>>> constBuffer;
@@ -104,12 +116,10 @@ protected:
 
 	//定数にセットする座標などの値
 	std::vector <ModelConstData>modelConstData;
-
 	std::vector<Material> materials;
 
-
+	std::string modelClassName;
 #pragma endregion
-
 
 #pragma region 関数
 
@@ -201,12 +211,12 @@ protected:
 	//	void** constData
 	//);
 
-	//void mapUserConstBuffer
-	//(
-	//	const int modelNum,
-	//	const int objectNum,
-	//	void** constData
-	//);
+	//const int objectNumは、まだ個別にセットできるようにするつもりないからこうしてる
+	void mapUserConstBuffer
+	(
+		const int modelNum,
+		void** constData
+	);
 #pragma endregion
 
 
@@ -223,14 +233,30 @@ protected:
 
 #pragma endregion
 
+
+
 public:
 	Model();
 	virtual ~Model();
 
+#pragma region 開発者用関数
+
+
+	static void createCommonBuffer();
+	
 	/// <summary>
 	/// マップ用
 	/// </summary>
 	/// <param name="data"></param>
-	static void setCommonConstData(const CommonConstData& data);
+	static void mapCommonConstData(const CommonConstData& data);
+
+	static void initialize();
+
+#pragma endregion
+	
+	void draw(const int modelNum);
+
+	void setPipeline(PipelineState* pipelineState);
+
 };
 

@@ -9,7 +9,7 @@
 #include"Color.h"
 
 //バッファーを作成するためのクラス
-class CreateBuffer
+class CreateBuffer final
 {
 private:
 	//ここComPtrにするか確認する
@@ -59,6 +59,10 @@ public:
 
 
 #pragma region 新
+
+#pragma region バッファ作成
+
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -86,7 +90,6 @@ public:
 	(
 		const D3D12_HEAP_PROPERTIES& cbheapprop,
 		const size_t& constStructDataSize,
-		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 		ID3D12Resource* constBuffer
 	);
 
@@ -94,8 +97,8 @@ public:
 	(
 		const DirectX::TexMetadata& metadata,
 		const DirectX::Image* image,
-		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle, 
-		ID3D12Resource* textureBuffer
+		ID3D12Resource* textureBuffer,
+		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle
 	);
 	void createOneColorTextureBuffer
 	(
@@ -110,6 +113,18 @@ public:
 		ID3D12DescriptorHeap* heap,
 		const int& arrayNum
 	);
+#pragma endregion
+
+#pragma region ビュー
+	void createConstBufferView
+	(
+		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+		ID3D12Resource* constBuffer
+	);
+#pragma endregion
+
+
+
 #pragma endregion
 
 };

@@ -31,7 +31,7 @@ public:
 		const std::string& path,
 		bool loadUV,
 		bool loadNormal,
-		std::vector<std::vector<OBJAnimationVertex>>& vertices,
+		std::vector<std::vector<ObjAnimationVertex>>& vertices,
 		std::vector<std::vector<USHORT>>& indices,
 		std::string& materialFileName,
 		std::vector<std::string>& materialName,

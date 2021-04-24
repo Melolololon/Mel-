@@ -10,10 +10,8 @@ private:
 	std::string materialFileName;
 
 	//頂点
-	std::vector<std::vector<OBJAnimationVertex>> vertices;
+	std::vector<std::vector<ObjAnimationVertex>> vertices;
 	std::vector<std::vector<DirectX::XMFLOAT3>> smoothNormal;
-	//インデックス
-	std::vector<std::vector<USHORT>> indices;
 
 	//[obj内のオブジェクト分]スムーズシェーディングの計算用データ
 	std::vector< std::unordered_map < USHORT, std::vector<USHORT> >>smoothData;
