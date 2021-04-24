@@ -54,6 +54,7 @@ struct ObjAnimationVertex
 struct Vertex
 {
 	Vertex();
+	Vertex(const Vertex& vertex);
 	Vertex(const ObjAnimationVertex& objVertex);
 	~Vertex();
 	DirectX::XMFLOAT3 pos;
@@ -67,7 +68,7 @@ struct SpriteVertex
 	DirectX::XMFLOAT2 uv;
 };
 
- 
+
 struct PointVertex
 {
 	DirectX::XMFLOAT3 pos;
@@ -190,7 +191,7 @@ struct Material
 	Material()
 	{
 		ambient = { 0.3f,0.3f,0.3f };
-		diffuse = { 1.0f,1.0f,1.0f};
+		diffuse = { 1.0f,1.0f,1.0f };
 		specular = { 0.0f,0.0f,0.0f };
 		alpha = 1.0f;
 	}
@@ -263,7 +264,7 @@ struct SpriteFontData
 
 #pragma region バッファ類
 
-struct WorldMatData 
+struct WorldMatData
 {
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3 angle;
@@ -375,7 +376,7 @@ struct DepthBufferSet
 //};
 
 #pragma region ポストエフェクト
-struct PostEffectConstData 
+struct PostEffectConstData
 {
 	DirectX::XMMATRIX worldMat;
 };
