@@ -231,7 +231,8 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 	if (dev != nullptr)
 	{
-		createBuffer = new CreateBuffer(dev.Get(), winWidth, winHeight);
+		CreateBuffer::getInstance()->initialize(dev.Get(), windouWidth, windowHeight);
+		createBuffer = CreateBuffer::getInstance();
 		createPipeline = new CreatePipeline(dev.Get());
 	}
 
@@ -740,10 +741,10 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 	postEffectVertex.resize(4);
 
-	postEffectVertex[0] = { {-1,-1,0},{0,1},{0,0,0} };
-	postEffectVertex[1] = { {-1,1,0},{0,0},{0,0,0} };
-	postEffectVertex[2] = { {1,-1,0},{1,1},{0,0,0} };
-	postEffectVertex[3] = { {1,1,0},{1,0},{0,0,0} };
+	postEffectVertex[0] = Vertex({ {-1,-1,0},{0,1},{0,0,0} });
+	postEffectVertex[1] = Vertex({ {-1,1,0},{0,0},{0,0,0} });
+	postEffectVertex[2] = Vertex({ {1,-1,0},{1,1},{0,0,0} });
+	postEffectVertex[3] = Vertex({ {1,1,0},{1,0},{0,0,0} });
 
 	createBuffer->createVertexBufferSet
 	(
@@ -1141,7 +1142,7 @@ void DirectX12::draw()
 
 void DirectX12::end()
 {
-	delete createBuffer;
+	//delete createBuffer;
 	delete createPipeline;
 	delete mainCamera;
 
