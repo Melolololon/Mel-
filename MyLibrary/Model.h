@@ -253,10 +253,18 @@ public:
 	static void initialize();
 
 #pragma endregion
-	
+
+#pragma region 描画
+
 	void draw(const int modelNum);
+#pragma endregion
+
+#pragma region パイプライン
 
 	void setPipeline(PipelineState* pipelineState);
 
+#pragma endregion
+
+	
 };
 

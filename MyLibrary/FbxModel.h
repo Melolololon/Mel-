@@ -4,6 +4,7 @@
 #include<DirectXMath.h>
 
 #include"DirectXStruct.h"
+#include"Model.h"
 struct Node
 {
 	std::string nodeName;
@@ -18,7 +19,7 @@ struct Node
 	Node* parentNode;
 };
 
-class FbxModel
+class FbxModel : public Model
 {
 private:
 	//モデル名
@@ -31,11 +32,11 @@ private:
 	Node* meshNode = nullptr;
 
 	std::vector<Vertex>vertices;
-	std::vector<USHORT>indices;
+	//std::vector<USHORT>indices;
 
+	std::vector<USHORT>& getIndices() { return indices[0]; }
 public:
 	//フレンドクラスは、privateの変数、関数を参照できる
 	friend class FbxLoader;
 
 };
-

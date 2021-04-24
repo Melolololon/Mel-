@@ -18,7 +18,7 @@
 #endif // _DEBUG
 
 
-class FbxLoader
+class FbxLoader final
 {
 private:
 	FbxLoader();
@@ -30,6 +30,8 @@ private:
 	FbxManager* fbxManager = nullptr;
 
 	FbxImporter* fbxImporter = nullptr;
+
+
 
 	/// <summary>
 	/// ノード構造解析用関数
@@ -57,7 +59,7 @@ private:
 	void parseMeshVertices(FbxModel* model, FbxMesh* fbxMesh);
 
 	/// <summary>
-	/// 面情報読み取り
+	/// 面情報(インデックス、UV、法線)読み取り
 	/// </summary>
 	/// <param name="model"></param>
 	/// <param name="fbxMesh"></param>

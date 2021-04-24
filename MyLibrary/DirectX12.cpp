@@ -1142,7 +1142,6 @@ void DirectX12::draw()
 
 void DirectX12::end()
 {
-	//delete createBuffer;
 	delete createPipeline;
 	delete mainCamera;
 
