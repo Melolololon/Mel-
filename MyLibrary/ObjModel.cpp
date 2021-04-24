@@ -16,8 +16,6 @@ void ObjModel::loadModelVertices
 	const bool& loadNormal
 )
 {
-	
-
 	//ƒ}ƒeƒŠƒAƒ‹
 	std::vector<std::string>materialName;
 
