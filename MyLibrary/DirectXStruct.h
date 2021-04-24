@@ -37,18 +37,13 @@ struct ModelData
 //DirectX12で描画するために使用する構造体
 #pragma region シェーダーに送る情報
 //頂点バッファで送る情報
+//Vertex.h作ってそっちに実装する
 #pragma region 頂点構造体
 
 
 
-struct Vertex
-{
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT2 uv;//ポリゴンのどこら辺かをあらわすもの　ポリゴン上の座標
-	DirectX::XMFLOAT3 normal;
-};
 
-struct OBJAnimationVertex
+struct ObjAnimationVertex
 {
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT2 uv;
@@ -56,6 +51,15 @@ struct OBJAnimationVertex
 	UINT boneNumber;
 };
 
+struct Vertex
+{
+	Vertex();
+	Vertex(const ObjAnimationVertex& objVertex);
+	~Vertex();
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;//ポリゴンのどこら辺かをあらわすもの　ポリゴン上の座標
+	DirectX::XMFLOAT3 normal;
+};
 
 struct SpriteVertex
 {

@@ -1334,7 +1334,7 @@ bool DirectX12::createUserPipelineState
 		break;
 	}
 
-	switch (pipelineData.alphaWrite)
+	switch (pipelineData.alphaWriteMode)
 	{
 	case ALPHA_WRITE_NONE:
 		gpipeline.BlendState.AlphaToCoverageEnable = true;
@@ -1947,7 +1947,7 @@ VertexType DirectX12::loadOBJVertex
 	bool loadUV,
 	bool loadNormal,
 	std::string* materialFireName,
-	ObjModel* objModel
+	const std::string& key
 )
 {
 
@@ -1961,7 +1961,7 @@ VertexType DirectX12::loadOBJVertex
 	std::vector<std::vector<int>>boneNum;
 
 	//仮配列
-	std::vector<std::vector<Vertex>>temporaryVertex;
+	std::vector<std::vector<ObjAnimationVertex>>temporaryVertex;
 	std::vector<std::vector<USHORT>>temporaryIndex;
 
 	ModelLoader::getInstance()->loadOBJModel
@@ -1971,7 +1971,7 @@ VertexType DirectX12::loadOBJVertex
 		loadNormal,
 		temporaryVertex,
 		temporaryIndex,
-		materialFireName,
+		*materialFireName,
 		materialName,
 		smoothData,
 		&loadNum,
@@ -2054,7 +2054,7 @@ VertexType DirectX12::loadOBJVertex
 	{
 		for (int i = 0; i < loadNum; i++)
 		{
-			size_t vertexSize = sizeof(OBJAnimationVertex) * vertices[key][i].size();
+			size_t vertexSize = sizeof(ObjAnimationVertex) * vertices[key][i].size();
 			auto result = dev->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 				D3D12_HEAP_FLAG_NONE,
@@ -2064,7 +2064,7 @@ VertexType DirectX12::loadOBJVertex
 				IID_PPV_ARGS(&vBuffs[i].vertexBuffer)
 			);
 
-			OBJAnimationVertex* aniVertex;
+			ObjAnimationVertex* aniVertex;
 			result = vBuffs[i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
 			
 			size_t size = vertices[key][i].size();
@@ -2080,7 +2080,7 @@ VertexType DirectX12::loadOBJVertex
 
 			vBuffs[i].vertexBufferView.BufferLocation = vBuffs[i].vertexBuffer->GetGPUVirtualAddress();
 			vBuffs[i].vertexBufferView.SizeInBytes = vertexSize;
-			vBuffs[i].vertexBufferView.StrideInBytes = sizeof(OBJAnimationVertex);
+			vBuffs[i].vertexBufferView.StrideInBytes = sizeof(ObjAnimationVertex);
 
 			vBuffs[i].materialName = materialName[i];
 		}
@@ -3870,7 +3870,7 @@ void DirectX12::map(const ModelData& modelData,int number )
 		//スムースシェーディング
 		for (size_t i = 0; i < size; i++)
 		{
-			OBJAnimationVertex* aniVertex;
+			ObjAnimationVertex* aniVertex;
 			vertexBufferSet[modelData.key][i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
 
 			//スムージングを行うか

@@ -201,6 +201,7 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="PipelineManager.cpp" />
+    <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="PolygonManager.cpp" />
     <ClCompile Include="PrimitiveModel.cpp" />
     <ClCompile Include="Quaternion.cpp" />
@@ -209,6 +210,7 @@
     <ClCompile Include="TextLoader.cpp" />
     <ClCompile Include="TextureLoad.cpp" />
     <ClCompile Include="Vector.cpp" />
+    <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="XInputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -471,6 +473,7 @@
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="PipelineManager.h" />
+    <ClInclude Include="PipelineState.h" />
     <ClInclude Include="PolygonManager.h" />
     <ClInclude Include="PrimitiveModel.h" />
     <ClInclude Include="Quaternion.h" />

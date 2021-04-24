@@ -36,10 +36,33 @@ void ObjModel::loadModelVertices
 		&objBonePositions,
 		&objBoneNums
 	);
-	auto vertexSize = vertices.size();
-	for (int i = 0; i < vertexSize; i++)
+	for (int i = 0; i < loadFileObjectNum; i++)
 		vertexBufferSet[i].materialName = materialName[i];
 
+
+
+	if(objBoneNums.size() == 0)
+	{
+		for (int i = 0; i < loadFileObjectNum; i++)
+		{
+			auto vertexNum = vertices[i].size();
+			for (int j = 0; j < vertexNum; j++)
+			{
+				vertices[i][j].boneNumber = 0;
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < loadFileObjectNum; i++)
+		{
+			auto vertexNum = vertices[i].size();
+			for (int j = 0; j < vertexNum; j++)
+			{
+				vertices[i][j].boneNumber = objBoneNums[i][j];
+			}
+		}
+	}
 
 #pragma region テクスチャ反転
 
@@ -113,7 +136,7 @@ void ObjModel::loadModelVertices
 
 	createModelVertexResources
 	(
-		sizeof(OBJAnimationVertex),
+		sizeof(ObjAnimationVertex),
 		verticesNum,
 		indices
 	);
@@ -122,15 +145,18 @@ void ObjModel::loadModelVertices
 	for (int i = 0; i < loadFileObjectNum; i++)
 	{
 
-		OBJAnimationVertex* vertex;
+		ObjAnimationVertex* vertex;
 		mapVertexBuffer
 		(
 			i,
 			(void**)&vertex
 		);
-		
-		for (int j = 0; j < vertexSize; i++)
+
+		auto vertexNum = vertices[i].size();
+		for (int j = 0; j < vertexNum; i++) 
 			vertex[j] = vertices[i][j];
+
+
 
 		unmapVertexBuffer(i);
 

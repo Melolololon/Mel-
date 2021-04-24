@@ -337,6 +337,7 @@ void CreateBuffer::createDepthBufferSet(D3D12_HEAP_PROPERTIES depthheapprop, D3D
 
 #pragma region 新
 
+#pragma region バッファ
 
 void CreateBuffer::createVertexBuffer
 (
@@ -404,7 +405,6 @@ void CreateBuffer::createConstBuffer
 (
 	const D3D12_HEAP_PROPERTIES& cbheapprop,
 	const size_t& constStructDataSize,
-	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 	ID3D12Resource* constBuffer
 )
 {
@@ -422,10 +422,6 @@ void CreateBuffer::createConstBuffer
 			IID_PPV_ARGS(&constBuffer)
 		);
 
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = constBuffer->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = constBuffer->GetDesc().Width;
-	device->CreateConstantBufferView(&cbvDesc, heapHandle);
 }
 
 
@@ -433,8 +429,8 @@ void CreateBuffer::createTextureBuffer
 (
 	const DirectX::TexMetadata& metadata,
 	const DirectX::Image* image,
-	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
-	ID3D12Resource* textureBuffer
+	ID3D12Resource* textureBuffer,
+	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle
 )
 {
 	D3D12_HEAP_PROPERTIES texHeapprop{};
@@ -570,5 +566,27 @@ void CreateBuffer::createDescriptorHeap
 		IID_PPV_ARGS(&heap)
 	);
 }
+
+
+#pragma endregion
+
+
+#pragma region ビュー
+
+void CreateBuffer::createConstBufferView
+(
+	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+	ID3D12Resource* constBuffer
+)
+{
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+	cbvDesc.BufferLocation = constBuffer->GetGPUVirtualAddress();
+	cbvDesc.SizeInBytes = constBuffer->GetDesc().Width;
+	device->CreateConstantBufferView(&cbvDesc, heapHandle);
+}
+
+#pragma endregion
+
+
 #pragma endregion
 

@@ -4,7 +4,7 @@
 
 Quaternion::Quaternion(){}
 
-Quaternion::Quaternion(const float& w, const float& x, const float& y, const float& z)
+Quaternion::Quaternion(const float w, const float x, const float y, const float z)
 {
 	this->w = w;
 	this->x = x;
@@ -12,7 +12,7 @@ Quaternion::Quaternion(const float& w, const float& x, const float& y, const flo
 	this->z = z;
 }
 
-Quaternion::Quaternion(const float& w, const Vector3& v)
+Quaternion::Quaternion(const float w, const Vector3& v)
 {
 	this->w = w;
 	x = v.x;
@@ -20,7 +20,7 @@ Quaternion::Quaternion(const float& w, const Vector3& v)
 	z = v.z;
 }
 
-Quaternion::Quaternion(const float& w, const Vector2& v)
+Quaternion::Quaternion(const float w, const Vector2& v)
 {
 	this->w = w;
 	x = v.x;
@@ -68,7 +68,7 @@ void Quaternion::operator*= (const Quaternion& q)
 }
 
 
-Quaternion getRotateQuaternion(const Vector3& pos, const Vector3& vector, const float& angle)
+Quaternion getRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle)
 {
 	float rad = LibMath::angleConversion(0, angle);
 	Vector3 nVector = vector3Normalize(vector);//ê≥ãKâª

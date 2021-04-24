@@ -51,7 +51,7 @@ bool  ModelLoader::loadOBJModel
 	const std::string& path,
 	bool loadUV,
 	bool loadNormal,
-	std::vector<std::vector<OBJAnimationVertex>>& vertices,
+	std::vector<std::vector<ObjAnimationVertex>>& vertices,
 	std::vector<std::vector<USHORT>>& indices,
 	std::string& materialFileName,
 	std::vector<std::string>& materialName,
@@ -244,7 +244,7 @@ bool  ModelLoader::loadOBJModel
 			char sluch;
 			
 			//頂点。これに一時的に入れてから、配列に入れる
-			OBJAnimationVertex vertex;
+			ObjAnimationVertex vertex;
 
 			//三角形ポリゴンを読み込むので3
 			int polygonValue = 3;

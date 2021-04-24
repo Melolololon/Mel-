@@ -1,5 +1,25 @@
 #pragma once
 
+enum FORMAT_TYPE
+{
+	FORMAT_TYPE_UNSIGNED_INT,
+	FORMAT_TYPE_SIGNED_INT,
+	FORMAT_TYPE_FLOAT,
+};
+
+//パイプライン作成時に
+struct InputLayoutData
+{
+	//セマンティクス名
+	const char* semantics;
+
+	//送る値の数
+	UINT number;
+
+	//送る数値の型
+	FORMAT_TYPE formatType;
+};
+
 
 enum DrawMode 
 {
@@ -27,7 +47,7 @@ enum DepthMode
 	DEPTH_TRUE,
 };
 
-enum AlphaWrite 
+enum AlphaWriteMode 
 {
 	ALPHA_WRITE_NONE,
 	ALPHA_WRITE_TRUE,
@@ -39,7 +59,7 @@ struct PipelineData
 	CullMode cullMode;
 	BlendMode blendMode;
 	DepthMode depthMode;
-	AlphaWrite alphaWrite;
+	AlphaWriteMode alphaWriteMode;
 };
 
 
