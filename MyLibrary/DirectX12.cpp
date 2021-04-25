@@ -1981,7 +1981,21 @@ VertexType DirectX12::loadOBJVertex
 
 	
 
-	vertices.emplace(key, temporaryVertex);
+	std::vector<std::vector<Vertex>> normalVertices(temporaryVertex.size());
+	auto size = temporaryVertex.size();
+	for(int i = 0; i < size;i++)
+	{
+		auto size2 = temporaryVertex[i].size();
+		normalVertices[i].resize(size2);
+		for(int j = 0; j < size2;j++)
+		{
+			normalVertices[i][j].pos = temporaryVertex[i][j].pos;
+			normalVertices[i][j].uv = temporaryVertex[i][j].uv;
+			normalVertices[i][j].normal = temporaryVertex[i][j].normal;
+		}
+	}
+
+	vertices.emplace(key, normalVertices);
 
 	//ƒ{[ƒ“‚ ‚Á‚½‚ç“ü‚ê‚é
 	bool loadBone = false;

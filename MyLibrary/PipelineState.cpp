@@ -1,5 +1,9 @@
 #include "PipelineState.h"
 #include<d3dcompiler.h>
+
+ID3D12Device* PipelineState::device;
+ID3D12RootSignature* PipelineState::modelRootSignature;
+
 PipelineState::PipelineState()
 {
 	

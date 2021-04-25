@@ -298,7 +298,7 @@ void FbxLoader::parseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 					std::string name = extractFileName(path_str);
 
 					//読み込み処理またはFbxModelクラスにパスを渡す処理をここに
-					fbxModel->textures[0].loadTexture();
+					fbxModel->textures[0].loadTexture(name);
 
 					textureLoader = true;
 				}

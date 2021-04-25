@@ -3,14 +3,14 @@
 struct Vector2;
 struct Vector3;
 
-struct Vector2  
+struct Vector2
 {
 	float x, y;
 
 	Vector2();
 	Vector2(const Vector3& v);
-	Vector2(const float num);
-	Vector2(const float x, const float y);
+	Vector2(const float& num);
+	Vector2(const float& x, const float& y);
 	Vector2(const DirectX::XMFLOAT2& f);
 	Vector2(const DirectX::XMVECTOR& v);
 
@@ -30,12 +30,12 @@ struct Vector2
 	void operator*= (const Vector2& vector);
 	void operator/= (const Vector2& vector);
 
-	Vector2 operator*(const float f)const;
-	Vector2 operator+(const float f)const;
-	Vector2 operator-(const float f)const;
-	Vector2 operator/(const float f)const;
+	Vector2 operator*(const float& f)const;
+	Vector2 operator+(const float& f)const;
+	Vector2 operator-(const float& f)const;
+	Vector2 operator/(const float& f)const;
 
-	void operator=(const float num);
+	void operator=(const float& num);
 	bool operator==(const Vector2& vector);
 	bool operator!=(const Vector2& vector);
 
@@ -66,8 +66,8 @@ struct Vector3
 
 	Vector3();
 	Vector3(const Vector2& v);
-	Vector3(const float num);
-	Vector3(const float x, const float y,const float z);
+	Vector3(const float& num);
+	Vector3(const float& x, const float& y, const float& z);
 	Vector3(const DirectX::XMFLOAT3& f);
 	Vector3(const DirectX::XMVECTOR& v);
 
@@ -95,16 +95,16 @@ struct Vector3
 
 	void operator/= (const Vector3& vector);
 
-	Vector3 operator+(const float f)const;
-	Vector3 operator-(const float f)const;
-	Vector3 operator*(const float f)const;
-	Vector3 operator/(const float f)const;
+	Vector3 operator+(const float& f)const;
+	Vector3 operator-(const float& f)const;
+	Vector3 operator*(const float& f)const;
+	Vector3 operator/(const float& f)const;
 
 
-	void operator=(const float num);
+	void operator=(const float& num);
 	bool operator==(const Vector3& vector);
 	bool operator!=(const Vector3& vector);
-	
+
 
 	void operator++();
 	void operator--();
@@ -118,8 +118,8 @@ struct Vector3
 
 Vector3 vector3Normalize(const Vector3& vector);
 
- Vector3 vector3Cross(const Vector3& vector1, const Vector3& vector2);
+Vector3 vector3Cross(const Vector3& vector1, const Vector3& vector2);
 
- float vector3Dot(const Vector3& vector1, const Vector3& vector2);
+float vector3Dot(const Vector3& vector1, const Vector3& vector2);
 #pragma endregion
 

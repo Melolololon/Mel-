@@ -53,10 +53,10 @@ struct ObjAnimationVertex
 
 struct Vertex
 {
-	Vertex();
+	/*Vertex();
 	Vertex(const Vertex& vertex);
 	Vertex(const ObjAnimationVertex& objVertex);
-	~Vertex();
+	~Vertex();*/
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT2 uv;//ポリゴンのどこら辺かをあらわすもの　ポリゴン上の座標
 	DirectX::XMFLOAT3 normal;

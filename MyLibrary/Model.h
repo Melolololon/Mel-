@@ -1,26 +1,18 @@
 #pragma once
-#include"Library.h"
 #include"Vector.h"
 #include"Color.h"
 #include"DirectXStruct.h"
 
-
 #include<DirectXMath.h>
 #include<vector>
 #include<d3d12.h>
+#include<d3dx12.h>
 #include<dxgi.h>
+
 
 #include"PipelineState.h"
 #include"Texture.h"
 
-//とりあえずこれのポインタをキーにする
-
-//これにバッファ持たせると、終了時に確実にバッファ解放できない。
-//プログラム終了時に
-
-//これをObjModelなどに継承する
-//これを引数にしても、OBJのボーンとか引き出せない。
-//セットとかの関数をここに移植するしかない
 
 //モデルクラスに継承するためのクラス
 class Model
@@ -48,6 +40,11 @@ private:
 	static ID3D12Device* device;
 	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
 	static ComPtr<ID3D12RootSignature>rootSignature;
+
+	//これスプライトみたいにヒープから呼び出さないようにして、
+	//1つだけ生成するようにしたほうがいい?
+	//バッファ1つだけ作って、ビューを複数作るようにする
+	static ComPtr<ID3D12Resource>commonBuffers;
 
 #pragma region 関数
 
@@ -99,10 +96,6 @@ protected:
 
 	ComPtr<ID3D12DescriptorHeap>desHeap;
 
-	//これスプライトみたいにヒープから呼び出さないようにして、
-	//1つだけ生成するようにしたほうがいい?
-	//バッファ1つだけ作って、ビューを複数作るようにする
-	static ComPtr<ID3D12Resource>commonBuffers;
 	
 	//[ヒープの番号(heapNum)ごと][obj内のモデルごと][バッファごと]
 	std::vector<std::vector<std::vector<ComPtr<ID3D12Resource>>>> constBuffer;

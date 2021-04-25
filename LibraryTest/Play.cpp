@@ -9,7 +9,6 @@
 
 #include"XInputManager.h"
 
-
 Play::Play()
 {
 

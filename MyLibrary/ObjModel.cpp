@@ -182,7 +182,7 @@ void ObjModel::loadModelVertices
 void ObjModel::loadModelMaterial
 (
 	const int createNum,
-	const size_t constDataSize = 0
+	const size_t constDataSize 
 )
 {
 #pragma region パスとファイル分離
@@ -226,35 +226,19 @@ void ObjModel::loadModelMaterial
 		materials,
 		&loadObjectNum
 	);
-	//テクスチャ名
-	std::vector<std::wstring>texturePathW(loadObjectNum);
-
-	for (int i = 0; i < loadObjectNum; i++)
-	{
-		texturePathW[i].resize(materials[i].textureName.size());
-
-		MultiByteToWideChar
-		(
-			CP_ACP,
-			0,
-			materials[i].textureName.c_str(),
-			-1,
-			texturePathW[i].data(),
-			texturePathW[i].size()
-		);
-	}
+	
 
 	//テクスチャ読み込み
 	for(int i = 0; i < loadObjectNum;i++)
 	{
-		textures[i].loadTexture(texturePathW[i]);
+		textures[i].loadTexture(materials[i].textureName);
 	}
 	
 	createModelHeapResources
 	(
 		textures,
 		createNum,
-		static_cast<int>(texturePathW.size()),
+		static_cast<int>(materials.size()),
 		constDataSize
 	);
 }
