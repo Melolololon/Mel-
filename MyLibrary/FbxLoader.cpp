@@ -44,15 +44,15 @@ void FbxLoader::end()
 
 void FbxLoader::parseNodeRecursive
 (
-	FbxModel* model,
+	FbxModel* fbxModel,
 	FbxNode* fbxNode, 
 	Node* parentNode
 )
 {
 	using namespace DirectX;
 
-	model->nodes.emplace_back();
-	Node& node = model->nodes.back();
+	fbxModel->nodes.emplace_back();
+	Node& node = fbxModel->nodes.back();
 
 	std::string name = fbxNode->GetName();
 
@@ -111,14 +111,14 @@ void FbxLoader::parseNodeRecursive
 		if(fbxNodeAttribute->GetAttributeType() == 
 			FbxNodeAttribute::eMesh)
 		{
-			model->meshNode = &node;
-			parseMesh(model, fbxNode);
+			fbxModel->meshNode = &node;
+			parseMesh(fbxModel, fbxNode);
 		}
 	}
 
 
 	for (int i = 0; i < fbxNode->GetChildCount(); i++)
-		parseNodeRecursive(model, fbxNode->GetChild(i), &node);
+		parseNodeRecursive(fbxModel, fbxNode->GetChild(i), &node);
 }
 
 
@@ -150,21 +150,24 @@ void FbxLoader::loadFbxModel(const std::string& modelPath)
 
 
 
-void FbxLoader::parseMesh(FbxModel* model, FbxNode* node)
+void FbxLoader::parseMesh(FbxModel* fbxModel, FbxNode* node)
 {
 	FbxMesh* fbxMesh = node->GetMesh();
 
-	parseMeshVertices(model, fbxMesh);
+	parseMeshVertices(fbxModel, fbxMesh);
+	parseMeshFaces(fbxModel, fbxMesh);
+	parseMaterial(fbxModel, node);
+
 }
 
-void FbxLoader::parseMeshVertices(FbxModel* model, FbxMesh* fbxMesh)
+void FbxLoader::parseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
 	//ControlPointとは、頂点データのこと(このライブラリでいうVertex構造体)
 
 	//頂点数取得
 	const int vertexNum = fbxMesh->GetControlPointsCount();
 
-	auto& vertices = model->vertices;
+	auto& vertices = fbxModel->vertices;
 	vertices.resize(vertexNum);
 
 	//座標取得
@@ -179,10 +182,10 @@ void FbxLoader::parseMeshVertices(FbxModel* model, FbxMesh* fbxMesh)
 	}
 }
 
-void FbxLoader::parseMeshFaces(FbxModel* model, FbxMesh* fbxMesh)
+void FbxLoader::parseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
-	auto& vertices = model->vertices;
-	auto& indices = model->getIndices();
+	auto& vertices = fbxModel->vertices;
+	auto& indices = fbxModel->getIndices();
 
 	assert(indices.size() == 0);
 
@@ -249,12 +252,79 @@ void FbxLoader::parseMeshFaces(FbxModel* model, FbxMesh* fbxMesh)
 	}
 }
 
-void FbxLoader::parseMaterial(FbxModel* model, FbxMesh* fbxMesh)
+void FbxLoader::parseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 {
+	const int materialCount = fbxNode->GetMaterialCount();
 
+	if(materialCount > 0)
+	{
+		FbxSurfaceMaterial* material = fbxNode->GetMaterial(0);
+
+		bool textureLoader = false;
+
+		if(material)
+		{
+			if(material->GetClassId().Is(FbxSurfaceLambert::ClassId))
+			{
+				FbxSurfaceLambert* lambert =
+					static_cast<FbxSurfaceLambert*>(material);
+
+				Material& material = fbxModel->getMaterial()[0];
+
+				FbxPropertyT<FbxDouble3> ambient = lambert->Ambient;
+				material.ambient.x = (float)ambient.Get()[0];
+				material.ambient.y = (float)ambient.Get()[1];
+				material.ambient.z = (float)ambient.Get()[2];
+
+				FbxPropertyT<FbxDouble3> diffuse = lambert->Diffuse;
+				material.diffuse.x = (float)diffuse.Get()[0];
+				material.diffuse.y = (float)diffuse.Get()[1];
+				material.diffuse.z = (float)diffuse.Get()[2];
+			}
+
+			const FbxProperty diffuseProperty =
+				material->FindProperty(FbxSurfaceMaterial::sDiffuse);
+
+			if(diffuseProperty.IsValid())
+			{
+				const FbxFileTexture* texture =
+					diffuseProperty.GetSrcObject<FbxFileTexture>();
+
+				if(texture)
+				{
+					const char* filePath = texture->GetFileName();
+
+					std::string path_str(filePath);
+					std::string name = extractFileName(path_str);
+
+					//読み込み処理またはFbxModelクラスにパスを渡す処理をここに
+					fbxModel->textures[0].loadTexture();
+
+					textureLoader = true;
+				}
+			}
+
+		}
+
+		if(!textureLoader)
+		{
+
+		}
+	}
 }
 
-void FbxLoader::parseTexture(FbxModel* model, const std::string& path)
-{
 
+std::string FbxLoader::extractFileName(const std::string& path)
+{
+	size_t pos1;
+
+	pos1 = path.rfind('\\');
+	if (pos1 != std::string::npos)
+		return path.substr(pos1 + 1, path.size() - pos1 - 1);
+
+	pos1 = path.rfind('/');
+	if (pos1 != std::string::npos)
+		return path.substr(pos1 + 1, path.size() - pos1 - 1);
+
+	return path;
 }
