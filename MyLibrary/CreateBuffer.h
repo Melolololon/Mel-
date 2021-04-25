@@ -90,27 +90,27 @@ public:
 	(
 		const D3D12_HEAP_PROPERTIES& cbheapprop,
 		const size_t& constStructDataSize,
-		ID3D12Resource* constBuffer
+		ID3D12Resource** constBuffer
 	);
 
 	void createTextureBuffer
 	(
 		const DirectX::TexMetadata& metadata,
 		const DirectX::Image* image,
-		ID3D12Resource* textureBuffer,
+		ID3D12Resource** textureBuffer,
 		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle
 	);
 	void createOneColorTextureBuffer
 	(
 		const Color& color,
 		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
-		ID3D12Resource* textureBuffer
+		ID3D12Resource** textureBuffer
 	);
 
 
 	void createDescriptorHeap
 	(
-		ID3D12DescriptorHeap* heap,
+		ID3D12DescriptorHeap** heap,
 		const int& arrayNum
 	);
 #pragma endregion

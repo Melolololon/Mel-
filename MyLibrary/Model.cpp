@@ -58,12 +58,14 @@ void Model::createModelVertexResources
 
 void Model::createModelHeapResources
 (
-	const std::vector<Texture>& texturePath,
+	const std::vector<Texture*>& pTextures,
 	const int modelNum,
 	const int modelFileObjectNum,
 	const size_t userDataSize
 )
 {
+#pragma region ディスクリプタヒープ
+
 
 	//ヒープ作成
 	int constBufferNum = 3;
@@ -79,12 +81,22 @@ void Model::createModelHeapResources
 
 	createDescriptorHeap(heapSize);
 
+#pragma endregion
+
+#pragma region テクスチャバッファ
+
 	//テクスチャバッファ作成
 	createTextureBuffer
 	(
-		texturePath,
+		pTextures,
 		0
 	);
+
+#pragma endregion
+
+#pragma region 定数バッファ
+
+
 
 	//定数バッファ作成
 	createConstBuffer
@@ -94,6 +106,7 @@ void Model::createModelHeapResources
 		modelFileObjectNum,
 		userDataSize
 	);
+#pragma endregion
 
 
 	ModelConstData* modelConstData;
@@ -143,14 +156,14 @@ void Model::createConstBuffer
 	int commonBufferNum = 1;
 
 	if (userDataSize == 0)
-		constBufferNum = 2;
-	else
 		constBufferNum = 3;
+	else
+		constBufferNum = 4;
 
 	//生成数分リサイズ
 	constBuffer.resize(modelNum);
 	//モデルファイルにあるオブジェクト分だけリサイズ
-	for (auto c : constBuffer) 
+	for (auto& c : constBuffer) 
 	{
 		c.resize(modelFileObjectNum);
 
@@ -215,7 +228,7 @@ void Model::createConstBuffer
 				(
 					CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 					constDataSize[k],
-					constBuffer[i][j][k].Get()
+					&constBuffer[i][j][k]
 				);
 				CreateBuffer::getInstance()->createConstBufferView
 				(
@@ -232,10 +245,12 @@ void Model::createConstBuffer
 
 void Model::createTextureBuffer
 (
-	const std::vector<Texture>& textures,
+	const std::vector<Texture*>& textures,
 	const int heapTop
 )
 {
+
+	textureBuffer.resize(textures.size());
 
 	D3D12_CPU_DESCRIPTOR_HANDLE hHandle;
 
@@ -253,9 +268,9 @@ void Model::createTextureBuffer
 
 		CreateBuffer::getInstance()->createTextureBuffer
 		(
-			textures[i].getMetadata(),
-			textures[i].getImage(),
-			textureBuffer[i].Get(),
+			textures[i]->getMetadata(),
+			textures[i]->getImage(),
+			&textureBuffer[i],
 			hHandle
 		);
 		heapTags.push_back(HeapBufferTag::HEAP_TAG_TEXTURE_BUFFER);
@@ -366,7 +381,7 @@ void Model::createCommonBuffer()
 	(
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		sizeof(CommonConstData),
-		commonBuffers.Get()
+		&commonBuffers
 	);
 }
 
@@ -501,8 +516,14 @@ void Model::draw(const int modelNum)
 
 }
 
-void Model::initialize()
+void Model::initialize
+(
+	ID3D12Device* dev,
+	std::vector<ID3D12GraphicsCommandList*> cmdList
+)
 {
+	device = dev;
+	cmdLists = cmdList;
 
 #pragma region ディスクリプタレンジ_ルートパラメーター
 

@@ -229,14 +229,18 @@ void ObjModel::loadModelMaterial
 	
 
 	//テクスチャ読み込み
+	textures.resize(loadObjectNum);
+	std::vector<Texture*> pTexture(loadObjectNum);
 	for(int i = 0; i < loadObjectNum;i++)
 	{
-		textures[i].loadTexture(materials[i].textureName);
+		textures[i] = std::make_unique<Texture>();
+		textures[i]->loadTexture(materials[i].textureName);
+		pTexture[i] = textures[i].get();
 	}
 	
 	createModelHeapResources
 	(
-		textures,
+		pTexture,
 		createNum,
 		static_cast<int>(materials.size()),
 		constDataSize

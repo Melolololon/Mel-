@@ -1,7 +1,7 @@
 #include "FbxLoader.h"
 
 #include<cassert>
-
+#include<filesystem>
 
 
 
@@ -122,8 +122,11 @@ void FbxLoader::parseNodeRecursive
 }
 
 
-void FbxLoader::loadFbxModel(const std::string& modelPath)
+void FbxLoader::loadFbxModel(const std::string& modelPath, FbxModel* fbxModel)
 {
+	
+	extractFileName(modelPath, &modelDirectryPath,nullptr);
+
 	if (!fbxImporter->Initialize
 	(
 		modelPath.c_str(), 
@@ -135,7 +138,7 @@ void FbxLoader::loadFbxModel(const std::string& modelPath)
 	FbxScene* fbxScene = FbxScene::Create(fbxManager, "fbxScene");
 	fbxImporter->Import(fbxScene);
 
-	FbxModel* model = new FbxModel();
+	FbxModel* model = fbxModel;
 	model->modelName = "";
 	
 	//ノード数取得
@@ -185,7 +188,10 @@ void FbxLoader::parseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 void FbxLoader::parseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
 	auto& vertices = fbxModel->vertices;
-	auto& indices = fbxModel->getIndices();
+	auto& m = fbxModel->getMaterial();
+	auto& indicesVector = fbxModel->getIndices();
+	indicesVector.resize(1);
+	auto& indices = indicesVector[0];
 
 	assert(indices.size() == 0);
 
@@ -269,7 +275,9 @@ void FbxLoader::parseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 				FbxSurfaceLambert* lambert =
 					static_cast<FbxSurfaceLambert*>(material);
 
-				Material& material = fbxModel->getMaterial()[0];
+				auto& materialVector = fbxModel->getMaterial();
+				materialVector.resize(1);
+				Material& material = materialVector[0];
 
 				FbxPropertyT<FbxDouble3> ambient = lambert->Ambient;
 				material.ambient.x = (float)ambient.Get()[0];
@@ -295,10 +303,15 @@ void FbxLoader::parseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 					const char* filePath = texture->GetFileName();
 
 					std::string path_str(filePath);
-					std::string name = extractFileName(path_str);
+					std::string name;
+					extractFileName(path_str,nullptr, &name);
 
 					//読み込み処理またはFbxModelクラスにパスを渡す処理をここに
-					fbxModel->textures[0].loadTexture(name);
+					//ファイル名のみ記述されてた
+					
+					fbxModel->textures.resize(1);
+					fbxModel->textures[0] = std::make_unique<Texture>();
+					fbxModel->textures[0]->loadTexture(modelDirectryPath + name);
 
 					textureLoader = true;
 				}
@@ -314,17 +327,34 @@ void FbxLoader::parseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 }
 
 
-std::string FbxLoader::extractFileName(const std::string& path)
+std::string FbxLoader::extractFileName
+(
+	const std::string& path,
+	std::string* directry,
+	std::string* fileName
+)
 {
 	size_t pos1;
 
 	pos1 = path.rfind('\\');
-	if (pos1 != std::string::npos)
-		return path.substr(pos1 + 1, path.size() - pos1 - 1);
+	if (pos1 != std::string::npos) 
+	{
+		if(fileName)
+			*fileName = path.substr(pos1 + 1, path.size() - pos1 - 1);
 
+		if(directry)
+			*directry = path.substr(0 , pos1 + 1);
+	}
 	pos1 = path.rfind('/');
-	if (pos1 != std::string::npos)
-		return path.substr(pos1 + 1, path.size() - pos1 - 1);
+	if (pos1 != std::string::npos) 
+	{
+		if (fileName)
+			*fileName = path.substr(pos1 + 1, path.size() - pos1 - 1);
+
+
+		if (directry)
+			*directry = path.substr(0, pos1 + 1);
+	}
 
 	return path;
 }

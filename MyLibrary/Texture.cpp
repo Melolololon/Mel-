@@ -4,8 +4,11 @@ Texture::Texture(){}
 
 Texture::~Texture(){}
 
+
 bool Texture::loadTexture(const std::string& texturePath)
 {
+	
+
 	std::wstring texturePathW;
 	texturePathW.resize(texturePath.size());
 
