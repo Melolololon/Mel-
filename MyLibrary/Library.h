@@ -51,7 +51,6 @@ private:
 
 	static std::unique_ptr<Audio> audio;
 
-	static DirectX12* directx12;
 	static WNDCLASSEX w;
 	static MSG msg;
 	static HWND hwnd;

@@ -3,18 +3,18 @@
 
 #pragma region Vector2
 
-Vector2::Vector2(){}
+Vector2::Vector2() {}
 Vector2::Vector2(const Vector3& v)
 {
 	x = v.x;
 	y = v.y;
 }
-Vector2::Vector2(const float num)
+Vector2::Vector2(const float& num)
 {
 	x = num;
 	y = num;
 }
-Vector2::Vector2(const float x, const float y)
+Vector2::Vector2(const float& x, const float& y)
 {
 	this->x = x;
 	this->y = y;
@@ -76,24 +76,24 @@ void Vector2::operator/= (const Vector2& vector)
 }
 
 
-Vector2 Vector2::operator*(const float f)const
+Vector2 Vector2::operator*(const float& f)const
 {
 	return { x * f, y * f };
 }
-Vector2 Vector2::operator+(const float f)const
+Vector2 Vector2::operator+(const float& f)const
 {
 	return { x + f, y + f };
 }
-Vector2 Vector2::operator-(const float f)const
+Vector2 Vector2::operator-(const float& f)const
 {
 	return { x - f, y - f };
 }
-Vector2 Vector2::operator/(const float f)const
+Vector2 Vector2::operator/(const float& f)const
 {
 	return { x / f, y / f };
 }
 
-void Vector2::operator=(const float num)
+void Vector2::operator=(const float& num)
 {
 	x = num;
 	y = num;
@@ -132,8 +132,8 @@ void Vector2::operator--()
 
 Vector2 vector2Normalize(const Vector2& vector)
 {
-	if (vector.x == 0 && vector.y == 0 )return { 0,0 };
-	float size = static_cast<float>(sqrt(vector.x * vector.x + vector.y * vector.y ));
+	if (vector.x == 0 && vector.y == 0)return { 0,0 };
+	float size = static_cast<float>(sqrt(vector.x * vector.x + vector.y * vector.y));
 	return{ vector.x / size ,vector.y / size };
 }
 
@@ -146,7 +146,7 @@ Vector2 vector2Normalize(const Vector2& vector)
 /// <returns></returns>
 float vector2Dot(const Vector2& vector1, const Vector2& vector2)
 {
-	return vector1.x *vector2.x + vector1.y*vector2.y;
+	return vector1.x * vector2.x + vector1.y * vector2.y;
 }
 
 float vector2Cross(const Vector2& vector1, const Vector2& vector2)
@@ -174,14 +174,14 @@ Vector3::Vector3(const Vector2& v)
 	z = 0;
 }
 
-Vector3::Vector3(const float num)
+Vector3::Vector3(const float& num)
 {
 	x = num;
 	y = num;
 	z = num;
 }
 
-Vector3::Vector3(const float x, const float y, const float z)
+Vector3::Vector3(const float& x, const float& y, const float& z)
 {
 	this->x = x;
 	this->y = y;
@@ -201,51 +201,51 @@ Vector3::Vector3(const DirectX::XMVECTOR& v)
 	x = v.m128_f32[0];
 	y = v.m128_f32[1];
 	z = v.m128_f32[2];
-	
+
 }
 
 #pragma region ‰‰ŽZŽq
 
-Vector3 Vector3::operator+(const Vector3&  vector)const
+Vector3 Vector3::operator+(const Vector3& vector)const
 {
 	return { x + vector.x, y + vector.y, z + vector.z };
 }
-Vector3 Vector3::operator-(const Vector3&  vector)const
+Vector3 Vector3::operator-(const Vector3& vector)const
 {
 	return { x - vector.x, y - vector.y, z - vector.z };
 }
-Vector3 Vector3::operator*(const Vector3&  vector)const
+Vector3 Vector3::operator*(const Vector3& vector)const
 {
 	return { x * vector.x, y * vector.y, z * vector.z };
 }
-Vector3 Vector3::operator/(const Vector3&  vector)const
+Vector3 Vector3::operator/(const Vector3& vector)const
 {
 	return { x / vector.x, y / vector.y, z / vector.z };
 }
 
 
-void Vector3::operator+= (const Vector3&  vector)
+void Vector3::operator+= (const Vector3& vector)
 {
 	x = x + vector.x;
 	y = y + vector.y;
 	z = z + vector.z;
 }
 
-void Vector3::operator-= (const Vector3&  vector)
+void Vector3::operator-= (const Vector3& vector)
 {
 	x = x - vector.x;
 	y = y - vector.y;
 	z = z - vector.z;
 }
 
-void Vector3::operator*= (const Vector3&  vector)
+void Vector3::operator*= (const Vector3& vector)
 {
 	x = x * vector.x;
 	y = y * vector.y;
 	z = z * vector.z;
 }
 
-void Vector3::operator/= (const Vector3&  vector)
+void Vector3::operator/= (const Vector3& vector)
 {
 	x = x / vector.x;
 	y = y / vector.y;
@@ -253,24 +253,24 @@ void Vector3::operator/= (const Vector3&  vector)
 }
 
 
-Vector3 Vector3::operator+(const float f)const
+Vector3 Vector3::operator+(const float& f)const
 {
-	return { x + f, y + f, z +f };
+	return { x + f, y + f, z + f };
 }
-Vector3 Vector3::operator-(const float f)const
+Vector3 Vector3::operator-(const float& f)const
 {
-	return { x - f, y - f, z -f };
+	return { x - f, y - f, z - f };
 }
-Vector3 Vector3::operator*(const float f)const
+Vector3 Vector3::operator*(const float& f)const
 {
-	return { x * f, y * f, z *f };
+	return { x * f, y * f, z * f };
 }
-Vector3 Vector3::operator/(const float f)const
+Vector3 Vector3::operator/(const float& f)const
 {
-	return { x / f, y / f, z /f };
+	return { x / f, y / f, z / f };
 }
 
-void Vector3::operator=(const float num)
+void Vector3::operator=(const float& num)
 {
 	x = num;
 	y = num;
@@ -279,10 +279,10 @@ void Vector3::operator=(const float num)
 
 bool Vector3::operator==(const Vector3& vector)
 {
-	if (x == vector.x && 
+	if (x == vector.x &&
 		y == vector.y &&
-		z == vector.z )
-			return true;
+		z == vector.z)
+		return true;
 	return false;
 }
 
@@ -333,7 +333,7 @@ Vector3 vector3Normalize(const Vector3& vector)
 Vector3 vector3Cross(const Vector3& vector1, const Vector3& vector2)
 {
 	Vector3 cross;
-	cross.x = vector1.y *vector2.z - vector1.z * vector2.y;
+	cross.x = vector1.y * vector2.z - vector1.z * vector2.y;
 	cross.y = vector1.z * vector2.x - vector1.x * vector2.z;
 	cross.z = vector1.x * vector2.y - vector1.y * vector2.x;
 
@@ -347,7 +347,7 @@ Vector3 vector3Cross(const Vector3& vector1, const Vector3& vector2)
 /// <returns></returns>
 float vector3Dot(const Vector3& vector1, const Vector3& vector2)
 {
-	return vector1.x *vector2.x + vector1.y*vector2.y + vector1.z *vector2.z;
+	return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
 }
 #pragma endregion
 

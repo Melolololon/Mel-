@@ -11,8 +11,8 @@ private:
 	void end();
 
 public:
-	Game(const Game&) = delete;
-	Game& operator=(const Game&) = delete;
+	Game(const Game& g) = delete;
+	Game& operator=(const Game& g) = delete;
 
 	static Game* getInstance();
 	void run();

@@ -29,7 +29,7 @@ void Object::hit
 (
 	const Object* const  object,
 	const CollisionType& collisionType,
-	const int arrayNum
+	const int& arrayNum
 )
 {
 }

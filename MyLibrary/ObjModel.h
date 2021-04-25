@@ -1,6 +1,6 @@
 #pragma once
 #include"Model.h"
-
+#include"Texture.h"
 //PrimitibModelを継承すると、プリミティブモデルを作成する関数に
 //このクラスを渡せてしまうため、Modelに変更
 

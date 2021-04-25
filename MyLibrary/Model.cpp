@@ -2,6 +2,10 @@
 #include"CreateBuffer.h"
 #include"PipelineState.h"
 
+ID3D12Device* Model::device;
+std::vector<ID3D12GraphicsCommandList*>Model::cmdLists;
+ComPtr<ID3D12RootSignature>Model::rootSignature;
+ComPtr<ID3D12Resource>Model::commonBuffers;
 Model::Model()
 {
 }
@@ -36,7 +40,6 @@ void Model::createModelVertexResources
 #pragma endregion
 
 #pragma region インデックスバッファ
-	auto objectNum = indicesNum.size();
 	indexBufferSet.resize(objectNum);
 
 	for (int i = 0; i < objectNum; i++)
@@ -58,7 +61,7 @@ void Model::createModelHeapResources
 	const std::vector<Texture>& texturePath,
 	const int modelNum,
 	const int modelFileObjectNum,
-	const size_t userDataSize = 0
+	const size_t userDataSize
 )
 {
 
@@ -133,7 +136,7 @@ void Model::createConstBuffer
 	const int modelNum,
 	const int modelFileObjectNum,
 	const int heapTop,
-	const size_t userDataSize = 0
+	const size_t userDataSize
 )
 {
 	int constBufferNum;

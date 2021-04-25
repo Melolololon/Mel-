@@ -12,7 +12,7 @@ bool FbxModel::loadModel
 (
 	const std::string& path,
 	const int createNum,
-	const size_t constDataSize = 0
+	const size_t constDataSize
 )
 {
 	FbxLoader::getInstance()->loadFbxModel("Resources/cube/cube.fbx");
@@ -35,6 +35,8 @@ bool FbxModel::loadModel
 		1,
 		constDataSize
 	);
+
+	return true;
 }
 
 	

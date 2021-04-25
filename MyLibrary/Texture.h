@@ -15,7 +15,7 @@ public:
 
 	Vector2 getTextureSize()const
 	{
-		return { metadata.width ,metadata.height };
+		return { static_cast<float>(metadata.width) , static_cast<float>(metadata.height) };
 	}
 
 	DirectX::TexMetadata getMetadata()const

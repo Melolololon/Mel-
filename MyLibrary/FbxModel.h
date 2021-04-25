@@ -1,11 +1,8 @@
 #pragma once
-#include<vector>
-#include<string>
-#include<DirectXMath.h>
 
 #include"DirectXStruct.h"
 #include"Model.h"
-
+#include<string>
 #include"Texture.h"
 struct Node
 {
@@ -21,7 +18,7 @@ struct Node
 	Node* parentNode;
 };
 
-class FbxModel : public Model
+class FbxModel:public Model
 {
 private:
 	//モデル名
@@ -43,7 +40,8 @@ private:
 public:
 	//フレンドクラスは、privateの変数、関数を参照できる
 	friend class FbxLoader;
-
+	FbxModel();
+	~FbxModel();
 
 	bool loadModel
 	(
