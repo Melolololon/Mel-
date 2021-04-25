@@ -55,7 +55,7 @@ void Model::createModelVertexResources
 
 void Model::createModelHeapResources
 (
-	const std::vector<std::wstring>& texturePath,
+	const std::vector<Texture>& texturePath,
 	const int modelNum,
 	const int modelFileObjectNum,
 	const size_t userDataSize = 0
@@ -229,17 +229,14 @@ void Model::createConstBuffer
 
 void Model::createTextureBuffer
 (
-	const std::vector<std::wstring>& texturePath,
+	const std::vector<Texture>& textures,
 	const int heapTop
 )
 {
-	DirectX::TexMetadata metadata{};
-	DirectX::ScratchImage scratchimage{};
-	const DirectX::Image* imgs;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE hHandle;
 
-	auto textureNum = texturePath.size();
+	auto textureNum = textures.size();
 	for (int i = 0; i < textureNum;i++)
 	{
 		hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
@@ -249,17 +246,12 @@ void Model::createTextureBuffer
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
 
-		imgs = DirectXTexLoader::loadTexture
-		(
-			texturePath[i].c_str(),
-			&metadata,
-			&scratchimage
-		);
+		
 
 		CreateBuffer::getInstance()->createTextureBuffer
 		(
-			metadata,
-			imgs,
+			textures[i].getMetadata(),
+			textures[i].getImage(),
 			textureBuffer[i].Get(),
 			hHandle
 		);

@@ -5,6 +5,8 @@
 
 #include"DirectXStruct.h"
 #include"Model.h"
+
+#include"Texture.h"
 struct Node
 {
 	std::string nodeName;
@@ -32,11 +34,21 @@ private:
 	Node* meshNode = nullptr;
 
 	std::vector<Vertex>vertices;
-	//std::vector<USHORT>indices;
 
 	std::vector<USHORT>& getIndices() { return indices[0]; }
+	std::vector<Material>& getMaterial() { return materials; }
+
+	std::vector<Texture>textures;
+
 public:
 	//フレンドクラスは、privateの変数、関数を参照できる
 	friend class FbxLoader;
 
+
+	bool loadModel
+	(
+		const std::string& path,
+		const int createNum,
+		const size_t constDataSize = 0
+	);
 };

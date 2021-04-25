@@ -11,6 +11,7 @@
 #include<dxgi.h>
 
 #include"PipelineState.h"
+#include"Texture.h"
 
 //とりあえずこれのポインタをキーにする
 
@@ -75,7 +76,7 @@ private:
 
 	void createTextureBuffer
 	(
-		const std::vector<std::wstring>& texturePath,
+		const std::vector<Texture>& textures,
 		const int heapTop
 	);
 
@@ -151,7 +152,7 @@ protected:
 	/// <param name="userDataSize"></param>
 	void createModelHeapResources
 	(
-		const std::vector<std::wstring>& texturePath,
+		const std::vector<Texture>& texturePath,
 		const int modelNum,
 		const int modelFileObjectNum,
 		const size_t userDataSize = 0

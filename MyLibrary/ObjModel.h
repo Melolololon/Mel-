@@ -27,6 +27,8 @@ private:
 
 	//モデルファイルにあるオブジェクト数
 	int loadFileObjectNum;
+
+	std::vector<Texture>textures;
 public:
 	ObjModel();
 	virtual ~ObjModel();
@@ -40,14 +42,14 @@ public:
 	void loadModelVertices
 	(
 		const std::string& path,
-		const bool& loadUV,
-		const bool& loadNormal
+		const bool loadUV,
+		const bool loadNormal
 	);
 
 	void loadModelMaterial
 	(
-		const int& createNum,
-		const size_t& constDataSize = 0
+		const int createNum,
+		const size_t constDataSize = 0
 	);
 };
 

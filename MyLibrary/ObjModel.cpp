@@ -12,8 +12,8 @@ ObjModel::~ObjModel(){}
 void ObjModel::loadModelVertices
 (
 	const std::string& path,
-	const bool& loadUV,
-	const bool& loadNormal
+	const bool loadUV,
+	const bool loadNormal
 )
 {
 	//マテリアル
@@ -181,8 +181,8 @@ void ObjModel::loadModelVertices
 
 void ObjModel::loadModelMaterial
 (
-	const int& createNum,
-	const size_t& constDataSize = 0
+	const int createNum,
+	const size_t constDataSize = 0
 )
 {
 #pragma region パスとファイル分離
@@ -244,9 +244,15 @@ void ObjModel::loadModelMaterial
 		);
 	}
 
+	//テクスチャ読み込み
+	for(int i = 0; i < loadObjectNum;i++)
+	{
+		textures[i].loadTexture(texturePathW[i]);
+	}
+	
 	createModelHeapResources
 	(
-		texturePathW,
+		textures,
 		createNum,
 		static_cast<int>(texturePathW.size()),
 		constDataSize

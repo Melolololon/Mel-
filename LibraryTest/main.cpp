@@ -7,15 +7,6 @@
 #include<fbxsdk.h>
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	//FbxManager* fbxManager = FbxManager::Create();
-	//fbxManager = FbxManager::Create();
-
-	//FbxIOSettings* ios = FbxIOSettings::Create(fbxManager, IOSROOT);
-	//fbxManager->SetIOSettings(ios);
-
-	//FbxImporter* fbxImporter = FbxImporter::Create(fbxManager, "");
-	//fbxImporter->Destroy();
-
 	Game::getInstance()->run();
 	return 0;
 }

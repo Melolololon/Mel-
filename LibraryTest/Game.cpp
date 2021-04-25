@@ -55,7 +55,7 @@ void Game::initialize()
 	SceneManager::getInstace()->initialize(new Play());
 #pragma endregion
 
-	FbxLoader::getInstance()->loadFbxModel("Resources/cube/cube.fbx");
+	
 }
 
 
