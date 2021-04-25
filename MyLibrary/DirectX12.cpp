@@ -33,6 +33,7 @@ DirectX12* DirectX12::getInstance()
 
 void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 {
+
 #pragma region •Ï”‰Šú‰»
 
 	cameraMat = DirectX::XMMatrixIdentity();
@@ -937,6 +938,15 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 	FbxLoader::getInstance()->initialize(dev.Get());
 #pragma endregion
 
+
+	std::vector<ID3D12GraphicsCommandList*>cmdLists(1);
+	cmdLists[0] = cmdList.Get();
+	Model::initialize
+	(
+		dev.Get(),
+		cmdLists
+	);
+	Model::createCommonBuffer();
 }
 
 void DirectX12::preparationToDraw()

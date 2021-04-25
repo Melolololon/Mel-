@@ -32,10 +32,10 @@ private:
 
 	std::vector<Vertex>vertices;
 
-	std::vector<USHORT>& getIndices() { return indices[0]; }
+	std::vector<std::vector<USHORT>>& getIndices() { return indices; }
 	std::vector<Material>& getMaterial() { return materials; }
 
-	std::vector<Texture>textures;
+	std::vector<std::unique_ptr<Texture>>textures;
 
 public:
 	//フレンドクラスは、privateの変数、関数を参照できる

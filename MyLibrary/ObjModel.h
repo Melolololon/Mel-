@@ -28,7 +28,7 @@ private:
 	//モデルファイルにあるオブジェクト数
 	int loadFileObjectNum;
 
-	std::vector<Texture>textures;
+	std::vector<std::unique_ptr<Texture>>textures;
 public:
 	ObjModel();
 	virtual ~ObjModel();

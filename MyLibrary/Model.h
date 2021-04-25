@@ -73,7 +73,7 @@ private:
 
 	void createTextureBuffer
 	(
-		const std::vector<Texture>& textures,
+		const std::vector<Texture*>& textures,
 		const int heapTop
 	);
 
@@ -145,11 +145,13 @@ protected:
 	/// <param name="userDataSize"></param>
 	void createModelHeapResources
 	(
-		const std::vector<Texture>& texturePath,
+		const std::vector<Texture*>& pTextures,
 		const int modelNum,
 		const int modelFileObjectNum,
 		const size_t userDataSize = 0
 	);
+
+	
 #pragma endregion
 
 
@@ -244,7 +246,11 @@ public:
 	/// <param name="data"></param>
 	static void mapCommonConstData(const CommonConstData& data);
 
-	static void initialize();
+	static void initialize
+	(
+		ID3D12Device* dev,
+		std::vector<ID3D12GraphicsCommandList*> cmdList
+	);
 
 #pragma endregion
 

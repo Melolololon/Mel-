@@ -31,7 +31,7 @@ private:
 
 	FbxImporter* fbxImporter = nullptr;
 
-
+	std::string modelDirectryPath;
 
 	/// <summary>
 	/// ノード構造解析用関数
@@ -72,7 +72,12 @@ private:
 	/// <param name="fbxMesh"></param>
 	void parseMaterial(FbxModel* fbxModel,FbxNode* fbxNode);
 	
-	std::string extractFileName(const std::string& path);
+	std::string extractFileName
+	(
+		const std::string& path, 
+		std::string* directry, 
+		std::string* fileName
+	);
 
 #pragma endregion
 public:
@@ -92,6 +97,6 @@ public:
 	/// fbxを読み込みます
 	/// </summary>
 	/// <param name="modelPath">モデルのパス</param>
-	void loadFbxModel(const std::string& modelPath);
+	void loadFbxModel(const std::string& modelPath,FbxModel* fbxModel);
 };
 

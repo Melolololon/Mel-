@@ -15,7 +15,9 @@ bool FbxModel::loadModel
 	const size_t constDataSize
 )
 {
-	FbxLoader::getInstance()->loadFbxModel("Resources/cube/cube.fbx");
+
+
+	FbxLoader::getInstance()->loadFbxModel("Resources/cube/cube.fbx",this);
 
 	std::vector<size_t> verticesNum(1);
 	verticesNum[0] = vertices.size();
@@ -28,9 +30,14 @@ bool FbxModel::loadModel
 		indices
 	);
 
+	auto texNum = textures.size();
+	std::vector<Texture*>pTextures(texNum);
+	for (int i = 0; i < texNum; i++)
+		pTextures[i] = textures[i].get();
+
 	createModelHeapResources
 	(
-		textures,
+		pTextures,
 		createNum,
 		1,
 		constDataSize

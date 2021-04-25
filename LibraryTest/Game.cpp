@@ -4,8 +4,7 @@
 #include"ObjectManager.h"
 #include"Play.h"
 
-#include"FbxLoader.h"
-
+#include"FbxModel.h"
 
 Game::Game() {}
 
@@ -55,7 +54,13 @@ void Game::initialize()
 	SceneManager::getInstace()->initialize(new Play());
 #pragma endregion
 
-	
+	FbxModel* model = new FbxModel();
+	model->loadModel
+	(
+		"Resources/cube/cube.fbx",
+		1
+	);
+
 }
 
 

@@ -405,7 +405,7 @@ void CreateBuffer::createConstBuffer
 (
 	const D3D12_HEAP_PROPERTIES& cbheapprop,
 	const size_t& constStructDataSize,
-	ID3D12Resource* constBuffer
+	ID3D12Resource** constBuffer
 )
 {
 	D3D12_RESOURCE_DESC resDesc = 
@@ -419,7 +419,7 @@ void CreateBuffer::createConstBuffer
 			&resDesc,
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			IID_PPV_ARGS(&constBuffer)
+			IID_PPV_ARGS(constBuffer)
 		);
 
 }
@@ -429,10 +429,11 @@ void CreateBuffer::createTextureBuffer
 (
 	const DirectX::TexMetadata& metadata,
 	const DirectX::Image* image,
-	ID3D12Resource* textureBuffer,
+	ID3D12Resource** textureBuffer,
 	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle
 )
 {
+
 	D3D12_HEAP_PROPERTIES texHeapprop{};
 	D3D12_RESOURCE_DESC texResDesc{};
 
@@ -460,10 +461,11 @@ void CreateBuffer::createTextureBuffer
 		&texResDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&textureBuffer)
+		IID_PPV_ARGS(textureBuffer)
 	);
 
-	auto result = textureBuffer->WriteToSubresource
+	ID3D12Resource* r = *textureBuffer;
+	auto result = r->WriteToSubresource
 	(
 		0,
 		nullptr,
@@ -480,7 +482,7 @@ void CreateBuffer::createTextureBuffer
 
 	device->CreateShaderResourceView
 	(
-		textureBuffer,
+		*textureBuffer,
 		&srvDesc,
 		heapHandle
 	);
@@ -491,7 +493,7 @@ void CreateBuffer::createOneColorTextureBuffer
 (
 	const Color& color,
 	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
-	ID3D12Resource* textureBuffer
+	ID3D12Resource** textureBuffer
 )
 {
 	D3D12_HEAP_PROPERTIES texHeapprop{};
@@ -521,10 +523,11 @@ void CreateBuffer::createOneColorTextureBuffer
 		&texResDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&textureBuffer)
+		IID_PPV_ARGS(textureBuffer)
 	);
 
-	result = textureBuffer->WriteToSubresource
+	ID3D12Resource* r = *textureBuffer;
+	result = r->WriteToSubresource
 	(
 		0,
 		nullptr,
@@ -541,7 +544,7 @@ void CreateBuffer::createOneColorTextureBuffer
 
 	device->CreateShaderResourceView
 	(
-	    textureBuffer,
+	    *textureBuffer,
 		&srvDesc,
 		heapHandle
 	);
@@ -549,7 +552,7 @@ void CreateBuffer::createOneColorTextureBuffer
 
 void CreateBuffer::createDescriptorHeap
 (
-	ID3D12DescriptorHeap* heap,
+	ID3D12DescriptorHeap** heap,
 	const int& arrayNum
 )
 {
@@ -563,7 +566,7 @@ void CreateBuffer::createDescriptorHeap
 	auto result = device->CreateDescriptorHeap
 	(
 		&descHeapDesc,
-		IID_PPV_ARGS(&heap)
+		IID_PPV_ARGS(heap)
 	);
 }
 
