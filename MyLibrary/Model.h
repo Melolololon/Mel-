@@ -39,13 +39,16 @@ private:
 
 	static ID3D12Device* device;
 	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
-	static ComPtr<ID3D12RootSignature>rootSignature;
+
+	
+
 
 	//これスプライトみたいにヒープから呼び出さないようにして、
 	//1つだけ生成するようにしたほうがいい?
 	//バッファ1つだけ作って、ビューを複数作るようにする
 	static ComPtr<ID3D12Resource>commonBuffers;
 
+	static ComPtr<ID3D12RootSignature>rootSignature;
 #pragma region 関数
 
 #pragma region 生成

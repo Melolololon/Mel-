@@ -1,5 +1,9 @@
 #include "FbxModel.h"
 #include"FbxLoader.h"
+
+
+std::unique_ptr<PipelineState>FbxModel::defaultFbxPipeline;
+
 FbxModel::FbxModel()
 {
 }
@@ -46,4 +50,30 @@ bool FbxModel::loadModel
 	return true;
 }
 
-	
+bool FbxModel::initialize()
+{
+	/*PipelineData data;
+	data.alphaWriteMode = ALPHA_WRITE_TRUE;
+	data.blendMode = BLEND_ADD;
+	data.cullMode = CULL_BACK;
+	data.depthMode = DEPTH_TRUE;
+	data.drawMode = DRAW_SOLID;
+	auto result = defaultFbxPipeline->createModelPipeline
+	(
+		data,
+		{ L"../MyLibrary/ObjAnimationVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"NULL","","" },
+		{ L"NULL","","" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		nullptr,
+		typeid(FbxModel).name()
+	);
+	if (!result)
+	{
+		OutputDebugString(L"FbxModelの初期化に失敗しました。デフォルトパイプラインを生成できませんでした\n");
+		return false;
+	}*/
+	return true;
+}
+

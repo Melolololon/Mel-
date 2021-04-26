@@ -13,20 +13,23 @@ PipelineState::~PipelineState()
 {
 }
 
-bool PipelineState::createModelPipeline
+bool PipelineState::createPipeline
 (
 	const PipelineData& pipelineData,
 	const ShaderData& vShaderData,
-	const ShaderData& gSyaderData,
+	const ShaderData& gShaderData,
 	const ShaderData& hShaderData,
 	const ShaderData& dShaderData,
 	const ShaderData& pShaderData,
 	const std::vector<InputLayoutData>* inputLayoutData,
-	const std::string& modelClassName
+	ID3D12RootSignature* rootSignature,
+	ID3D12PipelineState** pipelineState
 )
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc = {};
 	setPipelineDesc(pipelineData, pDesc);
+	//ルートシグネチャセット
+	pDesc.pRootSignature = rootSignature;
 
 	HRESULT result;
 	ComPtr<ID3DBlob> vsBlob;
@@ -128,7 +131,7 @@ bool PipelineState::createModelPipeline
 			inputLayoutVector.push_back(inputLayout);
 		}
 
-		
+
 	}
 	if (!inputLayoutData)
 	{
@@ -171,13 +174,13 @@ bool PipelineState::createModelPipeline
 
 #pragma region シェーダーコンパイル
 
-	auto getErrorString = [&]() 
+	auto getErrorString = [&]()
 	{
 		if (FAILED(result))
 		{
 			std::string errstr;
 			errstr.resize(errorBlob->GetBufferSize());
-	
+
 			std::copy_n((char*)errorBlob->GetBufferPointer(),
 				errorBlob->GetBufferSize(),
 				errstr.begin());
@@ -190,162 +193,163 @@ bool PipelineState::createModelPipeline
 
 #pragma region 頂点シェーダー
 
-		if (vShaderData.shaderPath == L"LIB")
-		{
-			result = D3DCompileFromFile(
-				L"../MyLibrary/ObjVertexShader.hlsl",
-				nullptr,
-				D3D_COMPILE_STANDARD_FILE_INCLUDE,
-				"VSmain", "vs_5_0",
-				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-				0,
-				&vsBlob, &errorBlob);
-		}
-		else
-		{
-			result = D3DCompileFromFile(
-				vShaderData.shaderPath,
-				nullptr,
-				D3D_COMPILE_STANDARD_FILE_INCLUDE,
-				vShaderData.entryPoint, vShaderData.ver,
-				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-				0,
-				&vsBlob, &errorBlob);
+	if (vShaderData.shaderPath == L"LIB")
+	{
+		result = D3DCompileFromFile(
+			L"../MyLibrary/ObjVertexShader.hlsl",
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			"VSmain", "vs_5_0",
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+			0,
+			&vsBlob, &errorBlob);
+	}
+	else
+	{
+		result = D3DCompileFromFile(
+			vShaderData.shaderPath,
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			vShaderData.entryPoint, vShaderData.ver,
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+			0,
+			&vsBlob, &errorBlob);
 
-		}
+	}
 
-		if(!result)
-		{
-			getErrorString();
-			OutputDebugString(L"頂点シェーダーが読み込めませんでした。\n");
-			return false;
-		}
+	if (!result)
+	{
+		getErrorString();
+		OutputDebugString(L"頂点シェーダーが読み込めませんでした。\n");
+		return false;
+	}
 
-		pDesc.VS.pShaderBytecode = vsBlob->GetBufferPointer();
-		pDesc.VS.BytecodeLength = vsBlob->GetBufferSize();
+	pDesc.VS.pShaderBytecode = vsBlob->GetBufferPointer();
+	pDesc.VS.BytecodeLength = vsBlob->GetBufferSize();
 #pragma endregion
 
 #pragma region ピクセルシェーダー
 
-		if (pShaderData.shaderPath == L"LIB")
-		{
-			result = D3DCompileFromFile(
-				L"../MyLibrary/ObjPixelShader.hlsl",
-				nullptr,
-				D3D_COMPILE_STANDARD_FILE_INCLUDE,
-				"PSmain", "ps_5_0",
-				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-				0,
-				&psBlob, &errorBlob);
-		}
-		else
-		{
-			result = D3DCompileFromFile(
-				pShaderData.shaderPath,
-				nullptr,
-				D3D_COMPILE_STANDARD_FILE_INCLUDE,
-				pShaderData.entryPoint, pShaderData.ver,
-				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-				0,
-				&psBlob, &errorBlob);
-		}
+	if (pShaderData.shaderPath == L"LIB")
+	{
+		result = D3DCompileFromFile(
+			L"../MyLibrary/ObjPixelShader.hlsl",
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			"PSmain", "ps_5_0",
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+			0,
+			&psBlob, &errorBlob);
+	}
+	else
+	{
+		result = D3DCompileFromFile(
+			pShaderData.shaderPath,
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			pShaderData.entryPoint, pShaderData.ver,
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+			0,
+			&psBlob, &errorBlob);
+	}
 
-		if (!result)
-		{
-			getErrorString();
-			OutputDebugString(L"ピクセルシェーダーが読み込めませんでした。\n");
-			return false;
-		}
+	if (!result)
+	{
+		getErrorString();
+		OutputDebugString(L"ピクセルシェーダーが読み込めませんでした。\n");
+		return false;
+	}
 
-		pDesc.PS.pShaderBytecode = psBlob->GetBufferPointer();
-		pDesc.PS.BytecodeLength = psBlob->GetBufferSize();
+	pDesc.PS.pShaderBytecode = psBlob->GetBufferPointer();
+	pDesc.PS.BytecodeLength = psBlob->GetBufferSize();
 #pragma endregion
 
 #pragma region ジオメトリシェーダー
 
-		if (gSyaderData.shaderPath == L"LIB")
+	if (gShaderData.shaderPath == L"LIB")
+	{
+		result = D3DCompileFromFile(
+			L"../MyLibrary/ObjGeometryShader.hlsl",
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			"GSmain", "gs_5_0",
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+			0,
+			&gsBlob, &errorBlob);
+
+
+	}
+	else
+		if (gShaderData.shaderPath == L"NULL") {}
+		else
 		{
 			result = D3DCompileFromFile(
-				L"../MyLibrary/ObjGeometryShader.hlsl",
+				gShaderData.shaderPath,
 				nullptr,
 				D3D_COMPILE_STANDARD_FILE_INCLUDE,
-				"GSmain", "gs_5_0",
+				gShaderData.entryPoint, gShaderData.ver,
 				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 				0,
 				&gsBlob, &errorBlob);
 
-			
-		}
-		else
-			if (gSyaderData.shaderPath == L"NULL") {}
-			else
-			{
-				result = D3DCompileFromFile(
-					gSyaderData.shaderPath,
-					nullptr,
-					D3D_COMPILE_STANDARD_FILE_INCLUDE,
-					gSyaderData.entryPoint, gSyaderData.ver,
-					D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-					0,
-					&gsBlob, &errorBlob);
-
-			}
-
-		if (!result)
-		{
-			getErrorString();
-			OutputDebugString(L"ジオメトリーシェーダーが読み込めませんでした。\n");
-			return false;
 		}
 
-		pDesc.GS.pShaderBytecode = gsBlob->GetBufferPointer();
-		pDesc.GS.BytecodeLength = gsBlob->GetBufferSize();
+	if (!result)
+	{
+		getErrorString();
+		OutputDebugString(L"ジオメトリーシェーダーが読み込めませんでした。\n");
+		return false;
+	}
+
+	pDesc.GS.pShaderBytecode = gsBlob->GetBufferPointer();
+	pDesc.GS.BytecodeLength = gsBlob->GetBufferSize();
 #pragma endregion
 
 #pragma region ハルシェーダー
-		/*result = D3DCompileFromFile(
-			L"../MyLibrary/BasicHullShader.hlsl",
-			nullptr,
-			D3D_COMPILE_STANDARD_FILE_INCLUDE,
-			"HSmain", "hs_5_0",
-			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-			0,
-			&hsBlob, &errorBlob);
+	/*result = D3DCompileFromFile(
+		L"../MyLibrary/BasicHullShader.hlsl",
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		"HSmain", "hs_5_0",
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		0,
+		&hsBlob, &errorBlob);
 
-		pDesc.HS.pShaderBytecode = hsBlob->GetBufferPointer();
-		pDesc.HS.BytecodeLength = hsBlob->GetBufferSize();*/
+	pDesc.HS.pShaderBytecode = hsBlob->GetBufferPointer();
+	pDesc.HS.BytecodeLength = hsBlob->GetBufferSize();*/
 #pragma endregion
 
 #pragma region ドメインシェーダー
-		/*	result = D3DCompileFromFile(
-				L"../MyLibrary/BasicDomainShader.hlsl",
-				nullptr,
-				D3D_COMPILE_STANDARD_FILE_INCLUDE,
-				"DSmain", "ds_5_0",
-				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-				0,
-				&dsBlob, &errorBlob);
+	/*	result = D3DCompileFromFile(
+			L"../MyLibrary/BasicDomainShader.hlsl",
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			"DSmain", "ds_5_0",
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+			0,
+			&dsBlob, &errorBlob);
 
-			pDesc.DS.pShaderBytecode = dsBlob->GetBufferPointer();
-			pDesc.DS.BytecodeLength = dsBlob->GetBufferSize();*/
+		pDesc.DS.pShaderBytecode = dsBlob->GetBufferPointer();
+		pDesc.DS.BytecodeLength = dsBlob->GetBufferSize();*/
 #pragma endregion
 
 
 
-	
+
 
 #pragma endregion
 
-	//パイプラインの生成
-	if (!device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(&pipeline)))
+		//パイプラインの生成
+	auto result = device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(pipelineState));
+	if (!result)
 	{
 		OutputDebugString(L"パイプラインの生成に失敗しました\n");
 		return false;
 	}
-	this->modelClassName = modelClassName;
-
 	return true;
 }
+
+
 
 void PipelineState::setPipelineDesc
 (
@@ -397,7 +401,7 @@ void PipelineState::setPipelineDesc
 	case DepthMode::DEPTH_NONE:
 		desc.DepthStencilState.DepthEnable = false;//カリング設定
 		break;
-	case DepthMode::DEPTH_TRUE :
+	case DepthMode::DEPTH_TRUE:
 		desc.DepthStencilState.DepthEnable = true;//カリング設定
 
 		break;
@@ -444,7 +448,7 @@ void PipelineState::setPipelineDesc
 
 
 	//アルファ書き込み
-	switch (pipelineData.alphaWriteMode) 
+	switch (pipelineData.alphaWriteMode)
 	{
 	case AlphaWriteMode::ALPHA_WRITE_NONE:
 		desc.BlendState.AlphaToCoverageEnable = true;
@@ -453,17 +457,57 @@ void PipelineState::setPipelineDesc
 		desc.BlendState.AlphaToCoverageEnable = false;
 		break;
 	}
-	
+
 
 #pragma endregion
-	
+
 	//
 	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	desc.NumRenderTargets = 1;
 	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.SampleDesc.Count = 1;
 
-	//ルートシグネチャセット
-	desc.pRootSignature = modelRootSignature;
 }
 
+
+
+bool PipelineState::createModelPipeline
+(
+	const PipelineData& pipelineData,
+	const ShaderData& vShaderData,
+	const ShaderData& gShaderData,
+	const ShaderData& hShaderData,
+	const ShaderData& dShaderData,
+	const ShaderData& pShaderData,
+	const std::vector<InputLayoutData>* inputLayoutData,
+	const std::string& modelClassName
+)
+{
+	auto result = createPipeline
+	(
+		pipelineData,
+		vShaderData,
+		gShaderData,
+		hShaderData,
+		dShaderData,
+		pShaderData,
+		inputLayoutData,
+		modelRootSignature,
+		&pipeline
+	);
+
+	if(result)
+	this->modelClassName = modelClassName;
+
+	return result;
+}
+
+bool PipelineState::initialize
+(
+	ID3D12Device* dev
+)
+{
+	device = dev;
+
+
+}
