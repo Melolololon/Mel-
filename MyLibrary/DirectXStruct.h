@@ -112,13 +112,13 @@ struct PMDHeader
 
 struct ModelConstData
 {
-	std::vector<DirectX::XMFLOAT3>position;
-	std::vector<DirectX::XMFLOAT3>scale;
-	std::vector<DirectX::XMFLOAT3>angle;
-	std::vector<DirectX::XMFLOAT4>addColor;
-	std::vector<DirectX::XMFLOAT4>subColor;
-	std::vector<DirectX::XMFLOAT4>mulColor;
-	std::vector<float>pushPolygonNum;
+	DirectX::XMFLOAT3 position = {0,0,0};
+	DirectX::XMFLOAT3 scale = {1,1,1};
+	DirectX::XMFLOAT3 angle = {0,0,0};
+	DirectX::XMFLOAT4 addColor = { 0,0,0,0 };
+	DirectX::XMFLOAT4 subColor = {0,0,0,0};
+	DirectX::XMFLOAT4 mulColor = {1,1,1,1};
+	float pushPolygonNum = 0.0f;
 
 };
 //表示してるモデル1つ1つが違う値の構造体
@@ -144,13 +144,13 @@ struct ConstBufferData
 {
 	DirectX::XMFLOAT4 color;
 	DirectX::XMMATRIX mat;
+	DirectX::XMMATRIX worldMat;
 	DirectX::XMMATRIX normalMat;
 	DirectX::XMFLOAT4 mulColor;
 	DirectX::XMFLOAT4 addColor;
 	DirectX::XMFLOAT4 subColor;
-	float ex;
-	DirectX::XMMATRIX worldMat;
 	DirectX::XMMATRIX boneMat[64];
+	float ex;
 };
 
 struct CommonConstData

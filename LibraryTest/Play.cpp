@@ -8,7 +8,8 @@
 #include"TestObject.h"
 
 #include"XInputManager.h"
-
+#include"FbxModel.h"
+std::unique_ptr<FbxModel> model = std::make_unique<FbxModel>();
 Play::Play()
 {
 
@@ -28,12 +29,19 @@ ModelData m;
 ModelData box;
 void Play::initialize()
 {
+	model->loadModel
+	(
+		"Resources/cube/cube.fbx",
+		1
+	);
+
+
 	Library::createPoint(1, &tP);
 	Library::createSprite(&tS);
 	Library::createSprite(&tS2);
 	tex = Library::loadTexture(L"Resources/Texture/testTexture.png");
 	tex2 = Library::loadTexture(L"Resources/Texture/testTexture2.png");
-	Library::setCamera({ 0,0,-10 }, { 0,0,0 }, { 0,1,0 });
+	//Library::setCamera({ 0,0,-10 }, { 0,0,0 }, { 0,1,0 });
 
 	m.key = "tank";
 	std::string mat;
@@ -89,6 +97,9 @@ void Play::update()
 		angle.x -= 3.1f;
 	Library::setAngle(angle, m, 0);
 	Library::setAngle(angle, box, 0);
+
+
+	model->setAngle(angle,0);
 }
 
 void Play::draw()
@@ -115,6 +126,8 @@ void Play::draw()
 	Library::drawGraphic(m, 0);
 	if (DirectInput::keyState(DIK_X))
 	Library::drawGraphic(box, 0);
+
+	model->draw(0);
 }
 
 void Play::end()

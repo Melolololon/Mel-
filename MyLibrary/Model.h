@@ -19,12 +19,12 @@ class Model
 {
 public:
 
-	//定数バッファのタグ
-	//"Texture" シェーダーリソースビュー t0
-	//"LibraryConst" ライブラリ構造体 b0
-	//"UserConst" ユーザー構造体 b1
-	//"Material" マテリアル構造体 b2
-	//COMMON_CONST_BUFFER 共通 b3
+	//ヒープ内を可視化するためのタグ
+	//"HEAP_TAG_TEXTURE_BUFFER" シェーダーリソースビュー t0
+	//"HEAP_TAG_LIBRARY_CONST_BUFFER" ライブラリ構造体 b0
+	//"HEAP_TAG_USER_CONST_BUFFER" ユーザー構造体 b1
+	//"HEAP_TAG_MATERIAL_CONST_BUFFER" マテリアル構造体 b2
+	//HEAP_TAG_COMMON_CONST_BUFFER 共通 b3
 	enum HeapBufferTag
 	{
 		HEAP_TAG_TEXTURE_BUFFER,
@@ -32,7 +32,6 @@ public:
 		HEAP_TAG_LIBRARY_CONST_BUFFER,
 		HEAP_TAG_USER_CONST_BUFFER,
 		HEAP_TAG_MATERIAL_CONST_BUFFER,
-		HEAP_TAG_OBJ_BONE_MATRIX_CONST_BUFFER
 	};
 
 private:
@@ -49,6 +48,9 @@ private:
 	static ComPtr<ID3D12Resource>commonBuffers;
 
 	static ComPtr<ID3D12RootSignature>rootSignature;
+
+	static DirectX::XMMATRIX cameraMatrix;
+
 #pragma region 関数
 
 #pragma region 生成
@@ -87,6 +89,9 @@ private:
 
 protected:
 #pragma region 変数
+	int modelNum;
+	int modelObjectNum;
+
 	ComPtr<ID3D12PipelineState> pipeline;
 	ID3D12PipelineState* currentSetPipeline;
 
@@ -101,6 +106,7 @@ protected:
 
 	
 	//[ヒープの番号(heapNum)ごと][obj内のモデルごと][バッファごと]
+	//バッファ格納配列をmapにしてもいいかも	std::vector<std::vector<std::umap<enum,ComPtr<ID3D12Resource>>>>
 	std::vector<std::vector<std::vector<ComPtr<ID3D12Resource>>>> constBuffer;
 	std::vector<ComPtr<ID3D12Resource>> textureBuffer;
 	//ディスクリプタヒープのバッファを可視化するためのもの
@@ -112,7 +118,9 @@ protected:
 
 
 	//定数にセットする座標などの値
-	std::vector <ModelConstData>modelConstData;
+	//[モデルごと][モデル内のオブジェクト数]
+	std::vector <std::vector<ModelConstData>>modelConstDatas;
+	//[モデル内のオブジェクトごと]
 	std::vector<Material> materials;
 
 	std::string modelClassName;
@@ -120,6 +128,8 @@ protected:
 
 #pragma region 関数
 
+	void dataMap(const int modelNum);
+	void setCmdList(const int modelNum);
 
 #pragma region バッファ生成
 
@@ -255,12 +265,19 @@ public:
 		std::vector<ID3D12GraphicsCommandList*> cmdList
 	);
 
+	static void setCameraMatrix(const DirectX::XMMATRIX& cameraMat) { cameraMatrix = cameraMat; }
 #pragma endregion
+
+#pragma region 操作
+	void setAngle(const Vector3& angle,const int modelNum);
+#pragma endregion
+
 
 #pragma region 描画
 
-	void draw(const int modelNum);
+	virtual void draw(const int modelNum);
 #pragma endregion
+
 
 #pragma region パイプライン
 

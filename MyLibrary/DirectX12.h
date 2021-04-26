@@ -237,7 +237,7 @@ private:
 
 #pragma region オブジェクト情報
 
-	std::unordered_map < std::string, ModelConstData>modelConstData;
+	std::unordered_map < std::string, std::vector<ModelConstData>>modelConstData;
 
 #pragma region ボーン
 
