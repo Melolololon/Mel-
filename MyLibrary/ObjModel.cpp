@@ -1,12 +1,12 @@
 #include "ObjModel.h"
 #include"ModelLoader.h"
 
-std::unique_ptr<PipelineState>ObjModel::defaultObjPipeline;
+PipelineState ObjModel::defaultObjPipeline;
 
 ObjModel::ObjModel()
 {
 	loadFileObjectNum = 0;
-	pipeline = defaultObjPipeline->getPipelineState();
+	pipeline = defaultObjPipeline.getPipelineState();
 }
 
 ObjModel::~ObjModel(){}
@@ -252,23 +252,39 @@ void ObjModel::loadModelMaterial
 
 bool ObjModel::initialize() 
 {
-	PipelineData data;
-	data.alphaWriteMode = ALPHA_WRITE_TRUE;
-	data.blendMode = BLEND_ADD;
-	data.cullMode = CULL_BACK;
-	data.depthMode = DEPTH_TRUE;
-	data.drawMode = DRAW_SOLID;
-	auto result = defaultObjPipeline->createModelPipeline
+	PipelineData pipelineData;
+	pipelineData.alphaWriteMode = ALPHA_WRITE_TRUE;
+	pipelineData.blendMode = BLEND_ADD;
+	pipelineData.cullMode = CULL_BACK;
+	pipelineData.depthMode = DEPTH_TRUE;
+	pipelineData.drawMode = DRAW_SOLID;
+
+	std::vector<InputLayoutData> layoutData(4);
+	layoutData[0].semantics = "POSITION";
+	layoutData[0].formatType = FORMAT_TYPE_FLOAT;
+	layoutData[0].number = 3;
+	layoutData[1].semantics = "TEXCOORD";
+	layoutData[1].formatType = FORMAT_TYPE_FLOAT;
+	layoutData[1].number = 2;
+	layoutData[2].semantics = "NORMAL";
+	layoutData[2].formatType = FORMAT_TYPE_FLOAT;
+	layoutData[2].number = 3;
+	layoutData[3].semantics = "BONENUM";
+	layoutData[3].formatType = FORMAT_TYPE_UNSIGNED_INT;
+	layoutData[3].number = 1;
+
+	auto result = defaultObjPipeline.createModelPipeline
 	(
-		data,
+		pipelineData,
 		{ L"../MyLibrary/ObjAnimationVertexShader.hlsl","VSmain","vs_5_0" },
 		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
 		{ L"NULL","","" },
 		{ L"NULL","","" },
 		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
-		nullptr,
+		&layoutData,
 		typeid(ObjModel).name()
 	);
+
 	if(!result)
 	{
 		OutputDebugString(L"ObjModelの初期化に失敗しました。デフォルトパイプラインを生成できませんでした\n");

@@ -8,7 +8,7 @@ class ObjModel:public Model
 {
 private:
 
-	static std::unique_ptr<PipelineState> defaultObjPipeline;
+	static PipelineState defaultObjPipeline;
 
 	std::string materialFileName;
 

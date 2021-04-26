@@ -22,7 +22,7 @@ class FbxModel:public Model
 {
 private:
 
-	static std::unique_ptr<PipelineState> defaultFbxPipeline;
+	static PipelineState defaultFbxPipeline;
 
 
 	//ƒ‚ƒfƒ‹–¼

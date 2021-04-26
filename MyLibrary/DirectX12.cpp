@@ -950,6 +950,7 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 	);
 	Model::createCommonBuffer();
 
+	
 	ObjModel::initialize();
 	FbxModel::initialize();
 }
