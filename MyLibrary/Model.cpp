@@ -4,8 +4,8 @@
 
 ID3D12Device* Model::device;
 std::vector<ID3D12GraphicsCommandList*>Model::cmdLists;
-ComPtr<ID3D12RootSignature>Model::rootSignature;
 ComPtr<ID3D12Resource>Model::commonBuffers;
+ComPtr<ID3D12RootSignature>Model::rootSignature;
 Model::Model()
 {
 }
@@ -443,6 +443,7 @@ void Model::draw(const int modelNum)
 		for (int j = 0; j < vertexBufferNum; j++)
 		{
 			//マテリアル紐づけ
+			//紐づけ失敗(マテリアル名未設定などで)だと、一番最初のテクスチャが選ばれる
 			if (vertexBufferSet[i].materialName == materials[j].materialName) 
 			{
 				handleNum = j;
@@ -524,6 +525,8 @@ void Model::initialize
 {
 	device = dev;
 	cmdLists = cmdList;
+
+
 
 #pragma region ディスクリプタレンジ_ルートパラメーター
 
@@ -630,10 +633,11 @@ void Model::initialize
 		rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
 
-	PipelineState::setModelRootSignature(rootSignature.Get());
 #pragma endregion
 
-	cmdLists.resize(1);
+	PipelineState::setModelRootSignature(rootSignature.Get());
+
+	//cmdLists.resize(1);
 }
 
 void Model::setPipeline(PipelineState* pipelineState)

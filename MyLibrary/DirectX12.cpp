@@ -941,12 +941,17 @@ void DirectX12::initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 	std::vector<ID3D12GraphicsCommandList*>cmdLists(1);
 	cmdLists[0] = cmdList.Get();
+
+	PipelineState::initialize(dev.Get());
 	Model::initialize
 	(
 		dev.Get(),
 		cmdLists
 	);
 	Model::createCommonBuffer();
+
+	ObjModel::initialize();
+	FbxModel::initialize();
 }
 
 void DirectX12::preparationToDraw()

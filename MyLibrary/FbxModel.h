@@ -21,6 +21,10 @@ struct Node
 class FbxModel:public Model
 {
 private:
+
+	static std::unique_ptr<PipelineState> defaultFbxPipeline;
+
+
 	//ƒ‚ƒfƒ‹–¼
 	std::string modelName;
 
@@ -49,4 +53,6 @@ public:
 		const int createNum,
 		const size_t constDataSize = 0
 	);
+
+	static bool initialize();
 };

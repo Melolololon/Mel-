@@ -7,6 +7,9 @@
 class ObjModel:public Model
 {
 private:
+
+	static std::unique_ptr<PipelineState> defaultObjPipeline;
+
 	std::string materialFileName;
 
 	//’¸“_
@@ -51,5 +54,7 @@ public:
 		const int createNum,
 		const size_t constDataSize = 0
 	);
+
+	static bool initialize();
 };
 
