@@ -49,12 +49,16 @@ void FbxLoader::parseNodeRecursive
 	Node* parentNode
 )
 {
+	//fbx‚©‚çŽæ“¾‚·‚é‰ñ“]Šp“x‚Æ‚©‚ÍA
+	//ƒ‚ƒfƒŠƒ“ƒOƒc[ƒ‹‚Å•Û‘¶Žž‚ÌƒV[ƒ“‚ðÄŒ»‚·‚é‚½‚ß‚Ì‚à‚Ì?
+	//obj‚Í’¸“_‚ð‰ñ“]‚Æ‚©Šgk‚ð”½‰f‚³‚¹‚Äo—Í‚·‚é‚ªAfbx‚Í”½‰f‚³‚¹‚¸‚ÉŠp“x‚Æ‚©‚ðo—Í‚·‚é?
+
 	using namespace DirectX;
 
 	fbxModel->nodes.emplace_back();
 	Node& node = fbxModel->nodes.back();
 
-	std::string name = fbxNode->GetName();
+	node.nodeName = fbxNode->GetName();
 
 	FbxDouble3 rotation = fbxNode->LclRotation.Get();
 	FbxDouble3 scaling = fbxNode->LclScaling.Get();
@@ -129,11 +133,11 @@ void FbxLoader::loadFbxModel(const std::string& modelPath, FbxModel* fbxModel)
 
 	if (!fbxImporter->Initialize
 	(
-		modelPath.c_str(), 
+		modelPath.c_str(),
 		-1,
 		fbxManager->GetIOSettings()
-	))
-		assert(0);
+	)) assert(0);
+	
 
 	FbxScene* fbxScene = FbxScene::Create(fbxManager, "fbxScene");
 	fbxImporter->Import(fbxScene);
@@ -272,23 +276,45 @@ void FbxLoader::parseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 		{
 			if(material->GetClassId().Is(FbxSurfaceLambert::ClassId))
 			{
-				FbxSurfaceLambert* lambert =
+			/*	FbxSurfaceLambert* lambert =
 					static_cast<FbxSurfaceLambert*>(material);
 
 				auto& materialVector = fbxModel->getMaterial();
 				materialVector.resize(1);
-				Material& material = materialVector[0];
+				Material& modelMaterial = materialVector[0];
 
 				FbxPropertyT<FbxDouble3> ambient = lambert->Ambient;
-				material.ambient.x = (float)ambient.Get()[0];
-				material.ambient.y = (float)ambient.Get()[1];
-				material.ambient.z = (float)ambient.Get()[2];
+				modelMaterial.ambient.x = (float)ambient.Get()[0];
+				modelMaterial.ambient.y = (float)ambient.Get()[1];
+				modelMaterial.ambient.z = (float)ambient.Get()[2];
 
 				FbxPropertyT<FbxDouble3> diffuse = lambert->Diffuse;
-				material.diffuse.x = (float)diffuse.Get()[0];
-				material.diffuse.y = (float)diffuse.Get()[1];
-				material.diffuse.z = (float)diffuse.Get()[2];
+				modelMaterial.diffuse.x = (float)diffuse.Get()[0];
+				modelMaterial.diffuse.y = (float)diffuse.Get()[1];
+				modelMaterial.diffuse.z = (float)diffuse.Get()[2];*/
+
+				FbxSurfacePhong* phong = static_cast<FbxSurfacePhong*>(material);
+				auto& materialVector = fbxModel->getMaterial();
+				materialVector.resize(1);
+				Material& modelMaterial = materialVector[0];
+
+				FbxPropertyT<FbxDouble3> ambient = phong->Ambient;
+				modelMaterial.ambient.x = (float)ambient.Get()[0];
+				modelMaterial.ambient.y = (float)ambient.Get()[1];
+				modelMaterial.ambient.z = (float)ambient.Get()[2];
+
+				FbxPropertyT<FbxDouble3> diffuse = phong->Diffuse;
+				modelMaterial.diffuse.x = (float)diffuse.Get()[0];
+				modelMaterial.diffuse.y = (float)diffuse.Get()[1];
+				modelMaterial.diffuse.z = (float)diffuse.Get()[2];
+
+				FbxPropertyT<FbxDouble3> specular = phong->Specular;
+				modelMaterial.specular.x = (float)specular.Get()[0];
+				modelMaterial.specular.y = (float)specular.Get()[1];
+				modelMaterial.specular.z = (float)specular.Get()[2];
+				int z = 0;
 			}
+
 
 			const FbxProperty diffuseProperty =
 				material->FindProperty(FbxSurfaceMaterial::sDiffuse);

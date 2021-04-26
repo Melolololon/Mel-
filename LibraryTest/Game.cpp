@@ -4,7 +4,6 @@
 #include"ObjectManager.h"
 #include"Play.h"
 
-#include"FbxModel.h"
 
 Game::Game() {}
 
@@ -35,8 +34,8 @@ void Game::initialize()
 {
 
 	Library::initialize(1280, 720, {0,0,0,255},L"MEL_Magical_Engene_Library(仮)");
-	Library::setCamera(Vector3( 0,0,-10 ), Vector3( 0,0,0 ), Vector3(0,1,0 ));
-
+	Library::setCamera(Vector3( 0,0,-200 ), Vector3( 0,40,0 ), Vector3(0,1,0 ));
+	Library::setCameraNearAndFar(0.1, 1000.0f);
 #pragma region マネージャー初期化
 
 	ObjectManager::getInstance()->initialize();
@@ -54,12 +53,7 @@ void Game::initialize()
 	SceneManager::getInstace()->initialize(new Play());
 #pragma endregion
 
-	std::unique_ptr<FbxModel> model = std::make_unique<FbxModel>();
-	model->loadModel
-	(
-		"Resources/cube/cube.fbx",
-		1
-	);
+
 
 }
 

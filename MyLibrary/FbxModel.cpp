@@ -6,7 +6,8 @@ PipelineState FbxModel::defaultFbxPipeline;
 
 FbxModel::FbxModel()
 {
-	pipeline = defaultFbxPipeline.getPipelineState();
+	
+
 }
 
 FbxModel::~FbxModel()
@@ -21,7 +22,6 @@ bool FbxModel::loadModel
 )
 {
 
-
 	FbxLoader::getInstance()->loadFbxModel("Resources/cube/cube.fbx",this);
 
 	std::vector<size_t> verticesNum(1);
@@ -34,6 +34,19 @@ bool FbxModel::loadModel
 		verticesNum,
 		indices
 	);
+
+	Vertex* vertex;
+	mapVertexBuffer
+	(
+		0,
+		(void**)&vertex
+	);
+
+	auto vertexNum = vertices.size();
+	for(int i = 0; i < vertexNum;i++)
+		vertex[i] = vertices[i];
+	unmapVertexBuffer(0);
+
 
 	auto texNum = textures.size();
 	std::vector<Texture*>pTextures(texNum);
@@ -48,12 +61,25 @@ bool FbxModel::loadModel
 		constDataSize
 	);
 
+
+
+	modelConstDatas.resize(createNum);
+	for (auto& data : modelConstDatas)
+		data.resize(1);
+
+	pipeline = defaultFbxPipeline.getPipelineState();
+
+
+	//一時的に書いてる
+	materials[0].ambient = { 0.3,0.3,0.3 };
+	materials[0].diffuse = { 0.8,0.8,0.8 };
+
 	return true;
 }
 
 bool FbxModel::initialize()
 {
-	/*PipelineData data;
+	PipelineData data;
 	data.alphaWriteMode = ALPHA_WRITE_TRUE;
 	data.blendMode = BLEND_ADD;
 	data.cullMode = CULL_BACK;
@@ -62,7 +88,7 @@ bool FbxModel::initialize()
 	auto result = defaultFbxPipeline.createModelPipeline
 	(
 		data,
-		{ L"../MyLibrary/ObjAnimationVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
 		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
 		{ L"NULL","","" },
 		{ L"NULL","","" },
@@ -74,7 +100,7 @@ bool FbxModel::initialize()
 	{
 		OutputDebugString(L"FbxModelの初期化に失敗しました。デフォルトパイプラインを生成できませんでした\n");
 		return false;
-	}*/
+	}
 	return true;
 }
 

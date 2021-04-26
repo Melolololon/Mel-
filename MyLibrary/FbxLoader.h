@@ -97,6 +97,7 @@ public:
 	/// fbxを読み込みます
 	/// </summary>
 	/// <param name="modelPath">モデルのパス</param>
+	/// <param name="fbxModel">モデルのポインタ</param>
 	void loadFbxModel(const std::string& modelPath,FbxModel* fbxModel);
 };
 

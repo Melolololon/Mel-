@@ -28,8 +28,6 @@ private:
 	//[ボーンごと](オブジェクトごとに変える必要なさそうなので、こうしてる)
 	std::vector<ParentBoneData> parentBoneData;//親ボーンと影響度
 
-	//モデルファイルにあるオブジェクト数
-	int loadFileObjectNum;
 
 	std::vector<std::unique_ptr<Texture>>textures;
 public:
@@ -56,5 +54,8 @@ public:
 	);
 
 	static bool initialize();
+
+
+	static void mapBoneData();
 };
 

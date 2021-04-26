@@ -6,6 +6,8 @@ ID3D12Device* Model::device;
 std::vector<ID3D12GraphicsCommandList*>Model::cmdLists;
 ComPtr<ID3D12Resource>Model::commonBuffers;
 ComPtr<ID3D12RootSignature>Model::rootSignature;
+
+DirectX::XMMATRIX Model::cameraMatrix;
 Model::Model()
 {
 }
@@ -109,22 +111,17 @@ void Model::createModelHeapResources
 #pragma endregion
 
 
-	ModelConstData* modelConstData;
+	modelConstDatas.resize(modelNum);
+	materials.resize(modelNum);
 	//モデル分ループ
 	for (int i = 0; i < modelNum; i++)
 	{
-		//モデル内のオブジェクト分ループ
-		for (int j = 0; j < modelFileObjectNum; j++)
-		{
-			//1つのモデル内のオブジェクトのバッファ分ループ
-			for (int k = 0; k < constBufferNum - commonBufferNum; k++)
-			{
-				constBuffer[i][j][k]->Map(0,nullptr,(void**)&modelConstData);
-				
-				constBuffer[i][j][k]->Unmap(0, nullptr);
-			}
-		}
+		modelConstDatas.resize(modelFileObjectNum);
+		materials.resize(modelFileObjectNum);
 	}
+
+	this->modelNum = modelNum;
+	this->modelObjectNum = modelFileObjectNum;
 }
 
 
@@ -375,6 +372,9 @@ void Model::unmapIndexBuffer(const int& modelNum)
 //}
 #pragma endregion
 
+#pragma region 開発者用関数
+
+
 void Model::createCommonBuffer()
 {
 	CreateBuffer::getInstance()->createConstBuffer
@@ -388,133 +388,12 @@ void Model::createCommonBuffer()
 void Model::mapCommonConstData(const CommonConstData& data)
 {
 	CommonConstData* common;
-	void* pCommon = static_cast<void*>(common);
-	commonBuffers->Map(0, nullptr, static_cast<void**>(&pCommon));
-	*common = data;
+	commonBuffers->Map(0, nullptr, (void**)&common);
+	common->cameraPos = data.cameraPos;
+	common->light = data.light;
+	common->lightColor = data.lightColor;
+	common->lightMat = data.lightMat;
 	commonBuffers->Unmap(0, nullptr);
-}
-
-void Model::draw(const int modelNum)
-{
-	//現在セットされてるパイプラインと別物だったら入れ替え
-	//今は、スプライトなどとコマンドリストを分けていないので、コメントアウト
-	//if(currentSetPipeline != pipeline.Get())
-	//	cmdLists[0]->SetPipelineState(pipeline.Get());
-	cmdLists[0]->SetPipelineState(pipeline.Get());
-	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
-	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	
-
-
-	std::vector<ID3D12DescriptorHeap*> ppHeaps;
-	ppHeaps.push_back(desHeap.Get());
-	cmdLists[0]->SetDescriptorHeaps(1, &ppHeaps[0]);
-
-	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	(
-		desHeap->GetGPUDescriptorHandleForHeapStart(),
-		0,
-		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
-
-	int handleNum = 0;//どのくらいハンドルをずらすか決めるための番号
-
-
-	//共通定数バッファ
-	handleNum = static_cast<int>(textureBuffer.size());
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	(
-		desHeap->GetGPUDescriptorHandleForHeapStart(),
-		handleNum,
-		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
-	cmdLists[0]->SetGraphicsRootDescriptorTable(4, gpuDescHandle);
-
-	//頂点バッファ分ループ
-	auto vertexBufferNum = vertexBufferSet.size();
-	for (int i = 0; i < vertexBufferNum; i++)
-	{
-
-		cmdLists[0]->IASetIndexBuffer(&indexBufferSet[i].indexBufferView);
-		cmdLists[0]->IASetVertexBuffers(0, 1, &vertexBufferSet[i].vertexBufferView);
-
-		handleNum = 0;
-		for (int j = 0; j < vertexBufferNum; j++)
-		{
-			//マテリアル紐づけ
-			//紐づけ失敗(マテリアル名未設定などで)だと、一番最初のテクスチャが選ばれる
-			if (vertexBufferSet[i].materialName == materials[j].materialName) 
-			{
-				handleNum = j;
-				break;
-			}
-		}
-
-
-		//テクスチャバッファ
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			desHeap->GetGPUDescriptorHandleForHeapStart(),
-			handleNum,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdLists[0]->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
-
-
-		//定数バッファセット
-		int commonBufferNum = 1;
-		handleNum = 0;
-		handleNum += static_cast<int>(textureBuffer.size()) + commonBufferNum;//テクスチャと共通分ずらす
-		handleNum += static_cast<int>(constBuffer[modelNum][i].size()) * i * modelNum;
-		//handleNum += static_cast<int>(constBuffer[modelNum].size()) * modelNum;//オブジェクトの場所までずらす
-
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			desHeap->GetGPUDescriptorHandleForHeapStart(),
-			handleNum,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdLists[0]->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
-
-
-		//マテリアルバッファセット
-		handleNum++;
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			desHeap->GetGPUDescriptorHandleForHeapStart(),
-			handleNum,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdLists[0]->SetGraphicsRootDescriptorTable(3, gpuDescHandle);
-
-
-
-		//ユーザー定数バッファセット
-
-		//要素数を超えてアクセスしないようにするためのif
-		if (heapTags.size() > handleNum + 2)
-		{
-			//ユーザー定数があったら、セットする
-			if (heapTags[handleNum + 1] == HEAP_TAG_USER_CONST_BUFFER)
-			{
-				handleNum++;
-				gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-				(
-					desHeap->GetGPUDescriptorHandleForHeapStart(),
-					handleNum,
-					device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-				);
-				cmdLists[0]->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
-			}
-		}
-
-		//描画
-		cmdLists[0]->DrawIndexedInstanced(static_cast<UINT>(indices.size()), 1, 0, 0, 0);
-
-	}
-
-
 }
 
 void Model::initialize
@@ -639,6 +518,205 @@ void Model::initialize
 
 	//cmdLists.resize(1);
 }
+
+#pragma endregion
+
+void Model::dataMap(const int modelNum)
+{
+	ConstBufferData* constBufferData;
+
+	for (int i = 0; i < modelObjectNum; i++) 
+	{
+		
+#pragma region 基本的な情報のマップ
+
+		constBuffer[modelNum][i][0]->Map(0, nullptr, (void**)&constBufferData);
+		constBufferData->addColor = modelConstDatas[modelNum][i].addColor;
+		constBufferData->subColor = modelConstDatas[modelNum][i].subColor;
+		constBufferData->mulColor = modelConstDatas[modelNum][i].mulColor;
+		constBufferData->ex = modelConstDatas[modelNum][i].pushPolygonNum;
+
+#pragma region 行列計算
+		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
+
+		matWorld *= DirectX::XMMatrixScaling
+		(
+			modelConstDatas[modelNum][i].scale.x,
+			modelConstDatas[modelNum][i].scale.y,
+			modelConstDatas[modelNum][i].scale.z
+		);
+		matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstDatas[modelNum][i].angle.z));
+		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas[modelNum][i].angle.x));
+		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas[modelNum][i].angle.y));
+
+		constBufferData->normalMat = matWorld * cameraMatrix;
+
+		matWorld *= DirectX::XMMatrixTranslation
+		(
+			modelConstDatas[modelNum][i].position.x,
+			modelConstDatas[modelNum][i].position.y,
+			modelConstDatas[modelNum][i].position.z
+		);
+
+		constBufferData->mat = matWorld * cameraMatrix;
+
+		constBufferData->worldMat = matWorld;
+		constBufferData->boneMat[0] = DirectX::XMMatrixIdentity();
+#pragma endregion
+
+
+		constBuffer[modelNum][i][0]->Unmap(0, nullptr);
+
+#pragma endregion
+
+#pragma region マテリアルのマップ
+		MaterialConstData* materialConstData;
+
+		constBuffer[modelNum][i][1]->Map(0, nullptr, (void**)&materialConstData);
+		materialConstData->ambient = materials[i].ambient;
+		materialConstData->diffuse = materials[i].diffuse;
+		materialConstData->specular = materials[i].specular;
+		materialConstData->alpha = materials[i].alpha;
+		constBuffer[modelNum][i][1]->Unmap(0, nullptr);
+
+#pragma endregion
+
+	}
+}
+
+void Model::setCmdList(const int modelNum)
+{
+	cmdLists[0]->SetPipelineState(pipeline.Get());
+	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
+	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+
+	std::vector<ID3D12DescriptorHeap*> ppHeaps;
+	ppHeaps.push_back(desHeap.Get());
+	cmdLists[0]->SetDescriptorHeaps(1, &ppHeaps[0]);
+
+	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
+	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	(
+		desHeap->GetGPUDescriptorHandleForHeapStart(),
+		0,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+
+	int handleNum = 0;//どのくらいハンドルをずらすか決めるための番号
+
+
+	//共通定数バッファ
+	handleNum = static_cast<int>(textureBuffer.size());
+	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	(
+		desHeap->GetGPUDescriptorHandleForHeapStart(),
+		handleNum,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+	cmdLists[0]->SetGraphicsRootDescriptorTable(4, gpuDescHandle);
+
+	//頂点バッファ分ループ
+	auto vertexBufferNum = vertexBufferSet.size();
+	for (int i = 0; i < vertexBufferNum; i++)
+	{
+
+		cmdLists[0]->IASetIndexBuffer(&indexBufferSet[i].indexBufferView);
+		cmdLists[0]->IASetVertexBuffers(0, 1, &vertexBufferSet[i].vertexBufferView);
+
+		handleNum = 0;
+		for (int j = 0; j < vertexBufferNum; j++)
+		{
+			//マテリアル紐づけ
+			//紐づけ失敗(マテリアル名未設定などで)だと、一番最初のテクスチャが選ばれる
+			if (vertexBufferSet[i].materialName == materials[j].materialName)
+			{
+				handleNum = j;
+				break;
+			}
+		}
+
+
+		//テクスチャバッファ
+		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		(
+			desHeap->GetGPUDescriptorHandleForHeapStart(),
+			handleNum,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+		cmdLists[0]->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
+
+
+		//定数バッファセット
+		int commonBufferNum = 1;
+		handleNum = 0;
+		handleNum += static_cast<int>(textureBuffer.size()) + commonBufferNum;//テクスチャと共通分ずらす
+		handleNum += static_cast<int>(constBuffer[modelNum][i].size()) * i * modelNum;
+		//handleNum += static_cast<int>(constBuffer[modelNum].size()) * modelNum;//オブジェクトの場所までずらす
+
+		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		(
+			desHeap->GetGPUDescriptorHandleForHeapStart(),
+			handleNum,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+		cmdLists[0]->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
+
+
+		//マテリアルバッファセット
+		handleNum++;
+		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		(
+			desHeap->GetGPUDescriptorHandleForHeapStart(),
+			handleNum,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+		cmdLists[0]->SetGraphicsRootDescriptorTable(3, gpuDescHandle);
+
+
+
+		//ユーザー定数バッファセット
+
+		//要素数を超えてアクセスしないようにするためのif
+		if (heapTags.size() > handleNum + 2)
+		{
+			//ユーザー定数があったら、セットする
+			if (heapTags[handleNum + 1] == HEAP_TAG_USER_CONST_BUFFER)
+			{
+				handleNum++;
+				gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+				(
+					desHeap->GetGPUDescriptorHandleForHeapStart(),
+					handleNum,
+					device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+				);
+				cmdLists[0]->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
+			}
+		}
+
+		//描画
+		cmdLists[0]->DrawIndexedInstanced(static_cast<UINT>(indices[i].size()), 1, 0, 0, 0);
+
+	}
+
+}
+
+
+void Model::draw(const int modelNum)
+{
+	dataMap(modelNum);
+	setCmdList(modelNum);
+
+}
+#pragma region 操作
+void Model::setAngle(const Vector3& angle, const int modelNum)
+{
+	for (int i = 0; i < modelObjectNum; i++)
+		modelConstDatas[modelNum][i].angle = angle.toXMFLOAT3();
+}
+#pragma endregion
+
 
 void Model::setPipeline(PipelineState* pipelineState)
 {

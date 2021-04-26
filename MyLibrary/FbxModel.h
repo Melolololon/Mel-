@@ -42,8 +42,6 @@ private:
 	std::vector<std::unique_ptr<Texture>>textures;
 
 public:
-	//フレンドクラスは、privateの変数、関数を参照できる
-	friend class FbxLoader;
 	FbxModel();
 	~FbxModel();
 
@@ -55,4 +53,8 @@ public:
 	);
 
 	static bool initialize();
+
+	//フレンドクラスは、privateの変数、関数を参照できる
+	friend class FbxLoader;
+
 };

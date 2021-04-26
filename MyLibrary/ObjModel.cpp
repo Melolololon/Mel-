@@ -5,8 +5,6 @@ PipelineState ObjModel::defaultObjPipeline;
 
 ObjModel::ObjModel()
 {
-	loadFileObjectNum = 0;
-	pipeline = defaultObjPipeline.getPipelineState();
 }
 
 ObjModel::~ObjModel(){}
@@ -33,18 +31,18 @@ void ObjModel::loadModelVertices
 		materialFileName,
 		materialName,
 		smoothData,
-		&loadFileObjectNum,
+		&modelObjectNum,
 		&objBonePositions,
 		&objBoneNums
 	);
-	for (int i = 0; i < loadFileObjectNum; i++)
+	for (int i = 0; i < modelObjectNum; i++)
 		vertexBufferSet[i].materialName = materialName[i];
 
 
 
 	if(objBoneNums.size() == 0)
 	{
-		for (int i = 0; i < loadFileObjectNum; i++)
+		for (int i = 0; i < modelObjectNum; i++)
 		{
 			auto vertexNum = vertices[i].size();
 			for (int j = 0; j < vertexNum; j++)
@@ -55,7 +53,7 @@ void ObjModel::loadModelVertices
 	}
 	else
 	{
-		for (int i = 0; i < loadFileObjectNum; i++)
+		for (int i = 0; i < modelObjectNum; i++)
 		{
 			auto vertexNum = vertices[i].size();
 			for (int j = 0; j < vertexNum; j++)
@@ -131,8 +129,8 @@ void ObjModel::loadModelVertices
 #pragma endregion
 
 #pragma region バッファ
-	std::vector<size_t>verticesNum(loadFileObjectNum);
-	for (int i = 0; i < loadFileObjectNum; i++)
+	std::vector<size_t>verticesNum(modelObjectNum);
+	for (int i = 0; i < modelObjectNum; i++)
 		verticesNum[i] = vertices[i].size();
 
 	createModelVertexResources
@@ -143,7 +141,7 @@ void ObjModel::loadModelVertices
 	);
 
 	//マップ
-	for (int i = 0; i < loadFileObjectNum; i++)
+	for (int i = 0; i < modelObjectNum; i++)
 	{
 
 		ObjAnimationVertex* vertex;
@@ -248,6 +246,10 @@ void ObjModel::loadModelMaterial
 		static_cast<int>(materials.size()),
 		constDataSize
 	);
+
+
+	pipeline = defaultObjPipeline.getPipelineState();
+
 }
 
 bool ObjModel::initialize() 

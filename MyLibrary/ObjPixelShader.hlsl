@@ -33,4 +33,5 @@ float4 PSmain(GSOutput input) : SV_TARGET
 	texColor *= mulColor;
 
 	return shaderColor * texColor;
+
 }
