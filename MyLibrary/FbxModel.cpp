@@ -2,10 +2,11 @@
 #include"FbxLoader.h"
 
 
-std::unique_ptr<PipelineState>FbxModel::defaultFbxPipeline;
+PipelineState FbxModel::defaultFbxPipeline;
 
 FbxModel::FbxModel()
 {
+	pipeline = defaultFbxPipeline.getPipelineState();
 }
 
 FbxModel::~FbxModel()
@@ -58,7 +59,7 @@ bool FbxModel::initialize()
 	data.cullMode = CULL_BACK;
 	data.depthMode = DEPTH_TRUE;
 	data.drawMode = DRAW_SOLID;
-	auto result = defaultFbxPipeline->createModelPipeline
+	auto result = defaultFbxPipeline.createModelPipeline
 	(
 		data,
 		{ L"../MyLibrary/ObjAnimationVertexShader.hlsl","VSmain","vs_5_0" },

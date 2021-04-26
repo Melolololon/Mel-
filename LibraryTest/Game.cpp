@@ -54,7 +54,7 @@ void Game::initialize()
 	SceneManager::getInstace()->initialize(new Play());
 #pragma endregion
 
-	FbxModel* model = new FbxModel();
+	std::unique_ptr<FbxModel> model = std::make_unique<FbxModel>();
 	model->loadModel
 	(
 		"Resources/cube/cube.fbx",

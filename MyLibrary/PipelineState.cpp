@@ -167,6 +167,7 @@ bool PipelineState::createPipeline
 				0
 		};
 	}
+
 	pDesc.InputLayout.pInputElementDescs = inputLayoutVector.data();
 	pDesc.InputLayout.NumElements = inputLayoutVector.size();
 
@@ -217,7 +218,7 @@ bool PipelineState::createPipeline
 
 	}
 
-	if (!result)
+	if (result)
 	{
 		getErrorString();
 		OutputDebugString(L"頂点シェーダーが読み込めませんでした。\n");
@@ -253,7 +254,7 @@ bool PipelineState::createPipeline
 			&psBlob, &errorBlob);
 	}
 
-	if (!result)
+	if (result)
 	{
 		getErrorString();
 		OutputDebugString(L"ピクセルシェーダーが読み込めませんでした。\n");
@@ -294,7 +295,7 @@ bool PipelineState::createPipeline
 
 		}
 
-	if (!result)
+	if (result)
 	{
 		getErrorString();
 		OutputDebugString(L"ジオメトリーシェーダーが読み込めませんでした。\n");
@@ -340,8 +341,8 @@ bool PipelineState::createPipeline
 #pragma endregion
 
 		//パイプラインの生成
-	auto result = device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(pipelineState));
-	if (!result)
+	result = device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(pipelineState));
+	if (result)
 	{
 		OutputDebugString(L"パイプラインの生成に失敗しました\n");
 		return false;
@@ -379,7 +380,7 @@ void PipelineState::setPipelineDesc
 #pragma region 塗りつぶし設定
 
 
-	switch (pipelineData.cullMode)
+	switch (pipelineData.drawMode)
 	{
 	case DrawMode::DRAW_SOLID:
 		desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//カリング設定
@@ -506,8 +507,8 @@ bool PipelineState::initialize
 (
 	ID3D12Device* dev
 )
+
 {
 	device = dev;
-
-
+	return  dev;
 }
