@@ -26,7 +26,7 @@ void Play::initialize()
 	fbxModel->loadModel
 	(
 		"Resources/cube/cube.fbx",
-		2
+		1
 	);
 
 	objModel->loadModel
@@ -46,27 +46,21 @@ void Play::update()
 
 
 	if (DirectInput::keyState(DIK_W))
-		angle.y += 3.1f;
+		angle.y += 3.0f;
 	if (DirectInput::keyState(DIK_S))
-		angle.y -= 3.1f;
+		angle.y -= 3.0f;
 	if (DirectInput::keyState(DIK_A))
-		angle.x += 3.1f;
+		angle.x += 3.0f;
 	if (DirectInput::keyState(DIK_D))
-		angle.x -= 3.1f;
-
-	//model->setAngle(angle,0);
-	fbxModel->setPosition({50,0,0}, 1);
+		angle.x -= 3.0f;
+	fbxModel->setAngle(angle, 0);
 }
 
 void Play::draw()
 {
 	ObjectManager::getInstance()->draw();
 
-	/*fbxModel->draw(0);
-	fbxModel->draw(1);*/
-
-	Library::setCamera({ 0,0,-20 }, { 0,0,0 }, { 0,1,0 });
-	objModel->draw(0);
+	fbxModel->draw(0);
 }
 
 void Play::end()
