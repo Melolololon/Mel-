@@ -62,10 +62,11 @@ bool FbxModel::loadModel
 	);
 
 
-
-	modelConstDatas.resize(createNum);
-	for (auto& data : modelConstDatas)
-		data.resize(1);
+	resizeConstData
+	(
+		createNum,
+		1
+	);
 
 	pipeline = defaultFbxPipeline.getPipelineState();
 

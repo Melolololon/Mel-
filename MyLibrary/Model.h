@@ -164,7 +164,11 @@ protected:
 		const size_t userDataSize = 0
 	);
 
-	
+	void resizeConstData
+	(
+		const int modelNum,
+		const int modelFileObjectNum
+	);
 #pragma endregion
 
 

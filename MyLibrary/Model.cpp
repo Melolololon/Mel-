@@ -111,20 +111,21 @@ void Model::createModelHeapResources
 #pragma endregion
 
 
-	modelConstDatas.resize(modelNum);
-	materials.resize(modelNum);
-	//モデル分ループ
-	for (int i = 0; i < modelNum; i++)
-	{
-		modelConstDatas.resize(modelFileObjectNum);
-		materials.resize(modelFileObjectNum);
-	}
-
 	this->modelNum = modelNum;
 	this->modelObjectNum = modelFileObjectNum;
 }
 
-
+void Model::resizeConstData
+(
+	const int modelNum,
+	const int modelFileObjectNum
+)
+{
+	modelConstDatas.resize(modelNum);
+	//モデル分ループ
+	for (int i = 0; i < modelNum; i++)
+		modelConstDatas[i].resize(modelFileObjectNum);
+}
 
 void Model::createDescriptorHeap
 (

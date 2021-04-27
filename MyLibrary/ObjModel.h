@@ -46,6 +46,7 @@ private:
 
 	void loadModelMaterial
 	(
+		const std::string& directryPath,
 		const int createNum,
 		const size_t constDataSize = 0
 	);
