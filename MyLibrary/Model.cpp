@@ -652,8 +652,11 @@ void Model::setCmdList(const int modelNum)
 		int commonBufferNum = 1;
 		handleNum = 0;
 		handleNum += static_cast<int>(textureBuffer.size()) + commonBufferNum;//テクスチャと共通分ずらす
-		handleNum += static_cast<int>(constBuffer[modelNum][i].size()) * i * modelNum;
-		//handleNum += static_cast<int>(constBuffer[modelNum].size()) * modelNum;//オブジェクトの場所までずらす
+		int cBuffSize = static_cast<int>(constBuffer[modelNum][i].size());
+
+		handleNum += i * cBuffSize;
+		handleNum += modelNum * (cBuffSize * vertexBufferNum);
+
 
 		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 		(
@@ -710,11 +713,24 @@ void Model::draw(const int modelNum)
 
 }
 #pragma region 操作
+void Model::setPosition(const Vector3& position, const int modelNum)
+{
+	for (int i = 0; i < modelObjectNum; i++)
+		modelConstDatas[modelNum][i].position = position.toXMFLOAT3();
+}
+
 void Model::setAngle(const Vector3& angle, const int modelNum)
 {
 	for (int i = 0; i < modelObjectNum; i++)
 		modelConstDatas[modelNum][i].angle = angle.toXMFLOAT3();
 }
+
+void Model::setScale(const Vector3& scale, const int modelNum)
+{
+	for (int i = 0; i < modelObjectNum; i++)
+		modelConstDatas[modelNum][i].scale = scale.toXMFLOAT3();
+}
+
 #pragma endregion
 
 

@@ -252,6 +252,18 @@ void ObjModel::loadModelMaterial
 
 }
 
+void ObjModel::loadModel
+(
+	const std::string& path,
+	const bool loadUV,
+	const int createNum,
+	const size_t constDataSize
+)
+{
+	loadModelVertices(path, loadUV, true);
+	loadModelMaterial(createNum, constDataSize);
+}
+
 bool ObjModel::initialize() 
 {
 	PipelineData pipelineData;
