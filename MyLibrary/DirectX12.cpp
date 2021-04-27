@@ -2359,7 +2359,6 @@ void DirectX12::loadOBJMaterial
 		constData3D->addColor = { 0,0,0,0 };
 		constData3D->subColor = { 0,0,0,0 };
 		constData3D->ex = 0.0f;
-		constData3D->color = { 1,1,1,1 };
 		constData3D->mat = DirectX::XMMatrixIdentity();
 		
 		for (int i = 0; i < _countof(constData3D->boneMat); i++)
@@ -2960,7 +2959,6 @@ void DirectX12::createHeapData
 			constData3D->addColor = { 0,0,0,0 };
 			constData3D->subColor = { 0,0,0,0 };
 			constData3D->ex = 0.0f;
-			constData3D->color = { 1,1,1,1 };
 			constData3D->mat = DirectX::XMMatrixIdentity();
 
 			constSetV[i].constBuffer[0].Get()->Unmap(0, nullptr);
@@ -2994,7 +2992,6 @@ void DirectX12::createHeapData
 			constData3D->addColor = { 0,0,0,0 };
 			constData3D->subColor = { 0,0,0,0 };
 			constData3D->ex = 0.0f;
-			constData3D->color = { 1,1,1,1 };
 			constData3D->mat = DirectX::XMMatrixIdentity();
 
 			heapTags[key].push_back(LIBRARY_CONST_BUFFER);
@@ -3250,7 +3247,6 @@ void DirectX12::createSprite(int* sprite, bool font)
 
 	spriteConstBufferSet[createSpriteCounter - 1].constBuffer[0]->Map(0, nullptr, (void**)&spriteConstBufferDatas[createSpriteCounter - 1]);
 
-	spriteConstBufferDatas[createSpriteCounter - 1]->color = { 1,1,1,1 };
 	spriteConstBufferDatas[createSpriteCounter - 1]->mulColor = { 1,1,1,1 };
 	spriteConstBufferDatas[createSpriteCounter - 1]->addColor = { 0,0,0,0 };
 	spriteConstBufferDatas[createSpriteCounter - 1]->subColor = { 0,0,0,0 };

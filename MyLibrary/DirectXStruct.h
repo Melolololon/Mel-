@@ -142,14 +142,13 @@ struct ParentBoneData
 
 struct ConstBufferData
 {
-	DirectX::XMFLOAT4 color;
+	DirectX::XMMATRIX boneMat[64];
 	DirectX::XMMATRIX mat;
-	DirectX::XMMATRIX worldMat;
 	DirectX::XMMATRIX normalMat;
+	DirectX::XMMATRIX worldMat;
 	DirectX::XMFLOAT4 mulColor;
 	DirectX::XMFLOAT4 addColor;
 	DirectX::XMFLOAT4 subColor;
-	DirectX::XMMATRIX boneMat[64];
 	float ex;
 };
 
