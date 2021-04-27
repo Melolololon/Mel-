@@ -35,9 +35,6 @@ void ObjModel::loadModelVertices
 		&objBonePositions,
 		&objBoneNums
 	);
-	for (int i = 0; i < modelObjectNum; i++)
-		vertexBufferSet[i].materialName = materialName[i];
-
 
 
 	if(objBoneNums.size() == 0)
@@ -140,6 +137,11 @@ void ObjModel::loadModelVertices
 		indices
 	);
 
+	//マテリアル名割り当て
+	for (int i = 0; i < modelObjectNum; i++)
+		vertexBufferSet[i].materialName = materialName[i];
+
+
 	//マップ
 	for (int i = 0; i < modelObjectNum; i++)
 	{
@@ -152,10 +154,8 @@ void ObjModel::loadModelVertices
 		);
 
 		auto vertexNum = vertices[i].size();
-		for (int j = 0; j < vertexNum; i++) 
+		for (int j = 0; j < vertexNum; j++) 
 			vertex[j] = vertices[i][j];
-
-
 
 		unmapVertexBuffer(i);
 
@@ -167,7 +167,7 @@ void ObjModel::loadModelVertices
 			(void**)&index
 		);
 		auto indexSize = indices.size();
-		for (int j = 0; j < indexSize; i++)
+		for (int j = 0; j < indexSize; j++)
 			index[j] = indices[i][j];
 
 		unmapIndexBuffer(i);
@@ -182,52 +182,28 @@ void ObjModel::loadModelVertices
 
 void ObjModel::loadModelMaterial
 (
+	const std::string& directryPath,
 	const int createNum,
 	const size_t constDataSize 
 )
 {
-#pragma region パスとファイル分離
-	std::string directoryPath;
-	std::string fileName;
-	
-	auto materialFileSize = materialFileName.size();
-	for(int i = materialFileSize - 1;;i--)
-	{
-		if (materialFileName[i] == '/' ||
-			materialFileName[i] == '\\')
-		{
-			std::copy
-			(
-				materialFileName.begin(),
-				materialFileName.begin() + i,
-				directoryPath.begin()
-			);
-			std::copy
-			(
-				materialFileName.begin() + i + 1, 
-				materialFileName.end(), 
-				fileName.begin()
-			);
-			break;
-		}
-
-	}
-
-
-#pragma endregion
-
 
 
 	//マテリアル読み込み&テクスチャ名取得
 	int loadObjectNum = 0;
 	ModelLoader::getInstance()->loadObjMaterial
 	(
-		directoryPath,
+		directryPath,
 		materialFileName,
 		materials,
 		&loadObjectNum
 	);
 	
+	resizeConstData
+	(
+		createNum,
+		loadObjectNum
+	);
 
 	//テクスチャ読み込み
 	textures.resize(loadObjectNum);
@@ -261,7 +237,35 @@ void ObjModel::loadModel
 )
 {
 	loadModelVertices(path, loadUV, true);
-	loadModelMaterial(createNum, constDataSize);
+
+
+#pragma region ディレクトリパス取得
+	std::string directoryPath;
+	std::string fullPath = path;
+
+	auto fullPathSize = fullPath.size();
+	for (int i = fullPathSize - 1;; i--)
+	{
+		if (fullPath[i] == '/' ||
+			fullPath[i] == '\\')
+		{
+			directoryPath.resize(fullPathSize - i + 2);
+			std::copy
+			(
+				fullPath.begin(),
+				fullPath.begin() + i + 1,
+				directoryPath.begin()
+			);
+			break;
+		}
+
+	}
+
+
+#pragma endregion
+
+
+	loadModelMaterial(directoryPath,createNum, constDataSize);
 }
 
 bool ObjModel::initialize() 

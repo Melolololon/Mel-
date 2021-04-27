@@ -9,7 +9,9 @@
 
 #include"XInputManager.h"
 #include"FbxModel.h"
-std::unique_ptr<FbxModel> model = std::make_unique<FbxModel>();
+#include"ObjModel.h"
+std::unique_ptr<FbxModel> fbxModel = std::make_unique<FbxModel>();
+std::unique_ptr<ObjModel> objModel = std::make_unique<ObjModel>();
 Play::Play()
 {
 
@@ -21,10 +23,17 @@ Play::~Play()
 }
 void Play::initialize()
 {
-	model->loadModel
+	fbxModel->loadModel
 	(
 		"Resources/cube/cube.fbx",
 		2
+	);
+
+	objModel->loadModel
+	(
+		"Resources/Obj/testBox.obj",
+		true,
+		1
 	);
 	
 }
@@ -46,15 +55,18 @@ void Play::update()
 		angle.x -= 3.1f;
 
 	//model->setAngle(angle,0);
-	model->setPosition({50,0,0}, 1);
+	fbxModel->setPosition({50,0,0}, 1);
 }
 
 void Play::draw()
 {
 	ObjectManager::getInstance()->draw();
 
-	model->draw(0);
-	model->draw(1);
+	/*fbxModel->draw(0);
+	fbxModel->draw(1);*/
+
+	Library::setCamera({ 0,0,-20 }, { 0,0,0 }, { 0,1,0 });
+	objModel->draw(0);
 }
 
 void Play::end()
