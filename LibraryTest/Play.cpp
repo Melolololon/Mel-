@@ -31,7 +31,7 @@ void Play::initialize()
 
 	objModel->loadModel
 	(
-		"Resources/Obj/testBox.obj",
+		"Resources/Obj/tank_head.obj",
 		true,
 		1
 	);

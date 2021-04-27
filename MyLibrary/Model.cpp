@@ -201,7 +201,7 @@ void Model::createConstBuffer
 
 	size_t constDataSize[3] =
 	{
-		sizeof(ModelConstData),
+		sizeof(ConstBufferData),
 		sizeof(Material),
 		userDataSize
 	};
@@ -237,6 +237,24 @@ void Model::createConstBuffer
 				heapTags.push_back(tags[k]);
 				heapNum++;
 			}
+		}
+	}
+
+
+	//ボーン行列の初期化(初期化してない奴があると、GPUはそれ以降見てくれないから)
+	ConstBufferData* constBufferData;
+	for (int i = 0; i < modelNum; i++)
+	{
+		//モデル内のオブジェクト分ループ
+		for (int j = 0; j < modelFileObjectNum; j++)
+		{
+			constBuffer[i][j][0]->Map(0, nullptr, (void**)&constBufferData);
+
+
+			for (int k = 0; k < _countof(constBufferData->boneMat); k++)
+				constBufferData->boneMat[k] = DirectX::XMMatrixIdentity();
+
+			constBuffer[i][j][0]->Unmap(0, nullptr);
 		}
 	}
 }
@@ -560,9 +578,8 @@ void Model::dataMap(const int modelNum)
 		);
 
 		constBufferData->mat = matWorld * cameraMatrix;
-
 		constBufferData->worldMat = matWorld;
-		constBufferData->boneMat[0] = DirectX::XMMatrixIdentity();
+	
 #pragma endregion
 
 

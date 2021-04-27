@@ -1,13 +1,12 @@
 cbuffer cbuff0 : register(b0)
 {
-	float4 color;
+	matrix boneMatArray[64];
 	matrix mat;
-	matrix worldMat;
 	matrix normalMat;
+	matrix worldMat;
 	float4 mulColor;
 	float4 addColor;
 	float4 subColor;
-	matrix boneMatArray[64];
 	float ex;
 };
 
