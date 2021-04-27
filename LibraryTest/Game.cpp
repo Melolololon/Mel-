@@ -36,6 +36,8 @@ void Game::initialize()
 	Library::initialize(1280, 720, {0,0,0,255},L"MEL_Magical_Engene_Library(仮)");
 	Library::setCamera(Vector3( 0,0,-200 ), Vector3( 0,40,0 ), Vector3(0,1,0 ));
 	Library::setCameraNearAndFar(0.1, 1000.0f);
+	Library::setLightVector({ 0,0,1 });
+
 #pragma region マネージャー初期化
 
 	ObjectManager::getInstance()->initialize();
@@ -69,7 +71,6 @@ void Game::end()
 
 	Library::end();//絶対に最後に書く
 }
-
 void Game::update()
 {
 	SceneManager::getInstace()->update();

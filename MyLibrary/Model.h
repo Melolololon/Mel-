@@ -269,7 +269,9 @@ public:
 #pragma endregion
 
 #pragma region ëÄçÏ
+	void setPosition(const Vector3& position, const int modelNum);
 	void setAngle(const Vector3& angle,const int modelNum);
+	void setScale(const Vector3& scale, const int modelNum);
 #pragma endregion
 
 

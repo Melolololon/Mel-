@@ -30,16 +30,13 @@ private:
 
 
 	std::vector<std::unique_ptr<Texture>>textures;
-public:
-	ObjModel();
-	virtual ~ObjModel();
 
 	/// <summary>
-	/// objモデルの頂点を読み込みます。
-	/// </summary>
-	/// <param name="path">モデルのパス</param>
-	/// <param name="loadUV">uvを読み込むか</param>
-	/// <param name="loadNormal">normalを読み込むか</param>
+/// objモデルの頂点を読み込みます。
+/// </summary>
+/// <param name="path">モデルのパス</param>
+/// <param name="loadUV">uvを読み込むか</param>
+/// <param name="loadNormal">normalを読み込むか</param>
 	void loadModelVertices
 	(
 		const std::string& path,
@@ -52,6 +49,26 @@ public:
 		const int createNum,
 		const size_t constDataSize = 0
 	);
+public:
+	ObjModel();
+	virtual ~ObjModel();
+
+
+	/// <summary>
+	/// objモデルを読み込みます。
+	/// </summary>
+	/// <param name="path">パス</param>
+	/// <param name="loadUV">UVを読み込むかどうか</param>
+	/// <param name="createNum">生成数</param>
+	/// <param name="constDataSize">シェーダーに送る利用者が用意したデータのバイト数</param>
+	void loadModel
+	(
+		const std::string& path,
+		const bool loadUV,
+		const int createNum,
+		const size_t constDataSize = 0
+	);
+
 
 	static bool initialize();
 
