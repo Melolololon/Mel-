@@ -244,12 +244,13 @@ void ObjModel::loadModel
 	std::string fullPath = path;
 
 	auto fullPathSize = fullPath.size();
+	int loopCount = 0;
 	for (int i = fullPathSize - 1;; i--)
 	{
 		if (fullPath[i] == '/' ||
 			fullPath[i] == '\\')
 		{
-			directoryPath.resize(fullPathSize - i + 2);
+			directoryPath.resize(fullPathSize - loopCount);
 			std::copy
 			(
 				fullPath.begin(),
@@ -259,6 +260,7 @@ void ObjModel::loadModel
 			break;
 		}
 
+		loopCount++;
 	}
 
 
