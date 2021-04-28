@@ -1466,15 +1466,6 @@ void Library::DrawsSpriteFontString(Vector2 position, Vector2 size, std::string 
 }
 #pragma endregion
 
-#pragma region ì«Ç›çûÇ›
-bool Library::LoadTextIntVector(const char* path, std::vector<std::vector<int>>& vector)
-{
-
-	if (!TextLoader::LoadText(path))return false;
-	TextLoader::GetIntVector(vector);
-	return true;
-}
-#pragma endregion
 
 #pragma region êeéqç\ë¢
 void Library::SetParent(const ModelData& modelData, int number, const ModelData& parentmodelData, int parentNum)

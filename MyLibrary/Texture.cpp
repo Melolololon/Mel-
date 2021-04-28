@@ -1,14 +1,11 @@
 #include "Texture.h"
-
+#include"CreateBuffer.h"
 Texture::Texture(){}
 
 Texture::~Texture(){}
 
-
 bool Texture::LoadTexture(const std::string& texturePath)
 {
-	
-
 	std::wstring texturePathW;
 	texturePathW.resize(texturePath.size());
 
@@ -29,9 +26,22 @@ bool Texture::LoadTexture(const std::string& texturePath)
 		&metadata,
 		scratchImage
 	);
+	//読み込み失敗
+	if(result)
+	{
+		OutputDebugString(L"テクスチャの読み込みに失敗しました。\n");
+		return false;
+	}
 
 	image = scratchImage.GetImage(0, 0, 0);
 
-	return result;
+
+	CreateBuffer::GetInstance()->CreateTextureBuffer
+	(
+		metadata,
+		image,
+		&textureBuffer
+	);
+	return true;
 }
 

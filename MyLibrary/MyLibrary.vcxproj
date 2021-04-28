@@ -207,7 +207,8 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="TextLoader.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Sprite2D.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Vector.cpp" />
@@ -481,7 +482,8 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderData.h" />
-    <ClInclude Include="TextLoader.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Sprite2D.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Vector.h" />

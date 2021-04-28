@@ -55,6 +55,12 @@
     <Filter Include="ソース ファイル\Model">
       <UniqueIdentifier>{98e113da-0251-46f7-94c3-dcd71844592c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Sprite">
+      <UniqueIdentifier>{219bd474-a2ac-41e8-9612-1d0b856f8587}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Sprite">
+      <UniqueIdentifier>{f50a39a5-46af-4612-8e6a-715b6245337b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CreateBuffer.cpp">
@@ -80,9 +86,6 @@
     </ClCompile>
     <ClCompile Include="Library.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="TextLoader.cpp">
-      <Filter>ソース ファイル\Loader</Filter>
     </ClCompile>
     <ClCompile Include="LibMath.cpp">
       <Filter>ソース ファイル</Filter>
@@ -162,6 +165,12 @@
     <ClCompile Include="Texture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite2D.cpp">
+      <Filter>ソース ファイル\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>ソース ファイル\Sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
@@ -217,9 +226,6 @@
       <Filter>ヘッダー ファイル\Struct</Filter>
     </ClInclude>
     <ClInclude Include="TextureLoader.h">
-      <Filter>ヘッダー ファイル\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="TextLoader.h">
       <Filter>ヘッダー ファイル\Loader</Filter>
     </ClInclude>
     <ClInclude Include="LibMath.h">
@@ -296,6 +302,12 @@
     </ClInclude>
     <ClInclude Include="FbxModel.h">
       <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite2D.h">
+      <Filter>ヘッダー ファイル\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>ヘッダー ファイル\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

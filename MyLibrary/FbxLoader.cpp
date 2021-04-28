@@ -16,8 +16,8 @@ FbxLoader::~FbxLoader()
 
 FbxLoader* FbxLoader::GetInstance()
 {
-	static FbxLoader inst;
-	return &inst;
+	static FbxLoader instance;
+	return &instance;
 }
 
 void FbxLoader::Initialize(ID3D12Device* device)

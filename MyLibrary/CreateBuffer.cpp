@@ -429,8 +429,7 @@ void CreateBuffer::CreateTextureBuffer
 (
 	const DirectX::TexMetadata& metadata,
 	const DirectX::Image* image,
-	ID3D12Resource** textureBuffer,
-	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle
+	ID3D12Resource** textureBuffer
 )
 {
 
@@ -473,20 +472,6 @@ void CreateBuffer::CreateTextureBuffer
 		(UINT)image->rowPitch,
 		(UINT)image->slicePitch
 	);
-
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = metadata.format;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-
-	device->CreateShaderResourceView
-	(
-		*textureBuffer,
-		&srvDesc,
-		heapHandle
-	);
-
 }
 
 void CreateBuffer::CreateOneColorTextureBuffer
@@ -579,13 +564,37 @@ void CreateBuffer::CreateDescriptorHeap
 void CreateBuffer::CreateConstBufferView
 (
 	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
-	ID3D12Resource* constBuffer
+	ID3D12Resource* pConstBuffer
 )
 {
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = constBuffer->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = constBuffer->GetDesc().Width;
-	device->CreateConstantBufferView(&cbvDesc, heapHandle);
+	cbvDesc.BufferLocation = pConstBuffer->GetGPUVirtualAddress();
+	cbvDesc.SizeInBytes = pConstBuffer->GetDesc().Width;
+	device->CreateConstantBufferView
+	(
+		&cbvDesc, 
+		heapHandle
+	);
+}
+
+void CreateBuffer::CreateShaderResourceView
+(
+	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+	ID3D12Resource* pTextureBuffer
+)
+{
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+
+	device->CreateShaderResourceView
+	(
+		pTextureBuffer,
+		&srvDesc,
+		heapHandle
+	);
 }
 
 #pragma endregion

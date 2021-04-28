@@ -115,7 +115,6 @@ struct Vector3
 
 #pragma region ä÷êî
 
-
 Vector3 Vector3Normalize(const Vector3& vector);
 
 Vector3 Vector3Cross(const Vector3& vector1, const Vector3& vector2);

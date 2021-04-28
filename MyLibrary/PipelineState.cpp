@@ -175,7 +175,7 @@ bool PipelineState::CreatePipelineState
 
 #pragma region シェーダーコンパイル
 
-	auto getErrorString = [&]()
+	auto GetErrorString = [&errorBlob, &result]()
 	{
 		if (FAILED(result))
 		{
@@ -220,7 +220,7 @@ bool PipelineState::CreatePipelineState
 
 	if (result)
 	{
-		getErrorString();
+		GetErrorString();
 		OutputDebugString(L"頂点シェーダーが読み込めませんでした。\n");
 		return false;
 	}
@@ -256,7 +256,7 @@ bool PipelineState::CreatePipelineState
 
 	if (result)
 	{
-		getErrorString();
+		GetErrorString();
 		OutputDebugString(L"ピクセルシェーダーが読み込めませんでした。\n");
 		return false;
 	}
@@ -297,7 +297,7 @@ bool PipelineState::CreatePipelineState
 
 	if (result)
 	{
-		getErrorString();
+		GetErrorString();
 		OutputDebugString(L"ジオメトリーシェーダーが読み込めませんでした。\n");
 		return false;
 	}
