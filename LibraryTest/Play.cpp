@@ -9,16 +9,11 @@
 #include"FbxModel.h"
 #include"ObjModel.h"
 std::unique_ptr<FbxModel> fbxModel = std::make_unique<FbxModel>();
-std::unique_ptr<ObjModel> objModel = std::make_unique<ObjModel>();
-Play::Play()
-{
-
-}
+Play::Play(){}
 
 
-Play::~Play()
-{
-}
+Play::~Play(){}
+
 void Play::Initialize()
 {
 	fbxModel->LoadModel
@@ -27,21 +22,11 @@ void Play::Initialize()
 		1
 	);
 
-	objModel->LoadModel
-	(
-		"Resources/Obj/tank_head.obj",
-		true,
-		1
-	);
-	
 }
 
 Vector3 angle = 0;
 void Play::Update()
 {
-	ObjectManager::GetInstance()->Update();
-	ObjectManager::GetInstance()->EraseObjectCheck();
-
 
 	if (DirectInput::KeyState(DIK_W))
 		angle.y += 3.0f;
@@ -56,8 +41,6 @@ void Play::Update()
 
 void Play::Draw()
 {
-	ObjectManager::GetInstance()->Draw();
-
 	fbxModel->Draw(0);
 }
 

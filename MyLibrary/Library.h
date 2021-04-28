@@ -4,7 +4,6 @@
 #include<random>
 #include"Vector.h"
 #include"Color.h"
-#include"TextLoader.h"
 #include"DirectX12.h"
 #include"Audio.h"
 #include"DirectXStruct.h"
@@ -1148,15 +1147,6 @@ public:
 
 #pragma endregion
 
-#pragma region 読み込み
-	/// <summary>
-	/// csvを読み取り、intの2次元配列に格納します
-	/// </summary>
-	/// <param name="path"></param>
-	/// <param name="vector"></param>
-	/// <returns></returns>
-	static bool LoadTextIntVector(const char* path, std::vector<std::vector<int>>& vector);
-#pragma endregion
 
 #pragma region 親子構造
 	/// <summary>

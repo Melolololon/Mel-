@@ -97,8 +97,7 @@ public:
 	(
 		const DirectX::TexMetadata& metadata,
 		const DirectX::Image* image,
-		ID3D12Resource** textureBuffer,
-		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle
+		ID3D12Resource** textureBuffer
 	);
 	void CreateOneColorTextureBuffer
 	(
@@ -119,7 +118,13 @@ public:
 	void CreateConstBufferView
 	(
 		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
-		ID3D12Resource* constBuffer
+		ID3D12Resource* pConstBuffer
+	);
+
+	void CreateShaderResourceView
+	(
+		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+		ID3D12Resource* pTextureBuffer
 	);
 #pragma endregion
 

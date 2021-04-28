@@ -93,6 +93,9 @@ protected:
 	int modelNum;
 	int modelObjectNum;
 
+	//テクスチャバッファ数
+	int textureBufferNum;
+
 	ComPtr<ID3D12PipelineState> pipeline;
 	ID3D12PipelineState* currentSetPipeline;
 
@@ -109,7 +112,10 @@ protected:
 	//[ヒープの番号(heapNum)ごと][obj内のモデルごと][バッファごと]
 	//バッファ格納配列をmapにしてもいいかも	std::vector<std::vector<std::umap<enum,ComPtr<ID3D12Resource>>>>
 	std::vector<std::vector<std::vector<ComPtr<ID3D12Resource>>>> constBuffer;
-	std::vector<ComPtr<ID3D12Resource>> textureBuffer;
+	
+	//テクスチャ側に持たせたからコメントアウト
+	//std::vector<ComPtr<ID3D12Resource>> textureBuffer;
+	
 	//ディスクリプタヒープのバッファを可視化するためのもの
 	std::vector<HeapBufferTag>heapTags;
 

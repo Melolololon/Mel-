@@ -266,8 +266,6 @@ void Model::CreateTextureBuffer
 )
 {
 
-	textureBuffer.resize(textures.size());
-
 	D3D12_CPU_DESCRIPTOR_HANDLE hHandle;
 
 	auto textureNum = textures.size();
@@ -280,17 +278,16 @@ void Model::CreateTextureBuffer
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
 
-		
-
-		CreateBuffer::GetInstance()->CreateTextureBuffer
+		CreateBuffer::GetInstance()->CreateShaderResourceView
 		(
-			textures[i]->GetMetadata(),
-			textures[i]->GetImage(),
-			&textureBuffer[i],
-			hHandle
+			hHandle,
+			textures[i]->GetPTextureBuffer()
 		);
+
 		heapTags.push_back(HeapBufferTag::HEAP_TAG_TEXTURE_BUFFER);
 	}
+
+	textureBufferNum = static_cast<int>(textureNum);
 }
 
 #pragma region マップ
@@ -608,25 +605,15 @@ void Model::SetCmdList(const int modelNum)
 	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
 	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-
-
 	std::vector<ID3D12DescriptorHeap*> ppHeaps;
 	ppHeaps.push_back(desHeap.Get());
 	cmdLists[0]->SetDescriptorHeaps(1, &ppHeaps[0]);
 
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	(
-		desHeap->GetGPUDescriptorHandleForHeapStart(),
-		0,
-		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
-
 	int handleNum = 0;//どのくらいハンドルをずらすか決めるための番号
 
-
 	//共通定数バッファ
-	handleNum = static_cast<int>(textureBuffer.size());
+	handleNum = textureBufferNum;
 	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 	(
 		desHeap->GetGPUDescriptorHandleForHeapStart(),
@@ -669,7 +656,7 @@ void Model::SetCmdList(const int modelNum)
 		//定数バッファセット
 		int commonBufferNum = 1;
 		handleNum = 0;
-		handleNum += static_cast<int>(textureBuffer.size()) + commonBufferNum;//テクスチャと共通分ずらす
+		handleNum += textureBufferNum + commonBufferNum;//テクスチャと共通分ずらす
 		int cBuffSize = static_cast<int>(constBuffer[modelNum][i].size());
 
 		handleNum += i * cBuffSize;
@@ -723,13 +710,13 @@ void Model::SetCmdList(const int modelNum)
 
 }
 
-
 void Model::Draw(const int modelNum)
 {
 	DataMap(modelNum);
 	SetCmdList(modelNum);
 
 }
+
 #pragma region 操作
 void Model::SetPosition(const Vector3& position, const int modelNum)
 {
