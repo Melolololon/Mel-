@@ -63,7 +63,7 @@
     <ClCompile Include="CreatePolygon.cpp">
       <Filter>ソース ファイル\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="TextureLoad.cpp">
+    <ClCompile Include="TextureLoader.cpp">
       <Filter>ソース ファイル\Loader</Filter>
     </ClCompile>
     <ClCompile Include="CreatePipeline.cpp">
@@ -216,7 +216,7 @@
     <ClInclude Include="ShaderData.h">
       <Filter>ヘッダー ファイル\Struct</Filter>
     </ClInclude>
-    <ClInclude Include="TextureLoad.h">
+    <ClInclude Include="TextureLoader.h">
       <Filter>ヘッダー ファイル\Loader</Filter>
     </ClInclude>
     <ClInclude Include="TextLoader.h">

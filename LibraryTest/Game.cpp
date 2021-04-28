@@ -18,7 +18,6 @@ Game* Game::GetInstance()
 void Game::Run()
 {
 	Initialize();
-	Library::SetFramesPerSecond60(true);
 	while (1)
 	{
 		Library::LoopStartProcess();
@@ -28,12 +27,13 @@ void Game::Run()
 		if (Library::GetIsEnd())break;
 	}
 
-	end();
+	Finalize();
 }
 void Game::Initialize()
 {
 
-	Library::Initialize(1280, 720, {0,0,0,255},L"MEL_Magical_Engene_Library(仮)");
+	Library::Initialize(1280, 720, {200,200,200,255},L"MyLib");
+	Library::SetFramesPerSecond60(true);
 	Library::SetCamera(Vector3( 0,0,-200 ), Vector3( 0,40,0 ), Vector3(0,1,0 ));
 	Library::SetCameraNearAndFar(0.1, 1000.0f);
 	Library::SetLightVector({ 0,0,1 });
@@ -60,7 +60,7 @@ void Game::Initialize()
 }
 
 
-void Game::end()
+void Game::Finalize()
 {
 #pragma region マネージャー終了
 	ObjectManager::GetInstance()->end();

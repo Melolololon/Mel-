@@ -2,7 +2,7 @@
 #include<vector>
 #include"DirectXStruct.h"
 
-class TextureLoad
+class TextureLoader
 {
 
 public:

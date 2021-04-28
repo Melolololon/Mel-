@@ -21,10 +21,6 @@ struct Node
 class FbxModel:public Model
 {
 private:
-
-	static PipelineState defaultFbxPipeline;
-
-
 	//モデル名
 	std::string modelName;
 
@@ -36,11 +32,13 @@ private:
 
 	std::vector<Vertex>vertices;
 
-	std::vector<std::vector<USHORT>>& getIndices() { return indices; }
-	std::vector<Material>& getMaterial() { return materials; }
-
 	std::vector<std::unique_ptr<Texture>>textures;
 
+	//読み込み時にセットされるパイプライン
+	static PipelineState defaultFbxPipeline;
+
+	std::vector<std::vector<USHORT>>& getIndices() { return indices; }
+	std::vector<Material>& getMaterial() { return materials; }
 public:
 	FbxModel();
 	~FbxModel();

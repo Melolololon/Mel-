@@ -35,12 +35,11 @@ public:
 	};
 
 private:
+#pragma region 変数
+
 
 	static ID3D12Device* device;
 	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
-
-	
-
 
 	//これスプライトみたいにヒープから呼び出さないようにして、
 	//1つだけ生成するようにしたほうがいい?
@@ -50,6 +49,8 @@ private:
 	static ComPtr<ID3D12RootSignature>rootSignature;
 
 	static DirectX::XMMATRIX cameraMatrix;
+
+#pragma endregion
 
 #pragma region 関数
 
@@ -246,8 +247,6 @@ protected:
 
 #pragma endregion
 
-
-
 public:
 	Model();
 	virtual ~Model();
@@ -278,12 +277,10 @@ public:
 	void SetScale(const Vector3& scale, const int modelNum);
 #pragma endregion
 
-
 #pragma region 描画
 
 	virtual void Draw(const int modelNum);
 #pragma endregion
-
 
 #pragma region パイプライン
 

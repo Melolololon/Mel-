@@ -1,8 +1,8 @@
-#include "TextureLoad.h"
+#include "TextureLoader.h"
 
 
 
-BMPData TextureLoad::LoadBMP(const char* texturepath)
+BMPData TextureLoader::LoadBMP(const char* texturepath)
 {
 	FILE* texture;
 	fopen_s(&texture, texturepath, "rb");

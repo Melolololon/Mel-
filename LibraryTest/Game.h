@@ -8,7 +8,7 @@ private:
 	void Initialize();
 	void Update();
 	void Draw();
-	void end();
+	void Finalize();
 
 public:
 	Game(const Game& g) = delete;

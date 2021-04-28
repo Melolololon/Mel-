@@ -3,12 +3,10 @@
 #include"Library.h"
 #include"LibMath.h"
 #include"Vector.h"
-#include"TestObject.h"
 class Play:public Scene
 {
 private:
 
-	std::shared_ptr<TestObject>t;
 public:
 	Play();
 	~Play();

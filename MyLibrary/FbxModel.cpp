@@ -72,8 +72,8 @@ bool FbxModel::LoadModel
 
 
 	//ˆê“I‚É‘‚¢‚Ä‚é
-	materials[0].ambient = { 0.3,0.3,0.3 };
-	materials[0].diffuse = { 0.8,0.8,0.8 };
+	materials[0].ambient = { 0.1f,0.1f,0.1f };
+	materials[0].diffuse = { 1.0f,1.0f,1.0f };
 
 	return true;
 }
