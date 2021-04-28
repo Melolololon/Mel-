@@ -38,7 +38,7 @@ DirectX::XMMATRIX DirectInput::projectionMat;
 float DirectInput::nearNum;
 float DirectInput::farNum;
 
-void DirectInput::initialize(HWND hwnd, int windowWidth, int windowHeight)
+void DirectInput::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 {
 	mHwnd = hwnd;
 	winWidth = windowWidth;
@@ -144,7 +144,7 @@ BOOL CALLBACK DirectInput::diEnumDevicesObjectCallBack(LPCDIDEVICEINSTANCE lpddi
 	return DIENUM_STOP;
 }
 
-void DirectInput::update()
+void DirectInput::Update()
 {
 
 #pragma region パッド
@@ -211,7 +211,7 @@ void DirectInput::update()
 
 
 #ifdef _DEBUG
-	if (DirectInput::keyTrigger(DIK_SPACE)) 
+	if (DirectInput::KeyTrigger(DIK_SPACE)) 
 	{
 		int a = 0;
 	}
@@ -223,7 +223,7 @@ void DirectInput::update()
 #pragma region キーボード
 
 
-bool DirectInput::keyState(const BYTE& keyDef)
+bool DirectInput::KeyState(const BYTE& keyDef)
 {
 	if (key[keyDef])
 	{
@@ -237,7 +237,7 @@ bool DirectInput::keyState(const BYTE& keyDef)
 	}
 }
 
-bool DirectInput::keyTrigger(const BYTE& keyDef)
+bool DirectInput::KeyTrigger(const BYTE& keyDef)
 {
 	//1フレーム前がtrueかfalseか
 	bool check;
@@ -250,7 +250,7 @@ bool DirectInput::keyTrigger(const BYTE& keyDef)
 		check = false;
 	}
 
-	if (keyState(keyDef) && !check)
+	if (KeyState(keyDef) && !check)
 	{
 		//押された瞬間(前フレーム押されてない&現フレーム押された)か
 		return true;
@@ -259,7 +259,7 @@ bool DirectInput::keyTrigger(const BYTE& keyDef)
 	return false;
 }
 
-bool DirectInput::keyRelease(const BYTE& keyDef)
+bool DirectInput::KeyRelease(const BYTE& keyDef)
 {
 	bool check;
 	if (preKey[keyDef])
@@ -271,7 +271,7 @@ bool DirectInput::keyRelease(const BYTE& keyDef)
 		check = false;
 	}
 
-	if (!keyState(keyDef) && check)
+	if (!KeyState(keyDef) && check)
 	{
 		return true;
 	}
@@ -279,7 +279,7 @@ bool DirectInput::keyRelease(const BYTE& keyDef)
 	return false;
 }
 
-char DirectInput::keyChar()
+char DirectInput::KeyChar()
 {
 	char returnChar = 0;
 
@@ -287,12 +287,12 @@ char DirectInput::keyChar()
 	return returnChar;
 }
 
-float DirectInput::arrowKeyAngle()
+float DirectInput::ArrowKeyAngle()
 {
-	bool right = DirectInput::keyState(DIK_RIGHT);
-	bool left = DirectInput::keyState(DIK_LEFT);
-	bool up = DirectInput::keyState(DIK_UP);
-	bool down = DirectInput::keyState(DIK_DOWN);
+	bool right = DirectInput::KeyState(DIK_RIGHT);
+	bool left = DirectInput::KeyState(DIK_LEFT);
+	bool up = DirectInput::KeyState(DIK_UP);
+	bool down = DirectInput::KeyState(DIK_DOWN);
 
 	if (right && up)return 45.0f;
 	if (up && left)return 135.0f;
@@ -310,7 +310,7 @@ float DirectInput::arrowKeyAngle()
 
 #pragma region パッド
 
-bool DirectInput::buttonState(int button)
+bool DirectInput::ButtonState(int button)
 {
 	if (!devPad)return false;
 	if (padState.rgbButtons[button])
@@ -325,7 +325,7 @@ bool DirectInput::buttonState(int button)
 	}
 }
 
-bool DirectInput::buttonTrigger(int button)
+bool DirectInput::ButtonTrigger(int button)
 {
 	if (!devPad)return false;
 	//1フレーム前がtrueかfalseか
@@ -339,7 +339,7 @@ bool DirectInput::buttonTrigger(int button)
 		check = false;
 	}
 
-	if (buttonState(button) && !check)
+	if (ButtonState(button) && !check)
 	{
 		//押された瞬間(前フレーム押されてない&現フレーム押された)か
 		return true;
@@ -348,7 +348,7 @@ bool DirectInput::buttonTrigger(int button)
 	return false;
 }
 
-bool DirectInput::buttonRelease(int button)
+bool DirectInput::ButtonRelease(int button)
 {
 	if (!devPad)return false;
 	bool check;
@@ -361,7 +361,7 @@ bool DirectInput::buttonRelease(int button)
 		check = false;
 	}
 
-	if (!buttonState(button) && check)
+	if (!ButtonState(button) && check)
 	{
 		return true;
 	}
@@ -370,7 +370,7 @@ bool DirectInput::buttonRelease(int button)
 }
 
 
-bool DirectInput::directionalButtonState(int button)
+bool DirectInput::DirectionalButtonState(int button)
 {
 	//押してるとき
 
@@ -410,7 +410,7 @@ bool DirectInput::directionalButtonState(int button)
 
 }
 
-bool DirectInput::directionalButtonTrigger(int button)
+bool DirectInput::DirectionalButtonTrigger(int button)
 {
 
 	//押してるとき
@@ -468,7 +468,7 @@ bool DirectInput::directionalButtonTrigger(int button)
 	return false;
 }
 
-bool DirectInput::leftStickLeft(int lXNum)
+bool DirectInput::LeftStickLeft(int lXNum)
 {
 	if (!devPad)return false;
 
@@ -479,7 +479,7 @@ bool DirectInput::leftStickLeft(int lXNum)
 	return false;
 
 }
-bool DirectInput::leftStickRight(int lXNum)
+bool DirectInput::LeftStickRight(int lXNum)
 {
 	if (!devPad)return false;
 	if (32767 + lXNum <= padState.lX)
@@ -488,7 +488,7 @@ bool DirectInput::leftStickRight(int lXNum)
 	}
 	return false;
 }
-bool DirectInput::leftStickUp(int lYNum)
+bool DirectInput::LeftStickUp(int lYNum)
 {
 	if (!devPad)return false;
 	if (32767 - lYNum >= padState.lY)
@@ -497,7 +497,7 @@ bool DirectInput::leftStickUp(int lYNum)
 	}
 	return false;
 }
-bool DirectInput::leftStickDown(int lYNum)
+bool DirectInput::LeftStickDown(int lYNum)
 {
 	if (!devPad)return false;
 	if (32767 + lYNum <= padState.lY)
@@ -506,7 +506,7 @@ bool DirectInput::leftStickDown(int lYNum)
 	}
 	return false;
 }
-bool DirectInput::rightStickLeft(int lXNum)
+bool DirectInput::RightStickLeft(int lXNum)
 {
 	if (!devPad)return false;
 	if (32767 - lXNum >= padState.lZ)
@@ -516,7 +516,7 @@ bool DirectInput::rightStickLeft(int lXNum)
 	return false;
 
 }
-bool DirectInput::rightStickRight(int lXNum)
+bool DirectInput::RightStickRight(int lXNum)
 {
 	if (!devPad)return false;
 	if (32767 + lXNum <= padState.lZ)
@@ -525,7 +525,7 @@ bool DirectInput::rightStickRight(int lXNum)
 	}
 	return false;
 }
-bool DirectInput::rightStickUp(int lYNum)
+bool DirectInput::RightStickUp(int lYNum)
 {
 	if (!devPad)return false;
 	if (32767 - lYNum >= padState.lRz)
@@ -534,7 +534,7 @@ bool DirectInput::rightStickUp(int lYNum)
 	}
 	return false;
 }
-bool DirectInput::rightStickDown(int lYNum)
+bool DirectInput::RightStickDown(int lYNum)
 {
 	if (!devPad)return false;
 	if (32767 + lYNum <= padState.lRz)
@@ -549,7 +549,7 @@ bool DirectInput::rightStickDown(int lYNum)
 
 
 
-void DirectInput::release()
+void DirectInput::Release()
 {
 	//DirectInputを閉じる
 	/*keyDev->Unacquire();
@@ -569,7 +569,7 @@ void DirectInput::release()
 
 #pragma region マウス
 
-void DirectInput::setMatrixAndNearFar(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX projectionMatrix,float nearNumber, float farNumber)
+void DirectInput::SetMatrixAndNearFar(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX projectionMatrix,float nearNumber, float farNumber)
 {
 	viewMat = viewMatrix;
 	projectionMat = projectionMatrix;
@@ -577,7 +577,7 @@ void DirectInput::setMatrixAndNearFar(DirectX::XMMATRIX viewMatrix, DirectX::XMM
 	farNum = farNumber;
 }
 
-Vector2 DirectInput::getMousePosition() 
+Vector2 DirectInput::GetMousePosition() 
 {
 	POINT p;
 
@@ -609,20 +609,20 @@ Vector2 DirectInput::getMousePosition()
 
 }
 
-Vector2 DirectInput::getCenterToMouseVector()
+Vector2 DirectInput::GetCenterToMouseVector()
 {
 	Vector2 point = { static_cast<float>(winWidth) / 2.0f, static_cast<float>(winHeight) / 2.0f };
-	return vector2Normalize(getMousePosition() - point);
+	return Vector2Normalize(GetMousePosition() - point);
 }
 
-float DirectInput::getMouseAngle()
+float DirectInput::GetMouseAngle()
 {
-	return LibMath::vecto2ToAngle(getCenterToMouseVector(), false);
+	return LibMath::Vecto2ToAngle(GetCenterToMouseVector(), false);
 }
 
-void DirectInput::getMouse3DLine( Vector3& nearPoint, Vector3& farPoint)
+void DirectInput::GetMouse3DLine( Vector3& nearPoint, Vector3& farPoint)
 {
-	Vector2 mousePos = getMousePosition();
+	Vector2 mousePos = GetMousePosition();
 
 	DirectX::XMMATRIX mousePosMatrix;
 	DirectX::XMMATRIX viewportMatrix;
@@ -718,24 +718,24 @@ void DirectInput::getMouse3DLine( Vector3& nearPoint, Vector3& farPoint)
 //2 中ボタン
 //3 左端のボタン2つの下側(上は反応無し)
 
-bool DirectInput::mouseButtonState(MouseButton mouseButton) 
+bool DirectInput::MouseButtonState(MouseButton mouseButton) 
 {
 	if (mouseState.rgbButtons[mouseButton]) return true;
 	return false;
 }
-bool DirectInput::mouseButtonTrigger(MouseButton mouseButton) 
+bool DirectInput::MouseButtonTrigger(MouseButton mouseButton) 
 {
 	if (!mousePrevious.rgbButtons[mouseButton]) 
 	{
-		if (mouseButtonState(mouseButton)) return true;
+		if (MouseButtonState(mouseButton)) return true;
 	}
 	return false;
 }
-bool DirectInput::mouseButtonRelease(MouseButton mouseButton) 
+bool DirectInput::MouseButtonRelease(MouseButton mouseButton) 
 {
 	if (mousePrevious.rgbButtons[mouseButton]) 
 	{
-		if (!mouseButtonState(mouseButton)) return true;
+		if (!MouseButtonState(mouseButton)) return true;
 	}
 	return false;
 }

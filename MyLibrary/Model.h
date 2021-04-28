@@ -55,7 +55,7 @@ private:
 
 #pragma region 生成
 
-	void createDescriptorHeap
+	void CreateDescriptorHeap
 	(
 		const int arrayNum
 	);
@@ -68,7 +68,7 @@ private:
 	/// <param name="heapTop">ヒープのどこから生成するか</param>
 	/// <param name="constDataSize">生成するバッファの構造体のバイト数</param>
 	/// <param name="tags">生成するバッファの種類(並びはconstDataSizeと合わせること)</param>
-	void createConstBuffer
+	void CreateConstBuffer
 	(
 		const int modelNum,
 		const int modelFileObjectNum,
@@ -76,7 +76,7 @@ private:
 		const size_t userDataSize = 0
 	);
 
-	void createTextureBuffer
+	void CreateTextureBuffer
 	(
 		const std::vector<Texture*>& textures,
 		const int heapTop
@@ -128,8 +128,8 @@ protected:
 
 #pragma region 関数
 
-	void dataMap(const int modelNum);
-	void setCmdList(const int modelNum);
+	void DataMap(const int modelNum);
+	void SetCmdList(const int modelNum);
 
 #pragma region バッファ生成
 
@@ -141,7 +141,7 @@ protected:
 	/// <param name="verticesSize">頂点データのバイト数</param>
 	/// <param name="verticesNum">各</param>
 	/// <param name="indicesNum"></param>
-	void createModelVertexResources
+	void CreateModelVertexResources
 	(
 		const size_t verticesSize,
 		const std::vector<size_t>& verticesNum,
@@ -156,7 +156,7 @@ protected:
 	/// <param name="modelNum"></param>
 	/// <param name="modelFileObjectNum"></param>
 	/// <param name="userDataSize"></param>
-	void createModelHeapResources
+	void CreateModelHeapResources
 	(
 		const std::vector<Texture*>& pTextures,
 		const int modelNum,
@@ -164,7 +164,7 @@ protected:
 		const size_t userDataSize = 0
 	);
 
-	void resizeConstData
+	void ResizeConstData
 	(
 		const int modelNum,
 		const int modelFileObjectNum
@@ -178,22 +178,22 @@ protected:
 	/// </summary>
 	/// <param name="modelNum">モデル番号(obj内のどのモデルか)</param>
 	/// <param name="vertexStruct">GPUの仮想アドレスを格納するポインタのポインタ</param>
-	void mapVertexBuffer
+	void MapVertexBuffer
 	(
 		const int modelNum,
 		void** vertexData
 	);
 
-	void unmapVertexBuffer(const int& modelNum);
+	void UnmapVertexBuffer(const int& modelNum);
 
 
-	void mapIndexBuffer
+	void MapIndexBuffer
 	(
 		const int modelNum,
 		void** index
 	);
 
-	void unmapIndexBuffer(const int& modelNum);
+	void UnmapIndexBuffer(const int& modelNum);
 
 	//これだと利用者がライブラリのバッファが書き換えられてしまう
 	//ずっとマップしっぱなしでもいいのでは?
@@ -225,7 +225,7 @@ protected:
 	//);
 
 	//const int objectNumは、まだ個別にセットできるようにするつもりないからこうしてる
-	void mapUserConstBuffer
+	void MapUserConstBuffer
 	(
 		const int modelNum,
 		void** constData
@@ -238,7 +238,7 @@ protected:
 
 
 #pragma region スムーズシェーディング
-	void calcSmoothingNormal
+	void CalcSmoothingNormal
 	(
 		std::vector<Vector3> normals
 	);
@@ -255,39 +255,39 @@ public:
 #pragma region 開発者用関数
 
 
-	static void createCommonBuffer();
+	static void CreateCommonBuffer();
 	
 	/// <summary>
 	/// マップ用
 	/// </summary>
 	/// <param name="data"></param>
-	static void mapCommonConstData(const CommonConstData& data);
+	static void MapCommonConstData(const CommonConstData& data);
 
-	static void initialize
+	static void Initialize
 	(
 		ID3D12Device* dev,
 		std::vector<ID3D12GraphicsCommandList*> cmdList
 	);
 
-	static void setCameraMatrix(const DirectX::XMMATRIX& cameraMat) { cameraMatrix = cameraMat; }
+	static void SetCameraMatrix(const DirectX::XMMATRIX& cameraMat) { cameraMatrix = cameraMat; }
 #pragma endregion
 
 #pragma region 操作
-	void setPosition(const Vector3& position, const int modelNum);
-	void setAngle(const Vector3& angle,const int modelNum);
-	void setScale(const Vector3& scale, const int modelNum);
+	void SetPosition(const Vector3& position, const int modelNum);
+	void SetAngle(const Vector3& angle,const int modelNum);
+	void SetScale(const Vector3& scale, const int modelNum);
 #pragma endregion
 
 
 #pragma region 描画
 
-	virtual void draw(const int modelNum);
+	virtual void Draw(const int modelNum);
 #pragma endregion
 
 
 #pragma region パイプライン
 
-	void setPipeline(PipelineState* pipelineState);
+	void SetPipeline(PipelineState* pipelineState);
 
 #pragma endregion
 

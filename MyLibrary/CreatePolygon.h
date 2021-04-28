@@ -19,9 +19,9 @@ private:
 public:
 	CreatePolygon(CreatePolygon& c) = delete;
 	CreatePolygon operator= (CreatePolygon& c) = delete;
-	static CreatePolygon* getInstance();
+	static CreatePolygon* GetInstance();
 
-	void initialize(const int& winWidth, const int& winHeight);
+	void Initialize(const int& winWidth, const int& winHeight);
 
 #pragma region 式を使った多角形作成
 	/// <summary>
@@ -32,14 +32,14 @@ public:
 	/// <param name="tyusinX">中心座標X</param>
 	/// <param name="tyusinY">中心座標Y</param>
 	/// <returns></returns>
-	std::vector<Vertex> setPolygonVertex( float r,  int vertexNum, XMFLOAT2 tyusin);
+	std::vector<Vertex> SetPolygonVertex( float r,  int vertexNum, XMFLOAT2 tyusin);
 	
 	/// /// <summary>
 	/// インデックスを設定します
 	/// </summary>
 	/// <param name="vertexNum">中心を除いた頂点数</param>
 	/// <returns></returns>
-	std::vector<unsigned short> setPolygonIndex(int vertexNum);
+	std::vector<unsigned short> SetPolygonIndex(int vertexNum);
 
 #pragma region 三角錐
 
@@ -50,20 +50,20 @@ public:
 	/// <param name="vertexNum">中心を除いた頂点数</param>
 	/// <param name="tyusinX">中心座標X</param>
 	/// <param name="tyusinY">中心座標Y</param>*	/// <returns></returns>
-	std::vector<Vertex> getTriangularPyramidVertex(float r, int vertexNum, XMFLOAT3 tyusin,float up);
+	std::vector<Vertex> GetTriangularPyramidVertex(float r, int vertexNum, XMFLOAT3 tyusin,float up);
 
 	/// /// <summary>
 	/// インデックスを設定します
 	/// </summary>
 	/// <param name="vertexNum">中心を除いた頂点数</param>
 	/// <returns></returns>
-	std::vector<unsigned short> setTriangularPyramidIndex(int vertexNum);
+	std::vector<unsigned short> SetTriangularPyramidIndex(int vertexNum);
 #pragma endregion
 
 #pragma region 正多角柱
-	std::vector<Vertex> setPolygonalPrismVertex(float r, int vertexNum, XMFLOAT3 tyusin, float up);
+	std::vector<Vertex> SetPolygonalPrismVertex(float r, int vertexNum, XMFLOAT3 tyusin, float up);
 
-	std::vector<unsigned short> setPolygonalPrismIndex(int vertexNum);
+	std::vector<unsigned short> SetPolygonalPrismIndex(int vertexNum);
 
 
 #pragma endregion
@@ -78,8 +78,8 @@ public:
 
 #pragma region スラッシュポリゴン
 
-	std::vector<Vertex> setSlushPolygonVertex(XMFLOAT2 tyusin, XMFLOAT2 pos,int type);
-	std::vector<unsigned short> setSlushPolygonIndex(int type);
+	std::vector<Vertex> SetSlushPolygonVertex(XMFLOAT2 tyusin, XMFLOAT2 pos,int type);
+	std::vector<unsigned short> SetSlushPolygonIndex(int type);
 
 #pragma endregion
 
@@ -95,33 +95,33 @@ public:
 	/// <param name="endPosX">右下座標X</param>
 	/// <param name="endPosY">右下座標Y</param>
 	/// <returns></returns>
-	std::vector<Vertex> setBoxPolygonVertex(XMFLOAT2 startPos, XMFLOAT2 endPos);
+	std::vector<Vertex> SetBoxPolygonVertex(XMFLOAT2 startPos, XMFLOAT2 endPos);
 	
 	/// <summary>
 	/// インデックスを設定します
 	/// </summary>
 	/// <returns></returns>
-	std::vector<unsigned short> setBoxPolygonIndex();
+	std::vector<unsigned short> SetBoxPolygonIndex();
 
 
 
 #pragma endregion
 
 #pragma region 4頂点板ポリゴン
-	std::vector<Vertex> setBoardPolygonVertex(XMFLOAT3 pos1, XMFLOAT3 pos2, XMFLOAT3 pos3, XMFLOAT3 pos4);
-	std::vector<unsigned short> setBoardPolygonIndex();
+	std::vector<Vertex> SetBoardPolygonVertex(XMFLOAT3 pos1, XMFLOAT3 pos2, XMFLOAT3 pos3, XMFLOAT3 pos4);
+	std::vector<unsigned short> SetBoardPolygonIndex();
 
 
 
 #pragma endregion
 
 #pragma region 箱
-	std::vector<Vertex> get3DBox(DirectX::XMFLOAT3 size);
-	std::vector<unsigned short>  get3DBoxIndex();
+	std::vector<Vertex> Get3DBox(DirectX::XMFLOAT3 size);
+	std::vector<unsigned short>  Get3DBoxIndex();
 
 	//頂点数が多いが、uvをちゃんと、自由に設定できる
-	std::vector<Vertex> getVertexMany3DBox(DirectX::XMFLOAT3 size);
-	std::vector<unsigned short>  getVertexMany3DBoxIndex();
+	std::vector<Vertex> GetVertexMany3DBox(DirectX::XMFLOAT3 size);
+	std::vector<unsigned short>  GetVertexMany3DBoxIndex();
 #pragma endregion
 
 

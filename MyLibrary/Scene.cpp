@@ -16,23 +16,23 @@ void Scene::falseIsEnd()
 	isEnd = false;
 }
 
-void Scene::initialize() {}
-void Scene::update() {}
-void Scene::draw() {}
+void Scene::Initialize() {}
+void Scene::Update() {}
+void Scene::Draw() {}
 void Scene::end() {}
 
-bool Scene::getIsEnd()
+bool Scene::GetIsEnd()
 {
 	return isEnd;
 }
 
-Scene* Scene::getNextScene()
+Scene* Scene::GetNextScene()
 {
 	return this;
 }
 
 
-void* Scene::getPtr() 
+void* Scene::GetPtr() 
 {
 	return this;
 }

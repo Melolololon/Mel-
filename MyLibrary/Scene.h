@@ -14,13 +14,13 @@ public:
 	Scene();
 	virtual ~Scene();
 	void falseIsEnd();
-	virtual void initialize() = 0;//初期化
-	virtual void update() = 0;
-	virtual void draw() = 0;
+	virtual void Initialize() = 0;//初期化
+	virtual void Update() = 0;
+	virtual void Draw() = 0;
 	virtual void end() = 0;//終了処理
-	virtual Scene* getNextScene() = 0;//次のシーンの指定
-	bool getIsEnd();//シーンが終わったかどうか
+	virtual Scene* GetNextScene() = 0;//次のシーンの指定
+	bool GetIsEnd();//シーンが終わったかどうか
 
-	void* getPtr();
+	void* GetPtr();
 };
 

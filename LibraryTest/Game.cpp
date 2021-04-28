@@ -9,38 +9,38 @@ Game::Game() {}
 
 Game::~Game() {}
 
-Game* Game::getInstance()
+Game* Game::GetInstance()
 {
 	static Game game;
 	return &game;
 }
 
-void Game::run()
+void Game::Run()
 {
-	initialize();
-	Library::setFramesPerSecond60(true);
+	Initialize();
+	Library::SetFramesPerSecond60(true);
 	while (1)
 	{
-		Library::loopStartProcess();
-		update();
-		draw();
-		Library::loopEndProcess();
-		if (Library::getIsEnd())break;
+		Library::LoopStartProcess();
+		Update();
+		Draw();
+		Library::LoopEndProcess();
+		if (Library::GetIsEnd())break;
 	}
 
 	end();
 }
-void Game::initialize()
+void Game::Initialize()
 {
 
-	Library::initialize(1280, 720, {0,0,0,255},L"MEL_Magical_Engene_Library(仮)");
-	Library::setCamera(Vector3( 0,0,-200 ), Vector3( 0,40,0 ), Vector3(0,1,0 ));
-	Library::setCameraNearAndFar(0.1, 1000.0f);
-	Library::setLightVector({ 0,0,1 });
+	Library::Initialize(1280, 720, {0,0,0,255},L"MEL_Magical_Engene_Library(仮)");
+	Library::SetCamera(Vector3( 0,0,-200 ), Vector3( 0,40,0 ), Vector3(0,1,0 ));
+	Library::SetCameraNearAndFar(0.1, 1000.0f);
+	Library::SetLightVector({ 0,0,1 });
 
 #pragma region マネージャー初期化
 
-	ObjectManager::getInstance()->initialize();
+	ObjectManager::GetInstance()->Initialize();
 	CollisionFlag initFlag;
 	initFlag.board = false;
 	initFlag.box = false;
@@ -48,11 +48,11 @@ void Game::initialize()
 	initFlag.plane = false;
 	initFlag.ray = false;
 	initFlag.sphere = true;
-	ObjectManager::getInstance()->setCollisionFlag3D(initFlag);
-	ObjectManager::getInstance()->setMouseCollisionFlag(false);
-	ObjectManager::getInstance()->reserveObjectArray(100);
+	ObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);
+	ObjectManager::GetInstance()->SetMouseCollisionFlag(false);
+	ObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	SceneManager::getInstace()->initialize(new Play());
+	SceneManager::getInstace()->Initialize(new Play());
 #pragma endregion
 
 
@@ -63,20 +63,20 @@ void Game::initialize()
 void Game::end()
 {
 #pragma region マネージャー終了
-	ObjectManager::getInstance()->end();
+	ObjectManager::GetInstance()->end();
 
 	SceneManager::getInstace()->end();
 #pragma endregion
 
 
-	Library::end();//絶対に最後に書く
+	Library::Finalize();//絶対に最後に書く
 }
-void Game::update()
+void Game::Update()
 {
-	SceneManager::getInstace()->update();
+	SceneManager::getInstace()->Update();
 }
 
-void Game::draw()
+void Game::Draw()
 {
-	SceneManager::getInstace()->draw();
+	SceneManager::getInstace()->Draw();
 }

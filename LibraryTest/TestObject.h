@@ -8,8 +8,8 @@ public:
 	TestObject();
 	~TestObject();
 
-	void initialize()override;
-	void update()override;
-	void draw()override;
+	void Initialize()override;
+	void Update()override;
+	void Draw()override;
 };
 

@@ -6,19 +6,19 @@ CreatePolygon::CreatePolygon()
 }
 CreatePolygon::~CreatePolygon() {}
 
-CreatePolygon* CreatePolygon::getInstance()
+CreatePolygon* CreatePolygon::GetInstance()
 {
 	static CreatePolygon c;
 	return &c;
 }
 
-void CreatePolygon::initialize(const int& winWidth, const int& winHeight)
+void CreatePolygon::Initialize(const int& winWidth, const int& winHeight)
 {
 	windowWidth = winWidth;
 	windowHeight = winHeight;
 }
 
-std::vector<Vertex> CreatePolygon::setPolygonVertex(float r, int vertexNum, XMFLOAT2 tyusin)
+std::vector<Vertex> CreatePolygon::SetPolygonVertex(float r, int vertexNum, XMFLOAT2 tyusin)
 {
 	std::vector<Vertex> vertices;
 
@@ -59,7 +59,7 @@ std::vector<Vertex> CreatePolygon::setPolygonVertex(float r, int vertexNum, XMFL
 	return vertices;
 }
 
-std::vector<unsigned short> CreatePolygon::setPolygonIndex(int vertexNum)
+std::vector<unsigned short> CreatePolygon::SetPolygonIndex(int vertexNum)
 {
 	std::vector<unsigned short> indices;
 
@@ -82,7 +82,7 @@ std::vector<unsigned short> CreatePolygon::setPolygonIndex(int vertexNum)
 	return indices;
 }
 
-std::vector<Vertex> CreatePolygon::getTriangularPyramidVertex(float r, int vertexNum, XMFLOAT3 tyusin, float up)
+std::vector<Vertex> CreatePolygon::GetTriangularPyramidVertex(float r, int vertexNum, XMFLOAT3 tyusin, float up)
 {
 	std::vector<Vertex> vertices;
 
@@ -131,7 +131,7 @@ std::vector<Vertex> CreatePolygon::getTriangularPyramidVertex(float r, int verte
 	return vertices;
 }
 
-std::vector<unsigned short> CreatePolygon::setTriangularPyramidIndex(int vertexNum)
+std::vector<unsigned short> CreatePolygon::SetTriangularPyramidIndex(int vertexNum)
 {
 	std::vector<unsigned short> indices;
 
@@ -173,7 +173,7 @@ std::vector<unsigned short> CreatePolygon::setTriangularPyramidIndex(int vertexN
 }
 
 
-std::vector<Vertex> CreatePolygon::setPolygonalPrismVertex(float r, int vertexNum, XMFLOAT3 tyusin, float up)
+std::vector<Vertex> CreatePolygon::SetPolygonalPrismVertex(float r, int vertexNum, XMFLOAT3 tyusin, float up)
 {
 	std::vector<Vertex> vertices;
 
@@ -228,7 +228,7 @@ std::vector<Vertex> CreatePolygon::setPolygonalPrismVertex(float r, int vertexNu
 	return vertices;
 }
 
-std::vector<unsigned short> CreatePolygon::setPolygonalPrismIndex(int vertexNum) 
+std::vector<unsigned short> CreatePolygon::SetPolygonalPrismIndex(int vertexNum) 
 {
 	std::vector<unsigned short> indices;
 
@@ -293,7 +293,7 @@ std::vector<unsigned short> CreatePolygon::setPolygonalPrismIndex(int vertexNum)
 }
 
 
-std::vector<Vertex> CreatePolygon::setSlushPolygonVertex(XMFLOAT2 tyusin, XMFLOAT2 pos, int type)
+std::vector<Vertex> CreatePolygon::SetSlushPolygonVertex(XMFLOAT2 tyusin, XMFLOAT2 pos, int type)
 {
 	std::vector<Vertex> vertices;
 	Vertex vertData;
@@ -335,7 +335,7 @@ std::vector<Vertex> CreatePolygon::setSlushPolygonVertex(XMFLOAT2 tyusin, XMFLOA
 	return vertices;
 }
 
-std::vector<unsigned short> CreatePolygon::setSlushPolygonIndex(int type)
+std::vector<unsigned short> CreatePolygon::SetSlushPolygonIndex(int type)
 {
 	std::vector<unsigned short> indices;
 
@@ -368,7 +368,7 @@ std::vector<unsigned short> CreatePolygon::setSlushPolygonIndex(int type)
 	return indices;
 }
 
-std::vector<Vertex> CreatePolygon::setBoxPolygonVertex(XMFLOAT2 startPos, XMFLOAT2 endPos)
+std::vector<Vertex> CreatePolygon::SetBoxPolygonVertex(XMFLOAT2 startPos, XMFLOAT2 endPos)
 {
 	std::vector<Vertex> vertices;
 	Vertex vertData;
@@ -390,7 +390,7 @@ std::vector<Vertex> CreatePolygon::setBoxPolygonVertex(XMFLOAT2 startPos, XMFLOA
 	return vertices;
 }
 
-std::vector<unsigned short> CreatePolygon::setBoxPolygonIndex() 
+std::vector<unsigned short> CreatePolygon::SetBoxPolygonIndex() 
 {
 	std::vector<unsigned short> indices = { 0,1,2,2,1,3 };
 
@@ -398,7 +398,7 @@ std::vector<unsigned short> CreatePolygon::setBoxPolygonIndex()
 }
 
 
-std::vector<Vertex> CreatePolygon::setBoardPolygonVertex(XMFLOAT3 pos1, XMFLOAT3 pos2, XMFLOAT3 pos3, XMFLOAT3 pos4)
+std::vector<Vertex> CreatePolygon::SetBoardPolygonVertex(XMFLOAT3 pos1, XMFLOAT3 pos2, XMFLOAT3 pos3, XMFLOAT3 pos4)
 {
 	std::vector<Vertex> vertices;
 	Vertex vertData;
@@ -424,7 +424,7 @@ std::vector<Vertex> CreatePolygon::setBoardPolygonVertex(XMFLOAT3 pos1, XMFLOAT3
 	return vertices;
 }
 
-std::vector<unsigned short> CreatePolygon::setBoardPolygonIndex()
+std::vector<unsigned short> CreatePolygon::SetBoardPolygonIndex()
 {
 	std::vector<unsigned short> indices = { 0,1,2,2,1,3 };
 
@@ -432,7 +432,7 @@ std::vector<unsigned short> CreatePolygon::setBoardPolygonIndex()
 }
 
 
-std::vector<Vertex> CreatePolygon::get3DBox(DirectX::XMFLOAT3 size)
+std::vector<Vertex> CreatePolygon::Get3DBox(DirectX::XMFLOAT3 size)
 {
 	float x = size.x;
 	float y = size.y;
@@ -522,7 +522,7 @@ std::vector<Vertex> CreatePolygon::get3DBox(DirectX::XMFLOAT3 size)
 	return vertices;
 }
 
-std::vector<unsigned short>  CreatePolygon::get3DBoxIndex()
+std::vector<unsigned short>  CreatePolygon::Get3DBoxIndex()
 {
 	std::vector<unsigned short> indices = 
 	{
@@ -537,7 +537,7 @@ std::vector<unsigned short>  CreatePolygon::get3DBoxIndex()
 	return indices;
 }
 
-std::vector<Vertex> CreatePolygon::getVertexMany3DBox(DirectX::XMFLOAT3 size)
+std::vector<Vertex> CreatePolygon::GetVertexMany3DBox(DirectX::XMFLOAT3 size)
 {
 	float x = size.x;
 	float y = size.y;
@@ -637,7 +637,7 @@ std::vector<Vertex> CreatePolygon::getVertexMany3DBox(DirectX::XMFLOAT3 size)
 	return vertices;
 }
 
-std::vector<unsigned short> CreatePolygon::getVertexMany3DBoxIndex()
+std::vector<unsigned short> CreatePolygon::GetVertexMany3DBoxIndex()
 {
 	std::vector<unsigned short> indices =
 	{

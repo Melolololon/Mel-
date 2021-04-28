@@ -13,7 +13,7 @@ CreateCamera::~CreateCamera()
 {
 }
 
-DirectX::XMMATRIX CreateCamera::get2DCameraMatrix()
+DirectX::XMMATRIX CreateCamera::Get2DCameraMatrix()
 {
 	DirectX::XMMATRIX mapProjection = DirectX::XMMatrixOrthographicOffCenterLH
 	(
@@ -29,7 +29,7 @@ DirectX::XMMATRIX CreateCamera::get2DCameraMatrix()
 }
 
 //ˆø”‚ğCameraData‚Æ‚¢‚¤\‘¢‘Ì‚É‚·‚é
-DirectX::XMMATRIX CreateCamera::get3DCameraMatrix(CameraData cameraData)
+DirectX::XMMATRIX CreateCamera::Get3DCameraMatrix(CameraData cameraData)
 {
 	if (cameraData.fovY <= 0.0f)
 	{
@@ -46,10 +46,10 @@ DirectX::XMMATRIX CreateCamera::get3DCameraMatrix(CameraData cameraData)
 
 
 
-	return  getViewMatrix(cameraData) * getProjectionMatrix(cameraData);
+	return  GetViewMatrix(cameraData) * GetProjectionMatrix(cameraData);
 }
 
-void CreateCamera::get3DCameraPosition(CameraData cameraData, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT3& target)
+void CreateCamera::Get3DCameraPosition(CameraData cameraData, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT3& target)
 {
 	if (cameraData.fovY <= 0.0f)
 	{
@@ -125,7 +125,7 @@ void CreateCamera::get3DCameraPosition(CameraData cameraData, DirectX::XMFLOAT3&
 }
 
 
-DirectX::XMMATRIX CreateCamera::getViewMatrix(CameraData cameraData)
+DirectX::XMMATRIX CreateCamera::GetViewMatrix(CameraData cameraData)
 {
 	DirectX::XMMATRIX matView;
 
@@ -195,7 +195,7 @@ DirectX::XMMATRIX CreateCamera::getViewMatrix(CameraData cameraData)
 	return matView;
 }
 
-DirectX::XMMATRIX CreateCamera::getProjectionMatrix(CameraData cameraData)
+DirectX::XMMATRIX CreateCamera::GetProjectionMatrix(CameraData cameraData)
 {
 	DirectX::XMMATRIX mapProjection = DirectX::XMMatrixPerspectiveFovLH
 	(

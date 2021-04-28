@@ -45,43 +45,43 @@ private:
 	static const WORD MAX_VIBRATION_VALUE;
 
 public:
-	static void update();
+	static void Update();
 
-	static bool getPadConnectedFlag(const UCHAR& padNum);
+	static bool GetPadConnectedFlag(const UCHAR& padNum);
 
 #pragma region ボタン
-	static bool buttonState(const XInputButton& button,const UCHAR& padNum);
-	static bool buttonTrigger(const XInputButton& button,const UCHAR& padNum);
-	static bool buttonRelease(const XInputButton& button,const UCHAR& padNum);
+	static bool ButtonState(const XInputButton& button,const UCHAR& padNum);
+	static bool ButtonTrigger(const XInputButton& button,const UCHAR& padNum);
+	static bool ButtonRelease(const XInputButton& button,const UCHAR& padNum);
 
 	/// <summary>
 	/// 十字ボタンが示す角度を取得します。
 	/// </summary>
 	/// <returns></returns>
-	static float crossButtonAngle(const UCHAR& padNum);
+	static float DirectionalButtonAngle(const UCHAR& padNum);
 #pragma endregion
 
 #pragma region アナログスティック
-	static bool leftStickLeft(const float& lXPar , const UCHAR& padNum);
-	static bool leftStickRight(const float&  lXPar, const UCHAR& padNum);
-	static bool leftStickUp(const float&  lYPar, const UCHAR& padNum);
-	static bool leftStickDown(const float&  lYPar, const UCHAR& padNum);
-	static bool rightStickLeft(const float&  lXPar, const UCHAR& padNum);
-	static bool rightStickRight(const float&  lXPar, const UCHAR& padNum);
-	static bool rightStickUp(const float&  lYPar, const UCHAR& padNum);
-	static bool rightStickDown(const float&  lYPar, const UCHAR& padNum);
+	static bool LeftStickLeft(const float& lXPar , const UCHAR& padNum);
+	static bool LeftStickRight(const float&  lXPar, const UCHAR& padNum);
+	static bool LeftStickUp(const float&  lYPar, const UCHAR& padNum);
+	static bool LeftStickDown(const float&  lYPar, const UCHAR& padNum);
+	static bool RightStickLeft(const float&  lXPar, const UCHAR& padNum);
+	static bool RightStickRight(const float&  lXPar, const UCHAR& padNum);
+	static bool RightStickUp(const float&  lYPar, const UCHAR& padNum);
+	static bool RightStickDown(const float&  lYPar, const UCHAR& padNum);
 
 	/// <summary>
 	/// 左スティックが何度かを角度で返します。スティックが傾いていない場合、-1を返します。
 	/// </summary>
 	/// <returns></returns>
-	static float leftStickAngle(const UCHAR& padNum);
+	static float LeftStickAngle(const UCHAR& padNum);
 
 	/// <summary>
 	/// 右スティックが何度かを角度で返します。スティックが傾いていない場合、-1を返します。
 	/// </summary>
 	/// <returns></returns>
-	static float rightStickAngle(const UCHAR& padNum);
+	static float RightStickAngle(const UCHAR& padNum);
 #pragma endregion
 
 #pragma region 振動
@@ -91,7 +91,7 @@ public:
 	/// <param name="leftPar">左側の振動量(0%～100%)</param>
 	/// <param name="rightPar">右側の振動量(0%～100%)</param>
 	/// <param name="padNum">パッド番号(1Pや2Pのこと)</param>
-	static void padVibration(const float& leftPar,const float& rightPar,const UCHAR& padNum);
+	static void PadVibration(const float& leftPar,const float& rightPar,const UCHAR& padNum);
 
 #pragma endregion
 

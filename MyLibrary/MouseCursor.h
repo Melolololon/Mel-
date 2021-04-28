@@ -15,11 +15,11 @@ public:
 	MouseCursor();
 	~MouseCursor();
 
-	void initialize()override;
-	void update()override;
+	void Initialize()override;
+	void Update()override;
 	
-	Vector2 getPosition2D() { return position2D; }
-	Vector3 getNearPos() { return nearPos; }
-	Vector3 getFarPos() { return farPos; }
+	Vector2 GetPosition2D() { return position2D; }
+	Vector3 GetNearPos() { return nearPos; }
+	Vector3 GetFarPos() { return farPos; }
 };
 

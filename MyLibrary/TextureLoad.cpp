@@ -2,7 +2,7 @@
 
 
 
-BMPData TextureLoad::loadBMP(const char* texturepath)
+BMPData TextureLoad::LoadBMP(const char* texturepath)
 {
 	FILE* texture;
 	fopen_s(&texture, texturepath, "rb");

@@ -10,16 +10,16 @@ MouseCursor::MouseCursor()
 
 MouseCursor::~MouseCursor(){}
 
-void MouseCursor::initialize()
+void MouseCursor::Initialize()
 {
 	nearPos = 0;
 	farPos = 0;
 	position2D = 0;
 }
 
-void MouseCursor::update()
+void MouseCursor::Update()
 {
-	position2D = DirectInput::getMousePosition();
-	DirectInput::getMouse3DLine(nearPos, farPos);
+	position2D = DirectInput::GetMousePosition();
+	DirectInput::GetMouse3DLine(nearPos, farPos);
 
 }

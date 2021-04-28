@@ -17,18 +17,18 @@ public:
 	SceneManager& operator=(const SceneManager& sceneManager) = delete;//コピー代入演算子
 	static SceneManager* getInstace();
 
-	void initialize(Scene* startScene);
-	void update();
-	void draw();
+	void Initialize(Scene* startScene);
+	void Update();
+	void Draw();
 	void end();
 
 	/// <summary>
 	/// シーンを切り替える処理を行います
 	/// </summary>
 	/// <param name="nextScene"></param>
-	void chengeScene(Scene* nextScene);
+	void ChengeScene(Scene* nextScene);
 
 
-	Scene* getCurrentScene();
+	Scene* GetCurrentScene();
 };
 

@@ -13,12 +13,12 @@ public:
 	Play();
 	~Play();
 
-	void initialize()override;
-	void update()override;
-	void draw()override;
+	void Initialize()override;
+	void Update()override;
+	void Draw()override;
 	void end()override;
-	Scene* getNextScene()override;
+	Scene* GetNextScene()override;
 
-	static void loadResources();
+	static void LoadResources();
 };
 

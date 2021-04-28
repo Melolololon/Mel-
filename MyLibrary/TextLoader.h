@@ -13,7 +13,7 @@ public:
 
 #pragma region “Ç‚İ‚İ
 
-	static bool loadText(const char* path);
+	static bool LoadText(const char* path);
 
 #pragma endregion
 
@@ -24,7 +24,7 @@ public:
 	/// int‚É•ÏŠ·‚µ‚Ä“ñŸŒ³vector‚ÉŠi”[‚µ‚Ü‚·(ƒJƒ“ƒ}‚ÍŠO‚³‚ê‚Ü‚·)
 	/// </summary>
 	/// <returns></returns>
-	static void getIntVector(std::vector<std::vector<int>>& intTextData);
+	static void GetIntVector(std::vector<std::vector<int>>& intTextData);
 
 
 

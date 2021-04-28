@@ -18,12 +18,12 @@ struct Matrix
 };
 
 
-Matrix getZeroMatrix();
+Matrix GetZeroMatrix();
 
-Matrix getIdentityMatrix();
-Matrix getRotateXMatrix(const float angle);
-Matrix getRotateYMatrix(const float angle);
-Matrix getRotateZMatrix(const float angle);
-Matrix getScalingMatrix(const Vector3& vector);
-Matrix getTranslationMatrix(const Vector3& vector);
+Matrix GetIdentityMatrix();
+Matrix GetRotateXMatrix(const float angle);
+Matrix GetRotateYMatrix(const float angle);
+Matrix GetRotateZMatrix(const float angle);
+Matrix GetScalingMatrix(const Vector3& vector);
+Matrix GetTranslationMatrix(const Vector3& vector);
 

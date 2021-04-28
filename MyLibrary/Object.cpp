@@ -12,20 +12,20 @@ Object::~Object()
 {
 }
 
-void Object::initialize()
+void Object::Initialize()
 {
 }
 
-void Object::update() 
+void Object::Update() 
 {
 }
 
-void Object::draw() 
+void Object::Draw() 
 {
 
 }
 
-void Object::hit
+void Object::Hit
 (
 	const Object* const  object,
 	const CollisionType& collisionType,
@@ -34,54 +34,54 @@ void Object::hit
 {
 }
 
-bool Object::getEraseManager() { return eraseManager; }
-void Object::objectInitialize() 
+bool Object::GetEraseManager() { return eraseManager; }
+void Object::ObjectInitialize() 
 {
 	eraseManager = false;
 }
 
-CollisionFlag Object::getCollisionFlag() 
+CollisionFlag Object::GetCollisionFlag() 
 {
 	return collisionFlag;
 }
 
 
-void* Object::getPtr()
+void* Object::GetPtr()
 {
 	return this;
 }
 
-std::vector<SphereData> Object::getSphereData()
+std::vector<SphereData> Object::GetSphereData()
 {
 	return sphereData;
 }
 
-std::vector<BoxData> Object::getBoxData()
+std::vector<BoxData> Object::GetBoxData()
 {
 	return boxData;
 }
 
-std::vector<LineSegmentData> Object::getLineSegmentData()
+std::vector<LineSegmentData> Object::GetLineSegmentData()
 {
 	return lineSegmentData;
 }
 
-std::vector<PlaneData> Object::getPlaneData()
+std::vector<PlaneData> Object::GetPlaneData()
 {
 	return planeData;
 }
 
-std::vector<BoardData> Object::getBoardData()
+std::vector<BoardData> Object::GetBoardData()
 {
 	return boardData;
 }
 
-Vector3& Object::getLineSegmentHitPosition(const int  num)
+Vector3& Object::GetLineSegmentHitPosition(const int  num)
 {
 	return lineSegmentData[num].hitPos;
 }
 
-Vector3& Object::getBoardHitPosition(const int  num)
+Vector3& Object::GetBoardHitPosition(const int  num)
 {
 	return boardData[num].hitPos;
 }

@@ -10,7 +10,7 @@ ObjModel::ObjModel()
 ObjModel::~ObjModel(){}
 
 
-void ObjModel::loadModelVertices
+void ObjModel::LoadModelVertices
 (
 	const std::string& path,
 	const bool loadUV,
@@ -21,7 +21,7 @@ void ObjModel::loadModelVertices
 	std::vector<std::string>materialName;
 
 
-	ModelLoader::getInstance()->loadOBJModel
+	ModelLoader::GetInstance()->LoadObjModel
 	(
 		path,
 		loadUV,
@@ -130,7 +130,7 @@ void ObjModel::loadModelVertices
 	for (int i = 0; i < modelObjectNum; i++)
 		verticesNum[i] = vertices[i].size();
 
-	createModelVertexResources
+	CreateModelVertexResources
 	(
 		sizeof(ObjAnimationVertex),
 		verticesNum,
@@ -147,7 +147,7 @@ void ObjModel::loadModelVertices
 	{
 
 		ObjAnimationVertex* vertex;
-		mapVertexBuffer
+		MapVertexBuffer
 		(
 			i,
 			(void**)&vertex
@@ -157,11 +157,11 @@ void ObjModel::loadModelVertices
 		for (int j = 0; j < vertexNum; j++) 
 			vertex[j] = vertices[i][j];
 
-		unmapVertexBuffer(i);
+		UnmapVertexBuffer(i);
 
 
 		USHORT* index;
-		mapIndexBuffer
+		MapIndexBuffer
 		(
 			i,
 			(void**)&index
@@ -170,7 +170,7 @@ void ObjModel::loadModelVertices
 		for (int j = 0; j < indexSize; j++)
 			index[j] = indices[i][j];
 
-		unmapIndexBuffer(i);
+		UnmapIndexBuffer(i);
 	}
 
 
@@ -180,7 +180,7 @@ void ObjModel::loadModelVertices
 
 }
 
-void ObjModel::loadModelMaterial
+void ObjModel::LoadModelMaterial
 (
 	const std::string& directryPath,
 	const int createNum,
@@ -191,7 +191,7 @@ void ObjModel::loadModelMaterial
 
 	//マテリアル読み込み&テクスチャ名取得
 	int loadObjectNum = 0;
-	ModelLoader::getInstance()->loadObjMaterial
+	ModelLoader::GetInstance()->LoadObjMaterial
 	(
 		directryPath,
 		materialFileName,
@@ -199,7 +199,7 @@ void ObjModel::loadModelMaterial
 		&loadObjectNum
 	);
 	
-	resizeConstData
+	ResizeConstData
 	(
 		createNum,
 		loadObjectNum
@@ -211,11 +211,11 @@ void ObjModel::loadModelMaterial
 	for(int i = 0; i < loadObjectNum;i++)
 	{
 		textures[i] = std::make_unique<Texture>();
-		textures[i]->loadTexture(materials[i].textureName);
+		textures[i]->LoadTexture(materials[i].textureName);
 		pTexture[i] = textures[i].get();
 	}
 	
-	createModelHeapResources
+	CreateModelHeapResources
 	(
 		pTexture,
 		createNum,
@@ -224,11 +224,11 @@ void ObjModel::loadModelMaterial
 	);
 
 
-	pipeline = defaultObjPipeline.getPipelineState();
+	pipeline = defaultObjPipeline.GetPipelineState();
 
 }
 
-void ObjModel::loadModel
+void ObjModel::LoadModel
 (
 	const std::string& path,
 	const bool loadUV,
@@ -236,7 +236,7 @@ void ObjModel::loadModel
 	const size_t constDataSize
 )
 {
-	loadModelVertices(path, loadUV, true);
+	LoadModelVertices(path, loadUV, true);
 
 
 #pragma region ディレクトリパス取得
@@ -267,10 +267,10 @@ void ObjModel::loadModel
 #pragma endregion
 
 
-	loadModelMaterial(directoryPath,createNum, constDataSize);
+	LoadModelMaterial(directoryPath,createNum, constDataSize);
 }
 
-bool ObjModel::initialize() 
+bool ObjModel::Initialize() 
 {
 	PipelineData pipelineData;
 	pipelineData.alphaWriteMode = ALPHA_WRITE_TRUE;
@@ -293,7 +293,7 @@ bool ObjModel::initialize()
 	layoutData[3].formatType = FORMAT_TYPE_UNSIGNED_INT;
 	layoutData[3].number = 1;
 
-	auto result = defaultObjPipeline.createModelPipeline
+	auto result = defaultObjPipeline.CreateModelPipeline
 	(
 		pipelineData,
 		{ L"../MyLibrary/ObjAnimationVertexShader.hlsl","VSmain","vs_5_0" },

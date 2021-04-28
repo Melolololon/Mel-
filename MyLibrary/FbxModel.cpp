@@ -14,7 +14,7 @@ FbxModel::~FbxModel()
 {
 }
 
-bool FbxModel::loadModel
+bool FbxModel::LoadModel
 (
 	const std::string& path,
 	const int createNum,
@@ -22,13 +22,13 @@ bool FbxModel::loadModel
 )
 {
 
-	FbxLoader::getInstance()->loadFbxModel("Resources/cube/cube.fbx",this);
+	FbxLoader::GetInstance()->LoadFbxModel("Resources/cube/cube.fbx",this);
 
 	std::vector<size_t> verticesNum(1);
 	verticesNum[0] = vertices.size();
 	
 	//バッファ作成
-	createModelVertexResources
+	CreateModelVertexResources
 	(
 		sizeof(Vertex),
 		verticesNum,
@@ -36,7 +36,7 @@ bool FbxModel::loadModel
 	);
 
 	Vertex* vertex;
-	mapVertexBuffer
+	MapVertexBuffer
 	(
 		0,
 		(void**)&vertex
@@ -45,7 +45,7 @@ bool FbxModel::loadModel
 	auto vertexNum = vertices.size();
 	for(int i = 0; i < vertexNum;i++)
 		vertex[i] = vertices[i];
-	unmapVertexBuffer(0);
+	UnmapVertexBuffer(0);
 
 
 	auto texNum = textures.size();
@@ -53,7 +53,7 @@ bool FbxModel::loadModel
 	for (int i = 0; i < texNum; i++)
 		pTextures[i] = textures[i].get();
 
-	createModelHeapResources
+	CreateModelHeapResources
 	(
 		pTextures,
 		createNum,
@@ -62,13 +62,13 @@ bool FbxModel::loadModel
 	);
 
 
-	resizeConstData
+	ResizeConstData
 	(
 		createNum,
 		1
 	);
 
-	pipeline = defaultFbxPipeline.getPipelineState();
+	pipeline = defaultFbxPipeline.GetPipelineState();
 
 
 	//一時的に書いてる
@@ -78,7 +78,7 @@ bool FbxModel::loadModel
 	return true;
 }
 
-bool FbxModel::initialize()
+bool FbxModel::Initialize()
 {
 	PipelineData data;
 	data.alphaWriteMode = ALPHA_WRITE_TRUE;
@@ -86,7 +86,7 @@ bool FbxModel::initialize()
 	data.cullMode = CULL_BACK;
 	data.depthMode = DEPTH_TRUE;
 	data.drawMode = DRAW_SOLID;
-	auto result = defaultFbxPipeline.createModelPipeline
+	auto result = defaultFbxPipeline.CreateModelPipeline
 	(
 		data,
 		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },

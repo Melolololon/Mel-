@@ -5,7 +5,7 @@ Texture::Texture(){}
 Texture::~Texture(){}
 
 
-bool Texture::loadTexture(const std::string& texturePath)
+bool Texture::LoadTexture(const std::string& texturePath)
 {
 	
 

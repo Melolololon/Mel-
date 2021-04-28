@@ -12,13 +12,13 @@ ObjectManager::~ObjectManager()
 {
 }
 
-ObjectManager* ObjectManager::getInstance()
+ObjectManager* ObjectManager::GetInstance()
 {
 	static ObjectManager inst;
 	return &inst;
 }
 
-void ObjectManager::initialize() 
+void ObjectManager::Initialize() 
 {
 	checkCollision.board = false;
 	checkCollision.box = false;
@@ -30,7 +30,7 @@ void ObjectManager::initialize()
 	checkMouseCollision = false;
 	cameraPosition = 0.0f;
 	cursor = std::make_unique<MouseCursor>();
-	cursor->initialize();
+	cursor->Initialize();
 
 	addObjectSort = OBJECT_SORT_NONE;
 	addObjectSortOrderType = false;
@@ -38,31 +38,31 @@ void ObjectManager::initialize()
 	addObjects.reserve(100);
 }
 
-void ObjectManager::update() 
+void ObjectManager::Update() 
 {
-#pragma region update
+#pragma region Update
 	//カーソルアップデート
 	if (cursor) 
 	{
-		cursor->update();
-		nearPos = cursor->getNearPos();
-		farPos = cursor->getFarPos();
+		cursor->Update();
+		nearPos = cursor->GetNearPos();
+		farPos = cursor->GetFarPos();
 	}
 	
 	for (auto& obj : objects)
-		obj->update();
+		obj->Update();
 	
 
 	if(addObjects.size() != 0)
 	{
 		for (auto& a : addObjects) 
 		{
-			a.get()->update();
+			a.get()->Update();
 			objects.push_back(a);
 		}
 		
 		if (addObjectSort != OBJECT_SORT_NONE)
-			objectSort(addObjectSort, addObjectSortOrderType);
+			ObjectSort(addObjectSort, addObjectSortOrderType);
 
 		addObjects.clear();
 	}
@@ -94,20 +94,20 @@ void ObjectManager::update()
 		{
 			for (auto& o2 : objects)
 			{
-				f1 = o1->getCollisionFlag();
-				f2 = o2->getCollisionFlag();
+				f1 = o1->GetCollisionFlag();
+				f2 = o2->GetCollisionFlag();
 
 				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
 				if (o1 == o2 || !f1.sphere || !f2.sphere)continue;
 
-				sphere1 = o1->getSphereData();
-				sphere2 = o2->getSphereData();
+				sphere1 = o1->GetSphereData();
+				sphere2 = o2->GetSphereData();
 
 				for (const auto& c1 : sphere1)
 				{
 					for (const auto& c2 : sphere2)
 					{
-						if (LibMath::sphereCollision
+						if (LibMath::SphereAndSphereCollision
 						(
 							c1.position,
 							c1.r,
@@ -115,7 +115,7 @@ void ObjectManager::update()
 							c2.r
 						))
 						{
-							o1->hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0]);
+							o1->Hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0]);
 						}
 						collisionCount[1]++;
 					}
@@ -136,21 +136,21 @@ void ObjectManager::update()
 		{
 			for (auto& o2 : objects)
 			{
-				f1 = o1->getCollisionFlag();
-				f2 = o2->getCollisionFlag();
+				f1 = o1->GetCollisionFlag();
+				f2 = o2->GetCollisionFlag();
 
 				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
 				if (o1 == o2 || !f1.sphere || !f2.box)continue;
 
-				sphere1 = o1->getSphereData();
-				box1 = o2->getBoxData();
+				sphere1 = o1->GetSphereData();
+				box1 = o2->GetBoxData();
 
 				for (const auto& c1 : sphere1)
 				{
 					for (const auto& c2 : box1)
 					{
 						BoxHitDirection dis;
-						if (LibMath::sphereAndBoxCollision
+						if (LibMath::SphereAndBoxCollision
 						(
 							c1.position,
 							c1.r,
@@ -159,11 +159,11 @@ void ObjectManager::update()
 							&dis
 						))
 						{
-							o1->getSphereBoxHitDistance(collisionCount[0]) = dis;
-							o2->getBoxBoxHitDistance(collisionCount[1]) = dis;
+							o1->GetSphereBoxHitDistance(collisionCount[0]) = dis;
+							o2->GetBoxBoxHitDistance(collisionCount[1]) = dis;
 
-							o1->hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0]);
-							o2->hit(o1.get(), CollisionType::COLLISION_BOX, collisionCount[1]);
+							o1->Hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0]);
+							o2->Hit(o1.get(), CollisionType::COLLISION_BOX, collisionCount[1]);
 						}
 						
 
@@ -186,21 +186,21 @@ void ObjectManager::update()
 		{
 			for (auto& o2 : objects)
 			{
-				f1 = o1->getCollisionFlag();
-				f2 = o2->getCollisionFlag();
+				f1 = o1->GetCollisionFlag();
+				f2 = o2->GetCollisionFlag();
 
 				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
 				if (o1 == o2 || !f1.box || !f2.box)continue;
 
-				box1 = o1->getBoxData();
-				box2 = o2->getBoxData();
+				box1 = o1->GetBoxData();
+				box2 = o2->GetBoxData();
 
 				for (const auto& c1 : box1)
 				{
 					for (const auto& c2 : box2)
 					{
 						BoxHitDirection dis;
-						if(LibMath::boxAndBoxCollision
+						if(LibMath::BoxAndBoxCollision
 						(
 							c1.position,
 							c1.size,
@@ -210,8 +210,8 @@ void ObjectManager::update()
 							nullptr
 						))
 						{
-							o1->getBoxBoxHitDistance(collisionCount[0]) = dis;
-							o1->hit(o2.get(), CollisionType::COLLISION_BOX, collisionCount[0]);
+							o1->GetBoxBoxHitDistance(collisionCount[0]) = dis;
+							o1->Hit(o2.get(), CollisionType::COLLISION_BOX, collisionCount[0]);
 						}
 
 
@@ -236,13 +236,13 @@ void ObjectManager::update()
 		{
 			for (auto& o2 : objects)
 			{
-				f1 = o1->getCollisionFlag();
-				f2 = o2->getCollisionFlag();
+				f1 = o1->GetCollisionFlag();
+				f2 = o2->GetCollisionFlag();
 
 				if (o1 == o2 || !f1.lineSegment || !f2.board)continue;
 
-				segmentData1 = o1->getLineSegmentData();
-				boardData1 = o2->getBoardData();
+				segmentData1 = o1->GetLineSegmentData();
+				boardData1 = o2->GetBoardData();
 				for (const auto& c1 : segmentData1)
 				{
 					for (const auto& c2 : boardData1)
@@ -254,7 +254,7 @@ void ObjectManager::update()
 						p[2] = c2.rightDownPos;
 
 						Vector3 hitPos = { 0,0,0 };
-						if (LibMath::lineSegmentAndBoardCollision
+						if (LibMath::LineSegmentAndBoardCollision
 						(
 							c1.position[0],
 							c1.position[1],
@@ -266,11 +266,11 @@ void ObjectManager::update()
 						))
 						{
 
-							o1->getLineSegmentHitPosition(collisionCount[0]) = hitPos;
-							o2->getBoardHitPosition(collisionCount[1]) = hitPos;
+							o1->GetLineSegmentHitPosition(collisionCount[0]) = hitPos;
+							o2->GetBoardHitPosition(collisionCount[1]) = hitPos;
 
-							o1->hit(o2.get(), CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
-							o2->hit(o1.get(), CollisionType::COLLISION_BOARD, collisionCount[1]);
+							o1->Hit(o2.get(), CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
+							o2->Hit(o1.get(), CollisionType::COLLISION_BOARD, collisionCount[1]);
 						}
 
 						collisionCount[1]++;
@@ -291,9 +291,9 @@ void ObjectManager::update()
 	{
 		for (auto& o1 : objects)
 		{
-			if(o1->getCollisionFlag().board)
+			if(o1->GetCollisionFlag().board)
 			{
-				boardData1 = o1->getBoardData();
+				boardData1 = o1->GetBoardData();
 				for (const auto& c1 : boardData1)
 				{
 					std::vector<Vector3>p(4);
@@ -302,7 +302,7 @@ void ObjectManager::update()
 					p[3] = c1.rightUpPos;
 					p[2] = c1.rightDownPos;
 					Vector3 hitPos = { 0,0,0 };
-					if (LibMath::lineSegmentAndBoardCollision
+					if (LibMath::LineSegmentAndBoardCollision
 					(
 						nearPos,
 						farPos,
@@ -312,9 +312,9 @@ void ObjectManager::update()
 						&hitPos
 						))
 					{
-						o1->getBoardHitPosition(collisionCount[0]) = hitPos;
+						o1->GetBoardHitPosition(collisionCount[0]) = hitPos;
 					
-						o1->hit(cursor.get(), CollisionType::COLLISION_BOARD, collisionCount[0]);
+						o1->Hit(cursor.get(), CollisionType::COLLISION_BOARD, collisionCount[0]);
 					}
 					collisionCount[0]++;
 				}
@@ -330,21 +330,21 @@ void ObjectManager::update()
 
 }
 
-void ObjectManager::draw() 
+void ObjectManager::Draw() 
 {
 	for (auto& o : objects)
 	{
-		o.get()->draw();
+		o.get()->Draw();
 	}
 }
 
-void ObjectManager::isDeadCheck()
+void ObjectManager::EraseObjectCheck()
 {
 
 	size_t size = objects.size();
 	for (size_t i = 0; i < size; i++)
 	{
-		if (objects[i]->getEraseManager())
+		if (objects[i]->GetEraseManager())
 		{
 			objects.erase(objects.begin() + i);
 			i--;
@@ -359,42 +359,42 @@ void ObjectManager::isDeadCheck()
 
 void ObjectManager::end() 
 {
-	allEraseObject();
+	AllEraseObject();
 }
 
 #pragma region オブジェクト関数
-void ObjectManager::reserveObjectArray(const int& reserveNum)
+void ObjectManager::ReserveObjectArray(const int& reserveNum)
 {
 	objects.reserve(reserveNum);
 }
 
-void ObjectManager::addObject(const std::shared_ptr<Object>& object)
+void ObjectManager::AddObject(const std::shared_ptr<Object>& object)
 {
 
 	if (object)
 	{
-		object.get()->objectInitialize();
+		object.get()->ObjectInitialize();
 		addObjects.push_back(object);
 	}
 
 	
 }
 
-void ObjectManager::setAddObjectSortState(const ObjectManager::ObjectSort& sort, const bool& orderType)
+void ObjectManager::SetAddObjectSortState(const ObjectSortType& sort, const bool& orderType)
 {
 	addObjectSort = sort;
 	addObjectSortOrderType = orderType;
 }
 
-void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool& orderType)
+void ObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType)
 {
 	switch (sort)
 	{
 	case OBJECT_SORT_XYZ_SUM:
 		std::sort(objects.begin(), objects.end(), [&orderType](const std::shared_ptr<Object>& obj1, const std::shared_ptr<Object>& obj2)
 		{
-			Vector3 pos1 = obj1->getPosition();
-			Vector3 pos2 = obj2->getPosition();
+			Vector3 pos1 = obj1->GetPosition();
+			Vector3 pos2 = obj2->GetPosition();
 			float posSum1 = pos1.x + pos1.y + pos1.z;
 			float posSum2 = pos2.x + pos2.y + pos2.z;
 			
@@ -414,8 +414,8 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 			const std::shared_ptr<Object>& obj2
 		)
 		{
-			Vector3 pos1 = obj1->getPosition();
-			Vector3 pos2 = obj2->getPosition();
+			Vector3 pos1 = obj1->GetPosition();
+			Vector3 pos2 = obj2->GetPosition();
 
 			if (orderType)return pos1.x < pos2.x;
 			return pos1.x > pos2.x;
@@ -433,8 +433,8 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 			const std::shared_ptr<Object>& obj2
 		)
 		{
-			Vector3 pos1 = obj1->getPosition();
-			Vector3 pos2 = obj2->getPosition();
+			Vector3 pos1 = obj1->GetPosition();
+			Vector3 pos2 = obj2->GetPosition();
 
 			if (orderType)return pos1.y < pos2.y;
 			return pos1.y > pos2.y;
@@ -452,8 +452,8 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 			const std::shared_ptr<Object>& obj2
 		)
 		{
-			Vector3 pos1 = obj1->getPosition();
-			Vector3 pos2 = obj2->getPosition();
+			Vector3 pos1 = obj1->GetPosition();
+			Vector3 pos2 = obj2->GetPosition();
 
 			if (orderType)return pos1.z < pos2.z;
 			return pos1.z > pos2.z;
@@ -472,11 +472,11 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 			const std::shared_ptr<Object>& obj2
 		)
 		{
-			Vector3 pos1 = obj1->getPosition();
-			Vector3 pos2 = obj2->getPosition();
+			Vector3 pos1 = obj1->GetPosition();
+			Vector3 pos2 = obj2->GetPosition();
 
-			float dis1 = LibMath::calcDistance3D(pos1, nearPos);
-			float dis2 = LibMath::calcDistance3D(pos2, nearPos);
+			float dis1 = LibMath::CalcDistance3D(pos1, nearPos);
+			float dis2 = LibMath::CalcDistance3D(pos2, nearPos);
 
 			if (orderType)return dis1 < dis2;
 			return dis1 > dis2;
@@ -495,11 +495,11 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 			const std::shared_ptr<Object>& obj2
 		)
 		{
-			Vector3 pos1 = obj1->getPosition();
-			Vector3 pos2 = obj2->getPosition();
+			Vector3 pos1 = obj1->GetPosition();
+			Vector3 pos2 = obj2->GetPosition();
 
-			float dis1 = LibMath::calcDistance3D(pos1, farPos);
-			float dis2 = LibMath::calcDistance3D(pos2, farPos);
+			float dis1 = LibMath::CalcDistance3D(pos1, farPos);
+			float dis2 = LibMath::CalcDistance3D(pos2, farPos);
 
 			if (orderType)return dis1 < dis2;
 			return dis1 > dis2;
@@ -510,19 +510,19 @@ void ObjectManager::objectSort(const ObjectManager::ObjectSort& sort, const bool
 
 #pragma endregion
 
-void ObjectManager::setCollisionFlag3D(const CollisionFlag& type)
+void ObjectManager::SetCollisionFlag3D(const CollisionFlag& type)
 {
 	checkCollision = type;
 }
 
-void ObjectManager::setMouseCollisionFlag(const bool& flag)
+void ObjectManager::SetMouseCollisionFlag(const bool& flag)
 {
 	checkMouseCollision = flag;
 }
 
 
 
-void ObjectManager::allEraseObject()
+void ObjectManager::AllEraseObject()
 {
 	objects.clear();
 }

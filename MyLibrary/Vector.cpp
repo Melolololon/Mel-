@@ -130,7 +130,7 @@ void Vector2::operator--()
 
 #pragma region ä÷êî
 
-Vector2 vector2Normalize(const Vector2& vector)
+Vector2 Vector2Normalize(const Vector2& vector)
 {
 	if (vector.x == 0 && vector.y == 0)return { 0,0 };
 	float size = static_cast<float>(sqrt(vector.x * vector.x + vector.y * vector.y));
@@ -144,12 +144,12 @@ Vector2 vector2Normalize(const Vector2& vector)
 /// <param name="vector1"></param>
 /// <param name="vector2"></param>
 /// <returns></returns>
-float vector2Dot(const Vector2& vector1, const Vector2& vector2)
+float Vector2Dot(const Vector2& vector1, const Vector2& vector2)
 {
 	return vector1.x * vector2.x + vector1.y * vector2.y;
 }
 
-float vector2Cross(const Vector2& vector1, const Vector2& vector2)
+float Vector2Cross(const Vector2& vector1, const Vector2& vector2)
 {
 	return vector1.x * vector2.y - vector1.y * vector2.x;
 }
@@ -317,7 +317,7 @@ void Vector3::operator--()
 /// </summary>
 /// <param name="vector"></param>
 /// <returns></returns>
-Vector3 vector3Normalize(const Vector3& vector)
+Vector3 Vector3Normalize(const Vector3& vector)
 {
 	if (vector.x == 0 && vector.y == 0 && vector.z == 0)return { 0,0,0 };
 	float size = (float)(sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z));
@@ -330,7 +330,7 @@ Vector3 vector3Normalize(const Vector3& vector)
 /// <param name="vector1"></param>
 /// <param name="vector2"></param>
 /// <returns></returns>
-Vector3 vector3Cross(const Vector3& vector1, const Vector3& vector2)
+Vector3 Vector3Cross(const Vector3& vector1, const Vector3& vector2)
 {
 	Vector3 cross;
 	cross.x = vector1.y * vector2.z - vector1.z * vector2.y;
@@ -345,7 +345,7 @@ Vector3 vector3Cross(const Vector3& vector1, const Vector3& vector2)
 /// <param name="vector1"></param>
 /// <param name="vector2"></param>
 /// <returns></returns>
-float vector3Dot(const Vector3& vector1, const Vector3& vector2)
+float Vector3Dot(const Vector3& vector1, const Vector3& vector2)
 {
 	return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
 }

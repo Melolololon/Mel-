@@ -45,14 +45,14 @@ public:
 	FbxModel();
 	~FbxModel();
 
-	bool loadModel
+	bool LoadModel
 	(
 		const std::string& path,
 		const int createNum,
 		const size_t constDataSize = 0
 	);
 
-	static bool initialize();
+	static bool Initialize();
 
 	//フレンドクラスは、privateの変数、関数を参照できる
 	friend class FbxLoader;

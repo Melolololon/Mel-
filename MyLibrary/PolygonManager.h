@@ -18,7 +18,7 @@ public:
 	PolygonManager(const PolygonManager& p) = delete;
 	PolygonManager& operator=(const PolygonManager& p) = delete;
 
-	static PolygonManager* getInstance();
+	static PolygonManager* GetInstance();
 
 
 	//void addPolygonVertex(std::string keyName, int* vert);
@@ -32,21 +32,21 @@ public:
 	int* getPolygonHeap(std::string keyName);
 	void clearPolygonHeap();*/
 
-	void addSprite(std::string keyName, sprite sprite);
-	void deleteSprite(std::string keyName);
-	sprite getSprite(std::string keyName);
-	void clearSprite();
+	void AddSprite(std::string keyName, sprite sprite);
+	void DeleteSprite(std::string keyName);
+	sprite GetSprite(std::string keyName);
+	void ClearSprite();
 
-	void addTexture(std::string keyName, texture texture);
-	void deleteTexture(std::string keyName);
-	texture getTexture(std::string keyName);
-	void clearTexture();
+	void AddTexture(std::string keyName, texture texture);
+	void DeleteTexture(std::string keyName);
+	texture GetTexture(std::string keyName);
+	void ClearTexture();
 
 
-	void addPolygonPoint(std::string keyName, point point);
-	void deletePolygonPoint(std::string keyName);
-	point getPolygonPoint(std::string keyName);
-	void clearPolygonPoint();
+	void AddPolygonPoint(std::string keyName, point point);
+	void DeletePolygonPoint(std::string keyName);
+	point GetPolygonPoint(std::string keyName);
+	void ClearPolygonPoint();
 
 	void clear();
 };

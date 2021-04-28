@@ -30,7 +30,7 @@ protected:
 	std::vector<BoardData>boardData;
 #pragma endregion
 
-	CollisionFlag collisionFlag = {false,false,false,false,false,false};
+	CollisionFlag collisionFlag;
 public:
 
 	//コンストラクタ
@@ -39,11 +39,11 @@ public:
 	virtual ~Object();
 
 	//初期化
-	virtual void initialize();
+	virtual void Initialize();
 	//処理
-	virtual void update();
+	virtual void Update();
 	//描画処理
-	virtual void draw();
+	virtual void Draw();
 
 	/// <summary>
 	/// 判定処理
@@ -51,35 +51,36 @@ public:
 	/// <param name="object">相手オブジェトのポインタ</param>
 	/// <param name="collisionType">自分のどの判定に当たったか</param>
 	/// <param name="arrayNum">何個目の判定に当たったか</param>
-	virtual void hit
+	virtual void Hit
 	(
 		const Object *const  object,
 		const CollisionType& collisionType,
 		const int& arrayNum
 	);
 
-	virtual void* getPtr();
+	virtual void* GetPtr();
 
 	//オブジェクトマネージャーから削除するかどうかのフラグを返す
-	bool getEraseManager();
+	bool GetEraseManager();
 
 
 	//確実に初期値が決まっている変数(eraseManagerなど)を初期化する変数(初期化忘れ防止用)
-	void objectInitialize();
+	//これで初期化せずにヘッダで初期化する?
+	void ObjectInitialize();
 	
-	Vector3 getPosition() { return position; };
+	Vector3 GetPosition() { return position; };
 
 	//判定用関数
-	CollisionFlag getCollisionFlag();
-	std::vector<SphereData> getSphereData();
-	std::vector<BoxData> getBoxData();
-	std::vector<LineSegmentData> getLineSegmentData();
-	std::vector<PlaneData> getPlaneData();
-	std::vector<BoardData> getBoardData();
-	Vector3& getLineSegmentHitPosition(const int num);
-	Vector3& getBoardHitPosition(const int num);
-	BoxHitDirection& getSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }
-	BoxHitDirection& getBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
+	CollisionFlag GetCollisionFlag();
+	std::vector<SphereData> GetSphereData();
+	std::vector<BoxData> GetBoxData();
+	std::vector<LineSegmentData> GetLineSegmentData();
+	std::vector<PlaneData> GetPlaneData();
+	std::vector<BoardData> GetBoardData();
+	Vector3& GetLineSegmentHitPosition(const int num);
+	Vector3& GetBoardHitPosition(const int num);
+	BoxHitDirection& GetSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }
+	BoxHitDirection& GetBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
 
 
 	

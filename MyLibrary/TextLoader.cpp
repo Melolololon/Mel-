@@ -6,7 +6,7 @@ std::vector<std::string> TextLoader::stringTextData;
 
 #pragma region ì«Ç›çûÇ›
 
-bool TextLoader::loadText(const char* path)
+bool TextLoader::LoadText(const char* path)
 {
 	std::ifstream text(path);
 	if (!text)return false;
@@ -27,7 +27,7 @@ bool TextLoader::loadText(const char* path)
 
 #pragma region éÛÇØéÊÇË
 
-void TextLoader::getIntVector(std::vector<std::vector<int>>& intTextData)
+void TextLoader::GetIntVector(std::vector<std::vector<int>>& intTextData)
 {
 	
 	if (stringTextData.size() == 0)return;
