@@ -2,8 +2,9 @@
 #include<d3d12.h>
 #include<DirectXTex.h>
 #include<wrl.h>
-#include"Vector.h"
 
+#include"Vector.h"
+#include"Color.h"
 
 using namespace Microsoft::WRL;
 class Texture
@@ -18,7 +19,19 @@ public:
 	Texture();
 	~Texture();
 
+	/// <summary>
+	/// テクスチャを読み込みます。
+	/// </summary>
+	/// <param name="texturePath"></param>
+	/// <returns></returns>
 	bool LoadTexture(const std::string& texturePath);
+
+	/// <summary>
+	/// 単色べた塗りテクスチャを生成します。
+	/// </summary>
+	/// <param name="color"></param>
+	/// <returns></returns>
+	bool CreateOneColorTexture(const Color& color);
 
 #pragma region データ取得
 
