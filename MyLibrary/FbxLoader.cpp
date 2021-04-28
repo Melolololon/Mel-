@@ -42,6 +42,36 @@ void FbxLoader::Finalize()
 	fbxManager->Destroy();
 }
 
+void FbxLoader::LoadFbxModel(const std::string& modelPath, FbxModel* fbxModel)
+{
+
+	ExtractFileName(modelPath, &modelDirectryPath, nullptr);
+
+	if (!fbxImporter->Initialize
+	(
+		modelPath.c_str(),
+		-1,
+		fbxManager->GetIOSettings()
+	)) assert(0);
+
+
+	FbxScene* fbxScene = FbxScene::Create(fbxManager, "fbxScene");
+	fbxImporter->Import(fbxScene);
+
+	FbxModel* model = fbxModel;
+	model->modelName = "";
+
+	//ノード数取得
+	int nodeCount = fbxScene->GetNodeCount();
+	//parseNodeRecursive()で配列を参照してるので、メモリの確保しなおさないようにするためにreserveしてる
+	model->nodes.reserve(nodeCount);
+
+	ParseNodeRecursive(model, fbxScene->GetRootNode());
+
+	fbxScene->Destroy();
+}
+
+
 void FbxLoader::ParseNodeRecursive
 (
 	FbxModel* fbxModel,
@@ -49,10 +79,6 @@ void FbxLoader::ParseNodeRecursive
 	Node* parentNode
 )
 {
-	//fbxから取得する回転角度とかは、
-	//モデリングツールで保存時のシーンを再現するためのもの?
-	//objは頂点を回転とか拡縮を反映させて出力するが、fbxは反映させずに角度とかを出力する?
-
 	using namespace DirectX;
 
 	fbxModel->nodes.emplace_back();
@@ -99,6 +125,7 @@ void FbxLoader::ParseNodeRecursive
 	node.transform *= matTranslation;
 
 	node.globalTransform = node.transform;
+
 	if(parentNode)
 	{
 		//親ノード代入
@@ -120,39 +147,8 @@ void FbxLoader::ParseNodeRecursive
 		}
 	}
 
-
 	for (int i = 0; i < fbxNode->GetChildCount(); i++)
 		ParseNodeRecursive(fbxModel, fbxNode->GetChild(i), &node);
-}
-
-
-void FbxLoader::LoadFbxModel(const std::string& modelPath, FbxModel* fbxModel)
-{
-	
-	ExtractFileName(modelPath, &modelDirectryPath,nullptr);
-
-	if (!fbxImporter->Initialize
-	(
-		modelPath.c_str(),
-		-1,
-		fbxManager->GetIOSettings()
-	)) assert(0);
-	
-
-	FbxScene* fbxScene = FbxScene::Create(fbxManager, "fbxScene");
-	fbxImporter->Import(fbxScene);
-
-	FbxModel* model = fbxModel;
-	model->modelName = "";
-	
-	//ノード数取得
-	int nodeCount = fbxScene->GetNodeCount();
-	//parseNodeRecursive()で配列を参照してるので、メモリの確保しなおさないようにするためにreserveしてる
-	model->nodes.reserve(nodeCount);
-
-	ParseNodeRecursive(model, fbxScene->GetRootNode());
-
-	fbxScene->Destroy();
 }
 
 
@@ -169,8 +165,6 @@ void FbxLoader::ParseMesh(FbxModel* fbxModel, FbxNode* node)
 
 void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
-	//ControlPointとは、頂点データのこと(このライブラリでいうVertex構造体)
-
 	//頂点数取得
 	const int vertexNum = fbxMesh->GetControlPointsCount();
 
@@ -276,23 +270,6 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 		{
 			if(material->GetClassId().Is(FbxSurfaceLambert::ClassId))
 			{
-			/*	FbxSurfaceLambert* lambert =
-					static_cast<FbxSurfaceLambert*>(material);
-
-				auto& materialVector = fbxModel->getMaterial();
-				materialVector.resize(1);
-				Material& modelMaterial = materialVector[0];
-
-				FbxPropertyT<FbxDouble3> ambient = lambert->Ambient;
-				modelMaterial.ambient.x = (float)ambient.Get()[0];
-				modelMaterial.ambient.y = (float)ambient.Get()[1];
-				modelMaterial.ambient.z = (float)ambient.Get()[2];
-
-				FbxPropertyT<FbxDouble3> diffuse = lambert->Diffuse;
-				modelMaterial.diffuse.x = (float)diffuse.Get()[0];
-				modelMaterial.diffuse.y = (float)diffuse.Get()[1];
-				modelMaterial.diffuse.z = (float)diffuse.Get()[2];*/
-
 				FbxSurfacePhong* phong = static_cast<FbxSurfacePhong*>(material);
 				auto& materialVector = fbxModel->getMaterial();
 				materialVector.resize(1);
@@ -312,7 +289,6 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 				modelMaterial.specular.x = (float)specular.Get()[0];
 				modelMaterial.specular.y = (float)specular.Get()[1];
 				modelMaterial.specular.z = (float)specular.Get()[2];
-				int z = 0;
 			}
 
 
@@ -347,7 +323,12 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 
 		if(!textureLoader)
 		{
-
+			//テクスチャにテクスチャバッファ持たせ、
+			//ライブラリで実装してるべた塗りテクスチャにバッファを持たせるようにするので、
+			//そのうちここ変更する
+			fbxModel->textures.resize(1);
+			fbxModel->textures[0] = std::make_unique<Texture>();
+			fbxModel->textures[0]->LoadTexture(modelDirectryPath + "WriteTex.png");
 		}
 	}
 }

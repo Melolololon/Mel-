@@ -41,9 +41,6 @@ private:
 	/// <param name="parentNode">親ノード</param>
 	void ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode,Node* parentNode = nullptr);
 
-#pragma region メッシュ読み込み
-
-
 	/// <summary>
 	/// メッシュ読み込み関数
 	/// </summary>
@@ -54,22 +51,22 @@ private:
 	/// <summary>
 	/// 頂点読み込み
 	/// </summary>
-	/// <param name="model"></param>
-	/// <param name="fbxMesh"></param>
+	/// <param name="model">モデル</param>
+	/// <param name="fbxMesh">メッシュ</param>
 	void ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// 面情報(インデックス、UV、法線)読み取り
 	/// </summary>
-	/// <param name="model"></param>
-	/// <param name="fbxMesh"></param>
+	/// <param name="model">モデル</param>
+	/// <param name="fbxMesh">メッシュ</param>
 	void ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// マテリアル読み取り
 	/// </summary>
-	/// <param name="model"></param>
-	/// <param name="fbxMesh"></param>
+	/// <param name="model">モデル</param>
+	/// <param name="fbxNode">ノード</param>
 	void ParseMaterial(FbxModel* fbxModel,FbxNode* fbxNode);
 	
 	std::string ExtractFileName
@@ -79,10 +76,9 @@ private:
 		std::string* fileName
 	);
 
-#pragma endregion
 public:
-	FbxLoader(const FbxLoader& moder) = delete;
-	FbxLoader& operator =(const FbxLoader& moder) = delete;
+	FbxLoader(const FbxLoader& model) = delete;
+	FbxLoader& operator =(const FbxLoader& model) = delete;
 	static FbxLoader* GetInstance();
 
 	/// <summary>

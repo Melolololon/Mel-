@@ -209,7 +209,7 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="TextLoader.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TextureLoad.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="XInputManager.cpp" />
@@ -483,7 +483,7 @@
     <ClInclude Include="ShaderData.h" />
     <ClInclude Include="TextLoader.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TextureLoad.h" />
+    <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="XInputManager.h" />
   </ItemGroup>

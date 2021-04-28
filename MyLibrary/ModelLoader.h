@@ -9,8 +9,8 @@ private:
 	~ModelLoader();
 
 public:
-	ModelLoader(const ModelLoader& moder) = delete;
-	ModelLoader& operator =(const ModelLoader& moder) = delete;
+	ModelLoader(const ModelLoader& model) = delete;
+	ModelLoader& operator =(const ModelLoader& model) = delete;
 	static ModelLoader* GetInstance();
 
 

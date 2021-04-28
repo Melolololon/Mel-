@@ -5,8 +5,6 @@
 #include"ObjectManager.h"
 
 
-#include"TestObject.h"
-
 #include"XInputManager.h"
 #include"FbxModel.h"
 #include"ObjModel.h"
