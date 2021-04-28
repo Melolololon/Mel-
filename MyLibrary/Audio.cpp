@@ -51,7 +51,7 @@ Audio::~Audio()
 }
 
 
-void Audio::playWave(const char* path)
+void Audio::PlayWave(const char* path)
 {
 	HRESULT result;
 
@@ -109,7 +109,7 @@ void Audio::playWave(const char* path)
 
 }
 
-void Audio::loadSound(const char* path, std::string name, bool loop)
+void Audio::LoadSound(const char* path, std::string name, bool loop)
 {
 	HRESULT result;
 
@@ -170,12 +170,12 @@ void Audio::loadSound(const char* path, std::string name, bool loop)
 #pragma endregion
 }
 
-void Audio::playLoadSound(std::string name)
+void Audio::PlayLoadSound(std::string name)
 {
 	pLoadSourceVoices[name]->Start();
 }
 
-void Audio::stopLoadSound(std::string name, bool resetFlag)
+void Audio::StopLoadSound(std::string name, bool resetFlag)
 {
 	if(!resetFlag)
 	pLoadSourceVoices[name]->Stop();

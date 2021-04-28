@@ -23,7 +23,7 @@ public:
 	/// <param name="parentHWND">親ウィンドウのHWND。親ウィンドウを生成する場合は、nullptrを渡す。</param>
 	/// <param name="winProc">ウィンドウプロシージャ</param>
 	/// <returns></returns>
-	static HWND createNormalWindow
+	static HWND CreateNormalWindow
 	(
 		const std::wstring& className,
 		const std::wstring& windowName,
@@ -53,7 +53,7 @@ public:
 	/// <param name="fileName">ファイル名を入力する部分の初期名を記述する。trueが返された場合、入力したファイル名が格納される。</param>
 	/// <param name="defaultFormat">フォーマットを指定しなかった場合のフォーマット名</param>
 	/// <returns></returns>
-	static bool createSaveWindow
+	static bool CreateSaveWindow
 	(
 		const HWND& hwnd, 
 		std::wstring& fileName,
@@ -67,7 +67,7 @@ public:
 	/// <param name="fileName">ファイル名を入力する部分の初期名を記述する。trueが返された場合、入力したファイル名が格納される。</param>
 	/// <param name="defaultFormat">フォーマットを指定しなかった場合のフォーマット名</param>
 	/// <returns></returns>
-	static bool createLoadWindow
+	static bool CreateLoadWindow
 	(
 		const HWND& hwnd,
 		std::wstring& fileName,

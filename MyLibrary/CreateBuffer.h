@@ -22,9 +22,9 @@ public:
 
 	CreateBuffer(CreateBuffer& c) = delete;
 	CreateBuffer& operator=(CreateBuffer& c) = delete;
-	static CreateBuffer* getInstance();
+	static CreateBuffer* GetInstance();
 
-	void initialize
+	void Initialize
 	(
 		ID3D12Device* device,
 		const int& windowWidth,
@@ -34,19 +34,19 @@ public:
 #pragma region 旧
 
 	//ここvoidじゃなくてboolにする
-	void createVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<Vertex> vertices, VertexBufferSet& set);
-	bool createPMDVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<PMDVertex> vertices, PMDVertexBufferSet& set);
+	void CreateVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<Vertex> vertices, VertexBufferSet& set);
+	bool CreatePMDVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<PMDVertex> vertices, PMDVertexBufferSet& set);
 
-	bool createUserVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, VertexBufferSet& set);
+	bool CreateUserVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, VertexBufferSet& set);
 
-	void createIndexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<unsigned short> indices, IndexBufferSet& set);
+	void CreateIndexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<unsigned short> indices, IndexBufferSet& set);
 
 
-	void createConstBufferSet(D3D12_HEAP_PROPERTIES cbheapprop, D3D12_RESOURCE_DESC cbresdesc, D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, void** constData, ConstBufferSet& set,int num);//(numは、ヒープの要素数)
-	void createTextureBufferSet(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, DirectX::TexMetadata metadata, const DirectX::Image* image, TextureBufferSet& set, int num);
-	void createTextureBufferSet2(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, Color color, TextureBufferSet& set, int num);
+	void CreateConstBufferSet(D3D12_HEAP_PROPERTIES cbheapprop, D3D12_RESOURCE_DESC cbresdesc, D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, void** constData, ConstBufferSet& set,int num);//(numは、ヒープの要素数)
+	void CreateTextureBufferSet(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, DirectX::TexMetadata metadata, const DirectX::Image* image, TextureBufferSet& set, int num);
+	void CreateTextureBufferSet2(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, Color color, TextureBufferSet& set, int num);
 
-	void createDepthBufferSet(D3D12_HEAP_PROPERTIES depthheapprop, D3D12_RESOURCE_DESC debthresdesc, D3D12_CLEAR_VALUE depthclearvalue, D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, DepthBufferSet& set);
+	void CreateDepthBufferSet(D3D12_HEAP_PROPERTIES depthheapprop, D3D12_RESOURCE_DESC debthresdesc, D3D12_CLEAR_VALUE depthclearvalue, D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, DepthBufferSet& set);
 
 #pragma region ユーザー作成
 	//void createVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<void*> vertices, VertexBufferSet& set);
@@ -71,7 +71,7 @@ public:
 	/// <param name="verticesSize">sizeofで計算した構造体のバイト数</param>
 	/// <param name="verticesNum">頂点数</param>
 	/// <param name="set">バッファーセット</param>
-	void createVertexBuffer
+	void CreateVertexBuffer
 	(
 		const D3D12_HEAP_PROPERTIES& heapprop,
 		const size_t& verticesSize,
@@ -79,28 +79,28 @@ public:
 		VertexBufferSet& set
 	);
 
-	void createIndexBuffer
+	void CreateIndexBuffer
 	(
 		const D3D12_HEAP_PROPERTIES& heapprop, 
 		const std::vector<USHORT>& indices, 
 		IndexBufferSet& set
 	);
 
-	void createConstBuffer
+	void CreateConstBuffer
 	(
 		const D3D12_HEAP_PROPERTIES& cbheapprop,
 		const size_t& constStructDataSize,
 		ID3D12Resource** constBuffer
 	);
 
-	void createTextureBuffer
+	void CreateTextureBuffer
 	(
 		const DirectX::TexMetadata& metadata,
 		const DirectX::Image* image,
 		ID3D12Resource** textureBuffer,
 		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle
 	);
-	void createOneColorTextureBuffer
+	void CreateOneColorTextureBuffer
 	(
 		const Color& color,
 		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
@@ -108,7 +108,7 @@ public:
 	);
 
 
-	void createDescriptorHeap
+	void CreateDescriptorHeap
 	(
 		ID3D12DescriptorHeap** heap,
 		const int& arrayNum
@@ -116,7 +116,7 @@ public:
 #pragma endregion
 
 #pragma region ビュー
-	void createConstBufferView
+	void CreateConstBufferView
 	(
 		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 		ID3D12Resource* constBuffer

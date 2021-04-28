@@ -8,14 +8,14 @@ CreateBuffer::CreateBuffer()
 CreateBuffer::~CreateBuffer() {}
 
 
-CreateBuffer* CreateBuffer::getInstance()
+CreateBuffer* CreateBuffer::GetInstance()
 {
 	static CreateBuffer c;
 	return &c;
 }
 
 
-void CreateBuffer::initialize
+void CreateBuffer::Initialize
 (
 	ID3D12Device* device,
 	const int& windowWidth,
@@ -34,7 +34,7 @@ void CreateBuffer::initialize
 
 #pragma region 頂点
 
-void CreateBuffer::createVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<Vertex> vertices, VertexBufferSet& set)
+void CreateBuffer::CreateVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<Vertex> vertices, VertexBufferSet& set)
 {
 	device->CreateCommittedResource(
 		&heapprop,
@@ -64,7 +64,7 @@ void CreateBuffer::createVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_R
 }
 
 
-bool CreateBuffer::createPMDVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<PMDVertex> vertices, PMDVertexBufferSet& set)
+bool CreateBuffer::CreatePMDVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<PMDVertex> vertices, PMDVertexBufferSet& set)
 {
 	auto result = device->CreateCommittedResource(
 		&heapprop,
@@ -92,7 +92,7 @@ bool CreateBuffer::createPMDVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D1
 }
 
 
-bool CreateBuffer::createUserVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, VertexBufferSet& set)
+bool CreateBuffer::CreateUserVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, void** vertexData, unsigned int vertexDataSize, unsigned int vertexSumDataSize, VertexBufferSet& set)
 {
 
 	auto result = device->CreateCommittedResource(
@@ -120,7 +120,7 @@ bool CreateBuffer::createUserVertexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D
 
 #pragma endregion
 
-void CreateBuffer::createIndexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<unsigned short> indices, IndexBufferSet& set)
+void CreateBuffer::CreateIndexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RESOURCE_DESC resdesc, std::vector<unsigned short> indices, IndexBufferSet& set)
 {
 	device->CreateCommittedResource(
 		&heapprop,
@@ -144,7 +144,7 @@ void CreateBuffer::createIndexBufferSet(D3D12_HEAP_PROPERTIES heapprop, D3D12_RE
 }
 
 
-void CreateBuffer::createConstBufferSet(D3D12_HEAP_PROPERTIES cbheapprop, D3D12_RESOURCE_DESC cbresdesc, D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, void** constData, ConstBufferSet& set, int num)
+void CreateBuffer::CreateConstBufferSet(D3D12_HEAP_PROPERTIES cbheapprop, D3D12_RESOURCE_DESC cbresdesc, D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, void** constData, ConstBufferSet& set, int num)
 {
 
 	auto result = device->CreateCommittedResource(
@@ -175,7 +175,7 @@ void CreateBuffer::createConstBufferSet(D3D12_HEAP_PROPERTIES cbheapprop, D3D12_
 	
 }
 
-void CreateBuffer::createTextureBufferSet(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, DirectX::TexMetadata metadata, const DirectX::Image* image, TextureBufferSet& set, int num)
+void CreateBuffer::CreateTextureBufferSet(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, DirectX::TexMetadata metadata, const DirectX::Image* image, TextureBufferSet& set, int num)
 {
 	D3D12_HEAP_PROPERTIES texHeapprop{};
 	D3D12_RESOURCE_DESC texResDesc{};
@@ -241,7 +241,7 @@ void CreateBuffer::createTextureBufferSet(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle
 
 }
 
-void CreateBuffer::createTextureBufferSet2(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, Color color, TextureBufferSet& set, int num)
+void CreateBuffer::CreateTextureBufferSet2(D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, Color color, TextureBufferSet& set, int num)
 {
 	D3D12_HEAP_PROPERTIES texHeapprop{};
 	D3D12_RESOURCE_DESC texResDesc{};
@@ -307,7 +307,7 @@ void CreateBuffer::createTextureBufferSet2(D3D12_CPU_DESCRIPTOR_HANDLE heapHandl
 }
 
 
-void CreateBuffer::createDepthBufferSet(D3D12_HEAP_PROPERTIES depthheapprop, D3D12_RESOURCE_DESC depthresdesc, D3D12_CLEAR_VALUE depthclearvalue, D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, DepthBufferSet& set)
+void CreateBuffer::CreateDepthBufferSet(D3D12_HEAP_PROPERTIES depthheapprop, D3D12_RESOURCE_DESC depthresdesc, D3D12_CLEAR_VALUE depthclearvalue, D3D12_CPU_DESCRIPTOR_HANDLE heapHandle, DepthBufferSet& set)
 {
 
 
@@ -339,7 +339,7 @@ void CreateBuffer::createDepthBufferSet(D3D12_HEAP_PROPERTIES depthheapprop, D3D
 
 #pragma region バッファ
 
-void CreateBuffer::createVertexBuffer
+void CreateBuffer::CreateVertexBuffer
 (
 	const D3D12_HEAP_PROPERTIES& heapprop,
 	const size_t& verticesSize,
@@ -369,7 +369,7 @@ void CreateBuffer::createVertexBuffer
 }
 
 
-void CreateBuffer::createIndexBuffer
+void CreateBuffer::CreateIndexBuffer
 (
 	const D3D12_HEAP_PROPERTIES& heapprop,
 	const std::vector<USHORT>& indices,
@@ -401,7 +401,7 @@ void CreateBuffer::createIndexBuffer
 	set.indexBufferView.SizeInBytes = indexSize;
 }
 
-void CreateBuffer::createConstBuffer
+void CreateBuffer::CreateConstBuffer
 (
 	const D3D12_HEAP_PROPERTIES& cbheapprop,
 	const size_t& constStructDataSize,
@@ -425,7 +425,7 @@ void CreateBuffer::createConstBuffer
 }
 
 
-void CreateBuffer::createTextureBuffer
+void CreateBuffer::CreateTextureBuffer
 (
 	const DirectX::TexMetadata& metadata,
 	const DirectX::Image* image,
@@ -489,7 +489,7 @@ void CreateBuffer::createTextureBuffer
 
 }
 
-void CreateBuffer::createOneColorTextureBuffer
+void CreateBuffer::CreateOneColorTextureBuffer
 (
 	const Color& color,
 	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
@@ -550,7 +550,7 @@ void CreateBuffer::createOneColorTextureBuffer
 	);
 }
 
-void CreateBuffer::createDescriptorHeap
+void CreateBuffer::CreateDescriptorHeap
 (
 	ID3D12DescriptorHeap** heap,
 	const int& arrayNum
@@ -576,7 +576,7 @@ void CreateBuffer::createDescriptorHeap
 
 #pragma region ビュー
 
-void CreateBuffer::createConstBufferView
+void CreateBuffer::CreateConstBufferView
 (
 	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 	ID3D12Resource* constBuffer

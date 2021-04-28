@@ -11,18 +11,18 @@ public:
 	Texture();
 	~Texture();
 
-	bool loadTexture(const std::string& texturePath);
+	bool LoadTexture(const std::string& texturePath);
 
-	Vector2 getTextureSize()const
+	Vector2 GetTextureSize()const
 	{
 		return { static_cast<float>(metadata.width) , static_cast<float>(metadata.height) };
 	}
 
-	DirectX::TexMetadata getMetadata()const
+	DirectX::TexMetadata GetMetadata()const
 	{
 		return metadata;
 	}
-	const DirectX::Image* getImage()const
+	const DirectX::Image* GetImage()const
 	{
 		return image;
 	}

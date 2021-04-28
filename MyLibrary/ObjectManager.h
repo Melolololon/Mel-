@@ -8,7 +8,7 @@
 class ObjectManager
 {
 public:
-	enum ObjectSort
+	enum ObjectSortType
 	{
 		//XYZの合計値でソート
 		OBJECT_SORT_NONE,
@@ -35,7 +35,7 @@ private:
 	CollisionFlag checkCollision;
 
 	//追加したフレームごとにソートするか
-	ObjectSort addObjectSort;
+	ObjectSortType addObjectSort;
 	bool addObjectSortOrderType;
 
 	//カーソル判定
@@ -50,27 +50,27 @@ public:
 	ObjectManager(const ObjectManager& obj) = delete;
 	ObjectManager& operator=(const ObjectManager& obj) = delete;
 
-	static ObjectManager* getInstance();
+	static ObjectManager* GetInstance();
 
 	/// <summary>
 	/// 初期化します
 	/// </summary>
-	void initialize();
+	void Initialize();
 
 	/// <summary>
 	/// 更新処理を行います
 	/// </summary>
-	void update();
+	void Update();
 
 	/// <summary>
 	/// 描画処理を行います
 	/// </summary>
-	void draw();
+	void Draw();
 
 	/// <summary>
-	/// isDeadがtrueかどうかを確認します。trueの場合は、削除されます
+	/// eraseManagerがtrueかどうかを確認します。trueの場合は、削除されます
 	/// </summary>
-	void isDeadCheck();
+	void EraseObjectCheck();
 
 	/// <summary>
 	/// 終了処理を行います
@@ -81,13 +81,13 @@ public:
 	/// どの判定を行うかを設定します
 	/// </summary>
 	/// <param name="type"></param>
-	void setCollisionFlag3D(const CollisionFlag& type);
+	void SetCollisionFlag3D(const CollisionFlag& type);
 	
 	/// <summary>
 	/// マウスカーソルとの判定をとるか設定します
 	/// </summary>
 	/// <param name="flag"></param>
-	void setMouseCollisionFlag(const bool& flag);
+	void SetMouseCollisionFlag(const bool& flag);
 
 
 #pragma region オブジェクト管理
@@ -96,20 +96,20 @@ public:
 	/// 配列のメモリを確保します。これにより、追加時の処理が速くなりますが、メモリ効率が悪くなります
 	/// </summary>
 	/// <param name="reserveNum"></param>
-	void reserveObjectArray(const int& reserveNum);
+	void ReserveObjectArray(const int& reserveNum);
 
 	/// <summary>
 	/// オブジェクトを追加します。
 	/// </summary>
 	/// <param name="object"></param>
-	void addObject(const std::shared_ptr<Object>& object);
+	void AddObject(const std::shared_ptr<Object>& object);
 
 	/// <summary>
 	/// 追加したフレームごとにソートするかを設定します。追加しない場合、orderTypeは無視されます
 	/// </summary>
 	/// <param name="sort">ソートの仕方</param>
 	/// <param name="orderType">true 昇順  false 降順</param>
-	void setAddObjectSortState(const ObjectSort& sort,const bool& orderType);
+	void SetAddObjectSortState(const ObjectSortType& sort,const bool& orderType);
 
 	
 /// <summary>
@@ -117,7 +117,7 @@ public:
 /// </summary>
 /// <param name="sort">ソートの仕方</param>
 /// <param name="orderType">true 昇順  false 降順</param>
-	void objectSort(const ObjectSort& sort,const bool& orderType);
+	void ObjectSort(const ObjectSortType& sort,const bool& orderType);
 #pragma endregion
 
 	
@@ -125,7 +125,7 @@ public:
 	/// <summary>
 	/// 全てのオブジェクトを配列から削除します
 	/// </summary>
-	void allEraseObject();
+	void AllEraseObject();
 
 };
 

@@ -9,7 +9,7 @@ bool XInputManager::padConnected[4];
 const short XInputManager::MAX_AXIS_VALUE = 32767;
 const WORD XInputManager::MAX_VIBRATION_VALUE = 65535;
 
-void XInputManager::update()
+void XInputManager::Update()
 {
 	for(int i = 0; i < XUSER_MAX_COUNT;i++)
 	{
@@ -21,7 +21,7 @@ void XInputManager::update()
 
 
 
-bool XInputManager::getPadConnectedFlag(const UCHAR& padNum)
+bool XInputManager::GetPadConnectedFlag(const UCHAR& padNum)
 {
 	return padConnected[padNum - 1];
 }
@@ -46,7 +46,7 @@ bool XInputManager::padCheck(const UCHAR& padNum)
 #pragma region ボタン
 
 
-bool XInputManager::buttonState(const XInputButton& button, const UCHAR& padNum)
+bool XInputManager::ButtonState(const XInputButton& button, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
@@ -57,38 +57,38 @@ bool XInputManager::buttonState(const XInputButton& button, const UCHAR& padNum)
 	return false;
 }
 
-bool XInputManager::buttonTrigger(const XInputButton& button, const UCHAR& padNum)
+bool XInputManager::ButtonTrigger(const XInputButton& button, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
 	int num = padPrevious[padNum - 1].Gamepad.wButtons & button;
 	if (num != button &&
-		buttonState(button, padNum))
+		ButtonState(button, padNum))
 		return true;
 
 	return false;
 }
 
-bool XInputManager::buttonRelease(const XInputButton& button, const UCHAR& padNum)
+bool XInputManager::ButtonRelease(const XInputButton& button, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
 	int num = padPrevious[padNum - 1].Gamepad.wButtons & button;
 	if (num == button &&
-		!buttonState(button, padNum))
+		!ButtonState(button, padNum))
 		return true;
 
 	return false;
 }
 
-float XInputManager::crossButtonAngle(const UCHAR& padNum)
+float XInputManager::DirectionalButtonAngle(const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return -1.0f;
 
-	bool right = XInputManager::buttonState(XINPUT_RIGHT_BUTTON, padNum);
-	bool left = XInputManager::buttonState(XINPUT_LEFT_BUTTON, padNum);
-	bool up = XInputManager::buttonState(XINPUT_UP_BUTTON, padNum);
-	bool down = XInputManager::buttonState(XINPUT_DOWN_BUTTON, padNum);
+	bool right = XInputManager::ButtonState(XINPUT_RIGHT_BUTTON, padNum);
+	bool left = XInputManager::ButtonState(XINPUT_LEFT_BUTTON, padNum);
+	bool up = XInputManager::ButtonState(XINPUT_UP_BUTTON, padNum);
+	bool down = XInputManager::ButtonState(XINPUT_DOWN_BUTTON, padNum);
 
 	if (right && up)return 45.0f;
 	if (up && left)return 135.0f;
@@ -108,7 +108,7 @@ float XInputManager::crossButtonAngle(const UCHAR& padNum)
 
 #pragma region スティック
 
-bool XInputManager::leftStickLeft(const float& lXPar, const UCHAR& padNum)
+bool XInputManager::LeftStickLeft(const float& lXPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLX)
@@ -117,7 +117,7 @@ bool XInputManager::leftStickLeft(const float& lXPar, const UCHAR& padNum)
 	return false;
 }
 
-bool XInputManager::leftStickRight(const float&  lXPar, const UCHAR& padNum)
+bool XInputManager::LeftStickRight(const float&  lXPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
@@ -127,7 +127,7 @@ bool XInputManager::leftStickRight(const float&  lXPar, const UCHAR& padNum)
 	return false;
 }
 
-bool XInputManager::leftStickUp(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::LeftStickUp(const float&  lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
@@ -137,7 +137,7 @@ bool XInputManager::leftStickUp(const float&  lYPar, const UCHAR& padNum)
 	return false;
 }
 
-bool XInputManager::leftStickDown(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::LeftStickDown(const float&  lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
@@ -147,7 +147,7 @@ bool XInputManager::leftStickDown(const float&  lYPar, const UCHAR& padNum)
 	return false;
 }
 
-bool XInputManager::rightStickLeft(const float&  lXPar, const UCHAR& padNum)
+bool XInputManager::RightStickLeft(const float&  lXPar, const UCHAR& padNum)
 {
 
 	if (!padCheck(padNum))return false;
@@ -158,7 +158,7 @@ bool XInputManager::rightStickLeft(const float&  lXPar, const UCHAR& padNum)
 	return false;
 }
 
-bool XInputManager::rightStickRight(const float&  lXPar, const UCHAR& padNum)
+bool XInputManager::RightStickRight(const float&  lXPar, const UCHAR& padNum)
 {
 
 	if (!padCheck(padNum))return false;
@@ -168,7 +168,7 @@ bool XInputManager::rightStickRight(const float&  lXPar, const UCHAR& padNum)
 	return false;
 }
 
-bool XInputManager::rightStickUp(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::RightStickUp(const float&  lYPar, const UCHAR& padNum)
 {
 
 	if (!padCheck(padNum))return false;
@@ -179,7 +179,7 @@ bool XInputManager::rightStickUp(const float&  lYPar, const UCHAR& padNum)
 	return false;
 }
 
-bool XInputManager::rightStickDown(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::RightStickDown(const float&  lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
@@ -190,7 +190,7 @@ bool XInputManager::rightStickDown(const float&  lYPar, const UCHAR& padNum)
 }
 
 
-float XInputManager::leftStickAngle( const UCHAR& padNum)
+float XInputManager::LeftStickAngle( const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return -1.0f;
 
@@ -202,10 +202,10 @@ float XInputManager::leftStickAngle( const UCHAR& padNum)
 		return -1.0f;
 
 
-	return LibMath::vecto2ToAngle(vector2Normalize({ x,y }), true);
+	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }), true);
 }
 
-float XInputManager::rightStickAngle( const UCHAR& padNum)
+float XInputManager::RightStickAngle( const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return -1.0f;
 
@@ -217,7 +217,7 @@ float XInputManager::rightStickAngle( const UCHAR& padNum)
 		return -1.0f;
 
 
-	return LibMath::vecto2ToAngle(vector2Normalize({ x,y }),true);
+	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }),true);
 }
 
 #pragma endregion
@@ -225,7 +225,7 @@ float XInputManager::rightStickAngle( const UCHAR& padNum)
 
 #pragma region 振動
 
-void XInputManager::padVibration(const float& leftPar, const float& rightPar, const UCHAR& padNum)
+void XInputManager::PadVibration(const float& leftPar, const float& rightPar, const UCHAR& padNum)
 {
 	if (leftPar > 100 || rightPar > 100)
 	{

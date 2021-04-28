@@ -13,7 +13,7 @@ PipelineState::~PipelineState()
 {
 }
 
-bool PipelineState::createPipeline
+bool PipelineState::CreatePipelineState
 (
 	const PipelineData& pipelineData,
 	const ShaderData& vShaderData,
@@ -27,7 +27,7 @@ bool PipelineState::createPipeline
 )
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc = {};
-	setPipelineDesc(pipelineData, pDesc);
+	SetPipelineDesc(pipelineData, pDesc);
 	//ルートシグネチャセット
 	pDesc.pRootSignature = rootSignature;
 
@@ -352,7 +352,7 @@ bool PipelineState::createPipeline
 
 
 
-void PipelineState::setPipelineDesc
+void PipelineState::SetPipelineDesc
 (
 	const PipelineData& pipelineData,
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc
@@ -472,7 +472,7 @@ void PipelineState::setPipelineDesc
 
 
 
-bool PipelineState::createModelPipeline
+bool PipelineState::CreateModelPipeline
 (
 	const PipelineData& pipelineData,
 	const ShaderData& vShaderData,
@@ -484,7 +484,7 @@ bool PipelineState::createModelPipeline
 	const std::string& modelClassName
 )
 {
-	auto result = createPipeline
+	auto result = CreatePipelineState
 	(
 		pipelineData,
 		vShaderData,
@@ -503,7 +503,7 @@ bool PipelineState::createModelPipeline
 	return result;
 }
 
-bool PipelineState::initialize
+bool PipelineState::Initialize
 (
 	ID3D12Device* dev
 )

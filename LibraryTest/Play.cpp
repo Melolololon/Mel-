@@ -21,15 +21,15 @@ Play::Play()
 Play::~Play()
 {
 }
-void Play::initialize()
+void Play::Initialize()
 {
-	fbxModel->loadModel
+	fbxModel->LoadModel
 	(
 		"Resources/cube/cube.fbx",
 		1
 	);
 
-	objModel->loadModel
+	objModel->LoadModel
 	(
 		"Resources/Obj/tank_head.obj",
 		true,
@@ -39,40 +39,40 @@ void Play::initialize()
 }
 
 Vector3 angle = 0;
-void Play::update()
+void Play::Update()
 {
-	ObjectManager::getInstance()->update();
-	ObjectManager::getInstance()->isDeadCheck();
+	ObjectManager::GetInstance()->Update();
+	ObjectManager::GetInstance()->EraseObjectCheck();
 
 
-	if (DirectInput::keyState(DIK_W))
+	if (DirectInput::KeyState(DIK_W))
 		angle.y += 3.0f;
-	if (DirectInput::keyState(DIK_S))
+	if (DirectInput::KeyState(DIK_S))
 		angle.y -= 3.0f;
-	if (DirectInput::keyState(DIK_A))
+	if (DirectInput::KeyState(DIK_A))
 		angle.x += 3.0f;
-	if (DirectInput::keyState(DIK_D))
+	if (DirectInput::KeyState(DIK_D))
 		angle.x -= 3.0f;
-	fbxModel->setAngle(angle, 0);
+	fbxModel->SetAngle(angle, 0);
 }
 
-void Play::draw()
+void Play::Draw()
 {
-	ObjectManager::getInstance()->draw();
+	ObjectManager::GetInstance()->Draw();
 
-	fbxModel->draw(0);
+	fbxModel->Draw(0);
 }
 
 void Play::end()
 {
 }
 
-Scene* Play::getNextScene()
+Scene* Play::GetNextScene()
 {
 	return new Play();
 }
 
-void Play::loadResources()
+void Play::LoadResources()
 {
 }
 

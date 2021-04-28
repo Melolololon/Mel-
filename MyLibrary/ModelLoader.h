@@ -11,10 +11,10 @@ private:
 public:
 	ModelLoader(const ModelLoader& moder) = delete;
 	ModelLoader& operator =(const ModelLoader& moder) = delete;
-	static ModelLoader* getInstance();
+	static ModelLoader* GetInstance();
 
 
-	bool loadPMDModel(const char* path, std::vector<PMDVertex>& vertex, std::vector<unsigned short>& indices);
+	bool LoadPmdModel(const char* path, std::vector<PMDVertex>& vertex, std::vector<unsigned short>& indices);
 	
 	/// <summary>
 	/// objを読み込みます
@@ -26,7 +26,7 @@ public:
 	/// <param name="indices"></param>
 	/// <param name="materialName">マテリアル名を入れるstring変数のポインタ(マテリアルを読み込まない場合は、nullptrを書く)</param>
 	/// <returns></returns>
-	bool loadOBJModel
+	bool LoadObjModel
 	(
 		const std::string& path,
 		bool loadUV,
@@ -41,7 +41,7 @@ public:
 		std::vector<std::vector<int>>* boneNumVector
 	);
 	
-	bool loadObjMaterial
+	bool LoadObjMaterial
 	(
 		std::string materialDirectoryPath, 
 		std::string materialFileName, 

@@ -68,10 +68,10 @@ void Quaternion::operator*= (const Quaternion& q)
 }
 
 
-Quaternion getRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle)
+Quaternion GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle)
 {
-	float rad = LibMath::angleConversion(0, angle);
-	Vector3 nVector = vector3Normalize(vector);//ê≥ãKâª
+	float rad = LibMath::AngleConversion(0, angle);
+	Vector3 nVector = Vector3Normalize(vector);//ê≥ãKâª
 	Quaternion p(0.0f, pos);
 	Quaternion q
 	(

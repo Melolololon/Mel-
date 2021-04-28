@@ -107,51 +107,51 @@ public:
 
 
 	//生成
-	static void initialize(HWND hwnd,int windowWidth,int windowHeight);
+	static void Initialize(HWND hwnd,int windowWidth,int windowHeight);
 	//情報取得
-	static void update();
+	static void Update();
 
 
 	//DInputの開放
-	static void release();
+	static void Release();
 
 #pragma region キーボード
 
 	//押しているか
-	static bool keyState(const BYTE& keyDef);
+	static bool KeyState(const BYTE& keyDef);
 	//押した瞬間か
-	static bool keyTrigger(const BYTE& keyDef);
+	static bool KeyTrigger(const BYTE& keyDef);
 	//離した瞬間か
-	static bool keyRelease(const BYTE& keyDef);
+	static bool KeyRelease(const BYTE& keyDef);
 
 	/// <summary>
 	/// キーの文字を返します
 	/// </summary>
 	/// <returns></returns>
-	static char keyChar();
+	static char KeyChar();
 
 	/// <summary>
 	/// アローキーが何度を示しているかを角度で返します。	
 	/// </summary>
 	/// <returns></returns>
-	static float arrowKeyAngle();
+	static float ArrowKeyAngle();
 #pragma endregion
 
 #pragma region パッド
 #pragma region 通常ボタン
 
 	//押しているか
-	static bool buttonState(int button);
+	static bool ButtonState(int button);
 	//押した瞬間か
-	static bool buttonTrigger(int button);
+	static bool ButtonTrigger(int button);
 	//離した瞬間か
-	static bool buttonRelease(int button);
+	static bool ButtonRelease(int button);
 #pragma endregion
 
 #pragma region 十字キー
 
-	static bool directionalButtonState(int button);
-	static bool directionalButtonTrigger(int button);
+	static bool DirectionalButtonState(int button);
+	static bool DirectionalButtonTrigger(int button);
 #pragma endregion
 
 #pragma endregion
@@ -162,14 +162,14 @@ public:
 	/// </summary>
 	/// <param name="lNum">軸(32767が最高値)</param>
 	/// <returns></returns>
-	static bool leftStickLeft(int lXNum);
-	static bool leftStickRight(int lXNum);
-	static bool leftStickUp(int lYNum);
-	static bool leftStickDown(int lYNum);
-	static bool rightStickLeft(int lXNum);
-	static bool rightStickRight(int lXNum);
-	static bool rightStickUp(int lYNum);
-	static bool rightStickDown(int lYNum);
+	static bool LeftStickLeft(int lXNum);
+	static bool LeftStickRight(int lXNum);
+	static bool LeftStickUp(int lYNum);
+	static bool LeftStickDown(int lYNum);
+	static bool RightStickLeft(int lXNum);
+	static bool RightStickRight(int lXNum);
+	static bool RightStickUp(int lYNum);
+	static bool RightStickDown(int lYNum);
 
 	
 #pragma endregion
@@ -178,25 +178,25 @@ public:
 
 #pragma region カーソル関係
 
-	static void setMatrixAndNearFar(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX projectionMatrix,float nearNumber ,float farNumber);
+	static void SetMatrixAndNearFar(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX projectionMatrix,float nearNumber ,float farNumber);
 
 	/// <summary>
 	/// クライアント座標に変換し、最初に設定したウィンドウサイズに応じて補正したマウスの座標を取得します
 	/// </summary>
 	/// <returns></returns>
-	static Vector2 getMousePosition();
+	static Vector2 GetMousePosition();
 
 	/// <summary>
 	/// ウィンドウの中心を基準としたカーソルのベクトルを取得します。
 	/// </summary>
 	/// <returns>ベクトル</returns>
-	static Vector2 getCenterToMouseVector();
+	static Vector2 GetCenterToMouseVector();
 
 	/// <summary>
 	/// ウィンドウの中心を基準としたカーソルの角度を取得します。
 	/// </summary>
 	/// <returns>角度</returns>
-	static float getMouseAngle();
+	static float GetMouseAngle();
 #pragma endregion
 
 
@@ -205,13 +205,13 @@ public:
 	/// </summary>
 	/// <param name="nearPoint"></param>
 	/// <param name="farPoint"></param>
-	static void getMouse3DLine(Vector3& nearPoint,Vector3& farPoint);
+	static void GetMouse3DLine(Vector3& nearPoint,Vector3& farPoint);
 
-	static bool mouseButtonState(MouseButton mouseButton);
+	static bool MouseButtonState(MouseButton mouseButton);
 
-	static bool mouseButtonTrigger(MouseButton mouseButton);
+	static bool MouseButtonTrigger(MouseButton mouseButton);
 	
-	static bool mouseButtonRelease(MouseButton mouseButton);
+	static bool MouseButtonRelease(MouseButton mouseButton);
 
 #pragma endregion
 

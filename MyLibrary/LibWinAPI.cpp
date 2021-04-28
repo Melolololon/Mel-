@@ -5,7 +5,7 @@
 //Ç±ÇÍÉÅÉìÉoïœêîÇ…ÇµÇ»Ç¢Ç∆HWNDÇ™NULLÇ…Ç»ÇÈ
 //WNDCLASSEX LibWinAPI::w;
 
-HWND LibWinAPI::createNormalWindow
+HWND LibWinAPI::CreateNormalWindow
 (
 	const std::wstring& className,
 	const std::wstring& windowName,
@@ -98,7 +98,7 @@ HWND LibWinAPI::createNormalWindow
 //}
 
 
-bool LibWinAPI::createSaveWindow
+bool LibWinAPI::CreateSaveWindow
 (
 	const HWND& hwnd, 
 	std::wstring& fileName,
@@ -145,7 +145,7 @@ bool LibWinAPI::createSaveWindow
 
 }
 
-bool LibWinAPI::createLoadWindow
+bool LibWinAPI::CreateLoadWindow
 (
 	const HWND& hwnd,
 	std::wstring& fileName,

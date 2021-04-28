@@ -5,7 +5,7 @@ class DirectXTexLoader
 {
 public:
 
-	static const DirectX::Image* loadTexture(const wchar_t* path, DirectX::TexMetadata* meta, DirectX::ScratchImage* scratchImage);
+	static const DirectX::Image* LoadTexture(const wchar_t* path, DirectX::TexMetadata* meta, DirectX::ScratchImage* scratchImage);
 	
 };
 

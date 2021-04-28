@@ -43,14 +43,14 @@ private:
 /// <param name="path">モデルのパス</param>
 /// <param name="loadUV">uvを読み込むか</param>
 /// <param name="loadNormal">normalを読み込むか</param>
-	void loadModelVertices
+	void LoadModelVertices
 	(
 		const std::string& path,
 		const bool loadUV,
 		const bool loadNormal
 	);
 
-	void loadModelMaterial
+	void LoadModelMaterial
 	(
 		const std::string& directryPath,
 		const int createNum,
@@ -68,7 +68,7 @@ public:
 	/// <param name="loadUV">UVを読み込むかどうか</param>
 	/// <param name="createNum">生成数</param>
 	/// <param name="constDataSize">シェーダーに送る利用者が用意したデータのバイト数</param>
-	void loadModel
+	void LoadModel
 	(
 		const std::string& path,
 		const bool loadUV,
@@ -77,9 +77,9 @@ public:
 	);
 
 
-	static bool initialize();
+	static bool Initialize();
 
 
-	static void mapBoneData();
+	static void MapBoneData();
 };
 

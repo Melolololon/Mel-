@@ -6,7 +6,7 @@ class TextureLoad
 {
 
 public:
-	static BMPData loadBMP(const char* texturepath);
+	static BMPData LoadBMP(const char* texturepath);
 
 };
 

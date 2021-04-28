@@ -10,13 +10,13 @@ private:
 	ComPtr<ID3D12PipelineState>pipeline;
 	static ID3D12Device* device;
 
-	static void setPipelineDesc
+	static void SetPipelineDesc
 	(
 		const PipelineData& pipelineData,
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc
 	);
 
-	static bool createPipeline
+	static bool CreatePipelineState
 	(
 		const PipelineData& pipelineData,
 		const ShaderData& vShaderData,
@@ -38,7 +38,7 @@ public:
 	PipelineState();
 	~PipelineState();
 
-	static bool initialize
+	static bool Initialize
 	(
 		ID3D12Device* dev
 	);
@@ -56,7 +56,7 @@ public:
 	/// <param name="inputLayoutData">インプットレイアウト情報(指定しない場合は、nullptrを渡す)</param>
 	/// <param name="modelClassName">typeidのname関数で取得した文字列</param>
 	/// <returns></returns>
-	bool createModelPipeline
+	bool CreateModelPipeline
 	(
 		const PipelineData& pipelineData,
 		const ShaderData& vShaderData,
@@ -68,7 +68,7 @@ public:
 		const std::string& modelClassName
 	);
 
-	bool createSpritePipeline
+	bool CreateSpritePipeline
 	(
 		const PipelineData& pipelineData,
 		const ShaderData& vShaderData,
@@ -77,17 +77,17 @@ public:
 		const std::vector<InputLayoutData>* inputLayoutData
 	);
 
-	std::string getModelClassName()
+	std::string GetModelClassName()
 	{
 		return modelClassName;
 	}
 
-	ComPtr<ID3D12PipelineState> getPipelineState()
+	ComPtr<ID3D12PipelineState> GetPipelineState()
 	{
 		return pipeline;
 	}
 
-	static void setModelRootSignature(ID3D12RootSignature* sig) { modelRootSignature = sig; }
+	static void SetModelRootSignature(ID3D12RootSignature* sig) { modelRootSignature = sig; }
 
 };
 

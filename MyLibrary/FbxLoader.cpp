@@ -14,13 +14,13 @@ FbxLoader::~FbxLoader()
 {
 }
 
-FbxLoader* FbxLoader::getInstance()
+FbxLoader* FbxLoader::GetInstance()
 {
 	static FbxLoader inst;
 	return &inst;
 }
 
-void FbxLoader::initialize(ID3D12Device* device)
+void FbxLoader::Initialize(ID3D12Device* device)
 {
 	assert(!fbxManager);
 
@@ -35,14 +35,14 @@ void FbxLoader::initialize(ID3D12Device* device)
 	
 }
 
-void FbxLoader::end()
+void FbxLoader::Finalize()
 {
 	//Importerを開放してからManagerを開放する
 	fbxImporter->Destroy();
 	fbxManager->Destroy();
 }
 
-void FbxLoader::parseNodeRecursive
+void FbxLoader::ParseNodeRecursive
 (
 	FbxModel* fbxModel,
 	FbxNode* fbxNode, 
@@ -116,20 +116,20 @@ void FbxLoader::parseNodeRecursive
 			FbxNodeAttribute::eMesh)
 		{
 			fbxModel->meshNode = &node;
-			parseMesh(fbxModel, fbxNode);
+			ParseMesh(fbxModel, fbxNode);
 		}
 	}
 
 
 	for (int i = 0; i < fbxNode->GetChildCount(); i++)
-		parseNodeRecursive(fbxModel, fbxNode->GetChild(i), &node);
+		ParseNodeRecursive(fbxModel, fbxNode->GetChild(i), &node);
 }
 
 
-void FbxLoader::loadFbxModel(const std::string& modelPath, FbxModel* fbxModel)
+void FbxLoader::LoadFbxModel(const std::string& modelPath, FbxModel* fbxModel)
 {
 	
-	extractFileName(modelPath, &modelDirectryPath,nullptr);
+	ExtractFileName(modelPath, &modelDirectryPath,nullptr);
 
 	if (!fbxImporter->Initialize
 	(
@@ -150,24 +150,24 @@ void FbxLoader::loadFbxModel(const std::string& modelPath, FbxModel* fbxModel)
 	//parseNodeRecursive()で配列を参照してるので、メモリの確保しなおさないようにするためにreserveしてる
 	model->nodes.reserve(nodeCount);
 
-	parseNodeRecursive(model, fbxScene->GetRootNode());
+	ParseNodeRecursive(model, fbxScene->GetRootNode());
 
 	fbxScene->Destroy();
 }
 
 
 
-void FbxLoader::parseMesh(FbxModel* fbxModel, FbxNode* node)
+void FbxLoader::ParseMesh(FbxModel* fbxModel, FbxNode* node)
 {
 	FbxMesh* fbxMesh = node->GetMesh();
 
-	parseMeshVertices(fbxModel, fbxMesh);
-	parseMeshFaces(fbxModel, fbxMesh);
-	parseMaterial(fbxModel, node);
+	ParseMeshVertices(fbxModel, fbxMesh);
+	ParseMeshFaces(fbxModel, fbxMesh);
+	ParseMaterial(fbxModel, node);
 
 }
 
-void FbxLoader::parseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
+void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
 	//ControlPointとは、頂点データのこと(このライブラリでいうVertex構造体)
 
@@ -189,7 +189,7 @@ void FbxLoader::parseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 	}
 }
 
-void FbxLoader::parseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
+void FbxLoader::ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
 	auto& vertices = fbxModel->vertices;
 	auto& m = fbxModel->getMaterial();
@@ -262,7 +262,7 @@ void FbxLoader::parseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
 	}
 }
 
-void FbxLoader::parseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
+void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 {
 	const int materialCount = fbxNode->GetMaterialCount();
 
@@ -330,14 +330,14 @@ void FbxLoader::parseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 
 					std::string path_str(filePath);
 					std::string name;
-					extractFileName(path_str,nullptr, &name);
+					ExtractFileName(path_str,nullptr, &name);
 
 					//読み込み処理またはFbxModelクラスにパスを渡す処理をここに
 					//ファイル名のみ記述されてた
 					
 					fbxModel->textures.resize(1);
 					fbxModel->textures[0] = std::make_unique<Texture>();
-					fbxModel->textures[0]->loadTexture(modelDirectryPath + name);
+					fbxModel->textures[0]->LoadTexture(modelDirectryPath + name);
 
 					textureLoader = true;
 				}
@@ -353,7 +353,7 @@ void FbxLoader::parseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 }
 
 
-std::string FbxLoader::extractFileName
+std::string FbxLoader::ExtractFileName
 (
 	const std::string& path,
 	std::string* directry,

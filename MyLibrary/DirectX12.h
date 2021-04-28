@@ -196,7 +196,7 @@ private:
 
 	CreatePolygon* createPolygon;
 	CreateBuffer* createBuffer;
-	CreatePipeline* createPipeline;
+	CreatePipeline* CreatePipelineState;
 	CreateCamera* mainCamera;
 
 #pragma endregion
@@ -436,7 +436,7 @@ private:
 
 
 #pragma region private関数
-	void resizeObjectData(int objectNum, const std::string& key);
+	void ResizeObjectData(int objectNum, const std::string& key);
 
 	void createHeap();
 
@@ -450,7 +450,7 @@ private:
 	/// </summary>
 	/// <param name="texNum">テクスチャバッファ数</param>
 	/// <param name="key"></param>
-	void createCommonBuffer
+	void CreateCommonBuffer
 	(
 		const int& texNum,
 		const std::string& key
@@ -465,7 +465,7 @@ private:
 	/// <param name="constData"></param>
 	/// <param name="constDataSize"></param>
 	/// <returns></returns>
-	bool createConstBuffer
+	bool CreateConstBuffer
 	(
 		ComPtr<ID3D12DescriptorHeap>& heap,
 		const int& heapHandleNum,
@@ -477,14 +477,14 @@ private:
 #pragma endregion
 
 #pragma region map処理
-	void calcBillboardMat(DirectX::XMMATRIX& matWorld);
+	void CalcBillboardMat(DirectX::XMMATRIX& matWorld);
 #pragma endregion
 
 
 	/// <summary>
 	/// ライブラリがパイプラインを作成します
 	/// </summary>
-	void create3DObjectPipeline();
+	void Create3DObjectPipeline();
 #pragma endregion
 
 
@@ -497,38 +497,38 @@ public:
 
 	DirectX12(DirectX12& d) = delete;
 	DirectX12 operator=(DirectX12& d) = delete;
-	static DirectX12* getInstance();
+	static DirectX12* GetInstance();
 
 #pragma region 初期化などの必須処理
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void initialize(HWND hwnd, int windouWidth, int windowHeight);
+	void Initialize(HWND hwnd, int windouWidth, int windowHeight);
 
 	/// <summary>
 	/// 描画コマンドなどを呼び出す前に呼ぶ処理
 	/// </summary>
-	void preparationToDraw();
+	void LoopStartProcess();
 
 	//描画処理。コマンドリストの命令を実行したりする
-	void draw();
+	void LoopEndProcess();
 
-	void end();
+	void Finalize();
 #pragma endregion
 
 
 	//画面の色受け取り
-	void setScreenColor(Color screenColor);
+	void SetScreenColor(Color screenColor);
 
 	//スプライトのサイズ取得
-	DirectX::XMFLOAT2 getTextureSize(int textureHandle);
+	DirectX::XMFLOAT2 GetTextureSize(int textureHandle);
 
 
 	//これいらん
 #pragma region パイプラインの設定
 
-	void setDespTestFlag(bool flag);
+	void SetDespTestFlag(bool flag);
 
 #pragma endregion
 
@@ -542,7 +542,7 @@ public:
 	/// <param name="vShaderData"></param>
 	/// <param name="gSyaderData"></param>
 	/// <param name="pShaderData"></param>
-	bool createUserPipelineState(
+	bool CreateUserPipelineState(
 		PipelineData pipelineData,
 		ShaderData vShaderData,
 		ShaderData gSyaderData,
@@ -559,45 +559,45 @@ public:
 	void setConstMapData(void** dataP, unsigned int dataSize);
 
 	//ワールド、ビュー、プロジェクション行列を乗算したものを受け取ります
-	void getMatrix(float matrix[4][4], const std::string& key, int number);
+	void GetMatrix(float matrix[4][4], const std::string& key, int number);
 
 	//ワールドは乗算しない
-	void getCameraMatrix(float matrix[4][4]);
+	void GetCameraMatrix(float matrix[4][4]);
 
 	/// <summary>
 /// インプットレイアウトの設定をします
 /// </summary>
 /// <param name="semantics">セマンティクス名</param>
 /// <param name="num">データ数(Vector3の場合、三次元なので3を入力)</param>
-	void setInputLayout(const std::vector<InputLayoutData>& inputLayoutData);
+	void SetInputLayout(const std::vector<InputLayoutData>& inputLayoutData);
 
 	/// <summary>
 /// 現在のインプットレイアウトを削除します
 /// </summary>
-	void deleteInputLayout();
+	void DeleteInputLayout();
 
 
 #pragma region ポストエフェクト
-	void setPostEffectPipeline(const int& num);
+	void SetPostEffectPipeline(const int& num);
 
-	bool createUserPostEffectPipelineState(const ShaderData& pShaderData);
+	bool CreateUserPostEffectPipelineState(const ShaderData& pShaderData);
 #pragma endregion
 
 
 #pragma endregion
 
 #pragma region バッファ作成
-	void createPoint(int createNum, int* point);
+	void CreatePoint(int createNum, int* point);
 
 	//typeに応じてどのcountを++するか決める
-	void createPolygonData
+	void CreatePolygonData
 	(
 		const std::vector<Vertex>& vertex, 
 		const std::vector<USHORT>& index,
 		const std::string& key
 	);
 
-	void createHeapData
+	void CreateHeapData
 	(
 		bool setConstDataFlag,
 		const std::string& key,
@@ -612,10 +612,10 @@ public:
 	/// </summary>
 	/// <param name="vertex"></param>
 	/// <param name="p"></param>
-	void addUserVertex(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV, const std::string& key);
+	void AddUserVertex(std::vector<Vector3>& vertexPos, std::vector<Vector2>& vertexUV, const std::string& key);
 
 
-	void addUserIndex(std::vector<unsigned short>& index, const std::string& key);
+	void AddUserIndex(std::vector<unsigned short>& index, const std::string& key);
 
 	/// <summary>
 	/// 
@@ -625,7 +625,7 @@ public:
 	/// <param name="vertexDataSize"></param>
 	/// <param name="index"></param>
 	/// <param name="polyData"></param>
-	void createUserPolygon
+	void CreateUserPolygon
 	(
 		void** vertexData,
 		UINT vertexDataSize,
@@ -636,7 +636,7 @@ public:
 #pragma endregion
 
 #pragma region モデル
-	VertexType loadOBJVertex
+	VertexType LoadObjVertex
 	(
 		const char* path,
 		bool loadUV,
@@ -645,7 +645,7 @@ public:
 		const std::string& key
 	);
 
-	void loadOBJMaterial
+	void LoadObjMaterial
 	(
 		std::string materialDirectoryPath,
 		std::string materialFileName,
@@ -660,12 +660,12 @@ public:
 #pragma endregion
 
 
-	void loadSpriteFont(const wchar_t *const texturePath,const DirectX::XMFLOAT2& lineNum);
+	void LoadSpriteFont(const wchar_t *const texturePath,const DirectX::XMFLOAT2& lineNum);
 
-	void loadTexture(const wchar_t* texturePath, Color color);
+	void LoadTexture(const wchar_t* texturePath, Color color);
 
 	//fontは、createするものがスプライトフォントかどうか
-	void createSprite(int* spr, bool font);
+	void CreateSprite(int* spr, bool font);
 
 
 #pragma endregion
@@ -673,13 +673,13 @@ public:
 #pragma region 描画
 	//描画時じゃなくて座標とかセットしたときに毎回マップする?
 //そうすると処理が遅くなる?
-	void setCmdList(const ModelData& modelData, int number);
-	void map(const ModelData& modelData, int number);
+	void SetCmdList(const ModelData& modelData, int number);
+	void DataMap(const ModelData& modelData, int number);
 
-	void spriteSetCmdList(int spriteNum, int textureNum,const bool& sprite3DFlag);
+	void SpriteSetCmdList(int spriteNum, int textureNum,const bool& sprite3DFlag);
 
-	void spriteMap(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, int spriteNum, int textureNum);
-	void spriteMap3D
+	void SpriteDataMap(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, int spriteNum, int textureNum);
+	void Sprite3DDataMap
 	(
 		const DirectX::XMFLOAT3& position,
 		const DirectX::XMFLOAT2& size ,
@@ -687,7 +687,7 @@ public:
 		const int& textureNumber
 	);
 
-	void pointSetCmdList
+	void PointSetCmdList
 	(
 		DirectX::XMFLOAT3 pos, 
 		int pointNum, 
@@ -698,70 +698,70 @@ public:
 #pragma endregion
 
 #pragma region 削除
-	void deletePolygonData(const ModelData& m);
-	void deleteHeapData(const ModelData& m);
+	void DeletePolygonData(const ModelData& m);
+	void DeleteHeapData(const ModelData& m);
 
-	void deleteSprite(int sprite);
+	void DeleteSprite(int sprite);
 #pragma endregion
 
 #pragma region カメラ
-	void setCameraDataMatrixPoint(Vector3 eye, Vector3 target, Vector3 up);
-	void setCameraData(Vector3 eye, Vector3 target, Vector3 up);
+	void SetCameraDataMatrixPoint(Vector3 eye, Vector3 target, Vector3 up);
+	void SetCameraData(Vector3 eye, Vector3 target, Vector3 up);
 
-	void setCameraVelocity(DirectX::XMFLOAT3 eyeVelocity, DirectX::XMFLOAT3 targetVelocity);
+	void SetCameraVelocity(DirectX::XMFLOAT3 eyeVelocity, DirectX::XMFLOAT3 targetVelocity);
 
-	void setCameraAngre(DirectX::XMFLOAT3 eyeAngle, DirectX::XMFLOAT3 targetAngle, DirectX::XMFLOAT3 upAngle);
+	void SetCameraAngre(DirectX::XMFLOAT3 eyeAngle, DirectX::XMFLOAT3 targetAngle, DirectX::XMFLOAT3 upAngle);
 
 
-	void setNearAndFar(float nearNum, float farNum);
+	void SetNearAndFar(float nearNum, float farNum);
 #pragma endregion
 
 #pragma region 見た目操作
 
 #pragma region スムースシェーディング
-	void setSmoothingFlag(bool flag);
+	void SetSmoothingFlag(bool flag);
 #pragma endregion
 
 
-	void setMulColor(Color color, const std::string& key, int number);
-	void setAddColor(Color color, const std::string& key, int number);
-	void setSubColor(Color color, const std::string& key, int number);
+	void SetMulColor(Color color, const std::string& key, int number);
+	void SetAddColor(Color color, const std::string& key, int number);
+	void SetSubColor(Color color, const std::string& key, int number);
 
-	void setIsPlane(bool flag);
-	void setIsBillboard(bool x, bool y, bool z);
+	void SetIsPlane(bool flag);
+	void SetIsBillboard(bool x, bool y, bool z);
 
-	void setSpriteMulColor(Color color, int spriteNum);
-	void setSpriteAddColor(Color color, int spriteNum);
-	void setSpriteSubColor(Color color, int spriteNum);
+	void SetSpriteMulColor(Color color, int spriteNum);
+	void SetSpriteAddColor(Color color, int spriteNum);
+	void SetSpriteSubColor(Color color, int spriteNum);
 
 
 
-	void setPointMulColor(Color color, int pointNum, int num);
+	void SetPointMulColor(Color color, int pointNum, int num);
 
 
 
 #pragma endregion
 
 #pragma region ライト操作
-	void setLightVector(DirectX::XMFLOAT3 vector);
+	void SetLightVector(DirectX::XMFLOAT3 vector);
 
-	void setLightColor(Color lightColor);
+	void SetLightColor(Color lightColor);
 #pragma endregion
 
 #pragma region 操作関数
-	void setObjectPosition(DirectX::XMFLOAT3 position, const std::string& key, int number);
-	void setObjectScale(DirectX::XMFLOAT3 angle, const std::string& key, int number);
-	void setObjectAngle(DirectX::XMFLOAT3 angle, const std::string& key, int number);
-	void setObjectPushNum(float objectEX, const std::string& key, int number);
+	void SetObjectPosition(DirectX::XMFLOAT3 position, const std::string& key, int number);
+	void SetObjectScale(DirectX::XMFLOAT3 angle, const std::string& key, int number);
+	void SetObjectAngle(DirectX::XMFLOAT3 angle, const std::string& key, int number);
+	void SetObjectPushNum(float objectEX, const std::string& key, int number);
 
-	void spriteSetObjectPosition(DirectX::XMFLOAT2 position, int spriteNum);
-	void spriteSetObjectScale(DirectX::XMFLOAT2 scale, int spriteNum);
-	void spriteSetObjectAngle(const DirectX::XMFLOAT3& angle,const int& spriteNum);
+	void SetSpritePosition(DirectX::XMFLOAT2 position, int spriteNum);
+	void SetSpriteScale(DirectX::XMFLOAT2 scale, int spriteNum);
+	void SetSpriteAngle(const DirectX::XMFLOAT3& angle,const int& spriteNum);
 
-	void changeSpriteSize(DirectX::XMFLOAT2 size, int spriteData);
+	void ChangeSpriteSize(DirectX::XMFLOAT2 size, int spriteData);
 
 
-	void setPointScale(DirectX::XMFLOAT2 scale, int pointNum, int num);
+	void SetPointScale(DirectX::XMFLOAT2 scale, int pointNum, int num);
 
 
 
@@ -772,20 +772,20 @@ public:
 	/// </summary>
 	/// <param name="pos">座標</param>
 	/// <param name="rtNum">どのレンダーターゲットを指定するか(今は意味なし)</param>
-	void setRenderTargerPosition(const DirectX::XMFLOAT3& pos, const int& rtNum);
+	void SetRenderTargerPosition(const DirectX::XMFLOAT3& pos, const int& rtNum);
 
-	void setRenderTargetAngle(const DirectX::XMFLOAT3& angle, const int& rtNum);
+	void SetRenderTargetAngle(const DirectX::XMFLOAT3& angle, const int& rtNum);
 
-	void setRenderTargetScale(const DirectX::XMFLOAT3& scale, const int& rtNum);
+	void SetRenderTargetScale(const DirectX::XMFLOAT3& scale, const int& rtNum);
 
-	void setPostEffectCameraFlag(const bool& flag, const int& rtNum);
+	void SetPostEffectCameraFlag(const bool& flag, const int& rtNum);
 #pragma endregion
 
 #pragma region アニメーション
 
-	std::vector<DirectX::XMFLOAT3> getBonePosition(const std::string& key);
+	std::vector<DirectX::XMFLOAT3> GetBonePosition(const std::string& key);
 
-	void setOBJModelRotatePoint
+	void SetObjModelRotatePoint
 	(
 		const DirectX::XMFLOAT3& position,
 		const UINT& boneNum,
@@ -798,7 +798,7 @@ public:
    /// <param name="vector">移動量</param>
    /// <param name="boneNum">操作するボーン番号</param>
    /// <param name="key">キー</param>
-	void setOBJBoneMoveVector
+	void SetObjBoneMoveVector
 	(
 		const DirectX::XMFLOAT3& vector,
 		const UINT& boneNum,
@@ -812,7 +812,7 @@ public:
 	/// <param name="scale"></param>
 	/// <param name="boneNum"></param>
 	/// <param name="key"></param>
-	void setOBJBoneScale
+	void SetObjBoneScale
 	(
 		const DirectX::XMFLOAT3& scale,
 		const UINT& boneNum,
@@ -826,7 +826,7 @@ public:
 	/// <param name="angle"></param>
 	/// <param name="boneNum"></param>
 	/// <param name="key"></param>
-	void setOBJBoneAngle
+	void SetObjBoneAngle
 	(
 		const DirectX::XMFLOAT3& angle,
 		const UINT& boneNum,
@@ -840,26 +840,26 @@ public:
 /// <param name="boneNum">ボーン番号</param>
 /// <param name="parentBoneNum">親ボーン番号</param>
 /// <param name="modelData">モデルデータ</param>
-	void setParentOBJBone
+	void SetParentObjBone
 	(
 		const UINT& boneNum,
 		const UINT& parentBoneNum,
 		const std::string& key
 	);
 
-	void setParentOBJBoneScaleImpact
+	void SetParentObjBoneScaleImpact
 	(
 		const UINT& boneNum,
 		const DirectX::XMFLOAT3& scaleImpact,
 		const std::string& key
 	);
-	void setParentOBJBoneAngleImpact
+	void SetParentObjBoneAngleImpact
 	(
 		const UINT& boneNum,
 		const DirectX::XMFLOAT3& angleImpact,
 		const std::string& key
 	);
-	void setParentOBJBoneMoveVectorImpact
+	void SetParentObjBoneMoveVectorImpact
 	(
 		const UINT& boneNum,
 		const DirectX::XMFLOAT3& moveVectorImpact,
@@ -872,9 +872,9 @@ public:
 #pragma endregion
 
 #pragma region 頂座標取得
-	std::vector<std::vector<DirectX::XMFLOAT3>> getModelVerticesPosition(const std::string& key);
+	std::vector<std::vector<DirectX::XMFLOAT3>> GetModelVerticesPosition(const std::string& key);
 
-	bool overrideWriteVertexPosition(std::vector<std::vector<DirectX::XMFLOAT3>> vertPos, const std::string& key);
+	bool OverrideWriteVertexPosition(std::vector<std::vector<DirectX::XMFLOAT3>> vertPos, const std::string& key);
 #pragma endregion
 
 
@@ -898,16 +898,16 @@ public:
 	//void setAnimation(int polyNum, int maxWidth, int maxHeight, int animationNumX, int animationNumY);
 	//void setAnimation2(int polyNum, int dataNum, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
 
-	void setSpriteAnimationVertex
+	void SetSpriteAnimationVertex
 	(
 		const int& spriteNum, 
 		const int& textureNum, 
 		const DirectX::XMFLOAT2& maxSize, 
 		const DirectX::XMFLOAT2& currentNumber
 	);
-	void setSpriteAnimationVertex2(int spriteNum, int textureNum, int posX, int posY, int areaWidth, int areaHeight, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
+	void SetSpriteAnimationVertex2(int spriteNum, int textureNum, int posX, int posY, int areaWidth, int areaHeight, int startAreaX, int startAreaY, int endAreaX, int endAreaY);
 
-	void setSprite3DAnimation
+	void SetSprite3DAnimation
 	(
 		DirectX::XMFLOAT2 leftUpPosition,
 	    DirectX::XMFLOAT2 rightDownPosition,
@@ -926,31 +926,31 @@ public:
 	/// <param name="vector">ベクトル</param>
 	/// <param name="flag">正規化するかどうか(trueで正規化する)</param>
 	/// <returns></returns>
-	DirectX::XMFLOAT3 matchEyeVelocityToCamera(DirectX::XMFLOAT3 eyeVector, bool flag);
+	DirectX::XMFLOAT3 MatchEyeVelocityToCamera(DirectX::XMFLOAT3 eyeVector, bool flag);
 
 	/// <summary>
 	///	行列で回転、移動させたカメラの座標を戻します
 	/// </summary>
 	/// <returns></returns>
-	DirectX::XMFLOAT3 getRotateCameraPosition();
+	DirectX::XMFLOAT3 GetRotateCameraPosition();
 
 
 	/// <summary>
 	/// 行列で回転、移動させたカメラの注視点を戻します
 	/// </summary>
 	/// <returns></returns>
-	DirectX::XMFLOAT3 getRotateCameraTarget();
+	DirectX::XMFLOAT3 GetRotateCameraTarget();
 #pragma endregion
 
 #pragma region 文字表示
-	void drawSpriteFontString(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, std::string text, int spriteFontTextureNum);
+	void DrawSpriteFontString(DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 size, std::string text, int spriteFontTextureNum);
 #pragma endregion
 
 #pragma region 親子構造
 	//ルートオブジェクトの子の子にルートオブジェクトと子の行列を乗算するために、
 	//親のオブジェクトを記録する配列作る?
 
-	void setParent
+	void SetParent
 	(
 		const std::string& key,
 		const int& number,
@@ -962,7 +962,7 @@ public:
 
 #pragma region 計算
 
-	void calculationNormal
+	void CalculationNormal
 	(
 		DirectX::XMFLOAT3 pos1, DirectX::XMFLOAT3 pos2, DirectX::XMFLOAT3 pos3,
 		DirectX::XMFLOAT3& normal1, DirectX::XMFLOAT3& normal2, DirectX::XMFLOAT3& normal3
@@ -971,7 +971,7 @@ public:
 
 #pragma region ライブラリ使用関数
 
-	void sortModelData(std::vector<std::tuple<ModelData, int>>& modelDatas);
+	void SortModelData(std::vector<std::tuple<ModelData, int>>& modelDatas);
 #pragma endregion
 
 };

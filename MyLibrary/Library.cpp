@@ -50,11 +50,11 @@ LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 }
 
-void Library::initialize(int windowWidth, int windowHeight, const Color& screenColor, const wchar_t* windowName)
+void Library::Initialize(int windowWidth, int windowHeight, const Color& screenColor, const wchar_t* windowName)
 {
-	dx12 = DirectX12::getInstance();
-	createPolygon = CreatePolygon::getInstance();
-	createPolygon->initialize(windowWidth, windowHeight);
+	dx12 = DirectX12::GetInstance();
+	createPolygon = CreatePolygon::GetInstance();
+	createPolygon->Initialize(windowWidth, windowHeight);
 
 	srand((unsigned int)time(NULL));
 	count = 0;
@@ -64,7 +64,7 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 
 #pragma region ウィンドウ処理
 
-	hwnd = LibWinAPI::createNormalWindow
+	hwnd = LibWinAPI::CreateNormalWindow
 	(
 		windowName,
 		windowName,
@@ -116,14 +116,14 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 #pragma endregion
 
 #pragma region Input
-	DirectInput::initialize(hwnd, windowWidth, windowHeight);
+	DirectInput::Initialize(hwnd, windowWidth, windowHeight);
 #pragma endregion
 
 
 	audio = std::unique_ptr<Audio>(new Audio());
 
-	dx12->setScreenColor(screenColor);
-	dx12->initialize(hwnd, windowWidth, windowHeight);
+	dx12->SetScreenColor(screenColor);
+	dx12->Initialize(hwnd, windowWidth, windowHeight);
 	
 
 	createPipelineCounter = dx12->getStartPipelineCreateNum();
@@ -136,7 +136,7 @@ void Library::initialize(int windowWidth, int windowHeight, const Color& screenC
 	//modelDatas.reserve(99999);
 }
 
-void Library::loopStartProcess()
+void Library::LoopStartProcess()
 {
 	startProsessTime = timeGetTime();
 
@@ -156,17 +156,17 @@ void Library::loopStartProcess()
 
 #pragma endregion
 
-	dx12->preparationToDraw();
+	dx12->LoopStartProcess();
 
 #pragma region Input
 
-	DirectInput::update();
-	XInputManager::update();
+	DirectInput::Update();
+	XInputManager::Update();
 #pragma endregion
 
 }
 
-void Library::loopEndProcess()
+void Library::LoopEndProcess()
 {
 	//ソート
 	//dx12->sortModelData(modelDatas);
@@ -184,7 +184,7 @@ void Library::loopEndProcess()
 
 	//modelDatas.clear();
 
-	dx12->draw();
+	dx12->LoopEndProcess();
 
 	if (isSetFPS60)
 	{
@@ -214,22 +214,22 @@ void Library::loopEndProcess()
 
 }
 
-void Library::endFlagTrue()
+void Library::EndFlagTrue()
 {
 	isDestroy = false;
 	isEnd = true;
 }
 
-bool Library::getIsEnd()
+bool Library::GetIsEnd()
 {
 	return isEnd;
 }
 
-void Library::end()
+void Library::Finalize()
 {
-	dx12->end();
+	dx12->Finalize();
 
-	DirectInput::release();
+	DirectInput::Release();
 
 	if (!isDestroy)
 	{
@@ -239,24 +239,24 @@ void Library::end()
 	UnregisterClass(w.lpszClassName, w.hInstance);
 }
 
-int Library::getRandomNumber(int number)
+int Library::GetRandomNumber(int number)
 {
 	return rand() % number;
 }
 
-float Library::getRandomNumberFloat(int number)
+float Library::GetRandomNumberFloat(int number)
 {
 	return static_cast<float>((rand() % number));
 }
 
-int Library::getRandomNumberRangeSelect(const int& start, const int& end)
+int Library::GetRandomNumberRangeSelect(const int& start, const int& end)
 {
-	return getRandomNumber(abs(end - start) + 1) + start;
+	return GetRandomNumber(abs(end - start) + 1) + start;
 }
 
-float Library::getRandomNumberRangeSelectFloat(const int& start, const int& end)
+float Library::GetRandomNumberRangeSelectFloat(const int& start, const int& end)
 {
-	return static_cast<float>(getRandomNumber(abs(end - start) + 1) + start);
+	return static_cast<float>(GetRandomNumber(abs(end - start) + 1) + start);
 }
 
 #pragma region プライベート関数
@@ -283,27 +283,27 @@ bool Library::checkCreateVertexBuffer(const VertexType& vertexType)
 
 
 #pragma region WinAPI関係
-HWND Library::getHWND()
+HWND Library::GetHWND()
 {
 	return hwnd;
 }
 #pragma endregion
 
-Vector2 Library::getTextureSize(texture textureHandle)
+Vector2 Library::GetTextureSize(texture textureHandle)
 {
-	DirectX::XMFLOAT2 size = dx12->getTextureSize(textureHandle);
+	DirectX::XMFLOAT2 size = dx12->GetTextureSize(textureHandle);
 	return { size.x,size.y };
 }
 
 #pragma region パイプライン設定
-void Library::setDespTestFlag(bool flag)
+void Library::SetDespTestFlag(bool flag)
 {
 	//dx12->setDespTestFlag(flag);
 }
 #pragma endregion
 
 #pragma region パイプライン作成
-pipeline Library::createUserPipelineState(
+pipeline Library::CreateUserPipelineState(
 	PipelineData pipelineData,
 	ShaderData vShaderData,
 	ShaderData gSyaderData,
@@ -311,7 +311,7 @@ pipeline Library::createUserPipelineState(
 	bool useUserInputLayout
 )
 {
-	bool result = dx12->createUserPipelineState
+	bool result = dx12->CreateUserPipelineState
 	(
 		pipelineData,
 		vShaderData,
@@ -327,7 +327,7 @@ pipeline Library::createUserPipelineState(
 	return createPipelineCounter - 1;
 }
 
-void Library::setPipeline(pipeline num)
+void Library::SetPipeline(pipeline num)
 {
 	dx12->setPipelineNumber(num);
 }
@@ -338,42 +338,42 @@ void Library::setPipeline(pipeline num)
 //	dx12->setConstMapData(dataP, dataSize);
 //}
 
-void Library::getMatrix(float matrix[4][4], const ModelData& modelData, int number)
+void Library::GetMatrix(float matrix[4][4], const ModelData& modelData, int number)
 {
-	dx12->getMatrix(matrix, modelData.key, number);
+	dx12->GetMatrix(matrix, modelData.key, number);
 }
 
-void Library::getCameraMatrix(float matrix[4][4])
+void Library::GetCameraMatrix(float matrix[4][4])
 {
-	dx12->getCameraMatrix(matrix);
+	dx12->GetCameraMatrix(matrix);
 }
 
 
-void Library::setInputLayout(const std::vector<InputLayoutData>& inputLayoutData)
+void Library::SetInputLayout(const std::vector<InputLayoutData>& inputLayoutData)
 {
-	dx12->setInputLayout(inputLayoutData);
+	dx12->SetInputLayout(inputLayoutData);
 }
 
-void Library::deleteInputLayout()
+void Library::DeleteInputLayout()
 {
-	dx12->deleteInputLayout();
+	dx12->DeleteInputLayout();
 }
 
 
 
 #pragma region ポストエフェクト
-void Library::setPostEffectPipeline(const pipeline& num)
+void Library::SetPostEffectPipeline(const pipeline& num)
 {
-	dx12->setPostEffectPipeline(num);
+	dx12->SetPostEffectPipeline(num);
 }
 
-pipeline Library::createUserPostEffectPipelineState
+pipeline Library::CreateUserPostEffectPipelineState
 (
 	const ShaderData& pShaderData
 )
 {
 	createPostEffectPuiperineCounter++;
-	dx12->createUserPostEffectPipelineState(pShaderData);
+	dx12->CreateUserPostEffectPipelineState(pShaderData);
 	return createPostEffectPuiperineCounter;
 }
 #pragma endregion
@@ -384,7 +384,7 @@ pipeline Library::createUserPostEffectPipelineState
 
 #pragma region 設定
 
-void Library::setFramesPerSecond60(bool flag)
+void Library::SetFramesPerSecond60(bool flag)
 {
 	isSetFPS60 = flag;
 }
@@ -402,7 +402,7 @@ void Library::setFramesPerSecond60(bool flag)
 #pragma region 頂点_インデックスバッファ作成
 
 #pragma region モデル読み込み
-void  Library::loadOBJVertex
+void  Library::LoadObjVertex
 (
 	const char* path,
 	bool loadUV,
@@ -414,7 +414,7 @@ void  Library::loadOBJVertex
 	if (!checkSetKeyName(modelData.key))return;
 
 
-	modelData.type = dx12->loadOBJVertex
+	modelData.type = dx12->LoadObjVertex
 	(
 		path,
 		loadUV,
@@ -429,14 +429,14 @@ void  Library::loadOBJVertex
 #pragma endregion
 
 
-void Library::createPoint(int createNum, point* p)
+void Library::CreatePoint(int createNum, point* p)
 {
 	*p = new int(createPointCount);
-	dx12->createPoint(createNum, *p);
+	dx12->CreatePoint(createNum, *p);
 	createPointCount++;
 }
 
-void Library::createBoard(const Vector2& size, ModelData& modelData)
+void Library::CreateBoard(const Vector2& size, ModelData& modelData)
 {
 	if (!checkSetKeyName(modelData.key))return;
 
@@ -448,16 +448,16 @@ void Library::createBoard(const Vector2& size, ModelData& modelData)
 	width /= 2;
 	height /= 2;
 
-	dx12->createPolygonData
+	dx12->CreatePolygonData
 	(
-		createPolygon->setBoardPolygonVertex
+		createPolygon->SetBoardPolygonVertex
 		(
 			{ 0 - width,boardSize.y - height,0 },//左下
 			{ 0 - width,0 - height, 0 },//左上
 			{ boardSize.x - width,boardSize.y - height,0 },//右下
 			{ boardSize.x - width,0 - height,0 }//右上
 		),
-		createPolygon->setBoardPolygonIndex(),
+		createPolygon->SetBoardPolygonIndex(),
 		modelData.key
 	);
 	modelData.type = VERTEX_TYPE_NORMAL;
@@ -511,7 +511,7 @@ void Library::createBoard(const Vector2& size, ModelData& modelData)
 
 
 
-void Library::createTriangularPyramid
+void Library::CreateTriangularPyramid
 (
 	const float& r,
 	const int& vertexNumber,
@@ -522,16 +522,16 @@ void Library::createTriangularPyramid
 {
 	if (!checkSetKeyName(modelData.key))return;
 	
-	dx12->createPolygonData
+	dx12->CreatePolygonData
 	(
-		createPolygon->getTriangularPyramidVertex
+		createPolygon->GetTriangularPyramidVertex
 		(
 			r,
 			vertexNumber,
 			centerPosition.toXMFLOAT3(),
 			upVertex
 		),
-		createPolygon->setTriangularPyramidIndex(vertexNumber),
+		createPolygon->SetTriangularPyramidIndex(vertexNumber),
 		modelData.key
 	);
 
@@ -540,14 +540,14 @@ void Library::createTriangularPyramid
 }
 
 
-void Library::create3DBox(const Vector3& size,  ModelData& modelData)
+void Library::Create3DBox(const Vector3& size,  ModelData& modelData)
 {
 	if (!checkSetKeyName(modelData.key))return;
 	
-	dx12->createPolygonData
+	dx12->CreatePolygonData
 	(
-		createPolygon->getVertexMany3DBox({ size.x,size.y,size.z }),
-		createPolygon->getVertexMany3DBoxIndex(),
+		createPolygon->GetVertexMany3DBox({ size.x,size.y,size.z }),
+		createPolygon->GetVertexMany3DBoxIndex(),
 		modelData.key
 	);
 
@@ -557,7 +557,7 @@ void Library::create3DBox(const Vector3& size,  ModelData& modelData)
 
 #pragma region ユーザー
 
-void Library::createUserObject
+void Library::CreateUserObject
 (
 	const std::vector<Vector3>& vertexPos,
 	const std::vector<Vector2>& vertexUV,
@@ -582,7 +582,7 @@ void Library::createUserObject
 		vertices[i].uv = vertexUV[i].toXMFLOAT2();
 	}
 
-	dx12->createPolygonData
+	dx12->CreatePolygonData
 	(
 		vertices,
 		indices,
@@ -594,7 +594,7 @@ void Library::createUserObject
 	modelData.type = VERTEX_TYPE_NORMAL;
 }
 
-void Library::createUserObject2
+void Library::CreateUserObject2
 (
 	void** vertexData, 
 	UINT vertexDataSize,
@@ -605,7 +605,7 @@ void Library::createUserObject2
 {
 	if (!checkSetKeyName(modelData.key))return;
 
-	dx12->createUserPolygon
+	dx12->CreateUserPolygon
 	(
 		vertexData,
 		vertexDataSize, 
@@ -624,7 +624,7 @@ void Library::createUserObject2
 
 #pragma region ヒープ作成
 
-void Library::loadOBJMaterial
+void Library::LoadObjMaterial
 (
 	std::string materialDirectoryPath, 
 	std::string materialFileName, 
@@ -635,11 +635,11 @@ void Library::loadOBJMaterial
 	if (!checkCreateVertexBuffer(modelData.type))return;
 	
 
-	dx12->loadOBJMaterial(materialDirectoryPath, materialFileName, false, modelData.key, objectNum, modelData.type);
+	dx12->LoadObjMaterial(materialDirectoryPath, materialFileName, false, modelData.key, objectNum, modelData.type);
 	
 }
 
-void Library::loadObjMaterialUseUserData
+void Library::LoadObjMaterialUseUserData
 (
 	std::string materialDirectoryPath,
 	std::string materialFileName,
@@ -652,11 +652,11 @@ void Library::loadObjMaterialUseUserData
 	if (!checkCreateVertexBuffer(modelData.type))return;
 	dx12->setConstMapData(dataP, dataSize);
 	
-	dx12->loadOBJMaterial(materialDirectoryPath, materialFileName, true, modelData.key, objectNum, modelData.type);
+	dx12->LoadObjMaterial(materialDirectoryPath, materialFileName, true, modelData.key, objectNum, modelData.type);
 	
 }
 
-void Library::createHeapData
+void Library::CreateHeapData
 (
 	const wchar_t* texturePath, 
 	int objectNum,
@@ -668,12 +668,12 @@ void Library::createHeapData
 
 	if (!checkCreateVertexBuffer(modelData.type))return;
 
-	dx12->createHeapData(false, modelData.key, objectNum, texturePath, nullptr);
+	dx12->CreateHeapData(false, modelData.key, objectNum, texturePath, nullptr);
 	
 	
 }
 
-void Library::createHeapData2
+void Library::CreateHeapData2
 (
 	Color color, 
 	int objectNum,
@@ -683,11 +683,11 @@ void Library::createHeapData2
 
 	if (!checkCreateVertexBuffer(modelData.type))return;
 
-	dx12->createHeapData(false, modelData.key, objectNum, L"", &color);
+	dx12->CreateHeapData(false, modelData.key, objectNum, L"", &color);
 
 }
 
-void Library::createUserHeapData
+void Library::CreateUserHeapData
 (
 	const wchar_t* texturePath, 
 	int objectNum, 
@@ -701,11 +701,11 @@ void Library::createUserHeapData
 	dx12->setConstMapData(dataP, dataSize);
 
 
-	dx12->createHeapData(true, modelData.key, objectNum, texturePath, nullptr);
+	dx12->CreateHeapData(true, modelData.key, objectNum, texturePath, nullptr);
 
 }
 
-void Library::createUserHeapData2
+void Library::CreateUserHeapData2
 (
 	const Color& color,
 	int objectNum,
@@ -719,7 +719,7 @@ void Library::createUserHeapData2
 	dx12->setConstMapData(dataP, dataSize);
 
 
-	dx12->createHeapData(true, modelData.key, objectNum, L"", &color);
+	dx12->CreateHeapData(true, modelData.key, objectNum, L"", &color);
 
 }
 
@@ -757,23 +757,23 @@ void Library::createUserHeapData2
 
 #pragma region スプライト
 
-font Library::loadSpriteFont
+font Library::LoadSpriteFont
 (
 	const wchar_t *const texturePath,
 	const Vector2& lineNum
 )
 {
 	loadFontTextureCounter++;
-	dx12->loadSpriteFont(texturePath,lineNum.toXMFLOAT2());
+	dx12->LoadSpriteFont(texturePath,lineNum.toXMFLOAT2());
 
 	return loadFontTextureCounter - 1;
 
 }
 
 //テクスチャの番号を返す
-texture Library::loadTexture(const wchar_t* texturePath)
+texture Library::LoadTexture(const wchar_t* texturePath)
 {
-	dx12->loadTexture(texturePath, { 0,0,0,0 });
+	dx12->LoadTexture(texturePath, { 0,0,0,0 });
 
 	loadTextureCounter++;
 	return loadTextureCounter - 1;
@@ -788,10 +788,10 @@ texture Library::loadTexture(const wchar_t* texturePath)
 //}
 
 //スプライトの識別番号を返す
-void Library::createSprite(sprite* sprite)
+void Library::CreateSprite(sprite* sprite)
 {
 	*sprite = new int(createSpriteConter);
-	dx12->createSprite(*sprite, false);
+	dx12->CreateSprite(*sprite, false);
 
 	createSpriteConter++;
 	//return createSpriteConter - 1;
@@ -803,7 +803,7 @@ void Library::createSprite(sprite* sprite)
 
 #pragma region 描画
 
-void Library::drawGraphic
+void Library::DrawGraphic
 (
 	const ModelData& modelData,
 	int number
@@ -812,11 +812,11 @@ void Library::drawGraphic
 	/*std::tuple<ModelData, int> mData = std::make_tuple(modelData, number);
 	modelDatas.push_back(mData);*/
 
-	dx12->map(modelData, number);
-	dx12->setCmdList(modelData, number);
+	dx12->DataMap(modelData, number);
+	dx12->SetCmdList(modelData, number);
 }
 
-void Library::drawSprite
+void Library::DrawSprite
 (
 	const Vector2& position,
 	const sprite& spriteNumber,
@@ -824,11 +824,11 @@ void Library::drawSprite
 )
 {
 	//dx12->spriteSetObjectPosition({ position.x,position.y }, *spriteNumber);
-	dx12->spriteMap(position.toXMFLOAT2(), { 0,0 }, *spriteNumber, textureNumber);
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber,false);
+	dx12->SpriteDataMap(position.toXMFLOAT2(), { 0,0 }, *spriteNumber, textureNumber);
+	dx12->SpriteSetCmdList(*spriteNumber, textureNumber,false);
 }
 
-void Library::drawSpriteAnimation
+void Library::DrawSpriteAnimation
 (
 	const Vector2& position,
 	const Vector2& maxSqare,
@@ -838,12 +838,12 @@ void Library::drawSpriteAnimation
 )
 {
 	//この順番じゃないとuvがちゃんとセットされない
-	dx12->spriteMap({ position.x,position.y }, { 0,0 }, *spriteNumber, textureNumber);
-	dx12->setSpriteAnimationVertex(*spriteNumber, textureNumber, maxSqare.toXMFLOAT2(), currentNum.toXMFLOAT2());
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber, false);
+	dx12->SpriteDataMap({ position.x,position.y }, { 0,0 }, *spriteNumber, textureNumber);
+	dx12->SetSpriteAnimationVertex(*spriteNumber, textureNumber, maxSqare.toXMFLOAT2(), currentNum.toXMFLOAT2());
+	dx12->SpriteSetCmdList(*spriteNumber, textureNumber, false);
 }
 
-void Library::drawSpriteAnimation2
+void Library::DrawSpriteAnimation2
 (
 	const Vector2& position,
 	const Vector2& currentStartNum,
@@ -853,7 +853,7 @@ void Library::drawSpriteAnimation2
 )
 {
 	//dx12->spriteMap({ position.x,position.y }, { 0,0 }, *spriteNumber, *textureNumber);
-	dx12->setSpriteAnimationVertex2
+	dx12->SetSpriteAnimationVertex2
 	(
 		*spriteNumber,
 		textureNumber,
@@ -867,10 +867,10 @@ void Library::drawSpriteAnimation2
 		currentEndNum.y
 	);
 
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber, false);
+	dx12->SpriteSetCmdList(*spriteNumber, textureNumber, false);
 }
 
-void Library::drawSprite3D
+void Library::DrawSprite3D
 (
 	const Vector3& position,
 	const Vector2& size,
@@ -878,17 +878,17 @@ void Library::drawSprite3D
 	const texture& textureNumber
 )
 {
-	dx12->spriteMap3D
+	dx12->Sprite3DDataMap
 	(
 		position.toXMFLOAT3(),
 		size.toXMFLOAT2(),
 		*spriteNumber, 
 		textureNumber
 	);
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber,true);
+	dx12->SpriteSetCmdList(*spriteNumber, textureNumber,true);
 }
 
-void Library::drawSprite3DAnimation
+void Library::DrawSprite3DAnimation
 (
 	const Vector3& position,
 	const Vector2& size,
@@ -898,24 +898,24 @@ void Library::drawSprite3DAnimation
 	const texture& textureNumber
 )
 {
-	dx12->spriteMap3D
+	dx12->Sprite3DDataMap
 	(
 		position.toXMFLOAT3(),
 		size.toXMFLOAT2(),
 		*spriteNumber,
 		textureNumber
 	);
-	dx12->setSprite3DAnimation
+	dx12->SetSprite3DAnimation
 	(
 		leftUpPos.toXMFLOAT2(),
 		rightDownPos.toXMFLOAT2(),
 		*spriteNumber,
 		textureNumber
 	);
-	dx12->spriteSetCmdList(*spriteNumber, textureNumber,true);
+	dx12->SpriteSetCmdList(*spriteNumber, textureNumber,true);
 }
 
-void Library::drawPointTexture
+void Library::DrawPointTexture
 (
 	Vector3 pos, 
 	point point, 
@@ -923,11 +923,11 @@ void Library::drawPointTexture
 	int num
 )
 {
-	dx12->pointSetCmdList({ pos.x,pos.y,pos.z }, *point, texture, num);
+	dx12->PointSetCmdList({ pos.x,pos.y,pos.z }, *point, texture, num);
 }
 
 #pragma region 形状
-void Library::drawSpriteBox
+void Library::DrawSpriteBox
 (
 	const Vector2& position,
 	const Vector2& size,
@@ -935,12 +935,12 @@ void Library::drawSpriteBox
 	const sprite& spriteHandle
 )
 {
-	setSpriteAddColor(color, spriteHandle);
-	dx12->spriteMap(position.toXMFLOAT2(), size.toXMFLOAT2(), *spriteHandle, 0);
-	dx12->spriteSetCmdList(*spriteHandle, 0,false);
+	SetSpriteAddColor(color, spriteHandle);
+	dx12->SpriteDataMap(position.toXMFLOAT2(), size.toXMFLOAT2(), *spriteHandle, 0);
+	dx12->SpriteSetCmdList(*spriteHandle, 0,false);
 }
 
-void Library::drawSprite3DBox
+void Library::DrawSprite3DBox
 (
 	const Vector3& position,
 	const Vector2& size,
@@ -948,9 +948,9 @@ void Library::drawSprite3DBox
 	const sprite& spriteHandle
 )
 {
-	setSpriteAddColor(color, spriteHandle);
-	dx12->spriteMap3D(position.toXMFLOAT3(), size.toXMFLOAT2(), *spriteHandle, 0);
-	dx12->spriteSetCmdList(*spriteHandle, 0,true);
+	SetSpriteAddColor(color, spriteHandle);
+	dx12->Sprite3DDataMap(position.toXMFLOAT3(), size.toXMFLOAT2(), *spriteHandle, 0);
+	dx12->SpriteSetCmdList(*spriteHandle, 0,true);
 }
 
 #pragma endregion
@@ -959,16 +959,16 @@ void Library::drawSprite3DBox
 #pragma endregion
 
 #pragma region 削除
-void Library::deleteModelData(const ModelData& modelData)
+void Library::DeleteModelData(const ModelData& modelData)
 {
-	dx12->deletePolygonData(modelData);
-	dx12->deleteHeapData(modelData);
+	dx12->DeletePolygonData(modelData);
+	dx12->DeleteHeapData(modelData);
 }
 
 
-void Library::deleteSprite(sprite sprite)
+void Library::DeleteSprite(sprite sprite)
 {
-	dx12->deleteSprite(*sprite);
+	dx12->DeleteSprite(*sprite);
 }
 #pragma endregion
 
@@ -976,179 +976,179 @@ void Library::deleteSprite(sprite sprite)
 
 
 #pragma region スムースシェーディング
-void Library::setSmoothingFlag(bool flag)
+void Library::SetSmoothingFlag(bool flag)
 {
-	dx12->setSmoothingFlag(flag);
+	dx12->SetSmoothingFlag(flag);
 }
 #pragma endregion
 
-void Library::setMulColor(Color color,const ModelData& modelData, int number)
+void Library::SetMulColor(Color color,const ModelData& modelData, int number)
 {
 	
-	dx12->setMulColor(color, modelData.key, number);
+	dx12->SetMulColor(color, modelData.key, number);
 }
-void Library::setAddColor(Color color,const ModelData& modelData, int number)
+void Library::SetAddColor(Color color,const ModelData& modelData, int number)
 {
 
-	dx12->setAddColor(color, modelData.key, number);
+	dx12->SetAddColor(color, modelData.key, number);
 }
-void Library::setSubColor(Color color,const ModelData& modelData, int number)
+void Library::SetSubColor(Color color,const ModelData& modelData, int number)
 {
 	
-	dx12->setSubColor(color, modelData.key, number);
+	dx12->SetSubColor(color, modelData.key, number);
 }
 
-void Library::setIsPlane(bool flag)
+void Library::SetIsPlane(bool flag)
 {
-	dx12->setIsPlane(flag);
+	dx12->SetIsPlane(flag);
 }
 
-void Library::setIsBillboard(bool x, bool y, bool z)
+void Library::SetIsBillboard(bool x, bool y, bool z)
 {
-	dx12->setIsBillboard(x, y, z);
+	dx12->SetIsBillboard(x, y, z);
 }
 
-void Library::setSpriteMulColor(Color color, sprite spriteNum)
+void Library::SetSpriteMulColor(Color color, sprite spriteNum)
 {
-	dx12->setSpriteMulColor(color, *spriteNum);
+	dx12->SetSpriteMulColor(color, *spriteNum);
 }
-void Library::setSpriteAddColor(Color color, sprite spriteNum)
+void Library::SetSpriteAddColor(Color color, sprite spriteNum)
 {
-	dx12->setSpriteAddColor(color, *spriteNum);
+	dx12->SetSpriteAddColor(color, *spriteNum);
 }
-void Library::setSpriteSubColor(Color color, sprite spriteNum)
+void Library::SetSpriteSubColor(Color color, sprite spriteNum)
 {
-	dx12->setSpriteSubColor(color, *spriteNum);
+	dx12->SetSpriteSubColor(color, *spriteNum);
 }
 
 
-void Library::setPointScale(Vector2 scale, point pointNum, int num)
+void Library::SetPointScale(Vector2 scale, point pointNum, int num)
 {
-	dx12->setPointScale({ scale.x,scale.y }, *pointNum, num);
+	dx12->SetPointScale({ scale.x,scale.y }, *pointNum, num);
 }
 #pragma endregion
 
 #pragma region カメラ
-void Library::setCameraMatrixPoint(Vector3 position, Vector3 target, Vector3 up)
+void Library::SetCameraMatrixPoint(Vector3 position, Vector3 target, Vector3 up)
 {
-	dx12->setCameraDataMatrixPoint(position, target, up);
+	dx12->SetCameraDataMatrixPoint(position, target, up);
 }
 
-void Library::setCamera(Vector3 position, Vector3 target, Vector3 up)
+void Library::SetCamera(Vector3 position, Vector3 target, Vector3 up)
 {
-	dx12->setCameraData(position, target, up);
+	dx12->SetCameraData(position, target, up);
 
 
 }
 
-void Library::setCameraVelocity(Vector3 eyeVelocity, Vector3 targetVelocity)
+void Library::SetCameraVelocity(Vector3 eyeVelocity, Vector3 targetVelocity)
 {
-	dx12->setCameraVelocity({ eyeVelocity.x,eyeVelocity.y,eyeVelocity.z }, { targetVelocity.x,targetVelocity.y,targetVelocity.z });
+	dx12->SetCameraVelocity({ eyeVelocity.x,eyeVelocity.y,eyeVelocity.z }, { targetVelocity.x,targetVelocity.y,targetVelocity.z });
 }
 
-void Library::setCameraAngle(Vector3 eyeAngle, Vector3 targetAngle, Vector3 upAngle)
+void Library::SetCameraAngle(Vector3 eyeAngle, Vector3 targetAngle, Vector3 upAngle)
 {
-	dx12->setCameraAngre({ eyeAngle.x,eyeAngle.y,eyeAngle.z }, { targetAngle.x ,targetAngle.y,targetAngle.z }, { upAngle.x,upAngle.y,upAngle.z });
+	dx12->SetCameraAngre({ eyeAngle.x,eyeAngle.y,eyeAngle.z }, { targetAngle.x ,targetAngle.y,targetAngle.z }, { upAngle.x,upAngle.y,upAngle.z });
 }
 
-void Library::setCameraNearAndFar(float nearNum, float farNum)
+void Library::SetCameraNearAndFar(float nearNum, float farNum)
 {
-	dx12->setNearAndFar(nearNum, farNum);
+	dx12->SetNearAndFar(nearNum, farNum);
 }
 
 #pragma endregion
 
 #pragma region ライト
 
-void Library::setLightVector(Vector3 vector)
+void Library::SetLightVector(Vector3 vector)
 {
-	Vector3 v = vector3Normalize(vector);
-	dx12->setLightVector({ v.x,v.y,v.z });
+	Vector3 v = Vector3Normalize(vector);
+	dx12->SetLightVector({ v.x,v.y,v.z });
 }
 //
 
-void Library::setLightColor(Color lightColor)
+void Library::SetLightColor(Color lightColor)
 {
-	dx12->setLightColor(lightColor);
+	dx12->SetLightColor(lightColor);
 }
 #pragma endregion
 
 #pragma region 操作
-void Library::setPosition(Vector3 position, const ModelData& modelData , int number)
+void Library::SetPosition(Vector3 position, const ModelData& modelData , int number)
 {
 	
-	dx12->setObjectPosition({ position.x,position.y,position.z }, modelData.key, number);
+	dx12->SetObjectPosition({ position.x,position.y,position.z }, modelData.key, number);
 }
 
 
-void Library::setAngle(Vector3 angle, const ModelData& modelData,  int number)
+void Library::SetAngle(Vector3 angle, const ModelData& modelData,  int number)
 {
 
-	dx12->setObjectAngle({ angle.x,angle.y,angle.z }, modelData.key, number);
+	dx12->SetObjectAngle({ angle.x,angle.y,angle.z }, modelData.key, number);
 }
 
-void Library::setScale(Vector3 scale, const ModelData& modelData , int number)
+void Library::SetScale(Vector3 scale, const ModelData& modelData , int number)
 {
-	dx12->setObjectScale({ scale.x,scale.y,scale.z }, modelData.key, number);
+	dx12->SetObjectScale({ scale.x,scale.y,scale.z }, modelData.key, number);
 }
 
 void Library::setPushPorigonNumber(float ex, const ModelData& modelData, int number)
 {
-	dx12->setObjectPushNum(ex, modelData.key, number);
+	dx12->SetObjectPushNum(ex, modelData.key, number);
 }
 
 
-void Library::setSpritePosition(Vector2 position, sprite sptiteNumber)
+void Library::SetSpritePosition(Vector2 position, sprite sptiteNumber)
 {
-	dx12->spriteSetObjectPosition({ position.x,position.y }, *sptiteNumber);
+	dx12->SetSpritePosition({ position.x,position.y }, *sptiteNumber);
 }
-void Library::setSpriteScale(Vector2 scale, sprite sptiteNumber)
+void Library::SetSpriteScale(Vector2 scale, sprite sptiteNumber)
 {
-	dx12->spriteSetObjectScale({ scale.x,scale.y }, *sptiteNumber);
+	dx12->SetSpriteScale({ scale.x,scale.y }, *sptiteNumber);
 }
-void Library::setSpriteAngle(float angle, sprite spriteNumber)
+void Library::SetSpriteAngle(float angle, sprite spriteNumber)
 {
-	dx12->spriteSetObjectAngle({0,0,angle }, *spriteNumber);
+	dx12->SetSpriteAngle({0,0,angle }, *spriteNumber);
 }
-void Library::setSpriteAngle3D(const Vector3& angle, const sprite& spriteNumber)
+void Library::SetSpriteAngle3D(const Vector3& angle, const sprite& spriteNumber)
 {
-	dx12->spriteSetObjectAngle(angle.toXMFLOAT3(), *spriteNumber);
-}
-
-void changeSpriteSize(Vector2 size, int *spriteData)
-{
-
+	dx12->SetSpriteAngle(angle.toXMFLOAT3(), *spriteNumber);
 }
 
-
-
-void Library::setPointMulColor(Color color, point pointNum, int num)
+void ChangeSpriteSize(Vector2 size, int *spriteData)
 {
-	dx12->setPointMulColor(color, *pointNum, num);
+
+}
+
+
+
+void Library::SetPointMulColor(Color color, point pointNum, int num)
+{
+	dx12->SetPointMulColor(color, *pointNum, num);
 }
 
 
 
 #pragma region ポストエフェクト
 
-void Library::setRenderTargetPosition(const Vector3& pos, const int& rtNum) 
+void Library::SetRenderTargetPosition(const Vector3& pos, const int& rtNum) 
 {
-	dx12->setRenderTargerPosition({ pos .x,pos .y,pos .z}, rtNum);
+	dx12->SetRenderTargerPosition({ pos .x,pos .y,pos .z}, rtNum);
 }
 
-void Library::setRenderTargetAngle(const Vector3& angle, const int& rtNum)
+void Library::SetRenderTargetAngle(const Vector3& angle, const int& rtNum)
 {
-	dx12->setRenderTargetAngle({ angle .x,angle .y,angle .z}, rtNum);
+	dx12->SetRenderTargetAngle({ angle .x,angle .y,angle .z}, rtNum);
 }
 
-void Library::setRenderTargetScale(const Vector3& scale, const int& rtNum)
+void Library::SetRenderTargetScale(const Vector3& scale, const int& rtNum)
 {
-	dx12->setRenderTargetScale({ scale.x,scale.y,scale.z }, rtNum);
+	dx12->SetRenderTargetScale({ scale.x,scale.y,scale.z }, rtNum);
 }
 
-void Library::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
+void Library::SetPostEffectCameraFlag(const bool& flag, const int& rtNum)
 {
-	dx12->setPostEffectCameraFlag(true, rtNum);
+	dx12->SetPostEffectCameraFlag(true, rtNum);
 }
 #pragma endregion
 
@@ -1164,7 +1164,7 @@ void Library::setPostEffectCameraFlag(const bool& flag, const int& rtNum)
 //
 //}
 
-void Library::setOBJBoneMoveVector
+void Library::SetObjBoneMoveVector
 (
 	const Vector3& vector, 
 	const UINT& boneNum,
@@ -1175,11 +1175,11 @@ void Library::setOBJBoneMoveVector
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
 
-	dx12->setOBJBoneMoveVector(vector.toXMFLOAT3(), boneNum, modelData.key, objectNum);
+	dx12->SetObjBoneMoveVector(vector.toXMFLOAT3(), boneNum, modelData.key, objectNum);
 
 }
 
-void Library::setOBJBoneScale
+void Library::SetObjBoneScale
 (
 	const Vector3& scale,
 	const UINT& boneNum,
@@ -1189,10 +1189,10 @@ void Library::setOBJBoneScale
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
-	dx12->setOBJBoneScale(scale.toXMFLOAT3(), boneNum, modelData.key, objectNum);
+	dx12->SetObjBoneScale(scale.toXMFLOAT3(), boneNum, modelData.key, objectNum);
 }
 
-void Library::setOBJBoneAngle
+void Library::SetObjBoneAngle
 (
 	const Vector3& angle, 
 	const UINT& boneNum,
@@ -1202,10 +1202,10 @@ void Library::setOBJBoneAngle
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
-	dx12->setOBJBoneAngle(angle.toXMFLOAT3(), boneNum, modelData.key, objectNum);
+	dx12->SetObjBoneAngle(angle.toXMFLOAT3(), boneNum, modelData.key, objectNum);
 }
 
-void Library::setParentOBJBone
+void Library::SetParentObjBone
 (
 	const UINT& boneNum,
 	const UINT& parentBoneNum,
@@ -1215,7 +1215,7 @@ void Library::setParentOBJBone
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
 
-	dx12->setParentOBJBone
+	dx12->SetParentObjBone
 	(
 		boneNum, 
 		parentBoneNum,
@@ -1223,7 +1223,7 @@ void Library::setParentOBJBone
 	);
 }
 
-void Library::setParentOBJBoneScaleImpact
+void Library::SetParentObjBoneScaleImpact
 (
 	const UINT& boneNum,
 	const Vector3& scaleImpact,
@@ -1232,7 +1232,7 @@ void Library::setParentOBJBoneScaleImpact
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
-	dx12->setParentOBJBoneScaleImpact
+	dx12->SetParentObjBoneScaleImpact
 	(
 		boneNum,
 		scaleImpact.toXMFLOAT3(),
@@ -1240,7 +1240,7 @@ void Library::setParentOBJBoneScaleImpact
 	);
 }
 
-void Library::setParentOBJBoneAngleImpact
+void Library::SetParentObjBoneAngleImpact
 (
 	const UINT& boneNum,
 	const Vector3& angleImpact,
@@ -1249,7 +1249,7 @@ void Library::setParentOBJBoneAngleImpact
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
-	dx12->setParentOBJBoneAngleImpact
+	dx12->SetParentObjBoneAngleImpact
 	(
 		boneNum,
 		angleImpact.toXMFLOAT3(),
@@ -1257,7 +1257,7 @@ void Library::setParentOBJBoneAngleImpact
 	);
 }
 
-void Library::setParentOBJBoneMoveVectorImpact
+void Library::SetParentObjBoneMoveVectorImpact
 (
 	const UINT& boneNum,
 	const Vector3& moveVectorImpact,
@@ -1266,7 +1266,7 @@ void Library::setParentOBJBoneMoveVectorImpact
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
-	dx12->setParentOBJBoneMoveVectorImpact
+	dx12->SetParentObjBoneMoveVectorImpact
 	(
 		boneNum,
 		moveVectorImpact.toXMFLOAT3(),
@@ -1281,7 +1281,7 @@ void Library::setParentOBJBoneMoveVectorImpact
 
 #pragma region アニメーション
 
-void Library::setPointBoardAnimation
+void Library::SetPointBoardAnimation
 (
 	const Vector2& leftUpPos,
 	const Vector2& rightDownPos,
@@ -1318,11 +1318,11 @@ void Library::setPointBoardAnimation
 #pragma endregion
 
 #pragma region 情報取得取得
-std::vector<std::vector<Vector3>> Library::getModelVerticesPosition(const ModelData& modelData)
+std::vector<std::vector<Vector3>> Library::GetModelVerticesPosition(const ModelData& modelData)
 {
 	std::vector<std::vector<Vector3>>vector3VertexPos;
 	std::vector<std::vector<DirectX::XMFLOAT3>> xmFloat3VertexPos;
-	xmFloat3VertexPos = dx12->getModelVerticesPosition(modelData.key);
+	xmFloat3VertexPos = dx12->GetModelVerticesPosition(modelData.key);
 	vector3VertexPos.resize(xmFloat3VertexPos.size());
 
 	size_t num = xmFloat3VertexPos.size();
@@ -1342,7 +1342,7 @@ std::vector<std::vector<Vector3>> Library::getModelVerticesPosition(const ModelD
 
 }
 
-bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const ModelData& modelData)
+bool Library::OverrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const ModelData& modelData)
 {
 	
 
@@ -1365,15 +1365,15 @@ bool Library::overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertP
 			
 		}
 	}
-	return dx12->overrideWriteVertexPosition(kariXM, modelData.key);
+	return dx12->OverrideWriteVertexPosition(kariXM, modelData.key);
 }
 
 #pragma region アニメーション
 
 
-std::vector<Vector3> Library::getBonePosition(const ModelData& modelData)
+std::vector<Vector3> Library::GetBonePosition(const ModelData& modelData)
 {
-	std::vector<DirectX::XMFLOAT3>getVector = dx12->getBonePosition(modelData.key);
+	std::vector<DirectX::XMFLOAT3>getVector = dx12->GetBonePosition(modelData.key);
 	std::vector<Vector3>returnVector(getVector.size());
 
 	int count = 0;
@@ -1387,7 +1387,7 @@ std::vector<Vector3> Library::getBonePosition(const ModelData& modelData)
 #pragma endregion
 
 #pragma region 当たり判定
-void Library::getModelBoxCollisionData
+void Library::GetModelBoxCollisionData
 (
 	const ModelData& modelData,
 	Vector3* pointPosition,
@@ -1397,7 +1397,7 @@ void Library::getModelBoxCollisionData
 )
 {
 	std::vector<std::vector<Vector3>> modelVertices;
-	modelVertices = getModelVerticesPosition(modelData);
+	modelVertices = GetModelVerticesPosition(modelData);
 
 	Vector3 min = 999999.0f;
 	Vector3 max = -999999.0f;
@@ -1437,56 +1437,56 @@ void Library::getModelBoxCollisionData
 #pragma endregion
 
 #pragma region 行列による変換
-Vector3 Library::rotateVectorToCameraPosition(Vector3 eyeVelocity, bool flag)
+Vector3 Library::RotateVectorToCameraPosition(Vector3 eyeVelocity, bool flag)
 {
-	DirectX::XMFLOAT3 ret = dx12->matchEyeVelocityToCamera({ eyeVelocity.x,eyeVelocity.y,eyeVelocity.z }, flag);
+	DirectX::XMFLOAT3 ret = dx12->MatchEyeVelocityToCamera({ eyeVelocity.x,eyeVelocity.y,eyeVelocity.z }, flag);
 
 
 	return { ret.x,ret.y,ret.z };
 }
 
-Vector3 Library::getRotateCameraPosition()
+Vector3 Library::GetRotateCameraPosition()
 {
-	DirectX::XMFLOAT3 pos = dx12->getRotateCameraPosition();
+	DirectX::XMFLOAT3 pos = dx12->GetRotateCameraPosition();
 	return { pos.x,pos.y,pos.z };
 }
 
-Vector3 Library::getRotateCameraTarget()
+Vector3 Library::GetRotateCameraTarget()
 {
-	DirectX::XMFLOAT3 pos = dx12->getRotateCameraTarget();
+	DirectX::XMFLOAT3 pos = dx12->GetRotateCameraTarget();
 	return { pos.x,pos.y,pos.z };
 }
 
 #pragma endregion
 
 #pragma region 文字表示
-void Library::drawsSpriteFontString(Vector2 position, Vector2 size, std::string text, font* spriteTextureNum)
+void Library::DrawsSpriteFontString(Vector2 position, Vector2 size, std::string text, font* spriteTextureNum)
 {
-	dx12->drawSpriteFontString({ position.x,position.y }, { size.x,size.y }, text, *spriteTextureNum);
+	dx12->DrawSpriteFontString({ position.x,position.y }, { size.x,size.y }, text, *spriteTextureNum);
 }
 #pragma endregion
 
 #pragma region 読み込み
-bool Library::loadTextIntVector(const char* path, std::vector<std::vector<int>>& vector)
+bool Library::LoadTextIntVector(const char* path, std::vector<std::vector<int>>& vector)
 {
 
-	if (!TextLoader::loadText(path))return false;
-	TextLoader::getIntVector(vector);
+	if (!TextLoader::LoadText(path))return false;
+	TextLoader::GetIntVector(vector);
 	return true;
 }
 #pragma endregion
 
 #pragma region 親子構造
-void Library::setParent(const ModelData& modelData, int number, const ModelData& parentmodelData, int parentNum)
+void Library::SetParent(const ModelData& modelData, int number, const ModelData& parentmodelData, int parentNum)
 {
 
-	dx12->setParent(modelData.key, number, parentmodelData.key, parentNum);
+	dx12->SetParent(modelData.key, number, parentmodelData.key, parentNum);
 }
 
 #pragma endregion
 
 #pragma region 計算
-void Library::calculationNormal
+void Library::CalculationNormal
 (
 	Vector3 pos1, Vector3 pos2, Vector3 pos3,
 	Vector3& normal1, Vector3& normal2, Vector3& normal3
@@ -1494,7 +1494,7 @@ void Library::calculationNormal
 {
 	DirectX::XMFLOAT3 normal[3];
 
-	dx12->calculationNormal
+	dx12->CalculationNormal
 	(
 		{ pos1.x,pos1.y,pos1.z },
 		{ pos2.x,pos2.y,pos2.z },
@@ -1521,22 +1521,22 @@ void Library::calculationNormal
 #pragma endregion
 
 #pragma region サウンド
-void Library::playSound(const char* path)
+void Library::PlaySound(const char* path)
 {
-	audio.get()->playWave(path);
+	audio.get()->PlayWave(path);
 }
 
-void Library::loadSound(const char* path, std::string name, bool loop)
+void Library::LoadSound(const char* path, std::string name, bool loop)
 {
-	audio.get()->loadSound(path, name,loop);
+	audio.get()->LoadSound(path, name,loop);
 }
-void Library::playLoadSound(std::string name)
+void Library::PlayLoadSound(std::string name)
 {
-	audio.get()->playLoadSound(name);
+	audio.get()->PlayLoadSound(name);
 }
-void Library::stopLoadSound(std::string name, bool resetFlag)
+void Library::StopLoadSound(std::string name, bool resetFlag)
 {
-	audio.get()->stopLoadSound(name, resetFlag);
+	audio.get()->StopLoadSound(name, resetFlag);
 }
 
 #pragma endregion

@@ -24,4 +24,4 @@ struct Color
 /// </summary>
 /// <param name="par">パーセント</param>
 /// <returns></returns>
-unsigned char alphaChangePar(float par);
+unsigned char AlphaChangePar(float par);

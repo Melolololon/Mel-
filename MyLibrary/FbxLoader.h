@@ -39,7 +39,7 @@ private:
 	/// <param name="model">モデルのポインタ</param>
 	/// <param name="fbxNode">解析するノード</param>
 	/// <param name="parentNode">親ノード</param>
-	void parseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode,Node* parentNode = nullptr);
+	void ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode,Node* parentNode = nullptr);
 
 #pragma region メッシュ読み込み
 
@@ -49,30 +49,30 @@ private:
 	/// </summary>
 	/// <param name="">モデル</param>
 	/// <param name="node">ノード</param>
-	void parseMesh(FbxModel* fbxModel, FbxNode* node);
+	void ParseMesh(FbxModel* fbxModel, FbxNode* node);
 
 	/// <summary>
 	/// 頂点読み込み
 	/// </summary>
 	/// <param name="model"></param>
 	/// <param name="fbxMesh"></param>
-	void parseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh);
+	void ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// 面情報(インデックス、UV、法線)読み取り
 	/// </summary>
 	/// <param name="model"></param>
 	/// <param name="fbxMesh"></param>
-	void parseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh);
+	void ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// マテリアル読み取り
 	/// </summary>
 	/// <param name="model"></param>
 	/// <param name="fbxMesh"></param>
-	void parseMaterial(FbxModel* fbxModel,FbxNode* fbxNode);
+	void ParseMaterial(FbxModel* fbxModel,FbxNode* fbxNode);
 	
-	std::string extractFileName
+	std::string ExtractFileName
 	(
 		const std::string& path, 
 		std::string* directry, 
@@ -83,21 +83,21 @@ private:
 public:
 	FbxLoader(const FbxLoader& moder) = delete;
 	FbxLoader& operator =(const FbxLoader& moder) = delete;
-	static FbxLoader* getInstance();
+	static FbxLoader* GetInstance();
 
 	/// <summary>
 	/// 初期化します
 	/// </summary>
 	/// <param name="device">デバイス</param>
-	void initialize(ID3D12Device* device);
+	void Initialize(ID3D12Device* device);
 	
-	void end();
+	void Finalize();
 
 	/// <summary>
 	/// fbxを読み込みます
 	/// </summary>
 	/// <param name="modelPath">モデルのパス</param>
 	/// <param name="fbxModel">モデルのポインタ</param>
-	void loadFbxModel(const std::string& modelPath,FbxModel* fbxModel);
+	void LoadFbxModel(const std::string& modelPath,FbxModel* fbxModel);
 };
 

@@ -16,7 +16,7 @@ Matrix::Matrix(const DirectX::XMMATRIX& m)
 
 Matrix Matrix::operator*(const Matrix& mat)const
 {
-	Matrix m = getZeroMatrix();
+	Matrix m = GetZeroMatrix();
 
 	for (int i = 0; i < 4; i++)
 		for (int j = 0; j < 4; j++)
@@ -55,7 +55,7 @@ std::array<float, 4> Matrix::operator[](const unsigned int num)const
 /// <summary>
 /// 零行列を作成します 
 /// </summary>
-Matrix getZeroMatrix()
+Matrix GetZeroMatrix()
 {
 	Matrix m;
 	for(auto& mat : m.matrix)
@@ -68,9 +68,9 @@ Matrix getZeroMatrix()
 /// 単位行列を作成します
 /// </summary>
 /// <returns></returns>
-Matrix getIdentityMatrix()
+Matrix GetIdentityMatrix()
 {
-	Matrix m = getZeroMatrix();
+	Matrix m = GetZeroMatrix();
 
 	for(int i = 0; i < 4;i++)
 	m[i][i] = 1;
@@ -82,9 +82,9 @@ Matrix getIdentityMatrix()
 /// X軸を基準に回転する行列を作成します
 /// </summary>
 /// <returns></returns>
-Matrix getRotateXMatrix(const float angle)
+Matrix GetRotateXMatrix(const float angle)
 {
-	Matrix m = getIdentityMatrix();
+	Matrix m = GetIdentityMatrix();
 
 	m[1][1] = std::cos(angle);
 	m[1][2] = std::sin(angle);
@@ -94,9 +94,9 @@ Matrix getRotateXMatrix(const float angle)
 	return m;
 }
 
-Matrix getRotateYMatrix(const float angle)
+Matrix GetRotateYMatrix(const float angle)
 {
-	Matrix m = getIdentityMatrix();
+	Matrix m = GetIdentityMatrix();
 
 	m[0][0] = std::cos(angle);
 	m[0][2] = std::sin(-angle);
@@ -106,9 +106,9 @@ Matrix getRotateYMatrix(const float angle)
 	return m;
 }
 
-Matrix getRotateZMatrix(const float angle)
+Matrix GetRotateZMatrix(const float angle)
 {
-	Matrix m = getIdentityMatrix();
+	Matrix m = GetIdentityMatrix();
 
 	m[0][0] = std::cos(angle);
 	m[0][1] = std::sin(angle);
@@ -118,9 +118,9 @@ Matrix getRotateZMatrix(const float angle)
 	return m;
 }
 
-Matrix getScalingMatrix(const Vector3& vector)
+Matrix GetScalingMatrix(const Vector3& vector)
 {
-	Matrix m = getIdentityMatrix();
+	Matrix m = GetIdentityMatrix();
 
 	m[0][0] = vector.x;
 	m[1][1] = vector.y;
@@ -129,9 +129,9 @@ Matrix getScalingMatrix(const Vector3& vector)
 	return m;
 }
 
-Matrix getTranslationMatrix(const Vector3& vector)
+Matrix GetTranslationMatrix(const Vector3& vector)
 {
-	Matrix m = getIdentityMatrix();
+	Matrix m = GetIdentityMatrix();
 
 	m[3][0] = vector.x;
 	m[3][1] = vector.y;

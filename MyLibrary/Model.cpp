@@ -16,7 +16,7 @@ Model::~Model()
 {
 }
 
-void Model::createModelVertexResources
+void Model::CreateModelVertexResources
 (
 	const size_t verticesSize,
 	const std::vector<size_t>& verticesNum,
@@ -31,7 +31,7 @@ void Model::createModelVertexResources
 
 	for (int i = 0; i < objectNum; i++)
 	{
-		CreateBuffer::getInstance()->createVertexBuffer
+		CreateBuffer::GetInstance()->CreateVertexBuffer
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 			verticesSize,
@@ -46,7 +46,7 @@ void Model::createModelVertexResources
 
 	for (int i = 0; i < objectNum; i++)
 	{
-		CreateBuffer::getInstance()->createIndexBuffer
+		CreateBuffer::GetInstance()->CreateIndexBuffer
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 			indicesNum[i],
@@ -58,7 +58,7 @@ void Model::createModelVertexResources
 	modelClassName = typeid(*this).name();
 }
 
-void Model::createModelHeapResources
+void Model::CreateModelHeapResources
 (
 	const std::vector<Texture*>& pTextures,
 	const int modelNum,
@@ -81,14 +81,14 @@ void Model::createModelHeapResources
 		* modelNum
 		* modelFileObjectNum;
 
-	createDescriptorHeap(heapSize);
+	CreateDescriptorHeap(heapSize);
 
 #pragma endregion
 
 #pragma region テクスチャバッファ
 
 	//テクスチャバッファ作成
-	createTextureBuffer
+	CreateTextureBuffer
 	(
 		pTextures,
 		0
@@ -101,7 +101,7 @@ void Model::createModelHeapResources
 
 
 	//定数バッファ作成
-	createConstBuffer
+	CreateConstBuffer
 	(
 		modelNum,
 		modelFileObjectNum,
@@ -115,7 +115,7 @@ void Model::createModelHeapResources
 	this->modelObjectNum = modelFileObjectNum;
 }
 
-void Model::resizeConstData
+void Model::ResizeConstData
 (
 	const int modelNum,
 	const int modelFileObjectNum
@@ -127,7 +127,7 @@ void Model::resizeConstData
 		modelConstDatas[i].resize(modelFileObjectNum);
 }
 
-void Model::createDescriptorHeap
+void Model::CreateDescriptorHeap
 (
 	const int arrayNum
 )
@@ -142,7 +142,7 @@ void Model::createDescriptorHeap
 
 }
 
-void Model::createConstBuffer
+void Model::CreateConstBuffer
 (
 	const int modelNum,
 	const int modelFileObjectNum,
@@ -182,7 +182,7 @@ void Model::createConstBuffer
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 	);
 
-	CreateBuffer::getInstance()->createConstBufferView
+	CreateBuffer::GetInstance()->CreateConstBufferView
 	(
 		hHandle,
 		commonBuffers.Get()
@@ -222,13 +222,13 @@ void Model::createConstBuffer
 						device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 					);
 
-				CreateBuffer::getInstance()->createConstBuffer
+				CreateBuffer::GetInstance()->CreateConstBuffer
 				(
 					CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 					constDataSize[k],
 					&constBuffer[i][j][k]
 				);
-				CreateBuffer::getInstance()->createConstBufferView
+				CreateBuffer::GetInstance()->CreateConstBufferView
 				(
 					hHandle,
 					constBuffer[i][j][k].Get()
@@ -259,7 +259,7 @@ void Model::createConstBuffer
 	}
 }
 
-void Model::createTextureBuffer
+void Model::CreateTextureBuffer
 (
 	const std::vector<Texture*>& textures,
 	const int heapTop
@@ -282,10 +282,10 @@ void Model::createTextureBuffer
 
 		
 
-		CreateBuffer::getInstance()->createTextureBuffer
+		CreateBuffer::GetInstance()->CreateTextureBuffer
 		(
-			textures[i]->getMetadata(),
-			textures[i]->getImage(),
+			textures[i]->GetMetadata(),
+			textures[i]->GetImage(),
 			&textureBuffer[i],
 			hHandle
 		);
@@ -295,7 +295,7 @@ void Model::createTextureBuffer
 
 #pragma region マップ
 
-void Model::mapVertexBuffer
+void Model::MapVertexBuffer
 (
 	const int modelNum,
 	void** vertexData
@@ -304,12 +304,12 @@ void Model::mapVertexBuffer
 	vertexBufferSet[modelNum].vertexBuffer->Map(0, nullptr, vertexData);
 }
 
-void Model::unmapVertexBuffer(const int& modelNum)
+void Model::UnmapVertexBuffer(const int& modelNum)
 {
 	vertexBufferSet[modelNum].vertexBuffer->Unmap(0, nullptr);
 }
 
-void Model::mapIndexBuffer
+void Model::MapIndexBuffer
 (
 	const int modelNum,
 	void** index
@@ -318,7 +318,7 @@ void Model::mapIndexBuffer
 	indexBufferSet[modelNum].indexBuffer->Map(0, nullptr, index);
 }
 
-void Model::unmapIndexBuffer(const int& modelNum)
+void Model::UnmapIndexBuffer(const int& modelNum)
 {
 	indexBufferSet[modelNum].indexBuffer->Unmap(0, nullptr);
 }
@@ -394,9 +394,9 @@ void Model::unmapIndexBuffer(const int& modelNum)
 #pragma region 開発者用関数
 
 
-void Model::createCommonBuffer()
+void Model::CreateCommonBuffer()
 {
-	CreateBuffer::getInstance()->createConstBuffer
+	CreateBuffer::GetInstance()->CreateConstBuffer
 	(
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		sizeof(CommonConstData),
@@ -404,7 +404,7 @@ void Model::createCommonBuffer()
 	);
 }
 
-void Model::mapCommonConstData(const CommonConstData& data)
+void Model::MapCommonConstData(const CommonConstData& data)
 {
 	CommonConstData* common;
 	commonBuffers->Map(0, nullptr, (void**)&common);
@@ -415,7 +415,7 @@ void Model::mapCommonConstData(const CommonConstData& data)
 	commonBuffers->Unmap(0, nullptr);
 }
 
-void Model::initialize
+void Model::Initialize
 (
 	ID3D12Device* dev,
 	std::vector<ID3D12GraphicsCommandList*> cmdList
@@ -533,14 +533,14 @@ void Model::initialize
 
 #pragma endregion
 
-	PipelineState::setModelRootSignature(rootSignature.Get());
+	PipelineState::SetModelRootSignature(rootSignature.Get());
 
 	//cmdLists.resize(1);
 }
 
 #pragma endregion
 
-void Model::dataMap(const int modelNum)
+void Model::DataMap(const int modelNum)
 {
 	ConstBufferData* constBufferData;
 
@@ -602,7 +602,7 @@ void Model::dataMap(const int modelNum)
 	}
 }
 
-void Model::setCmdList(const int modelNum)
+void Model::SetCmdList(const int modelNum)
 {
 	cmdLists[0]->SetPipelineState(pipeline.Get());
 	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
@@ -724,26 +724,26 @@ void Model::setCmdList(const int modelNum)
 }
 
 
-void Model::draw(const int modelNum)
+void Model::Draw(const int modelNum)
 {
-	dataMap(modelNum);
-	setCmdList(modelNum);
+	DataMap(modelNum);
+	SetCmdList(modelNum);
 
 }
 #pragma region 操作
-void Model::setPosition(const Vector3& position, const int modelNum)
+void Model::SetPosition(const Vector3& position, const int modelNum)
 {
 	for (int i = 0; i < modelObjectNum; i++)
 		modelConstDatas[modelNum][i].position = position.toXMFLOAT3();
 }
 
-void Model::setAngle(const Vector3& angle, const int modelNum)
+void Model::SetAngle(const Vector3& angle, const int modelNum)
 {
 	for (int i = 0; i < modelObjectNum; i++)
 		modelConstDatas[modelNum][i].angle = angle.toXMFLOAT3();
 }
 
-void Model::setScale(const Vector3& scale, const int modelNum)
+void Model::SetScale(const Vector3& scale, const int modelNum)
 {
 	for (int i = 0; i < modelObjectNum; i++)
 		modelConstDatas[modelNum][i].scale = scale.toXMFLOAT3();
@@ -752,12 +752,12 @@ void Model::setScale(const Vector3& scale, const int modelNum)
 #pragma endregion
 
 
-void Model::setPipeline(PipelineState* pipelineState)
+void Model::SetPipeline(PipelineState* pipelineState)
 {
-	if(pipelineState->getModelClassName() != typeid(*this).name())
+	if(pipelineState->GetModelClassName() != typeid(*this).name())
 	{
 		OutputDebugString(L"パイプラインに設定されたモデルクラスと違います。\0");
 		return;
 	}
-	pipeline = pipelineState->getPipelineState();
+	pipeline = pipelineState->GetPipelineState();
 }

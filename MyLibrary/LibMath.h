@@ -28,27 +28,27 @@ public:
 	/// <param name="num2">値2</param>
 	/// <param name="difference">基準の値</param>
 	/// <returns></returns>
-	static bool difference(const float& num1, const float& num2, const float& difference);
+	static bool Difference(const float& num1, const float& num2, const float& Difference);
 
 	/// <summary>
 		/// 度数法の角度をラジアンに　ラジアンを度数法の角度に
 		/// </summary>
 		/// <param name="pattern">0 度数法の角度をラジアンに   1 ラジアンを度数法の角度に</param>
 		/// <param name="angle">角度</param>
-	static float angleConversion(int pattern, float angle);
+	static float AngleConversion(int pattern, float angle);
 
 
 	/// <summary>
 	/// 円周率を取得します
 	/// </summary>
 	/// <returns></returns>
-	static float getFloatPI();
+	static float GetFloatPI();
 
 	/// <summary>
 	/// 円周率を取得します
 	/// </summary>
 	/// <returns></returns>
-	static double getDoublePI();
+	static double GetDoublePI();
 
 #pragma region ベクトル
 
@@ -61,7 +61,7 @@ public:
 	/// <param name="vector"></param>
 	/// <param name="point"></param>
 	/// <returns></returns>
-	static char pointLeftRightCheck(const Vector2& vector, const Vector2& point);
+	static char PointLeftRightCheck(const Vector2& vector, const Vector2& point);
 
 	/// <summary>
 	/// 2つのベクトルがなす角度を求めます
@@ -69,7 +69,7 @@ public:
 	/// <param name="v1"></param>
 	/// <param name="v2"></param>
 	/// <returns></returns>
-	static float twoVector2Angle(const Vector2& v1, const Vector2& v2);
+	static float TwoVector2Angle(const Vector2& v1, const Vector2& v2);
 
 	/// <summary>
 	/// ベクトルを角度に変換します
@@ -77,7 +77,7 @@ public:
 	/// <param name="v"></param>
 	/// <param name="v3">3次元座標系かどうか</param>
 	/// <returns></returns>
-	static float vecto2ToAngle(const Vector2& v,const bool& v3 );
+	static float Vecto2ToAngle(const Vector2& v,const bool& v3 );
 
 	/// <summary>
 	/// 角度をVector2に変換します
@@ -85,7 +85,7 @@ public:
 	/// <param name="angle"></param>
 	/// <param name="v3">3次元座標系かどうか</param>
 	/// <returns></returns>
-	static Vector2 angleToVector2(const float& angle, const bool& v3);
+	static Vector2 AngleToVector2(const float& angle, const bool& v3);
 
 	/// <summary>
 	/// Vector2のベクトルを指定した角度に応じて回転させます
@@ -93,7 +93,7 @@ public:
 	/// <param name="v"></param>
 	/// <param name="angle"></param>
 	/// <returns></returns>
-	static Vector2 rotateVector2(const Vector2& v, const float& angle);
+	static Vector2 RotateVector2(const Vector2& v, const float& angle);
 #pragma endregion
 
 #pragma region Vector3
@@ -104,7 +104,7 @@ public:
 	/// <param name="pos1">座標1</param>
 	/// <param name="pos2">座標2</param>
 	/// <returns></returns>
-	static float calcDistance3D(Vector3 pos1, Vector3 pos2);
+	static float CalcDistance3D(Vector3 pos1, Vector3 pos2);
 
 	/// <summary>
 	/// vex1からvec2のベクトルを取得します(正規化は行う)
@@ -112,7 +112,7 @@ public:
 	/// <param name="myPos"></param>
 	/// <param name="otherPos"></param>
 	/// <returns></returns>
-	static Vector3 otherVector(const Vector3& vec1, const Vector3& vec2);
+	static Vector3 OtherVector(const Vector3& vec1, const Vector3& vec2);
 
 	/// <summary>
 	/// ベクトルを回転させます
@@ -121,7 +121,7 @@ public:
 	/// <param name="vec">軸のベクトル</param>
 	/// <param name="angle"></param>
 	/// <returns></returns>
-	Vector3 rotateVector3(const Vector3& rotateV, const Vector3& vec ,const float& angle);
+	Vector3 RotateVector3(const Vector3& rotateV, const Vector3& vec ,const float& angle);
 #pragma endregion
 
 
@@ -139,7 +139,7 @@ public:
 	/// <param name="start2">1つ目の左上座標</param>
 	/// <param name="end2">1つ目の右下座標</param>
 	/// <returns>当たったかどうか</returns>
-	static bool rectCollision
+	static bool RectCollision
 	(
 		const Vector2& pos1,
 		const Vector2& size1, 
@@ -155,7 +155,7 @@ public:
 	/// <param name="centerPosition2">1つ目の座標</param>
 	/// <param name="r2">1つ目の円</param>
 	/// <returns>当たったかどうか</returns>
-	static bool circleCollision(Vector2 centerPosition1, float r1, Vector2 centerPosition2, float r2);
+	static bool CircleCollision(Vector2 centerPosition1, float r1, Vector2 centerPosition2, float r2);
 
 #pragma endregion
 
@@ -168,7 +168,7 @@ public:
 	/// <param name="centerPosition2">1つ目の座標</param>
 	/// <param name="r2">1つ目の円</param>
 	/// <returns>当たったかどうか</returns>
-	static bool sphereCollision(Vector3 centerPosition1, float r1, Vector3 centerPosition2, float r2);
+	static bool SphereAndSphereCollision(Vector3 centerPosition1, float r1, Vector3 centerPosition2, float r2);
 
 	/// <summary>
 	/// 球と平面の座標
@@ -179,7 +179,7 @@ public:
 	/// <param name="planeDist">平面の原点から平面の距離(マイナス可能)</param>
 	/// <param name="hitPos"></param>
 	/// <returns></returns>
-	static bool sphereAndPlaneCollision
+	static bool SphereAndPlaneCollision
 	(
 		Vector3 spherePos,
 		float r,
@@ -199,7 +199,7 @@ public:
 	/// <param name="normal"></param>
 	/// <param name="hitPos"></param>
 	/// <returns></returns>
-	static bool sphereAndTryangleCollision
+	static bool SphereAndTryangleCollision
 	(
 		Vector3 spherePos,
 		float r,
@@ -219,7 +219,7 @@ public:
 	/// <param name="maxPos"></param>
 	/// <param name="direction">球は、箱のどこに当たったか。箱は球が自分のどこにぶつかったかを返す</param>
 	/// <returns></returns>
-	static bool sphereAndBoxCollision
+	static bool SphereAndBoxCollision
 	(
 		const Vector3& spherePos,
 		const float& r,
@@ -238,7 +238,7 @@ public:
 	/// <param name="direction1">自分のどこがぶつかったかを返す</param>
 	/// <param name="direction2">自分のどこがぶつかったかを返す</param>
 	/// <returns></returns>
-	static bool boxAndBoxCollision
+	static bool BoxAndBoxCollision
 	(
 		const Vector3& centerPos1,
 		const Vector3& size1,
@@ -258,7 +258,7 @@ public:
 	/// <param name="vertexPoint">頂点の座標4つ(回転など適応後)(回転前の左下、左上、右下、右上の順で配列に入れる)</param>
 	/// <param name="crossPos">線とポリゴンがぶつかった場所</param>
 	/// /// <returns></returns>
-	static bool lineSegmentAndBoardCollision
+	static bool LineSegmentAndBoardCollision
 	(
 		Vector3 linePos1,
 		Vector3 linePos2,
@@ -278,7 +278,7 @@ public:
 	/// <param name="distance"></param>
 	/// <param name="crossPos"></param>
 	/// <returns></returns>
-	static bool rayAndPlaneCollision
+	static bool RayAndPlaneCollision
 	(
 		Vector3 layStartPos,
 		Vector3 layDirection,
@@ -288,7 +288,7 @@ public:
 		Vector3* crossPos
 	);
 
-	static bool rayAndTryangleCollision
+	static bool RayAndTryangleCollision
 	(
 		Vector3 layStartPos,
 		Vector3 layDirection,
@@ -303,7 +303,7 @@ public:
 	/// <summary>
 	/// 半直線と球の当たり判定
 	/// </summary>
-	static bool rayAndSphereCollision
+	static bool RayAndSphereCollision
 	(
 		Vector3 layStartPos,
 		Vector3 layDirection,

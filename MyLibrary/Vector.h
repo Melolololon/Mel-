@@ -50,11 +50,11 @@ struct Vector2
 
 #pragma region ä÷êî
 
-Vector2 vector2Normalize(const Vector2& vector);
+Vector2 Vector2Normalize(const Vector2& vector);
 
-float vector2Dot(const Vector2& vector1, const Vector2& vector2);
+float Vector2Dot(const Vector2& vector1, const Vector2& vector2);
 
-float vector2Cross(const Vector2& vector1, const Vector2& vector2);
+float Vector2Cross(const Vector2& vector1, const Vector2& vector2);
 
 #pragma endregion
 
@@ -116,10 +116,10 @@ struct Vector3
 #pragma region ä÷êî
 
 
-Vector3 vector3Normalize(const Vector3& vector);
+Vector3 Vector3Normalize(const Vector3& vector);
 
-Vector3 vector3Cross(const Vector3& vector1, const Vector3& vector2);
+Vector3 Vector3Cross(const Vector3& vector1, const Vector3& vector2);
 
-float vector3Dot(const Vector3& vector1, const Vector3& vector2);
+float Vector3Dot(const Vector3& vector1, const Vector3& vector2);
 #pragma endregion
 

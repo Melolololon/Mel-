@@ -11,7 +11,7 @@ PolygonManager::~PolygonManager()
 {
 }
 
-PolygonManager* PolygonManager::getInstance()
+PolygonManager* PolygonManager::GetInstance()
 {
 	static PolygonManager p;
 	return &p;
@@ -66,52 +66,52 @@ PolygonManager* PolygonManager::getInstance()
 //}
 
 
-void PolygonManager::addSprite(std::string keyName, sprite sprite) 
+void PolygonManager::AddSprite(std::string keyName, sprite sprite) 
 {
 	sprites.emplace(keyName, sprite);
 }
 
-void PolygonManager::deleteSprite(std::string keyName)
+void PolygonManager::DeleteSprite(std::string keyName)
 {
 }
 
-sprite PolygonManager::getSprite(std::string keyName)
+sprite PolygonManager::GetSprite(std::string keyName)
 {
 	return sprites[keyName];
 }
 
-void PolygonManager::clearSprite()
+void PolygonManager::ClearSprite()
 {
 }
 
 
 
 
-void PolygonManager::addTexture(std::string keyName, texture texture)
+void PolygonManager::AddTexture(std::string keyName, texture texture)
 {
 	textures.emplace(keyName, texture);
 }
-void PolygonManager::deleteTexture(std::string keyName){}
-texture PolygonManager::getTexture(std::string keyName)
+void PolygonManager::DeleteTexture(std::string keyName){}
+texture PolygonManager::GetTexture(std::string keyName)
 {
 
 	return textures[keyName];
 }
-void PolygonManager::clearTexture(){}
+void PolygonManager::ClearTexture(){}
 
 
-void PolygonManager::addPolygonPoint(std::string keyName, point point)
+void PolygonManager::AddPolygonPoint(std::string keyName, point point)
 {
 	points.emplace(keyName, point);
 }
-void PolygonManager::deletePolygonPoint(std::string keyName)
+void PolygonManager::DeletePolygonPoint(std::string keyName)
 {
 }
-point PolygonManager::getPolygonPoint(std::string keyName) 
+point PolygonManager::GetPolygonPoint(std::string keyName) 
 {
 	return points[keyName];
 }
-void PolygonManager::clearPolygonPoint()
+void PolygonManager::ClearPolygonPoint()
 {
 }
 

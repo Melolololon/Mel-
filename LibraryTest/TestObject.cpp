@@ -4,21 +4,21 @@
 TestObject::TestObject()
 {
 	m.key = "k";
-	Library::create3DBox({ 1,1,1 }, m);
-	Library::createHeapData2({ 244,244,244,255 }, 1, m);
-	Library::setPosition({ 5,3,0 }, m, 0);
+	Library::Create3DBox({ 1,1,1 }, m);
+	Library::CreateHeapData2({ 244,244,244,255 }, 1, m);
+	Library::SetPosition({ 5,3,0 }, m, 0);
 }
 TestObject::~TestObject()
 {
 }
 
-void TestObject::initialize()
+void TestObject::Initialize()
 {
 }
-void TestObject::update()
+void TestObject::Update()
 {
 }
-void TestObject::draw()
+void TestObject::Draw()
 {
-	Library::drawGraphic(m, 0);
+	Library::DrawGraphic(m, 0);
 }

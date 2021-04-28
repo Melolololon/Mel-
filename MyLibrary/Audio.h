@@ -40,11 +40,11 @@ public:
 	Audio();
 	~Audio();
 
-	void playWave(const char* path);
+	void PlayWave(const char* path);
 
 
-	void loadSound(const char* path, std::string name, bool loop);
-	void playLoadSound(std::string name);
-	void stopLoadSound(std::string name,bool resetFlag);
+	void LoadSound(const char* path, std::string name, bool loop);
+	void PlayLoadSound(std::string name);
+	void StopLoadSound(std::string name,bool resetFlag);
 };
 

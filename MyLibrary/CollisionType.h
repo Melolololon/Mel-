@@ -4,12 +4,12 @@
 //”»’è
 struct CollisionFlag
 {
-	bool sphere;
-	bool box;
-	bool ray;
-	bool lineSegment;
-	bool plane;
-	bool board;
+	bool sphere = false;
+	bool box = false;
+	bool ray = false;
+	bool lineSegment = false;
+	bool plane = false;
+	bool board = false;
 };
 
 enum CollisionType 

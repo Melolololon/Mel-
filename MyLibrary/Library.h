@@ -94,37 +94,37 @@ public:
 	/// </summary>
 	/// <param name="windowWidth">ウィンドウ横幅</param>
 	/// <param name="windowHeight">ウィンドウ縦幅</param>
-	static void initialize(int windowWidth, int windowHeight,const Color& screenColor,const wchar_t* windowName);
+	static void Initialize(int windowWidth, int windowHeight,const Color& screenColor,const wchar_t* windowName);
 
 	/// <summary>
 	/// 描画準備をします。更新処理部分の一番上で呼び出してください
 	/// </summary>
-	static void loopStartProcess();
+	static void LoopStartProcess();
 
 	/// <summary>
 	/// 描画します。描画処理の一番最後の呼び出してください
 	/// </summary>
-	static void loopEndProcess();
+	static void LoopEndProcess();
 
 	/// <summary>
 	/// ライブラリの終了フラグをtrueにします
 	/// </summary>
-	static void endFlagTrue();
+	static void EndFlagTrue();
 
 	/// <summary>
 	/// 終了フラグを取得します
 	/// </summary>
 	/// <returns>終了フラグ</returns>
-	static bool getIsEnd();
+	static bool GetIsEnd();
 
 	/// <summary>
 	/// 終了処理を行います
 	/// </summary>
-	static void end();
+	static void Finalize();
 #pragma endregion
 
 #pragma region WinAPI関係
-	static HWND getHWND();
+	static HWND GetHWND();
 
 #pragma endregion
 
@@ -136,7 +136,7 @@ public:
 	/// パイプラインを変更します
 	/// </summary>
 	/// <param name="num">パイプラインの番号が入っている変数</param>
-	static void setPipeline(pipeline num);
+	static void SetPipeline(pipeline num);
 
 	/// <summary>
 	/// シェーダーの情報を送り、パイプラインを作成します(ライブラリのものを利用する場合、{L"LIB","",""}と書いてください)
@@ -146,7 +146,7 @@ public:
 	/// <param name="pShaderData">ピクセルシェーダーのデータ</param>
 	/// <param name="useUserInputLayout">自分で設定したInputLayoutを適応するか</param>
 	/// <returns>パイプラインの番号</returns>
-	static pipeline createUserPipelineState(
+	static pipeline CreateUserPipelineState(
 		PipelineData pipelineData,
 		ShaderData vShaderData,
 		ShaderData gSyaderData,
@@ -167,13 +167,13 @@ public:
 	/// <param name="matrix"></param>
 	/// <param name="heapNum"></param>
 	/// <param name="number"></param>
-	static void getMatrix(float matrix[4][4],const ModelData& modelData, int number);
+	static void GetMatrix(float matrix[4][4],const ModelData& modelData, int number);
 
 	/// <summary>
 	/// ビュー、プロジェクション行列を乗算した行列を取得します
 	/// </summary>
 	/// <param name="matrix"></param>
-	static void getCameraMatrix(float matrix[4][4]);
+	static void GetCameraMatrix(float matrix[4][4]);
 
 
 	/// <summary>
@@ -181,14 +181,14 @@ public:
 	/// </summary>
 	/// <param name="semantics">セマンティクス名</param>
 	/// <param name="num">データ数(Vector3の場合、三次元なので3を入力)</param>
-	static void setInputLayout(const std::vector<InputLayoutData>& inputLayoutData);
+	static void SetInputLayout(const std::vector<InputLayoutData>& inputLayoutData);
 
 	//InputLayoutもパイプラインみたいに番号取得できるようにして生成時に渡すようにする?
 
 	/// <summary>
 	/// 現在セットされているインプットレイアウトを削除します
 	/// </summary>
-	static void deleteInputLayout();
+	static void DeleteInputLayout();
 
 
 #pragma region パイプライン設定
@@ -198,16 +198,16 @@ public:
 	/// 作成するパイプラインの深度テストを行うかどうかのフラグを設定します
 	/// </summary>
 	/// <param name="flag"></param>
-	static void setDespTestFlag(bool flag);
+	static void SetDespTestFlag(bool flag);
 #pragma endregion
 
 
 
 #pragma region ポストエフェクト
 	
-	static void setPostEffectPipeline(const pipeline& num);
+	static void SetPostEffectPipeline(const pipeline& num);
 
-	static pipeline createUserPostEffectPipelineState(const ShaderData& pShaderData);
+	static pipeline CreateUserPostEffectPipelineState(const ShaderData& pShaderData);
 #pragma endregion
 
 
@@ -220,7 +220,7 @@ public:
 	/// FPSを60に固定します
 	/// </summary>
 	/// <param name="framesPerSecond">フラグ</param>
-	static void setFramesPerSecond60(bool flag);
+	static void SetFramesPerSecond60(bool flag);
 
 	/// <summary>
 	/// 画面を指定した色で初期化します
@@ -248,7 +248,7 @@ public:
 	/// <param name="loadNormal">法線ベクトルを読み込むかどうか</param>
 	/// <param name="materialFireName">読み取ったマテリアルのファイル(.mtl)名を入れるstring型の変数(読み取らない場合、nullptr)</param>
 	/// <param name="p"></param>
-	static void loadOBJVertex
+	static void LoadObjVertex
 	(
 		const char* path, 
 		bool loadUV, 
@@ -265,7 +265,7 @@ public:
 	/// </summary>
 	/// <param name="createNum">生成数</param>
 	/// <param name="p"></param>
-	static void createPoint(int createNum, point* p);
+	static void CreatePoint(int createNum, point* p);
 
 	/// <summary>
 	/// 四角形の頂点情報を作成します
@@ -274,7 +274,7 @@ public:
 	/// <param name="dimention">次元</param>
 	/// <param name="p">データを入れる変数のポインタ</param>
 	/// <returns></returns>
-	static void createBoard(const Vector2& size,   ModelData& modelData);
+	static void CreateBoard(const Vector2& size,   ModelData& modelData);
 
 	/// <summary>
 	/// 円の頂点情報を作成します
@@ -302,7 +302,7 @@ public:
 	/// <param name="upVertex"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void createTriangularPyramid
+	static void CreateTriangularPyramid
 	(
 		const float& r, 
 		const int& vertexNumber, 
@@ -317,7 +317,7 @@ public:
 	/// <param name="size"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void create3DBox(const Vector3& size,  ModelData& modelData);
+	static void Create3DBox(const Vector3& size,  ModelData& modelData);
 
 #pragma endregion
 
@@ -331,7 +331,7 @@ public:
 	/// <param name="vertex">頂点データ(法線ベクトルは計算しなくてよい)</param>
 	/// <param name="index">インデックス</param>
 	/// <param name="p"></param>
-	static void createUserObject
+	static void CreateUserObject
 	(
 		const std::vector<Vector3>& vertexPos, 
 		const std::vector<Vector2>& vertexUV,
@@ -348,7 +348,7 @@ public:
 	/// <param name="vertexSumDataSize">頂点データ * 要素数のデータサイズ</param>
 	/// <param name="index">インデックス</param>
 	/// <param name="p"></param>
-	static void createUserObject2
+	static void CreateUserObject2
 	(
 		void** vertexData,
 		UINT vertexDataSize, 
@@ -372,7 +372,7 @@ public:
 	/// <param name="materialFileName">objのファイル名(拡張子含む)</param>
 	/// <param name="objectNum">生成数</param>
 	/// <param name="heapP"></param>
-	static void loadOBJMaterial
+	static void LoadObjMaterial
 	(
 		std::string materialDirectoryPath, 
 		std::string materialFileName, 
@@ -389,7 +389,7 @@ public:
 	/// <param name="dataP">void**に変換したデータのポインタ</param>
 	/// <param name="dataSize">データサイズ(sizeofで求めたもの)</param>
 	/// <param name="heapP"></param>
-	static void loadObjMaterialUseUserData
+	static void LoadObjMaterialUseUserData
 	(
 		std::string materialDirectoryPath,
 		std::string materialFileName,
@@ -406,7 +406,7 @@ public:
 	/// <param name="objectNum">オブジェクト生成数</param>
 	/// <param name="setConstDataFlag">自作した変数、構造体を使うかどうか</param>
 	/// <param name="p"></param>
-	static void createHeapData
+	static void CreateHeapData
 	(
 		const wchar_t* texturePath, 
 		int objectNum,
@@ -420,7 +420,7 @@ public:
 	/// <param name="objectNum">オブジェクト生成数</param>
 	/// <param name="setConstDataFlag">自作した変数、構造体を使うかどうか</param>
 	/// <param name="p"></param>
-	static void createHeapData2
+	static void CreateHeapData2
 	(
 		Color color, 
 		int objectNum, 
@@ -438,7 +438,7 @@ public:
 	/// <param name="dataP">データのポインタ(void**に変換する)</param>
 	/// <param name="dataSize">データサイズ(sizeofで求めて渡す)</param>
 	/// <param name="p"></param>
-	static void createUserHeapData
+	static void CreateUserHeapData
 	(
 		const wchar_t* texturePath, 
 		int objectNum, 
@@ -447,7 +447,7 @@ public:
 		ModelData& modelData
 	);
 
-	static void createUserHeapData2
+	static void CreateUserHeapData2
 	(
 		const Color& color,
 		int objectNum,
@@ -497,7 +497,7 @@ public:
 	/// </summary>
 	/// <param name="texturePath">テクスチャのパス</param>
 	/// <returns></returns>
-	static texture loadTexture(const wchar_t* texturePath);
+	static texture LoadTexture(const wchar_t* texturePath);
 
 	//static int createSpriteTexture(Color color);
 
@@ -506,7 +506,7 @@ public:
 	/// </summary>
 	/// <param name="size">spriteのポインタ</param>
 	/// <returns></returns>
-	static void createSprite(sprite* sprite);
+	static void CreateSprite(sprite* sprite);
 
 	/// <summary>
 	/// スプライトフォントを読み込みます
@@ -515,7 +515,7 @@ public:
 	/// <param name="lineNum">横、縦の文字数</param>
 	/// <param name="fontSize">文字サイズ</param>
 	/// <returns></returns>
-	static font loadSpriteFont
+	static font LoadSpriteFont
 	(
 		const wchar_t *const texturePath,
 		const Vector2& lineNum
@@ -536,7 +536,7 @@ public:
 	/// <param name="dataNum">createDataで生成したデータの番号</param>
 	/// <param name="number">何個目のやつを描画するか(ヒープの何個目のCBVを指定するか)</param>
 	/// <returns></returns>
-	static void drawGraphic(const ModelData& modelData, int numbe);
+	static void DrawGraphic(const ModelData& modelData, int numbe);
 
 #pragma region スプライト
 
@@ -548,7 +548,7 @@ public:
 	/// <param name="size">大きさ</param>
 	/// <param name="color">色</param>
 	/// <param name="spriteHandle">スプライトハンドル</param>
-	static void drawSpriteBox
+	static void DrawSpriteBox
 	(
 		const Vector2& position, 
 		const Vector2& size, 
@@ -563,7 +563,7 @@ public:
 	/// <param name="size"></param>
 	/// <param name="color"></param>
 	/// <param name="spriteHandle"></param>
-	static void drawSprite3DBox
+	static void DrawSprite3DBox
 	(
 		const Vector3& position,
 		const Vector2& size,
@@ -583,7 +583,7 @@ public:
 	/// <param name="position">座標</param>
 	/// <param name="spriteNumber"></param>
 	/// <param name="textureNumber"></param>
-	static void drawSprite
+	static void DrawSprite
 	(
 		const Vector2& position, 
 		const sprite& spriteNumber, 
@@ -597,7 +597,7 @@ public:
 	/// <param name="currentNum">1から開始</param>
 	/// <param name="spriteNumber"></param>
 	/// <param name="textureNumber"></param>
-	static void drawSpriteAnimation
+	static void DrawSpriteAnimation
 	(
 		const Vector2& position,
 		const Vector2& maxSqare,
@@ -614,7 +614,7 @@ public:
 	/// <param name="currentEndNum">右下の位置</param>
 	/// <param name="spriteNumber">スプライト番号</param>
 	/// <param name="textureNumber">テクスチャ番号</param>
-	static void drawSpriteAnimation2
+	static void DrawSpriteAnimation2
 	(
 		const Vector2& position, 
 		const Vector2& currentStartNum, 
@@ -630,7 +630,7 @@ public:
 	/// <param name="size">スプライトのサイズ</param>
 	/// <param name="spriteNumber">スプライトを</param>
 	/// <param name="textureNumber"></param>
-	static void drawSprite3D
+	static void DrawSprite3D
 	(
 		const Vector3& position,
 		const Vector2& size,
@@ -647,7 +647,7 @@ public:
 	/// <param name="rightDownPos">テクスチャ上の左上座標</param>
 	/// <param name="spriteNumber">テクスチャ上の右下座標</param>
 	/// <param name="textureNumber"></param>
-	static void drawSprite3DAnimation
+	static void DrawSprite3DAnimation
 	(
 		const Vector3& position,
 		const Vector2& size,
@@ -665,24 +665,24 @@ public:
 	/// <param name="point"></param>
 	/// <param name="texture"></param>
 	/// <param name="num">番号</param>
-	static void drawPointTexture(Vector3 pos, point point, texture texture, int num);
+	static void DrawPointTexture(Vector3 pos, point point, texture texture, int num);
 
 #pragma endregion
 
 #pragma region 削除
-	static void deleteModelData(const ModelData& modelData);
+	static void DeleteModelData(const ModelData& modelData);
 
 	/// <summary>
 	/// スプライトを削除します
 	/// </summary>
 	/// <param name="sprite"></param>
-	static void deleteSprite(sprite sprite);
+	static void DeleteSprite(sprite sprite);
 #pragma endregion
 
 #pragma region 見た目
 
 #pragma region スムースシェーディング
-	static void setSmoothingFlag(bool flag);
+	static void SetSmoothingFlag(bool flag);
 #pragma endregion
 
 
@@ -697,7 +697,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void setMulColor(Color color, const ModelData& modelData, int number);
+	static void SetMulColor(Color color, const ModelData& modelData, int number);
 
 	/// <summary>
 	/// 色を加算します
@@ -705,7 +705,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void setAddColor(Color color, const ModelData& modelData, int number);
+	static void SetAddColor(Color color, const ModelData& modelData, int number);
 
 	/// <summary>
 	/// 色を減算します
@@ -713,7 +713,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void setSubColor(Color color, const ModelData& modelData, int number);
+	static void SetSubColor(Color color, const ModelData& modelData, int number);
 
 #pragma endregion
 
@@ -724,7 +724,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="pointNum"></param>
 	/// <param name="num"></param>
-	static void setPointMulColor(Color color, point pointNum, int num);
+	static void SetPointMulColor(Color color, point pointNum, int num);
 
 
 #pragma endregion
@@ -734,21 +734,21 @@ public:
 	/// オブジェクトを平面化するかを設定します
 	/// </summary>
 	/// <param name="flag">平面化するかどうか</param>
-	static void setIsPlane(bool flag);
+	static void SetIsPlane(bool flag);
 	/// <summary>
 	/// ビルボードをするかを設定します
 	/// </summary>
 	/// <param name="x">X軸ビルボードするかどうか</param>
 	/// <param name="y"></param>
 	/// <param name="z"></param>
-	static void setIsBillboard(bool x, bool y, bool z);
+	static void SetIsBillboard(bool x, bool y, bool z);
 #pragma endregion
 
 #pragma region 2D
 
-	static void setSpriteMulColor(Color color, sprite spriteNum);
-	static void setSpriteAddColor(Color color, sprite spriteNum);
-	static void setSpriteSubColor(Color color, sprite spriteNum);
+	static void SetSpriteMulColor(Color color, sprite spriteNum);
+	static void SetSpriteAddColor(Color color, sprite spriteNum);
+	static void SetSpriteSubColor(Color color, sprite spriteNum);
 
 #pragma endregion
 
@@ -766,7 +766,7 @@ public:
 	/// <param name="position">座標</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void setPosition(Vector3 position, const ModelData& modelData, int number);
+	static void SetPosition(Vector3 position, const ModelData& modelData, int number);
 
 	/// <summary>
 	/// サイズを変更します
@@ -774,7 +774,7 @@ public:
 	/// <param name="scale">サイズ((1,1,1)で等倍)</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void setScale(Vector3 scale, const ModelData& modelData, int number);
+	static void SetScale(Vector3 scale, const ModelData& modelData, int number);
 
 	/// <summary>
 	/// オブジェクトをZ、X、Yの順に回転させます
@@ -782,7 +782,7 @@ public:
 	/// <param name="angle">角度</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void setAngle(Vector3 angle, const ModelData& modelData, int number);
+	static void SetAngle(Vector3 angle, const ModelData& modelData, int number);
 
 	/// <summary>
 	/// ポリゴンを法線ベクトルの方向に押し出します
@@ -801,22 +801,22 @@ public:
 	/// </summary>
 	/// <param name="position"></param>
 	/// <param name="sptiteNumber"></param>
-	static void setSpritePosition(Vector2 position, sprite sptiteNumber);
+	static void SetSpritePosition(Vector2 position, sprite sptiteNumber);
 
 	/// <summary>
 	/// スプライトのサイズを変えます(アンカーポイントを調整する)
 	/// </summary>
 	/// <param name="scale">サイズ((1,1)を等倍とする)</param>
 	/// <param name="sptiteNumber"></param>
-	static void setSpriteScale(Vector2 scale, sprite sptiteNumber);
+	static void SetSpriteScale(Vector2 scale, sprite sptiteNumber);
 
 	/// <summary>
 	/// スプライトの角度を変えます
 	/// </summary>
 	/// <param name="angle">角度(Z軸を基準)</param>
 	/// <param name="sptiteNumber"></param>
-	static void setSpriteAngle(float angle, sprite sptiteNumber);
-	static void setSpriteAngle3D(const Vector3& angle, const sprite& spriteNumber);
+	static void SetSpriteAngle(float angle, sprite sptiteNumber);
+	static void SetSpriteAngle3D(const Vector3& angle, const sprite& spriteNumber);
 
 #pragma endregion
 
@@ -827,7 +827,7 @@ public:
 	/// <param name="scale"></param>
 	/// <param name="pointNum"></param>
 	/// <param name="num"></param>
-	static void setPointScale(Vector2 scale, point pointNum, int num);
+	static void SetPointScale(Vector2 scale, point pointNum, int num);
 
 
 #pragma region ポストエフェクト
@@ -836,11 +836,11 @@ public:
 	/// </summary>
 	/// <param name="pos">座標</param>
 	/// <param name="rtNum">どのレンダーターゲットを指定するか(今は意味なし)</param>
-	static void setRenderTargetPosition(const Vector3& pos, const int& rtNum);
+	static void SetRenderTargetPosition(const Vector3& pos, const int& rtNum);
 
-	static void setRenderTargetAngle(const Vector3& angle, const int& rtNum);
+	static void SetRenderTargetAngle(const Vector3& angle, const int& rtNum);
 
-	static void setRenderTargetScale(const Vector3& scale, const int& rtNum);
+	static void SetRenderTargetScale(const Vector3& scale, const int& rtNum);
 
 	//trueにすると上(Y軸)向くの修正する
 	/// <summary>
@@ -848,7 +848,7 @@ public:
 	/// </summary>
 	/// <param name="flag"></param>
 	/// <param name="rtNum"></param>
-	static void setPostEffectCameraFlag(const bool& flag,const int& rtNum);
+	static void SetPostEffectCameraFlag(const bool& flag,const int& rtNum);
 #pragma endregion
 
 #pragma region モデルアニメーション
@@ -873,7 +873,7 @@ public:
 	/// <param name="vector">移動量</param>
 	/// <param name="boneNum">操作するボーン番号</param>
 	/// <param name="modelData">モデルデータ</param>
-	static void setOBJBoneMoveVector
+	static void SetObjBoneMoveVector
 	(
 		const Vector3& vector,
 		const UINT& boneNum ,
@@ -887,7 +887,7 @@ public:
 	/// <param name="scale"></param>
 	/// <param name="boneNum"></param>
 	/// <param name="modelData"></param>
-	static void setOBJBoneScale
+	static void SetObjBoneScale
 	(
 		const Vector3& scale, 
 		const UINT& boneNum,
@@ -901,7 +901,7 @@ public:
 	/// <param name="angle"></param>
 	/// <param name="boneNum"></param>
 	/// <param name="modelData"></param>
-	static void setOBJBoneAngle
+	static void SetObjBoneAngle
 	(
 		const Vector3& angle, 
 		const UINT& boneNum,
@@ -915,7 +915,7 @@ public:
 	/// <param name="boneNum">ボーン番号</param>
 	/// <param name="parentBoneNum">親ボーン番号</param>
 	/// <param name="modelData">モデルデータ</param>
-	static void setParentOBJBone
+	static void SetParentObjBone
 	(
 		const UINT& boneNum,
 		const UINT& parentBoneNum,
@@ -926,7 +926,7 @@ public:
 	/// 親オブジェクトの拡縮の影響度を設定します
 	/// </summary>
 	/// <param name="scaleImpact">拡縮影響度(倍率)</param>
-	static void setParentOBJBoneScaleImpact
+	static void SetParentObjBoneScaleImpact
 	(
 		const UINT& boneNum, 
 		const Vector3& scaleImpact,
@@ -937,7 +937,7 @@ public:
 	/// 親オブジェクトの回転の影響度を設定します
 	/// </summary>
 	/// <param name="angleImpact">回転影響度(倍率)</param>
-	static void setParentOBJBoneAngleImpact
+	static void SetParentObjBoneAngleImpact
 	(
 		const UINT& boneNum,
 		const Vector3& angleImpact,
@@ -948,7 +948,7 @@ public:
 	/// 親オブジェクトの移動量の影響度を設定します
 	/// </summary>
 	/// <param name="moveVectorImpact">移動量影響度(倍率)</param>
-	static void setParentOBJBoneMoveVectorImpact
+	static void SetParentObjBoneMoveVectorImpact
 	(
 		const UINT& boneNum, 
 		const Vector3& moveVectorImpact,
@@ -969,7 +969,7 @@ public:
 	/// <param name="rightDownPos">テクスチャの右下座標</param>
 	/// <param name="p">点</param>
 	/// <param name="num">番号</param>
-	static void setPointBoardAnimation
+	static void SetPointBoardAnimation
 	(
 		const Vector2& leftUpPos,
 		const Vector2& rightDownPos,
@@ -1008,7 +1008,7 @@ public:
 	/// <param name="position">カメラの位置を指定します</param>
 	/// <param name="target">カメラの注視点を指定します</param>
 	/// <param name="up">カメラの上ベクトルを指定します(これいらないかも)</param>
-	static void setCameraMatrixPoint(Vector3 position, Vector3 target, Vector3 up);
+	static void SetCameraMatrixPoint(Vector3 position, Vector3 target, Vector3 up);
 
 	/// <summary>
 	/// カメラの情報をセットします
@@ -1016,14 +1016,14 @@ public:
 	/// <param name="position">座標</param>
 	/// <param name="target">注視点</param>
 	/// <param name="up">上ベクトル</param>
-	static void setCamera(Vector3 position, Vector3 target, Vector3 up);
+	static void SetCamera(Vector3 position, Vector3 target, Vector3 up);
 
 	/// <summary>
 	/// これ消す
 	/// </summary>
 	/// <param name="eyeVelocity"></param>
 	/// <param name="targetVelocity"></param>
-	static void setCameraVelocity(Vector3 eyeVelocity, Vector3 targetVelocity);
+	static void SetCameraVelocity(Vector3 eyeVelocity, Vector3 targetVelocity);
 
 	/// <summary>
 	/// カメラの座標、注視点、上ベクトルの値を回転行列で変更します
@@ -1031,14 +1031,14 @@ public:
 	/// <param name="eyeAngle">座標</param>
 	/// <param name="targetAngle">注視点</param>
 	/// <param name="upAngle">これ消す</param>
-	static void setCameraAngle(Vector3 eyeAngle, Vector3 targetAngle, Vector3 upAngle);
+	static void SetCameraAngle(Vector3 eyeAngle, Vector3 targetAngle, Vector3 upAngle);
 
 	/// <summary>
 	/// カメラの表示範囲を指定します
 	/// </summary>
 	/// <param name="nearNum">表示範囲(手前)</param>
 	/// <param name="farNum">表示範囲(奥)</param>
-	static void setCameraNearAndFar(float nearNum, float farNum);
+	static void SetCameraNearAndFar(float nearNum, float farNum);
 #pragma endregion
 
 #pragma region ライト
@@ -1047,9 +1047,9 @@ public:
 	/// ライトの向きをセットします
 	/// </summary>
 	/// <param name="vector">ライトのベクトル(向き)</param>
-	static void setLightVector(Vector3 vector);
+	static void SetLightVector(Vector3 vector);
 
-	static void setLightColor(Color lightColor);
+	static void SetLightColor(Color lightColor);
 #pragma endregion
 
 #pragma region 情報取得
@@ -1060,7 +1060,7 @@ public:
 	/// </summary>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static std::vector<std::vector<Vector3>> getModelVerticesPosition(const ModelData& modelData);
+	static std::vector<std::vector<Vector3>> GetModelVerticesPosition(const ModelData& modelData);
 
 	/// <summary>
 	/// オブジェクトの頂点座標を上書きします
@@ -1068,10 +1068,10 @@ public:
 	/// <param name="vertPos"></param>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static bool overrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const ModelData& modelData);
+	static bool OverrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const ModelData& modelData);
 
 #pragma region スプライト
-	static Vector2 getTextureSize(texture textureHandle);
+	static Vector2 GetTextureSize(texture textureHandle);
 #pragma endregion
 
 #pragma region アニメーション
@@ -1080,7 +1080,7 @@ public:
 	/// </summary>
 	/// <param name="modelData"></param>
 	/// <returns></returns>
-	static std::vector<Vector3> getBonePosition(const ModelData& modelData);
+	static std::vector<Vector3> GetBonePosition(const ModelData& modelData);
 	
 
 #pragma endregion
@@ -1095,7 +1095,7 @@ public:
 	/// <param name="minPosition"></param>
 	/// <param name="maxPosition"></param>
 	/// <param name="boxSize"></param>
-	static void getModelBoxCollisionData
+	static void GetModelBoxCollisionData
 	(
 		const ModelData& modelData,
 		Vector3* pointPosition,
@@ -1115,19 +1115,19 @@ public:
 	/// <param name="eyeVelocity">回転させるベクトル</param>
 	/// <param name="flag">正規化するかどうか</param>
 	/// <returns></returns>
-	static Vector3 rotateVectorToCameraPosition(Vector3 vector, bool flag);
+	static Vector3 RotateVectorToCameraPosition(Vector3 vector, bool flag);
 
 	/// <summary>
 ///	setCameraAngleで回転、移動させたカメラの座標を取得します
 /// </summary>
 /// <returns></returns>
-	static Vector3 getRotateCameraPosition();
+	static Vector3 GetRotateCameraPosition();
 
 	/// <summary>
 ///	setCameraAngleで回転、移動させたカメラの注視点を取得します
 /// </summary>
 /// <returns></returns>
-	static Vector3 getRotateCameraTarget();
+	static Vector3 GetRotateCameraTarget();
 #pragma endregion
 
 #pragma region 文字表示
@@ -1138,7 +1138,7 @@ public:
 	/// <param name="size">文字サイズ</param>
 	/// <param name="text">表示する文字</param>
 	/// <param name="spriteTextureNum"></param>
-	static void drawsSpriteFontString
+	static void DrawsSpriteFontString
 	(
 		Vector2 position, 
 		Vector2 size, 
@@ -1155,7 +1155,7 @@ public:
 	/// <param name="path"></param>
 	/// <param name="vector"></param>
 	/// <returns></returns>
-	static bool loadTextIntVector(const char* path, std::vector<std::vector<int>>& vector);
+	static bool LoadTextIntVector(const char* path, std::vector<std::vector<int>>& vector);
 #pragma endregion
 
 #pragma region 親子構造
@@ -1166,7 +1166,7 @@ public:
 	/// <param name="number"></param>
 	/// <param name="parentObjHeapNum"></param>
 	/// <param name="parentNum"></param>
-	static void setParent(const ModelData& modelData,  int number, const ModelData& parentmodelData, int parentNum);
+	static void SetParent(const ModelData& modelData,  int number, const ModelData& parentmodelData, int parentNum);
 
 #pragma endregion
 
@@ -1181,7 +1181,7 @@ public:
 	/// <param name="normal1">法線ベクトルを入れる変数</param>
 	/// <param name="normal2">同じ</param>
 	/// <param name="normal3">同じ</param>
-	static void calculationNormal
+	static void CalculationNormal
 	(
 		Vector3 pos1, Vector3 pos2, Vector3 pos3,
 		Vector3& normal1, Vector3& normal2, Vector3& normal3
@@ -1193,27 +1193,27 @@ public:
 	/// サウンドを再生します(毎回読み込みが発生)
 	/// </summary>
 	/// <param name="path"></param>
-	static void playSound(const char* path);
+	static void PlaySound(const char* path);
 
 	/// <summary>
 	/// サウンドを読み込みます
 	/// </summary>
 	/// <param name="path">ファイルのパス</param>
 	/// <param name="name">サウンド名(任意の名前)</param>
-	static void loadSound(const char* path, std::string name,bool loop);
+	static void LoadSound(const char* path, std::string name,bool loop);
 
 	/// <summary>
 	/// 読み込んだサウンド再生します
 	/// </summary>
 	/// <param name="name">サウンド名</param>
-	static void playLoadSound(std::string name);
+	static void PlayLoadSound(std::string name);
 
 	/// <summary>
 	/// 現在再生してる読み込んだサウンドを一時停止します
 	/// </summary>
 	/// <param name="name"></param>
 	/// <param name="resetFlag">曲をリセットするかどうか</param>
-	static void stopLoadSound(std::string name, bool resetFlag);
+	static void StopLoadSound(std::string name, bool resetFlag);
 #pragma endregion
 
 
@@ -1225,18 +1225,18 @@ public:
 	/// </summary>
 	/// <param name="number">乱数幅(0含める)</param>
 	/// <returns></returns>
-	static int getRandomNumber(int number);
+	static int GetRandomNumber(int number);
 
 	/// <summary>
 	/// float型の乱数を取得します
 	/// </summary>
 	/// <param name="number">乱数幅(0含める)</param>
 	/// <returns></returns>
-	static float getRandomNumberFloat(int number);
+	static float GetRandomNumberFloat(int number);
 
-	static int getRandomNumberRangeSelect(const int& start, const int& end);
+	static int GetRandomNumberRangeSelect(const int& start, const int& end);
 
-	static float getRandomNumberRangeSelectFloat(const int& start, const int& end);
+	static float GetRandomNumberRangeSelectFloat(const int& start, const int& end);
 #pragma endregion
 
 

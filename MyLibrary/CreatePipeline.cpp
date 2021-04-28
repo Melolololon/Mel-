@@ -14,7 +14,7 @@ CreatePipeline::~CreatePipeline()
 
 
 
-void CreatePipeline::createRootSigneture(D3D12_ROOT_SIGNATURE_DESC rootSigDesc,ID3D12RootSignature** rootSigneture)
+void CreatePipeline::CreateRootSigneture(D3D12_ROOT_SIGNATURE_DESC rootSigDesc,ID3D12RootSignature** rootSigneture)
 {
 	ComPtr<ID3DBlob>rootSigBlob;
 	ComPtr<ID3DBlob>errorBlob;
@@ -32,7 +32,7 @@ void CreatePipeline::createRootSigneture(D3D12_ROOT_SIGNATURE_DESC rootSigDesc,I
 
 }
 
-void CreatePipeline::createPipeline(int dimention, D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc,ID3D12PipelineState** pipeline)
+void CreatePipeline::CreatePipelineState(int dimention, D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc,ID3D12PipelineState** pipeline)
 {
 	HRESULT result;
 	ComPtr<ID3DBlob> vsBlob;
@@ -182,7 +182,7 @@ void CreatePipeline::createPipeline(int dimention, D3D12_GRAPHICS_PIPELINE_STATE
 }
 
 
-bool CreatePipeline::createUserPipeline(
+bool CreatePipeline::CreateUserPipeline(
 	int dimention,
 	ShaderData vShaderData,
 	ShaderData gSyaderData,
@@ -520,7 +520,7 @@ bool CreatePipeline::createUserPipeline(
 }
 
 
-void CreatePipeline::setInputLayout(const std::vector<InputLayoutData>& inputLayoutData)
+void CreatePipeline::SetInputLayout(const std::vector<InputLayoutData>& inputLayoutData)
 {
 	//TYPELESS 1つ4バイトの型指定なし?
 	//FLOAT float
@@ -609,7 +609,7 @@ void CreatePipeline::setInputLayout(const std::vector<InputLayoutData>& inputLay
 	}
 }
 
-void CreatePipeline::deleteInputLayout() 
+void CreatePipeline::DeleteInputLayout() 
 {
 	inputLayoutVector.clear();
 	inputLayoutVector.shrink_to_fit();
