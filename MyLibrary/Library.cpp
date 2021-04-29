@@ -1092,7 +1092,7 @@ void Library::SetScale(Vector3 scale, const ModelData& modelData , int number)
 	dx12->SetObjectScale({ scale.x,scale.y,scale.z }, modelData.key, number);
 }
 
-void Library::setPushPorigonNumber(float ex, const ModelData& modelData, int number)
+void Library::SetPushPorigonNumber(float ex, const ModelData& modelData, int number)
 {
 	dx12->SetObjectPushNum(ex, modelData.key, number);
 }

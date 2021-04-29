@@ -20,6 +20,7 @@ Sprite::~Sprite(){}
 void Sprite::CreateBuffer()
 {
 
+
 	//頂点バッファ作成
 	CreateBuffer::GetInstance()->CreateVertexBuffer
 	(
@@ -57,6 +58,7 @@ void Sprite::DataMap
 	Texture* texture
 )
 {
+
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
 
@@ -69,7 +71,7 @@ void Sprite::DataMap
 	(
 		constData.scale.x,
 		constData.scale.y,
-		0
+		1
 	);
 	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(constData.angle.z));
 	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
@@ -138,11 +140,6 @@ void Sprite::SetCmdList(Texture* texture)
 
 	cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
 }
-
-void Sprite::Draw(Texture* texture)
-{
-}
-
 
 
 void Sprite::MapVertexBuffer(void** data)

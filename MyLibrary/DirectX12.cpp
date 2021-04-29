@@ -959,6 +959,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	Sprite2D::Initialize(windouWidth, windowHeight);
 	Sprite3D::Initialize();
 
+	Model::SetViewAndProjectionMat(mainCamera->Get3DCameraMatrix(mainCameraData));
+	Sprite3D::SetViewAndProjectionMatrix(mainCamera->Get3DCameraMatrix(mainCameraData));
 }
 
 void DirectX12::LoopStartProcess()
@@ -1717,7 +1719,7 @@ void DirectX12::SetCameraData(Vector3 eye, Vector3 target, Vector3 up)
 	);
 
 	Model::SetViewAndProjectionMat(mainCamera->Get3DCameraMatrix(mainCameraData));
-
+	Sprite3D::SetViewAndProjectionMatrix(mainCamera->Get3DCameraMatrix(mainCameraData));
 }
 
 
@@ -3845,6 +3847,8 @@ void DirectX12::DataMap(const ModelData& modelData,int number )
 
 	}
 
+
+	DirectX::XMMATRIX viewAndProjectionMat = mainCamera->Get3DCameraMatrix(mainCameraData);
 	if (isPlane)
 	{
 		DirectX::XMFLOAT4 shadowNormal =
@@ -3859,11 +3863,11 @@ void DirectX12::DataMap(const ModelData& modelData,int number )
 			DirectX::XMLoadFloat4(&rLight)
 		);
 
-		constData3D->mat = matWorld * matShadow * mainCamera->Get3DCameraMatrix(mainCameraData);
+		constData3D->mat = matWorld * matShadow * viewAndProjectionMat;
 	}
 	else
 	{
-		constData3D->mat = matWorld * mainCamera->Get3DCameraMatrix(mainCameraData);
+		constData3D->mat = matWorld * viewAndProjectionMat;
 	}
 
 	constData3D->worldMat = matWorld;
@@ -4249,10 +4253,10 @@ void DirectX12::Sprite3DDataMap
 		{ size.x - width, size.y - height, 0 }
 	);
 
-	vertex[1].uv = { 0.0f,0.0f };
 	vertex[0].uv = { 0.0f,1.0f };
-	vertex[3].uv = { 1.0f,0.0f };
+	vertex[1].uv = { 0.0f,0.0f };
 	vertex[2].uv = { 1.0f,1.0f };
+	vertex[3].uv = { 1.0f,0.0f };
 
 	spriteVertices[spriteNumber] = vertex;
 
@@ -4282,7 +4286,6 @@ void DirectX12::Sprite3DDataMap
 	);
 
 	spriteConstBufferDatas[spriteNumber]->mat = matWorld * mainCamera->Get3DCameraMatrix(mainCameraData);
-
 
 }
 

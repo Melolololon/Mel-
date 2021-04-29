@@ -11,8 +11,13 @@
 std::unique_ptr<FbxModel> fbxModel = std::make_unique<FbxModel>();
 
 std::unique_ptr<Sprite2D> sprite2D = std::make_unique<Sprite2D>();
+std::unique_ptr<Sprite3D> sprite3D = std::make_unique<Sprite3D>();
 std::unique_ptr<Texture> tex = std::make_unique<Texture>();
 
+ModelData data;
+
+sprite spr;
+texture sprTex;
 
 Play::Play(){}
 
@@ -22,6 +27,7 @@ Play::~Play(){}
 void Play::Initialize()
 {
 	sprite2D->CreateSprite();
+	sprite3D->CreateSprite({100,100});
 	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
 	fbxModel->LoadModel
 	(
@@ -30,6 +36,12 @@ void Play::Initialize()
 		0
 	);
 
+	data.key = "Key";
+	Library::CreateBoard({ 100,100 }, data);
+	Library::CreateHeapData2({ 255,0,0,255 }, 1, data);
+
+	Library::CreateSprite(&spr);
+	sprTex = Library::LoadTexture(L"Resources/Texture/testTexture.png");
 }
 
 Vector3 angle = 0;
@@ -45,13 +57,24 @@ void Play::Update()
 	if (DirectInput::KeyState(DIK_D))
 		angle.x -= 3.0f;
 	fbxModel->SetAngle(angle, 0);
+
+	sprite3D->SetAngle(angle);
 }
 
 void Play::Draw()
 {
-	fbxModel->Draw(0);
+	//fbxModel->Draw(0);
 
-	sprite2D->Draw(tex.get());
+	//sprite2D->Draw(tex.get());
+
+	//sprite3D->SetPosition({ 0,0,0 });
+    sprite3D->Draw(tex.get());
+
+	//Library::SetPosition({ 120,0,0 }, data, 0);
+	//Library::DrawGraphic(data,0);
+
+	Library::SetIsBillboard(true, true, true);
+	Library::DrawSprite3D({ 1,1,1 }, { 100,100 }, spr, sprTex);
 }
 
 void Play::end()
