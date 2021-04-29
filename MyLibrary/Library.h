@@ -789,7 +789,7 @@ public:
 	/// <param name="ex">‰Ÿ‚µo‚µ‹ï‡(0‚Å’Êí‚Ìƒ‚ƒfƒ‹‚ğ•\¦)</param>
 	/// <param name="polygonDataNumber"></param>
 	/// <param name="number"></param>
-	static void setPushPorigonNumber(float ex, const ModelData& modelData, int number);
+	static void SetPushPorigonNumber(float ex, const ModelData& modelData, int number);
 
 #pragma endregion
 

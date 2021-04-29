@@ -69,26 +69,18 @@ void Sprite2D::Draw(Texture* texture)
 	width /= 2;
 	height /= 2;
 
-	std::vector<Vertex>vertexVector;
-	vertexVector = CreatePolygon::GetInstance()->SetBoardPolygonVertex
-	(
-		{ 0 - width,textureSize.y - height,0, },
-		{ 0 - width,0 - height, 0, },
-		{ textureSize.x - width,textureSize.y - height,0 },
-		{ textureSize.x - width,0 - height,0, }
-	);
-
-	vertices[0].pos = vertexVector[0].pos;
-	vertices[1].pos = vertexVector[1].pos;
-	vertices[2].pos = vertexVector[2].pos;
-	vertices[3].pos = vertexVector[3].pos;
-	vertex[0].pos = vertexVector[0].pos;
-	vertex[1].pos = vertexVector[1].pos;
-	vertex[2].pos = vertexVector[2].pos;
-	vertex[3].pos = vertexVector[3].pos;
+	vertices[0].pos = { 0 - width,textureSize.y - height,0, };
+	vertices[1].pos = { 0 - width,0 - height, 0, };
+	vertices[2].pos = { textureSize.x - width,textureSize.y - height,0 };
+	vertices[3].pos = { textureSize.x - width,0 - height,0, };
+	auto vertexNum = vertices.size();
+	for (int i = 0; i < vertexNum; i++)
+		vertex[i].pos = vertices[i].pos;
 
 	UnmapVertexBuffer();
 
 	DataMap(cameraMatrix, true, texture);
 	SetCmdList(texture);
 }
+
+

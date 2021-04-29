@@ -26,11 +26,15 @@ public:
 
  	static bool Initialize(const int winWidth,const int winHeight);
 	
-
 	void CreateSprite();
+	void Draw(Texture* texture);
 
+#pragma region ëÄçÏ
+	void SetPosition(const Vector2& pos) { constData.position = { pos.x,pos.y,0 }; }
+	void SetAngle(const float& angle) { constData.angle = { 0,0,angle }; }
+	void SetScale(const Vector2& scale) { constData.scale = scale.ToXMFLOAT2(); }
+#pragma endregion
 
-	void Draw(Texture* texture)override;
 
 	static PipelineState GetDefaultPipeline() { return defaultPipeline; }
 };

@@ -266,37 +266,67 @@ bool PipelineState::CreateModelPipeline
 	}
 	if (!inputLayoutData)
 	{
-		inputLayoutVector.resize(3);
-		inputLayoutVector[0] =
+
+		switch (pipelineType)
 		{
-				"POSITION",
-				0,
-				DXGI_FORMAT_R32G32B32_FLOAT,
-				0,
-				D3D12_APPEND_ALIGNED_ELEMENT,
-				D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-				0
-		};
-		inputLayoutVector[1] =
-		{
-				"TEXCOORD",
-				0,
-				DXGI_FORMAT_R32G32_FLOAT,
-				0,
-				D3D12_APPEND_ALIGNED_ELEMENT,
-				D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-				0
-		};
-		inputLayoutVector[2] =
-		{
-				"NORMAL",
-				0,
-				DXGI_FORMAT_R32G32B32_FLOAT,
-				0,
-				D3D12_APPEND_ALIGNED_ELEMENT,
-				D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-				0
-		};
+		case PIPELINE_TYPE_MODEL:
+			inputLayoutVector.resize(3);
+			inputLayoutVector[0] =
+			{
+					"POSITION",
+					0,
+					DXGI_FORMAT_R32G32B32_FLOAT,
+					0,
+					D3D12_APPEND_ALIGNED_ELEMENT,
+					D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+					0
+			};
+			inputLayoutVector[1] =
+			{
+					"TEXCOORD",
+					0,
+					DXGI_FORMAT_R32G32_FLOAT,
+					0,
+					D3D12_APPEND_ALIGNED_ELEMENT,
+					D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+					0
+			};
+			inputLayoutVector[2] =
+			{
+					"NORMAL",
+					0,
+					DXGI_FORMAT_R32G32B32_FLOAT,
+					0,
+					D3D12_APPEND_ALIGNED_ELEMENT,
+					D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+					0
+			};
+			break;
+		case PIPELINE_TYPE_SPRITE:
+			inputLayoutVector.resize(2);
+			inputLayoutVector[0] =
+			{
+					"POSITION",
+					0,
+					DXGI_FORMAT_R32G32B32_FLOAT,
+					0,
+					D3D12_APPEND_ALIGNED_ELEMENT,
+					D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+					0
+			};
+			inputLayoutVector[1] =
+			{
+					"TEXCOORD",
+					0,
+					DXGI_FORMAT_R32G32_FLOAT,
+					0,
+					D3D12_APPEND_ALIGNED_ELEMENT,
+					D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+					0
+			};
+			break;
+		}
+		
 	}
 
 	pDesc.InputLayout.pInputElementDescs = inputLayoutVector.data();

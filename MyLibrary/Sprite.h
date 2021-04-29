@@ -34,7 +34,6 @@ private:
 	static ComPtr<ID3D12RootSignature>rootSignature;
 	static ComPtr<ID3D12PipelineState>defaultPipeline;
 
-	SpriteConstData constData;
 
 #pragma region バッファ
 
@@ -62,6 +61,7 @@ protected:
 
 	void CreateBuffer();
 
+	SpriteConstData constData;
 #pragma region 関数
 
 
@@ -91,12 +91,9 @@ public:
 
 #pragma region 見た目操作
 	//AddColorとか
+	
 #pragma endregion
 
 
-	/// <summary>
-	/// スプライトを描画します。
-	/// </summary>
-	virtual void Draw(Texture* texture) = 0;
 };
 
