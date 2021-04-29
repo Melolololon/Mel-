@@ -37,9 +37,6 @@
     <Filter Include="ソース ファイル\Scene">
       <UniqueIdentifier>{3a51d6af-f59c-4635-9050-29c89be0f67e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Scene">
-      <UniqueIdentifier>{9f62ab05-bff9-4cc3-89e6-543c6ec40589}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Loader">
       <UniqueIdentifier>{fb63133a-3a85-42ca-9cfb-e2badc981d0e}</UniqueIdentifier>
     </Filter>
@@ -60,6 +57,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Sprite">
       <UniqueIdentifier>{f50a39a5-46af-4612-8e6a-715b6245337b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scene">
+      <UniqueIdentifier>{9f62ab05-bff9-4cc3-89e6-543c6ec40589}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +169,9 @@
       <Filter>ソース ファイル\Sprite</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
+      <Filter>ソース ファイル\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite3D.cpp">
       <Filter>ソース ファイル\Sprite</Filter>
     </ClCompile>
   </ItemGroup>
@@ -307,6 +310,9 @@
       <Filter>ヘッダー ファイル\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
+      <Filter>ヘッダー ファイル\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite3D.h">
       <Filter>ヘッダー ファイル\Sprite</Filter>
     </ClInclude>
   </ItemGroup>

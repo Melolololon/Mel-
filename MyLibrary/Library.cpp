@@ -528,7 +528,7 @@ void Library::CreateTriangularPyramid
 		(
 			r,
 			vertexNumber,
-			centerPosition.toXMFLOAT3(),
+			centerPosition.ToXMFLOAT3(),
 			upVertex
 		),
 		createPolygon->SetTriangularPyramidIndex(vertexNumber),
@@ -578,8 +578,8 @@ void Library::CreateUserObject
 	std::vector<Vertex>vertices(posSize);
 	for(int i = 0; i < posSize;i++)
 	{
-		vertices[i].pos = vertexPos[i].toXMFLOAT3();
-		vertices[i].uv = vertexUV[i].toXMFLOAT2();
+		vertices[i].pos = vertexPos[i].ToXMFLOAT3();
+		vertices[i].uv = vertexUV[i].ToXMFLOAT2();
 	}
 
 	dx12->CreatePolygonData
@@ -764,7 +764,7 @@ font Library::LoadSpriteFont
 )
 {
 	loadFontTextureCounter++;
-	dx12->LoadSpriteFont(texturePath,lineNum.toXMFLOAT2());
+	dx12->LoadSpriteFont(texturePath,lineNum.ToXMFLOAT2());
 
 	return loadFontTextureCounter - 1;
 
@@ -824,7 +824,7 @@ void Library::DrawSprite
 )
 {
 	//dx12->spriteSetObjectPosition({ position.x,position.y }, *spriteNumber);
-	dx12->SpriteDataMap(position.toXMFLOAT2(), { 0,0 }, *spriteNumber, textureNumber);
+	dx12->SpriteDataMap(position.ToXMFLOAT2(), { 0,0 }, *spriteNumber, textureNumber);
 	dx12->SpriteSetCmdList(*spriteNumber, textureNumber,false);
 }
 
@@ -839,7 +839,7 @@ void Library::DrawSpriteAnimation
 {
 	//‚±‚Ì‡”Ô‚¶‚á‚È‚¢‚Æuv‚ª‚¿‚á‚ñ‚ÆƒZƒbƒg‚³‚ê‚È‚¢
 	dx12->SpriteDataMap({ position.x,position.y }, { 0,0 }, *spriteNumber, textureNumber);
-	dx12->SetSpriteAnimationVertex(*spriteNumber, textureNumber, maxSqare.toXMFLOAT2(), currentNum.toXMFLOAT2());
+	dx12->SetSpriteAnimationVertex(*spriteNumber, textureNumber, maxSqare.ToXMFLOAT2(), currentNum.ToXMFLOAT2());
 	dx12->SpriteSetCmdList(*spriteNumber, textureNumber, false);
 }
 
@@ -880,8 +880,8 @@ void Library::DrawSprite3D
 {
 	dx12->Sprite3DDataMap
 	(
-		position.toXMFLOAT3(),
-		size.toXMFLOAT2(),
+		position.ToXMFLOAT3(),
+		size.ToXMFLOAT2(),
 		*spriteNumber, 
 		textureNumber
 	);
@@ -900,15 +900,15 @@ void Library::DrawSprite3DAnimation
 {
 	dx12->Sprite3DDataMap
 	(
-		position.toXMFLOAT3(),
-		size.toXMFLOAT2(),
+		position.ToXMFLOAT3(),
+		size.ToXMFLOAT2(),
 		*spriteNumber,
 		textureNumber
 	);
 	dx12->SetSprite3DAnimation
 	(
-		leftUpPos.toXMFLOAT2(),
-		rightDownPos.toXMFLOAT2(),
+		leftUpPos.ToXMFLOAT2(),
+		rightDownPos.ToXMFLOAT2(),
 		*spriteNumber,
 		textureNumber
 	);
@@ -936,7 +936,7 @@ void Library::DrawSpriteBox
 )
 {
 	SetSpriteAddColor(color, spriteHandle);
-	dx12->SpriteDataMap(position.toXMFLOAT2(), size.toXMFLOAT2(), *spriteHandle, 0);
+	dx12->SpriteDataMap(position.ToXMFLOAT2(), size.ToXMFLOAT2(), *spriteHandle, 0);
 	dx12->SpriteSetCmdList(*spriteHandle, 0,false);
 }
 
@@ -949,7 +949,7 @@ void Library::DrawSprite3DBox
 )
 {
 	SetSpriteAddColor(color, spriteHandle);
-	dx12->Sprite3DDataMap(position.toXMFLOAT3(), size.toXMFLOAT2(), *spriteHandle, 0);
+	dx12->Sprite3DDataMap(position.ToXMFLOAT3(), size.ToXMFLOAT2(), *spriteHandle, 0);
 	dx12->SpriteSetCmdList(*spriteHandle, 0,true);
 }
 
@@ -1112,7 +1112,7 @@ void Library::SetSpriteAngle(float angle, sprite spriteNumber)
 }
 void Library::SetSpriteAngle3D(const Vector3& angle, const sprite& spriteNumber)
 {
-	dx12->SetSpriteAngle(angle.toXMFLOAT3(), *spriteNumber);
+	dx12->SetSpriteAngle(angle.ToXMFLOAT3(), *spriteNumber);
 }
 
 void ChangeSpriteSize(Vector2 size, int *spriteData)
@@ -1175,7 +1175,7 @@ void Library::SetObjBoneMoveVector
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
 
-	dx12->SetObjBoneMoveVector(vector.toXMFLOAT3(), boneNum, modelData.key, objectNum);
+	dx12->SetObjBoneMoveVector(vector.ToXMFLOAT3(), boneNum, modelData.key, objectNum);
 
 }
 
@@ -1189,7 +1189,7 @@ void Library::SetObjBoneScale
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
-	dx12->SetObjBoneScale(scale.toXMFLOAT3(), boneNum, modelData.key, objectNum);
+	dx12->SetObjBoneScale(scale.ToXMFLOAT3(), boneNum, modelData.key, objectNum);
 }
 
 void Library::SetObjBoneAngle
@@ -1202,7 +1202,7 @@ void Library::SetObjBoneAngle
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 		return;
-	dx12->SetObjBoneAngle(angle.toXMFLOAT3(), boneNum, modelData.key, objectNum);
+	dx12->SetObjBoneAngle(angle.ToXMFLOAT3(), boneNum, modelData.key, objectNum);
 }
 
 void Library::SetParentObjBone
@@ -1235,7 +1235,7 @@ void Library::SetParentObjBoneScaleImpact
 	dx12->SetParentObjBoneScaleImpact
 	(
 		boneNum,
-		scaleImpact.toXMFLOAT3(),
+		scaleImpact.ToXMFLOAT3(),
 		modelData.key
 	);
 }
@@ -1252,7 +1252,7 @@ void Library::SetParentObjBoneAngleImpact
 	dx12->SetParentObjBoneAngleImpact
 	(
 		boneNum,
-		angleImpact.toXMFLOAT3(),
+		angleImpact.ToXMFLOAT3(),
 		modelData.key
 	);
 }
@@ -1269,7 +1269,7 @@ void Library::SetParentObjBoneMoveVectorImpact
 	dx12->SetParentObjBoneMoveVectorImpact
 	(
 		boneNum,
-		moveVectorImpact.toXMFLOAT3(),
+		moveVectorImpact.ToXMFLOAT3(),
 		modelData.key
 	);
 }
@@ -1361,7 +1361,7 @@ bool Library::OverrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertP
 		num2 = kariXM[i].size();
 		for (size_t j = 0; j < num2; j++)
 		{
-			kariXM[i][j] = vertPos[i][j].toXMFLOAT3();
+			kariXM[i][j] = vertPos[i][j].ToXMFLOAT3();
 			
 		}
 	}

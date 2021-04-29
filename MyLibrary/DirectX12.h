@@ -42,6 +42,9 @@
 #include"PrimitiveModel.h"
 #include"ObjModel.h"
 #include"FbxModel.h"
+#include"Sprite.h"
+#include"Sprite2D.h"
+#include"Sprite3D.h"
 
 enum LibraryPipeline
 {

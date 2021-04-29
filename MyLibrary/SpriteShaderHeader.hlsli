@@ -1,12 +1,9 @@
 cbuffer cbuff0 : register(b0)
 {
 	matrix mat;
-	matrix normalMat;
 	float4 mulColor;
 	float4 addColor;
 	float4 subColor;
-	float ex;
-	matrix worldMat;
 };
 
 

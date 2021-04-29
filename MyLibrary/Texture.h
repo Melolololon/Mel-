@@ -14,17 +14,24 @@ private:
 	DirectX::ScratchImage scratchImage;
 	const DirectX::Image* image;
 
-	ComPtr<ID3D12Resource>textureBuffer;
+
+	UINT textureNumber;
+	static UINT loadTextureNumber;
+
+	bool LoadTexture(const std::string& texturePath);
+
 public:
 	Texture();
 	~Texture();
 
 	/// <summary>
-	/// テクスチャを読み込みます。
+	/// モデルのテクスチャを読み込みます。
 	/// </summary>
 	/// <param name="texturePath"></param>
 	/// <returns></returns>
-	bool LoadTexture(const std::string& texturePath);
+	bool LoadModelTexture(const std::string& texturePath);
+
+	bool LoadSpriteTexture(const std::string& texturePath);
 
 	/// <summary>
 	/// 単色べた塗りテクスチャを生成します。
@@ -44,8 +51,7 @@ public:
 
 	DirectX::TexMetadata GetMetadata()const{return metadata;}
 	const DirectX::Image* GetImage()const{return image;}
-	ID3D12Resource* GetPTextureBuffer() { return textureBuffer.Get(); }
-
+	UINT GetTextureNumber() { return textureNumber; }
 #pragma endregion
 };
 

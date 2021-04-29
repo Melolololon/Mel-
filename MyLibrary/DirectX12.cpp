@@ -511,9 +511,10 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	CD3DX12_DESCRIPTOR_RANGE spriteDescRangeSRV;
 	spriteDescRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
-	CD3DX12_ROOT_PARAMETER spriteRootparam[2];
+	CD3DX12_ROOT_PARAMETER spriteRootparam[2]={};
 	spriteRootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	spriteRootparam[1].InitAsDescriptorTable(1, &spriteDescRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+
 
 	rootSignatureDesc.pParameters = spriteRootparam;
 	rootSignatureDesc.NumParameters = _countof(spriteRootparam);
@@ -953,6 +954,11 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	
 	ObjModel::Initialize();
 	FbxModel::Initialize();
+
+	Sprite::Initialize(dev.Get(), cmdList.Get());
+	Sprite2D::Initialize(windouWidth, windowHeight);
+	Sprite3D::Initialize();
+
 }
 
 void DirectX12::LoopStartProcess()
@@ -1710,7 +1716,8 @@ void DirectX12::SetCameraData(Vector3 eye, Vector3 target, Vector3 up)
 		mainCameraData.farNumber
 	);
 
-	Model::SetCameraMatrix(mainCamera->Get3DCameraMatrix(mainCameraData));
+	Model::SetViewAndProjectionMat(mainCamera->Get3DCameraMatrix(mainCameraData));
+
 }
 
 
@@ -1738,6 +1745,8 @@ void DirectX12::SetCameraAngre(DirectX::XMFLOAT3 eyeAngle, DirectX::XMFLOAT3 tar
 	cameraMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(-mainCameraData.eyeAngle.z));
 	cameraMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-mainCameraData.eyeAngle.x));
 	cameraMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(-mainCameraData.eyeAngle.y));
+
+	Model::SetCameraRotateMat(cameraMat);
 }
 
 void DirectX12::SetNearAndFar(float nearNum, float farNum)

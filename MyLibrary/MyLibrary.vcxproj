@@ -209,6 +209,7 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Sprite2D.cpp" />
+    <ClCompile Include="Sprite3D.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Vector.cpp" />
@@ -484,6 +485,7 @@
     <ClInclude Include="ShaderData.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Sprite2D.h" />
+    <ClInclude Include="Sprite3D.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Vector.h" />

@@ -3,6 +3,12 @@
 #include"ShaderData.h"
 #include<string>
 
+enum PipelineType
+{
+	PIPELINE_TYPE_MODEL,
+	PIPELINE_TYPE_SPRITE,
+	PIPELINE_TYPE_RENDER_TARGET,
+};
 class PipelineState
 {
 
@@ -16,22 +22,11 @@ private:
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc
 	);
 
-	static bool CreatePipelineState
-	(
-		const PipelineData& pipelineData,
-		const ShaderData& vShaderData,
-		const ShaderData& gShaderData,
-		const ShaderData& hShaderData,
-		const ShaderData& dShaderData,
-		const ShaderData& pShaderData,
-		const std::vector<InputLayoutData>* inputLayoutData,
-		ID3D12RootSignature* rootSignature,
-		ID3D12PipelineState** pipelineState
-	);
 
 	std::string modelClassName;
 
 	static ID3D12RootSignature* modelRootSignature;
+	static ID3D12RootSignature* spriteRootSignature;
 
 
 public:
@@ -53,6 +48,7 @@ public:
 	/// <param name="hShaderData">ハルシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
 	/// <param name="dShaderData">ドメインシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
 	/// <param name="pShaderData">ピクセルシェーダー情報</param>
+	/// <param name="pipelineType">何のパイプラインを生成するか</param>
 	/// <param name="inputLayoutData">インプットレイアウト情報(指定しない場合は、nullptrを渡す)</param>
 	/// <param name="modelClassName">typeidのname関数で取得した文字列</param>
 	/// <returns></returns>
@@ -64,18 +60,11 @@ public:
 		const ShaderData& hShaderData,
 		const ShaderData& dShaderData,
 		const ShaderData& pShaderData,
+		const PipelineType pipelineType,
 		const std::vector<InputLayoutData>* inputLayoutData,
 		const std::string& modelClassName
 	);
 
-	bool CreateSpritePipeline
-	(
-		const PipelineData& pipelineData,
-		const ShaderData& vShaderData,
-		const ShaderData& gShaderData,
-		const ShaderData& pShaderData,
-		const std::vector<InputLayoutData>* inputLayoutData
-	);
 
 	std::string GetModelClassName()
 	{
@@ -88,6 +77,7 @@ public:
 	}
 
 	static void SetModelRootSignature(ID3D12RootSignature* sig) { modelRootSignature = sig; }
+	static void SetSpriteRootSignature(ID3D12RootSignature* sig) { spriteRootSignature = sig; }
 
 };
 

@@ -48,7 +48,8 @@ private:
 
 	static ComPtr<ID3D12RootSignature>rootSignature;
 
-	static DirectX::XMMATRIX cameraMatrix;
+	static DirectX::XMMATRIX viewAndProjectionMat;
+	static DirectX::XMMATRIX cameraRotateMat;
 
 #pragma endregion
 
@@ -93,11 +94,11 @@ protected:
 	int modelNum;
 	int modelObjectNum;
 
+
 	//テクスチャバッファ数
 	int textureBufferNum;
 
 	ComPtr<ID3D12PipelineState> pipeline;
-	ID3D12PipelineState* currentSetPipeline;
 
 	//[objの中のモデルごと]
 	std::vector<VertexBufferSet> vertexBufferSet;
@@ -114,7 +115,8 @@ protected:
 	std::vector<std::vector<std::vector<ComPtr<ID3D12Resource>>>> constBuffer;
 	
 	//テクスチャ側に持たせたからコメントアウト
-	//std::vector<ComPtr<ID3D12Resource>> textureBuffer;
+	//ヒープにシェーダーリソースビューを作らずに描画するのが不可能だったので、戻した
+	std::vector<ComPtr<ID3D12Resource>> textureBuffer;
 	
 	//ディスクリプタヒープのバッファを可視化するためのもの
 	std::vector<HeapBufferTag>heapTags;
@@ -135,12 +137,14 @@ protected:
 
 #pragma region 関数
 
-	void DataMap(const int modelNum);
+	void ConstDataMap(const int modelNum);
 	void SetCmdList(const int modelNum);
 
 #pragma region バッファ生成
 
 #pragma region 生成まとめ
+	//CreateModelVertexResourcesとCreateModelHeapResourcesまとめていいかも
+
 	/// <summary>
 	/// シェーダーに頂点情報を送るためのデータを生成します。
 	/// (頂点バッファとインデックスバッファのこと)
@@ -179,6 +183,11 @@ protected:
 #pragma endregion
 
 
+	//自作頂点使うときに継承しないようにしたから、
+	//マップをパブリックに移動
+	//継承させるため、protectedに戻した
+#pragma region Map
+
 #pragma region マップ
 	/// <summary>
 	/// 
@@ -206,7 +215,7 @@ protected:
 	//ずっとマップしっぱなしでもいいのでは?
 	//削除時にunmapすればいいのでは? 
 	//マップしっぱなしにする場合、バッファごとにポインタ用意しないといけない
-	
+
 	//定数バッファの順番は固定化する。
 	//create○○はまとめる
 
@@ -239,6 +248,7 @@ protected:
 	);
 #pragma endregion
 
+#pragma endregion
 
 #pragma endregion
 
@@ -274,8 +284,11 @@ public:
 		std::vector<ID3D12GraphicsCommandList*> cmdList
 	);
 
-	static void SetCameraMatrix(const DirectX::XMMATRIX& cameraMat) { cameraMatrix = cameraMat; }
+	static void SetViewAndProjectionMat(const DirectX::XMMATRIX& mat) { viewAndProjectionMat = mat; }
+	static void SetCameraRotateMat(const DirectX::XMMATRIX& mat) { cameraRotateMat = mat; }
 #pragma endregion
+
+
 
 #pragma region 操作
 	void SetPosition(const Vector3& position, const int modelNum);
