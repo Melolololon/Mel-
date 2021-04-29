@@ -8,6 +8,7 @@ private:
 	static DirectX::XMMATRIX viewAndProjectionMatrix;
 	static PipelineState defaultPipeline;
 
+
 public:
 	Sprite3D();
 	~Sprite3D();

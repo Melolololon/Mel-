@@ -30,6 +30,8 @@ void Sprite::CreateBuffer()
 		vertexBufferSet
 	);
 
+
+
 	//定数バッファ作成
 	CreateBuffer::GetInstance()->CreateConstBuffer
 	(
@@ -54,11 +56,10 @@ void Sprite::CreateBuffer()
 void Sprite::DataMap
 (
 	const DirectX::XMMATRIX& cameraMat,
-	const bool sprite2D, 
+	const bool sprite2D,
 	Texture* texture
 )
 {
-
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
 
@@ -77,7 +78,7 @@ void Sprite::DataMap
 	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
 	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));
 
-	if (!sprite2D) 
+	if (!sprite2D)
 	{
 		matWorld *= DirectX::XMMatrixTranslation
 		(
@@ -101,8 +102,6 @@ void Sprite::DataMap
 			0.0f
 		);
 	}
-
-
 	constBufferData->mat = matWorld * cameraMat;
 
 
@@ -117,16 +116,14 @@ void Sprite::SetCmdList(Texture* texture)
 	cmdList->SetPipelineState(pipeline.Get());
 
 
+	//頂点
+	cmdList->IASetVertexBuffers(0, 1, &vertexBufferSet.vertexBufferView);
+
+
 	std::vector<ID3D12DescriptorHeap*> ppHeaps;
 	ppHeaps.push_back(textureHeap.Get());
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
-	//頂点
-	cmdList->IASetVertexBuffers(0, 1, &vertexBufferSet.vertexBufferView);
-
-	//下2つのバッファは直指定
-	//定数セット
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
 	//テクスチャ
 	UINT heapNum = texture->GetTextureNumber();
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
@@ -137,8 +134,12 @@ void Sprite::SetCmdList(Texture* texture)
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 	);
 	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
+	//定数セット
+	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
+	
 
 	cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
+	
 }
 
 
@@ -157,6 +158,7 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 	device = dev;
 	cmdList = cmd;
 
+
 #pragma region ヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc{};
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
@@ -173,7 +175,7 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 
 	CD3DX12_ROOT_PARAMETER spriteRootparam[2] = {};
 	spriteRootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	spriteRootparam[1].InitAsDescriptorTable(1, &spriteDescRangeSRV, D3D12_SHADER_VISIBILITY_PIXEL);
+	spriteRootparam[1].InitAsDescriptorTable(1, &spriteDescRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
 
 #pragma region ルートシグネチャ
 
@@ -242,5 +244,7 @@ void Sprite::CreateTextureBuffer(Texture* texture)
 		hHandle,
 		&textureBuffer[textureNum]
 	);
+
+	
 
 }

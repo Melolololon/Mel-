@@ -959,8 +959,9 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	Sprite2D::Initialize(windouWidth, windowHeight);
 	Sprite3D::Initialize();
 
-	Model::SetViewAndProjectionMat(mainCamera->Get3DCameraMatrix(mainCameraData));
-	Sprite3D::SetViewAndProjectionMatrix(mainCamera->Get3DCameraMatrix(mainCameraData));
+
+
+
 }
 
 void DirectX12::LoopStartProcess()
@@ -1020,7 +1021,8 @@ void DirectX12::LoopStartProcess()
 
 #pragma endregion
 
-
+	Model::SetViewAndProjectionMat(mainCamera->Get3DCameraMatrix(mainCameraData));
+	Sprite3D::SetViewAndProjectionMatrix(mainCamera->Get3DCameraMatrix(mainCameraData));
 }
 
 void DirectX12::LoopEndProcess()
@@ -1718,8 +1720,6 @@ void DirectX12::SetCameraData(Vector3 eye, Vector3 target, Vector3 up)
 		mainCameraData.farNumber
 	);
 
-	Model::SetViewAndProjectionMat(mainCamera->Get3DCameraMatrix(mainCameraData));
-	Sprite3D::SetViewAndProjectionMatrix(mainCamera->Get3DCameraMatrix(mainCameraData));
 }
 
 
@@ -4116,6 +4116,7 @@ void DirectX12::DataMap(const ModelData& modelData,int number )
 
 void DirectX12::SpriteSetCmdList(int spriteNumber, int textureNumber, const bool& sprite3DFlag)
 {
+	//cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	std::vector<ID3D12DescriptorHeap*> ppHeaps;
 
@@ -4271,8 +4272,9 @@ void DirectX12::Sprite3DDataMap
 	
 #pragma endregion
 
+
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-	
+
 	CalcBillboardMat(matWorld);
 	matWorld *= DirectX::XMMatrixScaling(spriteScale[spriteNumber].x, spriteScale[spriteNumber].y,1.0f);
 	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(spriteAngle[spriteNumber].z));

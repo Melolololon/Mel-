@@ -3,6 +3,7 @@
 PipelineState Sprite3D::defaultPipeline;
 DirectX::XMMATRIX Sprite3D::viewAndProjectionMatrix;
 
+
 Sprite3D::Sprite3D()
 {
 }
@@ -31,6 +32,7 @@ void Sprite3D::CreateSprite(const Vector2& size)
 
 
 	pipeline = defaultPipeline.GetPipelineState();
+	
 }
 
 bool Sprite3D::Initialize()
@@ -39,9 +41,9 @@ bool Sprite3D::Initialize()
 	data.alphaWriteMode = ALPHA_WRITE_TRUE;
 	data.blendMode = BLEND_ADD;
 	data.cullMode = CULL_NONE;
-	data.depthMode = DEPTH_NONE;
+	data.depthMode = DEPTH_TRUE;
 	data.drawMode = DRAW_SOLID;
-	auto result = defaultPipeline.CreateModelPipeline
+	auto result = defaultPipeline.CreatePipeline
 	(
 		data,
 		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },
@@ -63,6 +65,9 @@ bool Sprite3D::Initialize()
 
 void Sprite3D::Draw(Texture* texture)
 {
+
 	DataMap(viewAndProjectionMatrix, false, texture);
 	SetCmdList(texture);
+
+
 }

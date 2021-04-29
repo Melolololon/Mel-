@@ -34,7 +34,6 @@ private:
 	static ComPtr<ID3D12RootSignature>rootSignature;
 	static ComPtr<ID3D12PipelineState>defaultPipeline;
 
-
 #pragma region バッファ
 
 	//インデックスは、スプライトをバラバラにしたりする処理に使えそうだから実装しとく
@@ -86,6 +85,9 @@ public:
 	static void Initialize(ID3D12Device* dev,ID3D12GraphicsCommandList* cmd);
 
 	static void CreateTextureBuffer(Texture* texture);
+
+
+
 #pragma endregion
 
 

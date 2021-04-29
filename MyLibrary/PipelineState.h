@@ -52,7 +52,7 @@ public:
 	/// <param name="inputLayoutData">インプットレイアウト情報(指定しない場合は、nullptrを渡す)</param>
 	/// <param name="modelClassName">typeidのname関数で取得した文字列</param>
 	/// <returns></returns>
-	bool CreateModelPipeline
+	bool CreatePipeline
 	(
 		const PipelineData& pipelineData,
 		const ShaderData& vShaderData,

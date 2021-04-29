@@ -29,6 +29,7 @@ public:
 	void CreateSprite();
 	void Draw(Texture* texture);
 
+
 #pragma region ëÄçÏ
 	void SetPosition(const Vector2& pos) { constData.position = { pos.x,pos.y,0 }; }
 	void SetAngle(const float& angle) { constData.angle = { 0,0,angle }; }

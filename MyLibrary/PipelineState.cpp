@@ -136,7 +136,7 @@ void PipelineState::SetPipelineDesc
 
 
 
-bool PipelineState::CreateModelPipeline
+bool PipelineState::CreatePipeline
 (
 	const PipelineData& pipelineData,
 	const ShaderData& vShaderData,
