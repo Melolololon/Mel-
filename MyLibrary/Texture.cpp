@@ -1,5 +1,9 @@
 #include "Texture.h"
 #include"CreateBuffer.h"
+#include"Sprite.h"
+
+UINT Texture::loadTextureNumber = 0;
+
 Texture::Texture(){}
 
 Texture::~Texture(){}
@@ -26,22 +30,42 @@ bool Texture::LoadTexture(const std::string& texturePath)
 		&metadata,
 		scratchImage
 	);
+	if (result != S_OK)
+		return false;
+	return true;
+}
+
+bool Texture::LoadModelTexture(const std::string& texturePath)
+{
+	auto result = LoadTexture(texturePath);
 	//読み込み失敗
-	if(result)
+	if(!result)
 	{
-		OutputDebugString(L"テクスチャの読み込みに失敗しました。\n");
+		OutputDebugString(L"モデルのテクスチャの読み込みに失敗しました。\n");
 		return false;
 	}
 
 	image = scratchImage.GetImage(0, 0, 0);
 
 
-	CreateBuffer::GetInstance()->CreateTextureBuffer
-	(
-		metadata,
-		image,
-		&textureBuffer
-	);
 	return true;
 }
 
+bool Texture::LoadSpriteTexture(const std::string& texturePath)
+{
+	auto result = LoadTexture(texturePath);
+	//読み込み失敗
+	if (!result)
+	{
+		OutputDebugString(L"スプライトのテクスチャの読み込みに失敗しました。\n");
+		return false;
+	}
+
+	image = scratchImage.GetImage(0, 0, 0);
+
+	textureNumber = loadTextureNumber;
+	loadTextureNumber++;
+	Sprite::CreateTextureBuffer(this);
+
+	return true;
+}

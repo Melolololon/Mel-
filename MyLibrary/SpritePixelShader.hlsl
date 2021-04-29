@@ -5,5 +5,5 @@ SamplerState smp:register(s0);
 
 float4 PSmain(VSOutput input) : SV_TARGET
 {
-	return float4((tex.Sample(smp, input.uv) + addColor - subColor)*mulColor);
+	return float4(tex.Sample(smp, input.uv) + addColor - subColor) * mulColor;
 }

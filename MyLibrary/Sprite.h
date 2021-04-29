@@ -1,9 +1,22 @@
 #pragma once
 #include"DirectXStruct.h"
+#include"Texture.h"
+#include"Vector.h"
 
 #include<d3d12.h>
 #include<dxgi.h>
+#include<d3dx12.h>
 #include<vector>
+#include<array>
+
+//頂点使いまわそうか考えたが、
+//sizeとかuvとかfloat4にしないといけなくて、
+//総合的に使用メモリ多そうだから毎回生成する
+//使いまわさないとuvを定数バッファで指定しないといけないから、
+//分けたほうがいいかも
+//四角形GPUに送ってそこから分割したほうがいいかも
+//スプライトだったらテッセレータで分割してバラバラにしたほうがいいかも
+
 
 //これを継承して2D、3Dスプライトクラスを作る
 //Drawは仮想関数。それぞれにmap処理を書く
@@ -13,29 +26,56 @@ class Sprite
 {
 private:
 
-	static DirectX::XMMATRIX sprite2DCameraMatrix;
-	static DirectX::XMMATRIX sprite3DCameraMatrix;
-
-	static ID3D12Device* device;
-	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
-	static ComPtr<ID3D12RootSignature>rootSignature;
-
+#pragma region 変数
+	static const UINT MAX_TEXTURE_LOAD_NUM;
 	
+	static ID3D12Device* device;
+	static ID3D12GraphicsCommandList* cmdList;
+	static ComPtr<ID3D12RootSignature>rootSignature;
+	static ComPtr<ID3D12PipelineState>defaultPipeline;
+
+	SpriteConstData constData;
+
+#pragma region バッファ
 
 	//インデックスは、スプライトをバラバラにしたりする処理に使えそうだから実装しとく
+	//ジオメトリでやるから消した
 	VertexBufferSet vertexBufferSet;
-	IndexBufferSet indexBufferSet;
-
-	//全スプライトでテクスチャヒープ共有する(ここからシェーダーリソースビュー引っ張りだす)
-	static ComPtr<ID3D12DescriptorHeap>desHeap;
 	ComPtr<ID3D12Resource> constBuffer;
-	//スプライト全体でバッファ共有する
-	static std::vector<ComPtr<ID3D12Resource>>textureBuffer;
+
+	static std::vector<ComPtr<ID3D12Resource>> textureBuffer;
+	static ComPtr<ID3D12DescriptorHeap> textureHeap;
+#pragma endregion
 
 	std::string modelClassName;
+#pragma endregion
+
+#pragma region 関数
+
+
+#pragma endregion
+
 protected:
 	ComPtr<ID3D12PipelineState> pipeline;
-	ID3D12PipelineState* currentSetPipeline;
+
+	std::array<SpriteVertex, 4> vertices;
+
+	void CreateBuffer();
+
+#pragma region 関数
+
+
+	void DataMap(const DirectX::XMMATRIX& cameraMat,const bool sprite2D, Texture* texture);
+	void SetCmdList(Texture* texture);
+
+
+#pragma region マップ
+	void MapVertexBuffer(void** data);
+	void UnmapVertexBuffer();
+#pragma endregion
+
+
+#pragma endregion
 
 public:
 	Sprite();
@@ -43,7 +83,9 @@ public:
 
 #pragma region 開発者用関数
 
-	
+	static void Initialize(ID3D12Device* dev,ID3D12GraphicsCommandList* cmd);
+
+	static void CreateTextureBuffer(Texture* texture);
 #pragma endregion
 
 
@@ -51,9 +93,10 @@ public:
 	//AddColorとか
 #pragma endregion
 
+
 	/// <summary>
 	/// スプライトを描画します。
 	/// </summary>
-	virtual void Draw();
+	virtual void Draw(Texture* texture) = 0;
 };
 

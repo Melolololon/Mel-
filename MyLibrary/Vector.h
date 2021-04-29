@@ -14,7 +14,7 @@ struct Vector2
 	Vector2(const DirectX::XMFLOAT2& f);
 	Vector2(const DirectX::XMVECTOR& v);
 
-	DirectX::XMFLOAT2 toXMFLOAT2()const
+	DirectX::XMFLOAT2 ToXMFLOAT2()const
 	{
 		return { x,y };
 	}
@@ -71,7 +71,7 @@ struct Vector3
 	Vector3(const DirectX::XMFLOAT3& f);
 	Vector3(const DirectX::XMVECTOR& v);
 
-	DirectX::XMFLOAT3 toXMFLOAT3() const
+	DirectX::XMFLOAT3 ToXMFLOAT3() const
 	{
 		return { x,y ,z };
 	}

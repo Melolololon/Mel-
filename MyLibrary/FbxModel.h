@@ -35,7 +35,7 @@ private:
 	std::vector<std::unique_ptr<Texture>>textures;
 
 	//読み込み時にセットされるパイプライン
-	static PipelineState defaultFbxPipeline;
+	static PipelineState defaultPipeline;
 
 	std::vector<std::vector<USHORT>>& getIndices() { return indices; }
 	std::vector<Material>& getMaterial() { return materials; }
@@ -47,10 +47,13 @@ public:
 	(
 		const std::string& path,
 		const int createNum,
-		const size_t constDataSize = 0
+		//const size_t vertexSize,
+		const size_t constDataSize
 	);
 
 	static bool Initialize();
+
+	static PipelineState GetDefaultPipeline() { return defaultPipeline; }
 
 	//フレンドクラスは、privateの変数、関数を参照できる
 	friend class FbxLoader;

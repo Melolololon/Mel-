@@ -67,7 +67,6 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="heapprop">プロップ</param>
-	/// <param name="resdesc">デスク</param>
 	/// <param name="verticesSize">sizeofで計算した構造体のバイト数</param>
 	/// <param name="verticesNum">頂点数</param>
 	/// <param name="set">バッファーセット</param>
@@ -97,6 +96,7 @@ public:
 	(
 		const DirectX::TexMetadata& metadata,
 		const DirectX::Image* image,
+		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 		ID3D12Resource** textureBuffer
 	);
 	void CreateOneColorTextureBuffer

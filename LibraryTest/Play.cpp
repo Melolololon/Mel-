@@ -9,6 +9,11 @@
 #include"FbxModel.h"
 #include"ObjModel.h"
 std::unique_ptr<FbxModel> fbxModel = std::make_unique<FbxModel>();
+
+std::unique_ptr<Sprite2D> sprite2D = std::make_unique<Sprite2D>();
+std::unique_ptr<Texture> tex = std::make_unique<Texture>();
+
+
 Play::Play(){}
 
 
@@ -16,10 +21,13 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
+	sprite2D->CreateSprite();
+	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
 	fbxModel->LoadModel
 	(
 		"Resources/cube/cube.fbx",
-		1
+		1,
+		0
 	);
 
 }
@@ -42,6 +50,8 @@ void Play::Update()
 void Play::Draw()
 {
 	fbxModel->Draw(0);
+
+	sprite2D->Draw(tex.get());
 }
 
 void Play::end()

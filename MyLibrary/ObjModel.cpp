@@ -1,7 +1,7 @@
 #include "ObjModel.h"
 #include"ModelLoader.h"
 
-PipelineState ObjModel::defaultObjPipeline;
+PipelineState ObjModel::defaultPipeline;
 
 ObjModel::ObjModel()
 {
@@ -14,10 +14,11 @@ void ObjModel::LoadModelVertices
 (
 	const std::string& path,
 	const bool loadUV,
-	const bool loadNormal
+	const bool loadNormal,
+	const size_t vertexSize
 )
 {
-	//マテリアル
+	//オブジェクトのマテリアル名格納
 	std::vector<std::string>materialName;
 
 
@@ -72,12 +73,12 @@ void ObjModel::LoadModelVertices
 
 #pragma region 法線計算
 
-	auto vertSize = vertices.size();
-	smoothNormal.resize(vertSize);
-	for (int i = 0; i < vertSize; i++)
+	auto vertNum = vertices.size();
+	smoothNormal.resize(vertNum);
+	for (int i = 0; i < vertNum; i++)
 		smoothNormal[i].resize(vertices[i].size());
 
-	for (int i = 0; i < vertSize; i++)
+	for (int i = 0; i < vertNum; i++)
 	{
 		for (int j = 0; j < vertices[i].size(); j++)
 		{
@@ -130,9 +131,16 @@ void ObjModel::LoadModelVertices
 	for (int i = 0; i < modelObjectNum; i++)
 		verticesNum[i] = vertices[i].size();
 
+	size_t vertSize = 0;
+	if (vertexSize == 0||
+		typeid(this) == typeid(ObjModel))
+		vertSize = sizeof(ObjAnimationVertex);
+	else
+		vertSize = vertexSize;
+
 	CreateModelVertexResources
 	(
-		sizeof(ObjAnimationVertex),
+		vertSize,
 		verticesNum,
 		indices
 	);
@@ -211,7 +219,7 @@ void ObjModel::LoadModelMaterial
 	for(int i = 0; i < loadObjectNum;i++)
 	{
 		textures[i] = std::make_unique<Texture>();
-		textures[i]->LoadTexture(materials[i].textureName);
+		textures[i]->LoadModelTexture(materials[i].textureName);
 		pTexture[i] = textures[i].get();
 	}
 	
@@ -224,7 +232,7 @@ void ObjModel::LoadModelMaterial
 	);
 
 
-	pipeline = defaultObjPipeline.GetPipelineState();
+	pipeline = defaultPipeline.GetPipelineState();
 
 }
 
@@ -233,10 +241,12 @@ void ObjModel::LoadModel
 	const std::string& path,
 	const bool loadUV,
 	const int createNum,
+	//const size_t vertexDataSize,
 	const size_t constDataSize
 )
 {
-	LoadModelVertices(path, loadUV, true);
+	//LoadModelVertices(path, loadUV, true, vertexDataSize);
+	LoadModelVertices(path, loadUV, true, sizeof(ObjAnimationVertex));
 
 
 #pragma region ディレクトリパス取得
@@ -293,14 +303,15 @@ bool ObjModel::Initialize()
 	layoutData[3].formatType = FORMAT_TYPE_UNSIGNED_INT;
 	layoutData[3].number = 1;
 
-	auto result = defaultObjPipeline.CreateModelPipeline
+	auto result = defaultPipeline.CreateModelPipeline
 	(
 		pipelineData,
 		{ L"../MyLibrary/ObjAnimationVertexShader.hlsl","VSmain","vs_5_0" },
 		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
 		{ L"NULL","","" },
 		{ L"NULL","","" },
-		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" }, 
+		PipelineType::PIPELINE_TYPE_MODEL,
 		&layoutData,
 		typeid(ObjModel).name()
 	);

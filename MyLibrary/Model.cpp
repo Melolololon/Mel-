@@ -7,7 +7,9 @@ std::vector<ID3D12GraphicsCommandList*>Model::cmdLists;
 ComPtr<ID3D12Resource>Model::commonBuffers;
 ComPtr<ID3D12RootSignature>Model::rootSignature;
 
-DirectX::XMMATRIX Model::cameraMatrix;
+DirectX::XMMATRIX Model::viewAndProjectionMat = DirectX::XMMatrixIdentity();
+DirectX::XMMATRIX Model::cameraRotateMat = DirectX::XMMatrixIdentity();
+
 Model::Model()
 {
 }
@@ -125,6 +127,8 @@ void Model::ResizeConstData
 	//ÉÇÉfÉãï™ÉãÅ[Év
 	for (int i = 0; i < modelNum; i++)
 		modelConstDatas[i].resize(modelFileObjectNum);
+
+	textureBuffer.resize(modelFileObjectNum);
 }
 
 void Model::CreateDescriptorHeap
@@ -278,10 +282,12 @@ void Model::CreateTextureBuffer
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
 
-		CreateBuffer::GetInstance()->CreateShaderResourceView
+		CreateBuffer::GetInstance()->CreateTextureBuffer
 		(
+			textures[i]->GetMetadata(),
+			textures[i]->GetImage(),
 			hHandle,
-			textures[i]->GetPTextureBuffer()
+			&textureBuffer[i]
 		);
 
 		heapTags.push_back(HeapBufferTag::HEAP_TAG_TEXTURE_BUFFER);
@@ -537,7 +543,7 @@ void Model::Initialize
 
 #pragma endregion
 
-void Model::DataMap(const int modelNum)
+void Model::ConstDataMap(const int modelNum)
 {
 	ConstBufferData* constBufferData;
 
@@ -565,7 +571,7 @@ void Model::DataMap(const int modelNum)
 		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas[modelNum][i].angle.x));
 		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas[modelNum][i].angle.y));
 
-		constBufferData->normalMat = matWorld * cameraMatrix;
+		constBufferData->normalMat = matWorld * cameraRotateMat;
 
 		matWorld *= DirectX::XMMatrixTranslation
 		(
@@ -574,7 +580,7 @@ void Model::DataMap(const int modelNum)
 			modelConstDatas[modelNum][i].position.z
 		);
 
-		constBufferData->mat = matWorld * cameraMatrix;
+		constBufferData->mat = matWorld * viewAndProjectionMat;
 		constBufferData->worldMat = matWorld;
 	
 #pragma endregion
@@ -712,7 +718,7 @@ void Model::SetCmdList(const int modelNum)
 
 void Model::Draw(const int modelNum)
 {
-	DataMap(modelNum);
+	ConstDataMap(modelNum);
 	SetCmdList(modelNum);
 
 }
@@ -721,19 +727,19 @@ void Model::Draw(const int modelNum)
 void Model::SetPosition(const Vector3& position, const int modelNum)
 {
 	for (int i = 0; i < modelObjectNum; i++)
-		modelConstDatas[modelNum][i].position = position.toXMFLOAT3();
+		modelConstDatas[modelNum][i].position = position.ToXMFLOAT3();
 }
 
 void Model::SetAngle(const Vector3& angle, const int modelNum)
 {
 	for (int i = 0; i < modelObjectNum; i++)
-		modelConstDatas[modelNum][i].angle = angle.toXMFLOAT3();
+		modelConstDatas[modelNum][i].angle = angle.ToXMFLOAT3();
 }
 
 void Model::SetScale(const Vector3& scale, const int modelNum)
 {
 	for (int i = 0; i < modelObjectNum; i++)
-		modelConstDatas[modelNum][i].scale = scale.toXMFLOAT3();
+		modelConstDatas[modelNum][i].scale = scale.ToXMFLOAT3();
 }
 
 #pragma endregion

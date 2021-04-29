@@ -313,7 +313,7 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 					
 					fbxModel->textures.resize(1);
 					fbxModel->textures[0] = std::make_unique<Texture>();
-					fbxModel->textures[0]->LoadTexture(modelDirectryPath + name);
+					fbxModel->textures[0]->LoadModelTexture(modelDirectryPath + name);
 
 					textureLoader = true;
 				}
@@ -328,7 +328,7 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 			//‚»‚Ì‚¤‚¿‚±‚±•ÏX‚·‚é
 			fbxModel->textures.resize(1);
 			fbxModel->textures[0] = std::make_unique<Texture>();
-			fbxModel->textures[0]->LoadTexture(modelDirectryPath + "WriteTex.png");
+			fbxModel->textures[0]->LoadModelTexture(modelDirectryPath + "WriteTex.png");
 		}
 	}
 }

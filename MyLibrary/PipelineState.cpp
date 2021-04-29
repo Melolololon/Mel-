@@ -3,6 +3,7 @@
 
 ID3D12Device* PipelineState::device;
 ID3D12RootSignature* PipelineState::modelRootSignature;
+ID3D12RootSignature* PipelineState::spriteRootSignature;
 
 PipelineState::PipelineState()
 {
@@ -13,7 +14,129 @@ PipelineState::~PipelineState()
 {
 }
 
-bool PipelineState::CreatePipelineState
+
+
+void PipelineState::SetPipelineDesc
+(
+	const PipelineData& pipelineData,
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc
+)
+{
+#pragma region カリング設定
+
+
+	switch (pipelineData.cullMode)
+	{
+	case CullMode::CULL_BACK:
+		desc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;//カリング設定
+		break;
+	case CullMode::CULL_FRONT:
+		desc.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;//カリング設定
+		break;
+	case CullMode::CULL_NONE:
+		desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリング設定
+		break;
+	}
+	desc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+#pragma endregion
+
+#pragma region 塗りつぶし設定
+
+
+	switch (pipelineData.drawMode)
+	{
+	case DrawMode::DRAW_SOLID:
+		desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//カリング設定
+		break;
+	case DrawMode::DRAW_WIREFRAME:
+		desc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;//カリング設定
+		break;
+	}
+
+	//クリッピング設定
+	desc.RasterizerState.DepthClipEnable = true;
+
+#pragma endregion
+
+#pragma region 深度設定
+
+	switch (pipelineData.depthMode)
+	{
+	case DepthMode::DEPTH_NONE:
+		desc.DepthStencilState.DepthEnable = false;//
+		desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		break;
+	case DepthMode::DEPTH_TRUE:
+		desc.DepthStencilState.DepthEnable = true;//
+		desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		break;
+	}
+	desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	desc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+
+#pragma endregion
+
+#pragma region ブレンド設定
+
+
+	//ブレンド
+	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
+
+	blenddesc.BlendEnable = true;//ブレンドを有効にするかのフラグ
+	switch (pipelineData.blendMode)
+	{
+	case BlendMode::BLEND_ADD:
+		blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算(不透明度が100%以外の時自分と後ろの色を足す)
+		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
+		break;
+	case BlendMode::BLEND_SUB:
+		blenddesc.BlendOpAlpha = D3D12_BLEND_OP_SUBTRACT;//加算(不透明度が100%以外の時自分と後ろの色を足す)
+		blenddesc.BlendOp = D3D12_BLEND_OP_SUBTRACT;
+		break;
+	case BlendMode::BLEND_NONE:
+		blenddesc.BlendEnable = false;
+		break;
+	}
+	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;//どの色をブレンドできるようにするかの設定?ALLだとRGBAがブレンド対象?
+	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算(不透明度が100%以外の時自分と後ろの色を足す)
+	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
+	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	desc.BlendState.RenderTarget[0] = blenddesc;
+
+#pragma endregion
+
+#pragma region アルファ値書き込み設定
+
+
+	//アルファ書き込み
+	switch (pipelineData.alphaWriteMode)
+	{
+	case AlphaWriteMode::ALPHA_WRITE_NONE:
+		desc.BlendState.AlphaToCoverageEnable = true;
+		break;
+	case AlphaWriteMode::ALPHA_WRITE_TRUE:
+		desc.BlendState.AlphaToCoverageEnable = false;
+		break;
+	}
+
+
+#pragma endregion
+
+	//
+	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	desc.NumRenderTargets = 1;
+	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.SampleDesc.Count = 1;
+
+}
+
+
+
+bool PipelineState::CreateModelPipeline
 (
 	const PipelineData& pipelineData,
 	const ShaderData& vShaderData,
@@ -21,15 +144,23 @@ bool PipelineState::CreatePipelineState
 	const ShaderData& hShaderData,
 	const ShaderData& dShaderData,
 	const ShaderData& pShaderData,
+	const PipelineType pipelineType,
 	const std::vector<InputLayoutData>* inputLayoutData,
-	ID3D12RootSignature* rootSignature,
-	ID3D12PipelineState** pipelineState
+	const std::string& modelClassName
 )
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc = {};
 	SetPipelineDesc(pipelineData, pDesc);
 	//ルートシグネチャセット
-	pDesc.pRootSignature = rootSignature;
+	switch (pipelineType)
+	{
+	case PIPELINE_TYPE_MODEL:
+		pDesc.pRootSignature = modelRootSignature;
+		break;
+	case PIPELINE_TYPE_SPRITE:
+		pDesc.pRootSignature = spriteRootSignature;
+		break;
+	}
 
 	HRESULT result;
 	ComPtr<ID3DBlob> vsBlob;
@@ -302,8 +433,11 @@ bool PipelineState::CreatePipelineState
 		return false;
 	}
 
-	pDesc.GS.pShaderBytecode = gsBlob->GetBufferPointer();
-	pDesc.GS.BytecodeLength = gsBlob->GetBufferSize();
+	if (gShaderData.shaderPath != L"NULL")
+	{
+		pDesc.GS.pShaderBytecode = gsBlob->GetBufferPointer();
+		pDesc.GS.BytecodeLength = gsBlob->GetBufferSize();
+	}
 #pragma endregion
 
 #pragma region ハルシェーダー
@@ -341,166 +475,15 @@ bool PipelineState::CreatePipelineState
 #pragma endregion
 
 		//パイプラインの生成
-	result = device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(pipelineState));
-	if (result)
+	result = device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(&pipeline));
+	if (result != S_OK)
 	{
 		OutputDebugString(L"パイプラインの生成に失敗しました\n");
 		return false;
 	}
-	return true;
-}
 
-
-
-void PipelineState::SetPipelineDesc
-(
-	const PipelineData& pipelineData,
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc
-)
-{
-#pragma region カリング設定
-
-
-	switch (pipelineData.cullMode)
-	{
-	case CullMode::CULL_BACK:
-		desc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;//カリング設定
-		break;
-	case CullMode::CULL_FRONT:
-		desc.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;//カリング設定
-		break;
-	case CullMode::CULL_NONE:
-		desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリング設定
-		break;
-	}
-	desc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-
-#pragma endregion
-
-#pragma region 塗りつぶし設定
-
-
-	switch (pipelineData.drawMode)
-	{
-	case DrawMode::DRAW_SOLID:
-		desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//カリング設定
-		break;
-	case DrawMode::DRAW_WIREFRAME:
-		desc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;//カリング設定
-		break;
-	}
-
-	//クリッピング設定
-	desc.RasterizerState.DepthClipEnable = true;
-
-#pragma endregion
-
-#pragma region 深度設定
-
-	switch (pipelineData.depthMode)
-	{
-	case DepthMode::DEPTH_NONE:
-		desc.DepthStencilState.DepthEnable = false;//カリング設定
-		break;
-	case DepthMode::DEPTH_TRUE:
-		desc.DepthStencilState.DepthEnable = true;//カリング設定
-
-		break;
-	}
-	desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-	desc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-
-#pragma endregion
-
-#pragma region ブレンド設定
-
-
-	//ブレンド
-	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
-
-	blenddesc.BlendEnable = true;//ブレンドを有効にするかのフラグ
-	switch (pipelineData.blendMode)
-	{
-	case BlendMode::BLEND_ADD:
-		blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算(不透明度が100%以外の時自分と後ろの色を足す)
-		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
-		break;
-	case BlendMode::BLEND_SUB:
-		blenddesc.BlendOpAlpha = D3D12_BLEND_OP_SUBTRACT;//加算(不透明度が100%以外の時自分と後ろの色を足す)
-		blenddesc.BlendOp = D3D12_BLEND_OP_SUBTRACT;
-		break;
-	case BlendMode::BLEND_NONE:
-		blenddesc.BlendEnable = false;
-		break;
-	}
-	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;//どの色をブレンドできるようにするかの設定?ALLだとRGBAがブレンド対象?
-	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算(不透明度が100%以外の時自分と後ろの色を足す)
-	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
-	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
-	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
-	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	desc.BlendState.RenderTarget[0] = blenddesc;
-
-#pragma endregion
-
-#pragma region アルファ値書き込み設定
-
-
-	//アルファ書き込み
-	switch (pipelineData.alphaWriteMode)
-	{
-	case AlphaWriteMode::ALPHA_WRITE_NONE:
-		desc.BlendState.AlphaToCoverageEnable = true;
-		break;
-	case AlphaWriteMode::ALPHA_WRITE_TRUE:
-		desc.BlendState.AlphaToCoverageEnable = false;
-		break;
-	}
-
-
-#pragma endregion
-
-	//
-	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	desc.NumRenderTargets = 1;
-	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-	desc.SampleDesc.Count = 1;
-
-}
-
-
-
-bool PipelineState::CreateModelPipeline
-(
-	const PipelineData& pipelineData,
-	const ShaderData& vShaderData,
-	const ShaderData& gShaderData,
-	const ShaderData& hShaderData,
-	const ShaderData& dShaderData,
-	const ShaderData& pShaderData,
-	const std::vector<InputLayoutData>* inputLayoutData,
-	const std::string& modelClassName
-)
-{
-	auto result = CreatePipelineState
-	(
-		pipelineData,
-		vShaderData,
-		gShaderData,
-		hShaderData,
-		dShaderData,
-		pShaderData,
-		inputLayoutData,
-		modelRootSignature,
-		&pipeline
-	);
-
-	if(result)
 	this->modelClassName = modelClassName;
-
-	return result;
+	return true;
 }
 
 bool PipelineState::Initialize
