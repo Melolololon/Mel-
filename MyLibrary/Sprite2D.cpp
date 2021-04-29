@@ -36,7 +36,7 @@ bool Sprite2D::Initialize(const int winWidth, const int winHeight)
 	data.cullMode = CULL_NONE;
 	data.depthMode = DEPTH_NONE;
 	data.drawMode = DRAW_SOLID;
-	auto result = defaultPipeline.CreateModelPipeline
+	auto result = defaultPipeline.CreatePipeline
 	(
 		data,
 		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },

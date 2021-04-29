@@ -303,7 +303,7 @@ bool ObjModel::Initialize()
 	layoutData[3].formatType = FORMAT_TYPE_UNSIGNED_INT;
 	layoutData[3].number = 1;
 
-	auto result = defaultPipeline.CreateModelPipeline
+	auto result = defaultPipeline.CreatePipeline
 	(
 		pipelineData,
 		{ L"../MyLibrary/ObjAnimationVertexShader.hlsl","VSmain","vs_5_0" },

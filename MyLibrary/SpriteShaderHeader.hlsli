@@ -7,15 +7,18 @@ cbuffer cbuff0 : register(b0)
 };
 
 
-
-
-//
-//cbuffer cbuff1 : register(b1)
+//cbuffer cbuff0 : register(b0)
 //{
-//	float4 colorS;
-//	float4 addColorS;
-//	matrix matS;
+//	matrix boneMatArray[64];
+//	matrix mat;
+//	matrix normalMat;
+//	matrix worldMat;
+//	float4 mulColor;
+//	float4 addColor;
+//	float4 subColor;
+//	float ex;
 //};
+
 
 struct VSOutput
 {

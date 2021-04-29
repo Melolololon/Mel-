@@ -101,7 +101,7 @@ bool FbxModel::Initialize()
 	data.cullMode = CULL_BACK;
 	data.depthMode = DEPTH_TRUE;
 	data.drawMode = DRAW_SOLID;
-	auto result = defaultPipeline.CreateModelPipeline
+	auto result = defaultPipeline.CreatePipeline
 	(
 		data,
 		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },

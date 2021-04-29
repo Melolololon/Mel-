@@ -37,7 +37,7 @@ void Play::Initialize()
 	);
 
 	data.key = "Key";
-	Library::CreateBoard({ 100,100 }, data);
+	Library::CreateBoard({ 10,10 }, data);
 	Library::CreateHeapData2({ 255,0,0,255 }, 1, data);
 
 	Library::CreateSprite(&spr);
@@ -58,7 +58,6 @@ void Play::Update()
 		angle.x -= 3.0f;
 	fbxModel->SetAngle(angle, 0);
 
-	sprite3D->SetAngle(angle);
 }
 
 void Play::Draw()
@@ -73,8 +72,10 @@ void Play::Draw()
 	//Library::SetPosition({ 120,0,0 }, data, 0);
 	//Library::DrawGraphic(data,0);
 
-	Library::SetIsBillboard(true, true, true);
-	Library::DrawSprite3D({ 1,1,1 }, { 100,100 }, spr, sprTex);
+
+	//Library::SetIsBillboard(true, true, true);
+	//これ出すには、スプライトのシェーダーのヘッダを書き換える
+	//Library::DrawSprite3D({ 0,0,0 }, { 100,100 }, spr, sprTex);
 }
 
 void Play::end()
