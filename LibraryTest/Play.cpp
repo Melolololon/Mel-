@@ -67,7 +67,7 @@ void Play::Draw()
 	//sprite2D->Draw(tex.get());
 
 	//sprite3D->SetPosition({ 0,0,0 });
-    sprite3D->Draw(tex.get());
+	sprite3D->SelectDrawAreaDraw({ 64,64 }, {128,128}, tex.get());
 
 	//Library::SetPosition({ 120,0,0 }, data, 0);
 	//Library::DrawGraphic(data,0);

@@ -74,9 +74,6 @@ void Sprite2D::SelectDrawAreaDraw
 	vertices[2].pos = { spriteSize.x / 2,   spriteSize.y / 2 ,0 };
 	vertices[3].pos = { spriteSize.x / 2 , -spriteSize.y / 2,0 };
 
-	auto vertexNum = vertices.size();
-	for (int i = 0; i < vertexNum; i++)
-		vertex[i].pos = vertices[i].pos;
 #pragma endregion
 
 #pragma region UVÀ•W
@@ -90,6 +87,11 @@ void Sprite2D::SelectDrawAreaDraw
 	vertices[2].uv = { uvRightDown.x ,uvRightDown.y };
 	vertices[3].uv = { uvRightDown.y ,uvLeftUp.y };
 #pragma endregion
+
+
+	auto vertexNum = vertices.size();
+	for (int i = 0; i < vertexNum; i++)
+		vertex[i] = vertices[i];
 
 	UnmapVertexBuffer();
 

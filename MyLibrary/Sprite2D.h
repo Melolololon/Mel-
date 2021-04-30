@@ -28,6 +28,12 @@ public:
 	
 	void CreateSprite();
 	void Draw(Texture* texture);
+	/// <summary>
+	/// 表示範囲を指定して描画します。
+	/// </summary>
+	/// <param name="leftUpPos">左上座標</param>
+	/// <param name="rightDownPos">右下座標</param>
+	/// <param name="texture"></param>
 	void SelectDrawAreaDraw(const Vector2& leftUpPos, const Vector2& rightDownPos, Texture* texture);
 
 #pragma region 操作
