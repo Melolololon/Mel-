@@ -18,7 +18,7 @@ public:
 
 	static bool Initialize();
 	void Draw(Texture* texture);
-
+	void SelectDrawAreaDraw(const Vector2& leftUpPos, const Vector2& rightDownPos, Texture* texture);
 
 #pragma region ëÄçÏ
 	void SetPosition(const Vector3& pos) { constData.position = pos.ToXMFLOAT3(); }

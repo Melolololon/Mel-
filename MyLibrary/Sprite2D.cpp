@@ -56,6 +56,47 @@ bool Sprite2D::Initialize(const int winWidth, const int winHeight)
 	return true;
 }
 
+void Sprite2D::SelectDrawAreaDraw
+(
+	const Vector2& leftUpPos, 
+	const Vector2& rightDownPos, 
+	Texture* texture
+)
+{
+	SpriteVertex* vertex;
+	MapVertexBuffer((void**)&vertex);
+
+#pragma region 頂点座標
+	Vector2 spriteSize = rightDownPos - leftUpPos;
+
+	vertices[0].pos = { -spriteSize.x / 2, spriteSize.y / 2, 0 };
+	vertices[1].pos = { -spriteSize.x / 2 ,-spriteSize.y / 2,0 };
+	vertices[2].pos = { spriteSize.x / 2,   spriteSize.y / 2 ,0 };
+	vertices[3].pos = { spriteSize.x / 2 , -spriteSize.y / 2,0 };
+
+	auto vertexNum = vertices.size();
+	for (int i = 0; i < vertexNum; i++)
+		vertex[i].pos = vertices[i].pos;
+#pragma endregion
+
+#pragma region UV座標
+
+	Vector2 textureSize = texture->GetTextureSize();
+	Vector2 uvLeftUp = { 1.0f / textureSize.x * leftUpPos.x ,1.0f / textureSize.y * leftUpPos.y };
+	Vector2 uvRightDown = { 1.0f / textureSize.x * rightDownPos.x ,1.0f / textureSize.y * rightDownPos.y };
+
+	vertices[0].uv = { uvLeftUp.x ,uvRightDown.y };
+	vertices[1].uv = { uvLeftUp .x,uvLeftUp .y};
+	vertices[2].uv = { uvRightDown.x ,uvRightDown.y };
+	vertices[3].uv = { uvRightDown.y ,uvLeftUp.y };
+#pragma endregion
+
+	UnmapVertexBuffer();
+
+	DataMap(cameraMatrix, true, texture);
+	SetCmdList(texture);
+}
+
 void Sprite2D::Draw(Texture* texture)
 {
 	//ここで頂点のマップをする
@@ -64,15 +105,10 @@ void Sprite2D::Draw(Texture* texture)
 
 	Vector2 textureSize = texture->GetTextureSize();
 	
-	float width = textureSize.x;
-	float height = textureSize.y;
-	width /= 2;
-	height /= 2;
-
-	vertices[0].pos = { 0 - width,textureSize.y - height,0, };
-	vertices[1].pos = { 0 - width,0 - height, 0, };
-	vertices[2].pos = { textureSize.x - width,textureSize.y - height,0 };
-	vertices[3].pos = { textureSize.x - width,0 - height,0, };
+	vertices[0].pos = { 0 - textureSize.x / 2,textureSize.y - textureSize.y / 2,0, };
+	vertices[1].pos = { 0 - textureSize.x / 2,0 - textureSize.y / 2, 0, };
+	vertices[2].pos = { textureSize.x - textureSize.x / 2,textureSize.y - textureSize.y / 2,0 };
+	vertices[3].pos = { textureSize.x - textureSize.x / 2,0 - textureSize.y / 2,0, };
 	auto vertexNum = vertices.size();
 	for (int i = 0; i < vertexNum; i++)
 		vertex[i].pos = vertices[i].pos;
