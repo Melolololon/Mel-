@@ -91,10 +91,6 @@ public:
 #pragma endregion
 
 
-#pragma region Œ©‚½–Ú‘€ì
-	//AddColor‚Æ‚©
-	
-#pragma endregion
 
 
 };

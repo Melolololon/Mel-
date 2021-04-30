@@ -175,7 +175,7 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 
 	CD3DX12_ROOT_PARAMETER spriteRootparam[2] = {};
 	spriteRootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	spriteRootparam[1].InitAsDescriptorTable(1, &spriteDescRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	spriteRootparam[1].InitAsDescriptorTable(1, &spriteDescRangeSRV, D3D12_SHADER_VISIBILITY_PIXEL);
 
 #pragma region ルートシグネチャ
 
@@ -248,3 +248,4 @@ void Sprite::CreateTextureBuffer(Texture* texture)
 	
 
 }
+

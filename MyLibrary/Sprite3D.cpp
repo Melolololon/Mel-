@@ -71,3 +71,32 @@ void Sprite3D::Draw(Texture* texture)
 
 
 }
+
+
+void Sprite3D::SelectDrawAreaDraw
+(
+	const Vector2& leftUpPos,
+	const Vector2& rightDownPos,
+	Texture* texture
+)
+{
+	SpriteVertex* vertex;
+	MapVertexBuffer((void**)&vertex);
+
+#pragma region UVÀ•W
+
+	Vector2 textureSize = texture->GetTextureSize();
+	Vector2 uvLeftUp = { 1.0f / textureSize.x * leftUpPos.x ,1.0f / textureSize.y * leftUpPos.y };
+	Vector2 uvRightDown = { 1.0f / textureSize.x * rightDownPos.x ,1.0f / textureSize.y * rightDownPos.y };
+
+	vertices[0].uv = { uvLeftUp.x ,uvRightDown.y };
+	vertices[1].uv = { uvLeftUp.x,uvLeftUp.y };
+	vertices[2].uv = { uvRightDown.x ,uvRightDown.y };
+	vertices[3].uv = { uvRightDown.y ,uvLeftUp.y };
+#pragma endregion
+
+	UnmapVertexBuffer();
+
+	DataMap(viewAndProjectionMatrix, true, texture);
+	SetCmdList(texture);
+}
