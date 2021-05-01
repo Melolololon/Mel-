@@ -34,7 +34,7 @@ void Game::Initialize()
 
 	Library::Initialize(1280, 720, {200,200,200,255},L"MyLib");
 	Library::SetFramesPerSecond60(true);
-	Library::SetCamera(Vector3( 0,0,-200 ), Vector3( 0,40,0 ), Vector3(0,1,0 ));
+	Library::SetCamera(Vector3( 0,0,-10 ), Vector3( 0,0,0 ), Vector3(0,1,0 ));
 	Library::SetCameraNearAndFar(0.1, 1000.0f);
 	Library::SetLightVector({ 0,0,1 });
 

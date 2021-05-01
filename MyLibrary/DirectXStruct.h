@@ -144,7 +144,7 @@ struct BoneData
 //ボーンの親をセットするときにセットする値
 struct ParentBoneData
 {
-	int parentBoneNum;//-1を未セットにするため、int型
+	int parentBoneNum = -1;//-1を未セットにするため、int型
 	DirectX::XMFLOAT3 angleImpact = {100,100,100};
 	DirectX::XMFLOAT3 scaleImpact = {100,100,100};
 	DirectX::XMFLOAT3 moveVectorImpact = {100,100,100};

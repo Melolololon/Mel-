@@ -476,6 +476,7 @@ void CreateBuffer::CreateTextureBuffer
 
 	CreateShaderResourceView
 	(
+		texResDesc,
 		heapHandle,
 		*textureBuffer
 	);
@@ -532,6 +533,7 @@ void CreateBuffer::CreateOneColorTextureBuffer
 
 	CreateShaderResourceView
 	(
+		texResDesc,
 		heapHandle,
 		*textureBuffer
 	);
@@ -581,12 +583,13 @@ void CreateBuffer::CreateConstBufferView
 
 void CreateBuffer::CreateShaderResourceView
 (
+	const D3D12_RESOURCE_DESC& desc,
 	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 	ID3D12Resource* pTextureBuffer
 )
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.Format = desc.Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;

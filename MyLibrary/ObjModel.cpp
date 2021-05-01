@@ -227,6 +227,10 @@ void ObjModel::LoadModelMaterial
 		constDataSize
 	);
 
+	boneDatas.resize(createNum);
+	for (auto& b : boneDatas)
+		b.resize(boneNum);
+	parentBoneDatas.resize(boneNum);
 
 	pipeline = defaultPipeline.GetPipelineState();
 
@@ -329,6 +333,8 @@ void ObjModel::Draw(const int modelNum)
 
 void ObjModel::MapBoneMatrix(const int modelNum)
 {
+	if (boneNum == 0)return;
+
 	ModelConstBufferData* modelConstData;
 
 	//ボーンの行列を全オブジェクトに持たせるのはもったいないから、やっぱバッファ分けれるようにしたほうがいい
