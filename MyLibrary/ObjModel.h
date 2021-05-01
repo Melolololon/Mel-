@@ -156,7 +156,7 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// e‚ÌƒEƒB‹¦‚ğ‚Ç‚Ì‚­‚ç‚¢ó‚¯‚é‚©‚ğİ’è‚µ‚Ü‚·
 	/// </summary>
 	/// <param name="impact">”{—¦</param>
 	/// <param name="boneNum"></param>

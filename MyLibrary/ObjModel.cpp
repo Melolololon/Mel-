@@ -348,167 +348,169 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 #pragma region ボーンの値マップ
 		constBuffer[modelNum][i][0]->Map(0, nullptr, (void**)&modelConstData);
 
-		for (int j = 0; j < boneNum; j++)
+
+
+		DirectX::XMMATRIX boneMat = DirectX::XMMatrixIdentity();
+		DirectX::XMFLOAT3 boneScale;
+		DirectX::XMFLOAT3 boneAngle;
+		DirectX::XMFLOAT3 boneMoveVector;
+
+		//親ボーンの行列乗算
+		int parentBoneNum = 0;
+		int bone = 0;
+
+		DirectX::XMFLOAT3 boneAngleImpact = { 0.0f,0.0f,0.0f };
+		DirectX::XMFLOAT3 boneScaleImpact = { 1.0f,1.0f,1.0f };
+		DirectX::XMFLOAT3 boneMoveVectorImpact = { 0.0f,0.0f,0.0f };
+		DirectX::XMFLOAT3 bonePos = { 0,0,0 };
+
+
+		for (UINT j = 0; j < boneNum; j++)
 		{
+			boneMat = DirectX::XMMatrixIdentity();
 
-			DirectX::XMMATRIX boneMat = DirectX::XMMatrixIdentity();
-			DirectX::XMFLOAT3 boneScale;
-			DirectX::XMFLOAT3 boneAngle;
-			DirectX::XMFLOAT3 boneMoveVector;
+			//ボーンから頂点の距離分移動
+			bonePos = objBonePositions[j];
+			boneMat *= DirectX::XMMatrixTranslation(-bonePos.x, -bonePos.y, -bonePos.z);
 
-			//親ボーンの行列乗算
-			int parentBoneNum = 0;
-			int bone = 0;
+			boneScale = boneDatas[modelNum][j].scale;
+			boneMat *= DirectX::XMMatrixScaling(boneScale.x, boneScale.y, boneScale.z);
 
-			DirectX::XMFLOAT3 boneAngleImpact = { 0.0f,0.0f,0.0f };
-			DirectX::XMFLOAT3 boneScaleImpact = { 1.0f,1.0f,1.0f };
-			DirectX::XMFLOAT3 boneMoveVectorImpact = { 0.0f,0.0f,0.0f };
-			DirectX::XMFLOAT3 bonePos = { 0,0,0 };
+			boneAngle = boneDatas[modelNum][j].angle;
+			boneMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(boneAngle.z));
+			boneMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(boneAngle.x));
+			boneMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(boneAngle.y));
+
+			boneMoveVector = boneDatas[modelNum][j].moveVector;
+
+			//なぜかxとzが+-逆になってる
+			//シェーダーでモデルの行列を乗算する前にボーンの行列を乗算してたからだった
+			//(モデルはY軸基準で180度回転してた)
+			boneMat *= DirectX::XMMatrixTranslation(boneMoveVector.x, boneMoveVector.y, boneMoveVector.z);
+
+			//回転させたら戻す
+			boneMat *= DirectX::XMMatrixTranslation(bonePos.x, bonePos.y, bonePos.z);
+
+			boneAngleImpact = parentBoneDatas[modelNum][j].angleImpact;
+			boneScaleImpact = parentBoneDatas[modelNum][j].scaleImpact;
+			boneMoveVectorImpact = parentBoneDatas[modelNum][j].moveVectorImpact;
+
+			//親のボーン番号代入
+			parentBoneNum = parentBoneDatas[modelNum][j].parentBoneNum;
+
+			//これを使って影響度とか加算してく
+			//子　→　親の順で入れる
+			std::vector<int>parentNums;
+			parentNums.reserve(50);
+
+			//こちらは親　→　子
+			std::vector<DirectX::XMMATRIX>parentMat;
+			parentMat.reserve(50);
 
 
-			for (UINT k = 0; k < boneNum; k++)
+			//先にすべての親を取得&影響度取得
+			while (1)
 			{
-				boneMat = DirectX::XMMatrixIdentity();
-
-				//ボーンから頂点の距離分移動
-				bonePos = objBonePositions[k];
-				boneMat *= DirectX::XMMatrixTranslation(-bonePos.x, -bonePos.y, -bonePos.z);
-
-				boneScale = boneDatas[modelNum][k].scale;
-				boneMat *= DirectX::XMMatrixScaling(boneScale.x, boneScale.y, boneScale.z);
-
-				boneAngle = boneDatas[modelNum][k].angle;
-				boneMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(boneAngle.z));
-				boneMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(boneAngle.x));
-				boneMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(boneAngle.y));
-
-				boneMoveVector = boneDatas[modelNum][k].moveVector;
-
-				//なぜかxとzが+-逆になってる
-				//シェーダーでモデルの行列を乗算する前にボーンの行列を乗算してたからだった
-				//(モデルはY軸基準で180度回転してた)
-				boneMat *= DirectX::XMMatrixTranslation(boneMoveVector.x, boneMoveVector.y, boneMoveVector.z);
-
-				//回転させたら戻す
-				boneMat *= DirectX::XMMatrixTranslation(bonePos.x, bonePos.y, bonePos.z);
-
-				boneAngleImpact = parentBoneDatas[modelNum][k].angleImpact;
-				boneScaleImpact = parentBoneDatas[modelNum][k].scaleImpact;
-				boneMoveVectorImpact = parentBoneDatas[modelNum][k].moveVectorImpact;
+				//-1だったら(親がセットされてなかったら)抜ける
+				if (parentBoneNum == -1)break;
+				parentNums.push_back(parentBoneNum);
 
 				//親のボーン番号代入
-				parentBoneNum = parentBoneDatas[modelNum][k].parentBoneNum;
-
-				//これを使って影響度とか加算してく
-				//子　→　親の順で入れる
-				std::vector<int>parentNums;
-				parentNums.reserve(50);
-
-				//こちらは親　→　子
-				std::vector<DirectX::XMMATRIX>parentMat;
-				parentMat.reserve(50);
-
-
-				//先にすべての親を取得&影響度取得
-				while (1)
-				{
-					//-1だったら(親がセットされてなかったら)抜ける
-					if (parentBoneNum == -1)break;
-					parentNums.push_back(parentBoneNum);
-
-					//親のボーン番号代入
-					parentBoneNum = parentBoneDatas[modelNum][parentBoneNum].parentBoneNum;
-
-				}
-				if (parentNums.size() != 0)
-				{
-
-
-					DirectX::XMMATRIX mulMat = DirectX::XMMatrixIdentity();
-
-					//親数
-					const int maxParentSize = static_cast<int>(parentNums.size());
-
-					DirectX::XMFLOAT3 pAngle = { 0,0,0 };
-					DirectX::XMFLOAT3 pScale = { 1,1,1 };
-					DirectX::XMFLOAT3 pMoveVector = { 0,0,0 };
-					DirectX::XMFLOAT3 pPos = { 0,0,0 };
-
-					DirectX::XMFLOAT3 pAngleImpact = { 1,1,1 };
-					DirectX::XMFLOAT3 pScaleImpact = { 1,1,1 };
-					DirectX::XMFLOAT3 pMoveVectorImpact = { 1,1,1 };
-
-					mulMat = DirectX::XMMatrixIdentity();
-
-					//最後にある親のボーンを基準に回すので、入れる
-					pPos.x = objBonePositions[parentNums[maxParentSize - 1]].x;
-					pPos.y = objBonePositions[parentNums[maxParentSize - 1]].y;
-					pPos.z = objBonePositions[parentNums[maxParentSize - 1]].z;
-
-					for (auto& num : parentNums)
-					{
-						pAngle.x += boneDatas[modelNum][num].angle.x;
-						pAngle.y += boneDatas[modelNum][num].angle.y;
-						pAngle.z += boneDatas[modelNum][num].angle.z;
-
-						pScale.x *= boneDatas[modelNum][num].scale.x;
-						pScale.y *= boneDatas[modelNum][num].scale.y;
-						pScale.z *= boneDatas[modelNum][num].scale.z;
-
-						pMoveVector.x += boneDatas[modelNum][num].moveVector.x;
-						pMoveVector.y += boneDatas[modelNum][num].moveVector.y;
-						pMoveVector.z += boneDatas[modelNum][num].moveVector.z;
-
-
-
-						pAngleImpact.x *= parentBoneDatas[modelNum][num + 1].angleImpact.x;
-						pAngleImpact.y *= parentBoneDatas[modelNum][num + 1].angleImpact.y;
-						pAngleImpact.z *= parentBoneDatas[modelNum][num + 1].angleImpact.z;
-						pScaleImpact.x *= parentBoneDatas[modelNum][num + 1].scaleImpact.x;
-						pScaleImpact.y *= parentBoneDatas[modelNum][num + 1].scaleImpact.y;
-						pScaleImpact.z *= parentBoneDatas[modelNum][num + 1].scaleImpact.z;
-						pMoveVectorImpact.x *= parentBoneDatas[modelNum][num + 1].moveVectorImpact.x;
-						pMoveVectorImpact.y *= parentBoneDatas[modelNum][num + 1].moveVectorImpact.y;
-						pMoveVectorImpact.z *= parentBoneDatas[modelNum][num + 1].moveVectorImpact.z;
-					}
-
-					pAngle.x *= pAngleImpact.x;
-					pAngle.y *= pAngleImpact.y;
-					pAngle.z *= pAngleImpact.z;
-
-					pScale.x *= pScaleImpact.x;
-					pScale.y *= pScaleImpact.y;
-					pScale.z *= pScaleImpact.z;
-
-					pMoveVector.x *= pMoveVectorImpact.x;
-					pMoveVector.y *= pMoveVectorImpact.y;
-					pMoveVector.z *= pMoveVectorImpact.z;
-
-
-					//ボーンから頂点の距離分移動
-					mulMat *= DirectX::XMMatrixTranslation(-pPos.x, -pPos.y, -pPos.z);
-
-					mulMat *= DirectX::XMMatrixScaling(pScale.x, pScale.y, pScale.z);
-
-					mulMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(pAngle.z));
-					mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(pAngle.x));
-					mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(pAngle.y));
-
-					mulMat *= DirectX::XMMatrixTranslation(pMoveVector.x, pMoveVector.y, pMoveVector.z);
-
-					//回転させたら戻す
-					mulMat *= DirectX::XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
-
-
-					boneMat *= mulMat;
-				}
-				//配列の0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
-				modelConstData->boneMat[k + 1] = boneMat;
+				parentBoneNum = parentBoneDatas[modelNum][parentBoneNum].parentBoneNum;
 
 			}
+			if (parentNums.size() != 0)
+			{
 
-			
+
+				DirectX::XMMATRIX mulMat = DirectX::XMMatrixIdentity();
+
+				//親数
+				const int maxParentSize = static_cast<int>(parentNums.size());
+
+				DirectX::XMFLOAT3 pAngle = { 0,0,0 };
+				DirectX::XMFLOAT3 pScale = { 1,1,1 };
+				DirectX::XMFLOAT3 pMoveVector = { 0,0,0 };
+				DirectX::XMFLOAT3 pPos = { 0,0,0 };
+
+				DirectX::XMFLOAT3 pAngleImpact = { 1,1,1 };
+				DirectX::XMFLOAT3 pScaleImpact = { 1,1,1 };
+				DirectX::XMFLOAT3 pMoveVectorImpact = { 1,1,1 };
+
+				mulMat = DirectX::XMMatrixIdentity();
+
+				//最後にある親のボーンを基準に回すので、入れる
+				pPos.x = objBonePositions[parentNums[maxParentSize - 1]].x;
+				pPos.y = objBonePositions[parentNums[maxParentSize - 1]].y;
+				pPos.z = objBonePositions[parentNums[maxParentSize - 1]].z;
+
+				int impactIndex = j;
+				for (auto& pNum : parentNums)
+				{
+					pAngle.x += boneDatas[modelNum][pNum].angle.x;
+					pAngle.y += boneDatas[modelNum][pNum].angle.y;
+					pAngle.z += boneDatas[modelNum][pNum].angle.z;
+
+					pScale.x *= boneDatas[modelNum][pNum].scale.x;
+					pScale.y *= boneDatas[modelNum][pNum].scale.y;
+					pScale.z *= boneDatas[modelNum][pNum].scale.z;
+
+					pMoveVector.x += boneDatas[modelNum][pNum].moveVector.x;
+					pMoveVector.y += boneDatas[modelNum][pNum].moveVector.y;
+					pMoveVector.z += boneDatas[modelNum][pNum].moveVector.z;
+
+
+
+					pAngleImpact.x *= parentBoneDatas[modelNum][impactIndex].angleImpact.x;
+					pAngleImpact.y *= parentBoneDatas[modelNum][impactIndex].angleImpact.y;
+					pAngleImpact.z *= parentBoneDatas[modelNum][impactIndex].angleImpact.z;
+					pScaleImpact.x *= parentBoneDatas[modelNum][impactIndex].scaleImpact.x;
+					pScaleImpact.y *= parentBoneDatas[modelNum][impactIndex].scaleImpact.y;
+					pScaleImpact.z *= parentBoneDatas[modelNum][impactIndex].scaleImpact.z;
+					pMoveVectorImpact.x *= parentBoneDatas[modelNum][impactIndex].moveVectorImpact.x;
+					pMoveVectorImpact.y *= parentBoneDatas[modelNum][impactIndex].moveVectorImpact.y;
+					pMoveVectorImpact.z *= parentBoneDatas[modelNum][impactIndex].moveVectorImpact.z;
+
+					impactIndex = pNum;
+				}
+
+				pAngle.x *= pAngleImpact.x;
+				pAngle.y *= pAngleImpact.y;
+				pAngle.z *= pAngleImpact.z;
+
+				pScale.x *= pScaleImpact.x;
+				pScale.y *= pScaleImpact.y;
+				pScale.z *= pScaleImpact.z;
+
+				pMoveVector.x *= pMoveVectorImpact.x;
+				pMoveVector.y *= pMoveVectorImpact.y;
+				pMoveVector.z *= pMoveVectorImpact.z;
+
+
+				//ボーンから頂点の距離分移動
+				mulMat *= DirectX::XMMatrixTranslation(-pPos.x, -pPos.y, -pPos.z);
+
+				mulMat *= DirectX::XMMatrixScaling(pScale.x, pScale.y, pScale.z);
+
+				mulMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(pAngle.z));
+				mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(pAngle.x));
+				mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(pAngle.y));
+
+				mulMat *= DirectX::XMMatrixTranslation(pMoveVector.x, pMoveVector.y, pMoveVector.z);
+
+				//回転させたら戻す
+				mulMat *= DirectX::XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
+
+
+				boneMat *= mulMat;
+			}
+			//配列の0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
+			modelConstData->boneMat[j + 1] = boneMat;
+
 		}
+
+
+		
 		constBuffer[modelNum][i][0]->Unmap(0, nullptr);
 #pragma endregion
 	}

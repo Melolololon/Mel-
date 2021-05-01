@@ -60,6 +60,7 @@ void Play::Update()
 
 	objModel->SetBoneAngle({ angle.x,angle.y ,angle.z }, 1, 0);
 	objModel->SetParentBone(0, 1, 0);
+	objModel->SetAngleImpact({ 0.3,0.3,0.3 }, 0, 0);
 }
 
 void Play::Draw()

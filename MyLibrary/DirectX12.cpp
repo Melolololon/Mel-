@@ -4033,7 +4033,8 @@ void DirectX12::DataMap(const ModelData& modelData,int number )
 				pPos.x = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].x;
 				pPos.y = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].y;
 				pPos.z = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].z;
-
+				
+				int impactIndex = i;
 				for (auto& num : parentNums)
 				{
 					pAngle.x += boneData[modelData.key][number][num].angle.x;
@@ -4050,15 +4051,15 @@ void DirectX12::DataMap(const ModelData& modelData,int number )
 
 
 
-					pAngleImpact.x *= parentBoneData[modelData.key][num + 1].angleImpact.x;
-					pAngleImpact.y *= parentBoneData[modelData.key][num + 1].angleImpact.y;
-					pAngleImpact.z *= parentBoneData[modelData.key][num + 1].angleImpact.z;
-					pScaleImpact.x *= parentBoneData[modelData.key][num + 1].scaleImpact.x;
-					pScaleImpact.y *= parentBoneData[modelData.key][num + 1].scaleImpact.y;
-					pScaleImpact.z *= parentBoneData[modelData.key][num + 1].scaleImpact.z;
-					pMoveVectorImpact.x *= parentBoneData[modelData.key][num + 1].moveVectorImpact.x;
-					pMoveVectorImpact.y *= parentBoneData[modelData.key][num + 1].moveVectorImpact.y;
-					pMoveVectorImpact.z *= parentBoneData[modelData.key][num + 1].moveVectorImpact.z;
+					pAngleImpact.x *= parentBoneData[modelData.key][impactIndex].angleImpact.x;
+					pAngleImpact.y *= parentBoneData[modelData.key][impactIndex].angleImpact.y;
+					pAngleImpact.z *= parentBoneData[modelData.key][impactIndex].angleImpact.z;
+					pScaleImpact.x *= parentBoneData[modelData.key][impactIndex].scaleImpact.x;
+					pScaleImpact.y *= parentBoneData[modelData.key][impactIndex].scaleImpact.y;
+					pScaleImpact.z *= parentBoneData[modelData.key][impactIndex].scaleImpact.z;
+					pMoveVectorImpact.x *= parentBoneData[modelData.key][impactIndex].moveVectorImpact.x;
+					pMoveVectorImpact.y *= parentBoneData[modelData.key][impactIndex].moveVectorImpact.y;
+					pMoveVectorImpact.z *= parentBoneData[modelData.key][impactIndex].moveVectorImpact.z;
 				}
 
 				pAngle.x *= pAngleImpact.x;
