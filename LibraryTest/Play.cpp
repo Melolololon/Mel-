@@ -58,11 +58,8 @@ void Play::Update()
 
 	objModel->SetPosition({ -10,0,0 }, 0);
 
-	for (int i = 0; i < 20; i++) 
-	{
-		float addNum = i * 5;
-		objModel->SetBoneAngle({ angle.x + addNum,angle.y ,angle.z }, i, 0);
-	}
+	objModel->SetBoneAngle({ angle.x,angle.y ,angle.z }, 1, 0);
+	objModel->SetParentBone(0, 1, 0);
 }
 
 void Play::Draw()
