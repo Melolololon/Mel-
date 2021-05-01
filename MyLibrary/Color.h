@@ -7,21 +7,22 @@ struct Color
 	//floatだとrgbがわかりにくい。内部で255で割ればいいが、メモリの使用量が多い
 	//Mapするとき、ColorじゃなくてXMFLOAT4にすれば、floatとUCHARを混合できる
 
+	Color();
+	Color(const unsigned char r, const unsigned char g, const unsigned char b, const float a);
+	Color(const unsigned char rgb, const float a);
+
 	//色
-	unsigned char r, g, b, a;
+	unsigned char r = 0;
+	unsigned char g = 0;
+	unsigned char b = 0;
+	float a = 100.0f;
 	
-	Color operator+(Color color);
-	Color operator-(Color color);
-	Color operator*(Color color);
-	Color operator/(Color color);
+	Color operator+(const Color& color);
+	Color operator-(const Color& color);
+	Color operator*(const Color& color);
+	Color operator/(const Color& color);
 
-
+private:
+	void AlphaClamp();
 
 };
-
-/// <summary>
-/// パーセントを0～255の数値に変換します
-/// </summary>
-/// <param name="par">パーセント</param>
-/// <returns></returns>
-unsigned char AlphaChangePar(float par);

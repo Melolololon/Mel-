@@ -84,6 +84,11 @@ private:
 		const int heapTop
 	);
 
+	void Model::CreateOneColorTextureBuffer
+	(
+		const Color& color,
+		const int heapTop
+	);
 
 #pragma endregion
 
@@ -168,9 +173,17 @@ protected:
 	/// <param name="modelNum"></param>
 	/// <param name="modelFileObjectNum"></param>
 	/// <param name="userDataSize"></param>
-	void CreateModelHeapResources
+	void CreateModelHeapResourcesSetTexture
 	(
 		const std::vector<Texture*>& pTextures,
+		const int modelNum,
+		const int modelFileObjectNum,
+		const size_t userDataSize = 0
+	);
+
+	void CreateModelHeapResourcesSelectColor
+	(
+		const Color& color,
 		const int modelNum,
 		const int modelFileObjectNum,
 		const size_t userDataSize = 0

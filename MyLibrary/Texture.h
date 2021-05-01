@@ -33,12 +33,6 @@ public:
 
 	bool LoadSpriteTexture(const std::string& texturePath);
 
-	/// <summary>
-	/// 単色べた塗りテクスチャを生成します。
-	/// </summary>
-	/// <param name="color"></param>
-	/// <returns></returns>
-	bool CreateOneColorTexture(const Color& color);
 
 #pragma region データ取得
 

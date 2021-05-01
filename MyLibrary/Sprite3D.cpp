@@ -1,5 +1,4 @@
 #include "Sprite3D.h"
-#include"CreatePolygon.h"
 PipelineState Sprite3D::defaultPipeline;
 DirectX::XMMATRIX Sprite3D::viewAndProjectionMatrix;
 

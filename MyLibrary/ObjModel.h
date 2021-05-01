@@ -92,7 +92,7 @@ private:
 
 public:
 	ObjModel();
-	virtual ~ObjModel();
+	~ObjModel();
 
 
 	/// <summary>
@@ -107,7 +107,7 @@ public:
 	(
 		const std::string& path,
 		const bool loadUV,
-		const int createNum,
+		const int modelNum,
 		//const size_t vertexSize,
 		const size_t constDataSize
 	);

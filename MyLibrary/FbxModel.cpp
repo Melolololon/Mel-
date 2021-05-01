@@ -14,7 +14,7 @@ FbxModel::~FbxModel()
 {
 }
 
-bool FbxModel::LoadModel
+bool FbxModel::modelNum
 (
 	const std::string& path,
 	const int createNum,
@@ -29,19 +29,6 @@ bool FbxModel::LoadModel
 	verticesNum[0] = vertices.size();
 	
 	//バッファ作成
-	//size_t vertSize = 0;
-	//if (vertexSize == 0 ||
-	//	typeid(this) == typeid(FbxModel))
-	//	vertSize = sizeof(Vertex);
-	//else
-	//	vertSize = vertexSize;
-
-	//CreateModelVertexResources
-	//(
-	//	vertSize,
-	//	verticesNum,
-	//	indices
-	//);
 	CreateModelVertexResources
 	(
 		sizeof(Vertex),
@@ -68,13 +55,9 @@ bool FbxModel::LoadModel
 	for (int i = 0; i < texNum; i++)
 		pTextures[i] = textures[i].get();
 
-	ResizeConstData
-	(
-		createNum,
-		1
-	);
 
-	CreateModelHeapResources
+
+	CreateModelHeapResourcesSetTexture
 	(
 		pTextures,
 		createNum,

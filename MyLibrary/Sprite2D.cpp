@@ -1,5 +1,4 @@
 #include "Sprite2D.h"
-#include"CreatePolygon.h"
 
 DirectX::XMMATRIX Sprite2D::cameraMatrix;
 PipelineState Sprite2D::defaultPipeline;

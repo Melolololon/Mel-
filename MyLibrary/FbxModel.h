@@ -43,10 +43,10 @@ public:
 	FbxModel();
 	~FbxModel();
 
-	bool LoadModel
+	bool modelNum
 	(
 		const std::string& path,
-		const int createNum,
+		const int modelNum,
 		//const size_t vertexSize,
 		const size_t constDataSize
 	);

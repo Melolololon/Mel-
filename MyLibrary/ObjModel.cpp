@@ -203,12 +203,6 @@ void ObjModel::LoadModelMaterial
 		&loadObjectNum
 	);
 	
-	ResizeConstData
-	(
-		createNum,
-		loadObjectNum
-	);
-
 	//テクスチャ読み込み
 	textures.resize(loadObjectNum);
 	std::vector<Texture*> pTexture(loadObjectNum);
@@ -219,7 +213,7 @@ void ObjModel::LoadModelMaterial
 		pTexture[i] = textures[i].get();
 	}
 	
-	CreateModelHeapResources
+	CreateModelHeapResourcesSetTexture
 	(
 		pTexture,
 		createNum,
@@ -243,7 +237,7 @@ void ObjModel::LoadModel
 (
 	const std::string& path,
 	const bool loadUV,
-	const int createNum,
+	const int modelNum,
 	//const size_t vertexDataSize,
 	const size_t constDataSize
 )
@@ -280,7 +274,7 @@ void ObjModel::LoadModel
 #pragma endregion
 
 
-	LoadModelMaterial(directoryPath,createNum, constDataSize);
+	LoadModelMaterial(directoryPath,modelNum, constDataSize);
 }
 
 bool ObjModel::Initialize() 

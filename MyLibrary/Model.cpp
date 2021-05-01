@@ -60,7 +60,7 @@ void Model::CreateModelVertexResources
 	modelClassName = typeid(*this).name();
 }
 
-void Model::CreateModelHeapResources
+void Model::CreateModelHeapResourcesSetTexture
 (
 	const std::vector<Texture*>& pTextures,
 	const int modelNum,
@@ -68,6 +68,12 @@ void Model::CreateModelHeapResources
 	const size_t userDataSize
 )
 {
+	ResizeConstData
+	(
+		modelNum,
+		1
+	);
+
 #pragma region ディスクリプタヒープ
 
 
@@ -93,6 +99,68 @@ void Model::CreateModelHeapResources
 	CreateTextureBuffer
 	(
 		pTextures,
+		0
+	);
+
+#pragma endregion
+
+#pragma region 定数バッファ
+
+
+
+	//定数バッファ作成
+	CreateConstBuffer
+	(
+		modelNum,
+		modelFileObjectNum,
+		modelFileObjectNum,
+		userDataSize
+	);
+#pragma endregion
+
+
+	this->modelNum = modelNum;
+	this->modelObjectNum = modelFileObjectNum;
+}
+
+void Model::CreateModelHeapResourcesSelectColor
+(
+	const Color& color,
+	const int modelNum,
+	const int modelFileObjectNum,
+	const size_t userDataSize
+)
+{
+	ResizeConstData
+	(
+		modelNum,
+		1
+	);
+#pragma region ディスクリプタヒープ
+
+
+	//ヒープ作成
+	int constBufferNum = 3;
+	if (userDataSize != 0)constBufferNum++;
+	int commonBufferNum = 1;
+	//テクスチャ　+ 共通バッファ + (定数バッファ - 共通バッファ) * モデル数 * モデル内のオブジェクト数
+	int heapSize =
+		modelFileObjectNum
+		+ commonBufferNum
+		+ (constBufferNum - commonBufferNum)
+		* modelNum
+		* modelFileObjectNum;
+
+	CreateDescriptorHeap(heapSize);
+
+#pragma endregion
+
+#pragma region テクスチャバッファ
+
+	//テクスチャバッファ作成
+	CreateOneColorTextureBuffer
+	(
+		color,
 		0
 	);
 
@@ -294,6 +362,32 @@ void Model::CreateTextureBuffer
 	}
 
 	textureBufferNum = static_cast<int>(textureNum);
+}
+
+void Model::CreateOneColorTextureBuffer
+(
+	const Color& color,
+	const int heapTop
+)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE hHandle;
+
+	hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+	(
+		desHeap->GetCPUDescriptorHandleForHeapStart(),
+		heapTop,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+
+	CreateBuffer::GetInstance()->CreateOneColorTextureBuffer
+	(
+		color,
+		hHandle,
+		&textureBuffer[0]
+	);
+
+	heapTags.push_back(HeapBufferTag::HEAP_TAG_TEXTURE_BUFFER);
+	textureBufferNum = 1;
 }
 
 #pragma region マップ

@@ -1,6 +1,8 @@
 #include "DirectX12.h"
 #include"LibMath.h"
 #include"FbxLoader.h"
+#include"ObjModel.h"
+#include"PrimitiveModel.h"
 
 
 DirectX12::DirectX12()
@@ -954,6 +956,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	
 	ObjModel::Initialize();
 	FbxModel::Initialize();
+	PrimitiveModel::Initialize();
 
 	Sprite::Initialize(dev.Get(), cmdList.Get());
 	Sprite2D::Initialize(windouWidth, windowHeight);
@@ -1793,13 +1796,16 @@ void DirectX12::SetIsBillboard(bool x, bool y, bool z)
 
 void DirectX12::SetMulColor(Color color, const std::string& key, int number)
 {
+
 	modelConstData[key][number].mulColor =
 	{
-	(float)color.r / (float)255,
-		(float)color.g / (float)255,
-		(float)color.b / (float)255,
-		(float)color.a / (float)255
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 100.0f
 	};
+
+
 
 	/*int size = constBufferSet[despNum][number].constBuffer.size();
 	for (int i = 0; i < size; i++) 
@@ -1821,10 +1827,10 @@ void DirectX12::SetAddColor(Color color, const std::string& key, int number)
 {
 	modelConstData[key][number].addColor =
 	{
-		(float)color.r / (float)255,
-		(float)color.g / (float)255,
-		(float)color.b / (float)255,
-		(float)color.a / (float)255
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 100.0f
 	};
 
 	/*int size = constBufferSet[despNum][number].constBuffer.size();
@@ -1846,10 +1852,10 @@ void DirectX12::SetSubColor(Color color, const std::string& key, int number)
 {
 	modelConstData[key][number].subColor =
 	{
-		(float)color.r / (float)255,
-		(float)color.g / (float)255,
-		(float)color.b / (float)255,
-		(float)color.a / (float)255
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 100.0f
 	};
 
 	/*int size = constBufferSet[despNum][number].constBuffer.size();
@@ -1873,30 +1879,30 @@ void DirectX12::SetSpriteMulColor(Color color, int spriteNum)
 {
 	spriteConstBufferDatas[spriteNum]->mulColor =
 	{
-	(float)color.r / (float)255,
-		(float)color.g / (float)255,
-		(float)color.b / (float)255,
-		(float)color.a / (float)255
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 100.0f
 	};
 }
 void DirectX12::SetSpriteAddColor(Color color, int spriteNum)
 {
 	spriteConstBufferDatas[spriteNum]->addColor =
 	{
-	(float)color.r / (float)255,
-		(float)color.g / (float)255,
-		(float)color.b / (float)255,
-		(float)color.a / (float)255
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 100.0f
 	};
 }
 void DirectX12::SetSpriteSubColor(Color color, int spriteNum)
 {
 	spriteConstBufferDatas[spriteNum]->subColor =
 	{
-	(float)color.r / (float)255,
-		(float)color.g / (float)255,
-		(float)color.b / (float)255,
-		(float)color.a / (float)255
+	(float)color.r / 255.0f,
+	(float)color.g / 255.0f,
+	(float)color.b / 255.0f,
+	(float)color.a / 100.0f
 	};
 }
 
@@ -1907,10 +1913,10 @@ void DirectX12::SetPointMulColor(Color color, int pointNum, int num)
 {
 	pointVertices[pointNum][num].color =
 	{
-		(float)color.r / (float)255,
-		(float)color.g / (float)255,
-		(float)color.b / (float)255,
-		(float)color.a / (float)255
+	(float)color.r / 255.0f,
+	(float)color.g / 255.0f,
+	(float)color.b / 255.0f,
+	(float)color.a / 100.0f
 	};
 }
 
