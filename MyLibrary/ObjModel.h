@@ -61,7 +61,7 @@ private:
 	UINT boneNum;
 	//[モデルごと][ボーンごと]
 	std::vector<std::vector<BoneData>>boneDatas;
-	std::vector<ParentBoneData> parentBoneDatas;//親ボーンと影響度
+	std::vector < std::vector<ParentBoneData>> parentBoneDatas;//親ボーンと影響度
 
 	std::vector<std::unique_ptr<Texture>>textures;
 
@@ -116,8 +116,8 @@ public:
 	void SetBoneMoveVector
 	(
 		const Vector3& vector,
-		const int modelNum, 
-		const int boneNum
+		const int boneNum,
+		const int modelNum
 	)
 	{
 		boneDatas[modelNum][boneNum].moveVector = vector.ToXMFLOAT3();
@@ -126,8 +126,8 @@ public:
 	void SetBoneScale
 	(
 		const Vector3& scale,
-		const int modelNum,
-		const int boneNum
+		const int boneNum,
+		const int modelNum
 	)
 	{
 		boneDatas[modelNum][boneNum].scale = scale.ToXMFLOAT3();
@@ -136,43 +136,51 @@ public:
 	void SetBoneAngle
 	(
 		const Vector3& angle,
-		const int modelNum,
-		const int boneNum
+		const int boneNum,
+		const int modelNum
 	)
 	{
 		boneDatas[modelNum][boneNum].angle = angle.ToXMFLOAT3();
 	}
 
-	void SetParentBoneBone(const int bone,const int parentBone)
+	void SetParentBoneBone
+	(
+		const int bone,
+		const int parentBone,
+		const int modelNum
+	)
 	{
-		parentBoneDatas[bone].parentBoneNum = parentBone;
+		parentBoneDatas[modelNum][bone].parentBoneNum = parentBone;
 	}
 
 	void SetMoveVectorImpact
 	(
 		const Vector3& impact,
-		const int boneNum
+		const int boneNum,
+		const int modelNum
 	)
 	{
-		parentBoneDatas[boneNum].moveVectorImpact = impact.ToXMFLOAT3();
+		parentBoneDatas[modelNum][boneNum].moveVectorImpact = impact.ToXMFLOAT3();
 	}
 
 	void SetAngle
 	(
 		const Vector3& impact,
-		const int boneNum
+		const int boneNum,
+		const int modelNum
 	)
 	{
-		parentBoneDatas[boneNum].angleImpact = impact.ToXMFLOAT3();
+		parentBoneDatas[modelNum][boneNum].angleImpact = impact.ToXMFLOAT3();
 	}
 
 	void SetScale
 	(
 		const Vector3& impact,
-		const int boneNum
+		const int boneNum,
+		const int modelNum
 	)
 	{
-		parentBoneDatas[boneNum].scaleImpact = impact.ToXMFLOAT3();
+		parentBoneDatas[modelNum][boneNum].scaleImpact = impact.ToXMFLOAT3();
 	}
 #pragma endregion
 

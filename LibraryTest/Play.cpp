@@ -56,6 +56,13 @@ void Play::Update()
 		angle.x -= 3.0f;
 	fbxModel->SetAngle(angle, 0);
 
+	objModel->SetPosition({ -10,0,0 }, 0);
+
+	for (int i = 0; i < 20; i++) 
+	{
+		float addNum = i * 5;
+		objModel->SetBoneAngle({ angle.x + addNum,angle.y ,angle.z }, i, 0);
+	}
 }
 
 void Play::Draw()

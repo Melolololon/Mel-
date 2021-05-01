@@ -230,7 +230,10 @@ void ObjModel::LoadModelMaterial
 	boneDatas.resize(createNum);
 	for (auto& b : boneDatas)
 		b.resize(boneNum);
-	parentBoneDatas.resize(boneNum);
+
+	parentBoneDatas.resize(createNum);
+	for (auto& b : parentBoneDatas)
+		b.resize(boneNum);
 
 	pipeline = defaultPipeline.GetPipelineState();
 
@@ -389,12 +392,12 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 				//回転させたら戻す
 				boneMat *= DirectX::XMMatrixTranslation(bonePos.x, bonePos.y, bonePos.z);
 
-				boneAngleImpact = parentBoneDatas[k].angleImpact;
-				boneScaleImpact = parentBoneDatas[k].scaleImpact;
-				boneMoveVectorImpact = parentBoneDatas[k].moveVectorImpact;
+				boneAngleImpact = parentBoneDatas[modelNum][k].angleImpact;
+				boneScaleImpact = parentBoneDatas[modelNum][k].scaleImpact;
+				boneMoveVectorImpact = parentBoneDatas[modelNum][k].moveVectorImpact;
 
 				//親のボーン番号代入
-				parentBoneNum = parentBoneDatas[k].parentBoneNum;
+				parentBoneNum = parentBoneDatas[modelNum][k].parentBoneNum;
 
 				//これを使って影響度とか加算してく
 				//子　→　親の順で入れる
@@ -414,7 +417,7 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 					parentNums.push_back(parentBoneNum);
 
 					//親のボーン番号代入
-					parentBoneNum = parentBoneDatas[parentBoneNum].parentBoneNum;
+					parentBoneNum = parentBoneDatas[modelNum][parentBoneNum].parentBoneNum;
 
 				}
 				if (parentNums.size() != 0)
@@ -458,15 +461,15 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 
 
 
-						pAngleImpact.x *= parentBoneDatas[num + 1].angleImpact.x;
-						pAngleImpact.y *= parentBoneDatas[num + 1].angleImpact.y;
-						pAngleImpact.z *= parentBoneDatas[num + 1].angleImpact.z;
-						pScaleImpact.x *= parentBoneDatas[num + 1].scaleImpact.x;
-						pScaleImpact.y *= parentBoneDatas[num + 1].scaleImpact.y;
-						pScaleImpact.z *= parentBoneDatas[num + 1].scaleImpact.z;
-						pMoveVectorImpact.x *= parentBoneDatas[num + 1].moveVectorImpact.x;
-						pMoveVectorImpact.y *= parentBoneDatas[num + 1].moveVectorImpact.y;
-						pMoveVectorImpact.z *= parentBoneDatas[num + 1].moveVectorImpact.z;
+						pAngleImpact.x *= parentBoneDatas[modelNum][num + 1].angleImpact.x;
+						pAngleImpact.y *= parentBoneDatas[modelNum][num + 1].angleImpact.y;
+						pAngleImpact.z *= parentBoneDatas[modelNum][num + 1].angleImpact.z;
+						pScaleImpact.x *= parentBoneDatas[modelNum][num + 1].scaleImpact.x;
+						pScaleImpact.y *= parentBoneDatas[modelNum][num + 1].scaleImpact.y;
+						pScaleImpact.z *= parentBoneDatas[modelNum][num + 1].scaleImpact.z;
+						pMoveVectorImpact.x *= parentBoneDatas[modelNum][num + 1].moveVectorImpact.x;
+						pMoveVectorImpact.y *= parentBoneDatas[modelNum][num + 1].moveVectorImpact.y;
+						pMoveVectorImpact.z *= parentBoneDatas[modelNum][num + 1].moveVectorImpact.z;
 					}
 
 					pAngle.x *= pAngleImpact.x;
