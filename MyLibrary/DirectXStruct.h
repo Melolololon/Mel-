@@ -136,22 +136,21 @@ struct SpriteConstData
 struct BoneData
 {
 	//0,0,0から、どのくらい動かすかを表したfloat3
-	std::vector<std::vector<DirectX::XMFLOAT3>>moveVector;
-
-	std::vector<std::vector<DirectX::XMFLOAT3>>scale;
-	std::vector<std::vector<DirectX::XMFLOAT3>>angle;
+	DirectX::XMFLOAT3 moveVector = {0,0,0};
+	DirectX::XMFLOAT3 scale = {1,1,1};
+	DirectX::XMFLOAT3 angle = {0,0,0};
 };
 
 //ボーンの親をセットするときにセットする値
 struct ParentBoneData
 {
 	int parentBoneNum;//-1を未セットにするため、int型
-	DirectX::XMFLOAT3 angleImpact;
-	DirectX::XMFLOAT3 scaleImpact;
-	DirectX::XMFLOAT3 moveVectorImpact;
+	DirectX::XMFLOAT3 angleImpact = {100,100,100};
+	DirectX::XMFLOAT3 scaleImpact = {100,100,100};
+	DirectX::XMFLOAT3 moveVectorImpact = {100,100,100};
 };
 
-struct ConstBufferData
+struct ModelConstBufferData
 {
 	DirectX::XMMATRIX boneMat[64];
 	DirectX::XMMATRIX mat;

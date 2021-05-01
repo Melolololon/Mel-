@@ -112,6 +112,7 @@ protected:
 	
 	//[ヒープの番号(heapNum)ごと][obj内のモデルごと][バッファごと]
 	//バッファ格納配列をmapにしてもいいかも	std::vector<std::vector<std::umap<enum,ComPtr<ID3D12Resource>>>>
+	//そもそもバッファごとに配列分けてもいいかも
 	std::vector<std::vector<std::vector<ComPtr<ID3D12Resource>>>> constBuffer;
 	
 	//テクスチャ側に持たせたからコメントアウト
@@ -137,7 +138,7 @@ protected:
 
 #pragma region 関数
 
-	void ConstDataMap(const int modelNum);
+	void MapConstData(const int modelNum);
 	void SetCmdList(const int modelNum);
 
 #pragma region バッファ生成

@@ -245,7 +245,7 @@ private:
 #pragma region ボーン
 
 	//[key モデルごと][オブジェクトの番号ごと][ボーンごと]
-	std::unordered_map < std::string, BoneData> boneConstData;
+	std::unordered_map < std::string, std::vector<std::vector<BoneData>>> boneData;
 
 
 	////モデルごとに違うデータ(同じモデルだったらいっしょ)
@@ -287,7 +287,7 @@ private:
 #pragma region 定数バッファ関係
 
 	//定数バッファデータ
-	ConstBufferData* constData3D;
+	ModelConstBufferData* constData3D;
 	//共通
 	CommonConstData* commonConstData3D;
 	//ユーザー
@@ -297,7 +297,7 @@ private:
 	MaterialConstData* materialData;
 
 	//下なくす
-	std::vector<ConstBufferData*>spriteConstBufferDatas;
+	std::vector<ModelConstBufferData*>spriteConstBufferDatas;
 
 	//点用の構造体
 	PointConstBufferData* constDataPoint;
