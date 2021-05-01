@@ -9,15 +9,12 @@
 #include"FbxModel.h"
 #include"ObjModel.h"
 std::unique_ptr<FbxModel> fbxModel = std::make_unique<FbxModel>();
+std::unique_ptr<ObjModel> objModel = std::make_unique<ObjModel>();
 
 std::unique_ptr<Sprite2D> sprite2D = std::make_unique<Sprite2D>();
 std::unique_ptr<Sprite3D> sprite3D = std::make_unique<Sprite3D>();
 std::unique_ptr<Texture> tex = std::make_unique<Texture>();
 
-ModelData data;
-
-sprite spr;
-texture sprTex;
 
 Play::Play(){}
 
@@ -36,12 +33,13 @@ void Play::Initialize()
 		0
 	);
 
-	data.key = "Key";
-	Library::CreateBoard({ 10,10 }, data);
-	Library::CreateHeapData2({ 255,0,0,255 }, 1, data);
-
-	Library::CreateSprite(&spr);
-	sprTex = Library::LoadTexture(L"Resources/Texture/testTexture.png");
+	objModel->LoadModel
+	(
+		"Resources/Obj/testSnake.obj",
+		true,
+		1,
+		0
+	);
 }
 
 Vector3 angle = 0;
@@ -67,15 +65,9 @@ void Play::Draw()
 	//sprite2D->Draw(tex.get());
 
 	//sprite3D->SetPosition({ 0,0,0 });
-	sprite3D->SelectDrawAreaDraw({ 64,64 }, {128,128}, tex.get());
+	//sprite3D->SelectDrawAreaDraw({ 64,64 }, {128,128}, tex.get());
 
-	//Library::SetPosition({ 120,0,0 }, data, 0);
-	//Library::DrawGraphic(data,0);
-
-
-	//Library::SetIsBillboard(true, true, true);
-	//これ出すには、スプライトのシェーダーのヘッダを書き換える
-	//Library::DrawSprite3D({ 0,0,0 }, { 100,100 }, spr, sprTex);
+	objModel->Draw(0);
 }
 
 void Play::end()

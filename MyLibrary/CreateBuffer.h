@@ -123,6 +123,7 @@ public:
 
 	void CreateShaderResourceView
 	(
+		const D3D12_RESOURCE_DESC& desc,
 		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 		ID3D12Resource* pTextureBuffer
 	);
