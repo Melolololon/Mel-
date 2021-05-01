@@ -113,6 +113,8 @@ public:
 	);
 
 #pragma region ëÄçÏ
+
+
 	void SetBoneMoveVector
 	(
 		const Vector3& vector,
@@ -143,7 +145,7 @@ public:
 		boneDatas[modelNum][boneNum].angle = angle.ToXMFLOAT3();
 	}
 
-	void SetParentBoneBone
+	void SetParentBone
 	(
 		const int bone,
 		const int parentBone,
@@ -153,6 +155,12 @@ public:
 		parentBoneDatas[modelNum][bone].parentBoneNum = parentBone;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="impact">î{ó¶</param>
+	/// <param name="boneNum"></param>
+	/// <param name="modelNum"></param>
 	void SetMoveVectorImpact
 	(
 		const Vector3& impact,
@@ -163,7 +171,8 @@ public:
 		parentBoneDatas[modelNum][boneNum].moveVectorImpact = impact.ToXMFLOAT3();
 	}
 
-	void SetAngle
+
+	void SetAngleImpact
 	(
 		const Vector3& impact,
 		const int boneNum,
@@ -173,7 +182,7 @@ public:
 		parentBoneDatas[modelNum][boneNum].angleImpact = impact.ToXMFLOAT3();
 	}
 
-	void SetScale
+	void SetScaleImpact
 	(
 		const Vector3& impact,
 		const int boneNum,
@@ -182,6 +191,8 @@ public:
 	{
 		parentBoneDatas[modelNum][boneNum].scaleImpact = impact.ToXMFLOAT3();
 	}
+
+
 #pragma endregion
 
 
