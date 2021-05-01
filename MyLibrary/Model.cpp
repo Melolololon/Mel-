@@ -205,7 +205,7 @@ void Model::CreateConstBuffer
 
 	size_t constDataSize[3] =
 	{
-		sizeof(ConstBufferData),
+		sizeof(ModelConstBufferData),
 		sizeof(Material),
 		userDataSize
 	};
@@ -246,7 +246,7 @@ void Model::CreateConstBuffer
 
 
 	//ボーン行列の初期化(初期化してない奴があると、GPUはそれ以降見てくれないから)
-	ConstBufferData* constBufferData;
+	ModelConstBufferData* constBufferData;
 	for (int i = 0; i < modelNum; i++)
 	{
 		//モデル内のオブジェクト分ループ
@@ -543,9 +543,9 @@ void Model::Initialize
 
 #pragma endregion
 
-void Model::ConstDataMap(const int modelNum)
+void Model::MapConstData(const int modelNum)
 {
-	ConstBufferData* constBufferData;
+	ModelConstBufferData* constBufferData;
 
 	for (int i = 0; i < modelObjectNum; i++) 
 	{
@@ -718,7 +718,7 @@ void Model::SetCmdList(const int modelNum)
 
 void Model::Draw(const int modelNum)
 {
-	ConstDataMap(modelNum);
+	MapConstData(modelNum);
 	SetCmdList(modelNum);
 
 }

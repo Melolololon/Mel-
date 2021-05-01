@@ -2286,19 +2286,19 @@ void DirectX12::LoadObjMaterial
 	if(vType == VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 	{
 		//ボーン用意
-		BoneData bData;
-		std::vector<DirectX::XMFLOAT3> xmFloat3Vector(objBonePositions[key].size(), { 0,0,0 });
-		std::vector<std::vector<DirectX::XMFLOAT3>>xmFloat3Vector2(objectNumber, xmFloat3Vector);
-		bData.angle = xmFloat3Vector2;
-		bData.moveVector = xmFloat3Vector2;
+		std::vector<std::vector<BoneData>>boneDataVector;
 
-		for (auto& vector : xmFloat3Vector)
-			vector = { 1,1,1 };
-		for (auto& vector : xmFloat3Vector2)
-			vector = xmFloat3Vector;
-		bData.scale = xmFloat3Vector2;
+		for (auto& b1 : boneDataVector) 
+		{
+			for(auto& b2 : b1)
+			{
+				b2.angle = {0,0,0};
+				b2.moveVector = {0,0,0};
+				b2.scale = {1,1,1};
+			}
+		}
+		boneData.emplace(key, boneDataVector);
 
-		boneConstData.emplace(key, bData);
 
 		ParentBoneData pBoneData;
 		pBoneData.angleImpact = { 1.0f,1.0f,1.0f };
@@ -2348,7 +2348,7 @@ void DirectX12::LoadObjMaterial
 		createBuffer->CreateConstBufferSet
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff)&~0xff),
+			CD3DX12_RESOURCE_DESC::Buffer((sizeof(ModelConstBufferData) + 0xff)&~0xff),
 			basicHeapHandle,
 			(void**)&constData3D,
 			constSetV[i],
@@ -2951,7 +2951,7 @@ void DirectX12::CreateHeapData
 
 			createBuffer->CreateConstBufferSet(
 				CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-				CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff)&~0xff),
+				CD3DX12_RESOURCE_DESC::Buffer((sizeof(ModelConstBufferData) + 0xff)&~0xff),
 				basicHeapHandle,
 				(void**)&constData3D,
 				constSetV[i],
@@ -2993,7 +2993,7 @@ void DirectX12::CreateHeapData
 
 			createBuffer->CreateConstBufferSet(
 				CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-				CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff)&~0xff),
+				CD3DX12_RESOURCE_DESC::Buffer((sizeof(ModelConstBufferData) + 0xff)&~0xff),
 				basicHeapHandle,
 				(void**)&constData3D,
 				constSetV[i],
@@ -3250,7 +3250,7 @@ void DirectX12::CreateSprite(int* sprite, bool font)
 	(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferData) + 0xff)&~0xff),
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ModelConstBufferData) + 0xff)&~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&spriteConstBufferSet[createSpriteCounter - 1].constBuffer[0])
@@ -3452,7 +3452,7 @@ void DirectX12::DeletePolygonData(const ModelData& m)
 
 	if(m.type == VertexType::VERTEX_TYPE_OBJ_ANIMATION)
 	{
-		boneConstData.erase(key);
+		boneData.erase(key);
 		objBoneNums.erase(key);
 		objBonePositions.erase(key);
 		parentBoneData.erase(key);
@@ -3940,7 +3940,7 @@ void DirectX12::DataMap(const ModelData& modelData,int number )
 		DirectX::XMFLOAT3 boneScale;
 		DirectX::XMFLOAT3 boneAngle;
 		DirectX::XMFLOAT3 boneMoveVector;
-		UINT boneNum = static_cast<UINT>(boneConstData[modelData.key].moveVector[number].size());
+		UINT boneNum = static_cast<UINT>(boneData[modelData.key][number].size());
 
 		//親ボーンの行列乗算
 		int parentBoneNum = 0;
@@ -3960,15 +3960,15 @@ void DirectX12::DataMap(const ModelData& modelData,int number )
 			bonePos = objBonePositions[modelData.key][i];
 			boneMat *= DirectX::XMMatrixTranslation(-bonePos.x, -bonePos.y, -bonePos.z);
 
-			boneScale = boneConstData[modelData.key].scale[number][i];
+			boneScale = boneData[modelData.key][number][i].scale;
 			boneMat *= DirectX::XMMatrixScaling(boneScale.x, boneScale.y, boneScale.z);
 
-			boneAngle = boneConstData[modelData.key].angle[number][i];
+			boneAngle = boneData[modelData.key][number][i].angle;
 			boneMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(boneAngle.z));
 			boneMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(boneAngle.x));
 			boneMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(boneAngle.y));
 
-			boneMoveVector = boneConstData[modelData.key].moveVector[number][i];
+			boneMoveVector = boneData[modelData.key][number][i].moveVector;
 
 			//なぜかxとzが+-逆になってる
 			//シェーダーでモデルの行列を乗算する前にボーンの行列を乗算してたからだった
@@ -3984,15 +3984,6 @@ void DirectX12::DataMap(const ModelData& modelData,int number )
 
 			//親のボーン番号代入
 			parentBoneNum = parentBoneData[modelData.key][i].parentBoneNum;
-
-			//std::vector<DirectX::XMFLOAT3>parentAngleImpacts;
-			//parentAngleImpacts.reserve(50);
-			//std::vector<DirectX::XMFLOAT3>parentScaleImpacts;
-			//parentScaleImpacts.reserve(50);
-			//std::vector<DirectX::XMFLOAT3>parentMoveVectorImpacts;
-			//parentMoveVectorImpacts.reserve(50);
-			//std::vector<DirectX::XMFLOAT3>parentPosition;
-			//parentPosition.reserve(50);
 
 			//これを使って影響度とか加算してく
 			//子　→　親の順で入れる
@@ -4045,17 +4036,17 @@ void DirectX12::DataMap(const ModelData& modelData,int number )
 
 				for (auto& num : parentNums)
 				{
-					pAngle.x += boneConstData[modelData.key].angle[number][num].x;
-					pAngle.y += boneConstData[modelData.key].angle[number][num].y;
-					pAngle.z += boneConstData[modelData.key].angle[number][num].z;
+					pAngle.x += boneData[modelData.key][number][num].angle.x;
+					pAngle.y += boneData[modelData.key][number][num].angle.y;
+					pAngle.z += boneData[modelData.key][number][num].angle.z;
 
-					pScale.x *= boneConstData[modelData.key].scale[number][num].x;
-					pScale.y *= boneConstData[modelData.key].scale[number][num].y;
-					pScale.z *= boneConstData[modelData.key].scale[number][num].z;
+					pScale.x *= boneData[modelData.key][number][num].scale.x;
+					pScale.y *= boneData[modelData.key][number][num].scale.y;
+					pScale.z *= boneData[modelData.key][number][num].scale.z;
 
-					pMoveVector.x += boneConstData[modelData.key].moveVector[number][num].x;
-					pMoveVector.y += boneConstData[modelData.key].moveVector[number][num].y;
-					pMoveVector.z += boneConstData[modelData.key].moveVector[number][num].z;
+					pMoveVector.x += boneData[modelData.key][number][num].moveVector.x;
+					pMoveVector.y += boneData[modelData.key][number][num].moveVector.y;
+					pMoveVector.z += boneData[modelData.key][number][num].moveVector.z;
 
 
 
@@ -4479,7 +4470,7 @@ void DirectX12::SetObjBoneMoveVector
 	const UINT& objectNum
 )
 {
-	boneConstData[key].moveVector[objectNum][boneNum] = vector;
+	boneData[key][objectNum][boneNum].moveVector = vector;
 }
 
 void DirectX12::SetObjBoneScale
@@ -4490,7 +4481,7 @@ void DirectX12::SetObjBoneScale
 	const UINT& objectNum
 )
 {
-	boneConstData[key].scale[objectNum][boneNum] = scale;
+	boneData[key][objectNum][boneNum].scale = scale;
 }
 
 void DirectX12::SetObjBoneAngle
@@ -4501,7 +4492,7 @@ void DirectX12::SetObjBoneAngle
 	const UINT& objectNum
 )
 {
-	boneConstData[key].angle[objectNum][boneNum] = angle;
+	boneData[key][objectNum][boneNum].angle = angle;
 }
 
 void DirectX12::SetParentObjBone

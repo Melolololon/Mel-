@@ -51,15 +51,17 @@ private:
 	//[obj内のオブジェクト分]スムーズシェーディングの計算用データ
 	std::vector< std::unordered_map < USHORT, std::vector<USHORT> >>smoothData;
 
-	//ボーンの座標とか
-	BoneData boneConstData;
 	//[.obj内のオブジェクトごと][頂点ごと]
 	std::vector<std::vector<int>> objBoneNums;//頂点に割り当てられているボーン番号
 	//[モデルごと(keyでアクセス)][ボーンごと]
-	 std::vector<DirectX::XMFLOAT3> objBonePositions;//ボーン座標
+	std::vector<DirectX::XMFLOAT3> objBonePositions;//ボーン座標
 	//[ボーンごと](オブジェクトごとに変える必要なさそうなので、こうしてる)
-	std::vector<ParentBoneData> parentBoneData;//親ボーンと影響度
 
+	//ボーン数
+	UINT boneNum;
+	//[モデルごと][ボーンごと]
+	std::vector<std::vector<BoneData>>boneDatas;
+	std::vector<ParentBoneData> parentBoneDatas;//親ボーンと影響度
 
 	std::vector<std::unique_ptr<Texture>>textures;
 
@@ -86,7 +88,7 @@ private:
 	);
 
 
-	static void MapBoneData();
+	void MapBoneMatrix(const int modelNum);
 
 public:
 	ObjModel();
@@ -110,8 +112,74 @@ public:
 		const size_t constDataSize
 	);
 
+#pragma region 操作
+	void SetBoneMoveVector
+	(
+		const Vector3& vector,
+		const int modelNum, 
+		const int boneNum
+	)
+	{
+		boneDatas[modelNum][boneNum].moveVector = vector.ToXMFLOAT3();
+	}
+
+	void SetBoneScale
+	(
+		const Vector3& scale,
+		const int modelNum,
+		const int boneNum
+	)
+	{
+		boneDatas[modelNum][boneNum].scale = scale.ToXMFLOAT3();
+	}
+
+	void SetBoneAngle
+	(
+		const Vector3& angle,
+		const int modelNum,
+		const int boneNum
+	)
+	{
+		boneDatas[modelNum][boneNum].angle = angle.ToXMFLOAT3();
+	}
+
+	void SetParentBoneBone(const int bone,const int parentBone)
+	{
+		parentBoneDatas[bone].parentBoneNum = parentBone;
+	}
+
+	void SetMoveVectorImpact
+	(
+		const Vector3& impact,
+		const int boneNum
+	)
+	{
+		parentBoneDatas[boneNum].moveVectorImpact = impact.ToXMFLOAT3();
+	}
+
+	void SetAngle
+	(
+		const Vector3& impact,
+		const int boneNum
+	)
+	{
+		parentBoneDatas[boneNum].angleImpact = impact.ToXMFLOAT3();
+	}
+
+	void SetScale
+	(
+		const Vector3& impact,
+		const int boneNum
+	)
+	{
+		parentBoneDatas[boneNum].scaleImpact = impact.ToXMFLOAT3();
+	}
+#pragma endregion
+
+
 
 	static bool Initialize();
+	void Draw(const int modelNum)override;
 
 	static PipelineState GetDefaultPipeline() { return defaultPipeline; }
 };
