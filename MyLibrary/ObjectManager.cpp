@@ -357,7 +357,7 @@ void ObjectManager::EraseObjectCheck()
 
 }
 
-void ObjectManager::end() 
+void ObjectManager::Finitialize() 
 {
 	AllEraseObject();
 }

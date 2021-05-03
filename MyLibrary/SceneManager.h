@@ -15,12 +15,12 @@ public:
 
 	SceneManager(const SceneManager& sceneManager) = delete;//コピーコンストラクタ
 	SceneManager& operator=(const SceneManager& sceneManager) = delete;//コピー代入演算子
-	static SceneManager* getInstace();
+	static SceneManager* GetInstace();
 
 	void Initialize(Scene* startScene);
 	void Update();
 	void Draw();
-	void end();
+	void Finitialize();
 
 	/// <summary>
 	/// シーンを切り替える処理を行います

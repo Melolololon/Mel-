@@ -12,6 +12,9 @@ DirectX::XMMATRIX Model::cameraRotateMat = DirectX::XMMatrixIdentity();
 
 Model::Model()
 {
+	modelNum = 0;
+	modelObjectNum = 0;
+	textureBufferNum = 0;
 }
 
 Model::~Model()

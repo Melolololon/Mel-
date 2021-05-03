@@ -52,7 +52,7 @@ void Game::Initialize()
 	ObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	ObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	SceneManager::getInstace()->Initialize(new Play());
+	SceneManager::GetInstace()->Initialize(new Play());
 #pragma endregion
 
 
@@ -63,9 +63,9 @@ void Game::Initialize()
 void Game::Finalize()
 {
 #pragma region マネージャー終了
-	ObjectManager::GetInstance()->end();
+	ObjectManager::GetInstance()->Finitialize();
 
-	SceneManager::getInstace()->end();
+	SceneManager::GetInstace()->Finitialize();
 #pragma endregion
 
 
@@ -73,10 +73,10 @@ void Game::Finalize()
 }
 void Game::Update()
 {
-	SceneManager::getInstace()->Update();
+	SceneManager::GetInstace()->Update();
 }
 
 void Game::Draw()
 {
-	SceneManager::getInstace()->Draw();
+	SceneManager::GetInstace()->Draw();
 }

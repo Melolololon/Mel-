@@ -36,15 +36,15 @@ void Play::Initialize()
 		0
 	);
 
-	objModel->LoadModel
-	(
-		"Resources/Obj/testSnake.obj",
-		true,
-		1,
-		0
-	);
+	//objModel->LoadModel
+	//(
+	//	"Resources/Obj/redBall.obj",
+	//	true,
+	//	1,
+	//	0
+	//);
 
-	priModel->CreateBox({ 1,1,1 }, { 255,0,0,100.0f }, 1);
+	priModel->CreateBox({ 1,1,1 }, { 255,0,0,0 }, 1);
 }
 
 Vector3 angle = 0;
@@ -61,11 +61,7 @@ void Play::Update()
 		angle.x -= 3.0f;
 	fbxModel->SetAngle(angle, 0);
 
-	objModel->SetPosition({ -10,0,0 }, 0);
 
-	objModel->SetBoneAngle({ angle.x,angle.y ,angle.z }, 1, 0);
-	objModel->SetParentBone(0, 1, 0);
-	objModel->SetAngleImpact({ 0.3,0.3,0.3 }, 0, 0);
 
 	priModel->SetAngle(angle, 0);
 }
@@ -84,7 +80,7 @@ void Play::Draw()
 	priModel->Draw(0);
 }
 
-void Play::end()
+void Play::Finitialize()
 {
 }
 

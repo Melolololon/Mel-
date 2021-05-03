@@ -121,7 +121,7 @@ public:
 	/// <param name="vec">Ž²‚ÌƒxƒNƒgƒ‹</param>
 	/// <param name="angle"></param>
 	/// <returns></returns>
-	Vector3 RotateVector3(const Vector3& rotateV, const Vector3& vec ,const float& angle);
+	static Vector3 RotateVector3(const Vector3& rotateV, const Vector3& vec ,const float& angle);
 #pragma endregion
 
 

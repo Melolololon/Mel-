@@ -11,7 +11,7 @@ Scene::~Scene()
 {
 }
 
-void Scene::falseIsEnd() 
+void Scene::FalseIsEnd() 
 {
 	isEnd = false;
 }
@@ -19,7 +19,7 @@ void Scene::falseIsEnd()
 void Scene::Initialize() {}
 void Scene::Update() {}
 void Scene::Draw() {}
-void Scene::end() {}
+void Scene::Finitialize() {}
 
 bool Scene::GetIsEnd()
 {

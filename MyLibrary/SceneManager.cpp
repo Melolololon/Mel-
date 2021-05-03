@@ -12,7 +12,7 @@ SceneManager::~SceneManager()
 
 }
 
-SceneManager* SceneManager::getInstace()
+SceneManager* SceneManager::GetInstace()
 {
 	static SceneManager inst;
 	return &inst;
@@ -33,7 +33,7 @@ void SceneManager::Update()
 	if (currentScene->GetIsEnd())
 	{
 		//終了処理
-		currentScene->end();
+		currentScene->Finitialize();
 
 		//シーン切り替え
 		//シーンを保存
@@ -46,7 +46,7 @@ void SceneManager::Update()
 		delete previousScene;
 
 		//初期化
-		currentScene->falseIsEnd();
+		currentScene->FalseIsEnd();
 		currentScene->Initialize();
 	}
 
@@ -59,7 +59,7 @@ void SceneManager::Draw()
 	currentScene->Draw();
 }
 
-void SceneManager::end()
+void SceneManager::Finitialize()
 {
 	if (currentScene)
 		delete currentScene;

@@ -328,6 +328,18 @@ void ObjModel::Draw(const int modelNum)
 	SetCmdList(modelNum);
 }
 
+#pragma region î•ñæ“¾
+std::vector<Vector3>ObjModel::GetBonePosition()
+{
+	std::vector<Vector3>v3BonePos(boneNum);
+	for (int i = 0; i < boneNum; i++)
+		v3BonePos[i] = objBonePositions[i];
+	return v3BonePos;
+}
+
+#pragma endregion
+
+
 void ObjModel::MapBoneMatrix(const int modelNum)
 {
 	if (boneNum == 0)return;

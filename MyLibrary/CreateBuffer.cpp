@@ -520,6 +520,7 @@ void CreateBuffer::CreateOneColorTextureBuffer
 	);
 
 	ID3D12Resource* r = *textureBuffer;
+	
 
 	//テクスチャサイズ1*1
 	result = r->WriteToSubresource

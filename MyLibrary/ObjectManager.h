@@ -75,7 +75,7 @@ public:
 	/// <summary>
 	/// I—¹ˆ—‚ğs‚¢‚Ü‚·
 	/// </summary>
-	void end();
+	void Finitialize();
 
 	/// <summary>
 	/// ‚Ç‚Ì”»’è‚ğs‚¤‚©‚ğİ’è‚µ‚Ü‚·

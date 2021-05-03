@@ -1830,7 +1830,7 @@ void DirectX12::SetAddColor(Color color, const std::string& key, int number)
 		(float)color.r / 255.0f,
 		(float)color.g / 255.0f,
 		(float)color.b / 255.0f,
-		(float)color.a / 100.0f
+		(float)color.a / 255.0f
 	};
 
 	/*int size = constBufferSet[despNum][number].constBuffer.size();
@@ -1855,7 +1855,7 @@ void DirectX12::SetSubColor(Color color, const std::string& key, int number)
 		(float)color.r / 255.0f,
 		(float)color.g / 255.0f,
 		(float)color.b / 255.0f,
-		(float)color.a / 100.0f
+		(float)color.a / 255.0f
 	};
 
 	/*int size = constBufferSet[despNum][number].constBuffer.size();
@@ -1882,7 +1882,7 @@ void DirectX12::SetSpriteMulColor(Color color, int spriteNum)
 		(float)color.r / 255.0f,
 		(float)color.g / 255.0f,
 		(float)color.b / 255.0f,
-		(float)color.a / 100.0f
+		(float)color.a / 255.0f
 	};
 }
 void DirectX12::SetSpriteAddColor(Color color, int spriteNum)
@@ -1892,7 +1892,7 @@ void DirectX12::SetSpriteAddColor(Color color, int spriteNum)
 		(float)color.r / 255.0f,
 		(float)color.g / 255.0f,
 		(float)color.b / 255.0f,
-		(float)color.a / 100.0f
+		(float)color.a / 255.0f
 	};
 }
 void DirectX12::SetSpriteSubColor(Color color, int spriteNum)
@@ -1902,7 +1902,7 @@ void DirectX12::SetSpriteSubColor(Color color, int spriteNum)
 	(float)color.r / 255.0f,
 	(float)color.g / 255.0f,
 	(float)color.b / 255.0f,
-	(float)color.a / 100.0f
+	(float)color.a / 255.0f
 	};
 }
 
@@ -1916,7 +1916,7 @@ void DirectX12::SetPointMulColor(Color color, int pointNum, int num)
 	(float)color.r / 255.0f,
 	(float)color.g / 255.0f,
 	(float)color.b / 255.0f,
-	(float)color.a / 100.0f
+	(float)color.a / 255.0f
 	};
 }
 

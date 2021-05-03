@@ -195,6 +195,9 @@ public:
 
 #pragma endregion
 
+#pragma region î•ñæ“¾
+	std::vector<Vector3>GetBonePosition();
+#pragma endregion
 
 
 	static bool Initialize();
