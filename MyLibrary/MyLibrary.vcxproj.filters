@@ -177,6 +177,9 @@
     <ClCompile Include="SpriteFont2D.cpp">
       <Filter>ソース ファイル\Sprite</Filter>
     </ClCompile>
+    <ClCompile Include="HeapIndexManager.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
@@ -320,6 +323,9 @@
     </ClInclude>
     <ClInclude Include="SpriteFont2D.h">
       <Filter>ヘッダー ファイル\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="HeapIndexManager.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

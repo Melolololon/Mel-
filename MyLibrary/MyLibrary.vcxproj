@@ -189,6 +189,7 @@
     <ClCompile Include="DirectXTexLoader.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FbxModel.cpp" />
+    <ClCompile Include="HeapIndexManager.cpp" />
     <ClCompile Include="LibMath.cpp" />
     <ClCompile Include="LibWinAPI.cpp" />
     <ClCompile Include="Matrix.cpp" />
@@ -465,6 +466,7 @@
     <ClInclude Include="DirectXTexLoader.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FbxModel.h" />
+    <ClInclude Include="HeapIndexManager.h" />
     <ClInclude Include="LibMath.h" />
     <ClInclude Include="LibWinAPI.h" />
     <ClInclude Include="Matrix.h" />
