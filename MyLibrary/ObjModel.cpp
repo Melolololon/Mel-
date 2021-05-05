@@ -392,7 +392,12 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 			//なぜかxとzが+-逆になってる
 			//シェーダーでモデルの行列を乗算する前にボーンの行列を乗算してたからだった
 			//(モデルはY軸基準で180度回転してた)
-			boneMat *= DirectX::XMMatrixTranslation(boneMoveVector.x, boneMoveVector.y, boneMoveVector.z);
+			boneMat *= DirectX::XMMatrixTranslation
+			(
+				boneMoveVector.x / modelConstDatas[i][0].scale.x,
+				boneMoveVector.y / modelConstDatas[i][0].scale.y,
+				boneMoveVector.z / modelConstDatas[i][0].scale.z
+			);
 
 			//回転させたら戻す
 			boneMat *= DirectX::XMMatrixTranslation(bonePos.x, bonePos.y, bonePos.z);
