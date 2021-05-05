@@ -389,9 +389,8 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 
 			boneMoveVector = boneDatas[modelNum][j].moveVector;
 
-			//なぜかxとzが+-逆になってる
-			//シェーダーでモデルの行列を乗算する前にボーンの行列を乗算してたからだった
-			//(モデルはY軸基準で180度回転してた)
+			//モデル自体のスケールの乗算により、ボーンの平行移動の値にスケールが乗算されるため、
+			//割って増減を抑えている
 			boneMat *= DirectX::XMMatrixTranslation
 			(
 				boneMoveVector.x / modelConstDatas[i][0].scale.x,
@@ -507,7 +506,15 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 				mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(pAngle.x));
 				mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(pAngle.y));
 
-				mulMat *= DirectX::XMMatrixTranslation(pMoveVector.x, pMoveVector.y, pMoveVector.z);
+
+				//親はまとめて掛けているので、モデルと自分の拡縮だけ掛ければいい
+				//modelConstDatas[i][0].scale に boneScale掛ける必要あるか要確認
+				mulMat *= DirectX::XMMatrixTranslation
+				(
+					pMoveVector.x / (modelConstDatas[i][0].scale.x * boneScale.x),
+					pMoveVector.y / (modelConstDatas[i][0].scale.y * boneScale.y),
+					pMoveVector.z / (modelConstDatas[i][0].scale.z * boneScale.z)
+				);
 
 				//回転させたら戻す
 				mulMat *= DirectX::XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
