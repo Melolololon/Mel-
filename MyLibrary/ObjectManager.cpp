@@ -327,7 +327,7 @@ void ObjectManager::Update()
 #pragma endregion
 
 
-
+	EraseObjectCheck();
 }
 
 void ObjectManager::Draw() 
