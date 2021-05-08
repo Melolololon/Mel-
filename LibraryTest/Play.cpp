@@ -45,6 +45,8 @@ void Play::Initialize()
 	//);
 
 	priModel->CreateBox({ 1,1,1 }, { 255,0,0,0 }, 1);
+
+
 }
 
 Vector3 angle = 0;

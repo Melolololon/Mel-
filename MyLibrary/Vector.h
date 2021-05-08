@@ -20,20 +20,12 @@ struct Vector2
 	}
 #pragma region ââéZéq
 
-	Vector2 operator+(const Vector2& vector)const;
-	Vector2 operator-(const Vector2& vector)const;
-	Vector2 operator*(const Vector2& vector)const;
-	Vector2 operator/(const Vector2& vector)const;
 
 	void operator+= (const Vector2& vector);
 	void operator-= (const Vector2& vector);
 	void operator*= (const Vector2& vector);
 	void operator/= (const Vector2& vector);
 
-	Vector2 operator*(const float f)const;
-	Vector2 operator+(const float f)const;
-	Vector2 operator-(const float f)const;
-	Vector2 operator/(const float f)const;
 
 	void operator=(const float num);
 	bool operator==(const Vector2& vector);
@@ -44,8 +36,33 @@ struct Vector2
 
 #pragma endregion
 
+#pragma region ä÷êî
+	static float Length(const Vector2& vector);
+
+	static Vector2 Normalize(const Vector2& vector);
+
+	static float Dot(const Vector2& vector1, const Vector2& vector2);
+
+	static float Cross(const Vector2& vector1, const Vector2& vector2);
+#pragma endregion
+
 
 };
+#pragma region ââéZéq
+
+Vector2 operator+(const Vector2& vector1,const Vector2& vector2);
+Vector2 operator-(const Vector2& vector1,const Vector2& vector2);
+Vector2 operator*(const Vector2& vector1,const Vector2& vector2);
+Vector2 operator/(const Vector2& vector1,const Vector2& vector2);
+Vector2 operator*(const Vector2& vector,const float f);
+Vector2 operator+(const Vector2& vector,const float f);
+Vector2 operator-(const Vector2& vector,const float f);
+Vector2 operator/(const Vector2& vector,const float f);
+Vector2 operator+(const float f, const Vector2& vector);
+Vector2 operator-(const float f, const Vector2& vector);
+Vector2 operator*(const float f, const Vector2& vector);
+Vector2 operator/(const float f, const Vector2& vector);
+#pragma endregion
 
 
 #pragma region ä÷êî
@@ -71,34 +88,19 @@ struct Vector3
 	Vector3(const DirectX::XMFLOAT3& f);
 	Vector3(const DirectX::XMVECTOR& v);
 
-	DirectX::XMFLOAT3 ToXMFLOAT3() const
-	{
-		return { x,y ,z };
-	}
+	DirectX::XMFLOAT3 ToXMFLOAT3() const { return { x,y ,z }; }
 
 
 #pragma region ââéZéq
 
-	Vector3 operator+(const Vector3& vector) const;
-
-	Vector3 operator-(const Vector3& vector)const;
-
-	Vector3 operator*(const Vector3& vector)const;
-
-	Vector3 operator/(const Vector3& vector)const;
-
 	void operator+= (const Vector3& vector);
-
 	void operator-= (const Vector3& vector);
-
 	void operator*= (const Vector3& vector);
-
 	void operator/= (const Vector3& vector);
 
-	Vector3 operator+(const float f)const;
-	Vector3 operator-(const float f)const;
-	Vector3 operator*(const float f)const;
-	Vector3 operator/(const float f)const;
+
+
+
 
 
 	void operator=(const float num);
@@ -110,7 +112,30 @@ struct Vector3
 	void operator--();
 #pragma endregion
 
+#pragma region ä÷êî
+	static float Length(const Vector3& vector);
+
+	static Vector3 Normalize(const Vector3& vector);
+
+	static float Dot(const Vector3& vector1, const Vector3& vector2);
+
+	static Vector3 Cross(const Vector3& vector1, const Vector3& vector2);
+#pragma endregion
 };
+#pragma region ââéZéq
+Vector3 operator+(const Vector3& vector1, const Vector3& vector2);
+Vector3 operator-(const Vector3& vector1, const Vector3& vector2);
+Vector3 operator*(const Vector3& vector1, const Vector3& vector2);
+Vector3 operator/(const Vector3& vector1, const Vector3& vector2);
+Vector3 operator+(const Vector3& vector, const float f);
+Vector3 operator-(const Vector3& vector, const float f);
+Vector3 operator*(const Vector3& vector, const float f);
+Vector3 operator/(const Vector3& vector, const float f);
+Vector3 operator+(const float f,const Vector3& vector);
+Vector3 operator-(const float f,const Vector3& vector);
+Vector3 operator*(const float f,const Vector3& vector);
+Vector3 operator/(const float f,const Vector3& vector);
+#pragma endregion
 
 
 #pragma region ä÷êî

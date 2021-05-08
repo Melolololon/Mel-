@@ -68,7 +68,7 @@ public:
 	//‚±‚ê‚Å‰Šú‰»‚¹‚¸‚Éƒwƒbƒ_‚Å‰Šú‰»‚·‚é?
 	void ObjectInitialize();
 	
-	Vector3 GetPosition() { return position; };
+	Vector3 GetPosition()const { return position; };
 
 	//”»’è—pŠÖ”
 	CollisionFlag GetCollisionFlag();
