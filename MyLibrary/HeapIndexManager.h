@@ -26,6 +26,7 @@ public:
 	/// モデルの描画が終了するとき、(クラスのデストラクタなど)で必ず呼び出してください。
 	/// </summary>
 	/// <param name="heapIndex"></param>
-	void DrawEndCallFunction(const int heapIndex){ drawCheckVector[heapIndex] = false; }
+	void DrawEndCallFunction(const int heapIndex);
+
 };
 
