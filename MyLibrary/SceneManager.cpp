@@ -18,7 +18,7 @@ SceneManager* SceneManager::GetInstace()
 	return &inst;
 }
 
-void SceneManager::Initialize(Scene* startScene)
+void SceneManager::SetStartScene(Scene* startScene)
 {
 	if (!startScene)
 		assert(0);

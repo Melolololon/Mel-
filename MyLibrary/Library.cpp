@@ -5,7 +5,10 @@
 
 #pragma comment(lib,"winmm.lib")//timeGetTime‚Æ
 #include"ObjectManager.h"
+#include"TimerManager.h"
+#include"Random.h"
 #include"LibWinAPI.h"
+
 
 std::unique_ptr<Audio> Library::audio;
 DirectX12* Library::dx12;
@@ -57,6 +60,9 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	createPolygon->Initialize(windowWidth, windowHeight);
 
 	srand((unsigned int)time(NULL));
+	Random::Initialize();
+	ObjectManager::GetInstance()->Initialize();
+
 	count = 0;
 	fps = 60;
 	startProsessTime = timeGetTime();
@@ -212,6 +218,7 @@ void Library::LoopEndProcess()
 		timeEndPeriod(1);
 	}
 
+	TimerManager::GetInstance()->Update();
 }
 
 void Library::EndFlagTrue()

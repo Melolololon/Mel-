@@ -40,7 +40,6 @@ void Game::Initialize()
 
 #pragma region マネージャー初期化
 
-	ObjectManager::GetInstance()->Initialize();
 	CollisionFlag initFlag;
 	initFlag.board = false;
 	initFlag.box = false;
@@ -52,7 +51,7 @@ void Game::Initialize()
 	ObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	ObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	SceneManager::GetInstace()->Initialize(new Play());
+	SceneManager::GetInstace()->SetStartScene(new Play());
 #pragma endregion
 
 

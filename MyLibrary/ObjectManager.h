@@ -46,6 +46,12 @@ private:
 	//データ
 	Vector3 nearPos;
 	Vector3 farPos;
+
+
+	/// <summary>
+	/// eraseManagerがtrueかどうかを確認します。trueの場合は、削除されます
+	/// </summary>
+	void EraseObjectCheck();
 public:
 	ObjectManager(const ObjectManager& obj) = delete;
 	ObjectManager& operator=(const ObjectManager& obj) = delete;
@@ -67,10 +73,6 @@ public:
 	/// </summary>
 	void Draw();
 
-	/// <summary>
-	/// eraseManagerがtrueかどうかを確認します。trueの場合は、削除されます
-	/// </summary>
-	void EraseObjectCheck();
 
 	/// <summary>
 	/// 終了処理を行います

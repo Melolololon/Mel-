@@ -17,7 +17,7 @@ public:
 	SceneManager& operator=(const SceneManager& sceneManager) = delete;//コピー代入演算子
 	static SceneManager* GetInstace();
 
-	void Initialize(Scene* startScene);
+	void SetStartScene(Scene* startScene);
 	void Update();
 	void Draw();
 	void Finitialize();

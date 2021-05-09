@@ -61,6 +61,12 @@
     <Filter Include="ヘッダー ファイル\Scene">
       <UniqueIdentifier>{9f62ab05-bff9-4cc3-89e6-543c6ec40589}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Support">
+      <UniqueIdentifier>{8b7ad9e6-9f1b-4fcf-bd57-62798c2f2bb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Support">
+      <UniqueIdentifier>{eb4fc17b-c1c6-4b1b-8786-d35c34ff5696}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CreateBuffer.cpp">
@@ -179,6 +185,15 @@
     </ClCompile>
     <ClCompile Include="HeapIndexManager.cpp">
       <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>ソース ファイル\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>ソース ファイル\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerManager.cpp">
+      <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -326,6 +341,15 @@
     </ClInclude>
     <ClInclude Include="HeapIndexManager.h">
       <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>ヘッダー ファイル\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>ヘッダー ファイル\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerManager.h">
+      <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
