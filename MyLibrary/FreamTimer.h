@@ -2,23 +2,24 @@
 #include"TimerManager.h"
 class TimerManager;
 
-class Timer
+class FreamTimer
 {
 private:
 	unsigned int time;
 	unsigned int maxTime;
 
-	
+
 	void Update() { time++; }
 public:
 	friend TimerManager;
 
+	FreamTimer();
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="maxTime">最大計測時間(フレーム)</param>
-	Timer(unsigned int maxTime);
-	~Timer();
+	FreamTimer(const unsigned int maxTime);
+	~FreamTimer();
 
 	/// <summary>
 	/// 現在の時間をフレームで返します。
@@ -27,7 +28,7 @@ public:
 	unsigned int GetTime() { return time; }
 
 	/// <summary>
-	/// 最大計測時間と現在の時間が同じかを返します。
+	/// 最大計測時間と現在の時間が同じ場合、trueを返します。
 	/// </summary>
 	bool GetSameAsMaximumFlag();
 
@@ -36,7 +37,7 @@ public:
 	/// </summary>
 	/// <param name="num"></param>
 	/// <returns></returns>
-	bool GetMultipleTime(const unsigned int num);
+	bool GetMultipleTimeFlag(const unsigned int num);
 
 };
 

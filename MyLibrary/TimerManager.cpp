@@ -1,7 +1,8 @@
 #include "TimerManager.h"
+
 TimerManager::TimerManager()
 {
-	timers.reserve(100);
+	freamTimers.reserve(100);
 }
 TimerManager::~TimerManager(){}
 
@@ -13,14 +14,14 @@ TimerManager* TimerManager::GetInstance()
 
 void TimerManager::Update()
 {
-	for (auto& t : timers)
+	for (auto& t : freamTimers)
 		t->Update();
 }
 
 
-void TimerManager::AddTimer(Timer* timer)
+void TimerManager::AddFreamTimer(FreamTimer* timer)
 {
-	timers.push_back(timer);
+	freamTimers.push_back(timer);
 }
 
 

@@ -1,7 +1,7 @@
 #pragma once
 #include<vector>
-#include"Timer.h"
-class Timer;
+#include"FreamTimer.h"
+class FreamTimer;
 
 class TimerManager
 {
@@ -9,13 +9,13 @@ private:
 	TimerManager();
 	~TimerManager();
 
-	std::vector<Timer*>timers;
+	std::vector<FreamTimer*>freamTimers;
 public:
 	TimerManager(TimerManager& t) = delete;
 	TimerManager& operator=(TimerManager& t) = delete;
 	static TimerManager* GetInstance();
 
-	void AddTimer(Timer* timer);
+	void AddFreamTimer(FreamTimer* timer);
 	void Update();
 };
 
