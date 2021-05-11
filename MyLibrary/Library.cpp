@@ -6,6 +6,8 @@
 #pragma comment(lib,"winmm.lib")//timeGetTime‚Æ
 #include"ObjectManager.h"
 #include"TimerManager.h"
+#include"SceneManager.h"
+
 #include"Random.h"
 #include"LibWinAPI.h"
 
@@ -234,8 +236,10 @@ bool Library::GetIsEnd()
 
 void Library::Finalize()
 {
-	dx12->Finalize();
+	ObjectManager::GetInstance()->Finitialize();
+	SceneManager::GetInstace()->Finitialize();
 
+	dx12->Finalize();
 	DirectInput::Release();
 
 	if (!isDestroy)

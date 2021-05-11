@@ -149,8 +149,6 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		debugController->EnableDebugLayer();
 	}
 
-
-
 #endif // _DEBUG
 
 #pragma endregion

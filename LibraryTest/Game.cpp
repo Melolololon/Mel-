@@ -61,11 +61,7 @@ void Game::Initialize()
 
 void Game::Finalize()
 {
-#pragma region マネージャー終了
-	ObjectManager::GetInstance()->Finitialize();
 
-	SceneManager::GetInstace()->Finitialize();
-#pragma endregion
 
 
 	Library::Finalize();//絶対に最後に書く
