@@ -4,6 +4,19 @@
 #include"Model.h"
 #include<string>
 #include"Texture.h"
+
+#include<fbxsdk.h>
+
+#ifdef _DEBUG
+#pragma comment(lib,"libfbxsdk-md.lib")
+#pragma comment(lib,"libxml2-md.lib")
+#pragma comment(lib,"zlib-md.lib")
+#else
+#pragma comment(lib,"libfbxsdk-mt.lib")
+#pragma comment(lib,"libxml2-mt.lib")
+#pragma comment(lib,"zlib-mt.lib")
+#endif // _DEBUG
+
 struct Node
 {
 	std::string nodeName;
@@ -18,9 +31,41 @@ struct Node
 	Node* parentNode;
 };
 
+
+
 class FbxModel:public Model
 {
+public:
+	
+
+	struct Bone
+	{
+		//ボーン名
+		std::string boneName;
+		//初期姿勢の逆行列
+		DirectX::XMMATRIX invInitialPose;
+		//ボーン情報
+		FbxCluster* fbxCluster;
+		
+		Bone(const std::string& name)
+		{
+			this->boneName = name;
+		}
+	};
+
+	static const int MAX_BONE_INDICES = 4;
+	struct FbxVertex
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT2 uv;
+		DirectX::XMFLOAT3 normal;
+		UINT boneIndex[MAX_BONE_INDICES];
+		float boneWeight[MAX_BONE_INDICES];
+	};
+
 private:
+	FbxScene* fbxScene = nullptr;
+
 	//モデル名
 	std::string modelName;
 
@@ -30,8 +75,12 @@ private:
 	//メッシュを持つノード
 	Node* meshNode = nullptr;
 
-	std::vector<Vertex>vertices;
+	std::vector<Bone>bones;
+	std::vector<Bone>& GetBones() { return bones; }
+	
 
+
+	std::vector<FbxVertex>vertices;
 	std::vector<std::unique_ptr<Texture>>textures;
 
 	//読み込み時にセットされるパイプライン
@@ -40,6 +89,9 @@ private:
 	std::vector<std::vector<USHORT>>& getIndices() { return indices; }
 	std::vector<Material>& getMaterial() { return materials; }
 public:
+
+
+
 	FbxModel();
 	~FbxModel();
 

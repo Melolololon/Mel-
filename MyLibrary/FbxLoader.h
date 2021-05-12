@@ -5,8 +5,8 @@
 #include<string>
 #include<d3dx12.h>
 #include<fbxsdk.h>
-#ifdef _DEBUG
 
+#ifdef _DEBUG
 #pragma comment(lib,"libfbxsdk-md.lib")
 #pragma comment(lib,"libxml2-md.lib")
 #pragma comment(lib,"zlib-md.lib")
@@ -14,7 +14,6 @@
 #pragma comment(lib,"libfbxsdk-mt.lib")
 #pragma comment(lib,"libxml2-mt.lib")
 #pragma comment(lib,"zlib-mt.lib")
-
 #endif // _DEBUG
 
 
@@ -69,6 +68,22 @@ private:
 	/// <param name="fbxNode">ノード</param>
 	void ParseMaterial(FbxModel* fbxModel,FbxNode* fbxNode);
 	
+	/// <summary>
+	/// スキニング情報読み取り
+	/// </summary>
+	/// <param name="model"></param>
+	/// <param name="fbxMesh"></param>
+	void ParseSkin(FbxModel* model, FbxMesh* fbxMesh);
+
+
+	/// <summary>
+	/// Fbxの行列からXMMATRIXに変換するクラス
+	/// </summary>
+	/// <param name="dst"></param>
+	/// <param name="src"></param>
+	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
+
+
 	std::string ExtractFileName
 	(
 		const std::string& path, 

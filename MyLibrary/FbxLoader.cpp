@@ -54,8 +54,8 @@ void FbxLoader::LoadFbxModel(const std::string& modelPath, FbxModel* fbxModel)
 		fbxManager->GetIOSettings()
 	)) assert(0);
 
-
-	FbxScene* fbxScene = FbxScene::Create(fbxManager, "fbxScene");
+	FbxScene*& fbxScene = fbxModel->fbxScene;
+	fbxModel->fbxScene = FbxScene::Create(fbxManager, "fbxScene");
 	fbxImporter->Import(fbxScene);
 
 	FbxModel* model = fbxModel;
@@ -68,7 +68,6 @@ void FbxLoader::LoadFbxModel(const std::string& modelPath, FbxModel* fbxModel)
 
 	ParseNodeRecursive(model, fbxScene->GetRootNode());
 
-	fbxScene->Destroy();
 }
 
 
@@ -160,7 +159,7 @@ void FbxLoader::ParseMesh(FbxModel* fbxModel, FbxNode* node)
 	ParseMeshVertices(fbxModel, fbxMesh);
 	ParseMeshFaces(fbxModel, fbxMesh);
 	ParseMaterial(fbxModel, node);
-
+	ParseSkin(fbxModel, fbxMesh);
 }
 
 void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
@@ -333,6 +332,112 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 	}
 }
 
+void FbxLoader::ParseSkin(FbxModel* model, FbxMesh* fbxMesh)
+{
+	//スキニング情報
+	FbxSkin* fbxSkin = 
+		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
+
+	//スキニング情報がない場合return
+	if (!fbxSkin)return;
+
+	std::vector<FbxModel::Bone>& bones = model->bones;
+
+	const int clusterCount = fbxSkin->GetClusterCount();
+	bones.reserve(clusterCount);
+
+	//ボーン番号とスキンウェイト
+	struct WeightSet
+	{
+		UINT index;
+		float weight;
+	};
+	std::vector<std::list<WeightSet>>weightLists(model->vertices.size());
+
+	for(int i = 0; i < clusterCount;i++)
+	{
+		//ボーン情報
+		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
+
+		//ボーンのノード名取得
+		const char* boneName = fbxCluster->GetLink()->GetName();
+
+		//ボーン追加
+		bones.emplace_back(FbxModel::Bone(boneName));
+		FbxModel::Bone& bone = bones.back();
+		//自作ボーンとfbxのボーンとの紐付け
+		bone.fbxCluster = fbxCluster;
+
+		//初期姿勢行列の取得
+		FbxAMatrix fbxMat;
+		fbxCluster->GetTransformLinkMatrix(fbxMat);
+
+		//XMMATRIXに変換
+		DirectX::XMMATRIX initialPose;
+		ConvertMatrixFromFbx(&initialPose, fbxMat);
+
+		//逆行列をボーンに渡す
+		bone.invInitialPose = DirectX::XMMatrixInverse(nullptr, initialPose);
+
+
+		const int controlPointIndicesCount = fbxCluster->GetControlPointIndicesCount();
+		int* controlPointIndices = fbxCluster->GetControlPointIndices();
+		double* controlPointWeight = fbxCluster->GetControlPointWeights();
+		for(int j = 0; j < controlPointIndicesCount;j++)
+		{
+			const int vertIndex = controlPointIndices[j];
+			const float weight = (float)controlPointWeight[j];
+
+			weightLists[vertIndex].emplace_back(WeightSet{ (UINT)i,weight });
+		}
+	}
+
+
+	auto& vertices = model->vertices;
+	auto verticesSize = vertices.size();
+	for(int i = 0; i < verticesSize;i++)
+	{
+		auto& weightList = weightLists[i];
+		weightList.sort
+		(
+			[](auto const& lhs,auto const& rhs)
+			{
+				return lhs.weight > rhs.weight;
+			}
+		);
+
+		int weightArrayIndex = 0;
+		for(auto& weightSet: weightList)
+		{
+			vertices[i].boneIndex[weightArrayIndex] = weightSet.index;
+			vertices[i].boneWeight[weightArrayIndex] = weightSet.weight;
+
+			if(++weightArrayIndex >= FbxModel::MAX_BONE_INDICES)
+			{
+				float weight = 0.0f;
+
+				for(int j = 1; j < FbxModel::MAX_BONE_INDICES;j++)
+					weight += vertices[i].boneWeight[j];
+
+				vertices[i].boneWeight[0] = 1.0f - weight;
+				break;
+				
+			}
+		}
+
+	}
+}
+
+
+void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src)
+{
+	for(int i = 0; i < 4;i++)
+	{
+		for (int j = 0; j < 4; j++)
+			dst->r[i].m128_f32[j] = (float)src.Get(i, j);
+	}
+
+}
 
 std::string FbxLoader::ExtractFileName
 (

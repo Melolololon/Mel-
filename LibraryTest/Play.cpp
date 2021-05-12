@@ -10,14 +10,6 @@
 #include"ObjModel.h"
 #include"PrimitiveModel.h"
 
-std::unique_ptr<FbxModel> fbxModel = std::make_unique<FbxModel>();
-std::unique_ptr<ObjModel> objModel = std::make_unique<ObjModel>();
-std::unique_ptr<PrimitiveModel> priModel = std::make_unique<PrimitiveModel>();
-
-std::unique_ptr<Sprite2D> sprite2D = std::make_unique<Sprite2D>();
-std::unique_ptr<Sprite3D> sprite3D = std::make_unique<Sprite3D>();
-std::unique_ptr<Texture> tex = std::make_unique<Texture>();
-
 
 Play::Play(){}
 
@@ -26,12 +18,21 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
+	fbxModel = std::make_unique<FbxModel>();
+	objModel = std::make_unique<ObjModel>();
+	priModel = std::make_unique<PrimitiveModel>();
+
+	sprite2D = std::make_unique<Sprite2D>();
+	sprite3D = std::make_unique<Sprite3D>();
+	tex = std::make_unique<Texture>();
+
+
 	sprite2D->CreateSprite();
 	sprite3D->CreateSprite({1,1});
 	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
 	fbxModel->modelNum
 	(
-		"Resources/cube/cube.fbx",
+		"Resources/boneTest/boneTest.fbx",
 		1,
 		0
 	);
@@ -49,6 +50,8 @@ void Play::Initialize()
 
 
 	Library::SetCamera({ 10,0,-10 }, { 0,0,0 }, { 0,1,0 });
+
+
 }
 
 Vector3 angle = 0;

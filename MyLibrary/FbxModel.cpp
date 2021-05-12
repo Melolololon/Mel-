@@ -12,6 +12,7 @@ FbxModel::FbxModel()
 
 FbxModel::~FbxModel()
 {
+	fbxScene->Destroy();
 }
 
 bool FbxModel::modelNum
@@ -31,13 +32,13 @@ bool FbxModel::modelNum
 	//バッファ作成
 	CreateModelVertexResources
 	(
-		sizeof(Vertex),
+		sizeof(FbxVertex),
 		verticesNum,
 		indices
 	);
 
 
-	Vertex* vertex;
+	FbxVertex* vertex;
 	MapVertexBuffer
 	(
 		0,
@@ -84,6 +85,25 @@ bool FbxModel::Initialize()
 	data.cullMode = CULL_BACK;
 	data.depthMode = DEPTH_TRUE;
 	data.drawMode = DRAW_SOLID;
+
+	//インプットレイアウト
+	std::vector<InputLayoutData> ilData(5);
+	ilData[0].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[0].number = 3;
+	ilData[0].semantics = "POSITION";
+	ilData[1].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[1].number = 2;
+	ilData[1].semantics = "TEXCOORD";
+	ilData[2].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[2].number = 3;
+	ilData[2].semantics = "NORMAL";
+	ilData[3].formatType = FORMAT_TYPE::FORMAT_TYPE_UNSIGNED_INT;
+	ilData[3].number = 4;
+	ilData[3].semantics = "BONEINDICES";
+	ilData[4].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[4].number = 4;
+	ilData[4].semantics = "BONEWEIGHTS";
+
 	auto result = defaultPipeline.CreatePipeline
 	(
 		data,
