@@ -22,15 +22,19 @@ FreamTimer::~FreamTimer()
 
 void FreamTimer::Update()
 {
+	timeResetFream = false;
 	time++;
-	if (time == maxTime)
+	if (time == maxTime) 
+	{
 		time = 0;
+		timeResetFream = true;
+	}
 }
 
 
 bool FreamTimer::GetSameAsMaximumFlag()
 {
-	return time == maxTime;
+	return timeResetFream;
 }
 
 bool FreamTimer::GetMultipleTimeFlag(const unsigned int num)

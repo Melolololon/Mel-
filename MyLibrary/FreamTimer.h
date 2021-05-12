@@ -5,9 +5,9 @@ class TimerManager;
 class FreamTimer
 {
 private:
-	unsigned int time;
-	unsigned int maxTime;
-
+	unsigned int time = 0;
+	unsigned int maxTime = 0;
+	bool timeResetFream = false;
 
 	void Update();
 public:
