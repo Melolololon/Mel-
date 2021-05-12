@@ -21,6 +21,8 @@ public:
 	FreamTimer(const unsigned int maxTime);
 	~FreamTimer();
 
+
+
 	/// <summary>
 	/// Œ»İ‚ÌŠÔ‚ğ•Ô‚µ‚Ü‚·B
 	/// </summary>
@@ -45,5 +47,7 @@ public:
 	/// <returns></returns>
 	bool GetMultipleTimeFlag(const unsigned int num);
 
+
+	void SetMaxTime(const unsigned int num) { maxTime = num; }
 };
 

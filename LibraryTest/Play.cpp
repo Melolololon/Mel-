@@ -77,8 +77,6 @@ void Play::Update()
 	priModel->SetAngle(angle, 0);
 
 	
-	int t = fTimer.GetTime();
-	int z = 0;
 }
 
 void Play::Draw()
