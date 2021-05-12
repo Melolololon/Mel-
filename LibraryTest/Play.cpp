@@ -52,6 +52,8 @@ void Play::Initialize()
 	Library::SetCamera({ 10,0,-10 }, { 0,0,0 }, { 0,1,0 });
 
 
+	Vector3 a = Vector3(1, 1, 1) + Vector3(3, 2, 1);
+	int z = 0;
 }
 
 Vector3 angle = 0;

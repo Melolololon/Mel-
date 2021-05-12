@@ -3,7 +3,7 @@
 
 HeapIndexManager::HeapIndexManager(const int maxModelNum)
 {
-	if(createNum <= 0)
+	if(maxModelNum <= 0)
 		createNum = 1;
 	else
 		createNum = maxModelNum;
