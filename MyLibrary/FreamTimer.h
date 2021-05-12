@@ -7,7 +7,9 @@ class FreamTimer
 private:
 	unsigned int time = 0;
 	unsigned int maxTime = 0;
+	bool isStop = true;
 	bool timeResetFream = false;
+
 
 	void Update();
 public:
@@ -21,7 +23,16 @@ public:
 	FreamTimer(const unsigned int maxTime);
 	~FreamTimer();
 
+	/// <summary>
+	/// 時間をリセットします。
+	/// </summary>
+	void ResetTime() { time = 0; }
 
+	/// <summary>
+	/// タイマーが停止しているかを返します。
+	/// </summary>
+	/// <returns></returns>
+	bool GetStopFlag() { return isStop; }
 
 	/// <summary>
 	/// 現在の時間を返します。
@@ -47,6 +58,11 @@ public:
 	/// <returns></returns>
 	bool GetMultipleTimeFlag(const unsigned int num);
 
+	/// <summary>
+	/// タイマーを停止するかどうかのフラグをセットします、
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetStopFlag(const bool flag) { isStop = flag; }
 
 	void SetMaxTime(const unsigned int num) { maxTime = num; }
 };

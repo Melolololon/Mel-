@@ -22,6 +22,8 @@ FreamTimer::~FreamTimer()
 
 void FreamTimer::Update()
 {
+	if (isStop)return;
+
 	timeResetFream = false;
 	time++;
 	if (time == maxTime) 
