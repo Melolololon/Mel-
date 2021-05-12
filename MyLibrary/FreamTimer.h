@@ -9,7 +9,7 @@ private:
 	unsigned int maxTime;
 
 
-	void Update() { time++; }
+	void Update();
 public:
 	friend TimerManager;
 
@@ -17,16 +17,22 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
-	/// <param name="maxTime">最大計測時間(フレーム)</param>
+	/// <param name="maxTime">最大計測時間</param>
 	FreamTimer(const unsigned int maxTime);
 	~FreamTimer();
 
 	/// <summary>
-	/// 現在の時間をフレームで返します。
+	/// 現在の時間を返します。
 	/// </summary>
 	/// <returns></returns>
 	unsigned int GetTime() { return time; }
 
+	/// <summary>
+	/// 最大計測時間を返します。
+	/// </summary>
+	/// <returns></returns>
+	unsigned int GetMaxTime() { return maxTime; }
+	
 	/// <summary>
 	/// 最大計測時間と現在の時間が同じ場合、trueを返します。
 	/// </summary>

@@ -10,11 +10,13 @@
 #include"ObjModel.h"
 #include"PrimitiveModel.h"
 
-
+#include"FreamTimer.h"
 Play::Play(){}
 
 
 Play::~Play(){}
+
+FreamTimer fTimer(4);
 
 void Play::Initialize()
 {
@@ -73,6 +75,10 @@ void Play::Update()
 
 
 	priModel->SetAngle(angle, 0);
+
+	
+	int t = fTimer.GetTime();
+	int z = 0;
 }
 
 void Play::Draw()

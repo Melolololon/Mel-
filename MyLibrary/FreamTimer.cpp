@@ -20,6 +20,13 @@ FreamTimer::~FreamTimer()
 {
 }
 
+void FreamTimer::Update()
+{
+	time++;
+	if (time == maxTime)
+		time = 0;
+}
+
 
 bool FreamTimer::GetSameAsMaximumFlag()
 {
