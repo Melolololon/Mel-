@@ -58,7 +58,7 @@ public:
 		const int& arrayNum
 	);
 
-	virtual void* GetPtr();
+	virtual const void* GetPtr()const;
 
 	//オブジェクトマネージャーから削除するかどうかのフラグを返す
 	bool GetEraseManager();
