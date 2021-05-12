@@ -1,10 +1,15 @@
 #include "Sprite3D.h"
 PipelineState Sprite3D::defaultPipeline;
 DirectX::XMMATRIX Sprite3D::viewAndProjectionMatrix;
-
+DirectX::XMFLOAT3 Sprite3D::cameraPosition;
+DirectX::XMFLOAT3 Sprite3D::cameraTargetPosition;
+DirectX::XMFLOAT3 Sprite3D::cameraUpVector;
 
 Sprite3D::Sprite3D()
 {
+	billboardX = false;
+	billboardY = false;
+	billboardZ = false;
 }
 
 Sprite3D::~Sprite3D()
@@ -65,9 +70,9 @@ bool Sprite3D::Initialize()
 void Sprite3D::Draw(Texture* texture)
 {
 
-	DataMap(viewAndProjectionMatrix, false, texture);
+	CommonDataMat();
+	MatrixMap(texture);
 	SetCmdList(texture);
-
 
 }
 
@@ -101,6 +106,86 @@ void Sprite3D::SelectDrawAreaDraw
 
 	UnmapVertexBuffer();
 
-	DataMap(viewAndProjectionMatrix, true, texture);
+	CommonDataMat();
+	MatrixMap(texture);
 	SetCmdList(texture);
 }
+
+void Sprite3D::MatrixMap(Texture* texture)
+{
+	SpriteConstBufferData* constBufferData;
+	constBuffer->Map(0, nullptr, (void**)&constBufferData);
+
+	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
+	Billboard(matWorld);
+	matWorld *= DirectX::XMMatrixScaling
+	(
+		constData.scale.x,
+		constData.scale.y,
+		1
+	);
+	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(constData.angle.z));
+	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
+	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));
+
+	matWorld *= DirectX::XMMatrixTranslation
+	(
+		constData.position.x,
+		constData.position.y,
+		constData.position.z
+	);
+
+	constBufferData->mat = matWorld * viewAndProjectionMatrix;
+
+
+	constBuffer->Unmap(0, nullptr);
+}
+
+void Sprite3D::SetBillboardFlag(const bool flagX, const bool flagY, const bool flagZ)
+{
+	billboardX = flagX;
+	billboardY = flagY;
+	billboardZ = flagZ;
+}
+
+void Sprite3D::Billboard(DirectX::XMMATRIX& worldMat)
+{
+	if (!billboardX && !billboardY && !billboardZ)return;
+
+	//回転させた座標の取得
+
+	DirectX::XMVECTOR vCPos = DirectX::XMLoadFloat3(&cameraPosition);
+	DirectX::XMVECTOR vCTarget = DirectX::XMLoadFloat3(&cameraTargetPosition);
+	DirectX::XMVECTOR upVector = DirectX::XMLoadFloat3(&cameraUpVector);
+	//Z軸を求める
+	DirectX::XMVECTOR cameraAxisZ = DirectX::XMVectorSubtract(vCTarget, vCPos);
+
+	//除外
+	assert(!DirectX::XMVector3Equal(cameraAxisZ, DirectX::XMVectorZero()));
+	assert(!DirectX::XMVector3IsInfinite(cameraAxisZ));
+	assert(!DirectX::XMVector3Equal(upVector, DirectX::XMVectorZero()));
+	assert(!DirectX::XMVector3IsInfinite(upVector));
+
+	//ベクトルを正規化
+	cameraAxisZ = DirectX::XMVector3Normalize(cameraAxisZ);
+
+	//X軸を求める
+	DirectX::XMVECTOR cameraAxisX = DirectX::XMVector3Cross(upVector, cameraAxisZ);
+
+	//正規化
+	cameraAxisX = DirectX::XMVector3Normalize(cameraAxisX);
+
+	//Y軸を求める
+	DirectX::XMVECTOR cameraAxisY = DirectX::XMVector3Cross(cameraAxisZ, cameraAxisX);
+
+	//全方位ビルボード行列の計算
+	DirectX::XMMATRIX billboardMatrix = DirectX::XMMatrixIdentity();
+	if (billboardX)billboardMatrix.r[0] = cameraAxisX;
+	if (billboardY)billboardMatrix.r[1] = cameraAxisY;
+	if (billboardZ)billboardMatrix.r[2] = cameraAxisZ;
+	billboardMatrix.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
+
+	worldMat *= billboardMatrix;
+
+}
+

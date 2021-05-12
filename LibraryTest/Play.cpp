@@ -27,7 +27,7 @@ Play::~Play(){}
 void Play::Initialize()
 {
 	sprite2D->CreateSprite();
-	sprite3D->CreateSprite({100,100});
+	sprite3D->CreateSprite({1,1});
 	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
 	fbxModel->modelNum
 	(
@@ -48,7 +48,7 @@ void Play::Initialize()
 
 
 
-
+	Library::SetCamera({ 10,0,-10 }, { 0,0,0 }, { 0,1,0 });
 }
 
 Vector3 angle = 0;
@@ -74,14 +74,19 @@ void Play::Draw()
 {
 	//fbxModel->Draw(0);
 
-	//sprite2D->Draw(tex.get());
+	sprite2D->Draw(tex.get());
 
-	//sprite3D->SetPosition({ 0,0,0 });
-	//sprite3D->SelectDrawAreaDraw({ 64,64 }, {128,128}, tex.get());
+	if (DirectInput::KeyState(DIK_SPACE))
+		sprite3D->SetBillboardFlag(true, true, true);
+	else
+		sprite3D->SetBillboardFlag(false, false, false);
+
+	sprite3D->SetPosition({ 0,0,0 });
+	sprite3D->SelectDrawAreaDraw({ 64,64 }, {128,128}, tex.get());
 
 	//objModel->Draw(0);
 
-	priModel->Draw(0);
+	//priModel->Draw(0);
 }
 
 void Play::Finitialize()

@@ -73,7 +73,7 @@ bool PrimitiveModel::Initialize()
 
 	if (!result)
 	{
-		OutputDebugString(L"PrimitiveModelの初期化に失敗しました。デフォルトパイプラインを生成できませんでした\n");
+		OutputDebugString(L"PrimitiveModelの初期化に失敗しました。デフォルトパイプラインを生成できませんでした。\n");
 		return false;
 	}
 	return true;

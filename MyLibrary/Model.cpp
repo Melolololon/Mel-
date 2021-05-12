@@ -60,7 +60,6 @@ void Model::CreateModelVertexResources
 	}
 #pragma endregion
 
-	modelClassName = typeid(*this).name();
 }
 
 void Model::CreateModelHeapResourcesSetTexture

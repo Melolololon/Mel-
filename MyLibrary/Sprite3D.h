@@ -9,6 +9,15 @@ private:
 	static PipelineState defaultPipeline;
 
 
+	bool billboardX;
+	bool billboardY;
+	bool billboardZ;
+	void Billboard(DirectX::XMMATRIX& worldMat);
+	static DirectX::XMFLOAT3 cameraPosition;
+	static DirectX::XMFLOAT3 cameraTargetPosition;
+	static DirectX::XMFLOAT3 cameraUpVector;
+
+	void MatrixMap(Texture* texture);
 public:
 	Sprite3D();
 	~Sprite3D();
@@ -16,8 +25,27 @@ public:
 
 	void CreateSprite(const Vector2& size);
 
+#pragma region 開発者用関数
+
+
 	static bool Initialize();
-	void Draw(Texture* texture);
+
+	static void SetViewAndProjectionMatrix(const DirectX::XMMATRIX& cameraMat) { viewAndProjectionMatrix = cameraMat; }
+	static void SetCameraPosTargetUpVector
+	(
+		const DirectX::XMFLOAT3& pos,
+		const DirectX::XMFLOAT3& target,
+		const DirectX::XMFLOAT3& up
+	)
+	{
+		cameraPosition = pos;
+		cameraTargetPosition = target;
+		cameraUpVector = up;
+	}
+#pragma endregion
+
+	void Draw(Texture* texture)override;
+
 	/// <summary>
 	/// 表示範囲を指定して描画します。
 	/// </summary>
@@ -31,10 +59,10 @@ public:
 	void SetAngle(const Vector3& angle) { constData.angle = angle.ToXMFLOAT3(); }
 	void SetScale(const Vector2& scale) { constData.scale = scale.ToXMFLOAT2(); }
 #pragma endregion
-
+	void SetBillboardFlag(const bool flagX, const bool flagY, const bool flagZ);
 
 	static PipelineState GetDefaultPipeline() { return defaultPipeline; }
 
-	static void SetViewAndProjectionMatrix(const DirectX::XMMATRIX& cameraMat) { viewAndProjectionMatrix = cameraMat; }
+	
 };
 

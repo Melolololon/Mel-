@@ -34,6 +34,19 @@ private:
 	static ComPtr<ID3D12RootSignature>rootSignature;
 	static ComPtr<ID3D12PipelineState>defaultPipeline;
 
+
+#pragma endregion
+
+#pragma region 関数
+
+
+#pragma endregion
+
+protected:
+	ComPtr<ID3D12PipelineState> pipeline;
+	std::array<SpriteVertex, 4> vertices;
+
+
 #pragma region バッファ
 
 	//インデックスは、スプライトをバラバラにしたりする処理に使えそうだから実装しとく
@@ -45,28 +58,16 @@ private:
 	static ComPtr<ID3D12DescriptorHeap> textureHeap;
 #pragma endregion
 
-	std::string modelClassName;
-#pragma endregion
-
-#pragma region 関数
-
-
-#pragma endregion
-
-protected:
-	ComPtr<ID3D12PipelineState> pipeline;
-
-	std::array<SpriteVertex, 4> vertices;
-
 	void CreateBuffer();
 
 	SpriteConstData constData;
 #pragma region 関数
 
 
-	void DataMap(const DirectX::XMMATRIX& cameraMat,const bool sprite2D, Texture* texture);
-	void SetCmdList(Texture* texture);
+	
 
+	void CommonDataMat();
+	void SetCmdList(Texture* texture);
 
 #pragma region マップ
 	void MapVertexBuffer(void** data);
@@ -79,6 +80,10 @@ protected:
 public:
 	Sprite();
 	~Sprite();
+
+	
+
+	virtual void Draw(Texture* texture);
 
 #pragma region 開発者用関数
 

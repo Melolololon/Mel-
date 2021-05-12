@@ -61,9 +61,6 @@ void Game::Initialize()
 
 void Game::Finalize()
 {
-
-
-
 	Library::Finalize();//â‘Î‚ÉÅŒã‚É‘‚­
 }
 void Game::Update()

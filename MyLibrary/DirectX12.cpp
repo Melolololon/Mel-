@@ -1024,6 +1024,7 @@ void DirectX12::LoopStartProcess()
 
 	Model::SetViewAndProjectionMat(mainCamera->Get3DCameraMatrix(mainCameraData));
 	Sprite3D::SetViewAndProjectionMatrix(mainCamera->Get3DCameraMatrix(mainCameraData));
+	Sprite3D::SetCameraPosTargetUpVector(mainCameraData.nowEye, mainCameraData.nowTarget, mainCameraData.nowUp);
 }
 
 void DirectX12::LoopEndProcess()
@@ -1178,6 +1179,7 @@ void DirectX12::Finalize()
 	delete CreatePipelineState;
 	delete mainCamera;
 
+	DirectInput::Release();
 	FbxLoader::GetInstance()->Finalize();
 }
 

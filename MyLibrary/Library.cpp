@@ -240,7 +240,6 @@ void Library::Finalize()
 	SceneManager::GetInstace()->Finitialize();
 
 	dx12->Finalize();
-	DirectInput::Release();
 
 	if (!isDestroy)
 	{

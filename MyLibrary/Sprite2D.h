@@ -20,6 +20,8 @@ private:
 	static DirectX::XMMATRIX cameraMatrix;
 
 	static PipelineState defaultPipeline;
+
+	void MatrixMap(Texture* texture);
 public:
 	Sprite2D();
 	~Sprite2D();
@@ -27,7 +29,7 @@ public:
  	static bool Initialize(const int winWidth,const int winHeight);
 	
 	void CreateSprite();
-	void Draw(Texture* texture);
+	void Draw(Texture* texture)override;
 	/// <summary>
 	/// •\¦”ÍˆÍ‚ğw’è‚µ‚Ä•`‰æ‚µ‚Ü‚·B
 	/// </summary>

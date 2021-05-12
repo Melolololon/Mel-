@@ -138,7 +138,6 @@ protected:
 	//[モデル内のオブジェクトごと]
 	std::vector<Material> materials;
 
-	std::string modelClassName;
 #pragma endregion
 
 #pragma region 関数

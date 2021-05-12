@@ -94,7 +94,8 @@ void Sprite2D::SelectDrawAreaDraw
 
 	UnmapVertexBuffer();
 
-	DataMap(cameraMatrix, true, texture);
+	CommonDataMat();
+	MatrixMap(texture);
 	SetCmdList(texture);
 }
 
@@ -116,8 +117,44 @@ void Sprite2D::Draw(Texture* texture)
 
 	UnmapVertexBuffer();
 
-	DataMap(cameraMatrix, true, texture);
+	CommonDataMat();
+	MatrixMap(texture);
 	SetCmdList(texture);
 }
 
+
+void Sprite2D::MatrixMap(Texture* texture)
+{
+	SpriteConstBufferData* constBufferData;
+	constBuffer->Map(0, nullptr, (void**)&constBufferData);
+
+	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
+	matWorld *= DirectX::XMMatrixScaling
+	(
+		constData.scale.x,
+		constData.scale.y,
+		1
+	);
+	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(constData.angle.z));
+	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
+	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));
+
+	Vector2 textureSize = texture->GetTextureSize();
+	float width = textureSize.x;
+	float height = textureSize.y;
+	width /= 2;
+	height /= 2;
+
+	matWorld *= DirectX::XMMatrixTranslation
+	(
+		constData.position.x + width * constData.scale.x,
+		constData.position.y + height * constData.scale.y,
+		0.0f
+	);
+
+	constBufferData->mat = matWorld * cameraMatrix;
+
+
+	constBuffer->Unmap(0, nullptr);
+}
 

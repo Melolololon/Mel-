@@ -20,7 +20,6 @@ Sprite::~Sprite(){}
 void Sprite::CreateBuffer()
 {
 
-
 	//頂点バッファ作成
 	CreateBuffer::GetInstance()->CreateVertexBuffer
 	(
@@ -53,12 +52,8 @@ void Sprite::CreateBuffer()
 	UnmapVertexBuffer();
 }
 
-void Sprite::DataMap
-(
-	const DirectX::XMMATRIX& cameraMat,
-	const bool sprite2D,
-	Texture* texture
-)
+
+void Sprite::CommonDataMat()
 {
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
@@ -66,44 +61,6 @@ void Sprite::DataMap
 	constBufferData->addColor = constData.addColor;
 	constBufferData->subColor = constData.subColor;
 	constBufferData->mulColor = constData.mulColor;
-
-	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-	matWorld *= DirectX::XMMatrixScaling
-	(
-		constData.scale.x,
-		constData.scale.y,
-		1
-	);
-	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(constData.angle.z));
-	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
-	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));
-
-	if (!sprite2D)
-	{
-		matWorld *= DirectX::XMMatrixTranslation
-		(
-			constData.position.x,
-			constData.position.y,
-			constData.position.z
-		);
-	}
-	else
-	{
-		Vector2 textureSize = texture->GetTextureSize();
-		float width = textureSize.x;
-		float height = textureSize.y;
-		width /= 2;
-		height /= 2;
-
-		matWorld *= DirectX::XMMatrixTranslation
-		(
-			constData.position.x + width * constData.scale.x,
-			constData.position.y + height * constData.scale.y,
-			0.0f
-		);
-	}
-	constBufferData->mat = matWorld * cameraMat;
-
 
 	constBuffer->Unmap(0, nullptr);
 }
@@ -152,6 +109,14 @@ void Sprite::UnmapVertexBuffer()
 {
 	vertexBufferSet.vertexBuffer->Unmap(0, nullptr);
 }
+
+
+
+void Sprite::Draw(Texture* texture)
+{
+}
+
+
 
 void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 {
@@ -248,4 +213,5 @@ void Sprite::CreateTextureBuffer(Texture* texture)
 	
 
 }
+
 
