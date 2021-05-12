@@ -55,7 +55,7 @@ char LibMath::PointLeftRightCheck(const Vector2& vector, const Vector2& point)
 float LibMath::TwoVector2Angle(const Vector2& v1, const Vector2& v2)
 {
 
-	float f = Vector2Dot(v1, { v2.x,v2.y });
+	float f = Vector2Dot(v1, Vector2Normalize( v2));
 	f = std::acos(f);
 	f = AngleConversion(1, f);
 
