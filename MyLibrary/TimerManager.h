@@ -16,6 +16,7 @@ public:
 	static TimerManager* GetInstance();
 
 	void AddFreamTimer(FreamTimer* timer);
+	void EraseFreamTimer(FreamTimer* timer);
 	void Update();
 };
 

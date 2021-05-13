@@ -24,4 +24,14 @@ void TimerManager::AddFreamTimer(FreamTimer* timer)
 	freamTimers.push_back(timer);
 }
 
+void TimerManager::EraseFreamTimer(FreamTimer* timer)
+{
+	auto freamTimerSize = freamTimers.size();
+	for (int i = 0; i < freamTimerSize;i++)
+	{
+		if (freamTimers[i] == timer)
+			freamTimers.erase(freamTimers.begin() + i);
+	}
+
+}
 

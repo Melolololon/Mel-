@@ -18,6 +18,7 @@ FreamTimer::FreamTimer(const unsigned int maxTime)
 
 FreamTimer::~FreamTimer()
 {
+	TimerManager::GetInstance()->EraseFreamTimer(this);
 }
 
 void FreamTimer::Update()
