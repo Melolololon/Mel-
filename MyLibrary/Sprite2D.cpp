@@ -84,7 +84,7 @@ void Sprite2D::SelectDrawAreaDraw
 	vertices[0].uv = { uvLeftUp.x ,uvRightDown.y };
 	vertices[1].uv = { uvLeftUp .x,uvLeftUp .y};
 	vertices[2].uv = { uvRightDown.x ,uvRightDown.y };
-	vertices[3].uv = { uvRightDown.y ,uvLeftUp.y };
+	vertices[3].uv = { uvRightDown.x ,uvLeftUp.y };
 #pragma endregion
 
 
