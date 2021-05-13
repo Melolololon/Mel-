@@ -5,8 +5,8 @@ class TimerManager;
 class FreamTimer
 {
 private:
-	unsigned int time = 0;
-	unsigned int maxTime = 0;
+	int time = 0;
+	int maxTime = 0;
 	bool isStop = true;
 	bool timeResetFream = false;
 
@@ -20,8 +20,9 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="maxTime">最大計測時間</param>
-	FreamTimer(const unsigned int maxTime);
+	FreamTimer(const int maxTime);
 	~FreamTimer();
+
 
 	/// <summary>
 	/// 時間をリセットします。
@@ -38,14 +39,14 @@ public:
 	/// 現在の時間を返します。
 	/// </summary>
 	/// <returns></returns>
-	unsigned int GetTime() { return time; }
+	int GetTime() { return time; }
 
 	/// <summary>
 	/// 最大計測時間を返します。
 	/// </summary>
 	/// <returns></returns>
-	unsigned int GetMaxTime() { return maxTime; }
-	
+	int GetMaxTime() { return maxTime; }
+
 	/// <summary>
 	/// 最大計測時間と現在の時間が同じ場合、trueを返します。
 	/// </summary>
@@ -56,7 +57,7 @@ public:
 	/// </summary>
 	/// <param name="num"></param>
 	/// <returns></returns>
-	bool GetMultipleTimeFlag(const unsigned int num);
+	bool GetMultipleTimeFlag(const int num);
 
 	/// <summary>
 	/// タイマーを停止するかどうかのフラグをセットします、
@@ -64,6 +65,16 @@ public:
 	/// <param name="flag"></param>
 	void SetStopFlag(const bool flag) { isStop = flag; }
 
-	void SetMaxTime(const unsigned int num) { maxTime = num; }
+	/// <summary>
+	/// 最大計測時間を設定します。
+	/// </summary>
+	/// <param name="num"></param>
+	void SetMaxTime(const int num) { maxTime = num; }
+
+	/// <summary>
+	/// タイマーの時間を設定します。
+	/// </summary>
+	/// <param name="num"></param>
+	void SetNowTime(const int num) { time = num; }
 };
 

@@ -8,7 +8,7 @@ FreamTimer::FreamTimer()
 	TimerManager::GetInstance()->AddFreamTimer(this);
 }
 
-FreamTimer::FreamTimer(const unsigned int maxTime)
+FreamTimer::FreamTimer(const  int maxTime)
 {
 	time = 0;
 	this->maxTime = maxTime;
@@ -27,7 +27,7 @@ void FreamTimer::Update()
 
 	timeResetFream = false;
 	time++;
-	if (time == maxTime) 
+	if (time == maxTime)
 	{
 		time = 0;
 		timeResetFream = true;
@@ -40,7 +40,7 @@ bool FreamTimer::GetSameAsMaximumFlag()
 	return timeResetFream;
 }
 
-bool FreamTimer::GetMultipleTimeFlag(const unsigned int num)
+bool FreamTimer::GetMultipleTimeFlag(const  int num)
 {
 	return time % num == 0;
 }
