@@ -55,6 +55,10 @@ void Play::Initialize()
 
 
 	Vector3 a = Vector3(1, 1, 1) + Vector3(3, 2, 1);
+	
+	
+	
+	bool f = LibMath::AngleDifference(360,90,80);
 	int z = 0;
 }
 

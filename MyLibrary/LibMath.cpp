@@ -13,17 +13,42 @@ float LibMath::AngleConversion(int paterrn, float angle)
 
 }
 
-bool LibMath::Difference(const float& num1, const float& num2, const float& Difference)
+bool LibMath::Difference(const float num1, const float num2, const float difference)
 {
 	float sum = num1 - num2;
 	float diff = abs(sum);//·‚ð‹‚ß‚é
 
 		//·‚ªŽw’è‚µ‚½’lˆÈ“à‚¾‚Á‚½‚çtrue
-	if (Difference >= diff)
+	if (difference >= diff)
 		return true;
 
 	return false;
 
+}
+bool LibMath::AngleDifference(const float angle1, const float angle2, const float difference)
+{
+	if (angle1 < 0
+		|| angle1 > 360
+		|| angle2 < 0
+		|| angle2 > 360)return false;
+
+	float sum = angle2 - angle1;
+	float diff = abs(sum);//·‚ð‹‚ß‚é
+
+	//’Êí‚Ì”»’è
+	bool flag1 = difference >= diff;
+	
+	//¬‚³‚¢‚Ù‚¤‚ð“ü‚ê‚é
+	int smallNum = min(angle1, angle2);
+	int bigNum = max(angle1, angle2);
+	sum = bigNum - (smallNum + 360.0f);
+	diff = abs(sum);
+	bool flag2 = difference >= diff;
+
+	if (flag1 || flag2)
+		return true;
+
+	return false;
 }
 
 
