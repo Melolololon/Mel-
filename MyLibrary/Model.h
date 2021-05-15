@@ -51,14 +51,12 @@ private:
 	static DirectX::XMMATRIX viewAndProjectionMat;
 	static DirectX::XMMATRIX cameraRotateMat;
 	
-	static std::vector<Model*>pModels;
 	static CommonConstData commonConstData;
-
-	ModelConstBufferData* constBufferData;
+	static std::vector<Model*> pModels;
 #pragma endregion
 
 #pragma region ä÷êî
-
+	void MapCommonConstData();
 #pragma region ê∂ê¨
 
 	void CreateDescriptorHeap
@@ -295,7 +293,7 @@ public:
 	/// <param name="data"></param>
 	//static void MapCommonConstData(const CommonConstData& data);
 	static void SetCommonConstData(const CommonConstData& data);
-	//void MapConstData();
+
 
 	static void Initialize
 	(

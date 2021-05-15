@@ -9,20 +9,20 @@ ComPtr<ID3D12RootSignature>Model::rootSignature;
 
 DirectX::XMMATRIX Model::viewAndProjectionMat = DirectX::XMMatrixIdentity();
 DirectX::XMMATRIX Model::cameraRotateMat = DirectX::XMMatrixIdentity();
-
-std::vector<Model*>Model::pModels;
+std::vector<Model*> Model::pModels;
 CommonConstData Model::commonConstData;
 Model::Model()
 {
 	modelNum = 0;
 	modelObjectNum = 0;
 	textureBufferNum = 0;
+	pModels.push_back(this);
 }
 
 Model::~Model()
 {
 	auto size = pModels.size();
-	for (int i = 0; i < size; i++)
+	for(int i = 0;i < size;i++)
 	{
 		if(pModels[i] == this)
 		{
@@ -134,7 +134,7 @@ void Model::CreateModelHeapResourcesSetTexture
 
 	this->modelNum = modelNum;
 	this->modelObjectNum = modelFileObjectNum;
-	pModels.push_back(this);
+
 }
 
 void Model::CreateModelHeapResourcesSelectColor
@@ -237,12 +237,11 @@ void Model::CreateConstBuffer
 )
 {
 	int constBufferNum;
-	int commonBufferNum = 1;
 
 	if (userDataSize == 0)
-		constBufferNum = 3;
+		constBufferNum = 2;
 	else
-		constBufferNum = 4;
+		constBufferNum = 3;
 
 	//生成数分リサイズ
 	constBuffer.resize(modelNum);
@@ -253,7 +252,7 @@ void Model::CreateConstBuffer
 
 		//バッファ分だけリサイズ
 		for (auto& c2 : c)
-			c2.resize(constBufferNum - commonBufferNum);
+			c2.resize(constBufferNum);
 	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE hHandle;
@@ -261,21 +260,21 @@ void Model::CreateConstBuffer
 
 #pragma region コモンバッファビュー作成
 
-	hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-	(
-		desHeap->GetCPUDescriptorHandleForHeapStart(),
-		heapNum,
-		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
+	//hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+	//(
+	//	desHeap->GetCPUDescriptorHandleForHeapStart(),
+	//	heapNum,
+	//	device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	//);
 
-	CreateBuffer::GetInstance()->CreateConstBufferView
-	(
-		hHandle,
-		commonBuffers.Get()
-	);
+	//CreateBuffer::GetInstance()->CreateConstBufferView
+	//(
+	//	hHandle,
+	//	commonBuffers.Get()
+	//);
 
-	heapTags.push_back(HEAP_TAG_COMMON_CONST_BUFFER);
-	heapNum++;
+	//heapTags.push_back(HEAP_TAG_COMMON_CONST_BUFFER);
+	//heapNum++;
 #pragma endregion
 
 	HeapBufferTag tags[3] =
@@ -299,7 +298,7 @@ void Model::CreateConstBuffer
 		for (int j = 0; j < modelFileObjectNum; j++)
 		{
 			//モデル内のオブジェクトのバッファ分ループ
-			for (int k = 0; k < constBufferNum - commonBufferNum; k++)
+			for (int k = 0; k < constBufferNum; k++)
 			{
 				hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 					(
@@ -530,41 +529,30 @@ void Model::CreateCommonBuffer()
 void Model::SetCommonConstData(const CommonConstData& data)
 {
 	commonConstData = data;
-	/*for (auto& m : pModels)
-		m->MapConstData();*/
+	for (auto& m : pModels)
+		m->MapCommonConstData();
 }
-//
-//void Model::MapConstData()
-//{
-//
-//	//for (auto& buff : constBuffer)
-//	//{
-//	//	for (auto& buff2 : buff) 
-//	//	{
-//	//		buff2[0]->Map(0, nullptr, (void**)&constBufferData);
-//
-//	//		constBufferData->light = commonConstData.light;
-//	//		constBufferData->lightColor = commonConstData.lightColor;
-//	//		constBufferData->lightMat = commonConstData.lightMat;
-//	//		constBufferData->cameraPos = commonConstData.cameraPos;
-//
-//	//		buff2[0]->Unmap(0, nullptr);
-//	//	}
-//	//}
-//
-//	for(int i = 0; i < modelNum;i++)
-//	{
-//		for(int j = 0; j < modelObjectNum;j++)
-//		{
-//			constBuffer[i][j][0]->Map(0, nullptr, (void**)&constBufferData);
-//			constBufferData->light = commonConstData.light;
-//			constBufferData->lightColor = commonConstData.lightColor;
-//			constBufferData->lightMat = commonConstData.lightMat;
-//			constBufferData->cameraPos = commonConstData.cameraPos;
-//			constBuffer[i][j][0]->Unmap(0, nullptr);
-//		}
-//	}
-//}
+
+void Model::MapCommonConstData()
+{
+	ModelConstBufferData* constBufferData;
+
+	for (auto& buff : constBuffer)
+	{
+		for (auto& buff2 : buff) 
+		{
+			buff2[0]->Map(0, nullptr, (void**)&constBufferData);
+
+			constBufferData->light = commonConstData.light;
+			constBufferData->lightColor = commonConstData.lightColor;
+			constBufferData->lightMat = commonConstData.lightMat;
+			constBufferData->cameraPos = commonConstData.cameraPos;
+
+			buff2[0]->Unmap(0, nullptr);
+		}
+	}
+
+}
 
 void Model::Initialize
 (
@@ -597,11 +585,11 @@ void Model::Initialize
 	materialDescRangeCSV.BaseShaderRegister = 2;
 	materialDescRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_DESCRIPTOR_RANGE commonRangeCSV{};
+	/*D3D12_DESCRIPTOR_RANGE commonRangeCSV{};
 	commonRangeCSV.NumDescriptors = 1;
 	commonRangeCSV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 	commonRangeCSV.BaseShaderRegister = 3;
-	commonRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	commonRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;*/
 
 
 	D3D12_DESCRIPTOR_RANGE descRangeSRV{};
@@ -612,7 +600,7 @@ void Model::Initialize
 
 
 
-	D3D12_ROOT_PARAMETER rootparam[5]{};
+	D3D12_ROOT_PARAMETER rootparam[4]{};
 
 	//テクスチャ
 	rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
@@ -639,10 +627,10 @@ void Model::Initialize
 	rootparam[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	//共通
-	rootparam[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[4].DescriptorTable.pDescriptorRanges = &commonRangeCSV;
-	rootparam[4].DescriptorTable.NumDescriptorRanges = 1;
-	rootparam[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	//rootparam[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	//rootparam[4].DescriptorTable.pDescriptorRanges = &commonRangeCSV;
+	//rootparam[4].DescriptorTable.NumDescriptorRanges = 1;
+	//rootparam[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 #pragma endregion
 
 #pragma region ルートシグネチャ
@@ -694,7 +682,7 @@ void Model::Initialize
 void Model::MapConstData(const int modelNum)
 {
 
-
+	ModelConstBufferData* constBufferData;
 	for (int i = 0; i < modelObjectNum; i++) 
 	{
 		
@@ -706,10 +694,10 @@ void Model::MapConstData(const int modelNum)
 		constBufferData->mulColor = modelConstDatas[modelNum][i].mulColor;
 		constBufferData->ex = modelConstDatas[modelNum][i].pushPolygonNum;
 		
-		constBufferData->light = commonConstData.light;
+	/*	constBufferData->light = commonConstData.light;
 		constBufferData->lightColor = commonConstData.lightColor;
 		constBufferData->lightMat = commonConstData.lightMat;
-		constBufferData->cameraPos = commonConstData.cameraPos;
+		constBufferData->cameraPos = commonConstData.cameraPos;*/
 
 #pragma region 行列計算
 		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
@@ -772,14 +760,14 @@ void Model::SetCmdList(const int modelNum)
 	int handleNum = 0;//どのくらいハンドルをずらすか決めるための番号
 
 	//共通定数バッファ
-	handleNum = textureBufferNum;
+	/*handleNum = textureBufferNum;
 	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 	(
 		desHeap->GetGPUDescriptorHandleForHeapStart(),
 		handleNum,
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 	);
-	cmdLists[0]->SetGraphicsRootDescriptorTable(4, gpuDescHandle);
+	cmdLists[0]->SetGraphicsRootDescriptorTable(4, gpuDescHandle);*/
 
 	//頂点バッファ分ループ
 	auto vertexBufferNum = vertexBufferSet.size();
@@ -813,9 +801,8 @@ void Model::SetCmdList(const int modelNum)
 
 
 		//定数バッファセット
-		int commonBufferNum = 1;
 		handleNum = 0;
-		handleNum += textureBufferNum + commonBufferNum;//テクスチャと共通分ずらす
+		handleNum += textureBufferNum;//テクスチャと共通分ずらす
 		int cBuffSize = static_cast<int>(constBuffer[modelNum][i].size());
 
 		handleNum += i * cBuffSize;
