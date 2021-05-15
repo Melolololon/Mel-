@@ -949,7 +949,6 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		dev.Get(),
 		cmdLists
 	);
-	Model::CreateCommonBuffer();
 
 	
 	ObjModel::Initialize();
@@ -1047,7 +1046,6 @@ void DirectX12::LoopEndProcess()
 		cBuf.second->Unmap(0, nullptr);
 	}
 
-	//Model::MapCommonConstData(commonData);
 	Model::SetCommonConstData(commonData);
 
 	//ポストエフェクトレンダーターゲットのMap

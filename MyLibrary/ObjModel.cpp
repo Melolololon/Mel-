@@ -352,7 +352,7 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 	{
 
 #pragma region ボーンの値マップ
-		constBuffer[modelNum][i][0]->Map(0, nullptr, (void**)&modelConstData);
+		constDataBuffer[modelNum][i]->Map(0, nullptr, (void**)&modelConstData);
 
 
 
@@ -529,7 +529,7 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 
 
 		
-		constBuffer[modelNum][i][0]->Unmap(0, nullptr);
+		constDataBuffer[modelNum][i]->Unmap(0, nullptr);
 #pragma endregion
 	}
 

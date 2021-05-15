@@ -4,7 +4,6 @@
 
 ID3D12Device* Model::device;
 std::vector<ID3D12GraphicsCommandList*>Model::cmdLists;
-ComPtr<ID3D12Resource>Model::commonBuffers;
 ComPtr<ID3D12RootSignature>Model::rootSignature;
 
 DirectX::XMMATRIX Model::viewAndProjectionMat = DirectX::XMMatrixIdentity();
@@ -81,6 +80,9 @@ void Model::CreateModelHeapResourcesSetTexture
 	const size_t userDataSize
 )
 {
+	this->modelNum = modelNum;
+	this->modelObjectNum = modelFileObjectNum;
+
 	ResizeConstData
 	(
 		modelNum,
@@ -132,8 +134,7 @@ void Model::CreateModelHeapResourcesSetTexture
 #pragma endregion
 
 
-	this->modelNum = modelNum;
-	this->modelObjectNum = modelFileObjectNum;
+	
 
 }
 
@@ -236,59 +237,60 @@ void Model::CreateConstBuffer
 	const size_t userDataSize
 )
 {
-	int constBufferNum;
 
-	if (userDataSize == 0)
-		constBufferNum = 2;
-	else
-		constBufferNum = 3;
+	constDataBuffer.resize(modelNum);
+	materialDataBuffer.resize(modelNum);
+	constBufferNum = 2;
 
-	//生成数分リサイズ
-	constBuffer.resize(modelNum);
-	//モデルファイルにあるオブジェクト分だけリサイズ
-	for (auto& c : constBuffer) 
+	if (userDataSize != 0) 
 	{
-		c.resize(modelFileObjectNum);
-
-		//バッファ分だけリサイズ
-		for (auto& c2 : c)
-			c2.resize(constBufferNum);
+		userDataBuffer.resize(modelNum);
+		constBufferNum++;
 	}
+	for(int i = 0; i < modelNum;i++)
+	{
+		constDataBuffer[i].resize(modelFileObjectNum);
+		materialDataBuffer[i].resize(modelFileObjectNum);
+
+		if (userDataSize != 0)
+			userDataBuffer[i].resize(modelFileObjectNum);
+	}
+
 
 	D3D12_CPU_DESCRIPTOR_HANDLE hHandle;
 	int heapNum = heapTop;
 
-#pragma region コモンバッファビュー作成
 
-	//hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-	//(
-	//	desHeap->GetCPUDescriptorHandleForHeapStart(),
-	//	heapNum,
-	//	device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//);
-
-	//CreateBuffer::GetInstance()->CreateConstBufferView
-	//(
-	//	hHandle,
-	//	commonBuffers.Get()
-	//);
-
-	//heapTags.push_back(HEAP_TAG_COMMON_CONST_BUFFER);
-	//heapNum++;
-#pragma endregion
-
-	HeapBufferTag tags[3] =
+	auto CreateBuffer = [&]
+	(
+		ID3D12Resource** pBuffer,
+		const size_t& dataSize,
+		const HeapBufferTag tag
+	) 
 	{
-		HeapBufferTag::HEAP_TAG_LIBRARY_CONST_BUFFER,
-		HeapBufferTag::HEAP_TAG_MATERIAL_CONST_BUFFER,
-		HeapBufferTag::HEAP_TAG_USER_CONST_BUFFER
-	};
 
-	size_t constDataSize[3] =
-	{
-		sizeof(ModelConstBufferData),
-		sizeof(Material),
-		userDataSize
+		hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			desHeap->GetCPUDescriptorHandleForHeapStart(),
+			heapNum,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+
+		CreateBuffer::GetInstance()->CreateConstBuffer
+		(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			dataSize,
+			pBuffer
+		);
+		CreateBuffer::GetInstance()->CreateConstBufferView
+		(
+			hHandle,
+			*pBuffer
+		);
+
+		heapTags.push_back(tag);
+		heapNum++;
+
 	};
 
 	//モデル分ループ
@@ -297,31 +299,59 @@ void Model::CreateConstBuffer
 		//モデル内のオブジェクト分ループ
 		for (int j = 0; j < modelFileObjectNum; j++)
 		{
-			//モデル内のオブジェクトのバッファ分ループ
-			for (int k = 0; k < constBufferNum; k++)
+			////モデル内のオブジェクトのバッファ分ループ
+			//for (int k = 0; k < constBufferNum; k++)
+			//{
+			//	hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+			//		(
+			//			desHeap->GetCPUDescriptorHandleForHeapStart(),
+			//			heapNum,
+			//			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			//		);
+
+			//	CreateBuffer::GetInstance()->CreateConstBuffer
+			//	(
+			//		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			//		constDataSize[k],
+			//		&constBuffer[i][j][k]
+			//	);
+			//	CreateBuffer::GetInstance()->CreateConstBufferView
+			//	(
+			//		hHandle,
+			//		constBuffer[i][j][k].Get()
+			//	);
+
+			//	heapTags.push_back(tags[k]);
+			//	heapNum++;
+			//}
+
+			//メイン
+			CreateBuffer
+			(
+				&constDataBuffer[i][j],
+				sizeof(ModelConstBufferData),
+				HeapBufferTag::HEAP_TAG_LIBRARY_CONST_BUFFER
+			);
+
+			//マテリアル
+			CreateBuffer
+			(
+				&materialDataBuffer[i][j],
+				sizeof(ModelConstBufferData),
+				HeapBufferTag::HEAP_TAG_MATERIAL_CONST_BUFFER
+			);
+
+			//ユーザー
+			if (userDataBuffer.size() != 0) 
 			{
-				hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-					(
-						desHeap->GetCPUDescriptorHandleForHeapStart(),
-						heapNum,
-						device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-					);
-
-				CreateBuffer::GetInstance()->CreateConstBuffer
+				CreateBuffer
 				(
-					CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-					constDataSize[k],
-					&constBuffer[i][j][k]
+					&userDataBuffer[i][j],
+					userDataSize,
+					HeapBufferTag::HEAP_TAG_USER_CONST_BUFFER
 				);
-				CreateBuffer::GetInstance()->CreateConstBufferView
-				(
-					hHandle,
-					constBuffer[i][j][k].Get()
-				);
-
-				heapTags.push_back(tags[k]);
-				heapNum++;
 			}
+
 		}
 	}
 
@@ -333,13 +363,13 @@ void Model::CreateConstBuffer
 		//モデル内のオブジェクト分ループ
 		for (int j = 0; j < modelFileObjectNum; j++)
 		{
-			constBuffer[i][j][0]->Map(0, nullptr, (void**)&constBufferData);
+			constDataBuffer[i][j]->Map(0, nullptr, (void**)&constBufferData);
 
 
 			for (int k = 0; k < _countof(constBufferData->boneMat); k++)
 				constBufferData->boneMat[k] = DirectX::XMMatrixIdentity();
 
-			constBuffer[i][j][0]->Unmap(0, nullptr);
+			constDataBuffer[i][j]->Unmap(0, nullptr);
 		}
 	}
 }
@@ -504,27 +534,6 @@ void Model::UnmapIndexBuffer(const int& modelNum)
 #pragma region 開発者用関数
 
 
-void Model::CreateCommonBuffer()
-{
-	CreateBuffer::GetInstance()->CreateConstBuffer
-	(
-		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		sizeof(CommonConstData),
-		&commonBuffers
-	);
-}
-//
-//void Model::MapCommonConstData(const CommonConstData& data)
-//{
-//	CommonConstData* common;
-//	commonBuffers->Map(0, nullptr, (void**)&common);
-//	//common->cameraPos = data.cameraPos;
-//	/*common->light = data.light;
-//	common->lightColor = data.lightColor;*/
-//	//common->lightMat = data.lightMat;
-//	commonBuffers->Unmap(0, nullptr);
-//}
-
 
 void Model::SetCommonConstData(const CommonConstData& data)
 {
@@ -537,18 +546,18 @@ void Model::MapCommonConstData()
 {
 	ModelConstBufferData* constBufferData;
 
-	for (auto& buff : constBuffer)
+	for (auto& buff : constDataBuffer)
 	{
 		for (auto& buff2 : buff) 
 		{
-			buff2[0]->Map(0, nullptr, (void**)&constBufferData);
+			buff2->Map(0, nullptr, (void**)&constBufferData);
 
 			constBufferData->light = commonConstData.light;
 			constBufferData->lightColor = commonConstData.lightColor;
 			constBufferData->lightMat = commonConstData.lightMat;
 			constBufferData->cameraPos = commonConstData.cameraPos;
 
-			buff2[0]->Unmap(0, nullptr);
+			buff2->Unmap(0, nullptr);
 		}
 	}
 
@@ -688,16 +697,12 @@ void Model::MapConstData(const int modelNum)
 		
 #pragma region 基本的な情報のマップ
 
-		constBuffer[modelNum][i][0]->Map(0, nullptr, (void**)&constBufferData);
+		constDataBuffer[modelNum][i]->Map(0, nullptr, (void**)&constBufferData);
 		constBufferData->addColor = modelConstDatas[modelNum][i].addColor;
 		constBufferData->subColor = modelConstDatas[modelNum][i].subColor;
 		constBufferData->mulColor = modelConstDatas[modelNum][i].mulColor;
 		constBufferData->ex = modelConstDatas[modelNum][i].pushPolygonNum;
 		
-	/*	constBufferData->light = commonConstData.light;
-		constBufferData->lightColor = commonConstData.lightColor;
-		constBufferData->lightMat = commonConstData.lightMat;
-		constBufferData->cameraPos = commonConstData.cameraPos;*/
 
 #pragma region 行列計算
 		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
@@ -727,19 +732,19 @@ void Model::MapConstData(const int modelNum)
 #pragma endregion
 
 
-		constBuffer[modelNum][i][0]->Unmap(0, nullptr);
+		constDataBuffer[modelNum][i]->Unmap(0, nullptr);
 
 #pragma endregion
 
 #pragma region マテリアルのマップ
 		MaterialConstData* materialConstData;
 
-		constBuffer[modelNum][i][1]->Map(0, nullptr, (void**)&materialConstData);
+		materialDataBuffer[modelNum][i]->Map(0, nullptr, (void**)&materialConstData);
 		materialConstData->ambient = materials[i].ambient;
 		materialConstData->diffuse = materials[i].diffuse;
 		materialConstData->specular = materials[i].specular;
 		materialConstData->alpha = materials[i].alpha;
-		constBuffer[modelNum][i][1]->Unmap(0, nullptr);
+		materialDataBuffer[modelNum][i]->Unmap(0, nullptr);
 
 #pragma endregion
 
@@ -803,10 +808,9 @@ void Model::SetCmdList(const int modelNum)
 		//定数バッファセット
 		handleNum = 0;
 		handleNum += textureBufferNum;//テクスチャと共通分ずらす
-		int cBuffSize = static_cast<int>(constBuffer[modelNum][i].size());
-
-		handleNum += i * cBuffSize;
-		handleNum += modelNum * (cBuffSize * vertexBufferNum);
+		
+		handleNum += i * constBufferNum;
+		handleNum += modelNum * (constBufferNum * vertexBufferNum);
 
 
 		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE

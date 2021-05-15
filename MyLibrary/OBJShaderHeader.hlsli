@@ -14,10 +14,6 @@ cbuffer cbuff0 : register(b0)
 	float ex;
 };
 
-cbuffer cbuff3 : register(b3)
-{
-};
-
 cbuffer cbuff2 : register(b2)
 {
 	float3 m_ambient : packoffset(c0);
@@ -33,7 +29,6 @@ struct VSOutput
 	float4 worldPos:POSITION;
 	float4 svpos : SV_POSITION;
 	float3 normal:NORMAL;
-	//float4 color:COLOR;
 	float2 uv : TEXCOORD;
 };
 
@@ -42,6 +37,5 @@ struct GSOutput
 	float4 worldPos:POSITION;
 	float4 svpos : SV_POSITION;
 	float3 normal : NORMAL;
-	//float4 color:COLOR;
 	float2 uv : TEXCOORD;
 };

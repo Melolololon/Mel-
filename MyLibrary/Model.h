@@ -36,7 +36,7 @@ public:
 
 private:
 #pragma region 変数
-
+	int constBufferNum = 0;
 
 	static ID3D12Device* device;
 	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
@@ -44,8 +44,7 @@ private:
 	//これスプライトみたいにヒープから呼び出さないようにして、
 	//1つだけ生成するようにしたほうがいい?
 	//バッファ1つだけ作って、ビューを複数作るようにする
-	static ComPtr<ID3D12Resource>commonBuffers;
-
+	//static ComPtr<ID3D12Resource>commonBuffers;
 	static ComPtr<ID3D12RootSignature>rootSignature;
 
 	static DirectX::XMMATRIX viewAndProjectionMat;
@@ -53,10 +52,12 @@ private:
 	
 	static CommonConstData commonConstData;
 	static std::vector<Model*> pModels;
+
 #pragma endregion
 
 #pragma region 関数
 	void MapCommonConstData();
+
 #pragma region 生成
 
 	void CreateDescriptorHeap
@@ -117,11 +118,12 @@ protected:
 	ComPtr<ID3D12DescriptorHeap>desHeap;
 
 	
-	//[ヒープの番号(heapNum)ごと][obj内のモデルごと][バッファごと]
-	//バッファ格納配列をmapにしてもいいかも	std::vector<std::vector<std::umap<enum,ComPtr<ID3D12Resource>>>>
-	//そもそもバッファごとに配列分けてもいいかも
-	std::vector<std::vector<std::vector<ComPtr<ID3D12Resource>>>> constBuffer;
+	std::vector<std::vector<ComPtr<ID3D12Resource>>> constDataBuffer;
+	std::vector<std::vector<ComPtr<ID3D12Resource>>> materialDataBuffer;
+	std::vector<std::vector<ComPtr<ID3D12Resource>>> userDataBuffer;
 	
+
+
 	//テクスチャ側に持たせたからコメントアウト
 	//ヒープにシェーダーリソースビューを作らずに描画するのが不可能だったので、戻した
 	std::vector<ComPtr<ID3D12Resource>> textureBuffer;
@@ -284,14 +286,6 @@ public:
 
 #pragma region 開発者用関数
 
-
-	static void CreateCommonBuffer();
-	
-	/// <summary>
-	/// マップ用
-	/// </summary>
-	/// <param name="data"></param>
-	//static void MapCommonConstData(const CommonConstData& data);
 	static void SetCommonConstData(const CommonConstData& data);
 
 
