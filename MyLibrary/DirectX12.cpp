@@ -1031,10 +1031,10 @@ void DirectX12::LoopEndProcess()
 {
 
 	CommonConstData commonData;
-	//commonData.cameraPos = { mainCameraData.nowEye.x,mainCameraData.nowEye.y,mainCameraData.nowEye.z,1 };
-	////commonData.light = { lightVector.x,lightVector.y,lightVector.z,1 };
-	////commonData.lightColor = { lightColor.x,lightColor.y,lightColor.z,1 };
-	//commonData.lightMat = cameraMat;
+	commonData.cameraPos = { mainCameraData.nowEye.x,mainCameraData.nowEye.y,mainCameraData.nowEye.z,1 };
+	commonData.light = { lightVector.x,lightVector.y,lightVector.z,1 };
+	commonData.lightColor = { lightColor.x,lightColor.y,lightColor.z,1 };
+	commonData.lightMat = cameraMat;
 	//共通バッファのMap
 	for (auto& cBuf : commonBuffers)
 	{
@@ -1046,7 +1046,9 @@ void DirectX12::LoopEndProcess()
 
 		cBuf.second->Unmap(0, nullptr);
 	}
-	Model::MapCommonConstData(commonData);
+
+	//Model::MapCommonConstData(commonData);
+	Model::SetCommonConstData(commonData);
 
 	//ポストエフェクトレンダーターゲットのMap
 	DirectX::XMMATRIX peWorldMat = DirectX::XMMatrixIdentity();

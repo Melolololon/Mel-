@@ -323,7 +323,7 @@ bool ObjModel::Initialize()
 
 void ObjModel::Draw(const int modelNum)
 {
-	MapConstData(modelNum);
+	//MapConstData(modelNum);
 	MapBoneMatrix(modelNum);
 	SetCmdList(modelNum);
 }

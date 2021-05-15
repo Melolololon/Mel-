@@ -11,7 +11,7 @@ DirectX::XMMATRIX Model::viewAndProjectionMat = DirectX::XMMatrixIdentity();
 DirectX::XMMATRIX Model::cameraRotateMat = DirectX::XMMatrixIdentity();
 
 std::vector<Model*>Model::pModels;
-
+CommonConstData Model::commonConstData;
 Model::Model()
 {
 	modelNum = 0;
@@ -514,17 +514,57 @@ void Model::CreateCommonBuffer()
 		&commonBuffers
 	);
 }
+//
+//void Model::MapCommonConstData(const CommonConstData& data)
+//{
+//	CommonConstData* common;
+//	commonBuffers->Map(0, nullptr, (void**)&common);
+//	//common->cameraPos = data.cameraPos;
+//	/*common->light = data.light;
+//	common->lightColor = data.lightColor;*/
+//	//common->lightMat = data.lightMat;
+//	commonBuffers->Unmap(0, nullptr);
+//}
 
-void Model::MapCommonConstData(const CommonConstData& data)
+
+void Model::SetCommonConstData(const CommonConstData& data)
 {
-	CommonConstData* common;
-	commonBuffers->Map(0, nullptr, (void**)&common);
-	//common->cameraPos = data.cameraPos;
-	/*common->light = data.light;
-	common->lightColor = data.lightColor;*/
-	//common->lightMat = data.lightMat;
-	commonBuffers->Unmap(0, nullptr);
+	commonConstData = data;
+	/*for (auto& m : pModels)
+		m->MapConstData();*/
 }
+//
+//void Model::MapConstData()
+//{
+//
+//	//for (auto& buff : constBuffer)
+//	//{
+//	//	for (auto& buff2 : buff) 
+//	//	{
+//	//		buff2[0]->Map(0, nullptr, (void**)&constBufferData);
+//
+//	//		constBufferData->light = commonConstData.light;
+//	//		constBufferData->lightColor = commonConstData.lightColor;
+//	//		constBufferData->lightMat = commonConstData.lightMat;
+//	//		constBufferData->cameraPos = commonConstData.cameraPos;
+//
+//	//		buff2[0]->Unmap(0, nullptr);
+//	//	}
+//	//}
+//
+//	for(int i = 0; i < modelNum;i++)
+//	{
+//		for(int j = 0; j < modelObjectNum;j++)
+//		{
+//			constBuffer[i][j][0]->Map(0, nullptr, (void**)&constBufferData);
+//			constBufferData->light = commonConstData.light;
+//			constBufferData->lightColor = commonConstData.lightColor;
+//			constBufferData->lightMat = commonConstData.lightMat;
+//			constBufferData->cameraPos = commonConstData.cameraPos;
+//			constBuffer[i][j][0]->Unmap(0, nullptr);
+//		}
+//	}
+//}
 
 void Model::Initialize
 (
@@ -653,7 +693,7 @@ void Model::Initialize
 
 void Model::MapConstData(const int modelNum)
 {
-	ModelConstBufferData* constBufferData;
+
 
 	for (int i = 0; i < modelObjectNum; i++) 
 	{
@@ -665,6 +705,11 @@ void Model::MapConstData(const int modelNum)
 		constBufferData->subColor = modelConstDatas[modelNum][i].subColor;
 		constBufferData->mulColor = modelConstDatas[modelNum][i].mulColor;
 		constBufferData->ex = modelConstDatas[modelNum][i].pushPolygonNum;
+		
+		constBufferData->light = commonConstData.light;
+		constBufferData->lightColor = commonConstData.lightColor;
+		constBufferData->lightMat = commonConstData.lightMat;
+		constBufferData->cameraPos = commonConstData.cameraPos;
 
 #pragma region çsóÒåvéZ
 		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();

@@ -52,6 +52,9 @@ private:
 	static DirectX::XMMATRIX cameraRotateMat;
 	
 	static std::vector<Model*>pModels;
+	static CommonConstData commonConstData;
+
+	ModelConstBufferData* constBufferData;
 #pragma endregion
 
 #pragma region 関数
@@ -290,7 +293,9 @@ public:
 	/// マップ用
 	/// </summary>
 	/// <param name="data"></param>
-	static void MapCommonConstData(const CommonConstData& data);
+	//static void MapCommonConstData(const CommonConstData& data);
+	static void SetCommonConstData(const CommonConstData& data);
+	//void MapConstData();
 
 	static void Initialize
 	(
