@@ -152,6 +152,10 @@ struct ParentBoneData
 
 struct ModelConstBufferData
 {
+	DirectX::XMFLOAT4 lightColor;
+	DirectX::XMFLOAT4 light;
+	DirectX::XMFLOAT4 cameraPos;
+	DirectX::XMMATRIX lightMat;//ライト用行列
 	DirectX::XMMATRIX boneMat[64];
 	DirectX::XMMATRIX mat;
 	DirectX::XMMATRIX normalMat;
@@ -165,10 +169,7 @@ struct ModelConstBufferData
 struct CommonConstData
 {
 	//float4にするかパック詰めないと送れない(float4以外の変数と次の変数の間に入り込む)からfloat4にしてる
-	DirectX::XMFLOAT4 lightColor;
-	DirectX::XMFLOAT4 light;
-	DirectX::XMFLOAT4 cameraPos;
-	DirectX::XMMATRIX lightMat;//ライト用行列
+
 };
 
 struct SpriteConstBufferData

@@ -28,9 +28,9 @@ bool LibMath::Difference(const float num1, const float num2, const float differe
 bool LibMath::AngleDifference(const float angle1, const float angle2, const float difference)
 {
 	if (angle1 < 0
-		|| angle1 > 360
+		|| angle1 >= 360
 		|| angle2 < 0
-		|| angle2 > 360)return false;
+		|| angle2 >= 360)return false;
 
 	float sum = angle2 - angle1;
 	float diff = abs(sum);//·‚ğ‹‚ß‚é

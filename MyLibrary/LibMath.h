@@ -33,8 +33,8 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
-	/// <param name="angle1">Šp“x(0‚©‚ç360)</param>
-	/// <param name="angle2">Šp“x(0‚©‚ç360)</param>
+	/// <param name="angle1">Šp“x(0‚©‚ç359)</param>
+	/// <param name="angle2">Šp“x(0‚©‚ç359 )</param>
 	/// <param name="difference"></param>
 	/// <returns></returns>
 	static bool AngleDifference(const float angle1, const float angle2, const float difference);

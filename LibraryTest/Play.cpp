@@ -39,27 +39,15 @@ void Play::Initialize()
 		0
 	);
 
-	//objModel->LoadModel
-	//(
-	//	"Resources/Obj/redBall.obj",
-	//	true,
-	//	1,
-	//	0
-	//);
+	/*objModel->LoadModel
+	(
+		"Resources/Obj/redBall.obj",
+		true,
+		1,
+		0
+	);*/
 
-	priModel->CreateBox({ 1,1,1 }, { 255,0,0,0 }, 1);
-
-
-
-	Library::SetCamera({ 10,0,-10 }, { 0,0,0 }, { 0,1,0 });
-
-
-	Vector3 a = Vector3(1, 1, 1) + Vector3(3, 2, 1);
-	
-	
-	
-	bool f = LibMath::AngleDifference(360,90,80);
-	int z = 0;
+	priModel->CreateBox({ 4,4,4 }, { 255,255,255,255 }, 1);
 }
 
 Vector3 angle = 0;
@@ -87,19 +75,19 @@ void Play::Draw()
 {
 	//fbxModel->Draw(0);
 
-	sprite2D->Draw(tex.get());
+	//sprite2D->Draw(tex.get());
 
-	if (DirectInput::KeyState(DIK_SPACE))
-		sprite3D->SetBillboardFlag(true, true, true);
-	else
-		sprite3D->SetBillboardFlag(false, false, false);
+	//if (DirectInput::KeyState(DIK_SPACE))
+	//	sprite3D->SetBillboardFlag(true, true, true);
+	//else
+	//	sprite3D->SetBillboardFlag(false, false, false);
 
-	sprite3D->SetPosition({ 0,0,0 });
-	sprite3D->SelectDrawAreaDraw({ 64,64 }, {128,128}, tex.get());
+	//sprite3D->SetPosition({ 0,0,0 });
+	//sprite3D->SelectDrawAreaDraw({ 64,64 }, {128,128}, tex.get());
 
 	//objModel->Draw(0);
 
-	//priModel->Draw(0);
+	priModel->Draw(0);
 }
 
 void Play::Finitialize()

@@ -50,7 +50,8 @@ private:
 
 	static DirectX::XMMATRIX viewAndProjectionMat;
 	static DirectX::XMMATRIX cameraRotateMat;
-
+	
+	static std::vector<Model*>pModels;
 #pragma endregion
 
 #pragma region ä÷êî

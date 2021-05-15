@@ -1031,18 +1031,18 @@ void DirectX12::LoopEndProcess()
 {
 
 	CommonConstData commonData;
-	commonData.cameraPos = { mainCameraData.nowEye.x,mainCameraData.nowEye.y,mainCameraData.nowEye.z,1 };
-	commonData.light = { lightVector.x,lightVector.y,lightVector.z,1 };
-	commonData.lightColor = { lightColor.x,lightColor.y,lightColor.z,1 };
-	commonData.lightMat = cameraMat;
+	//commonData.cameraPos = { mainCameraData.nowEye.x,mainCameraData.nowEye.y,mainCameraData.nowEye.z,1 };
+	////commonData.light = { lightVector.x,lightVector.y,lightVector.z,1 };
+	////commonData.lightColor = { lightColor.x,lightColor.y,lightColor.z,1 };
+	//commonData.lightMat = cameraMat;
 	//共通バッファのMap
 	for (auto& cBuf : commonBuffers)
 	{
 		cBuf.second->Map(0, nullptr, (void**)&commonConstData3D);
-		commonConstData3D->lightColor = commonData.lightColor;
-		commonConstData3D->light = commonData.light;
-		commonConstData3D->lightMat = commonData.lightMat;
-		commonConstData3D->cameraPos = commonData.cameraPos;
+		//commonConstData3D->lightColor = commonData.lightColor;
+		//commonConstData3D->light = commonData.light;
+		/*commonConstData3D->lightMat = commonData.lightMat;
+		commonConstData3D->cameraPos = commonData.cameraPos;*/
 
 		cBuf.second->Unmap(0, nullptr);
 	}
@@ -3077,10 +3077,10 @@ void DirectX12::CreateCommonBuffer(const int& texNum, const std::string& key)
 	//Map
 	result = commonBuffers[key]->Map(0, nullptr, (void**)&commonConstData3D);
 
-	commonConstData3D->lightColor = { 1,1,1 ,1 };
-	commonConstData3D->light = { 1,1,1,1 };
-	commonConstData3D->lightMat = DirectX::XMMatrixIdentity();
-	commonConstData3D->cameraPos = { mainCameraData.nowEye.x,mainCameraData.nowEye.y,mainCameraData.nowEye.z,1 };
+	/*commonConstData3D->lightColor = { 1,1,1 ,1 };
+	commonConstData3D->light = { 1,1,1,1 };*/
+	//commonConstData3D->lightMat = DirectX::XMMatrixIdentity();
+	//commonConstData3D->cameraPos = { mainCameraData.nowEye.x,mainCameraData.nowEye.y,mainCameraData.nowEye.z,1 };
 	
 	commonBuffers[key]->Unmap(0, nullptr);
 

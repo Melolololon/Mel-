@@ -1,5 +1,9 @@
 cbuffer cbuff0 : register(b0)
 {
+	float4 lightColor;
+	float4 light;
+	float4 cameraPos;
+	matrix lightMat;
 	matrix boneMatArray[64];
 	matrix mat;
 	matrix normalMat;
@@ -12,10 +16,6 @@ cbuffer cbuff0 : register(b0)
 
 cbuffer cbuff3 : register(b3)
 {
-	float4 lightColor;
-	float4 light;
-	float4 cameraPos;
-	matrix lightMat;
 };
 
 cbuffer cbuff2 : register(b2)

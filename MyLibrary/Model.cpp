@@ -10,6 +10,8 @@ ComPtr<ID3D12RootSignature>Model::rootSignature;
 DirectX::XMMATRIX Model::viewAndProjectionMat = DirectX::XMMatrixIdentity();
 DirectX::XMMATRIX Model::cameraRotateMat = DirectX::XMMatrixIdentity();
 
+std::vector<Model*>Model::pModels;
+
 Model::Model()
 {
 	modelNum = 0;
@@ -19,6 +21,15 @@ Model::Model()
 
 Model::~Model()
 {
+	auto size = pModels.size();
+	for (int i = 0; i < size; i++)
+	{
+		if(pModels[i] == this)
+		{
+			pModels.erase(pModels.begin() + i);
+			break;
+		}
+	}
 }
 
 void Model::CreateModelVertexResources
@@ -123,6 +134,7 @@ void Model::CreateModelHeapResourcesSetTexture
 
 	this->modelNum = modelNum;
 	this->modelObjectNum = modelFileObjectNum;
+	pModels.push_back(this);
 }
 
 void Model::CreateModelHeapResourcesSelectColor
@@ -507,10 +519,10 @@ void Model::MapCommonConstData(const CommonConstData& data)
 {
 	CommonConstData* common;
 	commonBuffers->Map(0, nullptr, (void**)&common);
-	common->cameraPos = data.cameraPos;
-	common->light = data.light;
-	common->lightColor = data.lightColor;
-	common->lightMat = data.lightMat;
+	//common->cameraPos = data.cameraPos;
+	/*common->light = data.light;
+	common->lightColor = data.lightColor;*/
+	//common->lightMat = data.lightMat;
 	commonBuffers->Unmap(0, nullptr);
 }
 
