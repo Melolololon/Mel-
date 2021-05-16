@@ -77,32 +77,46 @@ void Model::CreateModelHeapResourcesSetTexture
 	const std::vector<Texture*>& pTextures,
 	const int modelNum,
 	const int modelFileObjectNum,
-	const size_t userDataSize
+	BufferData* modelBufferData,
+	BufferData* userBufferData
 )
 {
-	this->modelNum = modelNum;
-	this->modelObjectNum = modelFileObjectNum;
 
-	ResizeConstData
+	BufferCreatePreparation
 	(
 		modelNum,
-		1
+		modelFileObjectNum,
+		modelBufferData,
+		userBufferData
 	);
+
+
 
 #pragma region ディスクリプタヒープ
 
 
-	//ヒープ作成
-	int constBufferNum = 3;
-	if (userDataSize != 0)constBufferNum++;
-	int commonBufferNum = 1;
-	//テクスチャ　+ 共通バッファ + (定数バッファ - 共通バッファ) * モデル数 * モデル内のオブジェクト数
-	int heapSize = 
+	////ヒープ作成
+	//int constBufferNum = 3;
+	//if (userDataSize != 0)constBufferNum++;
+	//int commonBufferNum = 1;
+	////テクスチャ　+ 共通バッファ + (定数バッファ - 共通バッファ) * モデル数 * モデル内のオブジェクト数
+	//int heapSize = 
+	//	modelFileObjectNum
+	//	+ commonBufferNum
+	//	+ (constBufferNum - commonBufferNum)
+	//	* modelNum
+	//	* modelFileObjectNum;
+
+	//heapSize = テクスチャ + 共通 + 
+	//				モデルごと * モデル数 
+	//				モデルのオブジェクトごと * モデル数 * モデルのオブジェクト数
+
+
+	int heapSize =
 		modelFileObjectNum
-		+ commonBufferNum
-		+ (constBufferNum - commonBufferNum)
-		* modelNum
-		* modelFileObjectNum;
+		+ commonConstBufferNum
+		+ eachModelConstBufferNum * modelNum
+		+ eachModelObjectConstBufferNum * modelNum * modelFileObjectNum;
 
 	CreateDescriptorHeap(heapSize);
 
@@ -129,7 +143,8 @@ void Model::CreateModelHeapResourcesSetTexture
 		modelNum,
 		modelFileObjectNum,
 		modelFileObjectNum,
-		userDataSize
+		modelBufferData,
+		userBufferData
 	);
 #pragma endregion
 
@@ -143,28 +158,27 @@ void Model::CreateModelHeapResourcesSelectColor
 	const Color& color,
 	const int modelNum,
 	const int modelFileObjectNum,
-	const size_t userDataSize
+	BufferData* modelBufferData,
+	BufferData* userBufferData
 )
 {
-	ResizeConstData
+	BufferCreatePreparation
 	(
 		modelNum,
-		1
+		1,
+		modelBufferData,
+		userBufferData
 	);
+
 #pragma region ディスクリプタヒープ
 
 
 	//ヒープ作成
-	int constBufferNum = 3;
-	if (userDataSize != 0)constBufferNum++;
-	int commonBufferNum = 1;
-	//テクスチャ　+ 共通バッファ + (定数バッファ - 共通バッファ) * モデル数 * モデル内のオブジェクト数
 	int heapSize =
 		modelFileObjectNum
-		+ commonBufferNum
-		+ (constBufferNum - commonBufferNum)
-		* modelNum
-		* modelFileObjectNum;
+		+ commonConstBufferNum
+		+ eachModelConstBufferNum * modelNum
+		+ eachModelObjectConstBufferNum * modelNum * modelFileObjectNum;
 
 	CreateDescriptorHeap(heapSize);
 
@@ -191,27 +205,107 @@ void Model::CreateModelHeapResourcesSelectColor
 		modelNum,
 		modelFileObjectNum,
 		modelFileObjectNum,
-		userDataSize
+		modelBufferData,
+		userBufferData
 	);
 #pragma endregion
 
 
-	this->modelNum = modelNum;
-	this->modelObjectNum = modelFileObjectNum;
 }
 
-void Model::ResizeConstData
+void Model::BufferCreatePreparation
 (
 	const int modelNum,
-	const int modelFileObjectNum
+	const int modelFileObjectNum,
+	BufferData* modelBufferData,
+	BufferData* userBufferData
 )
 {
+	this->modelNum = modelNum;
+	this->modelObjectNum = modelFileObjectNum;
+
+	if (modelBufferData)
+		modelConstBufferType = modelBufferData->bufferType;
+	else
+		modelConstBufferType = BufferData::BufferType::BUFFER_TYPE_NONE;
+
+	if (userBufferData)
+		userConstBufferType = userBufferData->bufferType;
+	else
+		userConstBufferType = BufferData::BufferType::BUFFER_TYPE_NONE;
+
+
+	//データを格納している配列をresize
 	modelConstDatas.resize(modelNum);
 	//モデル分ループ
 	for (int i = 0; i < modelNum; i++)
 		modelConstDatas[i].resize(modelFileObjectNum);
 
 	textureBuffer.resize(modelFileObjectNum);
+
+	//バッファをリサイズ
+	constBuffer.resize(modelNum);
+	materialConstBuffer.resize(modelNum);
+
+	for (int i = 0; i < modelNum; i++)
+	{
+		constBuffer[i].resize(modelFileObjectNum);
+		materialConstBuffer[i].resize(modelFileObjectNum);
+	}
+	eachModelObjectConstBufferNum = 2;
+
+
+	switch (modelConstBufferType)
+	{
+
+	case BufferData::BufferType::BUFFER_TYPE_COMMON:
+		commonConstBufferNum++;
+		modelConstBuffer.resize(1);
+		break;
+
+	case BufferData::BufferType::BUFFER_TYPE_EACH_MODEL:
+		eachModelConstBufferNum++;
+		modelConstBuffer.resize(modelNum);
+		for (auto& buff : modelConstBuffer)
+			buff.resize(1);
+		break;
+
+	case BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT:
+		eachModelObjectConstBufferNum++;
+
+		modelConstBuffer.resize(modelNum);
+		for (auto& buff : modelConstBuffer)
+			buff.resize(modelFileObjectNum);
+		break;
+
+	}
+
+	switch (userConstBufferType)
+	{
+
+	case BufferData::BufferType::BUFFER_TYPE_COMMON:
+		commonConstBufferNum++;
+		userConstBuffer.resize(1);
+		break;
+
+	case BufferData::BufferType::BUFFER_TYPE_EACH_MODEL:
+		eachModelConstBufferNum++;
+		userConstBuffer.resize(modelNum);
+		for (auto& buff : userConstBuffer)
+			buff.resize(1);
+		break;
+
+	case BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT:
+		eachModelObjectConstBufferNum++;
+
+		userConstBuffer.resize(modelNum);
+		for (auto& buff : userConstBuffer)
+			buff.resize(modelFileObjectNum);
+		break;
+
+	}
+
+
 }
 
 void Model::CreateDescriptorHeap
@@ -233,29 +327,11 @@ void Model::CreateConstBuffer
 (
 	const int modelNum,
 	const int modelFileObjectNum,
-	const int heapTop,
-	const size_t userDataSize
+	const int heapTop, 
+	BufferData * modelBufferData,
+	BufferData* userBufferData 
 )
 {
-
-	constDataBuffer.resize(modelNum);
-	materialDataBuffer.resize(modelNum);
-	constBufferNum = 2;
-
-	if (userDataSize != 0) 
-	{
-		userDataBuffer.resize(modelNum);
-		constBufferNum++;
-	}
-	for(int i = 0; i < modelNum;i++)
-	{
-		constDataBuffer[i].resize(modelFileObjectNum);
-		materialDataBuffer[i].resize(modelFileObjectNum);
-
-		if (userDataSize != 0)
-			userDataBuffer[i].resize(modelFileObjectNum);
-	}
-
 
 	D3D12_CPU_DESCRIPTOR_HANDLE hHandle;
 	int heapNum = heapTop;
@@ -293,42 +369,56 @@ void Model::CreateConstBuffer
 
 	};
 
+	//共通だったらここで生成
+	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON)
+		CreateBuffer
+		(
+			&modelConstBuffer[0][0],
+			modelBufferData->bufferDataSize,
+			HeapBufferTag::HEAP_TAG_MODEL_CONST_BUFFER
+		);
+	
+	//共通だったらここで生成
+	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON)
+		CreateBuffer
+		(
+			&userConstBuffer[0][0],
+			modelBufferData->bufferDataSize,
+			HeapBufferTag::HEAP_TAG_USER_CONST_BUFFER
+		);
+
+		
+
+
 	//モデル分ループ
 	for (int i = 0; i < modelNum; i++) 
 	{
+		//モデル
+		if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+			CreateBuffer
+			(
+				&modelConstBuffer[i][0],
+				modelBufferData->bufferDataSize,
+				HeapBufferTag::HEAP_TAG_MODEL_CONST_BUFFER
+			);
+
+		//ユーザー
+		if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+			CreateBuffer
+			(
+				&userConstBuffer[i][0],
+				modelBufferData->bufferDataSize,
+				HeapBufferTag::HEAP_TAG_USER_CONST_BUFFER
+			);
+
 		//モデル内のオブジェクト分ループ
 		for (int j = 0; j < modelFileObjectNum; j++)
 		{
-			////モデル内のオブジェクトのバッファ分ループ
-			//for (int k = 0; k < constBufferNum; k++)
-			//{
-			//	hHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-			//		(
-			//			desHeap->GetCPUDescriptorHandleForHeapStart(),
-			//			heapNum,
-			//			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-			//		);
-
-			//	CreateBuffer::GetInstance()->CreateConstBuffer
-			//	(
-			//		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			//		constDataSize[k],
-			//		&constBuffer[i][j][k]
-			//	);
-			//	CreateBuffer::GetInstance()->CreateConstBufferView
-			//	(
-			//		hHandle,
-			//		constBuffer[i][j][k].Get()
-			//	);
-
-			//	heapTags.push_back(tags[k]);
-			//	heapNum++;
-			//}
 
 			//メイン
 			CreateBuffer
 			(
-				&constDataBuffer[i][j],
+				&constBuffer[i][j],
 				sizeof(ModelConstBufferData),
 				HeapBufferTag::HEAP_TAG_LIBRARY_CONST_BUFFER
 			);
@@ -336,42 +426,35 @@ void Model::CreateConstBuffer
 			//マテリアル
 			CreateBuffer
 			(
-				&materialDataBuffer[i][j],
+				&materialConstBuffer[i][j],
 				sizeof(ModelConstBufferData),
 				HeapBufferTag::HEAP_TAG_MATERIAL_CONST_BUFFER
 			);
 
-			//ユーザー
-			if (userDataBuffer.size() != 0) 
-			{
+			//モデル
+			if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 				CreateBuffer
 				(
-					&userDataBuffer[i][j],
-					userDataSize,
+					&modelConstBuffer[i][j],
+					modelBufferData->bufferDataSize,
+					HeapBufferTag::HEAP_TAG_MODEL_CONST_BUFFER
+				);
+
+			
+
+			//ユーザー
+			if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+				CreateBuffer
+				(
+					&userConstBuffer[i][j],
+					modelBufferData->bufferDataSize,
 					HeapBufferTag::HEAP_TAG_USER_CONST_BUFFER
 				);
-			}
 
 		}
 	}
 
-
-	//ボーン行列の初期化(初期化してない奴があると、GPUはそれ以降見てくれないから)
-	ModelConstBufferData* constBufferData;
-	for (int i = 0; i < modelNum; i++)
-	{
-		//モデル内のオブジェクト分ループ
-		for (int j = 0; j < modelFileObjectNum; j++)
-		{
-			constDataBuffer[i][j]->Map(0, nullptr, (void**)&constBufferData);
-
-
-			for (int k = 0; k < _countof(constBufferData->boneMat); k++)
-				constBufferData->boneMat[k] = DirectX::XMMatrixIdentity();
-
-			constDataBuffer[i][j]->Unmap(0, nullptr);
-		}
-	}
+	
 }
 
 void Model::CreateTextureBuffer
@@ -546,7 +629,7 @@ void Model::MapCommonConstData()
 {
 	ModelConstBufferData* constBufferData;
 
-	for (auto& buff : constDataBuffer)
+	for (auto& buff : constBuffer)
 	{
 		for (auto& buff2 : buff) 
 		{
@@ -576,11 +659,11 @@ void Model::Initialize
 
 #pragma region ディスクリプタレンジ_ルートパラメーター
 
-	D3D12_DESCRIPTOR_RANGE modelRangeCSV{};
-	modelRangeCSV.NumDescriptors = 1;
-	modelRangeCSV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-	modelRangeCSV.BaseShaderRegister = 0;
-	modelRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	D3D12_DESCRIPTOR_RANGE mainRangeCSV{};
+	mainRangeCSV.NumDescriptors = 1;
+	mainRangeCSV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+	mainRangeCSV.BaseShaderRegister = 0;
+	mainRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	D3D12_DESCRIPTOR_RANGE userDescRangeCSV{};
 	userDescRangeCSV.NumDescriptors = 1;
@@ -599,6 +682,12 @@ void Model::Initialize
 	commonRangeCSV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 	commonRangeCSV.BaseShaderRegister = 3;
 	commonRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;*/
+	
+	D3D12_DESCRIPTOR_RANGE modelRangeCSV{};
+	modelRangeCSV.NumDescriptors = 1;
+	modelRangeCSV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+	modelRangeCSV.BaseShaderRegister = 3;
+	modelRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 
 	D3D12_DESCRIPTOR_RANGE descRangeSRV{};
@@ -609,7 +698,7 @@ void Model::Initialize
 
 
 
-	D3D12_ROOT_PARAMETER rootparam[4]{};
+	D3D12_ROOT_PARAMETER rootparam[5]{};
 
 	//テクスチャ
 	rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
@@ -619,7 +708,7 @@ void Model::Initialize
 
 	//定数
 	rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[1].DescriptorTable.pDescriptorRanges = &modelRangeCSV;
+	rootparam[1].DescriptorTable.pDescriptorRanges = &mainRangeCSV;
 	rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
 	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
@@ -634,6 +723,12 @@ void Model::Initialize
 	rootparam[3].DescriptorTable.pDescriptorRanges = &materialDescRangeCSV;
 	rootparam[3].DescriptorTable.NumDescriptorRanges = 1;
 	rootparam[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	
+	//モデル
+	rootparam[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[4].DescriptorTable.pDescriptorRanges = &modelRangeCSV;
+	rootparam[4].DescriptorTable.NumDescriptorRanges = 1;
+	rootparam[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	//共通
 	//rootparam[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
@@ -697,7 +792,7 @@ void Model::MapConstData(const int modelNum)
 		
 #pragma region 基本的な情報のマップ
 
-		constDataBuffer[modelNum][i]->Map(0, nullptr, (void**)&constBufferData);
+		constBuffer[modelNum][i]->Map(0, nullptr, (void**)&constBufferData);
 		constBufferData->addColor = modelConstDatas[modelNum][i].addColor;
 		constBufferData->subColor = modelConstDatas[modelNum][i].subColor;
 		constBufferData->mulColor = modelConstDatas[modelNum][i].mulColor;
@@ -732,19 +827,19 @@ void Model::MapConstData(const int modelNum)
 #pragma endregion
 
 
-		constDataBuffer[modelNum][i]->Unmap(0, nullptr);
+		constBuffer[modelNum][i]->Unmap(0, nullptr);
 
 #pragma endregion
 
 #pragma region マテリアルのマップ
 		MaterialConstData* materialConstData;
 
-		materialDataBuffer[modelNum][i]->Map(0, nullptr, (void**)&materialConstData);
+		materialConstBuffer[modelNum][i]->Map(0, nullptr, (void**)&materialConstData);
 		materialConstData->ambient = materials[i].ambient;
 		materialConstData->diffuse = materials[i].diffuse;
 		materialConstData->specular = materials[i].specular;
 		materialConstData->alpha = materials[i].alpha;
-		materialDataBuffer[modelNum][i]->Unmap(0, nullptr);
+		materialConstBuffer[modelNum][i]->Unmap(0, nullptr);
 
 #pragma endregion
 
@@ -762,18 +857,50 @@ void Model::SetCmdList(const int modelNum)
 	cmdLists[0]->SetDescriptorHeaps(1, &ppHeaps[0]);
 
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
-	int handleNum = 0;//どのくらいハンドルをずらすか決めるための番号
 
-	//共通定数バッファ
-	/*handleNum = textureBufferNum;
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	(
-		desHeap->GetGPUDescriptorHandleForHeapStart(),
-		handleNum,
-		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
-	cmdLists[0]->SetGraphicsRootDescriptorTable(4, gpuDescHandle);*/
+	//どのくらいハンドルをずらすか決めるための番号
+	int constBufferHandleNum = 0;
+	auto SetConstBufferDesTable = [&](const int rootParamIndex)
+	{
+		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		(
+			desHeap->GetGPUDescriptorHandleForHeapStart(),
+			constBufferHandleNum,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+		cmdLists[0]->SetGraphicsRootDescriptorTable(rootParamIndex, gpuDescHandle);
+		constBufferHandleNum++;
+	};
 
+
+	//共通をセット
+	constBufferHandleNum = modelObjectNum;
+	//モデル特有バッファセット
+	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON)
+		SetConstBufferDesTable(4);
+
+	//ユーザーモデルバッファセット
+	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON)
+		SetConstBufferDesTable(2);
+
+
+	//モデルごとをセット
+	constBufferHandleNum =
+		modelObjectNum
+		+ commonConstBufferNum
+		+ eachModelConstBufferNum * modelNum
+		+ eachModelObjectConstBufferNum * modelObjectNum * modelNum;
+
+	//モデル特有バッファセット
+	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+		SetConstBufferDesTable(4);
+
+	//ユーザーモデルバッファセット
+	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+		SetConstBufferDesTable(2);
+
+	
+	//モデルのオブジェクトごとをセット
 	//頂点バッファ分ループ
 	auto vertexBufferNum = vertexBufferSet.size();
 	for (int i = 0; i < vertexBufferNum; i++)
@@ -782,76 +909,75 @@ void Model::SetCmdList(const int modelNum)
 		cmdLists[0]->IASetIndexBuffer(&indexBufferSet[i].indexBufferView);
 		cmdLists[0]->IASetVertexBuffers(0, 1, &vertexBufferSet[i].vertexBufferView);
 
-		handleNum = 0;
+
+#pragma region テクスチャ
+
+
+		int textureBufferHandleNum = 0;
+		//紐づけ
 		for (int j = 0; j < vertexBufferNum; j++)
 		{
 			//マテリアル紐づけ
 			//紐づけ失敗(マテリアル名未設定などで)だと、一番最初のテクスチャが選ばれる
 			if (vertexBufferSet[i].materialName == materials[j].materialName)
 			{
-				handleNum = j;
+				textureBufferHandleNum = j;
 				break;
 			}
 		}
-
 
 		//テクスチャバッファ
 		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 		(
 			desHeap->GetGPUDescriptorHandleForHeapStart(),
-			handleNum,
+			textureBufferHandleNum,
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
 		cmdLists[0]->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
 
+#pragma endregion
+
+#pragma region 定数
+
+		//数値セット
+		//テクスチャと番号を分け、共通でインクリメントしたことによりセットがいらなくなった
+		//constBufferHandleNum = 0;
+		//constBufferHandleNum += textureBufferNum + commonConstBufferNum;//テクスチャと共通分ずらす
+		//constBufferHandleNum += i * eachModelConstBufferNum;
+		//constBufferHandleNum += modelNum * (eachModelConstBufferNum * vertexBufferNum);
 
 		//定数バッファセット
-		handleNum = 0;
-		handleNum += textureBufferNum;//テクスチャと共通分ずらす
-		
-		handleNum += i * constBufferNum;
-		handleNum += modelNum * (constBufferNum * vertexBufferNum);
-
-
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			desHeap->GetGPUDescriptorHandleForHeapStart(),
-			handleNum,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdLists[0]->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
-
+		SetConstBufferDesTable(1);
 
 		//マテリアルバッファセット
-		handleNum++;
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			desHeap->GetGPUDescriptorHandleForHeapStart(),
-			handleNum,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdLists[0]->SetGraphicsRootDescriptorTable(3, gpuDescHandle);
+		SetConstBufferDesTable(3);
 
-
+		//モデルバッファセット
+		if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+			SetConstBufferDesTable(4);
 
 		//ユーザー定数バッファセット
-
+		if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+			SetConstBufferDesTable(2);
+		
 		//要素数を超えてアクセスしないようにするためのif
-		if (heapTags.size() > handleNum + 2)
-		{
-			//ユーザー定数があったら、セットする
-			if (heapTags[handleNum + 1] == HEAP_TAG_USER_CONST_BUFFER)
-			{
-				handleNum++;
-				gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-				(
-					desHeap->GetGPUDescriptorHandleForHeapStart(),
-					handleNum,
-					device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-				);
-				cmdLists[0]->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
-			}
-		}
+		//if (heapTags.size() > handleNum + 2)
+		//{
+		//	//ユーザー定数があったら、セットする
+		//	if (heapTags[handleNum + 1] == HEAP_TAG_USER_CONST_BUFFER)
+		//	{
+		//		handleNum++;
+		//		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		//		(
+		//			desHeap->GetGPUDescriptorHandleForHeapStart(),
+		//			handleNum,
+		//			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		//		);
+		//		cmdLists[0]->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
+		//	}
+		//}
+#pragma endregion
+
 
 		//描画
 		cmdLists[0]->DrawIndexedInstanced(static_cast<UINT>(indices[i].size()), 1, 0, 0, 0);
@@ -866,6 +992,8 @@ void Model::Draw(const int modelNum)
 	SetCmdList(modelNum);
 
 }
+
+
 
 #pragma region 操作
 void Model::SetPosition(const Vector3& position, const int modelNum)

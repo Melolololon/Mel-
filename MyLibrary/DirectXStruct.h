@@ -156,7 +156,6 @@ struct ModelConstBufferData
 	DirectX::XMFLOAT4 light;
 	DirectX::XMFLOAT4 cameraPos;
 	DirectX::XMMATRIX lightMat;//ライト用行列
-	DirectX::XMMATRIX boneMat[64];
 	DirectX::XMMATRIX mat;
 	DirectX::XMMATRIX normalMat;
 	DirectX::XMMATRIX worldMat;
@@ -174,6 +173,12 @@ struct CommonConstData
 	DirectX::XMFLOAT4 cameraPos;
 	DirectX::XMMATRIX lightMat;//ライト用行列
 };
+
+struct BoneConstBufferData
+{
+	DirectX::XMMATRIX boneMat[64];
+};
+
 
 struct SpriteConstBufferData
 {

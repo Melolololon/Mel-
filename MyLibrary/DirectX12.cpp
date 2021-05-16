@@ -2378,8 +2378,8 @@ void DirectX12::LoadObjMaterial
 		constData3D->ex = 0.0f;
 		constData3D->mat = DirectX::XMMatrixIdentity();
 		
-		for (int i = 0; i < _countof(constData3D->boneMat); i++)
-			constData3D->boneMat[i] = DirectX::XMMatrixIdentity();
+		/*for (int i = 0; i < _countof(constData3D->boneMat); i++)
+			constData3D->boneMat[i] = DirectX::XMMatrixIdentity();*/
 		
 
 		heapTags[key].push_back(LIBRARY_CONST_BUFFER);
@@ -4017,88 +4017,88 @@ void DirectX12::DataMap(const ModelData& modelData,int number )
 				parentBoneNum = parentBoneData[modelData.key][parentBoneNum].parentBoneNum;
 
 			}
-			if (parentNums.size() != 0)
-			{
+			//if (parentNums.size() != 0)
+			//{
 
 
-				DirectX::XMMATRIX mulMat = DirectX::XMMatrixIdentity();
-				const int maxParentSize = static_cast<int>(parentNums.size());
+			//	DirectX::XMMATRIX mulMat = DirectX::XMMatrixIdentity();
+			//	const int maxParentSize = static_cast<int>(parentNums.size());
 
-				DirectX::XMFLOAT3 pAngle = { 0,0,0 };
-				DirectX::XMFLOAT3 pScale = { 1,1,1 };
-				DirectX::XMFLOAT3 pMoveVector = { 0,0,0 };
-				DirectX::XMFLOAT3 pPos = { 0,0,0 };
+			//	DirectX::XMFLOAT3 pAngle = { 0,0,0 };
+			//	DirectX::XMFLOAT3 pScale = { 1,1,1 };
+			//	DirectX::XMFLOAT3 pMoveVector = { 0,0,0 };
+			//	DirectX::XMFLOAT3 pPos = { 0,0,0 };
 
-				DirectX::XMFLOAT3 pAngleImpact = { 1,1,1 };
-				DirectX::XMFLOAT3 pScaleImpact = { 1,1,1 };
-				DirectX::XMFLOAT3 pMoveVectorImpact = { 1,1,1 };
+			//	DirectX::XMFLOAT3 pAngleImpact = { 1,1,1 };
+			//	DirectX::XMFLOAT3 pScaleImpact = { 1,1,1 };
+			//	DirectX::XMFLOAT3 pMoveVectorImpact = { 1,1,1 };
 
-				mulMat = DirectX::XMMatrixIdentity();
+			//	mulMat = DirectX::XMMatrixIdentity();
 
-				//最後にある親のボーンを基準に回すので、入れる
-				pPos.x = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].x;
-				pPos.y = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].y;
-				pPos.z = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].z;
-				
-				int impactIndex = i;
-				for (auto& num : parentNums)
-				{
-					pAngle.x += boneData[modelData.key][number][num].angle.x;
-					pAngle.y += boneData[modelData.key][number][num].angle.y;
-					pAngle.z += boneData[modelData.key][number][num].angle.z;
+			//	//最後にある親のボーンを基準に回すので、入れる
+			//	pPos.x = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].x;
+			//	pPos.y = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].y;
+			//	pPos.z = objBonePositions[modelData.key][parentNums[maxParentSize - 1]].z;
+			//	
+			//	int impactIndex = i;
+			//	for (auto& num : parentNums)
+			//	{
+			//		pAngle.x += boneData[modelData.key][number][num].angle.x;
+			//		pAngle.y += boneData[modelData.key][number][num].angle.y;
+			//		pAngle.z += boneData[modelData.key][number][num].angle.z;
 
-					pScale.x *= boneData[modelData.key][number][num].scale.x;
-					pScale.y *= boneData[modelData.key][number][num].scale.y;
-					pScale.z *= boneData[modelData.key][number][num].scale.z;
+			//		pScale.x *= boneData[modelData.key][number][num].scale.x;
+			//		pScale.y *= boneData[modelData.key][number][num].scale.y;
+			//		pScale.z *= boneData[modelData.key][number][num].scale.z;
 
-					pMoveVector.x += boneData[modelData.key][number][num].moveVector.x;
-					pMoveVector.y += boneData[modelData.key][number][num].moveVector.y;
-					pMoveVector.z += boneData[modelData.key][number][num].moveVector.z;
-
-
-
-					pAngleImpact.x *= parentBoneData[modelData.key][impactIndex].angleImpact.x;
-					pAngleImpact.y *= parentBoneData[modelData.key][impactIndex].angleImpact.y;
-					pAngleImpact.z *= parentBoneData[modelData.key][impactIndex].angleImpact.z;
-					pScaleImpact.x *= parentBoneData[modelData.key][impactIndex].scaleImpact.x;
-					pScaleImpact.y *= parentBoneData[modelData.key][impactIndex].scaleImpact.y;
-					pScaleImpact.z *= parentBoneData[modelData.key][impactIndex].scaleImpact.z;
-					pMoveVectorImpact.x *= parentBoneData[modelData.key][impactIndex].moveVectorImpact.x;
-					pMoveVectorImpact.y *= parentBoneData[modelData.key][impactIndex].moveVectorImpact.y;
-					pMoveVectorImpact.z *= parentBoneData[modelData.key][impactIndex].moveVectorImpact.z;
-				}
-
-				pAngle.x *= pAngleImpact.x;
-				pAngle.y *= pAngleImpact.y;
-				pAngle.z *= pAngleImpact.z;
-
-				pScale.x *= pScaleImpact.x;
-				pScale.y *= pScaleImpact.y;
-				pScale.z *= pScaleImpact.z;
-
-				pMoveVector.x *= pMoveVectorImpact.x;
-				pMoveVector.y *= pMoveVectorImpact.y;
-				pMoveVector.z *= pMoveVectorImpact.z;
+			//		pMoveVector.x += boneData[modelData.key][number][num].moveVector.x;
+			//		pMoveVector.y += boneData[modelData.key][number][num].moveVector.y;
+			//		pMoveVector.z += boneData[modelData.key][number][num].moveVector.z;
 
 
-				//ボーンから頂点の距離分移動
-				mulMat *= DirectX::XMMatrixTranslation(-pPos.x, -pPos.y, -pPos.z);
 
-				mulMat *= DirectX::XMMatrixScaling(pScale.x, pScale.y, pScale.z);
+			//		pAngleImpact.x *= parentBoneData[modelData.key][impactIndex].angleImpact.x;
+			//		pAngleImpact.y *= parentBoneData[modelData.key][impactIndex].angleImpact.y;
+			//		pAngleImpact.z *= parentBoneData[modelData.key][impactIndex].angleImpact.z;
+			//		pScaleImpact.x *= parentBoneData[modelData.key][impactIndex].scaleImpact.x;
+			//		pScaleImpact.y *= parentBoneData[modelData.key][impactIndex].scaleImpact.y;
+			//		pScaleImpact.z *= parentBoneData[modelData.key][impactIndex].scaleImpact.z;
+			//		pMoveVectorImpact.x *= parentBoneData[modelData.key][impactIndex].moveVectorImpact.x;
+			//		pMoveVectorImpact.y *= parentBoneData[modelData.key][impactIndex].moveVectorImpact.y;
+			//		pMoveVectorImpact.z *= parentBoneData[modelData.key][impactIndex].moveVectorImpact.z;
+			//	}
 
-				mulMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(pAngle.z));
-				mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(pAngle.x));
-				mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(pAngle.y));
+			//	pAngle.x *= pAngleImpact.x;
+			//	pAngle.y *= pAngleImpact.y;
+			//	pAngle.z *= pAngleImpact.z;
 
-				mulMat *= DirectX::XMMatrixTranslation(pMoveVector.x, pMoveVector.y, pMoveVector.z);
+			//	pScale.x *= pScaleImpact.x;
+			//	pScale.y *= pScaleImpact.y;
+			//	pScale.z *= pScaleImpact.z;
 
-				//回転させたら戻す
-				mulMat *= DirectX::XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
+			//	pMoveVector.x *= pMoveVectorImpact.x;
+			//	pMoveVector.y *= pMoveVectorImpact.y;
+			//	pMoveVector.z *= pMoveVectorImpact.z;
 
 
-				boneMat *= mulMat;
-			}
-			constData3D->boneMat[i + 1] = boneMat;
+			//	//ボーンから頂点の距離分移動
+			//	mulMat *= DirectX::XMMatrixTranslation(-pPos.x, -pPos.y, -pPos.z);
+
+			//	mulMat *= DirectX::XMMatrixScaling(pScale.x, pScale.y, pScale.z);
+
+			//	mulMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(pAngle.z));
+			//	mulMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(pAngle.x));
+			//	mulMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(pAngle.y));
+
+			//	mulMat *= DirectX::XMMatrixTranslation(pMoveVector.x, pMoveVector.y, pMoveVector.z);
+
+			//	//回転させたら戻す
+			//	mulMat *= DirectX::XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
+
+
+			//	boneMat *= mulMat;
+			//}
+			//constData3D->boneMat[i + 1] = boneMat;
 
 		}
 

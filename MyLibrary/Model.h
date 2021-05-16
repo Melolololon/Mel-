@@ -14,29 +14,48 @@
 #include"Texture.h"
 
 
+struct BufferData
+{
+	enum BufferType
+	{
+		BUFFER_TYPE_NONE,//生成しない
+		BUFFER_TYPE_COMMON,//全モデル共通
+		BUFFER_TYPE_EACH_MODEL,//各モデルごと
+		BUFFER_TYPE_EACH_MODEL_OBJECT,//各モデル各オブジェクトごと
+	};
+
+	BufferType bufferType;
+	size_t bufferDataSize;
+};
+
 //モデルクラスに継承するためのクラス
 class Model
 {
 public:
 
 	//ヒープ内を可視化するためのタグ
-	//"HEAP_TAG_TEXTURE_BUFFER" シェーダーリソースビュー t0
-	//"HEAP_TAG_LIBRARY_CONST_BUFFER" ライブラリ構造体 b0
-	//"HEAP_TAG_USER_CONST_BUFFER" ユーザー構造体 b1
-	//"HEAP_TAG_MATERIAL_CONST_BUFFER" マテリアル構造体 b2
-	//HEAP_TAG_COMMON_CONST_BUFFER 共通 b3
 	enum HeapBufferTag
 	{
-		HEAP_TAG_TEXTURE_BUFFER,
-		HEAP_TAG_COMMON_CONST_BUFFER,
-		HEAP_TAG_LIBRARY_CONST_BUFFER,
-		HEAP_TAG_USER_CONST_BUFFER,
-		HEAP_TAG_MATERIAL_CONST_BUFFER,
+		HEAP_TAG_TEXTURE_BUFFER,//テクスチャ
+		HEAP_TAG_COMMON_CONST_BUFFER,//使わん
+		HEAP_TAG_LIBRARY_CONST_BUFFER,//メインのバッファ
+		HEAP_TAG_MATERIAL_CONST_BUFFER,//マテリアル
+		HEAP_TAG_MODEL_CONST_BUFFER,//各モデルクラスごとに用意するバッファ
+		HEAP_TAG_USER_CONST_BUFFER,//利用者が用意したデータのバッファ
 	};
+
+	
 
 private:
 #pragma region 変数
-	int constBufferNum = 0;
+	//全共通
+	int commonConstBufferNum = 0;
+	//モデルごと
+	int eachModelConstBufferNum = 0;
+	//モデルのオブジェクトごと
+	int eachModelObjectConstBufferNum = 0;
+	BufferData::BufferType modelConstBufferType;
+	BufferData::BufferType userConstBufferType;
 
 	static ID3D12Device* device;
 	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
@@ -78,7 +97,8 @@ private:
 		const int modelNum,
 		const int modelFileObjectNum,
 		const int heapTop,
-		const size_t userDataSize = 0
+		BufferData* modelBufferData,
+		BufferData* userBufferData
 	);
 
 	void CreateTextureBuffer
@@ -99,9 +119,8 @@ private:
 
 protected:
 #pragma region 変数
-	int modelNum;
-	int modelObjectNum;
-
+	int modelNum;//生成数
+	int modelObjectNum;//ファイル内のオブジェクト数
 
 	//テクスチャバッファ数
 	int textureBufferNum;
@@ -118,9 +137,10 @@ protected:
 	ComPtr<ID3D12DescriptorHeap>desHeap;
 
 	
-	std::vector<std::vector<ComPtr<ID3D12Resource>>> constDataBuffer;
-	std::vector<std::vector<ComPtr<ID3D12Resource>>> materialDataBuffer;
-	std::vector<std::vector<ComPtr<ID3D12Resource>>> userDataBuffer;
+	std::vector<std::vector<ComPtr<ID3D12Resource>>> constBuffer;//メイン(基本的な情報)
+	std::vector<std::vector<ComPtr<ID3D12Resource>>> materialConstBuffer;//マテリアル
+	std::vector<std::vector<ComPtr<ID3D12Resource>>> userConstBuffer;//ユーザー
+	std::vector<std::vector<ComPtr<ID3D12Resource>>> modelConstBuffer;//モデル特有
 	
 
 
@@ -181,7 +201,8 @@ protected:
 		const std::vector<Texture*>& pTextures,
 		const int modelNum,
 		const int modelFileObjectNum,
-		const size_t userDataSize = 0
+		BufferData* modelBufferData,
+		BufferData* userBufferData
 	);
 
 	void CreateModelHeapResourcesSelectColor
@@ -189,13 +210,16 @@ protected:
 		const Color& color,
 		const int modelNum,
 		const int modelFileObjectNum,
-		const size_t userDataSize = 0
+		BufferData* modelBufferData,
+		BufferData* userBufferData
 	);
 
-	void ResizeConstData
+	void BufferCreatePreparation
 	(
 		const int modelNum,
-		const int modelFileObjectNum
+		const int modelFileObjectNum,
+		BufferData* modelBufferData,
+		BufferData* userBufferData 
 	);
 #pragma endregion
 
@@ -295,11 +319,12 @@ public:
 		std::vector<ID3D12GraphicsCommandList*> cmdList
 	);
 
+
 	static void SetViewAndProjectionMat(const DirectX::XMMATRIX& mat) { viewAndProjectionMat = mat; }
 	static void SetCameraRotateMat(const DirectX::XMMATRIX& mat) { cameraRotateMat = mat; }
 #pragma endregion
 
-
+	 
 
 #pragma region 操作
 	void SetPosition(const Vector3& position, const int modelNum);

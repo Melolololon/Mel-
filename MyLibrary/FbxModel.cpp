@@ -63,7 +63,8 @@ bool FbxModel::modelNum
 		pTextures,
 		createNum,
 		1,
-		constDataSize
+		nullptr,
+		nullptr
 	);
 
 

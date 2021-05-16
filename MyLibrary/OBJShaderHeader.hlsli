@@ -4,7 +4,6 @@ cbuffer cbuff0 : register(b0)
 	float4 light;
 	float4 cameraPos;
 	matrix lightMat;
-	matrix boneMatArray[64];
 	matrix mat;
 	matrix normalMat;
 	matrix worldMat;
@@ -22,7 +21,10 @@ cbuffer cbuff2 : register(b2)
 	float m_alpha : packoffset(c2.w);
 };
 
-
+cbuffer cbuff3 : register(b3)
+{
+	matrix boneMatArray[64];
+}
 
 struct VSOutput
 {

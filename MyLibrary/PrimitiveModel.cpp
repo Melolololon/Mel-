@@ -194,7 +194,9 @@ void PrimitiveModel::CreateBox
 	(
 		color,
 		modelNum,
-		1
+		1,
+		nullptr,
+		nullptr
 	);
 #pragma endregion
 

@@ -63,6 +63,7 @@ private:
 	std::vector<std::vector<BoneData>>boneDatas;
 	std::vector < std::vector<ParentBoneData>> parentBoneDatas;//親ボーンと影響度
 
+
 	std::vector<std::unique_ptr<Texture>>textures;
 
 	/// <summary>

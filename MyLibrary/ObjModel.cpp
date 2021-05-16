@@ -213,12 +213,24 @@ void ObjModel::LoadModelMaterial
 		pTexture[i] = textures[i].get();
 	}
 	
+	//ボーンバッファの情報セット
+	BufferData* boneBufferData = nullptr;
+	//ボーンがあったらボーンバッファ生成
+	if (boneNum != 0) 
+	{
+		boneBufferData = new BufferData();
+		
+		//モデルのオブジェクトごとのスケールを掛けるため、モデルのオブジェクトごとに作る
+		boneBufferData->bufferType = BufferData::BUFFER_TYPE_EACH_MODEL_OBJECT;
+		boneBufferData->bufferDataSize = sizeof(BoneConstBufferData);
+	}
 	CreateModelHeapResourcesSetTexture
 	(
 		pTexture,
 		createNum,
 		static_cast<int>(materials.size()),
-		constDataSize
+		boneBufferData,
+		nullptr
 	);
 
 	boneDatas.resize(createNum);
@@ -323,7 +335,7 @@ bool ObjModel::Initialize()
 
 void ObjModel::Draw(const int modelNum)
 {
-	//MapConstData(modelNum);
+	MapConstData(modelNum);
 	MapBoneMatrix(modelNum);
 	SetCmdList(modelNum);
 }
@@ -344,7 +356,7 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 {
 	if (boneNum == 0)return;
 
-	ModelConstBufferData* modelConstData;
+	BoneConstBufferData* boneConstBufferData;
 
 	//ボーンの行列を全オブジェクトに持たせるのはもったいないから、やっぱバッファ分けれるようにしたほうがいい
 	//(ボーンの行列は、オブジェクトで共通だから)
@@ -352,7 +364,7 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 	{
 
 #pragma region ボーンの値マップ
-		constDataBuffer[modelNum][i]->Map(0, nullptr, (void**)&modelConstData);
+		modelConstBuffer[modelNum][i]->Map(0, nullptr, (void**)&boneConstBufferData);
 
 
 
@@ -523,13 +535,13 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 				boneMat *= mulMat;
 			}
 			//配列の0は設定しないようにする(0はボーン未割当ての頂点の行列なので、いじらないようにする)
-			modelConstData->boneMat[j + 1] = boneMat;
+			boneConstBufferData->boneMat[j + 1] = boneMat;
 
 		}
 
 
 		
-		constDataBuffer[modelNum][i]->Unmap(0, nullptr);
+		constBuffer[modelNum][i]->Unmap(0, nullptr);
 #pragma endregion
 	}
 
