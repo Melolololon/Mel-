@@ -46,6 +46,7 @@ void Play::Initialize()
 		1,
 		0
 	);
+	objModel->SetPosition({ -10,0,0 },0);
 
 	priModel->CreateBox({ 4,4,4 }, { 255,255,255,255 }, 1);
 }
@@ -68,7 +69,7 @@ void Play::Update()
 
 	priModel->SetAngle(angle, 0);
 
-	
+	objModel->SetBoneAngle(angle,0,0);
 }
 
 void Play::Draw()
