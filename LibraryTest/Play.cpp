@@ -32,20 +32,20 @@ void Play::Initialize()
 	sprite2D->CreateSprite();
 	sprite3D->CreateSprite({1,1});
 	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
-	fbxModel->modelNum
+	fbxModel->LoadModel
 	(
 		"Resources/boneTest/boneTest.fbx",
 		1,
 		0
 	);
 
-	/*objModel->LoadModel
+	objModel->LoadModel
 	(
-		"Resources/Obj/redBall.obj",
+		"Resources/Obj/testSnake.obj",
 		true,
 		1,
 		0
-	);*/
+	);
 
 	priModel->CreateBox({ 4,4,4 }, { 255,255,255,255 }, 1);
 }
@@ -85,9 +85,9 @@ void Play::Draw()
 	//sprite3D->SetPosition({ 0,0,0 });
 	//sprite3D->SelectDrawAreaDraw({ 64,64 }, {128,128}, tex.get());
 
-	//objModel->Draw(0);
+	objModel->Draw(0);
 
-	priModel->Draw(0);
+	//priModel->Draw(0);
 }
 
 void Play::Finitialize()
