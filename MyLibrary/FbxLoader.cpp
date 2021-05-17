@@ -340,16 +340,26 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 	}
 }
 
-void FbxLoader::ParseSkin(FbxModel* model, FbxMesh* fbxMesh)
+void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
 	//スキニング情報
 	FbxSkin* fbxSkin = 
 		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
 
 	//スキニング情報がない場合return
-	if (!fbxSkin)return;
+	if (!fbxSkin)
+	{
+		auto vertSize = fbxModel->vertices.size();
+		for(int i = 0; i < vertSize;i++)
+		{
+			//最初のボーンの影響度を100%にする(単位行列の結果を反映させるため)
+			fbxModel->vertices[i].boneIndex[0] = 0;
+			fbxModel->vertices[i].boneWeight[0] = 1.0f;
+		}
+		return;
+	}
 
-	std::vector<FbxModel::Bone>& bones = model->bones;
+	std::vector<FbxModel::Bone>& bones = fbxModel->bones;
 
 	const int clusterCount = fbxSkin->GetClusterCount();
 	bones.reserve(clusterCount);
@@ -360,7 +370,7 @@ void FbxLoader::ParseSkin(FbxModel* model, FbxMesh* fbxMesh)
 		UINT index;
 		float weight;
 	};
-	std::vector<std::list<WeightSet>>weightLists(model->vertices.size());
+	std::vector<std::list<WeightSet>>weightLists(fbxModel->vertices.size());
 
 	for(int i = 0; i < clusterCount;i++)
 	{
@@ -401,7 +411,7 @@ void FbxLoader::ParseSkin(FbxModel* model, FbxMesh* fbxMesh)
 	}
 
 
-	auto& vertices = model->vertices;
+	auto& vertices = fbxModel->vertices;
 	auto verticesSize = vertices.size();
 	for(int i = 0; i < verticesSize;i++)
 	{

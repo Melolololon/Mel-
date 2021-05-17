@@ -73,7 +73,7 @@ private:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <param name="fbxMesh"></param>
-	void ParseSkin(FbxModel* model, FbxMesh* fbxMesh);
+	void ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh);
 
 
 
