@@ -34,10 +34,10 @@ struct Node
 class FbxModel:public Model
 {
 public:
-
+	static const UINT BONE_MAX = 64;
 	struct SkinConstBufferData
 	{
-		DirectX::XMMATRIX bones[64];
+		DirectX::XMMATRIX bones[BONE_MAX];
 	};
 
 
@@ -125,7 +125,7 @@ public:
 	/// <summary>
 	/// この関数を呼び出している間、アニメーションを行います。
 	/// </summary>
-	void PlayAnimation();
+	void PlayAnimation(const int modelNum);
 	
 	/// <summary>
 	/// アニメーションをリセットします。

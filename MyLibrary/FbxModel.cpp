@@ -81,6 +81,20 @@ bool FbxModel::LoadModel
 	);
 
 
+	//‰Šú‰»
+	SkinConstBufferData* skinConstBufferData = nullptr;
+	for (int i = 0; i < modelNum; i++) 
+	{
+		
+		modelConstBuffer[modelNum][0]->Map(0, nullptr, (void**)&skinConstBufferData);
+
+		//’PˆÊs—ñ‚ğ“ü‚ê‚é
+		for (int j = 0; j < BONE_MAX; j++)
+			skinConstBufferData->bones[j] = DirectX::XMMatrixIdentity();
+
+		modelConstBuffer[modelNum][0]->Unmap(0, nullptr);
+	}
+
 	pipeline = defaultPipeline.GetPipelineState();
 
 
@@ -167,23 +181,27 @@ void FbxModel::MapSkinData(const int modelNum)
 	modelConstBuffer[modelNum][0]->Map(0, nullptr, (void**)&skinConstBufferData);
 	
 	auto bonesSize = bones.size();
-	for(int i = 0; i < bonesSize;i++)
-	{
-		//•ÏŠ·
-		DirectX::XMMATRIX matCurrentPose;
-		FbxAMatrix fbxCurrentPose = 
-			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
-		FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
-		
-		//æZ
-		skinConstBufferData->bones[i] = bones[i].invInitialPose * matCurrentPose;
-		
-	}
 
+	if (bonesSize != 0) 
+	{
+		for (int i = 0; i < bonesSize; i++)
+		{
+			//•ÏŠ·
+			DirectX::XMMATRIX matCurrentPose;
+			FbxAMatrix fbxCurrentPose =
+				bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+			FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+
+			//æZ
+			skinConstBufferData->bones[i] = bones[i].invInitialPose * matCurrentPose;
+
+		}
+	}
+	
 	modelConstBuffer[modelNum][0]->Unmap(0, nullptr);
 }
 
-void FbxModel::PlayAnimation()
+void FbxModel::PlayAnimation(const int modelNum)
 {
 	
 	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
