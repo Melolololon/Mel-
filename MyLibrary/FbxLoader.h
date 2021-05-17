@@ -76,12 +76,6 @@ private:
 	void ParseSkin(FbxModel* model, FbxMesh* fbxMesh);
 
 
-	/// <summary>
-	/// Fbxの行列からXMMATRIXに変換するクラス
-	/// </summary>
-	/// <param name="dst"></param>
-	/// <param name="src"></param>
-	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
 
 
 	std::string ExtractFileName
@@ -110,5 +104,13 @@ public:
 	/// <param name="modelPath">モデルのパス</param>
 	/// <param name="fbxModel">モデルのポインタ</param>
 	void LoadFbxModel(const std::string& modelPath,FbxModel* fbxModel);
+
+	/// <summary>
+	/// Fbxの行列からXMMATRIXに変換するクラス
+	/// </summary>
+	/// <param name="dst"></param>
+	/// <param name="src"></param>
+	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
+
 };
 

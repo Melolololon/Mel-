@@ -696,6 +696,7 @@ void Model::Initialize
 	descRangeSRV.BaseShaderRegister = 0;
 	descRangeSRV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
+	
 
 
 	D3D12_ROOT_PARAMETER rootparam[5]{};
@@ -729,6 +730,8 @@ void Model::Initialize
 	rootparam[4].DescriptorTable.pDescriptorRanges = &modelRangeCSV;
 	rootparam[4].DescriptorTable.NumDescriptorRanges = 1;
 	rootparam[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	
+
 
 	//‹¤’Ê
 	//rootparam[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
@@ -781,7 +784,9 @@ void Model::Initialize
 	//cmdLists.resize(1);
 }
 
+
 #pragma endregion
+
 
 void Model::MapConstData(const int modelNum)
 {

@@ -217,6 +217,9 @@
     <FxCompile Include="ToonPixelShader.hlsl" />
     <FxCompile Include="ToonVertexShader.hlsl" />
     <FxCompile Include="ObjAnimationVertexShader.hlsl" />
+    <FxCompile Include="FbxGeometryShader.hlsl" />
+    <FxCompile Include="FbxPixelShader.hlsl" />
+    <FxCompile Include="FbxVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CreateBuffer.h">
@@ -360,5 +363,6 @@
     <None Include="NotShadowShaderHeader.hlsli" />
     <None Include="PostEffectShaderHeader.hlsli" />
     <None Include="ToonShaderHeader.hlsli" />
+    <None Include="FbxShaderHeader.hlsli" />
   </ItemGroup>
 </Project>

@@ -74,7 +74,7 @@ void Play::Update()
 
 void Play::Draw()
 {
-	//fbxModel->Draw(0);
+	fbxModel->Draw(0);
 
 	//sprite2D->Draw(tex.get());
 
@@ -86,7 +86,7 @@ void Play::Draw()
 	//sprite3D->SetPosition({ 0,0,0 });
 	//sprite3D->SelectDrawAreaDraw({ 64,64 }, {128,128}, tex.get());
 
-	objModel->Draw(0);
+	//objModel->Draw(0);
 
 	//priModel->Draw(0);
 }

@@ -267,7 +267,7 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 
 		if(material)
 		{
-			if(material->GetClassId().Is(FbxSurfaceLambert::ClassId))
+			if (material->GetClassId().Is(FbxSurfaceLambert::ClassId))
 			{
 				FbxSurfacePhong* phong = static_cast<FbxSurfacePhong*>(material);
 				auto& materialVector = fbxModel->getMaterial();
@@ -283,11 +283,20 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 				modelMaterial.diffuse.x = (float)diffuse.Get()[0];
 				modelMaterial.diffuse.y = (float)diffuse.Get()[1];
 				modelMaterial.diffuse.z = (float)diffuse.Get()[2];
+				
+				//FbxPropertyT<FbxDouble3> specular = phong->Specular;
 
-				FbxPropertyT<FbxDouble3> specular = phong->Specular;
-				modelMaterial.specular.x = (float)specular.Get()[0];
-				modelMaterial.specular.y = (float)specular.Get()[1];
-				modelMaterial.specular.z = (float)specular.Get()[2];
+				////if () 
+				//{
+				//	modelMaterial.specular.x = (float)specular.Get()[0];
+				//	modelMaterial.specular.y = (float)specular.Get()[1];
+				//	modelMaterial.specular.z = (float)specular.Get()[2];
+				//}
+
+				//拡散反射光の情報があるかどうか判断する方法がわからないため、一応これで対処
+				modelMaterial.specular.x = 0.2f;
+				modelMaterial.specular.y = 0.2f;
+				modelMaterial.specular.z = 0.2f;
 			}
 
 
@@ -322,12 +331,11 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 
 		if(!textureLoader)
 		{
-			//テクスチャにテクスチャバッファ持たせ、
-			//ライブラリで実装してるべた塗りテクスチャにバッファを持たせるようにするので、
+			//ライブラリで実装してるべた塗りテクスチャを持たせるようにするので、
 			//そのうちここ変更する
 			fbxModel->textures.resize(1);
 			fbxModel->textures[0] = std::make_unique<Texture>();
-			fbxModel->textures[0]->LoadModelTexture(modelDirectryPath + "WriteTex.png");
+			fbxModel->textures[0]->LoadModelTexture(modelDirectryPath + "WhiteTex.png");
 		}
 	}
 }

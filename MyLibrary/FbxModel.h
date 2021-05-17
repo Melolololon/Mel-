@@ -31,12 +31,15 @@ struct Node
 	Node* parentNode;
 };
 
-
-
 class FbxModel:public Model
 {
 public:
-	
+
+	struct SkinConstBufferData
+	{
+		DirectX::XMMATRIX bones[64];
+	};
+
 
 	struct Bone
 	{
@@ -90,8 +93,6 @@ private:
 	std::vector<Material>& getMaterial() { return materials; }
 public:
 
-
-
 	FbxModel();
 	~FbxModel();
 
@@ -103,8 +104,11 @@ public:
 		const size_t constDataSize
 	);
 
-	static bool Initialize();
+	void MapSkinData(const int modelNum);
 
+	static bool Initialize();
+	void Draw(const int modelNum)override;
+	
 	static PipelineState GetDefaultPipeline() { return defaultPipeline; }
 
 	//フレンドクラスは、privateの変数、関数を参照できる

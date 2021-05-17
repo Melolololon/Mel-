@@ -24,7 +24,7 @@ bool FbxModel::LoadModel
 )
 {
 
-	FbxLoader::GetInstance()->LoadFbxModel("Resources/cube/cube.fbx",this);
+	FbxLoader::GetInstance()->LoadFbxModel(path,this);
 
 	std::vector<size_t> verticesNum(1);
 	verticesNum[0] = vertices.size();
@@ -57,13 +57,25 @@ bool FbxModel::LoadModel
 		pTextures[i] = textures[i].get();
 
 
+	//ボーンバッファの情報セット
+	std::unique_ptr<BufferData> boneBufferData;
+	//ボーンがあったらボーンバッファ生成
+	//if (boneNum != 0)
+	{
+		boneBufferData = std::make_unique<BufferData>();
+
+		//モデルのオブジェクトごとのスケールを掛けるため、モデルのオブジェクトごとに作る
+		boneBufferData->bufferType = BufferData::BUFFER_TYPE_EACH_MODEL;
+		boneBufferData->bufferDataSize = sizeof(SkinConstBufferData);
+	}
+
 
 	CreateModelHeapResourcesSetTexture
 	(
 		pTextures,
 		createNum,
 		1,
-		nullptr,
+		boneBufferData.get(),
 		nullptr
 	);
 
@@ -98,6 +110,7 @@ bool FbxModel::Initialize()
 	ilData[2].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
 	ilData[2].number = 3;
 	ilData[2].semantics = "NORMAL";
+
 	ilData[3].formatType = FORMAT_TYPE::FORMAT_TYPE_UNSIGNED_INT;
 	ilData[3].number = 4;
 	ilData[3].semantics = "BONEINDICES";
@@ -108,20 +121,63 @@ bool FbxModel::Initialize()
 	auto result = defaultPipeline.CreatePipeline
 	(
 		data,
-		{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+		{ L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" },
+		{ L"../MyLibrary/FbxGeometryShader.hlsl","main","gs_5_0" },
 		{ L"NULL","","" },
 		{ L"NULL","","" },
-		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" },
 		PipelineType::PIPELINE_TYPE_MODEL,
-		nullptr,
+		& ilData,
 		typeid(FbxModel).name()
 	);
+	//auto result = defaultPipeline.CreatePipeline
+	//(
+	//	data,
+	//	{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
+	//	{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
+	//	{ L"NULL","","" },
+	//	{ L"NULL","","" },
+	//	{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
+	//	PipelineType::PIPELINE_TYPE_MODEL,
+	//	nullptr,
+	//	typeid(FbxModel).name()
+	//);
+
+
 	if (!result)
 	{
-		OutputDebugString(L"FbxModelの初期化に失敗しました。デフォルトパイプラインを生成できませんでした\n");
+		OutputDebugString(L"FbxModelの初期化に失敗しました。デフォルトパイプラインを生成できませんでした。\n");
 		return false;
 	}
 	return true;
 }
 
+void FbxModel::Draw(const int modelNum)
+{
+	MapConstData(modelNum);
+	MapSkinData(modelNum);
+	SetCmdList(modelNum);
+}
+
+void FbxModel::MapSkinData(const int modelNum)
+{
+	SkinConstBufferData* skinConstBufferData = nullptr;
+
+	modelConstBuffer[modelNum][0]->Map(0, nullptr, (void**)&skinConstBufferData);
+	
+	auto bonesSize = bones.size();
+	for(int i = 0; i < bonesSize;i++)
+	{
+		//変換
+		DirectX::XMMATRIX matCurrentPose;
+		FbxAMatrix fbxCurrentPose = 
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
+		FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+		
+		//乗算
+		skinConstBufferData->bones[i] = bones[i].invInitialPose * matCurrentPose;
+		
+	}
+
+	modelConstBuffer[modelNum][0]->Unmap(0, nullptr);
+}

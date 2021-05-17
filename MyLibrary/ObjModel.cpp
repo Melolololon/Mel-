@@ -214,11 +214,11 @@ void ObjModel::LoadModelMaterial
 	}
 	
 	//ボーンバッファの情報セット
-	BufferData* boneBufferData = nullptr;
+	std::unique_ptr<BufferData> boneBufferData;
 	//ボーンがあったらボーンバッファ生成
 	if (boneNum != 0) 
 	{
-		boneBufferData = new BufferData();
+		boneBufferData = std::make_unique<BufferData>();
 		
 		//モデルのオブジェクトごとのスケールを掛けるため、モデルのオブジェクトごとに作る
 		boneBufferData->bufferType = BufferData::BUFFER_TYPE_EACH_MODEL_OBJECT;
@@ -229,7 +229,7 @@ void ObjModel::LoadModelMaterial
 		pTexture,
 		createNum,
 		static_cast<int>(materials.size()),
-		boneBufferData,
+		boneBufferData.get(),
 		nullptr
 	);
 
@@ -541,7 +541,7 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 
 
 		
-		constBuffer[modelNum][i]->Unmap(0, nullptr);
+		modelConstBuffer[modelNum][i]->Unmap(0, nullptr);
 #pragma endregion
 	}
 
