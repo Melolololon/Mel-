@@ -3,6 +3,7 @@
 #include"Library.h"
 #include"LibMath.h"
 #include"Vector.h"
+#include"FreamTimer.h"
 class Play:public Scene
 {
 private:
@@ -14,6 +15,7 @@ private:
 	std::unique_ptr<Sprite3D> sprite3D;
 	std::unique_ptr<Texture> tex;
 
+	FreamTimer testTime;
 public:
 	Play();
 	~Play();

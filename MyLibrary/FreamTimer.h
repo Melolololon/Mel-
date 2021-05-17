@@ -2,10 +2,13 @@
 #include"TimerManager.h"
 class TimerManager;
 
+//演算子オーバーロードする?
+
 class FreamTimer
 {
 private:
 	int time = 0;
+	int resetTime = 0;
 	int maxTime = 0;
 	bool isStop = true;
 	bool timeResetFream = false;
@@ -36,10 +39,16 @@ public:
 	bool GetStopFlag() { return isStop; }
 
 	/// <summary>
-	/// 現在の時間を返します。
+	/// 最大計測時間に達したときにリセットするための時間を返します。
 	/// </summary>
 	/// <returns></returns>
 	int GetTime() { return time; }
+
+	/// <summary>
+	/// 最小計測時間を取得します。
+	/// </summary>
+	/// <returns></returns>
+	int GetResetTime() { return resetTime; }
 
 	/// <summary>
 	/// 最大計測時間を返します。
@@ -64,6 +73,13 @@ public:
 	/// </summary>
 	/// <param name="flag"></param>
 	void SetStopFlag(const bool flag) { isStop = flag; }
+
+
+	/// <summary>
+	/// 最大計測時間に達したときに現在の時間をリセットするための時間を設定します。
+	/// </summary>
+	/// <param name="num"></param>
+	void SetResetTime(const int num) { resetTime = num; }
 
 	/// <summary>
 	/// 最大計測時間を設定します。

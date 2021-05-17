@@ -68,6 +68,8 @@ void Play::Initialize()
 		fbxModel->SetPosition(pos ,i);
 		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(-3, 3),i);
 	}
+	testTime.SetMaxTime(3);
+	testTime.SetStopFlag(false);
 }
 Vector3 angle = 0;
 void Play::Update()
@@ -81,10 +83,15 @@ void Play::Update()
 		angle.x += 3.0f;
 	if (DirectInput::KeyState(DIK_D))
 		angle.x -= 3.0f;
-	fbxModel->SetAngle(angle, 0);
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 10; i++) 
+	{
+
+		fbxModel->SetAngle(angle, i);
 		fbxModel->PlayAnimation(i);
+	}
+	if (testTime.GetSameAsMaximumFlag())
+		angle += 5.0f;
 }
 
 void Play::Draw()

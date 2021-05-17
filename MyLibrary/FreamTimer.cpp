@@ -2,9 +2,6 @@
 
 FreamTimer::FreamTimer()
 {
-	time = 0;
-	maxTime = 0;
-
 	TimerManager::GetInstance()->AddFreamTimer(this);
 }
 
@@ -29,7 +26,7 @@ void FreamTimer::Update()
 	time++;
 	if (time == maxTime)
 	{
-		time = 0;
+		time = resetTime;
 		timeResetFream = true;
 	}
 }
