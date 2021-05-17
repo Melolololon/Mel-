@@ -100,20 +100,22 @@ bool FbxModel::LoadModel
 	materials[0].diffuse = { 1.0f,1.0f,1.0f };
 
 #pragma region アニメーション関係準備
-
-	freamTime.resize(createNum);
-	currentTime.resize(createNum);
-
-	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
-	const char* animstackname = animstack->GetName();
-	FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
-	startTime = takeinfo->mLocalTimeSpan.GetStart();
-	endTime = takeinfo->mLocalTimeSpan.GetStop();
-	for (int i = 0; i < createNum; i++)
+	if (bones.size() != 0) 
 	{
-		//1秒60フレームのアニメーションの場合、eFream60って設定する?
-		freamTime[i].SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
-		currentTime[i] = startTime;
+		currentTime.resize(createNum);
+
+		FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+		const char* animstackname = animstack->GetName();
+		FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
+
+		startTime = takeinfo->mLocalTimeSpan.GetStart();
+		endTime = takeinfo->mLocalTimeSpan.GetStop();
+		freamTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+		animationMag.resize(createNum, 1.0f);
+
+		for (int i = 0; i < createNum; i++)
+			//1秒60フレームのアニメーションの場合、eFream60って設定する?
+			currentTime[i] = startTime;
 	}
 
 
@@ -195,26 +197,25 @@ void FbxModel::Draw(const int modelNum)
 
 void FbxModel::MapSkinData(const int modelNum)
 {
-	SkinConstBufferData* skinConstBufferData = nullptr;
 
-	modelConstBuffer[modelNum][0]->Map(0, nullptr, (void**)&skinConstBufferData);
-	
 	auto bonesSize = bones.size();
+	if (bonesSize == 0)return;
 
-	if (bonesSize != 0) 
+
+	SkinConstBufferData* skinConstBufferData = nullptr;
+	modelConstBuffer[modelNum][0]->Map(0, nullptr, (void**)&skinConstBufferData);
+
+	for (int i = 0; i < bonesSize; i++)
 	{
-		for (int i = 0; i < bonesSize; i++)
-		{
-			//変換
-			DirectX::XMMATRIX matCurrentPose;
-			FbxAMatrix fbxCurrentPose =
-				bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime[modelNum]);
-			FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+		//変換
+		DirectX::XMMATRIX matCurrentPose;
+		FbxAMatrix fbxCurrentPose =
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime[modelNum]);
+		FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
-			//乗算
-			skinConstBufferData->bones[i] = bones[i].invInitialPose * matCurrentPose;
+		//乗算
+		skinConstBufferData->bones[i] = bones[i].invInitialPose * matCurrentPose;
 
-		}
 	}
 	
 	modelConstBuffer[modelNum][0]->Unmap(0, nullptr);
@@ -222,9 +223,39 @@ void FbxModel::MapSkinData(const int modelNum)
 
 void FbxModel::PlayAnimation(const int modelNum)
 {
+	if (bones.size() == 0)return;
+
 	//タイムを進める
-	currentTime[modelNum] += freamTime[modelNum];
+	currentTime[modelNum] += freamTime * animationMag[modelNum];
 	if (currentTime[modelNum] > endTime)
 		currentTime[modelNum] = startTime;
+	if (currentTime[modelNum] < startTime)
+		currentTime[modelNum] = endTime;
+}
+
+void FbxModel::ResetAnimation(const int modelNum)
+{
+	if (bones.size() == 0)return;
+	currentTime[modelNum] = startTime; 
+}
+
+void FbxModel::SetCurrentFream(const UINT fream, const int modelNum)
+{
+	if (bones.size() == 0)return;
+
+	FbxTime setTime = startTime * fream;
+	if (setTime > endTime)
+		setTime = endTime;
+
+	currentTime[modelNum] = setTime;
+}
+
+void FbxModel::SetAnimationSpeedMagnification(const int magnification, const int modelNum)
+{
+	//floatで倍率指定する場合、
+	//倍率から何フレームに1度スキップするかどうか計算しないといけない
+
+	if (bones.size() == 0)return;
+	animationMag[modelNum] = magnification;
 }
 

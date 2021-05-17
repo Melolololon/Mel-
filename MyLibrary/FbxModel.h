@@ -86,12 +86,11 @@ private:
 
 
 #pragma region アニメーション
-
-	std::vector<FbxTime> freamTime;
+	FbxTime freamTime;
 	FbxTime startTime;
 	FbxTime endTime;
 	std::vector<FbxTime> currentTime;
-
+	std::vector<int> animationMag;
 #pragma endregion
 
 	//読み込み時にセットされるパイプライン
@@ -129,8 +128,11 @@ public:
 	/// <summary>
 	/// アニメーションをリセットします。
 	/// </summary>
-	void ResetAnimation(const int modelNum){ currentTime[modelNum] = startTime; }
+	void ResetAnimation(const int modelNum);
 
+	void SetCurrentFream(const UINT fream,const int modelNum);
+
+	void SetAnimationSpeedMagnification(const int magnification,const int modelNum);
 #pragma endregion
 
 	

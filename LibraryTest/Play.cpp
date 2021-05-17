@@ -11,6 +11,9 @@
 #include"PrimitiveModel.h"
 
 #include"FreamTimer.h"
+
+#include"Random.h"
+
 Play::Play(){}
 
 
@@ -30,12 +33,12 @@ void Play::Initialize()
 
 
 	sprite2D->CreateSprite();
-	sprite3D->CreateSprite({1,1});
+	sprite3D->CreateSprite({ 1,1 });
 	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
 	fbxModel->LoadModel
 	(
 		"Resources/boneTest/boneTest.fbx",
-		3,
+		10,
 		0
 	);
 	fbxModel->SetPosition({ 3,0,0 }, 1);
@@ -48,11 +51,24 @@ void Play::Initialize()
 		1,
 		0
 	);
-	objModel->SetPosition({ -10,0,0 },0);
+	objModel->SetPosition({ -10,0,0 }, 0);
 
 	priModel->CreateBox({ 4,4,4 }, { 255,255,255,255 }, 1);
-}
 
+	for (int i = 0; i < 10; i++) 
+	{
+		fbxModel->SetCurrentFream(Random::GetRandomNumber(10), i);
+		
+		Vector3 pos =
+		{
+			Random::GetRandomNumberRangeSelectFloat(-20,20) ,
+			Random::GetRandomNumberRangeSelectFloat(-20,20) ,
+			0
+		};
+		fbxModel->SetPosition(pos ,i);
+		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(-3, 3),i);
+	}
+}
 Vector3 angle = 0;
 void Play::Update()
 {
@@ -66,21 +82,15 @@ void Play::Update()
 	if (DirectInput::KeyState(DIK_D))
 		angle.x -= 3.0f;
 	fbxModel->SetAngle(angle, 0);
-	fbxModel->PlayAnimation(0);
-	fbxModel->PlayAnimation(1);
-	fbxModel->PlayAnimation(2);
 
-
-	priModel->SetAngle(angle, 0);
-
-	objModel->SetBoneAngle(angle,0,0);
+	for (int i = 0; i < 10; i++)
+		fbxModel->PlayAnimation(i);
 }
 
 void Play::Draw()
 {
-	fbxModel->Draw(0);
-	fbxModel->Draw(1);
-	fbxModel->Draw(2);
+	for(int i = 0; i < 10;i++)
+	fbxModel->Draw(i);
 
 	//sprite2D->Draw(tex.get());
 
