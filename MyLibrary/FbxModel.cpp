@@ -8,7 +8,7 @@ FbxModel::FbxModel()
 {
 	//1秒60フレームのアニメーションの場合、eFream60って設定する?
 	freamTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
-
+	currentTime = startTime;
 }
 
 FbxModel::~FbxModel()
@@ -192,7 +192,7 @@ void FbxModel::PlayAnimation()
 
 	startTime = takeinfo->mLocalTimeSpan.GetStart();
 	endTime = takeinfo->mLocalTimeSpan.GetStop();
-	currentTime = startTime;
+	
 	
 	//タイムを進める
 	currentTime += freamTime;

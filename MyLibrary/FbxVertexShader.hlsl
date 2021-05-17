@@ -53,20 +53,20 @@ SkinOutput ComputeSkin(VSInput input)
 	output.pos += weight * mul(m, input.pos);
 	output.normal += weight * mul((float3x3)m, input.normal);
 
+
 	return output;
 }
 
 
 VSOutput main(VSInput input)
 {
-
-
 	SkinOutput skinned = ComputeSkin(input);
 	float4 wnormal = normalize(mul(normalMat, float4(skinned.normal, 0)));
 
 	VSOutput output;
 
 	//ここでmat掛けたせいで、ワールド行列が再度かけられている
+	//ボーンが先なので、問題ないはず
 	output.svpos = mul(mat, skinned.pos);
 	output.normal = wnormal.xyz;
 
