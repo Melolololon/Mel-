@@ -6,9 +6,7 @@ PipelineState FbxModel::defaultPipeline;
 
 FbxModel::FbxModel()
 {
-	//1秒60フレームのアニメーションの場合、eFream60って設定する?
-	freamTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
-	currentTime = startTime;
+
 }
 
 FbxModel::~FbxModel()
@@ -24,7 +22,6 @@ bool FbxModel::LoadModel
 	const size_t constDataSize
 )
 {
-
 	FbxLoader::GetInstance()->LoadFbxModel(path,this);
 
 	std::vector<size_t> verticesNum(1);
@@ -86,13 +83,13 @@ bool FbxModel::LoadModel
 	for (int i = 0; i < modelNum; i++) 
 	{
 		
-		modelConstBuffer[modelNum][0]->Map(0, nullptr, (void**)&skinConstBufferData);
+		modelConstBuffer[i][0]->Map(0, nullptr, (void**)&skinConstBufferData);
 
 		//単位行列を入れる
 		for (int j = 0; j < BONE_MAX; j++)
 			skinConstBufferData->bones[j] = DirectX::XMMatrixIdentity();
 
-		modelConstBuffer[modelNum][0]->Unmap(0, nullptr);
+		modelConstBuffer[i][0]->Unmap(0, nullptr);
 	}
 
 	pipeline = defaultPipeline.GetPipelineState();
@@ -101,6 +98,28 @@ bool FbxModel::LoadModel
 	//一時的に書いてる
 	materials[0].ambient = { 0.1f,0.1f,0.1f };
 	materials[0].diffuse = { 1.0f,1.0f,1.0f };
+
+#pragma region アニメーション関係準備
+
+	freamTime.resize(createNum);
+	currentTime.resize(createNum);
+
+	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	const char* animstackname = animstack->GetName();
+	FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
+	startTime = takeinfo->mLocalTimeSpan.GetStart();
+	endTime = takeinfo->mLocalTimeSpan.GetStop();
+	for (int i = 0; i < createNum; i++)
+	{
+		//1秒60フレームのアニメーションの場合、eFream60って設定する?
+		freamTime[i].SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+		currentTime[i] = startTime;
+	}
+
+
+#pragma endregion
+
+
 
 	return true;
 }
@@ -189,7 +208,7 @@ void FbxModel::MapSkinData(const int modelNum)
 			//変換
 			DirectX::XMMATRIX matCurrentPose;
 			FbxAMatrix fbxCurrentPose =
-				bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+				bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime[modelNum]);
 			FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 			//乗算
@@ -203,18 +222,9 @@ void FbxModel::MapSkinData(const int modelNum)
 
 void FbxModel::PlayAnimation(const int modelNum)
 {
-	
-	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
-	const char* animstackname = animstack->GetName();
-	FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
-
-	startTime = takeinfo->mLocalTimeSpan.GetStart();
-	endTime = takeinfo->mLocalTimeSpan.GetStop();
-	
-	
 	//タイムを進める
-	currentTime += freamTime;
-	if (currentTime > endTime)
-		currentTime = startTime;
+	currentTime[modelNum] += freamTime[modelNum];
+	if (currentTime[modelNum] > endTime)
+		currentTime[modelNum] = startTime;
 }
 

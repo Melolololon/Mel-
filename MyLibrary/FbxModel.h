@@ -87,11 +87,10 @@ private:
 
 #pragma region アニメーション
 
-	FbxTime freamTime;
-
+	std::vector<FbxTime> freamTime;
 	FbxTime startTime;
 	FbxTime endTime;
-	FbxTime currentTime;
+	std::vector<FbxTime> currentTime;
 
 #pragma endregion
 
@@ -130,7 +129,7 @@ public:
 	/// <summary>
 	/// アニメーションをリセットします。
 	/// </summary>
-	void ResetAnimation(){ currentTime = startTime; }
+	void ResetAnimation(const int modelNum){ currentTime[modelNum] = startTime; }
 
 #pragma endregion
 

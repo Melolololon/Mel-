@@ -35,9 +35,11 @@ void Play::Initialize()
 	fbxModel->LoadModel
 	(
 		"Resources/boneTest/boneTest.fbx",
-		1,
+		3,
 		0
 	);
+	fbxModel->SetPosition({ 3,0,0 }, 1);
+	fbxModel->SetPosition({ -3,0,0 }, 2);
 
 	objModel->LoadModel
 	(
@@ -64,7 +66,9 @@ void Play::Update()
 	if (DirectInput::KeyState(DIK_D))
 		angle.x -= 3.0f;
 	fbxModel->SetAngle(angle, 0);
-	fbxModel->PlayAnimation();
+	fbxModel->PlayAnimation(0);
+	fbxModel->PlayAnimation(1);
+	fbxModel->PlayAnimation(2);
 
 
 	priModel->SetAngle(angle, 0);
@@ -75,6 +79,8 @@ void Play::Update()
 void Play::Draw()
 {
 	fbxModel->Draw(0);
+	fbxModel->Draw(1);
+	fbxModel->Draw(2);
 
 	//sprite2D->Draw(tex.get());
 
