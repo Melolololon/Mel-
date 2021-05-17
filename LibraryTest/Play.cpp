@@ -64,7 +64,7 @@ void Play::Update()
 	if (DirectInput::KeyState(DIK_D))
 		angle.x -= 3.0f;
 	fbxModel->SetAngle(angle, 0);
-
+	fbxModel->PlayAnimation();
 
 
 	priModel->SetAngle(angle, 0);

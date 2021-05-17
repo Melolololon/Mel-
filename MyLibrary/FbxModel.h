@@ -81,16 +81,28 @@ private:
 	std::vector<Bone>bones;
 	std::vector<Bone>& GetBones() { return bones; }
 	
-
-
 	std::vector<FbxVertex>vertices;
 	std::vector<std::unique_ptr<Texture>>textures;
+
+
+#pragma region アニメーション
+
+	FbxTime freamTime;
+
+	FbxTime startTime;
+	FbxTime endTime;
+	FbxTime currentTime;
+
+#pragma endregion
 
 	//読み込み時にセットされるパイプライン
 	static PipelineState defaultPipeline;
 
 	std::vector<std::vector<USHORT>>& getIndices() { return indices; }
 	std::vector<Material>& getMaterial() { return materials; }
+
+
+	void MapSkinData(const int modelNum);
 public:
 
 	FbxModel();
@@ -104,10 +116,24 @@ public:
 		const size_t constDataSize
 	);
 
-	void MapSkinData(const int modelNum);
 
 	static bool Initialize();
 	void Draw(const int modelNum)override;
+
+#pragma region アニメーション
+
+	/// <summary>
+	/// この関数を呼び出している間、アニメーションを行います。
+	/// </summary>
+	void PlayAnimation();
+	
+	/// <summary>
+	/// アニメーションをリセットします。
+	/// </summary>
+	void ResetAnimation(){ currentTime = startTime; }
+
+#pragma endregion
+
 	
 	static PipelineState GetDefaultPipeline() { return defaultPipeline; }
 

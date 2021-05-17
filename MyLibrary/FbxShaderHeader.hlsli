@@ -31,9 +31,9 @@ struct VSOutput
 	float4 worldPos:POSITION;
 	float4 svpos : SV_POSITION;
 	float3 normal:NORMAL;
-	float2 uv : TEXCOORD;
+	float2 uv : TEXCOORD;/*
 	uint4 boneIndices : BONEINDICES;
-	float4 boneWeights:BONEWEIGHTS;
+	float4 boneWeights:BONEWEIGHTS;*/
 };
 
 struct GSOutput

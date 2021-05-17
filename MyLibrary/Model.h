@@ -319,6 +319,7 @@ public:
 		std::vector<ID3D12GraphicsCommandList*> cmdList
 	);
 
+	
 
 	static void SetViewAndProjectionMat(const DirectX::XMMATRIX& mat) { viewAndProjectionMat = mat; }
 	static void SetCameraRotateMat(const DirectX::XMMATRIX& mat) { cameraRotateMat = mat; }

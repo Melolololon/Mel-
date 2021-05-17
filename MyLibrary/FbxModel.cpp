@@ -6,7 +6,8 @@ PipelineState FbxModel::defaultPipeline;
 
 FbxModel::FbxModel()
 {
-	
+	//1秒60フレームのアニメーションの場合、eFream60って設定する?
+	freamTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 
 }
 
@@ -171,7 +172,7 @@ void FbxModel::MapSkinData(const int modelNum)
 		//変換
 		DirectX::XMMATRIX matCurrentPose;
 		FbxAMatrix fbxCurrentPose = 
-			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
 		FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 		
 		//乗算
@@ -181,3 +182,21 @@ void FbxModel::MapSkinData(const int modelNum)
 
 	modelConstBuffer[modelNum][0]->Unmap(0, nullptr);
 }
+
+void FbxModel::PlayAnimation()
+{
+	
+	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	const char* animstackname = animstack->GetName();
+	FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
+
+	startTime = takeinfo->mLocalTimeSpan.GetStart();
+	endTime = takeinfo->mLocalTimeSpan.GetStop();
+	currentTime = startTime;
+	
+	//タイムを進める
+	currentTime += freamTime;
+	if (currentTime > endTime)
+		currentTime = startTime;
+}
+
