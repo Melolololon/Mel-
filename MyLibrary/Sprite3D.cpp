@@ -99,7 +99,6 @@ void Sprite3D::SelectDrawAreaDraw
 	vertices[3].uv = { uvRightDown.y ,uvLeftUp.y };
 #pragma endregion
 
-
 	auto vertexNum = vertices.size();
 	for (int i = 0; i < vertexNum; i++)
 		vertex[i].uv = vertices[i].uv;

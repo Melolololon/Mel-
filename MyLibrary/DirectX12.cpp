@@ -1021,8 +1021,10 @@ void DirectX12::LoopStartProcess()
 
 #pragma endregion
 
-	Model::SetViewAndProjectionMat(mainCamera->Get3DCameraMatrix(mainCameraData));
-	Sprite3D::SetViewAndProjectionMatrix(mainCamera->Get3DCameraMatrix(mainCameraData));
+	DirectX::XMMATRIX cameraMat = mainCamera->Get3DCameraMatrix(mainCameraData);
+
+	Model::SetViewAndProjectionMatrix(cameraMat);
+	Sprite3D::SetViewAndProjectionMatrix(cameraMat);
 	Sprite3D::SetCameraPosTargetUpVector(mainCameraData.nowEye, mainCameraData.nowTarget, mainCameraData.nowUp);
 }
 

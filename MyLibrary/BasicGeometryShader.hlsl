@@ -44,7 +44,7 @@ void GSmain
 	for (uint i = 0; i < 3; i++)
 	{
 		//element.svpos = input[i].svpos + float4(faceNormal * ex, 1);
-		 element.svpos = input[i].svpos + float4(input[i].normal  * ex, 1);
+		 element.svpos = input[i].svpos + float4(input[i].normal  * ex, 0);
 		 
 		element.normal = input[i].normal;
 		element.uv = input[i].uv;

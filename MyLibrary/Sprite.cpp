@@ -91,6 +91,7 @@ void Sprite::SetCmdList(Texture* texture)
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 	);
 	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
+
 	//’è”ƒZƒbƒg
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
 	

@@ -321,7 +321,7 @@ public:
 
 	
 
-	static void SetViewAndProjectionMat(const DirectX::XMMATRIX& mat) { viewAndProjectionMat = mat; }
+	static void SetViewAndProjectionMatrix(const DirectX::XMMATRIX& mat) { viewAndProjectionMat = mat; }
 	static void SetCameraRotateMat(const DirectX::XMMATRIX& mat) { cameraRotateMat = mat; }
 #pragma endregion
 
