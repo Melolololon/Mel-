@@ -163,7 +163,7 @@ bool FbxModel::Initialize()
 		{ L"NULL","","" },
 		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" },
 		PipelineType::PIPELINE_TYPE_MODEL,
-		& ilData,
+		&ilData,
 		typeid(FbxModel).name()
 	);
 	//auto result = defaultPipeline.CreatePipeline

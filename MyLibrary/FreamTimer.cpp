@@ -23,7 +23,12 @@ void FreamTimer::Update()
 	if (isStop)return;
 
 	timeResetFream = false;
-	time++;
+
+	if (isDecrement)
+		time--;
+	else
+		time++;
+
 	if (time == maxTime)
 	{
 		time = resetTime;
@@ -32,12 +37,3 @@ void FreamTimer::Update()
 }
 
 
-bool FreamTimer::GetSameAsMaximumFlag()
-{
-	return timeResetFream;
-}
-
-bool FreamTimer::GetMultipleTimeFlag(const  int num)
-{
-	return time % num == 0;
-}

@@ -195,6 +195,9 @@
     <ClCompile Include="FreamTimer.cpp">
       <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
+    <ClCompile Include="MicroTimer.cpp">
+      <Filter>ソース ファイル\Support</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
@@ -352,6 +355,9 @@
       <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
     <ClInclude Include="FreamTimer.h">
+      <Filter>ヘッダー ファイル\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="MicroTimer.h">
       <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
   </ItemGroup>

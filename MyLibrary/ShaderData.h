@@ -16,7 +16,7 @@ struct InputLayoutData
 	//‘—‚é’l‚Ì”
 	UINT number;
 
-	//‘—‚é”’l‚ÌŒ^
+	//‘—‚é’l‚ÌŒ^
 	FORMAT_TYPE formatType;
 };
 
