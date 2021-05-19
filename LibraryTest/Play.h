@@ -8,6 +8,8 @@ class Play:public Scene
 {
 private:
 	std::unique_ptr<FbxModel> fbxModel;
+	std::unique_ptr<Sprite3D> spr;
+	std::unique_ptr<Texture> tex;
 public:
 	Play();
 	~Play();

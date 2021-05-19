@@ -33,32 +33,40 @@ void Play::Initialize()
 
 	for (int i = 0; i < 10; i++) 
 	{
-		fbxModel->SetCurrentFream(Random::GetRandomNumber(10), i);
-		
 		Vector3 pos =
-		{
+		Vector3
+		(
 			Random::GetRandomNumberRangeSelectFloat(-20,20) ,
 			Random::GetRandomNumberRangeSelectFloat(-20,20) ,
 			0
-		};
-		fbxModel->SetPosition(pos ,i);
-		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(-3, 3),i);
+		);
+		fbxModel->SetPosition(pos, i);
+
+		//アニメーション開始位置セット
+		fbxModel->SetCurrentFream(Random::GetRandomNumber(10), i);
+		
+		//速度倍率セット
+		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 4), i);
 	}
+
+	spr = std::make_unique<Sprite3D>();
+	tex = std::make_unique<Texture>();
+	spr->CreateSprite({8,8});
+	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
 
 }
 void Play::Update()
 {
-
 	for (int i = 0; i < 10; i++) 
 		fbxModel->PlayAnimation(i);
-
-
 }
 
 void Play::Draw()
 {
 	for(int i = 0; i < 10;i++)
 	fbxModel->Draw(i);
+
+	//spr->SelectDrawAreaDraw({ 0,0 }, {64,128}, tex.get());
 }
 
 void Play::Finitialize()
