@@ -64,19 +64,19 @@ void Play::Initialize()
 		Vector2(0,0)
 	};
 
-	/*curve = std::make_unique<Curve>();
-	curve->SetPoints(points);*/
+	curve = std::make_unique<Curve>();
+	curve->SetPoints(points);
 }
 void Play::Update()
 {
-	//if (DirectInput::KeyTrigger(DIK_SPACE))isEnd = true;
+	if (DirectInput::KeyTrigger(DIK_SPACE))isEnd = true;
 
 	for (int i = 0; i < CREATE_NUM; i++)
 		fbxModel->PlayAnimation(i);
 
-	//Vector2 sprPos = curve->GetVector2Position();
-	//spr->SetPosition(sprPos);
-	//curve->AddNumber(0.02f);
+	Vector2 sprPos = curve->GetVector2Position();
+	spr->SetPosition(sprPos);
+	curve->AddNumber(0.02f);
 }
 
 Vector2 rdPos = { 128,128 };
@@ -99,9 +99,8 @@ void Play::Draw()
 	if (DirectInput::KeyState(DIK_S))
 		scale -= 0.1;
 
-	spr->SetPosition({ 400,400 });
 	spr->SetAngle(ang);
-	spr->SetScale(scale);
+	spr->SetScale(1);
 	spr->SelectDrawAreaDraw({ 0,0 }, rdPos, tex.get());
 }
 

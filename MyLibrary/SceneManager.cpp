@@ -30,20 +30,22 @@ void SceneManager::SetStartScene(Scene* startScene)
 void SceneManager::Update()
 {
 
+
+	
 	if (currentScene->GetIsEnd())
 	{
 		//終了処理
 		currentScene->Finitialize();
 
 		//シーン切り替え
-		//シーンを保存
-		Scene* previousScene = currentScene;
-		//切り替え
-		currentScene = currentScene->GetNextScene();
+
+		Scene* newScene = currentScene->GetNextScene();
 		//同じポインタセット防止
-		if (currentScene == previousScene)assert(0);
+		if (newScene == currentScene)assert(0);
 		//前のシーンを削除
-		delete previousScene;
+		delete currentScene;
+	    //入れ替え
+		currentScene = newScene;
 
 		//初期化
 		currentScene->FalseIsEnd();

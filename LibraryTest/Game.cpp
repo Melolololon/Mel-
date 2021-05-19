@@ -29,8 +29,10 @@ void Game::Run()
 
 	Finalize();
 }
+
 void Game::Initialize()
 {
+	
 
 	Library::Initialize(1280, 720, {200,200,200,255},L"MyLib");
 	Library::SetFramesPerSecond60(true);

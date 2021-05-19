@@ -236,8 +236,8 @@ bool Library::GetIsEnd()
 
 void Library::Finalize()
 {
-	ObjectManager::GetInstance()->Finitialize();
 	SceneManager::GetInstace()->Finitialize();
+	ObjectManager::GetInstance()->Finitialize();
 
 	dx12->Finalize();
 

@@ -5,6 +5,7 @@
 #include"Vector.h"
 #include"FreamTimer.h"
 #include"Curve.h"
+#include"MouseCursor.h"
 class Play:public Scene
 {
 private:
@@ -13,7 +14,6 @@ private:
 	std::unique_ptr<Sprite2D> spr;
 	std::unique_ptr<Texture> tex;
 
-	//std::unique_ptr<Curve> curve;
 public:
 	Play();
 	~Play();
