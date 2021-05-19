@@ -57,16 +57,14 @@ bool FbxModel::LoadModel
 
 	//ボーンバッファの情報セット
 	std::unique_ptr<BufferData> boneBufferData;
-	//ボーンがあったらボーンバッファ生成
-	//if (boneNum != 0)
+	//ボーンがあったらバッファ生成
+	if (bones.size() != 0)
 	{
 		boneBufferData = std::make_unique<BufferData>();
 
-		//モデルのオブジェクトごとのスケールを掛けるため、モデルのオブジェクトごとに作る
 		boneBufferData->bufferType = BufferData::BUFFER_TYPE_EACH_MODEL;
 		boneBufferData->bufferDataSize = sizeof(SkinConstBufferData);
 	}
-
 
 	CreateModelHeapResourcesSetTexture
 	(
@@ -77,12 +75,10 @@ bool FbxModel::LoadModel
 		nullptr
 	);
 
-
 	//初期化
 	SkinConstBufferData* skinConstBufferData = nullptr;
 	for (int i = 0; i < modelNum; i++) 
 	{
-		
 		modelConstBuffer[i][0]->Map(0, nullptr, (void**)&skinConstBufferData);
 
 		//単位行列を入れる
@@ -93,11 +89,6 @@ bool FbxModel::LoadModel
 	}
 
 	pipeline = defaultPipeline.GetPipelineState();
-
-
-	//一時的に書いてる
-	materials[0].ambient = { 0.1f,0.1f,0.1f };
-	materials[0].diffuse = { 1.0f,1.0f,1.0f };
 
 #pragma region アニメーション関係準備
 	if (bones.size() != 0) 
@@ -110,11 +101,12 @@ bool FbxModel::LoadModel
 
 		startTime = takeinfo->mLocalTimeSpan.GetStart();
 		endTime = takeinfo->mLocalTimeSpan.GetStop();
+
+		//1秒60フレームで設定されてるアニメーションの場合、eFream60って設定する?
 		freamTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 		animationMag.resize(createNum, 1.0f);
 
 		for (int i = 0; i < createNum; i++)
-			//1秒60フレームのアニメーションの場合、eFream60って設定する?
 			currentTime[i] = startTime;
 	}
 
@@ -122,6 +114,9 @@ bool FbxModel::LoadModel
 #pragma endregion
 
 
+	//一時的に書いてる
+	materials[0].ambient = { 0.1f,0.1f,0.1f };
+	materials[0].diffuse = { 1.0f,1.0f,1.0f };
 
 	return true;
 }
@@ -166,19 +161,6 @@ bool FbxModel::Initialize()
 		&ilData,
 		typeid(FbxModel).name()
 	);
-	//auto result = defaultPipeline.CreatePipeline
-	//(
-	//	data,
-	//	{ L"../MyLibrary/ObjVertexShader.hlsl","VSmain","vs_5_0" },
-	//	{ L"../MyLibrary/ObjGeometryShader.hlsl","GSmain","gs_5_0" },
-	//	{ L"NULL","","" },
-	//	{ L"NULL","","" },
-	//	{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
-	//	PipelineType::PIPELINE_TYPE_MODEL,
-	//	nullptr,
-	//	typeid(FbxModel).name()
-	//);
-
 
 	if (!result)
 	{
@@ -227,6 +209,7 @@ void FbxModel::PlayAnimation(const int modelNum)
 
 	//タイムを進める
 	currentTime[modelNum] += freamTime * animationMag[modelNum];
+
 	if (currentTime[modelNum] > endTime)
 		currentTime[modelNum] = startTime;
 	if (currentTime[modelNum] < startTime)

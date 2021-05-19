@@ -22,16 +22,17 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
+
 	fbxModel = std::make_unique<FbxModel>();
 	fbxModel->LoadModel
 	(
 		"Resources/boneTest/boneTest.fbx",
-		10,
+		CREATE_NUM,
 		0
 	);
 
 
-	for (int i = 0; i < 10; i++) 
+	for (int i = 0; i < CREATE_NUM; i++)
 	{
 		Vector3 pos =
 		Vector3
@@ -49,24 +50,59 @@ void Play::Initialize()
 		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 4), i);
 	}
 
-	spr = std::make_unique<Sprite3D>();
+	spr = std::make_unique<Sprite2D>();
 	tex = std::make_unique<Texture>();
-	spr->CreateSprite({8,8});
+	spr->CreateSprite();
 	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
 
+
+	std::vector<Vector2>points =
+	{
+		Vector2(0,0),
+		Vector2(40,100),
+		Vector2(500,400),
+		Vector2(0,0)
+	};
+
+	/*curve = std::make_unique<Curve>();
+	curve->SetPoints(points);*/
 }
 void Play::Update()
 {
-	for (int i = 0; i < 10; i++) 
+	//if (DirectInput::KeyTrigger(DIK_SPACE))isEnd = true;
+
+	for (int i = 0; i < CREATE_NUM; i++)
 		fbxModel->PlayAnimation(i);
+
+	//Vector2 sprPos = curve->GetVector2Position();
+	//spr->SetPosition(sprPos);
+	//curve->AddNumber(0.02f);
 }
+
+Vector2 rdPos = { 128,128 };
+float ang = 0.0f;
+Vector2 scale = 1;
 
 void Play::Draw()
 {
-	for(int i = 0; i < 10;i++)
+	for(int i = 0; i < CREATE_NUM;i++)
 	fbxModel->Draw(i);
 
-	//spr->SelectDrawAreaDraw({ 0,0 }, {64,128}, tex.get());
+	if (DirectInput::KeyState(DIK_A))
+		rdPos.y -= 3;
+	if (DirectInput::KeyState(DIK_D))
+		rdPos.y += 3;
+	if (DirectInput::KeyState(DIK_SPACE))
+		ang+= 4.0f;
+	if (DirectInput::KeyState(DIK_W))
+		scale += 0.1;
+	if (DirectInput::KeyState(DIK_S))
+		scale -= 0.1;
+
+	spr->SetPosition({ 400,400 });
+	spr->SetAngle(ang);
+	spr->SetScale(scale);
+	spr->SelectDrawAreaDraw({ 0,0 }, rdPos, tex.get());
 }
 
 void Play::Finitialize()

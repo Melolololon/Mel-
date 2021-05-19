@@ -184,6 +184,7 @@
     <ClCompile Include="CreateBuffer.cpp" />
     <ClCompile Include="CreatePipeline.cpp" />
     <ClCompile Include="CreatePolygon.cpp" />
+    <ClCompile Include="Curve.cpp" />
     <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="DirectX12.cpp" />
     <ClCompile Include="DirectXTexLoader.cpp" />
@@ -484,6 +485,7 @@
     <ClInclude Include="CreateCamera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="CreatePipeline.h" />
+    <ClInclude Include="Curve.h" />
     <ClInclude Include="DirectX12.h" />
     <ClInclude Include="DirectXStruct.h" />
     <ClInclude Include="CreateBuffer.h" />

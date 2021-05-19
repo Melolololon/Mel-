@@ -12,7 +12,7 @@ class FreamTimer
 private:
 	int time = 0;
 	int resetTime = 0;
-	int maxTime = 0;
+	int maxTime = INT_MAX;
 	bool isStop = true;
 	bool timeResetFream = false;
 	bool isDecrement = false;

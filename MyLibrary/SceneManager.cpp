@@ -63,6 +63,7 @@ void SceneManager::Finitialize()
 {
 	if (currentScene)
 		delete currentScene;
+	
 }
 
 

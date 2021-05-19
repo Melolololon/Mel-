@@ -68,10 +68,10 @@ void Sprite2D::SelectDrawAreaDraw
 #pragma region ’¸“_À•W
 	Vector2 spriteSize = rightDownPos - leftUpPos;
 
-	vertices[0].pos = { -spriteSize.x / 2, spriteSize.y / 2, 0 };
+	vertices[0].pos = { -spriteSize.x / 2 , spriteSize.y / 2, 0 };
 	vertices[1].pos = { -spriteSize.x / 2 ,-spriteSize.y / 2,0 };
-	vertices[2].pos = { spriteSize.x / 2,   spriteSize.y / 2 ,0 };
-	vertices[3].pos = { spriteSize.x / 2 , -spriteSize.y / 2,0 };
+	vertices[2].pos = { spriteSize.x / 2  ,   spriteSize.y / 2 ,0 };
+	vertices[3].pos = { spriteSize.x / 2  , -spriteSize.y / 2,0 };
 
 #pragma endregion
 
@@ -135,6 +135,8 @@ void Sprite2D::MatrixMap(Texture* texture)
 		constData.scale.y,
 		1
 	);
+
+	
 	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(constData.angle.z));
 	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
 	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));
@@ -145,12 +147,23 @@ void Sprite2D::MatrixMap(Texture* texture)
 	width /= 2;
 	height /= 2;
 
+
+	//¶ãŠî€Šgk
+	//matWorld *= DirectX::XMMatrixTranslation
+	//(
+	//	constData.position.x + (width * constData.scale.x) + (vertices[2].pos.x - width),
+	//	constData.position.y + (height * constData.scale.y) + (vertices[0].pos.y - height),
+	//	0.0f
+	//);
+
+	//’†SŠî€Šgk
 	matWorld *= DirectX::XMMatrixTranslation
 	(
-		constData.position.x + width * constData.scale.x,
-		constData.position.y + height * constData.scale.y,
+		constData.position.x + (vertices[2].pos.x - width) + width,
+		constData.position.y + (vertices[0].pos.y - height) + height,
 		0.0f
 	);
+
 
 	constBufferData->mat = matWorld * cameraMatrix;
 
