@@ -158,7 +158,7 @@ public:
 	/// <param name="start2">1つ目の左上座標</param>
 	/// <param name="end2">1つ目の右下座標</param>
 	/// <returns>当たったかどうか</returns>
-	static bool RectCollision
+	static bool RectAndRectCollision
 	(
 		const Vector2& pos1,
 		const Vector2& size1, 
@@ -174,7 +174,21 @@ public:
 	/// <param name="centerPosition2">1つ目の座標</param>
 	/// <param name="r2">1つ目の円</param>
 	/// <returns>当たったかどうか</returns>
-	static bool CircleCollision(Vector2 centerPosition1, float r1, Vector2 centerPosition2, float r2);
+	static bool CircleAndCircleCollision
+	(
+		Vector2 centerPosition1, 
+		float r1, 
+		Vector2 centerPosition2, 
+		float r2
+	);
+
+	static bool CircleAndLineSegmentCollision
+	(
+		const Vector2& spherePos,
+		const float r,
+		const Vector2& linePos1,
+		const Vector2& linePos2
+	);
 
 #pragma endregion
 
@@ -227,6 +241,14 @@ public:
 		Vector3 triPos3,
 		Vector3 normal,
 		Vector3* hitPos
+	);
+
+	static bool SphereAndLineSegmentCollision
+	(
+		const Vector3& spherePos,
+		const float r,
+		const Vector3& linePos1,
+		const Vector3& linePos2
 	);
 
 	/// <summary>
@@ -288,7 +310,7 @@ public:
 	);
 
 	/// <summary>
-	/// 半直線と平面の
+	/// 半直線(レイ)と平面の判定
 	/// </summary>
 	/// <param name="layStartPos"></param>
 	/// <param name="layDirection"></param>
@@ -307,6 +329,18 @@ public:
 		Vector3* crossPos
 	);
 
+	/// <summary>
+	/// 半直線(レイ)と平らな三角形の判定。
+	/// </summary>
+	/// <param name="layStartPos"></param>
+	/// <param name="layDirection"></param>
+	/// <param name="triPos1"></param>
+	/// <param name="triPos2"></param>
+	/// <param name="triPos3"></param>
+	/// <param name="normal"></param>
+	/// <param name="distance"></param>
+	/// <param name="crossPos"></param>
+	/// <returns></returns>
 	static bool RayAndTryangleCollision
 	(
 		Vector3 layStartPos,
@@ -331,6 +365,8 @@ public:
 		float* distance,
 		Vector3* crossPos
 	);
+
+
 #pragma endregion
 
 #pragma endregion

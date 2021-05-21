@@ -47,7 +47,7 @@ void Play::Initialize()
 		fbxModel->SetCurrentFream(Random::GetRandomNumber(10), i);
 		
 		//速度倍率セット
-		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 4), i);
+		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(5, 15), i);
 	}
 
 	spr = std::make_unique<Sprite2D>();
@@ -61,7 +61,7 @@ void Play::Initialize()
 		Vector2(0,0),
 		Vector2(40,100),
 		Vector2(500,400),
-		Vector2(0,0)
+		Vector2(1000,600)
 	};
 
 	curve = std::make_unique<Curve>();
@@ -82,18 +82,16 @@ void Play::Update()
 Vector2 rdPos = { 128,128 };
 float ang = 0.0f;
 Vector2 scale = 1;
-
+int num = 0;
 void Play::Draw()
 {
 	for(int i = 0; i < CREATE_NUM;i++)
 	fbxModel->Draw(i);
 
 	if (DirectInput::KeyState(DIK_A))
-		rdPos.y -= 3;
+		num++;
 	if (DirectInput::KeyState(DIK_D))
-		rdPos.y += 3;
-	if (DirectInput::KeyState(DIK_SPACE))
-		ang+= 4.0f;
+		num--;
 	if (DirectInput::KeyState(DIK_W))
 		scale += 0.1;
 	if (DirectInput::KeyState(DIK_S))
@@ -101,7 +99,11 @@ void Play::Draw()
 
 	spr->SetAngle(ang);
 	spr->SetScale(1);
-	spr->SelectDrawAreaDraw({ 0,0 }, rdPos, tex.get());
+
+	float size = 40;
+	/*spr->SetPosition(Vector2(0, 0));
+	spr->SelectDrawAreaDraw({ size * num ,size * num }, { size * (num + 1),size * (num + 1) }, tex.get());*/
+	spr->Draw(tex.get());
 }
 
 void Play::Finitialize()

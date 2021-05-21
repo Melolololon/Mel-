@@ -8,7 +8,7 @@ class Scene
 {
 
 protected:
-	bool isEnd;
+	bool isEnd = false;
 
 public:
 	Scene();

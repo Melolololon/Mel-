@@ -163,7 +163,7 @@ Vector3 LibMath::FloatDistanceMoveVector3
 #pragma region “–‚½‚è”»’è
 #pragma region 2D
 
-bool LibMath::RectCollision
+bool LibMath::RectAndRectCollision
 (
 	const Vector2& pos1,
 	const Vector2& size1,
@@ -179,7 +179,13 @@ bool LibMath::RectCollision
 	return false;
 }
 
-bool LibMath::CircleCollision(Vector2 centerPosition1, float r1, Vector2 centerPosition2, float r2)//‰~”»’è
+bool LibMath::CircleAndCircleCollision
+(
+	Vector2 centerPosition1, 
+	float r1,
+	Vector2 centerPosition2, 
+	float r2
+)//‰~”»’è
 {
 	if ((centerPosition1.x - centerPosition2.x) *
 		(centerPosition1.x - centerPosition2.x) +
@@ -191,6 +197,60 @@ bool LibMath::CircleCollision(Vector2 centerPosition1, float r1, Vector2 centerP
 	}
 	return false;
 }
+
+bool LibMath::CircleAndLineSegmentCollision
+(
+	const Vector2& spherePos,
+	const float r,
+	const Vector2& linePos1,
+	const Vector2& linePos2
+)
+{
+	//ü‚Ì’[‚©‚ç’[‚Ö‚ÌƒxƒNƒgƒ‹
+	Vector2 lineVector = linePos2 - linePos1;
+	//ü‚ÌÀ•W1‚©‚ç‰~‚Ì’†S
+	Vector2 linePos1ToSphere = spherePos - linePos1;
+	//‰~‚Æü‚ÌÅ’Z‹——£‚ð‹‚ß‚é
+	float distance = abs(Vector2::Cross(lineVector, linePos1ToSphere) / Vector2::Length(lineVector));
+
+	//‹——£‚Ì‚Ù‚¤‚ª‘å‚«‚©‚Á‚½‚çŒvŽZI—¹
+	if (distance > r)return false;
+
+	//ü‚ÌÀ•W2‚©‚ç‰~‚Ì’†S
+	Vector2 linePos2ToSphere = spherePos - linePos2;
+	//³‚Ì”‚©‚Ç‚¤‚©‚ð”»•Ê‚·‚éƒtƒ‰ƒO
+	bool linePos1ToSpherePositive = false;
+	bool linePos2ToSpherePositive = false;
+
+	//“àÏ‚ð‹‚ß‚é
+	float linePos1ToSphereDot = Vector2::Dot(lineVector, linePos1ToSphere);
+	float linePos2ToSphereDot = Vector2::Dot(lineVector, linePos2ToSphere);
+
+	//³‚©•‰‚©Šm”F
+	if (linePos1ToSphereDot >= 0)
+		linePos1ToSpherePositive = true;
+	if (linePos2ToSphereDot >= 0)
+		linePos2ToSpherePositive = true;
+
+	//‚Ç‚¿‚ç‚à³‚Ü‚½‚Í•‰‚¾‚Á‚½‚ç“ü‚é
+	if (linePos1ToSpherePositive
+		&& linePos2ToSpherePositive
+		|| !linePos1ToSpherePositive
+		&& !linePos2ToSpherePositive)
+	{
+		//‘å‚«‚³‚ð‹‚ß‚é
+		float linePos1ToSphereLength = Vector2::Length(linePos1ToSphere);
+		float linePos2ToSphereLength = Vector2::Length(linePos2ToSphere);
+
+		//”¼Œa‚æ‚è‘å‚«‚©‚Á‚½‚ç“–‚½‚Á‚Ä‚È‚¢
+		if (linePos1ToSphereLength > r
+			&& linePos2ToSphereLength > r)
+			return false;
+	}
+
+	return true;
+}
+
 
 #pragma endregion
 
@@ -413,6 +473,18 @@ bool LibMath::SphereAndTryangleCollision
 	return true;
 
 }
+
+bool LibMath::SphereAndLineSegmentCollision
+(
+	const Vector3& spherePos,
+	const float r,
+	const Vector3& linePos1,
+	const Vector3& linePos2
+)
+{
+}
+
+
 
 bool LibMath::SphereAndBoxCollision
 (

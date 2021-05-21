@@ -39,10 +39,11 @@ void SceneManager::Update()
 
 		//シーン切り替え
 
+		//シーン取得
 		Scene* newScene = currentScene->GetNextScene();
 		//同じポインタセット防止
 		if (newScene == currentScene)assert(0);
-		//前のシーンを削除
+		//シーンを削除
 		delete currentScene;
 	    //入れ替え
 		currentScene = newScene;
