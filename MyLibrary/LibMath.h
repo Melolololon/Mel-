@@ -176,12 +176,20 @@ public:
 	/// <returns>ìñÇΩÇ¡ÇΩÇ©Ç«Ç§Ç©</returns>
 	static bool CircleAndCircleCollision
 	(
-		Vector2 centerPosition1, 
-		float r1, 
-		Vector2 centerPosition2, 
-		float r2
+		const Vector2& centerPosition1,
+		const float r1, 
+		const Vector2& centerPosition2,
+		const float r2
 	);
 
+	/// <summary>
+	/// â~Ç∆ê¸ï™ÇÃîªíËÇ≈Ç∑
+	/// </summary>
+	/// <param name="spherePos"></param>
+	/// <param name="r"></param>
+	/// <param name="linePos1"></param>
+	/// <param name="linePos2"></param>
+	/// <returns></returns>
 	static bool CircleAndLineSegmentCollision
 	(
 		const Vector2& spherePos,
@@ -201,7 +209,13 @@ public:
 	/// <param name="centerPosition2">1Ç¬ñ⁄ÇÃç¿ïW</param>
 	/// <param name="r2">1Ç¬ñ⁄ÇÃâ~</param>
 	/// <returns>ìñÇΩÇ¡ÇΩÇ©Ç«Ç§Ç©</returns>
-	static bool SphereAndSphereCollision(Vector3 centerPosition1, float r1, Vector3 centerPosition2, float r2);
+	static bool SphereAndSphereCollision
+	(
+		const Vector3& centerPosition1,
+		const float r1,
+		const Vector3& centerPosition2,
+		const float r2
+	);
 
 	/// <summary>
 	/// ãÖÇ∆ïΩñ ÇÃç¿ïW
@@ -214,10 +228,10 @@ public:
 	/// <returns></returns>
 	static bool SphereAndPlaneCollision
 	(
-		Vector3 spherePos,
-		float r,
-		Vector3 normal,
-		float planeDist,
+		const Vector3& spherePos,
+		const float r,
+		const Vector3& normal,
+		const float planeDist,
 		Vector3* hitPos
 	);
 
@@ -234,12 +248,12 @@ public:
 	/// <returns></returns>
 	static bool SphereAndTryangleCollision
 	(
-		Vector3 spherePos,
-		float r,
-		Vector3 triPos1,
-		Vector3 triPos2,
-		Vector3 triPos3,
-		Vector3 normal,
+		const Vector3& spherePos,
+		const float r,
+		const Vector3& triPos1,
+		const Vector3& triPos2,
+		const Vector3& triPos3,
+		const Vector3& normal,
 		Vector3* hitPos
 	);
 
@@ -301,11 +315,11 @@ public:
 	/// /// <returns></returns>
 	static bool LineSegmentAndBoardCollision
 	(
-		Vector3 linePos1,
-		Vector3 linePos2,
-		Vector3 normal,
-		Vector3 pointPos,
-		std::vector<Vector3>vertexPoint,
+		const Vector3& linePos1,
+		const Vector3& linePos2,
+		const Vector3& normal,
+		const Vector3& pointPos,
+		const std::vector<Vector3>&vertexPoint,
 		Vector3* crossPosition
 	);
 
@@ -321,10 +335,10 @@ public:
 	/// <returns></returns>
 	static bool RayAndPlaneCollision
 	(
-		Vector3 layStartPos,
-		Vector3 layDirection,
-		Vector3 normal,
-		float planeDistance,
+		const Vector3& layStartPos,
+		const Vector3& layDirection,
+		const Vector3& normal,
+		const float planeDistance,
 		float* distance,
 		Vector3* crossPos
 	);
@@ -343,12 +357,12 @@ public:
 	/// <returns></returns>
 	static bool RayAndTryangleCollision
 	(
-		Vector3 layStartPos,
-		Vector3 layDirection,
-		Vector3 triPos1,
-		Vector3 triPos2,
-		Vector3 triPos3,
-		Vector3 normal,
+		const Vector3& layStartPos,
+		const Vector3& layDirection,
+		const Vector3& triPos1,
+		const Vector3& triPos2,
+		const Vector3& triPos3,
+		const Vector3& normal,
 		float* distance,
 		Vector3* crossPos
 	);
@@ -358,10 +372,10 @@ public:
 	/// </summary>
 	static bool RayAndSphereCollision
 	(
-		Vector3 layStartPos,
-		Vector3 layDirection,
-		Vector3 spherePos,
-		float r,
+		const Vector3& layStartPos,
+		const Vector3& layDirection,
+		const Vector3& spherePos,
+		const float r,
 		float* distance,
 		Vector3* crossPos
 	);

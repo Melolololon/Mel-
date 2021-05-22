@@ -181,10 +181,10 @@ bool LibMath::RectAndRectCollision
 
 bool LibMath::CircleAndCircleCollision
 (
-	Vector2 centerPosition1, 
-	float r1,
-	Vector2 centerPosition2, 
-	float r2
+	const Vector2& centerPosition1, 
+	const float r1,
+	const Vector2& centerPosition2, 
+	const float r2
 )//‰~”»’è
 {
 	if ((centerPosition1.x - centerPosition2.x) *
@@ -256,7 +256,13 @@ bool LibMath::CircleAndLineSegmentCollision
 
 #pragma region 3D
 
-bool LibMath::SphereAndSphereCollision(Vector3 centerPosition1, float r1, Vector3 centerPosition2, float r2)
+bool LibMath::SphereAndSphereCollision
+(
+	const Vector3& centerPosition1,
+	const float r1, 
+	const Vector3& centerPosition2,
+	const float r2
+)
 {
 	if ((centerPosition2.x - centerPosition1.x) *
 		(centerPosition2.x - centerPosition1.x) +
@@ -271,10 +277,15 @@ bool LibMath::SphereAndSphereCollision(Vector3 centerPosition1, float r1, Vector
 	return false;
 }
 
-bool LibMath::SphereAndPlaneCollision(Vector3 spherePos, float r, Vector3 normal, float planeDist, Vector3* hitPos)
+bool LibMath::SphereAndPlaneCollision
+(
+	const Vector3& spherePos,
+	const float r,
+	const Vector3& normal,
+	const float planeDist, 
+	Vector3* hitPos
+)
 {
-
-
 	//Œ´“_‚©‚ç‹…‚Ì‹——£
 	float sphereDist = Vector3Dot(spherePos, normal);
 
@@ -287,12 +298,12 @@ bool LibMath::SphereAndPlaneCollision(Vector3 spherePos, float r, Vector3 normal
 
 bool LibMath::SphereAndTryangleCollision
 (
-	Vector3 spherePos,
-	float r,
-	Vector3 triPos1,
-	Vector3 triPos2,
-	Vector3 triPos3,
-	Vector3 normal,
+	const Vector3& spherePos,
+	const float r,
+	const Vector3& triPos1,
+	const Vector3& triPos2,
+	const Vector3& triPos3,
+	const Vector3& normal,
 	Vector3* hitPos
 )
 {
@@ -721,11 +732,11 @@ bool LibMath::BoxAndBoxCollision
 
 bool LibMath::LineSegmentAndBoardCollision
 (
-	Vector3 linePos1,
-	Vector3 linePos2,
-	Vector3 normal,
-	Vector3 pointPos,
-	std::vector<Vector3>vertexPoint,
+	const Vector3& linePos1,
+	const Vector3& linePos2,
+	const Vector3& normal,
+	const Vector3& pointPos,
+	const std::vector<Vector3>&vertexPoint,
 	Vector3* crossPosition
 )
 {
@@ -870,10 +881,10 @@ bool LibMath::LineSegmentAndBoardCollision
 
 bool LibMath::RayAndPlaneCollision
 (
-	Vector3 layStartPos,
-	Vector3 layDirection,
-	Vector3 normal,
-	float planeDistance,
+	const Vector3& layStartPos,
+	const Vector3& layDirection,
+	const Vector3& normal,
+	const float planeDistance,
 	float* distance,
 	Vector3* crossPos
 )
@@ -900,12 +911,12 @@ bool LibMath::RayAndPlaneCollision
 
 bool LibMath::RayAndTryangleCollision
 (
-	Vector3 layStartPos,
-	Vector3 layDirection,
-	Vector3 triPos1,
-	Vector3 triPos2,
-	Vector3 triPos3,
-	Vector3 normal,
+	const Vector3& layStartPos,
+	const Vector3& layDirection,
+	const Vector3& triPos1,
+	const Vector3& triPos2,
+	const Vector3& triPos3,
+	const Vector3& normal,
 	float* distance,
 	Vector3* crossPos
 )
@@ -949,10 +960,10 @@ bool LibMath::RayAndTryangleCollision
 
 bool LibMath::RayAndSphereCollision
 (
-	Vector3 layStartPos,
-	Vector3 layDirection,
-	Vector3 spherePos,
-	float r,
+	const Vector3& layStartPos,
+	const Vector3& layDirection,
+	const Vector3& spherePos,
+	const float r,
 	float* distance,
 	Vector3* crossPos
 )

@@ -1804,7 +1804,7 @@ void DirectX12::SetMulColor(Color color, const std::string& key, int number)
 		(float)color.r / 255.0f,
 		(float)color.g / 255.0f,
 		(float)color.b / 255.0f,
-		(float)color.a / 100.0f
+		(float)color.a / 255.0f
 	};
 
 

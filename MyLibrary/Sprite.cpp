@@ -216,3 +216,49 @@ void Sprite::CreateTextureBuffer(Texture* texture)
 }
 
 
+void Sprite::SetPipeline(PipelineState* pipelineState)
+{
+	if (pipelineState->GetModelClassName() != typeid(*this).name())
+	{
+		OutputDebugString(L"パイプラインに設定されたモデルクラスと違います。\0");
+		return;
+	}
+	pipeline = pipelineState->GetPipelineState();
+}
+
+
+#pragma region 見た目操作
+void Sprite::SetAddColor(const Color& color)
+{
+	constData.addColor =
+	{
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 255.0f
+	};
+}
+
+void Sprite::SetSubColor(const Color& color)
+{
+	constData.subColor =
+	{
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 255.0f
+	};
+}
+
+void Sprite::SetMulColor(const Color& color)
+{
+	constData.mulColor =
+	{
+		(float)color.r / 255.0f,
+		(float)color.g / 255.0f,
+		(float)color.b / 255.0f,
+		(float)color.a / 255.0f
+	};
+}
+
+#pragma endregion

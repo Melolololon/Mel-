@@ -47,63 +47,46 @@ void Play::Initialize()
 		fbxModel->SetCurrentFream(Random::GetRandomNumber(10), i);
 		
 		//速度倍率セット
-		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(5, 15), i);
+		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 5), i);
 	}
 
-	spr = std::make_unique<Sprite2D>();
-	tex = std::make_unique<Texture>();
-	spr->CreateSprite();
-	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
+	//spr = std::make_unique<Sprite2D>();
+	//tex = std::make_unique<Texture>();
+	//spr->CreateSprite();
+	
+	//これ毎回呼び出しているため、毎フレームシーン切り替えすると、消費使用メモリが増え続ける
+	//tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
 
 
-	std::vector<Vector2>points =
-	{
-		Vector2(0,0),
-		Vector2(40,100),
-		Vector2(500,400),
-		Vector2(1000,600)
-	};
+	//std::vector<Vector2>points =
+	//{
+	//	Vector2(0,0),
+	//	Vector2(40,100),
+	//	Vector2(500,400),
+	//	Vector2(1000,600)
+	//};
 
-	curve = std::make_unique<Curve>();
-	curve->SetPoints(points);
+	//curve = std::make_unique<Curve>();
+	//curve->SetPoints(points);
 }
 void Play::Update()
 {
-	if (DirectInput::KeyTrigger(DIK_SPACE))isEnd = true;
+	if (DirectInput::KeyState(DIK_SPACE))
+		isEnd = true;
 
 	for (int i = 0; i < CREATE_NUM; i++)
 		fbxModel->PlayAnimation(i);
 
-	Vector2 sprPos = curve->GetVector2Position();
+	/*Vector2 sprPos = curve->GetVector2Position();
 	spr->SetPosition(sprPos);
-	curve->AddNumber(0.02f);
+	curve->AddNumber(0.02f);*/
 }
 
-Vector2 rdPos = { 128,128 };
-float ang = 0.0f;
-Vector2 scale = 1;
-int num = 0;
 void Play::Draw()
 {
 	for(int i = 0; i < CREATE_NUM;i++)
 	fbxModel->Draw(i);
 
-	if (DirectInput::KeyState(DIK_A))
-		num++;
-	if (DirectInput::KeyState(DIK_D))
-		num--;
-	if (DirectInput::KeyState(DIK_W))
-		scale += 0.1;
-	if (DirectInput::KeyState(DIK_S))
-		scale -= 0.1;
-
-	spr->SetAngle(ang);
-	spr->SetScale(1);
-
-	float size = 40;
-	/*spr->SetPosition(Vector2(0, 0));
-	spr->SelectDrawAreaDraw({ size * num ,size * num }, { size * (num + 1),size * (num + 1) }, tex.get());*/
-	spr->Draw(tex.get());
 }
 
 void Play::Finitialize()
