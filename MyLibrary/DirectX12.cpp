@@ -179,8 +179,6 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		}
 	}
 
-
-
 	for (int i = 0; i < (int)adapters.size(); i++)
 	{
 		DXGI_ADAPTER_DESC adesc{};
@@ -236,6 +234,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		createBuffer = CreateBuffer::GetInstance();
 		CreatePipelineState = new CreatePipeline(dev.Get());
 	}
+	else
+		assert(0);
 
 	tmpAdapter->Release();
 

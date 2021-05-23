@@ -57,6 +57,8 @@ LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 void Library::Initialize(int windowWidth, int windowHeight, const Color& screenColor, const wchar_t* windowName)
 {
+	auto coResult = CoInitialize(NULL);
+
 	dx12 = DirectX12::GetInstance();
 	createPolygon = CreatePolygon::GetInstance();
 	createPolygon->Initialize(windowWidth, windowHeight);
@@ -146,7 +148,6 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 
 void Library::LoopStartProcess()
 {
-	startProsessTime = timeGetTime();
 
 #pragma region ウィンドウ処理
 
@@ -161,8 +162,9 @@ void Library::LoopStartProcess()
 		isDestroy = true;
 	}
 
-
 #pragma endregion
+
+	startProsessTime = timeGetTime();
 
 	dx12->LoopStartProcess();
 
@@ -221,6 +223,8 @@ void Library::LoopEndProcess()
 	}
 
 	TimerManager::GetInstance()->Update();
+
+
 }
 
 void Library::EndFlagTrue()

@@ -24,7 +24,8 @@ void Game::Run()
 		Update();
 		Draw();
 		Library::LoopEndProcess();
-		if (Library::GetIsEnd())break;
+		if (Library::GetIsEnd())
+			break;
 	}
 
 	Finalize();

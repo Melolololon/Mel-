@@ -493,6 +493,7 @@ bool LibMath::SphereAndLineSegmentCollision
 	const Vector3& linePos2
 )
 {
+	return false;
 }
 
 
