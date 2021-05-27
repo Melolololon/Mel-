@@ -46,5 +46,6 @@ public:
 	void LoadSound(const char* path, std::string name, bool loop);
 	void PlayLoadSound(std::string name);
 	void StopLoadSound(std::string name,bool resetFlag);
+	void EraseLoadSound(const std::string& name);
 };
 

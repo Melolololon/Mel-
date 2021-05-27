@@ -160,6 +160,10 @@ bool PipelineState::CreatePipeline
 	case PIPELINE_TYPE_SPRITE:
 		pDesc.pRootSignature = spriteRootSignature;
 		break;
+
+	case PIPELINE_TYPE_RENDER_TARGET:
+		pDesc.pRootSignature = renderTargetRootSignature;
+		break;
 	}
 
 	HRESULT result;
@@ -270,6 +274,7 @@ bool PipelineState::CreatePipeline
 		switch (pipelineType)
 		{
 		case PIPELINE_TYPE_MODEL:
+		case PIPELINE_TYPE_RENDER_TARGET:
 			inputLayoutVector.resize(3);
 			inputLayoutVector[0] =
 			{

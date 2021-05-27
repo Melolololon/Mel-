@@ -746,7 +746,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	postEffectVertex[0] = Vertex({ {-1,-1,0},{0,1},{0,0,0} });
 	postEffectVertex[1] = Vertex({ {-1,1,0},{0,0},{0,0,0} });
 	postEffectVertex[2] = Vertex({ {1,-1,0},{1,1},{0,0,0} });
-	postEffectVertex[3] = Vertex({ {1,1,0},{1,0},{0,0,0} });
+	postEffectVertex[3] = Vertex({ {1,1,0},{1,0},{0,0,0}  });
 
 	createBuffer->CreateVertexBufferSet
 	(
@@ -958,7 +958,6 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	Sprite::Initialize(dev.Get(), cmdList.Get());
 	Sprite2D::Initialize(windouWidth, windowHeight);
 	Sprite3D::Initialize();
-
 
 
 

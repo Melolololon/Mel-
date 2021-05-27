@@ -200,6 +200,7 @@ void Library::LoopEndProcess()
 	{
 
 		//60fpsの時の1フレームの処理時間を計測(この数値は、環境に依存しない)
+		//これ毎回計測する必要ない
 		float pureTime = 1000.0f / (float)fps * ((float)count - 1.0f);
 		float currTime = 1000.0f / (float)fps * (float)count;
 		int taikiTime = (int)currTime - (int)pureTime;//待機しないといけない時間
@@ -394,7 +395,6 @@ pipeline Library::CreateUserPostEffectPipelineState
 
 
 #pragma endregion
-
 
 #pragma region 設定
 
@@ -1526,7 +1526,7 @@ void Library::CalculationNormal
 #pragma endregion
 
 #pragma region サウンド
-void Library::PlaySound(const char* path)
+void Library::PlaySoundEveryLoad(const char* path)
 {
 	audio.get()->PlayWave(path);
 }

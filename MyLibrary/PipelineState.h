@@ -27,6 +27,7 @@ private:
 
 	static ID3D12RootSignature* modelRootSignature;
 	static ID3D12RootSignature* spriteRootSignature;
+	static ID3D12RootSignature* renderTargetRootSignature;
 
 
 public:
@@ -78,6 +79,7 @@ public:
 
 	static void SetModelRootSignature(ID3D12RootSignature* sig) { modelRootSignature = sig; }
 	static void SetSpriteRootSignature(ID3D12RootSignature* sig) { spriteRootSignature = sig; }
+	static void SetRenderTargetRootSignature(ID3D12RootSignature* sig) { renderTargetRootSignature = sig; }
 
 };
 

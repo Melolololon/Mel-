@@ -210,6 +210,7 @@
     <ClCompile Include="PrimitiveModel.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -514,6 +515,7 @@
     <ClInclude Include="PrimitiveModel.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderData.h" />

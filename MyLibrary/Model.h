@@ -336,6 +336,7 @@ public:
 #pragma region 描画
 
 	virtual void Draw(const int modelNum);
+	virtual void AllDraw();
 #pragma endregion
 
 #pragma region パイプライン

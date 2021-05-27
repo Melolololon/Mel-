@@ -96,8 +96,8 @@ private:
 	//読み込み時にセットされるパイプライン
 	static PipelineState defaultPipeline;
 
-	std::vector<std::vector<USHORT>>& getIndices() { return indices; }
-	std::vector<Material>& getMaterial() { return materials; }
+	std::vector<std::vector<USHORT>>& GetIndices() { return indices; }
+	std::vector<Material>& GetMaterial() { return materials; }
 
 
 	void MapSkinData(const int modelNum);

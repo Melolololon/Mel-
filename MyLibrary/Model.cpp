@@ -790,7 +790,6 @@ void Model::Initialize
 
 void Model::MapConstData(const int modelNum)
 {
-
 	ModelConstBufferData* constBufferData;
 	for (int i = 0; i < modelObjectNum; i++) 
 	{
@@ -944,12 +943,7 @@ void Model::SetCmdList(const int modelNum)
 
 #pragma region 定数
 
-		//数値セット
-		//テクスチャと番号を分け、共通でインクリメントしたことによりセットがいらなくなった
-		//constBufferHandleNum = 0;
-		//constBufferHandleNum += textureBufferNum + commonConstBufferNum;//テクスチャと共通分ずらす
-		//constBufferHandleNum += i * eachModelConstBufferNum;
-		//constBufferHandleNum += modelNum * (eachModelConstBufferNum * vertexBufferNum);
+		
 
 		//定数バッファセット
 		SetConstBufferDesTable(1);
@@ -965,22 +959,6 @@ void Model::SetCmdList(const int modelNum)
 		if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 			SetConstBufferDesTable(2);
 		
-		//要素数を超えてアクセスしないようにするためのif
-		//if (heapTags.size() > handleNum + 2)
-		//{
-		//	//ユーザー定数があったら、セットする
-		//	if (heapTags[handleNum + 1] == HEAP_TAG_USER_CONST_BUFFER)
-		//	{
-		//		handleNum++;
-		//		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		//		(
-		//			desHeap->GetGPUDescriptorHandleForHeapStart(),
-		//			handleNum,
-		//			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		//		);
-		//		cmdLists[0]->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
-		//	}
-		//}
 #pragma endregion
 
 
@@ -998,7 +976,7 @@ void Model::Draw(const int modelNum)
 
 }
 
-
+void Model::AllDraw(){}
 
 #pragma region 操作
 void Model::SetPosition(const Vector3& position, const int modelNum)

@@ -20,7 +20,8 @@ public:
 		OBJECT_SORT_NEAR_DISTANCE,
 		//カメラから遠い順
 		OBJECT_SORT_FAR_DISTANCE,
-
+		//ソート番号でのソート
+		OBJECT_SORT_SORT_NUMBER,
 	};
 
 

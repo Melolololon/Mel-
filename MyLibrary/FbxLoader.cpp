@@ -185,8 +185,8 @@ void FbxLoader::ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh)
 void FbxLoader::ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
 	auto& vertices = fbxModel->vertices;
-	auto& m = fbxModel->getMaterial();
-	auto& indicesVector = fbxModel->getIndices();
+	auto& m = fbxModel->GetMaterial();
+	auto& indicesVector = fbxModel->GetIndices();
 	indicesVector.resize(1);
 	auto& indices = indicesVector[0];
 
@@ -270,7 +270,7 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 			if (material->GetClassId().Is(FbxSurfaceLambert::ClassId))
 			{
 				FbxSurfacePhong* phong = static_cast<FbxSurfacePhong*>(material);
-				auto& materialVector = fbxModel->getMaterial();
+				auto& materialVector = fbxModel->GetMaterial();
 				materialVector.resize(1);
 				Material& modelMaterial = materialVector[0];
 
@@ -342,7 +342,7 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 
 void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 {
-	//スキニング情報
+	//スキニング情報取得
 	FbxSkin* fbxSkin = 
 		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
 
@@ -374,7 +374,7 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 
 	for(int i = 0; i < clusterCount;i++)
 	{
-		//ボーン情報
+		//ボーン情報(クラスターはSDKで定義されているボーン?)
 		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
 
 		//ボーンのノード名取得
@@ -454,7 +454,7 @@ void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& s
 		for (int j = 0; j < 4; j++)
 			dst->r[i].m128_f32[j] = (float)src.Get(i, j);
 	}
-
+	
 }
 
 std::string FbxLoader::ExtractFileName

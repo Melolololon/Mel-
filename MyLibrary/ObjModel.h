@@ -157,7 +157,7 @@ public:
 	}
 
 	/// <summary>
-	/// 親のウィ協をどのくらい受けるかを設定します
+	/// 親の影響をどのくらい受けるかを設定します
 	/// </summary>
 	/// <param name="impact">倍率</param>
 	/// <param name="boneNum"></param>
@@ -203,6 +203,7 @@ public:
 
 	static bool Initialize();
 	void Draw(const int modelNum)override;
+	void AllDraw()override;
 
 	static PipelineState GetDefaultPipeline() { return defaultPipeline; }
 };

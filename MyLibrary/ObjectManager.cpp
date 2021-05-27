@@ -505,6 +505,24 @@ void ObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType
 			return dis1 > dis2;
 		});
 		break;
+
+	case OBJECT_SORT_SORT_NUMBER:
+		std::sort
+		(
+			objects.begin(),
+			objects.end(),
+			[&]
+		(
+			const std::shared_ptr<Object>& obj1,
+			const std::shared_ptr<Object>& obj2
+			)
+		{
+			short obj1Num = obj1->GetSortNumber();
+			short obj2Num = obj2->GetSortNumber();
+			if (orderType)return obj1Num < obj2Num;
+			return obj1Num > obj2Num;
+		});
+		break;
 	}
 }
 

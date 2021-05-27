@@ -340,6 +340,15 @@ void ObjModel::Draw(const int modelNum)
 	SetCmdList(modelNum);
 }
 
+void ObjModel::AllDraw()
+{
+	/*for () 
+	{
+		MapConstData(modelNum);
+		MapBoneMatrix(modelNum);
+	}*/
+}
+
 #pragma region î•ñæ“¾
 std::vector<Vector3>ObjModel::GetBonePosition()
 {

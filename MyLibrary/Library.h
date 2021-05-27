@@ -1183,7 +1183,7 @@ public:
 	/// サウンドを再生します(毎回読み込みが発生)
 	/// </summary>
 	/// <param name="path"></param>
-	static void PlaySound(const char* path);
+	static void PlaySoundEveryLoad(const char* path);
 
 	/// <summary>
 	/// サウンドを読み込みます

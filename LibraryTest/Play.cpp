@@ -47,7 +47,7 @@ void Play::Initialize()
 		fbxModel->SetCurrentFream(Random::GetRandomNumber(10), i);
 		
 		//速度倍率セット
-		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 5), i);
+		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 2), i);
 	}
 
 	//spr = std::make_unique<Sprite2D>();
@@ -72,11 +72,14 @@ void Play::Initialize()
 void Play::Update()
 {
 	if (DirectInput::KeyState(DIK_SPACE))
+	{
 		isEnd = true;
+	}
 
 	for (int i = 0; i < CREATE_NUM; i++)
+	{
 		fbxModel->PlayAnimation(i);
-
+	}
 	/*Vector2 sprPos = curve->GetVector2Position();
 	spr->SetPosition(sprPos);
 	curve->AddNumber(0.02f);*/
@@ -84,8 +87,10 @@ void Play::Update()
 
 void Play::Draw()
 {
-	for(int i = 0; i < CREATE_NUM;i++)
-	fbxModel->Draw(i);
+	for (int i = 0; i < CREATE_NUM; i++)
+	{
+		fbxModel->Draw(i);
+	}
 
 }
 
