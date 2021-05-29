@@ -20,9 +20,9 @@ FreamTimer::~FreamTimer()
 
 void FreamTimer::Update()
 {
+	timeResetFream = false;
 	if (isStop)return;
 
-	timeResetFream = false;
 
 	if (isDecrement)
 		time--;

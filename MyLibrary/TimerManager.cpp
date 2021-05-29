@@ -14,8 +14,10 @@ TimerManager* TimerManager::GetInstance()
 
 void TimerManager::Update()
 {
-	for (auto& t : freamTimers)
+	for (auto& t : freamTimers) 
+	{
 		t->Update();
+	}
 }
 
 

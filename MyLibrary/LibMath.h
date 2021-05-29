@@ -59,6 +59,8 @@ public:
 	/// <returns></returns>
 	static double GetDoublePI();
 
+
+
 #pragma region ベクトル
 
 
@@ -182,20 +184,31 @@ public:
 		const float r2
 	);
 
+
+	enum LineSegmentHitPosition
+	{
+		LS_HIT_POSITION_NOT_HIT,//衝突してない
+		LS_HIT_POSITION_LE_START_END,//線の端(始点終点)
+		LS_HIT_POSITION_LE_LINE,//線
+	};
 	/// <summary>
-	/// 円と線分の判定です
+	/// 円と線分の判定
 	/// </summary>
 	/// <param name="spherePos"></param>
 	/// <param name="r"></param>
 	/// <param name="linePos1"></param>
 	/// <param name="linePos2"></param>
+	/// <param name="nearPos">円との最近点</param>
+	/// <param name="lsHit">線のどこに当たったか</param>
 	/// <returns></returns>
 	static bool CircleAndLineSegmentCollision
 	(
 		const Vector2& spherePos,
 		const float r,
 		const Vector2& linePos1,
-		const Vector2& linePos2
+		const Vector2& linePos2,
+		Vector2* nearPos,
+		LineSegmentHitPosition* lsHit
 	);
 
 #pragma endregion

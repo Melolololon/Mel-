@@ -203,15 +203,31 @@ bool LibMath::CircleAndLineSegmentCollision
 	const Vector2& spherePos,
 	const float r,
 	const Vector2& linePos1,
-	const Vector2& linePos2
+	const Vector2& linePos2,
+	Vector2* nearPos,
+	LineSegmentHitPosition* lsHit
 )
 {
+
+
 	//ü‚Ì’[‚©‚ç’[‚Ö‚ÌƒxƒNƒgƒ‹
 	Vector2 lineVector = linePos2 - linePos1;
 	//ü‚ÌÀ•W1‚©‚ç‰~‚Ì’†S
 	Vector2 linePos1ToSphere = spherePos - linePos1;
 	//‰~‚Æü‚ÌÅ’Z‹——£‚ð‹‚ß‚é
 	float distance = abs(Vector2::Cross(lineVector, linePos1ToSphere) / Vector2::Length(lineVector));
+
+
+	//‰~‚Æü•ª‚ÌÅ‹ß“_‚ð‹‚ß‚é
+	//‚±‚êŠÖ”‰»‚·‚é
+	if (nearPos)
+	{
+		//linePos1‚©‚çÅ‹ß“_‚Ì‹——£‚ð‹‚ß‚é
+		float linePos1ToNearPosDis = Vector2::Dot(Vector2::Normalize(lineVector), linePos1ToSphere);
+
+		*nearPos = linePos1 + (Vector2::Normalize(lineVector) * linePos1ToNearPosDis);
+	}
+
 
 	//‹——£‚Ì‚Ù‚¤‚ª‘å‚«‚©‚Á‚½‚çŒvŽZI—¹
 	if (distance > r)return false;
@@ -244,8 +260,16 @@ bool LibMath::CircleAndLineSegmentCollision
 
 		//”¼Œa‚æ‚è‘å‚«‚©‚Á‚½‚ç“–‚½‚Á‚Ä‚È‚¢
 		if (linePos1ToSphereLength > r
-			&& linePos2ToSphereLength > r)
+			&& linePos2ToSphereLength > r) 
+		{
 			return false;
+		}
+
+		if (lsHit)*lsHit = LineSegmentHitPosition::LS_HIT_POSITION_LE_START_END;
+	}
+	else
+	{
+		if (lsHit)*lsHit = LineSegmentHitPosition::LS_HIT_POSITION_LE_LINE;
 	}
 
 	return true;

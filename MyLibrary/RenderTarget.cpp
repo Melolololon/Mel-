@@ -3,13 +3,11 @@
 #include<d3dx12.h>
 
 PipelineState RenderTarget::defaultPipeline;
-std::vector<RenderTarget*> RenderTarget::pRenderTarget(8);
 std::vector<RenderTarget*>RenderTarget::pRenderTarget;
 ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
 
 bool RenderTarget::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmdList)
 {
-	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 
 	//ƒŒƒ“ƒW
 	D3D12_DESCRIPTOR_RANGE peRangeSRV{};

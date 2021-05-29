@@ -83,6 +83,8 @@ void Play::Update()
 	/*Vector2 sprPos = curve->GetVector2Position();
 	spr->SetPosition(sprPos);
 	curve->AddNumber(0.02f);*/
+
+	
 }
 
 void Play::Draw()

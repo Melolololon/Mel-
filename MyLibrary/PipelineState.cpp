@@ -4,6 +4,7 @@
 ID3D12Device* PipelineState::device;
 ID3D12RootSignature* PipelineState::modelRootSignature;
 ID3D12RootSignature* PipelineState::spriteRootSignature;
+ID3D12RootSignature* PipelineState::renderTargetRootSignature;
 
 PipelineState::PipelineState()
 {
