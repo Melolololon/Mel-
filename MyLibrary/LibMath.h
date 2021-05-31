@@ -16,10 +16,13 @@
 class LibMath
 {
 private:
-
+	LibMath(){}
+	~LibMath(){}
 public:
 
-	
+	static int Pow(const int num,const int index);
+
+	static float PowFloat(const float num,const float index);
 
 	/// <summary>
 	/// num1‚Ænum2‚Ì’l‚Ì·‚ğ‹‚ßA·‚ªŠî€‚Ì’l‚æ‚è‘½‚©‚Á‚½‚çtrue‚ğ•Ô‚µ‚Ü‚·

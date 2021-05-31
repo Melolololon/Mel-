@@ -5,6 +5,7 @@
 #include"DirectXStruct.h"
 #include"Vector.h"
 #include"PipelineState.h"
+#include"Camera.h"
 
 //レンダーターゲットクラス
 //描画時に渡すことで、渡したレンダーターゲットに描画できるようにする
@@ -21,16 +22,28 @@ private:
 
 	std::array<Vertex, 4>vertices;
 
-	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ + ポストエフェクトの定数バッファビュー
+	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;
+
+	//カメラのポインタ
+	Camera* pCamera;
 public:
 	RenderTarget(){}
 	~RenderTarget(){}
 
 	static bool Initialize(ID3D12Device* dev,ID3D12GraphicsCommandList* cmdList);
 
+	/// <summary>
+	/// レンダーターゲットを生成します。
+	/// </summary>
 	bool CreateRenderTarget();
 
+	
+	/// <summary>
+	/// レンダーターゲットにカメラをセットします。レンダーターゲットには、セットされたカメラに映っているものが描画されます。
+	/// </summary>
+	/// <param name="camera">カメラのポインタ</param>
+	void SetCamera(Camera* pCamera){ this->pCamera = pCamera; }
 
 };
 

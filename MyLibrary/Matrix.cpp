@@ -49,13 +49,19 @@ std::array<float, 4> Matrix::operator[](const unsigned int num)const
 
 #pragma endregion
 
+DirectX::XMMATRIX Matrix::ToXMMatrix()
+{
+	return DirectX::XMMatrixSet
+	(
+		matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3],
+		matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3],
+		matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3],
+		matrix[3][0], matrix[3][1], matrix[3][2], matrix[3][3]
+	);
+}
 
 
-
-/// <summary>
-/// 零行列を作成します 
-/// </summary>
-Matrix GetZeroMatrix()
+Matrix Matrix::GetZeroMatrix()
 {
 	Matrix m;
 	for(auto& mat : m.matrix)
@@ -64,11 +70,7 @@ Matrix GetZeroMatrix()
 	return m;
 }
 
-/// <summary>
-/// 単位行列を作成します
-/// </summary>
-/// <returns></returns>
-Matrix GetIdentityMatrix()
+Matrix Matrix::GetIdentityMatrix()
 {
 	Matrix m = GetZeroMatrix();
 
@@ -78,11 +80,7 @@ Matrix GetIdentityMatrix()
 	return m;
 }
 
-/// <summary>
-/// X軸を基準に回転する行列を作成します
-/// </summary>
-/// <returns></returns>
-Matrix GetRotateXMatrix(const float angle)
+Matrix Matrix::GetRotateXMatrix(const float angle)
 {
 	Matrix m = GetIdentityMatrix();
 
@@ -94,7 +92,7 @@ Matrix GetRotateXMatrix(const float angle)
 	return m;
 }
 
-Matrix GetRotateYMatrix(const float angle)
+Matrix Matrix::GetRotateYMatrix(const float angle)
 {
 	Matrix m = GetIdentityMatrix();
 
@@ -106,7 +104,7 @@ Matrix GetRotateYMatrix(const float angle)
 	return m;
 }
 
-Matrix GetRotateZMatrix(const float angle)
+Matrix Matrix::GetRotateZMatrix(const float angle)
 {
 	Matrix m = GetIdentityMatrix();
 
@@ -118,7 +116,7 @@ Matrix GetRotateZMatrix(const float angle)
 	return m;
 }
 
-Matrix GetScalingMatrix(const Vector3& vector)
+Matrix Matrix::GetScalingMatrix(const Vector3& vector)
 {
 	Matrix m = GetIdentityMatrix();
 
@@ -129,7 +127,7 @@ Matrix GetScalingMatrix(const Vector3& vector)
 	return m;
 }
 
-Matrix GetTranslationMatrix(const Vector3& vector)
+Matrix Matrix::GetTranslationMatrix(const Vector3& vector)
 {
 	Matrix m = GetIdentityMatrix();
 

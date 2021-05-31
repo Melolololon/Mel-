@@ -38,8 +38,8 @@ void Play::Initialize()
 		Vector3 pos =
 		Vector3
 		(
-			Random::GetRandomNumberRangeSelectFloat(-20,20) ,
-			Random::GetRandomNumberRangeSelectFloat(-20,20) ,
+			Random::GetRandomNumberRangeSelect(-20,20) ,
+			Random::GetRandomNumberRangeSelect(-20,20) ,
 			0
 		);
 		fbxModel->SetPosition(pos, i);
@@ -69,9 +69,12 @@ void Play::Initialize()
 
 	//curve = std::make_unique<Curve>();
 	//curve->SetPoints(points);
+
 }
 void Play::Update()
 {
+	
+
 	if (DirectInput::KeyState(DIK_SPACE))
 	{
 		isEnd = true;

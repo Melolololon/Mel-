@@ -2,6 +2,8 @@
 #include"TimerManager.h"
 class TimerManager;
 
+#include<vector>
+
 //演算子オーバーロードする?
 //マネージャーでのUpdateとストップフラグ関数やめて、
 //関数呼び出してる間ストップしない(Updateする)って仕様にする?
@@ -10,11 +12,20 @@ class TimerManager;
 class FreamTimer
 {
 private:
+	//タイマーのポインタの配列(Update用)
+	std::vector<FreamTimer*>pTimers;
+
+	//現在の時間
 	int time = 0;
+	//リセットしたときに現在の時間を上書きする時間
 	int resetTime = 0;
+	//最大カウント時間
 	int maxTime = INT_MAX;
+	//カウントするかどうか
 	bool isStop = true;
+	//タイムがリセットされるフレームかどうか
 	bool timeResetFream = false;
+	//時間を加算するか減算するか
 	bool isDecrement = false;
 
 	void Update();
@@ -30,11 +41,10 @@ public:
 	~FreamTimer();
 
 
-	//これresetTimeでリセットするようにする
 	/// <summary>
-	/// 時間をリセットします。
+	/// 時間をリセットタイムでリセットします。
 	/// </summary>
-	void ResetTime() { time = 0; }
+	void ResetTime() { time = resetTime; }
 
 	/// <summary>
 	/// 時間を0でリセットします。
@@ -69,7 +79,7 @@ public:
 	int GetMaxTime() { return maxTime; }
 
 	/// <summary>
-	/// 最大計測時間と現在の時間が同じ場合、trueを返します。
+	/// 最大計測時間と現在の時間が同じになった瞬間にtrueを返します。
 	/// </summary>
 	/// <returns></returns>
 	bool GetSameAsMaximumFlag() { return timeResetFream; }
@@ -81,7 +91,12 @@ public:
 	/// <returns></returns>
 	bool GetMultipleTimeFlag(const int num){ return time % num == 0; }
 
-
+	/// <summary>
+	/// セットした時間ごとにフラグをtrueとfalseに切り替えて返します。falseからスタートします。
+	/// </summary>
+	/// <param name="num">数値</param>
+	/// <returns></returns>
+	int GetSetByNumberFlag(const int num) { return time % (num * 2) >= num; }
 #pragma endregion
 
 #pragma region セット
@@ -111,7 +126,7 @@ public:
 	void SetMaxTime(const int num) { maxTime = num; }
 
 	/// <summary>
-	/// タイマーの時間を設定します。
+	/// タイマーの現在の時間を設定します。
 	/// </summary>
 	/// <param name="num"></param>
 	void SetNowTime(const int num) { time = num; }
