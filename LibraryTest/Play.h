@@ -15,6 +15,7 @@ private:
 	std::unique_ptr<Texture> tex;
 	std::unique_ptr<Curve> curve;
 
+	FreamTimer ti;
 public:
 	Play();
 	~Play();

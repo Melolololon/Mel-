@@ -93,7 +93,7 @@ void DirectInput::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 
 #pragma endregion
 
-	if (getEnum.size() == 0)
+	/*if (getEnum.size() == 0)
 	{
 		dInputDevice->EnumDevices(DI8DEVCLASS_GAMECTRL, &diEnumDevicesCallBack, NULL, DIEDFL_ATTACHEDONLY);
 
@@ -120,7 +120,7 @@ void DirectInput::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 				getEnum.shrink_to_fit();
 			}
 		}
-	}
+	}*/
 }
 
 //これをEnumDeviceに渡すとこれに接続したものを渡してくれる
@@ -129,13 +129,13 @@ void DirectInput::Initialize(HWND hwnd, int windowWidth, int windowHeight)
 
 BOOL CALLBACK DirectInput::diEnumDevicesCallBack(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
 {
-	if (lpddi != nullptr) 
+	if (lpddi != nullptr)
 	{
 		//vectorをポインタにして入れるとCreateできない?
 		getEnum.push_back(*lpddi);
 		return DIENUM_CONTINUE;
 	}
-	
+
 	return DIENUM_STOP;
 }
 
@@ -153,39 +153,39 @@ void DirectInput::Update()
 	//LPVOID callV = nullptr;
 
 	//ゲームパッドの設定にしたのにペンタブ認識した
-	padPrevious = padState;
+	//padPrevious = padState;
 
-	
-	
-	
-	if (getEnum.size() != 0 && !setPad)
-	{
-		//パッド接続するとGUID_JoystickでS_OK戻ってくる(やっていいかはわからん)
-		//enumのやつ渡す場合、インスタンスのやつを渡せばいいっぽい?
-		auto ifresult = dInputDevice->CreateDevice(getEnum[0].guidInstance, &devPad, NULL);
-		padCaps.dwSize = sizeof(DIDEVCAPS);
-		ifresult = devPad->GetCapabilities(&padCaps);
-		ifresult = devPad->SetDataFormat(&c_dfDIJoystick);
-		ifresult = devPad->SetCooperativeLevel(mHwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-		//result = devPad->EnumObjects();
-		//joyPadState = new DIJOYSTATE();
-	
-		setPad = true;
+	//
+	//
+	//
+	//if (getEnum.size() != 0 && !setPad)
+	//{
+	//	//パッド接続するとGUID_JoystickでS_OK戻ってくる(やっていいかはわからん)
+	//	//enumのやつ渡す場合、インスタンスのやつを渡せばいいっぽい?
+	//	auto ifresult = dInputDevice->CreateDevice(getEnum[0].guidInstance, &devPad, NULL);
+	//	padCaps.dwSize = sizeof(DIDEVCAPS);
+	//	ifresult = devPad->GetCapabilities(&padCaps);
+	//	ifresult = devPad->SetDataFormat(&c_dfDIJoystick);
+	//	ifresult = devPad->SetCooperativeLevel(mHwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	//	//result = devPad->EnumObjects();
+	//	//joyPadState = new DIJOYSTATE();
+	//
+	//	setPad = true;
 
-		
-	}
-	
+	//	
+	//}
+	//
 
-	if (setPad) 
-	{
-		//アクセスエラー
-		 auto ifresult = devPad->Acquire();
+	//if (setPad) 
+	//{
+	//	//アクセスエラー
+	//	 auto ifresult = devPad->Acquire();
 
-		//ここエラー
-		ifresult = devPad->Poll();
-		ifresult = devPad->GetDeviceState(sizeof(padState), &padState);
-	}
-	
+	//	//ここエラー
+	//	ifresult = devPad->Poll();
+	//	ifresult = devPad->GetDeviceState(sizeof(padState), &padState);
+	//}
+	//
 #pragma endregion
 
 
@@ -196,7 +196,7 @@ void DirectInput::Update()
 	{
 		preKey[i] = key[i];
 	}
-	
+
 	//キー情報取得
 	//dIResult = keyDev->GetDeviceState(256, key);
 	result = devKeyBoard->GetDeviceState(sizeof(key), key);
@@ -211,7 +211,7 @@ void DirectInput::Update()
 
 
 #ifdef _DEBUG
-	if (DirectInput::KeyTrigger(DIK_SPACE)) 
+	if (DirectInput::KeyTrigger(DIK_SPACE))
 	{
 		int a = 0;
 	}
@@ -283,7 +283,7 @@ char DirectInput::KeyChar()
 {
 	char returnChar = 0;
 
-	
+
 	return returnChar;
 }
 
@@ -296,7 +296,7 @@ float DirectInput::ArrowKeyAngle()
 
 	if (right && up)return 45.0f;
 	if (up && left)return 135.0f;
-	if (left && down)return 225.0f;	
+	if (left && down)return 225.0f;
 	if (down && right)return 315.0f;
 
 	if (right)return 0.0f;
@@ -426,7 +426,8 @@ bool DirectInput::DirectionalButtonTrigger(int button)
 		{
 			if (padPrevious.rgdwPOV[0] <= 4500 ||
 				padPrevious.rgdwPOV[0] >= 31500 &&
-				padPrevious.rgdwPOV[0] <= 36000) {}
+				padPrevious.rgdwPOV[0] <= 36000) {
+			}
 			else
 				return true;
 		}
@@ -449,7 +450,9 @@ bool DirectInput::DirectionalButtonTrigger(int button)
 			padState.rgdwPOV[0] >= 13500)
 		{
 			if (padPrevious.rgdwPOV[0] <= 22500 &&
-				padPrevious.rgdwPOV[0] >= 13500) {	}else
+				padPrevious.rgdwPOV[0] >= 13500) {
+			}
+			else
 				return true;
 		}
 		break;
@@ -459,7 +462,8 @@ bool DirectInput::DirectionalButtonTrigger(int button)
 			padState.rgdwPOV[0] >= 22500)
 		{
 			if (padPrevious.rgdwPOV[0] <= 31500 &&
-				padPrevious.rgdwPOV[0] >= 22500){ }
+				padPrevious.rgdwPOV[0] >= 22500) {
+			}
 			else
 				return true;
 		}
@@ -558,18 +562,18 @@ void DirectInput::Release()
 
 	devKeyBoard->Unacquire();
 	devKeyBoard->Release();
-	if (devPad) 
+	/*if (devPad)
 	{
 		devPad->Unacquire();
 		devPad->Release();
-	}
+	}*/
 	dInputDevice->Release();
 
 }
 
 #pragma region マウス
 
-void DirectInput::SetMatrixAndNearFar(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX projectionMatrix,float nearNumber, float farNumber)
+void DirectInput::SetMatrixAndNearFar(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX projectionMatrix, float nearNumber, float farNumber)
 {
 	viewMat = viewMatrix;
 	projectionMat = projectionMatrix;
@@ -577,16 +581,16 @@ void DirectInput::SetMatrixAndNearFar(DirectX::XMMATRIX viewMatrix, DirectX::XMM
 	farNum = farNumber;
 }
 
-Vector2 DirectInput::GetMousePosition() 
+Vector2 DirectInput::GetMousePosition()
 {
 	POINT p;
 
 	//マウスのスクリーン座標を取得
 	GetCursorPos(&p);
-	
+
 	//クライアント座標に変換
 	ScreenToClient(mHwnd, &p);
-	
+
 	RECT rect;//現在のウィンドウサイズを入れる
 	Vector2 pos = { (float)p.x,(float)p.y };
 	float num;
@@ -597,7 +601,7 @@ Vector2 DirectInput::GetMousePosition()
 
 	//現在のウィンドウサイズを取得
 	GetClientRect(mHwnd, &rect);
-	
+
 	//ウィンドウサイズを変えても座標の上限が変わらないように変換
 	num = (float)rect.right / (float)winWidth;
 	pos.x = (float)pos.x / num;
@@ -620,7 +624,7 @@ float DirectInput::GetMouseAngle()
 	return LibMath::Vecto2ToAngle(GetCenterToMouseVector(), false);
 }
 
-void DirectInput::GetMouse3DLine( Vector3& nearPoint, Vector3& farPoint)
+void DirectInput::GetMouse3DLine(Vector3& nearPoint, Vector3& farPoint)
 {
 	Vector2 mousePos = GetMousePosition();
 
@@ -643,7 +647,7 @@ void DirectInput::GetMouse3DLine( Vector3& nearPoint, Vector3& farPoint)
 
 	//マウス座標の行列
 	mousePosMatrix = DirectX::XMMatrixIdentity();
-	
+
 	invViewPortMatrix = DirectX::XMMatrixInverse(nullptr, viewportMatrix);
 	invViewMatrix = DirectX::XMMatrixInverse(nullptr, viewMat);
 	invProjectionMatrix = DirectX::XMMatrixInverse(nullptr, projectionMat);
@@ -668,11 +672,11 @@ void DirectInput::GetMouse3DLine( Vector3& nearPoint, Vector3& farPoint)
 	worldMousePosMatrix *= invViewMatrix;
 
 	//最近点
-    nearPoint = 
+	nearPoint =
 	{
 		worldMousePosMatrix.r[3].m128_f32[0] ,
 		worldMousePosMatrix.r[3].m128_f32[1] ,
-		worldMousePosMatrix.r[3].m128_f32[2]  
+		worldMousePosMatrix.r[3].m128_f32[2]
 	};
 #pragma endregion
 
@@ -697,7 +701,7 @@ void DirectInput::GetMouse3DLine( Vector3& nearPoint, Vector3& farPoint)
 	worldMousePosMatrix.r[3].m128_f32[3] /= worldMousePosMatrix.r[3].m128_f32[3];
 
 	worldMousePosMatrix *= invViewMatrix;
-	
+
 
 	//最遠点
 	farPoint =
@@ -718,22 +722,22 @@ void DirectInput::GetMouse3DLine( Vector3& nearPoint, Vector3& farPoint)
 //2 中ボタン
 //3 左端のボタン2つの下側(上は反応無し)
 
-bool DirectInput::MouseButtonState(MouseButton mouseButton) 
+bool DirectInput::MouseButtonState(MouseButton mouseButton)
 {
 	if (mouseState.rgbButtons[mouseButton]) return true;
 	return false;
 }
-bool DirectInput::MouseButtonTrigger(MouseButton mouseButton) 
+bool DirectInput::MouseButtonTrigger(MouseButton mouseButton)
 {
-	if (!mousePrevious.rgbButtons[mouseButton]) 
+	if (!mousePrevious.rgbButtons[mouseButton])
 	{
 		if (MouseButtonState(mouseButton)) return true;
 	}
 	return false;
 }
-bool DirectInput::MouseButtonRelease(MouseButton mouseButton) 
+bool DirectInput::MouseButtonRelease(MouseButton mouseButton)
 {
-	if (mousePrevious.rgbButtons[mouseButton]) 
+	if (mousePrevious.rgbButtons[mouseButton])
 	{
 		if (!MouseButtonState(mouseButton)) return true;
 	}

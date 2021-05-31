@@ -69,6 +69,7 @@ void ObjectManager::Update()
 
 #pragma endregion
 
+	EraseObjectCheck();
 #pragma region collision
 
 	CollisionFlag f1;
@@ -327,7 +328,6 @@ void ObjectManager::Update()
 #pragma endregion
 
 
-	EraseObjectCheck();
 }
 
 void ObjectManager::Draw() 
