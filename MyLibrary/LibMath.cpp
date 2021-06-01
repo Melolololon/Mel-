@@ -2,10 +2,10 @@
 #include"DirectInput.h"
 
 
-int LibMath::Pow(const int num, const int index)
+int LibMath::Pow(const float num, const int index)
 {
 	
-	int returnNum = 1.0f;
+	float returnNum = 1.0f;
 	if(index >= 0)
 	{
 		for(int i = 0; i < index;i++)
@@ -15,7 +15,7 @@ int LibMath::Pow(const int num, const int index)
 	}
 	else
 	{
-		for (int i = 0; i < index; i++)
+		for (int i = 0; i < abs(index); i++)
 		{
 			returnNum /= num;
 		}
@@ -23,12 +23,6 @@ int LibMath::Pow(const int num, const int index)
 
 	return returnNum;
 	
-}
-
-
-float PowFloat(const float num, const float index)
-{
-	return 0.0f;
 }
 
 float LibMath::AngleConversion(int paterrn, float angle)

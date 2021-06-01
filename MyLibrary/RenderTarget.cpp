@@ -87,7 +87,7 @@ bool RenderTarget::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmdL
 	PipelineData pipelineData;
 	pipelineData.alphaWriteMode = ALPHA_WRITE_TRUE;
 	pipelineData.blendMode = BLEND_ADD;
-	pipelineData.cullMode = CULL_BACK;
+	pipelineData.cullMode = CULL_NONE;
 	pipelineData.depthMode = DEPTH_TRUE;
 	pipelineData.drawMode = DRAW_SOLID;
 
@@ -133,7 +133,101 @@ bool RenderTarget::CreateRenderTarget()
 
 #pragma endregion
 	
-	
+
+
+#pragma region 描画先板ポリのリソース作成
+//	postEfectConstBuffers.resize(1);
+//	postEfectConstBuffers.reserve(20);
+//
+//	//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
+//	D3D12_CLEAR_VALUE peClesrValue;
+//
+//
+//
+//	peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
+//	//リソース作成
+//	postEffectResources.resize(1);
+//
+//	dev->CreateCommittedResource
+//	(
+//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+//		D3D12_HEAP_FLAG_NONE,
+//		&backBuffer[0].Get()->GetDesc(),
+//		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+//		&peClesrValue,
+//		IID_PPV_ARGS(&postEffectResources[0])
+//	);
+//
+//#pragma region ヒープとビュー作成
+//	//テクスチャ
+//
+//	//ヒープ作成
+//	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
+//	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+//	peHeapDesc.NumDescriptors = 2;
+//	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+//	peHeapDesc.NodeMask = 0;
+//	dev->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&postEffectHeap));
+//
+//	//ビュー作成
+//	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+//
+//	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+//	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+//	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+//	srvDesc.Texture2D.MipLevels = 1;
+//
+//	dev->CreateShaderResourceView
+//	(
+//		postEffectResources[0].Get(),
+//		&srvDesc,
+//		postEffectHeap.Get()->GetCPUDescriptorHandleForHeapStart()
+//	);
+//
+//	//定数バッファ作成
+//	postEffectWorldMatData.resize(1);
+//	postEffectWorldMatData[0].scale = { 1,1,1 };
+//
+//	postEfectConstBuffers[0].constBuffer.resize(1);
+//	createBuffer->CreateConstBufferSet(
+//		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//		CD3DX12_RESOURCE_DESC::Buffer((sizeof(PostEffectConstData) + 0xff) & ~0xff),
+//		CD3DX12_CPU_DESCRIPTOR_HANDLE
+//		(
+//			postEffectHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+//			1,
+//			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+//		),
+//		(void**)&postEffectConstDataP,
+//		postEfectConstBuffers[0],
+//		0);
+//	postEffectConstDataP->worldMat = DirectX::XMMatrixIdentity();
+//	//postEfectConstBuffers[0].constBuffer[0].Get()->Unmap(0, nullptr);
+//
+//	//レンダーターゲット
+//
+//	//ヒープ作成
+//	peHeapDesc = {};
+//	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+//	peHeapDesc.NumDescriptors = 10;
+//	dev->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&postEffectRTVHeap));
+//
+//	//ビュー作成
+//	D3D12_RENDER_TARGET_VIEW_DESC peRTVDesc = {};
+//	peRTVDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+//	peRTVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+//
+//	dev.Get()->CreateRenderTargetView
+//	(
+//		postEffectResources[0].Get(),
+//		&peRTVDesc,
+//		postEffectRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart()
+//	);
+#pragma endregion
+
+#pragma endregion
+
+
 
 
 	pRenderTarget.push_back(this);

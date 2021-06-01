@@ -104,7 +104,7 @@ public:
 	/// <param name="createNum">生成数</param>
 	///// <param name="vertexSize">シェーダーに送る利用者が用意した頂点データのバイト数(用意しない場合は0)</param>
 	/// <param name="constDataSize">シェーダーに送る利用者が用意した定数データのバイト数(用意しない場合は0)</param>
-	void LoadModel
+	void Load
 	(
 		const std::string& path,
 		const bool loadUV,

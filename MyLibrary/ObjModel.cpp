@@ -245,7 +245,7 @@ void ObjModel::LoadModelMaterial
 
 }
 
-void ObjModel::LoadModel
+void ObjModel::Load
 (
 	const std::string& path,
 	const bool loadUV,

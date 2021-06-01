@@ -5,9 +5,9 @@ class Camera
 {
 	
 private:
-	Vector3 position;
-	Vector3 angle;
-	float fovY;
+	Vector3 position = 0;
+	Vector3 angle = 0;
+	float fovY = 60.0f;
 	
 public:
 	/// <summary>
@@ -29,5 +29,10 @@ public:
 	void SetFovY(const float fovY) { this->fovY = fovY; }
 
 
+	/// <summary>
+	/// ビューとプロジェクションを掛けた行列を取得。
+	/// </summary>
+	/// <returns></returns>
+	DirectX::XMMATRIX GetViewAndProjectionMat();
 };
 

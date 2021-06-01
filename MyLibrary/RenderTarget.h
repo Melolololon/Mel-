@@ -19,8 +19,10 @@ private:
 	static ComPtr<ID3D12RootSignature>rootSignature;
 	
 	VertexBufferSet vertexBufferSet;
-
 	std::array<Vertex, 4>vertices;
+
+	ComPtr<ID3D12Resource>constBuffer;
+	ComPtr<ID3D12Resource>textureBuffer;
 
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;

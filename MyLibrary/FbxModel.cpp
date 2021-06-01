@@ -14,7 +14,7 @@ FbxModel::~FbxModel()
 	fbxScene->Destroy();
 }
 
-bool FbxModel::LoadModel
+bool FbxModel::Load
 (
 	const std::string& path,
 	const int createNum,

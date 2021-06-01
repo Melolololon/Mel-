@@ -28,7 +28,7 @@ public:
 
  	static bool Initialize(const int winWidth,const int winHeight);
 	
-	void CreateSprite();
+	void Create();
 	void Draw(Texture* texture)override;
 	/// <summary>
 	/// •\¦”ÍˆÍ‚ğw’è‚µ‚Ä•`‰æ‚µ‚Ü‚·B

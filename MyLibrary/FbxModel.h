@@ -106,7 +106,7 @@ public:
 	FbxModel();
 	~FbxModel();
 
-	bool LoadModel
+	bool Load
 	(
 		const std::string& path,
 		const int modelNum,

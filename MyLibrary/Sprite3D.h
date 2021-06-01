@@ -23,7 +23,7 @@ public:
 	~Sprite3D();
 
 
-	void CreateSprite(const Vector2& size);
+	void Create(const Vector2& size);
 
 #pragma region äJî≠é“ópä÷êî
 

@@ -20,10 +20,7 @@ private:
 	~LibMath(){}
 public:
 
-	static int Pow(const int num,const int index);
-
-	static float PowFloat(const float num,const float index);
-
+	static int Pow(const float num,const int index);
 	/// <summary>
 	/// num1‚Ænum2‚Ì’l‚Ì·‚ğ‹‚ßA·‚ªŠî€‚Ì’l‚æ‚è‘½‚©‚Á‚½‚çtrue‚ğ•Ô‚µ‚Ü‚·
 	/// </summary>

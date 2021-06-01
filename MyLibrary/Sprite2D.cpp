@@ -10,7 +10,7 @@ Sprite2D::Sprite2D()
 Sprite2D::~Sprite2D(){}
 
 
-void Sprite2D::CreateSprite()
+void Sprite2D::Create()
 {
 	CreateBuffer();
 

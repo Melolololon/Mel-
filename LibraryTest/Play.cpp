@@ -25,7 +25,7 @@ void Play::Initialize()
 {
 
 	fbxModel = std::make_unique<FbxModel>();
-	fbxModel->LoadModel
+	fbxModel->Load
 	(
 		"Resources/boneTest/boneTest.fbx",
 		CREATE_NUM,
@@ -73,8 +73,6 @@ void Play::Initialize()
 }
 void Play::Update()
 {
-	
-
 	if (DirectInput::KeyState(DIK_SPACE))
 	{
 		isEnd = true;

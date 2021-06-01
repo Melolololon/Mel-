@@ -65,8 +65,6 @@ protected:
 #pragma region ŠÖ”
 
 
-	
-
 	void CommonDataMat();
 	void SetCmdList(Texture* texture);
 

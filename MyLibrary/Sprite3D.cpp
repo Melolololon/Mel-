@@ -16,7 +16,7 @@ Sprite3D::~Sprite3D()
 {
 }
 
-void Sprite3D::CreateSprite(const Vector2& size)
+void Sprite3D::Create(const Vector2& size)
 {
 	CreateBuffer();
 
