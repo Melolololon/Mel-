@@ -16,11 +16,6 @@ Sprite::Sprite(){}
 
 Sprite::~Sprite(){}
 
-void Sprite::Create(Texture* pTexture)
-{
-
-}
-
 
 void Sprite::CreateBuffer()
 {

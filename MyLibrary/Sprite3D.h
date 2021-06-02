@@ -9,9 +9,9 @@ private:
 	static PipelineState defaultPipeline;
 
 
-	bool billboardX;
-	bool billboardY;
-	bool billboardZ;
+	bool billboardX = false;
+	bool billboardY = false;
+	bool billboardZ = false;
 	void Billboard(DirectX::XMMATRIX& worldMat);
 	static DirectX::XMFLOAT3 cameraPosition;
 	static DirectX::XMFLOAT3 cameraTargetPosition;
@@ -19,12 +19,9 @@ private:
 
 	void MatrixMap(Texture* texture);
 public:
-	Sprite3D();
+	Sprite3D(Texture* pTexture);
 	~Sprite3D();
 
-
-	void Create(Texture* pTexture)override;
-	
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
 	virtual void Draw()override;
 

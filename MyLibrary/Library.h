@@ -82,6 +82,11 @@ private:
 	static bool checkCreateVertexBuffer(const VertexType& vertexType);
 #pragma endregion
 
+#pragma region 初期化値
+	static int winWidth;
+	static int winHeight;
+	static Color clearColor;
+#pragma endregion
 
 public:
 
@@ -120,6 +125,12 @@ public:
 	/// 終了処理を行います
 	/// </summary>
 	static void Finalize();
+#pragma endregion
+
+#pragma region 初期化値取得
+	static int GetWindowWidth() { return winWidth; }
+	static int GetWindowHeight() { return winHeight; }
+	static Color GetScreenColor() { return clearColor; }
 #pragma endregion
 
 #pragma region WinAPI関係

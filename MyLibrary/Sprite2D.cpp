@@ -2,25 +2,21 @@
 
 DirectX::XMMATRIX Sprite2D::cameraMatrix;
 PipelineState Sprite2D::defaultPipeline;
-Sprite2D::Sprite2D()
+Sprite2D::Sprite2D(Texture* pTexture)
 {
 
-}
-
-Sprite2D::~Sprite2D(){}
-
-
-void Sprite2D::Create(Texture* pTexture)
-{
 	this->pTexture = pTexture;
 
 	//テクスチャがあったら描画範囲変更
-	if(pTexture) drawRightDownPosition = pTexture->GetTextureSize();
+	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
 
 	CreateBuffer();
 
 	pipeline = defaultPipeline.GetPipelineState();
 }
+
+Sprite2D::~Sprite2D(){}
+
 
 bool Sprite2D::Initialize(const int winWidth, const int winHeight)
 {

@@ -2,6 +2,7 @@
 #include<vector>
 #include<array>
 
+#include"Sprite2D.h"
 #include"DirectXStruct.h"
 #include"Vector.h"
 #include"PipelineState.h"
@@ -11,34 +12,26 @@
 //描画時に渡すことで、渡したレンダーターゲットに描画できるようにする
 //セットしない場合は、バックバッファに直接または1枚目のレンダーターゲットに描画
 
-class RenderTarget
+class RenderTarget :public Sprite2D 
 {
 private:
 	static std::vector<RenderTarget*>pRenderTarget;
-	static PipelineState defaultPipeline;
-	static ComPtr<ID3D12RootSignature>rootSignature;
-	
-	VertexBufferSet vertexBufferSet;
-	std::array<Vertex, 4>vertices;
+	static float clearColor[4];
 
-	ComPtr<ID3D12Resource>constBuffer;
 	ComPtr<ID3D12Resource>textureBuffer;
-
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
+
+
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;
 
+	ComPtr<ID3D12Resource>depthBuffer;
+	ComPtr<ID3D12DescriptorHeap>depthHeap;
+
 	//カメラのポインタ
-	Camera* pCamera;
+	Camera* pCamera = nullptr;
 public:
-	RenderTarget(){}
-	~RenderTarget(){}
-
-	static bool Initialize(ID3D12Device* dev,ID3D12GraphicsCommandList* cmdList);
-
-	/// <summary>
-	/// レンダーターゲットを生成します。
-	/// </summary>
-	bool CreateRenderTarget();
+	RenderTarget();
+	~RenderTarget();
 
 	
 	/// <summary>

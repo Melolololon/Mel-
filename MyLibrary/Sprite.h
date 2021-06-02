@@ -30,7 +30,6 @@ private:
 #pragma region ïœêî
 	static const UINT MAX_TEXTURE_LOAD_NUM;
 	
-	static ID3D12Device* device;
 	static ID3D12GraphicsCommandList* cmdList;
 	static ComPtr<ID3D12RootSignature>rootSignature;
 	static ComPtr<ID3D12PipelineState>defaultPipeline;
@@ -43,6 +42,8 @@ private:
 #pragma endregion
 
 protected:
+
+	static ID3D12Device* device;
 	ComPtr<ID3D12PipelineState> pipeline;
 	std::array<SpriteVertex, 4> vertices;
 	Texture* pTexture;
@@ -85,7 +86,6 @@ public:
 	Sprite();
 	~Sprite();
 
-	virtual void Create(Texture* pTexture) = 0;
 	virtual void Draw() = 0;
 	void SetDrawArea(const Vector2& leftUpPos, const Vector2& rightDownPos)
 	{

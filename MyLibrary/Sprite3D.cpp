@@ -5,25 +5,17 @@ DirectX::XMFLOAT3 Sprite3D::cameraPosition;
 DirectX::XMFLOAT3 Sprite3D::cameraTargetPosition;
 DirectX::XMFLOAT3 Sprite3D::cameraUpVector;
 
-Sprite3D::Sprite3D()
-{
-	billboardX = false;
-	billboardY = false;
-	billboardZ = false;
-}
-
-Sprite3D::~Sprite3D()
-{
-}
-
-void Sprite3D::Create(Texture* pTexture)
+Sprite3D::Sprite3D(Texture* pTexture)
 {
 	this->pTexture = pTexture;
 	//テクスチャがあったら描画範囲変更
 	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
 	CreateBuffer();
 	pipeline = defaultPipeline.GetPipelineState();
-	
+}
+
+Sprite3D::~Sprite3D()
+{
 }
 
 bool Sprite3D::Initialize()

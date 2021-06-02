@@ -43,6 +43,10 @@ DWORD Library::nowTime;
 
 std::vector<std::tuple<ModelData, int>> Library::modelDatas;
 
+int Library::winWidth;
+int Library::winHeight;
+Color Library::clearColor;
+
 LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	switch (msg)
@@ -57,6 +61,11 @@ LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 void Library::Initialize(int windowWidth, int windowHeight, const Color& screenColor, const wchar_t* windowName)
 {
+	 winWidth = windowWidth;
+	 winHeight = windowHeight;
+	 clearColor = screenColor;
+
+
 	auto coResult = CoInitialize(NULL);
 
 	dx12 = DirectX12::GetInstance();
