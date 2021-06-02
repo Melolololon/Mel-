@@ -21,9 +21,11 @@ private:
 
 	void MatrixMap(Texture* texture);
 	
-
+	void Create(const Color& color)override;
+	void Create(Texture* pTexture)override;
 protected:
 	static PipelineState defaultPipeline;
+
 
 public:
 	Sprite2D(){}
@@ -35,8 +37,6 @@ public:
 	
 
 	
-	void Create(const Color& color)override;
-	void Create(Texture* pTexture)override;
 	
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
 	virtual void Draw()override;

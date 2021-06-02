@@ -88,22 +88,24 @@ protected:
 
 #pragma endregion
 
-public:
-	Sprite();
-	~Sprite();
-	
 
 	/// <summary>
 	/// 生成します。
 	/// </summary>
 	/// <param name="color">色</param>
 	virtual void Create(const Color& color) = 0;
-	
+
 	/// <summary>
 	/// 生成します。レンダーターゲットの生成は行えません。
 	/// </summary>
 	/// <param name="pTexture">テクスチャのポインタ</param>
 	virtual void Create(Texture* pTexture) = 0;
+
+public:
+	Sprite();
+	~Sprite();
+	
+
 
 
 	virtual void Draw() = 0;

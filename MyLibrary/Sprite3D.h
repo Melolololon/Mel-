@@ -19,13 +19,16 @@ private:
 
 	void MatrixMap();
 
+	void Create(const Color& color)override;
+	void Create(Texture* pTexture)override;
+
+protected:
+
 public:
 	Sprite3D(const Color& color);
 	Sprite3D(Texture* pTexture);
 	~Sprite3D();
 
-	void Create(const Color& color)override;
-    void Create(Texture* pTexture)override;;
 
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
 	virtual void Draw()override;
