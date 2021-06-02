@@ -35,7 +35,6 @@ private:
 	static ComPtr<ID3D12RootSignature>rootSignature;
 	static ComPtr<ID3D12PipelineState>defaultPipeline;
 
-
 #pragma endregion
 
 #pragma region 関数
@@ -46,7 +45,13 @@ private:
 protected:
 	ComPtr<ID3D12PipelineState> pipeline;
 	std::array<SpriteVertex, 4> vertices;
+	Texture* pTexture;
 
+
+	//描画するときの左上の座標
+	Vector2 drawLeftUpPosition = 0;
+	//描画するときの左上の座標
+	Vector2 drawRightDownPosition = 1;
 
 #pragma region バッファ
 
@@ -80,10 +85,13 @@ public:
 	Sprite();
 	~Sprite();
 
-	
-
-	virtual void Draw(Texture* texture);
-
+	virtual void Create(Texture* pTexture) = 0;
+	virtual void Draw() = 0;
+	void SetDrawArea(const Vector2& leftUpPos, const Vector2& rightDownPos)
+	{
+		drawLeftUpPosition = leftUpPos;
+		drawRightDownPosition = rightDownPos;
+	}
 #pragma region 開発者用関数
 
 	static void Initialize(ID3D12Device* dev,ID3D12GraphicsCommandList* cmd);

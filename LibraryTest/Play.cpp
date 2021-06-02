@@ -51,12 +51,14 @@ void Play::Initialize()
 		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 2), i);
 	}
 
-	//spr = std::make_unique<Sprite2D>();
-	//tex = std::make_unique<Texture>();
-	//spr->CreateSprite();
+	spr = std::make_unique<Sprite3D>();
+	tex = std::make_unique<Texture>();
+	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
+	spr->Create(tex.get());
+	spr->SetDrawArea(Vector2(0,0),Vector2(64,64));
 	
 	//これ毎回呼び出しているため、毎フレームシーン切り替えすると、消費使用メモリが増え続ける
-	//tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
+	
 
 
 	//std::vector<Vector2>points =
@@ -95,7 +97,7 @@ void Play::Draw()
 	{
 		fbxModel->Draw(i);
 	}
-
+	spr->Draw();
 }
 
 void Play::Finitialize()

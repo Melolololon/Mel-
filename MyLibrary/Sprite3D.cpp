@@ -16,25 +16,12 @@ Sprite3D::~Sprite3D()
 {
 }
 
-void Sprite3D::Create(const Vector2& size)
+void Sprite3D::Create(Texture* pTexture)
 {
+	this->pTexture = pTexture;
+	//テクスチャがあったら描画範囲変更
+	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
 	CreateBuffer();
-
-	SpriteVertex* vertex;
-	MapVertexBuffer((void**)&vertex);
-
-	vertices[0].pos = { -size.x + size.x / 2 ,-size.y + size.y / 2 ,0.0f };
-	vertices[1].pos = { -size.x + size.x / 2 ,size.y - size.y / 2 ,0.0f };
-	vertices[2].pos = { size.x - size.x / 2 ,-size.y + size.y / 2 ,0.0f };
-	vertices[3].pos = { size.x - size.x / 2 ,size.y - size.y / 2 ,0.0f };
-
-	auto vertexNum = vertices.size();
-	for (int i = 0; i < vertexNum; i++)
-		vertex[i].pos = vertices[i].pos;
-
-	UnmapVertexBuffer();
-
-
 	pipeline = defaultPipeline.GetPipelineState();
 	
 }
@@ -67,48 +54,47 @@ bool Sprite3D::Initialize()
 	return true;
 }
 
-void Sprite3D::Draw(Texture* texture)
+void Sprite3D::Draw()
 {
+	if (!pTexture)
+	{
+#ifdef _DEBUG
+		OutputDebugString(L"描画に失敗しました。スプライト3Dにテクスチャがセットされていません。\n");
+#endif // _DEBUG
 
-	CommonDataMat();
-	MatrixMap(texture);
-	SetCmdList(texture);
+		return;
+	}
 
-}
+#pragma region map
 
-
-void Sprite3D::SelectDrawAreaDraw
-(
-	const Vector2& leftUpPos,
-	const Vector2& rightDownPos,
-	Texture* texture
-)
-{
 	SpriteVertex* vertex;
 	MapVertexBuffer((void**)&vertex);
 
 #pragma region UV座標
 
-	Vector2 textureSize = texture->GetTextureSize();
-	Vector2 uvLeftUp = { 1.0f / textureSize.x * leftUpPos.x ,1.0f / textureSize.y * leftUpPos.y };
-	Vector2 uvRightDown = { 1.0f / textureSize.x * rightDownPos.x ,1.0f / textureSize.y * rightDownPos.y };
+	Vector2 textureSize = pTexture->GetTextureSize();
+	Vector2 uvLeftUp = { 1.0f / textureSize.x * drawLeftUpPosition.x ,1.0f / textureSize.y * drawLeftUpPosition.y };
+	Vector2 uvRightDown = { 1.0f / textureSize.x * drawRightDownPosition.x ,1.0f / textureSize.y * drawRightDownPosition.y };
 
 	vertices[0].uv = { uvLeftUp.x ,uvRightDown.y };
 	vertices[1].uv = { uvLeftUp.x,uvLeftUp.y };
 	vertices[2].uv = { uvRightDown.x ,uvRightDown.y };
 	vertices[3].uv = { uvRightDown.x ,uvLeftUp.y };
 #pragma endregion
-
 	auto vertexNum = vertices.size();
 	for (int i = 0; i < vertexNum; i++)
 		vertex[i].uv = vertices[i].uv;
 
 	UnmapVertexBuffer();
+#pragma endregion
+
 
 	CommonDataMat();
-	MatrixMap(texture);
-	SetCmdList(texture);
+	MatrixMap(pTexture);
+	SetCmdList(pTexture);
+
 }
+
 
 void Sprite3D::MatrixMap(Texture* texture)
 {

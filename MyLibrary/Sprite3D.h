@@ -23,7 +23,10 @@ public:
 	~Sprite3D();
 
 
-	void Create(const Vector2& size);
+	void Create(Texture* pTexture)override;
+	
+	//レンダーターゲットでDrawを使うため、仮想関数にしてる
+	virtual void Draw()override;
 
 #pragma region 開発者用関数
 
@@ -44,15 +47,8 @@ public:
 	}
 #pragma endregion
 
-	void Draw(Texture* texture)override;
 
-	/// <summary>
-	/// 表示範囲を指定して描画します。
-	/// </summary>
-	/// <param name="leftUpPos">左上座標</param>
-	/// <param name="rightDownPos">右下座標</param>
-	/// <param name="texture"></param>
-	void SelectDrawAreaDraw(const Vector2& leftUpPos, const Vector2& rightDownPos, Texture* texture);
+
 
 #pragma region 操作
 	void SetPosition(const Vector3& pos) { constData.position = pos.ToXMFLOAT3(); }

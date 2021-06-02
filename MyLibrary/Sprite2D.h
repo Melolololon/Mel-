@@ -28,15 +28,12 @@ public:
 
  	static bool Initialize(const int winWidth,const int winHeight);
 	
-	void Create();
-	void Draw(Texture* texture)override;
-	/// <summary>
-	/// 表示範囲を指定して描画します。
-	/// </summary>
-	/// <param name="leftUpPos">左上座標</param>
-	/// <param name="rightDownPos">右下座標</param>
-	/// <param name="texture"></param>
-	void SelectDrawAreaDraw(const Vector2& leftUpPos, const Vector2& rightDownPos, Texture* texture);
+	void Create(Texture* pTexture)override;
+
+	//レンダーターゲットでDrawを使うため、仮想関数にしてる
+	virtual void Draw()override;
+	
+	
 
 #pragma region 操作
 	void SetPosition(const Vector2& pos) { constData.position = { pos.x,pos.y,0 }; }

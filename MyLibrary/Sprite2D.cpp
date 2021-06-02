@@ -10,8 +10,13 @@ Sprite2D::Sprite2D()
 Sprite2D::~Sprite2D(){}
 
 
-void Sprite2D::Create()
+void Sprite2D::Create(Texture* pTexture)
 {
+	this->pTexture = pTexture;
+
+	//テクスチャがあったら描画範囲変更
+	if(pTexture) drawRightDownPosition = pTexture->GetTextureSize();
+
 	CreateBuffer();
 
 	pipeline = defaultPipeline.GetPipelineState();
@@ -55,18 +60,24 @@ bool Sprite2D::Initialize(const int winWidth, const int winHeight)
 	return true;
 }
 
-void Sprite2D::SelectDrawAreaDraw
-(
-	const Vector2& leftUpPos, 
-	const Vector2& rightDownPos, 
-	Texture* texture
-)
+void Sprite2D::Draw()
 {
+	if(!pTexture)
+	{
+#ifdef _DEBUG
+		OutputDebugString(L"描画に失敗しました。スプライト2Dにテクスチャがセットされていません。\n");
+#endif // _DEBUG
+
+		return;
+	}
+
+	
+
 	SpriteVertex* vertex;
 	MapVertexBuffer((void**)&vertex);
 
 #pragma region 頂点座標
-	Vector2 spriteSize = rightDownPos - leftUpPos;
+	Vector2 spriteSize = drawRightDownPosition - drawLeftUpPosition;
 
 	vertices[0].pos = { -spriteSize.x / 2 , spriteSize.y / 2, 0 };
 	vertices[1].pos = { -spriteSize.x / 2 ,-spriteSize.y / 2,0 };
@@ -77,12 +88,12 @@ void Sprite2D::SelectDrawAreaDraw
 
 #pragma region UV座標
 
-	Vector2 textureSize = texture->GetTextureSize();
-	Vector2 uvLeftUp = { 1.0f / textureSize.x * leftUpPos.x ,1.0f / textureSize.y * leftUpPos.y };
-	Vector2 uvRightDown = { 1.0f / textureSize.x * rightDownPos.x ,1.0f / textureSize.y * rightDownPos.y };
+	Vector2 textureSize = pTexture->GetTextureSize();
+	Vector2 uvLeftUp = { 1.0f / textureSize.x * drawLeftUpPosition.x ,1.0f / textureSize.y * drawLeftUpPosition.y };
+	Vector2 uvRightDown = { 1.0f / textureSize.x * drawRightDownPosition.x ,1.0f / textureSize.y * drawRightDownPosition.y };
 
 	vertices[0].uv = { uvLeftUp.x ,uvRightDown.y };
-	vertices[1].uv = { uvLeftUp .x,uvLeftUp .y};
+	vertices[1].uv = { uvLeftUp.x,uvLeftUp.y };
 	vertices[2].uv = { uvRightDown.x ,uvRightDown.y };
 	vertices[3].uv = { uvRightDown.x ,uvLeftUp.y };
 #pragma endregion
@@ -95,31 +106,8 @@ void Sprite2D::SelectDrawAreaDraw
 	UnmapVertexBuffer();
 
 	CommonDataMat();
-	MatrixMap(texture);
-	SetCmdList(texture);
-}
-
-void Sprite2D::Draw(Texture* texture)
-{
-	//ここで頂点のマップをする
-	SpriteVertex* vertex;
-	MapVertexBuffer((void**)&vertex);
-
-	Vector2 textureSize = texture->GetTextureSize();
-	
-	vertices[0].pos = { 0 - textureSize.x / 2,textureSize.y - textureSize.y / 2,0, };
-	vertices[1].pos = { 0 - textureSize.x / 2,0 - textureSize.y / 2, 0, };
-	vertices[2].pos = { textureSize.x - textureSize.x / 2,textureSize.y - textureSize.y / 2,0 };
-	vertices[3].pos = { textureSize.x - textureSize.x / 2,0 - textureSize.y / 2,0, };
-	auto vertexNum = vertices.size();
-	for (int i = 0; i < vertexNum; i++)
-		vertex[i].pos = vertices[i].pos;
-
-	UnmapVertexBuffer();
-
-	CommonDataMat();
-	MatrixMap(texture);
-	SetCmdList(texture);
+	MatrixMap(pTexture);
+	SetCmdList(pTexture);
 }
 
 
