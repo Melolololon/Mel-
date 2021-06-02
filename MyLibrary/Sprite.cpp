@@ -2,7 +2,6 @@
 #include"CreateBuffer.h"
 #include"PipelineState.h"
 
-const UINT Sprite::MAX_TEXTURE_LOAD_NUM = 256 * 15;
 
 ID3D12Device* Sprite::device;
 ID3D12GraphicsCommandList* Sprite::cmdList;
@@ -15,7 +14,6 @@ ComPtr<ID3D12DescriptorHeap> Sprite::textureHeap;
 Sprite::Sprite(){}
 
 Sprite::~Sprite(){}
-
 
 void Sprite::CreateBuffer()
 {
@@ -41,10 +39,10 @@ void Sprite::CreateBuffer()
 	
 	SpriteVertex* vertex;
 	MapVertexBuffer((void**)&vertex);
-	vertices[0].pos = { -1.0f,-1.0f ,0.0f };
-	vertices[1].pos = {-1.0f,1.0f ,0.0f };
-	vertices[2].pos = { 1.0f,-1.0f ,0.0f };
-	vertices[3].pos = { 1.0f,1.0f,0.0f };
+	vertices[0].pos = { -0.5f,-0.5f ,0.0f };
+	vertices[1].pos = {-0.5f,0.5f ,0.0f };
+	vertices[2].pos = { 0.5f,-0.5f ,0.0f };
+	vertices[3].pos = { 0.5f,0.5f,0.0f };
 	vertex[0].pos = vertices[0].pos;
 	vertex[1].pos = vertices[1].pos;
 	vertex[2].pos = vertices[2].pos;
@@ -59,10 +57,27 @@ void Sprite::CreateBuffer()
 	vertex[2].uv = vertices[2].uv;
 	vertex[3].uv = vertices[3].uv;
 	UnmapVertexBuffer();
+
+
 }
 
+void Sprite::SetOneColorSpriteColor(const Color& color)
+{
+	SpriteConstBufferData* constBufferData;
+	constBuffer->Map(0, nullptr, (void**)&constBufferData);
 
-void Sprite::CommonDataMat()
+	constBufferData->color = DirectX::XMFLOAT4
+	(
+		static_cast<float>(color.r) / 255.0f,
+		static_cast<float>(color.g) / 255.0f,
+		static_cast<float>(color.b) / 255.0f,
+		static_cast<float>(color.a) / 255.0f
+	);
+
+	constBuffer->Unmap(0, nullptr);
+}
+
+void Sprite::ConstDataMat()
 {
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
@@ -91,7 +106,9 @@ void Sprite::SetCmdList(Texture* texture)
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
 	//テクスチャ
-	UINT heapNum = texture->GetTextureNumber();
+	UINT heapNum = 0;
+	if (pTexture) texture->GetTextureNumber();
+	
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 	(
@@ -122,11 +139,6 @@ void Sprite::UnmapVertexBuffer()
 
 
 
-void Sprite::Draw()
-{
-}
-
-
 
 void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 {
@@ -142,6 +154,17 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 	descHeapDesc.NodeMask = 0;
 
 	auto result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&textureHeap));
+#pragma endregion
+
+#pragma region 単色スプライト用の画像のバッファとビュー生成
+	textureBuffer.resize(1);
+
+	CreateBuffer::GetInstance()->CreateOneColorTextureBuffer
+	(
+		Color(0, 0, 0, 0),
+		textureHeap->GetCPUDescriptorHandleForHeapStart(),
+		&textureBuffer[0]
+	);
 #pragma endregion
 
 

@@ -127,6 +127,7 @@ struct SpriteConstData
 	DirectX::XMFLOAT3 position = { 0,0,0 };
 	DirectX::XMFLOAT2 scale = { 1,1 };
 	DirectX::XMFLOAT3 angle = { 0,0,0 };
+	DirectX::XMFLOAT4 color = { 0,0,0,0 };//テクスチャ貼らない場合の色(テクスチャ貼り付け時は常に0)
 	DirectX::XMFLOAT4 addColor = { 0,0,0,0 };
 	DirectX::XMFLOAT4 subColor = { 0,0,0,0 };
 	DirectX::XMFLOAT4 mulColor = { 1,1,1,1 };
@@ -183,6 +184,7 @@ struct BoneConstBufferData
 struct SpriteConstBufferData
 {
 	DirectX::XMMATRIX mat;
+	DirectX::XMFLOAT4 color;
 	DirectX::XMFLOAT4 mulColor;
 	DirectX::XMFLOAT4 addColor;
 	DirectX::XMFLOAT4 subColor;

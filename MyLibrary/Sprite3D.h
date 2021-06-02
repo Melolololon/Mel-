@@ -17,10 +17,15 @@ private:
 	static DirectX::XMFLOAT3 cameraTargetPosition;
 	static DirectX::XMFLOAT3 cameraUpVector;
 
-	void MatrixMap(Texture* texture);
+	void MatrixMap();
+
 public:
+	Sprite3D(const Color& color);
 	Sprite3D(Texture* pTexture);
 	~Sprite3D();
+
+	void Create(const Color& color)override;
+    void Create(Texture* pTexture)override;;
 
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
 	virtual void Draw()override;

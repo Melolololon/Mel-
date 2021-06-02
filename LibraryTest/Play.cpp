@@ -50,11 +50,12 @@ void Play::Initialize()
 		//速度倍率セット
 		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 2), i);
 	}
-
+	
 	tex = std::make_unique<Texture>();
-	spr = std::make_unique<Sprite3D>(tex.get());
+	spr = std::make_unique<Sprite2D>(Color(255, 0, 0, 120));
+	spr->SetScale(Vector2(256, 256));
 	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
-	spr->SetDrawArea(Vector2(0,0),Vector2(64,64));
+	//spr->SetDrawArea(Vector2(0,0),Vector2(64,64));
 	
 	//これ毎回呼び出しているため、毎フレームシーン切り替えすると、消費使用メモリが増え続ける
 	

@@ -5,13 +5,14 @@ DirectX::XMFLOAT3 Sprite3D::cameraPosition;
 DirectX::XMFLOAT3 Sprite3D::cameraTargetPosition;
 DirectX::XMFLOAT3 Sprite3D::cameraUpVector;
 
+Sprite3D::Sprite3D(const Color& color)
+{
+	Create(color);
+}
+
 Sprite3D::Sprite3D(Texture* pTexture)
 {
-	this->pTexture = pTexture;
-	//テクスチャがあったら描画範囲変更
-	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
-	CreateBuffer();
-	pipeline = defaultPipeline.GetPipelineState();
+	Create(pTexture);
 }
 
 Sprite3D::~Sprite3D()
@@ -46,17 +47,26 @@ bool Sprite3D::Initialize()
 	return true;
 }
 
+
+void Sprite3D::Create(const Color& color)
+{
+	CreateBuffer();
+	SetOneColorSpriteColor(color);
+	pipeline = defaultPipeline.GetPipelineState();
+}
+
+void Sprite3D::Create(Texture* pTexture)
+{
+	this->pTexture = pTexture;
+	//テクスチャがあったら描画範囲変更
+	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
+	CreateBuffer();
+	pipeline = defaultPipeline.GetPipelineState();
+}
+
 void Sprite3D::Draw()
 {
-	if (!pTexture)
-	{
-#ifdef _DEBUG
-		OutputDebugString(L"描画に失敗しました。スプライト3Dにテクスチャがセットされていません。\n");
-#endif // _DEBUG
-
-		return;
-	}
-
+	
 #pragma region map
 
 	SpriteVertex* vertex;
@@ -64,7 +74,8 @@ void Sprite3D::Draw()
 
 #pragma region UV座標
 
-	Vector2 textureSize = pTexture->GetTextureSize();
+	Vector2 textureSize = 1;
+	if(pTexture) textureSize = pTexture->GetTextureSize();
 	Vector2 uvLeftUp = { 1.0f / textureSize.x * drawLeftUpPosition.x ,1.0f / textureSize.y * drawLeftUpPosition.y };
 	Vector2 uvRightDown = { 1.0f / textureSize.x * drawRightDownPosition.x ,1.0f / textureSize.y * drawRightDownPosition.y };
 
@@ -81,14 +92,14 @@ void Sprite3D::Draw()
 #pragma endregion
 
 
-	CommonDataMat();
-	MatrixMap(pTexture);
+	ConstDataMat();
+	MatrixMap();
 	SetCmdList(pTexture);
 
 }
 
 
-void Sprite3D::MatrixMap(Texture* texture)
+void Sprite3D::MatrixMap()
 {
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);

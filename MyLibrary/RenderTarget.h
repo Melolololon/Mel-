@@ -12,7 +12,7 @@
 //描画時に渡すことで、渡したレンダーターゲットに描画できるようにする
 //セットしない場合は、バックバッファに直接または1枚目のレンダーターゲットに描画
 
-class RenderTarget :public Sprite2D 
+class RenderTarget :public Sprite2D
 {
 private:
 	static std::vector<RenderTarget*>pRenderTarget;
@@ -20,7 +20,6 @@ private:
 
 	ComPtr<ID3D12Resource>textureBuffer;
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
-
 
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;
 
@@ -33,7 +32,6 @@ public:
 	RenderTarget();
 	~RenderTarget();
 
-	
 	/// <summary>
 	/// レンダーターゲットにカメラをセットします。レンダーターゲットには、セットされたカメラに映っているものが描画されます。
 	/// </summary>

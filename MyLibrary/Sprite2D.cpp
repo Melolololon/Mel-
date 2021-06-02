@@ -2,18 +2,18 @@
 
 DirectX::XMMATRIX Sprite2D::cameraMatrix;
 PipelineState Sprite2D::defaultPipeline;
+
+
+Sprite2D::Sprite2D(const Color& color)
+{
+	Create(color);
+}
+
 Sprite2D::Sprite2D(Texture* pTexture)
 {
-
-	this->pTexture = pTexture;
-
-	//テクスチャがあったら描画範囲変更
-	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
-
-	CreateBuffer();
-
-	pipeline = defaultPipeline.GetPipelineState();
+	Create(pTexture);
 }
+
 
 Sprite2D::~Sprite2D(){}
 
@@ -56,19 +56,24 @@ bool Sprite2D::Initialize(const int winWidth, const int winHeight)
 	return true;
 }
 
+void Sprite2D::Create(const Color& color)
+{
+	CreateBuffer();
+	SetOneColorSpriteColor(color);
+	pipeline = defaultPipeline.GetPipelineState();
+}
+
+void Sprite2D::Create(Texture* pTexture)
+{
+	this->pTexture = pTexture;
+	//テクスチャがあったら描画範囲変更
+	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
+	CreateBuffer();
+	pipeline = defaultPipeline.GetPipelineState();
+}
+
 void Sprite2D::Draw()
 {
-	if(!pTexture)
-	{
-#ifdef _DEBUG
-		OutputDebugString(L"描画に失敗しました。スプライト2Dにテクスチャがセットされていません。\n");
-#endif // _DEBUG
-
-		return;
-	}
-
-	
-
 	SpriteVertex* vertex;
 	MapVertexBuffer((void**)&vertex);
 
@@ -84,7 +89,8 @@ void Sprite2D::Draw()
 
 #pragma region UV座標
 
-	Vector2 textureSize = pTexture->GetTextureSize();
+	Vector2 textureSize = 1;
+	if (pTexture)  textureSize = pTexture->GetTextureSize();
 	Vector2 uvLeftUp = { 1.0f / textureSize.x * drawLeftUpPosition.x ,1.0f / textureSize.y * drawLeftUpPosition.y };
 	Vector2 uvRightDown = { 1.0f / textureSize.x * drawRightDownPosition.x ,1.0f / textureSize.y * drawRightDownPosition.y };
 
@@ -101,7 +107,7 @@ void Sprite2D::Draw()
 
 	UnmapVertexBuffer();
 
-	CommonDataMat();
+	ConstDataMat();
 	MatrixMap(pTexture);
 	SetCmdList(pTexture);
 }
@@ -109,6 +115,7 @@ void Sprite2D::Draw()
 
 void Sprite2D::MatrixMap(Texture* texture)
 {
+
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
 
@@ -125,7 +132,8 @@ void Sprite2D::MatrixMap(Texture* texture)
 	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
 	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));
 
-	Vector2 textureSize = texture->GetTextureSize();
+	Vector2 textureSize = 1.0f;
+	if(texture)textureSize = texture->GetTextureSize();
 	float width = textureSize.x;
 	float height = textureSize.y;
 	width /= 2;
@@ -133,20 +141,20 @@ void Sprite2D::MatrixMap(Texture* texture)
 
 
 	//左上基準拡縮
-	//matWorld *= DirectX::XMMatrixTranslation
-	//(
-	//	constData.position.x + (width * constData.scale.x) + (vertices[2].pos.x - width),
-	//	constData.position.y + (height * constData.scale.y) + (vertices[0].pos.y - height),
-	//	0.0f
-	//);
+	matWorld *= DirectX::XMMatrixTranslation
+	(
+		constData.position.x + (width * constData.scale.x) + (vertices[2].pos.x - width),
+		constData.position.y + (height * constData.scale.y) + (vertices[0].pos.y - height),
+		0.0f
+	);
 
 	//中心基準拡縮
-	matWorld *= DirectX::XMMatrixTranslation
+	/*matWorld *= DirectX::XMMatrixTranslation
 	(
 		constData.position.x + (vertices[2].pos.x - width) + width,
 		constData.position.y + (vertices[0].pos.y - height) + height,
 		0.0f
-	);
+	);*/
 
 
 	constBufferData->mat = matWorld * cameraMatrix;

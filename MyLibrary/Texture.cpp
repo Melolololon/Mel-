@@ -2,7 +2,7 @@
 #include"CreateBuffer.h"
 #include"Sprite.h"
 
-UINT Texture::loadTextureNumber = 0;
+UINT Texture::loadTextureNumber = 1;
 
 Texture::Texture(){}
 

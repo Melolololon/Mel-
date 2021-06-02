@@ -20,17 +20,24 @@ private:
 	static DirectX::XMMATRIX cameraMatrix;
 
 	void MatrixMap(Texture* texture);
+	
 
 protected:
 	static PipelineState defaultPipeline;
 
 public:
+	Sprite2D(){}
+	Sprite2D(const Color& color);
 	Sprite2D(Texture* pTexture);
 	~Sprite2D();
 
  	static bool Initialize(const int winWidth,const int winHeight);
 	
 
+	
+	void Create(const Color& color)override;
+	void Create(Texture* pTexture)override;
+	
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
 	virtual void Draw()override;
 	

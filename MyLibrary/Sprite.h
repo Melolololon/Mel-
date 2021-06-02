@@ -28,7 +28,7 @@ class Sprite
 private:
 
 #pragma region 変数
-	static const UINT MAX_TEXTURE_LOAD_NUM;
+	static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 10;
 	
 	static ID3D12GraphicsCommandList* cmdList;
 	static ComPtr<ID3D12RootSignature>rootSignature;
@@ -46,13 +46,15 @@ protected:
 	static ID3D12Device* device;
 	ComPtr<ID3D12PipelineState> pipeline;
 	std::array<SpriteVertex, 4> vertices;
-	Texture* pTexture;
 
 
 	//描画するときの左上の座標
 	Vector2 drawLeftUpPosition = 0;
 	//描画するときの左上の座標
 	Vector2 drawRightDownPosition = 1;
+
+	//座標などの情報をまとめた構造体
+	SpriteConstData constData;
 
 #pragma region バッファ
 
@@ -67,11 +69,15 @@ protected:
 
 	void CreateBuffer();
 
-	SpriteConstData constData;
+	//単色スプライト生成時に色をセットする関数
+	void SetOneColorSpriteColor(const Color& color);
+
+	Texture* pTexture = nullptr;
+
 #pragma region 関数
 
 
-	void CommonDataMat();
+	void ConstDataMat();
 	void SetCmdList(Texture* texture);
 
 #pragma region マップ
@@ -85,8 +91,24 @@ protected:
 public:
 	Sprite();
 	~Sprite();
+	
+
+	/// <summary>
+	/// 生成します。
+	/// </summary>
+	/// <param name="color">色</param>
+	virtual void Create(const Color& color) = 0;
+	
+	/// <summary>
+	/// 生成します。レンダーターゲットの生成は行えません。
+	/// </summary>
+	/// <param name="pTexture">テクスチャのポインタ</param>
+	virtual void Create(Texture* pTexture) = 0;
+
 
 	virtual void Draw() = 0;
+	
+	
 	void SetDrawArea(const Vector2& leftUpPos, const Vector2& rightDownPos)
 	{
 		drawLeftUpPosition = leftUpPos;
