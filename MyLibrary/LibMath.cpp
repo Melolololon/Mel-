@@ -315,6 +315,18 @@ void LibMath::GetAStarCalcResult
 
 	}
 
+
+	//ベクトル計算と代入
+
+	//リサイズ
+	auto minRouteNodesArrayNum = minRouteNodes.size();
+	routeVector.resize(minRouteNodesArrayNum - 1);
+
+	//計算と代入
+	for(int i = 0 ,size = routeVector.size();i < size ;i++)
+	{
+		routeVector[i] = minRouteNodes[i + 1].position - minRouteNodes[i].position;
+	}
 }
 
 #pragma endregion
