@@ -94,6 +94,8 @@ void Play::Initialize()
 		nodes
 	);
 
+	int a = 0;
+
 }
 void Play::Update()
 {

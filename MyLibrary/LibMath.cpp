@@ -94,10 +94,138 @@ void LibMath::GetAStarCalcResult
 (
 	const Vector2& startPos,
 	const Vector2& endPos,
-	const std::vector< std::vector<AStarNode>>& nodes,
+	std::vector< std::vector<AStarNode>>& nodes,
 	std::vector<Vector2>& routeVector
 )
 {
+
+	//スタートに一番近い分を隣接ノードと選んだノードを前のノードに選ぶ?
+	//そうじゃなくて、隣接してるかつ、計算結果が最短距離と同等のノードを配列に格納し、
+	//ゴールについたらそのノードをたどっていき、ゴールにたどり着くルートを見つける
+
+
+
+	//スタート地点とゴール地点がどこに所属するか調べる
+
+	//経路のノードの添え字
+	std::vector<int>routeIndexX(1);
+	routeIndexX.reserve(9);
+	std::vector<int>routeIndexY(1);
+	routeIndexY.reserve(9);
+	//ノードの配列のゴール地点の場所を示す添え字
+	int endX = 0;
+	int endY = 0;
+
+
+	//スタート地点に一番近いノードの距離を格納する変数
+	float startMinDistance = FLT_MAX;
+	//ゴール地点に一番近いノードの距離を格納する変数
+	float endMinDistance = FLT_MAX;
+	
+	float distance = 0.0f;
+
+	auto nodeXArrayNum = nodes[0].size();
+	auto nodeYArrayNum = nodes.size();
+	for(int y = 0; y < nodeYArrayNum;y++)
+	{
+		for (int x = 0; x < nodeXArrayNum; x++)
+		{
+			distance = CalcDistance2D(nodes[y][x].position, startPos);
+			if (distance <= startMinDistance)
+			{
+				startMinDistance = distance;
+				routeIndexX[0] = x;
+				routeIndexY[0] = y;
+			}
+
+			distance = CalcDistance2D(nodes[y][x].position, endPos);
+			if (distance <= endMinDistance)
+			{
+				endMinDistance = distance;
+				endX = x;
+				endY = y;
+			}
+		}
+	}
+
+
+	////最短距離のノードの配列
+	//std::vector<AStarNode*>shortestDistanceNodes;
+
+	//スタート地点からゴール地点の距離を求める
+
+	//ゴールのノードまでの距離を求めるラムダ式
+	auto CalcEndNodeDistance = [&endX, &endY]
+	(
+		const int x,
+		const int y
+		)
+	{
+		//Xの差
+		int startXToEndXDiff = abs(x - endX);
+		//Yの差
+		int startYToEndYDiff = abs(y - endY);
+
+		//Xの差とYの差のどちらが大きいか求める。斜め移動ありの場合、大きいほうが最短距離
+		if (startXToEndXDiff >= startYToEndYDiff)return startXToEndXDiff;
+		return startYToEndYDiff;
+
+	};
+
+	//最短距離を求める
+	const int minDistance = CalcEndNodeDistance(routeIndexX[0], routeIndexY[0]);
+	
+	//次routeIndexに入れる数値の配列
+	std::vector<int>nextRouteIndexX;
+	std::vector<int>nextRouteIndexY;
+
+	for(int i = 0;;i++)
+	{
+		for(int j = 0,size = routeIndexX.size(); j < size;j++)
+		{
+			//自分の周り8方向求める
+			for(int y = -1; y < 2;y++)
+			{
+				int indexY = routeIndexY[j] + y;
+				//範囲外アクセス防止
+				if (routeIndexY[j] + y <= -1
+					|| routeIndexY[j] + y >= nodeYArrayNum)continue;
+
+				for (int x = -1; x < 2; x++)
+				{
+					int indexX = routeIndexX[j] + x;
+					//範囲外アクセス防止
+					if (routeIndexX[j] + x <= -1
+						|| routeIndexX[j] + x >= nodeXArrayNum)continue;
+
+					//ゴールと同じだったら計算終了
+					if(indexX == endX 
+						&& indexY== endY)
+					{
+
+					}
+
+					//ノードからゴールの距離 + i + コストと最短距離が同じ
+					//かつ、障害物がなければ入る
+					AStarNode& node = nodes[indexY][indexX];
+					if(CalcEndNodeDistance(indexX, indexY) + i + node.cost == minDistance
+						&& !node.hitObjectNode)
+					{
+						//計算対象ノードに追加
+						nextRouteIndexX.push_back(indexX);
+						nextRouteIndexY.push_back(indexY);
+					}
+				}
+			}
+
+		}
+
+		//次の計算対象ノードの添え字を入れる
+		routeIndexX = nextRouteIndexX;
+		routeIndexY = nextRouteIndexY;
+
+	}
+
 }
 
 #pragma endregion
@@ -204,6 +332,17 @@ double LibMath::GetDoublePI()
 
 
 #pragma region vector2
+
+float LibMath::CalcDistance2D(const Vector2& pos1, const Vector2& pos2)
+{
+	return sqrt
+	(
+		(pos1.x - pos2.x) * (pos1.x - pos2.x) +
+		(pos1.y - pos2.y) * (pos1.y - pos2.y)
+	);
+}
+
+
 char LibMath::PointLeftRightCheck(const Vector2& vector, const Vector2& point)
 {
 	float num = Vector2Cross(vector, point);

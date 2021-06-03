@@ -22,6 +22,12 @@ struct AStarNode
 	//進行不能オブジェクトと重なっているノード
 	bool hitObjectNode = false;
 
+	//自分を隣接してるノードと指定したノードのポインタの配列
+	std::vector<AStarNode*> pAStarNodes;
+
+	//コスト
+	UINT cost = 1;
+
 };
 
 class LibMath
@@ -53,6 +59,7 @@ public:
 		const bool upPlus
 	);
 
+	//この関数でコストが1じゃないオブジェクトとそのコストを渡すようにする
 	/// <summary>
 	/// ノードが進行不能オブジェクトにヒットしてるかを確認します。
 	/// </summary>
@@ -77,7 +84,7 @@ public:
 	(
 		const Vector2& startPos,
 		const Vector2& endPos,
-		const std::vector< std::vector<AStarNode>>& nodes,
+		std::vector< std::vector<AStarNode>>& nodes,
 		std::vector<Vector2>& routeVector
 	);
 
@@ -144,6 +151,16 @@ public:
 
 
 #pragma region vector2
+
+
+	/// <summary>
+	/// 2つの座標の距離を取得します
+	/// </summary>
+	/// <param name="pos1">座標1</param>
+	/// <param name="pos2">座標2</param>
+	/// <returns></returns>
+	static float CalcDistance2D(const Vector2& pos1, const Vector2& pos2);
+
 
 	/// <summary>
 	/// 左右判定を行います。点がベクトルより右の場合は1、左の場合は-1、ベクトル上の場合は0を返します。
