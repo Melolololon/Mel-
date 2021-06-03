@@ -72,6 +72,28 @@ void Play::Initialize()
 	//curve = std::make_unique<Curve>();
 	//curve->SetPoints(points);
 
+	Vector2 leftUpPos = Vector2(-10, 10);
+	Vector2 rightDownPos = Vector2(10, -10);
+	std::vector<std::vector<AStarNode>>nodes;
+	LibMath::SetAStarNodePosition
+	(
+		leftUpPos,
+		rightDownPos,
+		2,
+		2,
+		nodes,
+		true
+	);
+
+	std::vector<Vector2> blockPos = { Vector2(10, -10) };
+	std::vector<Vector2> blockSize = { Vector2(2, 2) };
+	LibMath::SetAStarNodeHitObjectNodeFlag
+	(
+		blockPos,
+		blockSize,
+		nodes
+	);
+
 }
 void Play::Update()
 {

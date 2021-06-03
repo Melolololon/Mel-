@@ -2,6 +2,119 @@
 #include"DirectInput.h"
 
 
+#pragma region 最短経路
+
+
+void LibMath::SetAStarNodePosition
+(
+	const Vector2& leftUpPos,
+	const Vector2& rightDownPos,
+	const UINT& nodeNumX,
+	const UINT& nodeNumY,
+	std::vector< std::vector<AStarNode>>& nodes,
+	const bool upPlus
+)
+{
+	//マスのサイズを求める
+	Vector2 size = rightDownPos - leftUpPos;
+	size.x = abs(size.x);
+	size.y = abs(size.y);
+	if (nodeNumX >= 1) size.x /= nodeNumX - 1;
+	if (nodeNumY >= 1) size.y /= nodeNumY - 1;
+
+	//ノードリサイズ
+	nodes.resize(nodeNumY, std::vector<AStarNode>(nodeNumX));
+	
+	//ノードの座標をセットしていく
+	Vector2 addPos = 0;
+	for (int y = 0; y < nodeNumY; y++)
+	{
+		for (int x = 0; x < nodeNumX; x++)
+		{
+			if (upPlus)addPos = Vector2(size.x * x, size.y * -y);
+			else addPos = Vector2(size.x * x, size.y * y);
+			nodes[y][x].position = leftUpPos + addPos;
+		}
+	}
+
+}
+
+void LibMath::SetAStarNodeHitObjectNodeFlag
+(
+	const std::vector<Vector2>& hitObjectsPos,
+	const std::vector<Vector2>& hitObjectsSize,
+	std::vector< std::vector<AStarNode>>& nodes
+)
+{
+	//サイズを求める
+	Vector2 size = 0;
+	size.x = abs(nodes[0][0].position.x - nodes[0][1].position.x);
+	
+	float smallPos = 0.0f;
+	float bigPos = 0.0f;
+	if(nodes[0][0].position.y >= nodes[1][0].position.y)
+	{
+		bigPos = nodes[0][0].position.y;
+		smallPos = nodes[1][0].position.y;
+	}
+	else
+	{
+		bigPos = nodes[1][0].position.y;
+		smallPos = nodes[0][0].position.y;
+	}
+	size.y = abs(smallPos - bigPos);
+	
+	//判定
+	auto nodesXNum = nodes[0].size();
+	auto nodesYNum = nodes.size();
+	auto hitObjectNum = hitObjectsPos.size();
+	
+	//当たってるか確認
+	Vector2 addPos = 0;
+	for (int y = 0; y < nodesYNum; y++)
+	{
+		for (int x = 0; x < nodesXNum; x++)
+		{
+			for (int i = 0; i < hitObjectNum; i++)
+			{
+					nodes[y][x].hitObjectNode =
+					LibMath::RectAndRectCollision
+					(
+						nodes[y][x].position,
+						size,
+						hitObjectsPos[i],
+						hitObjectsSize[i]
+					);
+			}
+		}
+	}
+}
+
+void LibMath::GetAStarCalcResult
+(
+	const Vector2& startPos,
+	const Vector2& endPos,
+	const std::vector< std::vector<AStarNode>>& nodes,
+	std::vector<Vector2>& routeVector
+)
+{
+}
+
+#pragma endregion
+
+
+
+
+int LibMath::Factorial(const int num)
+{
+	int returnNum = num;
+	for(int i = num;i > -1;i--)
+	{
+		returnNum *= i;
+	}
+	return returnNum;
+}
+
 int LibMath::Pow(const float num, const int index)
 {
 	
@@ -197,8 +310,7 @@ bool LibMath::RectAndRectCollision
 	if (size2.x + pos2.x > pos1.x &&
 		pos2.x < size1.x + pos1.x &&
 		pos2.y < size1.y + pos1.y &&
-		size2.y + pos2.y > pos1.y)
-		return true;
+		size2.y + pos2.y > pos1.y) return true;
 	return false;
 }
 
