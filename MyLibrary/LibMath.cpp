@@ -122,15 +122,16 @@ void LibMath::GetAStarCalcResult
 	//ゴール地点に一番近いノードの距離を格納する変数
 	float endMinDistance = FLT_MAX;
 	
-	float distance = 0.0f;
-
 	auto nodeXArrayNum = nodes[0].size();
 	auto nodeYArrayNum = nodes.size();
 	for(int y = 0; y < nodeYArrayNum;y++)
 	{
 		for (int x = 0; x < nodeXArrayNum; x++)
 		{
+			float distance = 0.0f;
+
 			distance = CalcDistance2D(nodes[y][x].position, startPos);
+			
 			if (distance <= startMinDistance)
 			{
 				startMinDistance = distance;
@@ -179,6 +180,10 @@ void LibMath::GetAStarCalcResult
 	std::vector<int>nextRouteIndexX;
 	std::vector<int>nextRouteIndexY;
 
+	//最短経路候補の経路のノードを格納する配列
+	//[ルートごと][ルートのノードごと]
+	std::vector<std::vector<AStarNode&>>candidateRouteNodes;
+
 	for(int i = 0;;i++)
 	{
 		for(int j = 0,size = routeIndexX.size(); j < size;j++)
@@ -214,6 +219,7 @@ void LibMath::GetAStarCalcResult
 						//計算対象ノードに追加
 						nextRouteIndexX.push_back(indexX);
 						nextRouteIndexY.push_back(indexY);
+						
 					}
 				}
 			}
