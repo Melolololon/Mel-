@@ -174,8 +174,9 @@ void LibMath::GetAStarCalcResult
 	};
 
 	//最短距離を求める
-	const int minDistance = CalcEndNodeDistance(routeIndexX[0], routeIndexY[0]);
-	
+	int minNodeNum = CalcEndNodeDistance(routeIndexX[0], routeIndexY[0]);
+	int secondMinNodeNum = INT_MAX;
+
 	//次routeIndexに入れる数値の配列
 	std::vector<int>nextRouteIndexX;
 	std::vector<int>nextRouteIndexY;
@@ -183,9 +184,16 @@ void LibMath::GetAStarCalcResult
 	//最短経路候補の経路のノードを格納する配列
 	//[ルートごと][ルートのノードごと]
 	std::vector<std::vector<AStarNode&>>candidateRouteNodes;
+	
+	//nodeNumがsecondNumDistanceと同じノードを格納(最短距離での探索が不可能になった時用)
+	std::vector<int>secondNumRouteNodesIndexX;
+	std::vector<int>secondNumRouteNodesIndexY;
 
 	for(int i = 0;;i++)
 	{
+		//現在の最短距離で計算できるかどうか
+		bool noneMinDistanceRoute = false;
+
 		for(int j = 0,size = routeIndexX.size(); j < size;j++)
 		{
 			//自分の周り8方向求める
@@ -210,21 +218,51 @@ void LibMath::GetAStarCalcResult
 
 					}
 
-					//ノードからゴールの距離 + i + コストと最短距離が同じ
-					//かつ、障害物がなければ入る
+					//ノードを取得
 					AStarNode& node = nodes[indexY][indexX];
-					if(CalcEndNodeDistance(indexX, indexY) + i + node.cost == minDistance
+
+					//minDistanceと比較する数値(ノードからゴールの距離 + i + コスト)
+					int nodeNum = CalcEndNodeDistance(indexX, indexY) + i + node.cost;
+					
+					//minDistanceと比較する数値と最短距離が同じ
+					//かつ、障害物がなければ入る
+					if(nodeNum == minNodeNum
 						&& !node.hitObjectNode)
 					{
 						//計算対象ノードに追加
 						nextRouteIndexX.push_back(indexX);
 						nextRouteIndexY.push_back(indexY);
 						
+						noneMinDistanceRoute = true;
+					}
+
+					//最大じゃないかつ、今セットされてる値よりも小さい値
+					//(つまり、2番目に大きい値)かどうかの確認
+					if (nodeNum != minNodeNum
+						&& secondMinNodeNum > nodeNum)
+					{
+						secondMinNodeNum = nodeNum;
+						secondNumRouteNodesIndexX.push_back(indexX);
+						secondNumRouteNodesIndexY.push_back(indexY);
 					}
 				}
 			}
 
 		}
+
+		//現在の値で探索できなかったら入る
+		if(!noneMinDistanceRoute)
+		{
+			//最短数値を書き換え
+			minNodeNum = secondMinNodeNum;
+			secondMinNodeNum = INT_MAX;
+
+			//2番目に少ない値のノードの添え字を代入し、これらで探索開始する
+			nextRouteIndexX = secondNumRouteNodesIndexX;
+			nextRouteIndexY = secondNumRouteNodesIndexY;
+
+		}
+
 
 		//次の計算対象ノードの添え字を入れる
 		routeIndexX = nextRouteIndexX;
