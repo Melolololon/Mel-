@@ -213,6 +213,9 @@ void LibMath::GetAStarCalcResult
 	//計算終了かどうか
 	bool calcEnd = false;
 
+	//secondじゃないルートがあるかどうか(最短候補があるかどうか)
+	bool firstRoute = false;
+
 	for(int i = 0;;i++)
 	{
 		//現在の最短距離で計算できるかどうか
@@ -249,13 +252,15 @@ void LibMath::GetAStarCalcResult
 					//ノードを取得
 					const AStarNode& node = nodes[indexY][indexX];
 
+					//障害物があったら計算しない
+					if (node.hitObjectNode)continue;
+
 					//minDistanceと比較する数値(ノードからゴールの距離 + i + コスト)
 					int nodeNum = CalcEndNodeDistance(indexX, indexY) + i + node.cost;
 					
 					//minDistanceと比較する数値と最短距離が同じ
 					//かつ、障害物がなければ入る
-					if(nodeNum == minNodeNum
-						&& !node.hitObjectNode)
+					if(nodeNum == minNodeNum)
 					{
 						//計算対象ノードに追加
 						nextRouteIndexX.push_back(indexX);
@@ -290,6 +295,8 @@ void LibMath::GetAStarCalcResult
 						noneMinDistanceRouteCount++;
 
 						routeCheckStop = false;
+
+						firstRoute = true;
 					}
 					//最短だけど障害物があって探索終了する場合入る
 					else if (nodeNum == minNodeNum
@@ -345,6 +352,12 @@ void LibMath::GetAStarCalcResult
 				if (calcEnd)break;
 			}
 
+			//最短ルートがないかつ、ルートが配列にあったら、最短ルートリストからルートを消す
+			if(!firstRoute
+				&& candidateRouteNodePositions.size() != 0)
+			{
+				candidateRouteNodePositions.erase(candidateRouteNodePositions.begin() + noneMinDistanceRouteCount);
+			}
 
 			//進行不能だった場合入る
 			if (routeCheckStop)
