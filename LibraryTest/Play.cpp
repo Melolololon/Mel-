@@ -79,19 +79,28 @@ void Play::Initialize()
 	(
 		leftUpPos,
 		rightDownPos,
-		2,
-		2,
+		3,
+		3,
 		nodes,
 		true
 	);
 
-	std::vector<Vector2> blockPos = { Vector2(10, -10) };
-	std::vector<Vector2> blockSize = { Vector2(2, 2) };
+	std::vector<Vector2> blockPos = { Vector2(0, 0) ,Vector2(10,0)};
+	std::vector<Vector2> blockSize = { Vector2(2, 2),Vector2(2, 2) };
 	LibMath::SetAStarNodeHitObjectNodeFlag
 	(
 		blockPos,
 		blockSize,
 		nodes
+	);
+
+	std::vector<Vector2>vectors;
+	LibMath::GetAStarCalcResult
+	(
+		Vector2(-10,10),
+		Vector2(10,-10),
+		nodes,
+		vectors
 	);
 
 	int a = 0;

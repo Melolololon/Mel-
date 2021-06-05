@@ -84,7 +84,7 @@ public:
 	(
 		const Vector2& startPos,
 		const Vector2& endPos,
-		std::vector< std::vector<AStarNode>>& nodes,
+		const std::vector< std::vector<AStarNode>>& nodes,
 		std::vector<Vector2>& routeVector
 	);
 

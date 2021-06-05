@@ -189,6 +189,7 @@
     <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="DirectX12.cpp" />
     <ClCompile Include="DirectXTexLoader.cpp" />
+    <ClCompile Include="Easing.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FbxModel.cpp" />
     <ClCompile Include="FreamTimer.cpp" />
@@ -495,6 +496,7 @@
     <ClInclude Include="CreatePolygon.h" />
     <ClInclude Include="DirectInput.h" />
     <ClInclude Include="DirectXTexLoader.h" />
+    <ClInclude Include="Easing.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FbxModel.h" />
     <ClInclude Include="FreamTimer.h" />
