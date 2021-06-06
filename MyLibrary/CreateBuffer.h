@@ -99,6 +99,7 @@ public:
 		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 		ID3D12Resource** textureBuffer
 	);
+
 	void CreateOneColorTextureBuffer
 	(
 		const Color& color,
@@ -106,6 +107,14 @@ public:
 		ID3D12Resource** textureBuffer
 	);
 
+	void CreateDepthBuffer
+	(
+		const D3D12_HEAP_PROPERTIES& depthheapprop,
+		const D3D12_RESOURCE_DESC& debthresdesc,
+		const 	D3D12_CLEAR_VALUE& depthclearvalue,
+		const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+		ID3D12Resource** depthBuffer
+	);
 
 	void CreateDescriptorHeap
 	(

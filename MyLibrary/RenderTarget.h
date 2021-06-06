@@ -18,6 +18,7 @@ private:
 	static std::vector<RenderTarget*>pRenderTarget;
 	static float clearColor[4];
 
+
 	ComPtr<ID3D12Resource>textureBuffer;
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
 
@@ -29,8 +30,20 @@ private:
 	//カメラのポインタ
 	Camera* pCamera = nullptr;
 public:
-	RenderTarget();
+	RenderTarget(const Color& color);
 	~RenderTarget();
+
+	//void Create(const Color& color);
+
+	void Initialize();
+
+	/// <summary>
+	/// 描画前の処理
+	/// </summary>
+	void PreDrawProcess();
+
+	void Draw()override;
+	static void AllDraw();
 
 	/// <summary>
 	/// レンダーターゲットにカメラをセットします。レンダーターゲットには、セットされたカメラに映っているものが描画されます。

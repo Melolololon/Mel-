@@ -976,6 +976,7 @@ void DirectX12::LoopStartProcess()
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;*/
 
+	//板ポリの状態を、RESOURCEからRTに切り替え
 	barrierDesc.Transition.pResource = postEffectResources[0].Get();
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -1049,6 +1050,9 @@ void DirectX12::LoopEndProcess()
 
 	Model::SetCommonConstData(commonData);
 
+#pragma region ポストエフェクト処理
+
+
 	//ポストエフェクトレンダーターゲットのMap
 	DirectX::XMMATRIX peWorldMat = DirectX::XMMatrixIdentity();
 	peWorldMat *= DirectX::XMMatrixScaling
@@ -1077,6 +1081,9 @@ void DirectX12::LoopEndProcess()
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	cmdList->ResourceBarrier(1, &barrierDesc);
+
+#pragma endregion
+
 
 	//板ポリをバックバッファーに描画する準備
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();

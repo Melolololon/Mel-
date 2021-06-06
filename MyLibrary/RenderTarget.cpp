@@ -5,8 +5,9 @@
 
 std::vector<RenderTarget*>RenderTarget::pRenderTarget;
 float RenderTarget::clearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
-RenderTarget::RenderTarget():
-	Sprite2D(nullptr)
+
+RenderTarget::RenderTarget(const Color& color):
+	Sprite2D(color)
 {
 	//頂点、定数バッファ作成
 	CreateBuffer();
@@ -22,6 +23,12 @@ RenderTarget::RenderTarget():
 		Library::GetWindowHeight(),
 		1,0,1,0,D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
 	);
+
+	//色セット
+	clearColor[0] = color.r / 255;
+	clearColor[1] = color.g / 255;
+	clearColor[2] = color.b / 255;
+	clearColor[3] = color.a / 255;
 
 	//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
 	D3D12_CLEAR_VALUE peClesrValue;
@@ -83,12 +90,156 @@ RenderTarget::RenderTarget():
 #pragma endregion
 
 #pragma region 深度バッファ_ヒープ_ビュー作成
+	//深度用ヒープ作成
+	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
+	dsvHeapDesc.NumDescriptors = 1;
+	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	result = device->CreateDescriptorHeap
+	(
+		&dsvHeapDesc,
+		IID_PPV_ARGS(&depthHeap)
+	);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE depthHeapHandle = depthHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_RESOURCE_DESC depthResDesc = CD3DX12_RESOURCE_DESC::Tex2D
+	(
+		DXGI_FORMAT_D32_FLOAT,
+		Library::GetWindowWidth(),
+		Library::GetWindowHeight(),
+		1, 0, 1, 0,
+		D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL
+	);
+
+	CreateBuffer::GetInstance()->CreateDepthBuffer
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), 
+		depthResDesc, 
+		CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D32_FLOAT, 1.0f, 0), 
+		depthHeapHandle, 
+		&depthBuffer
+	);
+
 
 #pragma endregion
 
 
 	pipeline = defaultPipeline.GetPipelineState();
 	pRenderTarget.push_back(this);
+
+	//ウィンドウサイズをスケールに
+	constData.scale = DirectX::XMFLOAT2(Library::GetWindowWidth(), Library::GetWindowHeight());
 }
 
-RenderTarget::~RenderTarget(){}
+RenderTarget::~RenderTarget() {}
+
+
+void RenderTarget::Initialize()
+{
+}
+
+
+void RenderTarget::PreDrawProcess()
+{
+	//セット
+	cmdList->ResourceBarrier
+	(
+		1, 
+		&CD3DX12_RESOURCE_BARRIER::Transition
+		(
+			textureBuffer.Get(),
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			D3D12_RESOURCE_STATE_RENDER_TARGET
+		)
+	);
+
+	//レンダーターゲットセット
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+	cmdList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+
+	//画面のクリア
+	cmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+
+
+#pragma region ビューポート_シザー矩形
+
+	D3D12_VIEWPORT viewport{};
+	viewport.Width = Library::GetWindowWidth();
+	viewport.Height = Library::GetWindowHeight();
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+	cmdList->RSSetViewports(1, &viewport);
+
+
+	D3D12_RECT scissorrect{};
+	scissorrect.left = 0;
+	scissorrect.right = scissorrect.left + Library::GetWindowWidth();
+	scissorrect.top = 0;
+	scissorrect.bottom = scissorrect.top + Library::GetWindowHeight();
+	cmdList->RSSetScissorRects(1, &scissorrect);
+
+#pragma endregion
+}
+
+void RenderTarget::Draw()
+{
+	ConstDataMat();
+	MatrixMap(nullptr);
+
+	//戻す
+	cmdList->ResourceBarrier
+	(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition
+		(
+			textureBuffer.Get(),
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+		)
+	);
+
+	//パイプラインセット
+	cmdList->SetPipelineState(pipeline.Get());
+
+
+	//コマンドセット
+	std::vector<ID3D12DescriptorHeap*> ppHeaps;
+
+	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
+
+	//頂点
+	cmdList->IASetVertexBuffers(0, 1, &vertexBufferSet.vertexBufferView);
+
+	//ヒープ
+	ppHeaps.push_back(descHeap.Get());
+	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
+
+	//テクスチャ
+	gpuDescHandle = descHeap->GetGPUDescriptorHandleForHeapStart();
+	cmdList->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
+
+	//定数
+	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	(
+		gpuDescHandle,
+		1,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
+
+	cmdList->DrawInstanced(4, 1, 0, 0);
+}
+
+void RenderTarget::AllDraw()
+{
+	//共通のやつをセット
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	cmdList->SetGraphicsRootSignature(rootSignature.Get());
+
+	//ここで各レンダーターゲットのDrawを呼び出す
+}
+

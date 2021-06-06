@@ -19,13 +19,15 @@ private:
 	//2Dのカメラは固定だから、行列生成関数このクラスに持たせてもいいかも
 	static DirectX::XMMATRIX cameraMatrix;
 
-	void MatrixMap(Texture* texture);
+
 	
 	void Create(const Color& color)override;
 	void Create(Texture* pTexture)override;
 protected:
 	static PipelineState defaultPipeline;
 
+
+	void MatrixMap(Texture* texture);
 
 public:
 	Sprite2D(){}

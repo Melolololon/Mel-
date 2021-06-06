@@ -30,8 +30,6 @@ private:
 #pragma region •Ï”
 	static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 10;
 	
-	static ID3D12GraphicsCommandList* cmdList;
-	static ComPtr<ID3D12RootSignature>rootSignature;
 	static ComPtr<ID3D12PipelineState>defaultPipeline;
 
 #pragma endregion
@@ -43,9 +41,11 @@ private:
 
 protected:
 
+	static ID3D12GraphicsCommandList* cmdList;
 	static ID3D12Device* device;
 	ComPtr<ID3D12PipelineState> pipeline;
 	std::array<SpriteVertex, 4> vertices;
+	static ComPtr<ID3D12RootSignature>rootSignature;
 
 
 	//•`‰æ‚·‚é‚Æ‚«‚Ì¶ã‚ÌÀ•W
