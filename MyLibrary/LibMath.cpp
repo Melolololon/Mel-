@@ -109,18 +109,21 @@ void LibMath::GetAStarCalcResult
 	//障害物があるノードに隣接してるかつ、XまたはYが障害物があるノードのX、Yに移動前より近づくようだったら斜め移動禁止
 	//多分基本的に1度しか最短ルート候補認定しないから、自分を選んだノードの座標をそれぞれのノードに持たせちゃってもいいかも
 	//同じところ通るパターンある。無理
+	 
+	
 	//途中で分岐したらどうするか
 	//もう一つ少ないコストのノードがあったら、今のルートの配列をコピーして新しい配列を作る?
 	//スタート基準で調べるときは上の処理いらん
-
+	//これsecondでもやる?
 
 	//スタート地点とゴール地点がどこに所属するか調べる
 
-	//経路のノードの添え字
+	//経路のノードの添え字(これに入ってる添え字でノードを取得して計算する)
 	std::vector<int>routeIndexX(1);
 	routeIndexX.reserve(9);
 	std::vector<int>routeIndexY(1);
 	routeIndexY.reserve(9);
+
 	//ノードの配列のゴール地点の場所を示す添え字
 	int endX = 0;
 	int endY = 0;
@@ -158,8 +161,10 @@ void LibMath::GetAStarCalcResult
 		}
 	}
 
+	//スタートのノードのインデックスを代入
 	int startNodeIndexX = routeIndexX[0];
 	int startNodeIndexY = routeIndexY[0];
+
 
 	//スタート地点からゴール地点の距離を求める
 
@@ -181,8 +186,14 @@ void LibMath::GetAStarCalcResult
 
 	};
 
+
+	//最短ルート上のノード(最短ルート上のノードをいれる配列)
+	std::vector<Vector2>minRouteNodePositions;
+
 	//最短距離を求める
+	//最短距離を入れる変数
 	int minNodeNum = CalcEndNodeDistance(routeIndexX[0], routeIndexY[0]);
+	//2番目を入れる変数
 	int secondMinNodeNum = INT_MAX;
 
 	//次routeIndexに入れる数値の配列
@@ -194,11 +205,6 @@ void LibMath::GetAStarCalcResult
 	std::vector<std::vector<Vector2>>candidateRouteNodePositions;
 	std::vector<std::vector<Vector2>>secondCandidateRouteNodePositions;
 
-	
-
-	//最短ルート上のノード
-	std::vector<Vector2>minRouteNodePositions;
-	
 	//打ち切りフラグ(これがtrueだと計算しない)
 	std::vector<std::vector<bool>>calcStopFlag(nodeYArrayNum, std::vector<bool>(nodeXArrayNum, false));
 
@@ -206,15 +212,14 @@ void LibMath::GetAStarCalcResult
 	std::vector<int>secondNumRouteNodesIndexX;
 	std::vector<int>secondNumRouteNodesIndexY;
 
-	//candidateRouteNodesに追加するループかどうか
+	//candidateRouteNodesにルート(配列)を追加するループかどうか
 	bool addCandidateRouteNodesLoop = true;
 	bool addSecondCandidateRouteNodesLoop = true;
 
 	//計算終了かどうか
 	bool calcEnd = false;
 
-	//secondじゃないルートがあるかどうか(最短候補があるかどうか)
-	bool firstRoute = false;
+	
 
 	for(int i = 0;;i++)
 	{
@@ -222,12 +227,15 @@ void LibMath::GetAStarCalcResult
 		bool noneMinDistanceRoute = false;
 		
 		//現在の最短距離で計算できた回数
-		int noneMinDistanceRouteCount = 0;
+		int calcCurrentMinDistanceRouteCount = 0;
 
 		for(int j = 0,size = routeIndexX.size(); j < size;j++)
 		{
-			//進行不能になったかどうか(今のノードから)
+			//進行不能になったかどうか(今のノードから進行できなくなったかどうか)
 			bool routeCheckStop = true;
+
+			//secondじゃないルートがあるかどうか(最短ルート候補があるかどうか)
+			bool firstRoute = false;
 
 			//自分の周り8方向求める
 			for(int y = -1; y < 2;y++)
@@ -266,33 +274,58 @@ void LibMath::GetAStarCalcResult
 						nextRouteIndexX.push_back(indexX);
 						nextRouteIndexY.push_back(indexY);
 						
-						if(addCandidateRouteNodesLoop)
-						{
-							//ノードの座標の配列を追加
-							candidateRouteNodePositions.push_back(std::vector<Vector2>(2, node.position));
 
-							//スタートと現在のノードの座標を追加
-							auto indexY = candidateRouteNodePositions.size() - 1;
-							candidateRouteNodePositions[indexY][0] = nodes[startNodeIndexY][startNodeIndexX].position;
-							candidateRouteNodePositions[indexY][1] = node.position;
+						//ここのif内の処理いらん?if (!firstRoute)のelseの処理書けば問題なさそう
+						//最初は2個ノード入れるから分けないとダメ?
+
+						//一個目の最短ルートの場合、こちらに入る
+						if (!firstRoute)
+						{
+							if (addCandidateRouteNodesLoop)
+							{
+								//ノードの座標の配列を追加
+								candidateRouteNodePositions.push_back(std::vector<Vector2>(2, node.position));
+
+								//スタートと現在のノードの座標を追加
+								auto indexY = candidateRouteNodePositions.size() - 1;
+								candidateRouteNodePositions[indexY][0] = nodes[startNodeIndexY][startNodeIndexX].position;
+								candidateRouteNodePositions[indexY][1] = node.position;
+							}
+							else
+							{
+								//ノードの座標を追加
+								candidateRouteNodePositions[calcCurrentMinDistanceRouteCount].push_back(node.position);
+							}
 						}
+						//2個目以降はこっち(コピーしてルート作るため)
 						else
 						{
-							//ノードの座標を追加
-							candidateRouteNodePositions[noneMinDistanceRouteCount].push_back(node.position);
+							//別のルートをコピー
+							std::vector<Vector2>copyRoute = candidateRouteNodePositions[calcCurrentMinDistanceRouteCount - 1];
+							
+							//最後(別のルートのノード)と入れ替え
+							copyRoute[copyRoute.size() - 1] = node.position;
+
+							//コピーしたルートの後に追加(nextRouteIndexと順番を統一するため)
+							//これsecondでもやる?
+							candidateRouteNodePositions.insert
+							(
+								candidateRouteNodePositions.begin() + calcCurrentMinDistanceRouteCount, 
+								copyRoute
+							);
 						}
 
 						//ゴールと同じだったら計算終了
 						if (indexX == endX
 							&& indexY == endY)
 						{
-							minRouteNodePositions = candidateRouteNodePositions[noneMinDistanceRouteCount];
+							minRouteNodePositions = candidateRouteNodePositions[calcCurrentMinDistanceRouteCount];
 							calcEnd = true;
 							break;
 						}
 
 						noneMinDistanceRoute = true;
-						noneMinDistanceRouteCount++;
+						calcCurrentMinDistanceRouteCount++;
 
 						routeCheckStop = false;
 
@@ -340,7 +373,7 @@ void LibMath::GetAStarCalcResult
 						else
 						{
 							//ノードの座標を追加
-							secondCandidateRouteNodePositions[noneMinDistanceRouteCount].push_back(node.position);
+							secondCandidateRouteNodePositions[calcCurrentMinDistanceRouteCount].push_back(node.position);
 						}
 
 
@@ -356,14 +389,14 @@ void LibMath::GetAStarCalcResult
 			if(!firstRoute
 				&& candidateRouteNodePositions.size() != 0)
 			{
-				candidateRouteNodePositions.erase(candidateRouteNodePositions.begin() + noneMinDistanceRouteCount);
+				candidateRouteNodePositions.erase(candidateRouteNodePositions.begin() + calcCurrentMinDistanceRouteCount);
 			}
 
 			//進行不能だった場合入る
 			if (routeCheckStop)
 			{
 				//ルート0で入った場合、ゴールに到達不可能なので、計算終了
-				if (noneMinDistanceRouteCount == 0)
+				if (calcCurrentMinDistanceRouteCount == 0)
 				{
 					calcEnd = true;
 					break;
@@ -371,7 +404,7 @@ void LibMath::GetAStarCalcResult
 				else //そうじゃなかった場合、そのルートは進めないので削除
 				{
 					//ルートを消す
-					candidateRouteNodePositions.erase(candidateRouteNodePositions.begin() + noneMinDistanceRouteCount);
+					candidateRouteNodePositions.erase(candidateRouteNodePositions.begin() + calcCurrentMinDistanceRouteCount);
 				}
 			}
 

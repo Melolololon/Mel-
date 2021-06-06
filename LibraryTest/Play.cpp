@@ -94,6 +94,7 @@ void Play::Initialize()
 		nodes
 	);
 
+
 	std::vector<Vector2>vectors;
 	LibMath::GetAStarCalcResult
 	(
