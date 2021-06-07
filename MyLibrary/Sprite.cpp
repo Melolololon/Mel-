@@ -107,7 +107,7 @@ void Sprite::SetCmdList(Texture* texture)
 
 	//テクスチャ
 	UINT heapNum = 0;
-	if (pTexture) texture->GetTextureNumber();
+	if (pTexture)heapNum = texture->GetTextureNumber();
 	
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
