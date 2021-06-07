@@ -15,80 +15,83 @@ RenderTarget::RenderTarget(const Color& color):
 
 	HRESULT result;
 
+	for (int i = 0; i < _countof(textureBuffer); i++) 
+	{
 #pragma region 板ポリのリソース作成
 
-	CD3DX12_RESOURCE_DESC textureDesc = CD3DX12_RESOURCE_DESC::Tex2D
-	(
-		DXGI_FORMAT_R8G8B8A8_UNORM,
-		Library::GetWindowWidth(),
-		Library::GetWindowHeight(),
-		1,0,1,0,D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
-	);
+		CD3DX12_RESOURCE_DESC textureDesc = CD3DX12_RESOURCE_DESC::Tex2D
+		(
+			DXGI_FORMAT_R8G8B8A8_UNORM,
+			Library::GetWindowWidth(),
+			Library::GetWindowHeight(),
+			1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
+		);
 
-	//色セット
-	clearColor[0] = color.r / 255;
-	clearColor[1] = color.g / 255;
-	clearColor[2] = color.b / 255;
-	clearColor[3] = color.a / 255;
+		//色セット
+		clearColor[0] = color.r / 255;
+		clearColor[1] = color.g / 255;
+		clearColor[2] = color.b / 255;
+		clearColor[3] = color.a / 255;
 
-	//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
-	D3D12_CLEAR_VALUE peClesrValue;
-	peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
+		//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
+		D3D12_CLEAR_VALUE peClesrValue;
+		peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
 
-	result = device->CreateCommittedResource
-	(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-		D3D12_HEAP_FLAG_NONE,
-		&textureDesc,
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-		&peClesrValue,
-		IID_PPV_ARGS(&textureBuffer)
-	);
+		result = device->CreateCommittedResource
+		(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE,
+			&textureDesc,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			&peClesrValue,
+			IID_PPV_ARGS(&textureBuffer[i])
+		);
 
-	//ヒープ作成
-	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
-	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	peHeapDesc.NumDescriptors = 1;
-	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	peHeapDesc.NodeMask = 0;
-	result = device->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&descHeap));
+		//ヒープ作成
+		D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
+		peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		peHeapDesc.NumDescriptors = _countof(textureBuffer);
+		peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		peHeapDesc.NodeMask = 0;
+		result = device->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&descHeap));
 
-	//ビュー作成
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		//ビュー作成
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 
-	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
+		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = 1;
 
-	device->CreateShaderResourceView
-	(
-		textureBuffer.Get(),
-		&srvDesc,
-		descHeap.Get()->GetCPUDescriptorHandleForHeapStart()
-	);
+		device->CreateShaderResourceView
+		(
+			textureBuffer[i].Get(),
+			&srvDesc,
+			descHeap.Get()->GetCPUDescriptorHandleForHeapStart()
+		);
 
 #pragma endregion
 
 #pragma region レンダーターゲットヒープ_ビュー作成
-	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
-	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = 1;
+		D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
+		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+		rtvHeapDesc.NumDescriptors = _countof(textureBuffer);
 
-	result = device->CreateDescriptorHeap
-	(
-		&rtvHeapDesc,
-		IID_PPV_ARGS(&rtvHeap)
-	);
-	assert(SUCCEEDED(result));
+		result = device->CreateDescriptorHeap
+		(
+			&rtvHeapDesc,
+			IID_PPV_ARGS(&rtvHeap)
+		);
+		assert(SUCCEEDED(result));
 
-	device->CreateRenderTargetView
-	(
-		textureBuffer.Get(),
-		nullptr,
-		rtvHeap->GetCPUDescriptorHandleForHeapStart()
-	);
+		device->CreateRenderTargetView
+		(
+			textureBuffer[i].Get(),
+			nullptr,
+			rtvHeap->GetCPUDescriptorHandleForHeapStart()
+		);
 #pragma endregion
+	}
 
 #pragma region 深度バッファ_ヒープ_ビュー作成
 	//深度用ヒープ作成
@@ -146,25 +149,41 @@ void RenderTarget::Initialize()
 
 void RenderTarget::PreDrawProcess()
 {
-	//セット
-	cmdList->ResourceBarrier
-	(
-		1, 
-		&CD3DX12_RESOURCE_BARRIER::Transition
+	for (int i = 0; i < _countof(textureBuffer); i++) 
+	{
+		//セット
+		cmdList->ResourceBarrier
 		(
-			textureBuffer.Get(),
-			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			D3D12_RESOURCE_STATE_RENDER_TARGET
-		)
-	);
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition
+			(
+				textureBuffer[i].Get(),
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+				D3D12_RESOURCE_STATE_RENDER_TARGET
+			)
+		);
+	}
 
 	//レンダーターゲットセット
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[_countof(textureBuffer)];
+	for(int i = 0; i < _countof(textureBuffer);i++)
+	{
+		rtvHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+			i,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+		);
+	}
+
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	cmdList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+	cmdList->OMSetRenderTargets(2, rtvHandle, false, &dsvHandle);
 
 	//画面のクリア
-	cmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	for (int i = 0; i < _countof(textureBuffer); i++) 
+	{
+		cmdList->ClearRenderTargetView(rtvHandle[i], clearColor, 0, nullptr);
+	}
 	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 
@@ -198,16 +217,19 @@ void RenderTarget::Draw()
 	MatrixMap(nullptr);
 
 	//戻す
-	cmdList->ResourceBarrier
-	(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition
+	for (int i = 0; i < _countof(textureBuffer); i++)
+	{
+		cmdList->ResourceBarrier
 		(
-			textureBuffer.Get(),
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-		)
-	);
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition
+			(
+				textureBuffer[i].Get(),
+				D3D12_RESOURCE_STATE_RENDER_TARGET,
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+			)
+		);
+	}
 
 	//パイプラインセット
 	cmdList->SetPipelineState(pipeline.Get());

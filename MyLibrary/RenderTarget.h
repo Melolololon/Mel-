@@ -20,7 +20,7 @@ private:
 	static float clearColor[4];
 
 
-	ComPtr<ID3D12Resource>textureBuffer;
+	ComPtr<ID3D12Resource>textureBuffer[2];
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
 
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;
