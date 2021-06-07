@@ -53,6 +53,7 @@ void Play::Initialize()
 	
 	tex = std::make_unique<Texture>();
 	tex->LoadSpriteTexture("Resources/Texture/testTexture.png");
+	//spr = std::make_unique<Sprite2D>(tex.get());
 	spr = std::make_unique<Sprite2D>(tex.get());
 	/*spr->SetScale(Vector2(256, 256));*/
 	

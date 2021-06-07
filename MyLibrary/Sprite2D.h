@@ -35,6 +35,8 @@ public:
 	Sprite2D(Texture* pTexture);
 	~Sprite2D();
 
+	void InitializeVertices();
+
  	static bool Initialize(const int winWidth,const int winHeight);
 	
 

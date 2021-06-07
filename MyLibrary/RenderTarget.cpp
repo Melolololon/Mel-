@@ -129,6 +129,7 @@ RenderTarget::RenderTarget(const Color& color):
 
 	//ウィンドウサイズをスケールに
 	constData.scale = DirectX::XMFLOAT2(Library::GetWindowWidth(), Library::GetWindowHeight());
+	
 
 	//配列に追加
 	pRenderTarget.push_back(this);
@@ -191,6 +192,8 @@ void RenderTarget::PreDrawProcess()
 
 void RenderTarget::Draw()
 {
+
+
 	ConstDataMat();
 	MatrixMap(nullptr);
 
@@ -234,7 +237,7 @@ void RenderTarget::Draw()
 	//定数セット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
 
-	cmdList->DrawInstanced(4, 1, 0, 0);
+	cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
 }
 
 void RenderTarget::AllDraw()

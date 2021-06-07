@@ -37,26 +37,7 @@ void Sprite::CreateBuffer()
 		&constBuffer
 	);
 	
-	SpriteVertex* vertex;
-	MapVertexBuffer((void**)&vertex);
-	vertices[0].pos = { -0.5f,-0.5f ,0.0f };
-	vertices[1].pos = {-0.5f,0.5f ,0.0f };
-	vertices[2].pos = { 0.5f,-0.5f ,0.0f };
-	vertices[3].pos = { 0.5f,0.5f,0.0f };
-	vertex[0].pos = vertices[0].pos;
-	vertex[1].pos = vertices[1].pos;
-	vertex[2].pos = vertices[2].pos;
-	vertex[3].pos = vertices[3].pos;
-
-	vertices[0].uv = { 0,1 };
-	vertices[1].uv = { 0,0 };
-	vertices[2].uv = { 1,1 };
-	vertices[3].uv = { 1,0 };
-	vertex[0].uv = vertices[0].uv;
-	vertex[1].uv = vertices[1].uv;
-	vertex[2].uv = vertices[2].uv;
-	vertex[3].uv = vertices[3].uv;
-	UnmapVertexBuffer();
+	
 
 
 }

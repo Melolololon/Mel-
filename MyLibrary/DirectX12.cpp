@@ -974,31 +974,31 @@ void DirectX12::LoopStartProcess()
 
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 
-	barrierDesc.Transition.pResource = backBuffer[bbIndex].Get();
+	/*barrierDesc.Transition.pResource = backBuffer[bbIndex].Get();
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;*/
 
 	//板ポリの状態を、RESOURCEからRTに切り替え
 	/*barrierDesc.Transition.pResource = postEffectResources[0].Get();
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;*/
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-	cmdList->ResourceBarrier(1, &barrierDesc);
+	cmdList->ResourceBarrier(1, &barrierDesc);*/
 #pragma endregion
 
-	//renderTarget->PreDrawProcess();
+	renderTarget->PreDrawProcess();
 
 #pragma region 画面クリア
 
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
-	rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
+	////D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+	////rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
 	//D3D12_CPU_DESCRIPTOR_HANDLE rtvH = postEffectRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
+	//D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+	//cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
 
-	//画面のクリア
-	cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
-	cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	////画面のクリア
+	//cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
+	//cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 
 
@@ -1090,22 +1090,22 @@ void DirectX12::LoopEndProcess()
 
 
 
-	////板ポリをバックバッファーに描画する準備
-	//UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
-	//barrierDesc.Transition.pResource = backBuffer[bbIndex].Get();
-	//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	//cmdList->ResourceBarrier(1, &barrierDesc);
+	//板ポリをバックバッファーに描画する準備
+	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
+	barrierDesc.Transition.pResource = backBuffer[bbIndex].Get();
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	cmdList->ResourceBarrier(1, &barrierDesc);
 
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
-	//rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
-	////D3D12_CPU_DESCRIPTOR_HANDLE rtvH = postEffectResourcesRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	//cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+	rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
+	//D3D12_CPU_DESCRIPTOR_HANDLE rtvH = postEffectResourcesRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+	cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
 
-	////画面のクリア
-	//cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
-	//cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	//画面のクリア
+	cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
+	cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 #pragma region ポストエフェクト用板ポリの描画コマンドセット
 
@@ -1151,7 +1151,7 @@ void DirectX12::LoopEndProcess()
 
 #pragma endregion
 
-	//RenderTarget::AllDraw();
+	RenderTarget::AllDraw();
 
 #pragma region RTVからPRESENTへ
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
