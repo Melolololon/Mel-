@@ -24,11 +24,11 @@ private:
 
 protected:
 
+	void InitializeVertices();
 public:
 	Sprite3D(const Color& color);
 	Sprite3D(Texture* pTexture);
 	~Sprite3D();
-	void InitializeVertices();
 
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
 	virtual void Draw()override;

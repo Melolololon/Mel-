@@ -7,7 +7,7 @@ PipelineState Sprite2D::defaultPipeline;
 Sprite2D::Sprite2D(const Color& color)
 {
 	Create(color);
-	InitializeVertices()
+	InitializeVertices();
 }
 
 Sprite2D::Sprite2D(Texture* pTexture)

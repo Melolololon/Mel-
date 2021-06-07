@@ -11,6 +11,7 @@ RenderTarget::RenderTarget(const Color& color):
 {
 	//頂点、定数バッファ作成
 	CreateBuffer();
+	InitializeVertices();
 
 	HRESULT result;
 
@@ -192,7 +193,6 @@ void RenderTarget::PreDrawProcess()
 
 void RenderTarget::Draw()
 {
-
 
 	ConstDataMat();
 	MatrixMap(nullptr);

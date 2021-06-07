@@ -29,13 +29,13 @@ protected:
 
 	void MatrixMap(Texture* texture);
 
+	void InitializeVertices();
 public:
 	Sprite2D(){}
 	Sprite2D(const Color& color);
 	Sprite2D(Texture* pTexture);
 	~Sprite2D();
 
-	void InitializeVertices();
 
  	static bool Initialize(const int winWidth,const int winHeight);
 	
