@@ -1,6 +1,7 @@
 #include "XInputManager.h"
 #include"LibMath.h"
 #include<Windows.h>
+#include<string>
 
 XINPUT_STATE XInputManager::padState[4];
 XINPUT_STATE XInputManager::padPrevious[4];

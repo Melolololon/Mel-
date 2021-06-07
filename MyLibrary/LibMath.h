@@ -1,10 +1,10 @@
 #pragma once
+#include<vector>
 #include"Vector.h"
 #include"Matrix.h"
 #include"Quaternion.h"
 #define _USE_MATH_DEFINES
 #include<math.h>
-#include"Library.h"
 #include"CollisionType.h"
 //GameにMathクラスがあったから名前をMathにするとエラーが出る
 //Math意外だとエラー出なかったので、Mathという名前自体がいけないのかもしれない

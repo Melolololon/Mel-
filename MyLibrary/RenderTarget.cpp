@@ -18,7 +18,7 @@ RenderTarget::RenderTarget(const Color& color):
 
 	CD3DX12_RESOURCE_DESC textureDesc = CD3DX12_RESOURCE_DESC::Tex2D
 	(
-		DXGI_FORMAT_B8G8R8X8_UNORM,
+		DXGI_FORMAT_R8G8B8A8_UNORM,
 		Library::GetWindowWidth(),
 		Library::GetWindowHeight(),
 		1,0,1,0,D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
@@ -34,7 +34,7 @@ RenderTarget::RenderTarget(const Color& color):
 	D3D12_CLEAR_VALUE peClesrValue;
 	peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
 
-	device->CreateCommittedResource
+	result = device->CreateCommittedResource
 	(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
@@ -47,10 +47,10 @@ RenderTarget::RenderTarget(const Color& color):
 	//ヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
 	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	peHeapDesc.NumDescriptors = 2;
+	peHeapDesc.NumDescriptors = 1;
 	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	peHeapDesc.NodeMask = 0;
-	device->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&descHeap));
+	result = device->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&descHeap));
 
 	//ビュー作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -99,6 +99,7 @@ RenderTarget::RenderTarget(const Color& color):
 		&dsvHeapDesc,
 		IID_PPV_ARGS(&depthHeap)
 	);
+	assert(SUCCEEDED(result));
 
 	D3D12_CPU_DESCRIPTOR_HANDLE depthHeapHandle = depthHeap->GetCPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC depthResDesc = CD3DX12_RESOURCE_DESC::Tex2D
@@ -124,10 +125,13 @@ RenderTarget::RenderTarget(const Color& color):
 
 
 	pipeline = defaultPipeline.GetPipelineState();
-	pRenderTarget.push_back(this);
+
 
 	//ウィンドウサイズをスケールに
 	constData.scale = DirectX::XMFLOAT2(Library::GetWindowWidth(), Library::GetWindowHeight());
+
+	//配列に追加
+	pRenderTarget.push_back(this);
 }
 
 RenderTarget::~RenderTarget() {}
@@ -219,17 +223,16 @@ void RenderTarget::Draw()
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
 	//テクスチャ
-	gpuDescHandle = descHeap->GetGPUDescriptorHandleForHeapStart();
-	cmdList->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
-
-	//定数
 	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 	(
-		gpuDescHandle,
-		1,
+		descHeap->GetGPUDescriptorHandleForHeapStart(),
+		0,
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 	);
 	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
+
+	//定数セット
+	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
 
 	cmdList->DrawInstanced(4, 1, 0, 0);
 }
@@ -241,5 +244,9 @@ void RenderTarget::AllDraw()
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 
 	//ここで各レンダーターゲットのDrawを呼び出す
+	for(auto& p : pRenderTarget)
+	{
+		p->Draw();
+	}
 }
 

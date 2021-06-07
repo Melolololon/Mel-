@@ -1,6 +1,6 @@
 #include"LibMath.h"
 #include"DirectInput.h"
-
+#include"Library.h"
 
 int LibMath::Pow(const float num, const int index)
 {

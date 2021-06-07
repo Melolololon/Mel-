@@ -3,8 +3,6 @@
 #include"SceneManager.h"
 #include"ObjectManager.h"
 #include"Play.h"
-
-
 Game::Game() {}
 
 Game::~Game() {}

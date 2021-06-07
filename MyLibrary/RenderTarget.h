@@ -6,7 +6,7 @@
 #include"DirectXStruct.h"
 #include"Vector.h"
 #include"PipelineState.h"
-#include"Camera.h"
+
 
 //レンダーターゲットクラス
 //描画時に渡すことで、渡したレンダーターゲットに描画できるようにする
@@ -15,6 +15,7 @@
 class RenderTarget :public Sprite2D
 {
 private:
+
 	static std::vector<RenderTarget*>pRenderTarget;
 	static float clearColor[4];
 
@@ -28,8 +29,12 @@ private:
 	ComPtr<ID3D12DescriptorHeap>depthHeap;
 
 	//カメラのポインタ
-	Camera* pCamera = nullptr;
+	//Camera* pCamera = nullptr;
 public:
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="color">初期化色</param>
 	RenderTarget(const Color& color);
 	~RenderTarget();
 
@@ -49,7 +54,7 @@ public:
 	/// レンダーターゲットにカメラをセットします。レンダーターゲットには、セットされたカメラに映っているものが描画されます。
 	/// </summary>
 	/// <param name="camera">カメラのポインタ</param>
-	void SetCamera(Camera* pCamera){ this->pCamera = pCamera; }
+	//void SetCamera(Camera* pCamera){ this->pCamera = pCamera; }
 
 };
 
