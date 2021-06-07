@@ -963,6 +963,32 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 	renderTarget = std::make_unique<RenderTarget>(Color(255, 255, 255, 255));
 
+
+#pragma region テスト用
+	PipelineState postEffectTestPipeline;
+
+	PipelineData data;
+	data.alphaWriteMode = ALPHA_WRITE_TRUE;
+	data.blendMode = BLEND_ADD;
+	data.cullMode = CULL_NONE;
+	data.depthMode = DEPTH_NONE;
+	data.drawMode = DRAW_SOLID;
+	auto result = postEffectTestPipeline.CreatePipeline
+	(
+		data,
+		{ L"../MyLibrary/PostEffectTestVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"NULL","","" },
+		{ L"NULL","","" },
+		{ L"NULL","","" },
+		{ L"../MyLibrary/PostEffectTestPixelShader.hlsl","PSmain","ps_5_0" },
+		PipelineType::PIPELINE_TYPE_SPRITE,
+		nullptr,
+		typeid(RenderTarget).name()
+	);
+	renderTarget->SetPipeline(&postEffectTestPipeline);
+#pragma endregion
+
+	
 }
 
 void DirectX12::LoopStartProcess()
