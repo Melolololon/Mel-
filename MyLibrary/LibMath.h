@@ -20,7 +20,44 @@ private:
 	~LibMath(){}
 public:
 
+
+	/// <summary>
+	/// 階乗(整数のみ)
+	/// </summary>
+	/// <param name="num"></param>
+	/// <param name="index"></param>
+	/// <returns></returns>
 	static int Pow(const float num,const int index);
+	
+
+#pragma region クランプ
+	
+
+	enum MultipleClampType
+	{
+		CLAMP_TYPE_BIG,//大きい値を返す
+		CLAMP_TYPE_SMALL,//小さい値を返す
+		CLAMP_TYPE_NEAR_BIG,//大きい値と小さい値のうち近いほうを返し、差が同等だった場合、大きいほうを返します
+		CLAMP_TYPE_NEAR_SMALL,//大きい値と小さい値のうち近いほうを返し、差が同等だった場合、小さいほうを返します
+	};
+
+	/// <summary>
+	/// multipleの倍数でnumをクランプします。返す値はMultipleClampTypeでセットします。
+	/// </summary>
+	/// <param name="num">数値</param>
+	/// <param name="multiple">倍率</param>
+	/// <param name="type">返す値の種類</param>
+	/// <returns></returns>
+	static float MultipleClamp
+	(
+		const float num, 
+		const float multiple,
+		const MultipleClampType type
+	);
+#pragma endregion
+
+#pragma region 範囲
+
 	/// <summary>
 	/// num1とnum2の値の差を求め、差が基準の値より多かったらtrueを返します
 	/// </summary>
@@ -38,6 +75,10 @@ public:
 	/// <param name="difference"></param>
 	/// <returns></returns>
 	static bool AngleDifference(const float angle1, const float angle2, const float difference);
+
+
+#pragma endregion
+
 
 	/// <summary>
 		/// 度数法の角度をラジアンに　ラジアンを度数法の角度に
