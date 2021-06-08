@@ -224,6 +224,8 @@ void Model::BufferCreatePreparation
 	this->modelNum = modelNum;
 	this->modelObjectNum = modelFileObjectNum;
 
+	pipeline.resize(modelNum);
+
 	if (modelBufferData)
 		modelConstBufferType = modelBufferData->bufferType;
 	else
@@ -852,7 +854,7 @@ void Model::MapConstData(const int modelNum)
 
 void Model::SetCmdList(const int modelNum)
 {
-	cmdLists[0]->SetPipelineState(pipeline.Get());
+	cmdLists[0]->SetPipelineState(pipeline[modelNum].Get());
 	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
 	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -1000,12 +1002,26 @@ void Model::SetScale(const Vector3& scale, const int modelNum)
 #pragma endregion
 
 
-void Model::SetPipeline(PipelineState* pipelineState)
+void Model::SetPipeline(PipelineState* pipelineState, const int modelNum)
 {
 	if(pipelineState->GetModelClassName() != typeid(*this).name())
 	{
 		OutputDebugString(L"パイプラインに設定されたモデルクラスと違います。\0");
 		return;
 	}
-	pipeline = pipelineState->GetPipelineState();
+	pipeline[modelNum] = pipelineState->GetPipelineState();
+}
+
+void Model::SetPipelineAllSet(PipelineState* pipelineState)
+{
+	if (pipelineState->GetModelClassName() != typeid(*this).name())
+	{
+		OutputDebugString(L"パイプラインに設定されたモデルクラスと違います。\0");
+		return;
+	}
+
+	for (auto& p : pipeline) 
+	{
+		p = pipelineState->GetPipelineState();
+	}
 }

@@ -5,7 +5,8 @@
 #include"Vector.h"
 #include"FreamTimer.h"
 #include"Curve.h"
-#include"MouseCursor.h"
+#include"PipelineState.h"
+
 class Play:public Scene
 {
 private:
@@ -15,7 +16,9 @@ private:
 	std::unique_ptr<Texture> tex;
 	std::unique_ptr<Curve> curve;
 
-	FreamTimer ti;
+	PipelineState fbxPipeline;
+
+	//FreamTimer ti;
 public:
 	Play();
 	~Play();

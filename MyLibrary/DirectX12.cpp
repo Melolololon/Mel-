@@ -960,6 +960,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	Sprite::Initialize(dev.Get(), cmdList.Get());
 	Sprite2D::Initialize(windouWidth, windowHeight);
 	Sprite3D::Initialize();
+	RenderTarget::Initialize();
 
 	renderTarget = std::make_unique<RenderTarget>(Color(255, 255, 255, 255));
 
@@ -983,7 +984,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		{ L"../MyLibrary/PostEffectTestPixelShader.hlsl","PSmain","ps_5_0" },
 		PipelineType::PIPELINE_TYPE_SPRITE,
 		nullptr,
-		typeid(RenderTarget).name()
+		typeid(RenderTarget).name(),
+		1
 	);
 	renderTarget->SetPipeline(&postEffectTestPipeline);
 #pragma endregion

@@ -6,7 +6,6 @@
 ID3D12Device* Sprite::device;
 ID3D12GraphicsCommandList* Sprite::cmdList;
 ComPtr<ID3D12RootSignature>Sprite::rootSignature;
-ComPtr<ID3D12PipelineState>Sprite::defaultPipeline;
 
 std::vector<ComPtr<ID3D12Resource>> Sprite::textureBuffer;
 ComPtr<ID3D12DescriptorHeap> Sprite::textureHeap;

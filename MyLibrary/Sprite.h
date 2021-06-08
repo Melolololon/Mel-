@@ -29,8 +29,7 @@ private:
 
 #pragma region •Ï”
 	static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 10;
-	
-	static ComPtr<ID3D12PipelineState>defaultPipeline;
+	\
 
 #pragma endregion
 

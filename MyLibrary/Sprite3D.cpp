@@ -63,7 +63,8 @@ bool Sprite3D::Initialize()
 		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
 		PipelineType::PIPELINE_TYPE_SPRITE,
 		nullptr,
-		typeid(Sprite3D).name()
+		typeid(Sprite3D).name(),
+		1
 	);
 	if (!result)
 	{

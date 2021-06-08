@@ -18,7 +18,7 @@ private:
 
 	static std::vector<RenderTarget*>pRenderTarget;
 	static float clearColor[4];
-
+	static PipelineState defaultPipeline;
 
 	ComPtr<ID3D12Resource>textureBuffer[2];
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
@@ -40,7 +40,7 @@ public:
 
 	//void Create(const Color& color);
 
-	void Initialize();
+	static bool Initialize();
 
 	/// <summary>
 	/// 描画前の処理

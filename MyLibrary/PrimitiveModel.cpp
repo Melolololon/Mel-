@@ -68,7 +68,8 @@ bool PrimitiveModel::Initialize()
 		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
 		PipelineType::PIPELINE_TYPE_MODEL,
 		nullptr,
-		typeid(PrimitiveModel).name()
+		typeid(PrimitiveModel).name(),
+		1
 	);
 
 	if (!result)
@@ -84,8 +85,8 @@ bool PrimitiveModel::Initialize()
 
 void PrimitiveModel::CreateBox
 (
-	const Vector3& size, 
-	const Color& color, 
+	const Vector3& size,
+	const Color& color,
 	const int modelNum
 )
 {
@@ -167,7 +168,7 @@ void PrimitiveModel::CreateBox
 
 #pragma region インデックス決定
 	indices.resize(1);
-	indices[0] = 
+	indices[0] =
 	{
 		0,1,2,2,1,3,
 		4,5,6,6,5,7,
@@ -203,7 +204,10 @@ void PrimitiveModel::CreateBox
 	);
 #pragma endregion
 
-	pipeline = defaultPipeline.GetPipelineState();
+	for (int i = 0; i < modelNum; i++) 
+	{
+		pipeline[i] = defaultPipeline.GetPipelineState();
+	}
 }
 
 

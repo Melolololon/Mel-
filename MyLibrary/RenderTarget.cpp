@@ -4,6 +4,7 @@
 #include"Library.h"
 
 std::vector<RenderTarget*>RenderTarget::pRenderTarget;
+PipelineState RenderTarget::defaultPipeline;
 float RenderTarget::clearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
 
 RenderTarget::RenderTarget(const Color& color):
@@ -15,28 +16,54 @@ RenderTarget::RenderTarget(const Color& color):
 
 	HRESULT result;
 
+
+
+	//ヒープ作成
+	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
+	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	peHeapDesc.NumDescriptors = _countof(textureBuffer);
+	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	peHeapDesc.NodeMask = 0;
+	result = device->CreateDescriptorHeap
+	(
+		&peHeapDesc, 
+		IID_PPV_ARGS(&descHeap)
+	);
+	assert(SUCCEEDED(result));
+
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
+	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvHeapDesc.NumDescriptors = _countof(textureBuffer);
+	result = device->CreateDescriptorHeap
+	(
+		&rtvHeapDesc,
+		IID_PPV_ARGS(&rtvHeap)
+	);
+	assert(SUCCEEDED(result));
+
+
+	CD3DX12_RESOURCE_DESC textureDesc = CD3DX12_RESOURCE_DESC::Tex2D
+	(
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		Library::GetWindowWidth(),
+		Library::GetWindowHeight(),
+		1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
+	);
+
+	//色セット
+	clearColor[0] = color.r / 255;
+	clearColor[1] = color.g / 255;
+	clearColor[2] = color.b / 255;
+	clearColor[3] = color.a / 255;
+
+	//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
+	D3D12_CLEAR_VALUE peClesrValue;
+	peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
+
+
 	for (int i = 0; i < _countof(textureBuffer); i++) 
 	{
-#pragma region 板ポリのリソース作成
-
-		CD3DX12_RESOURCE_DESC textureDesc = CD3DX12_RESOURCE_DESC::Tex2D
-		(
-			DXGI_FORMAT_R8G8B8A8_UNORM,
-			Library::GetWindowWidth(),
-			Library::GetWindowHeight(),
-			1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
-		);
-
-		//色セット
-		clearColor[0] = color.r / 255;
-		clearColor[1] = color.g / 255;
-		clearColor[2] = color.b / 255;
-		clearColor[3] = color.a / 255;
-
-		//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
-		D3D12_CLEAR_VALUE peClesrValue;
-		peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
-
+	
 		result = device->CreateCommittedResource
 		(
 			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
@@ -47,14 +74,6 @@ RenderTarget::RenderTarget(const Color& color):
 			IID_PPV_ARGS(&textureBuffer[i])
 		);
 
-		//ヒープ作成
-		D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
-		peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		peHeapDesc.NumDescriptors = _countof(textureBuffer);
-		peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-		peHeapDesc.NodeMask = 0;
-		result = device->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&descHeap));
-
 		//ビュー作成
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 
@@ -63,34 +82,35 @@ RenderTarget::RenderTarget(const Color& color):
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MipLevels = 1;
 
+		CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			descHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+			i,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+
 		device->CreateShaderResourceView
 		(
 			textureBuffer[i].Get(),
 			&srvDesc,
-			descHeap.Get()->GetCPUDescriptorHandleForHeapStart()
+			handle
 		);
 
-#pragma endregion
 
-#pragma region レンダーターゲットヒープ_ビュー作成
-		D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
-		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-		rtvHeapDesc.NumDescriptors = _countof(textureBuffer);
 
-		result = device->CreateDescriptorHeap
+		handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
-			&rtvHeapDesc,
-			IID_PPV_ARGS(&rtvHeap)
+			rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+			i,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
 		);
-		assert(SUCCEEDED(result));
 
 		device->CreateRenderTargetView
 		(
 			textureBuffer[i].Get(),
 			nullptr,
-			rtvHeap->GetCPUDescriptorHandleForHeapStart()
+			handle
 		);
-#pragma endregion
 	}
 
 #pragma region 深度バッファ_ヒープ_ビュー作成
@@ -142,8 +162,34 @@ RenderTarget::RenderTarget(const Color& color):
 RenderTarget::~RenderTarget() {}
 
 
-void RenderTarget::Initialize()
+bool RenderTarget::Initialize()
 {
+	PipelineData data;
+	data.alphaWriteMode = ALPHA_WRITE_TRUE;
+	data.blendMode = BLEND_ADD;
+	data.cullMode = CULL_NONE;
+	data.depthMode = DEPTH_NONE;
+	data.drawMode = DRAW_SOLID;
+
+	auto result = defaultPipeline.CreatePipeline
+	(
+		data,
+		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },
+		{ L"NULL","","" },
+		{ L"NULL","","" },
+		{ L"NULL","","" },
+		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
+		PipelineType::PIPELINE_TYPE_SPRITE,
+		nullptr,
+		typeid(RenderTarget).name(),
+		1
+	);
+	if (!result)
+	{
+		OutputDebugString(L"RenderTargetの初期化に失敗しました。デフォルトパイプラインを生成できませんでした\n");
+		return false;
+	}
+	return true;
 }
 
 
@@ -190,23 +236,25 @@ void RenderTarget::PreDrawProcess()
 
 #pragma region ビューポート_シザー矩形
 
-	D3D12_VIEWPORT viewport{};
-	viewport.Width = Library::GetWindowWidth();
-	viewport.Height = Library::GetWindowHeight();
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-	cmdList->RSSetViewports(1, &viewport);
+	D3D12_VIEWPORT viewport[_countof(textureBuffer)]{};
+	D3D12_RECT scissorRect[_countof(textureBuffer)]{};
+	for (int i = 0; i < _countof(textureBuffer); i++) 
+	{
+		viewport[i].Width = Library::GetWindowWidth();
+		viewport[i].Height = Library::GetWindowHeight();
+		viewport[i].TopLeftX = 0;
+		viewport[i].TopLeftY = 0;
+		viewport[i].MinDepth = 0.0f;
+		viewport[i].MaxDepth = 1.0f;
+		cmdList->RSSetViewports(1, &viewport[i]);
 
 
-	D3D12_RECT scissorrect{};
-	scissorrect.left = 0;
-	scissorrect.right = scissorrect.left + Library::GetWindowWidth();
-	scissorrect.top = 0;
-	scissorrect.bottom = scissorrect.top + Library::GetWindowHeight();
-	cmdList->RSSetScissorRects(1, &scissorrect);
-
+		scissorRect[i].left = 0;
+		scissorRect[i].right = scissorRect[i].left + Library::GetWindowWidth();
+		scissorRect[i].top = 0;
+		scissorRect[i].bottom = scissorRect[i].top + Library::GetWindowHeight();
+		cmdList->RSSetScissorRects(1, &scissorRect[i]);
+	}
 #pragma endregion
 }
 

@@ -7,6 +7,7 @@ enum PipelineType
 {
 	PIPELINE_TYPE_MODEL,
 	PIPELINE_TYPE_SPRITE,
+	PIPELINE_TYPE_RENDER_TARGET,
 };
 class PipelineState
 {
@@ -18,7 +19,8 @@ private:
 	static void SetPipelineDesc
 	(
 		const PipelineData& pipelineData,
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc,
+		const int renderTargetNum
 	);
 
 
@@ -50,6 +52,7 @@ public:
 	/// <param name="pipelineType">何のパイプラインを生成するか</param>
 	/// <param name="inputLayoutData">インプットレイアウト情報(指定しない場合は、nullptrを渡す)</param>
 	/// <param name="modelClassName">typeidのname関数で取得した文字列</param>
+	/// <param name="renderTargetNum">同時にどのくらい出力するか</param>
 	/// <returns></returns>
 	bool CreatePipeline
 	(
@@ -61,8 +64,10 @@ public:
 		const ShaderData& pShaderData,
 		const PipelineType pipelineType,
 		const std::vector<InputLayoutData>* inputLayoutData,
-		const std::string& modelClassName
+		const std::string& modelClassName,
+		const int renderTargetNum
 	);
+
 
 
 	std::string GetModelClassName()

@@ -88,7 +88,11 @@ bool FbxModel::Load
 		modelConstBuffer[i][0]->Unmap(0, nullptr);
 	}
 
-	pipeline = defaultPipeline.GetPipelineState();
+
+	for (int i = 0; i < createNum; i++) 
+	{
+		pipeline[i] = defaultPipeline.GetPipelineState();
+	}
 
 #pragma region アニメーション関係準備
 	if (bones.size() != 0) 
@@ -159,7 +163,8 @@ bool FbxModel::Initialize()
 		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" },
 		PipelineType::PIPELINE_TYPE_MODEL,
 		&ilData,
-		typeid(FbxModel).name()
+		typeid(FbxModel).name(),
+		1
 	);
 
 	if (!result)

@@ -211,7 +211,6 @@
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
     <FxCompile Include="BasicPixelShader.hlsl" />
-    <FxCompile Include="BasicGeometryShader.hlsl" />
     <FxCompile Include="SpritePixelShader.hlsl" />
     <FxCompile Include="SpriteVertexShader.hlsl" />
     <FxCompile Include="GrayPixelShader.hlsl" />
@@ -234,6 +233,10 @@
     <FxCompile Include="FbxVertexShader.hlsl" />
     <FxCompile Include="PostEffectTestPixelShader.hlsl" />
     <FxCompile Include="PostEffectTestVertexShader.hlsl" />
+    <FxCompile Include="FbxMultiPixelShader.hlsl" />
+    <FxCompile Include="FbxMultiVertexShader.hlsl" />
+    <FxCompile Include="BasicGeometryShader.hlsl" />
+    <FxCompile Include="FbxMultiGeometryShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CreateBuffer.h">
@@ -391,5 +394,6 @@
     <None Include="ToonShaderHeader.hlsli" />
     <None Include="FbxShaderHeader.hlsli" />
     <None Include="PostEffectTestShaderHeader.hlsli" />
+    <None Include="FbxMultiShaderHeader.hlsli" />
   </ItemGroup>
 </Project>

@@ -19,7 +19,8 @@ PipelineState::~PipelineState()
 void PipelineState::SetPipelineDesc
 (
 	const PipelineData& pipelineData,
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc,
+	const int renderTargetNum
 )
 {
 #pragma region カリング設定
@@ -105,7 +106,6 @@ void PipelineState::SetPipelineDesc
 	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
 	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
 	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	desc.BlendState.RenderTarget[0] = blenddesc;
 
 #pragma endregion
 
@@ -126,11 +126,17 @@ void PipelineState::SetPipelineDesc
 
 #pragma endregion
 
-	//
 	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	desc.NumRenderTargets = 1;
-	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.SampleDesc.Count = 1;
+
+
+
+	desc.NumRenderTargets = renderTargetNum;
+	for (int i = 0; i < renderTargetNum; i++)
+	{
+		desc.RTVFormats[i] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.BlendState.RenderTarget[i] = blenddesc;
+	}
 
 }
 
@@ -146,23 +152,33 @@ bool PipelineState::CreatePipeline
 	const ShaderData& pShaderData,
 	const PipelineType pipelineType,
 	const std::vector<InputLayoutData>* inputLayoutData,
-	const std::string& modelClassName
+	const std::string& modelClassName,
+	const int renderTargetNum
 )
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc = {};
-	SetPipelineDesc(pipelineData, pDesc);
-	//ルートシグネチャセット
+	SetPipelineDesc(pipelineData, pDesc, renderTargetNum);
+
+	
+
+	//非共通設定
 	switch (pipelineType)
 	{
 	case PIPELINE_TYPE_MODEL:
 		pDesc.pRootSignature = modelRootSignature;
+
 		break;
 	case PIPELINE_TYPE_SPRITE:
 		pDesc.pRootSignature = spriteRootSignature;
 		break;
 
-	
+	case PIPELINE_TYPE_RENDER_TARGET:
+
+		pDesc.pRootSignature = spriteRootSignature;
+		break;
 	}
+
+
 
 	HRESULT result;
 	ComPtr<ID3DBlob> vsBlob;

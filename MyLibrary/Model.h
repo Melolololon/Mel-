@@ -125,7 +125,7 @@ protected:
 	//テクスチャバッファ数
 	int textureBufferNum;
 
-	ComPtr<ID3D12PipelineState> pipeline;
+	std::vector<ComPtr<ID3D12PipelineState>> pipeline;
 
 	//[objの中のモデルごと]
 	std::vector<VertexBufferSet> vertexBufferSet;
@@ -341,7 +341,8 @@ public:
 
 #pragma region パイプライン
 
-	void SetPipeline(PipelineState* pipelineState);
+	void SetPipeline(PipelineState* pipelineState, const int modelNum);
+	void SetPipelineAllSet(PipelineState* pipelineState);
 
 #pragma endregion
 

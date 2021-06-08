@@ -241,8 +241,10 @@ void ObjModel::LoadModelMaterial
 	for (auto& b : parentBoneDatas)
 		b.resize(boneNum);
 
-	pipeline = defaultPipeline.GetPipelineState();
-
+	for (int i = 0; i < createNum; i++) 
+	{
+		pipeline[i] = defaultPipeline.GetPipelineState();
+	}
 }
 
 void ObjModel::Load
@@ -322,7 +324,8 @@ bool ObjModel::Initialize()
 		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" }, 
 		PipelineType::PIPELINE_TYPE_MODEL,
 		&layoutData,
-		typeid(ObjModel).name()
+		typeid(ObjModel).name(),
+		1
 	);
 
 	if(!result)

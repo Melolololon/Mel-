@@ -74,6 +74,49 @@ void Play::Initialize()
 	//curve = std::make_unique<Curve>();
 	//curve->SetPoints(points);
 
+
+
+	PipelineData data;
+	data.alphaWriteMode = ALPHA_WRITE_TRUE;
+	data.blendMode = BLEND_ADD;
+	data.cullMode = CULL_BACK;
+	data.depthMode = DEPTH_TRUE;
+	data.drawMode = DRAW_SOLID;
+
+	//インプットレイアウト
+	std::vector<InputLayoutData> ilData(5);
+	ilData[0].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[0].number = 3;
+	ilData[0].semantics = "POSITION";
+	ilData[1].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[1].number = 2;
+	ilData[1].semantics = "TEXCOORD";
+	ilData[2].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[2].number = 3;
+	ilData[2].semantics = "NORMAL";
+
+	ilData[3].formatType = FORMAT_TYPE::FORMAT_TYPE_UNSIGNED_INT;
+	ilData[3].number = 4;
+	ilData[3].semantics = "BONEINDICES";
+	ilData[4].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[4].number = 4;
+	ilData[4].semantics = "BONEWEIGHTS";
+
+	auto result = fbxPipeline.CreatePipeline
+	(
+		data,
+		{ L"../MyLibrary/FbxMultiVertexShader.hlsl","main","vs_5_0" },
+		{ L"../MyLibrary/FbxMultiGeometryShader.hlsl","main","gs_5_0" },
+		{ L"NULL","","" },
+		{ L"NULL","","" },
+		{ L"../MyLibrary/FbxMultiPixelShader.hlsl","main","ps_5_0" },
+		PipelineType::PIPELINE_TYPE_MODEL,
+		&ilData,
+		typeid(FbxModel).name(),
+		2
+	);
+	fbxModel->SetPipelineAllSet(&fbxPipeline);
+
 }
 void Play::Update()
 {
