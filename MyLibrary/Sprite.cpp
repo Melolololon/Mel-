@@ -118,8 +118,6 @@ void Sprite::UnmapVertexBuffer()
 }
 
 
-
-
 void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 {
 	device = dev;
@@ -148,12 +146,12 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 #pragma endregion
 
 
-	CD3DX12_DESCRIPTOR_RANGE spriteDescRangeSRV;
-	spriteDescRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
+	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
-	CD3DX12_ROOT_PARAMETER spriteRootparam[2] = {};
-	spriteRootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	spriteRootparam[1].InitAsDescriptorTable(1, &spriteDescRangeSRV, D3D12_SHADER_VISIBILITY_PIXEL);
+	CD3DX12_ROOT_PARAMETER rootparam[2] = {};
+	rootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
+	rootparam[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_PIXEL);
 
 #pragma region ルートシグネチャ
 
@@ -161,8 +159,8 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	rootSignatureDesc.pParameters = spriteRootparam;
-	rootSignatureDesc.NumParameters = _countof(spriteRootparam);
+	rootSignatureDesc.pParameters = rootparam;
+	rootSignatureDesc.NumParameters = _countof(rootparam);
 
 
 	D3D12_STATIC_SAMPLER_DESC samplerDesc{};

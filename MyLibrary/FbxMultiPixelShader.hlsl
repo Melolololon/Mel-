@@ -1,17 +1,20 @@
 #include"FbxMultiShaderHeader.hlsli"
 
 Texture2D<float4> tex:register(t0);
+Texture2D<float4> tex2:register(t1);
 SamplerState smp:register(s0);
 
 struct PSOutput
 {
 	float4 target0 : SV_TARGET0;
-	float4 target1 : SV_TARGET1;
+	//float4 target1 : SV_TARGET1;
 };
 
-PSOutput main(GSOutput input)
+float4 main(GSOutput input) : SV_TARGET
 {
 	float4 texColor = tex.Sample(smp, input.uv);
+	
+
 	float4 shaderColor;
 
 
@@ -33,13 +36,14 @@ PSOutput main(GSOutput input)
 
 	texColor += addColor - subColor;
 	texColor *= mulColor;
+	return shaderColor * texColor;
 
-	PSOutput output;
-	output.target0 = shaderColor * texColor;
-	output.target1 = float4(1 - (shaderColor * texColor).rgb, 1);
-	return output;
+	//PSOutput output;
+	//output.target0 = texColor;
 
-	//return shaderColor * texColor;
+	//output.target0 = shaderColor * texColor;
+	//output.target1 = float4(1 - (shaderColor * texColor).rgb, 1);
+	
 
 
 }

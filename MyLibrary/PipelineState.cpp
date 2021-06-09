@@ -172,10 +172,6 @@ bool PipelineState::CreatePipeline
 		pDesc.pRootSignature = spriteRootSignature;
 		break;
 
-	case PIPELINE_TYPE_RENDER_TARGET:
-
-		pDesc.pRootSignature = spriteRootSignature;
-		break;
 	}
 
 

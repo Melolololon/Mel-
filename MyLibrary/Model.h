@@ -218,6 +218,7 @@ protected:
 	(
 		const int modelNum,
 		const int modelFileObjectNum,
+		const size_t textureNum,
 		BufferData* modelBufferData,
 		BufferData* userBufferData 
 	);

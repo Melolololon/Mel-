@@ -19,7 +19,7 @@ Play::Play(){}
 
 Play::~Play(){}
 
-
+Vector3 angle = 0;
 
 void Play::Initialize()
 {
@@ -49,6 +49,8 @@ void Play::Initialize()
 		
 		//速度倍率セット
 		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 2), i);
+
+		fbxModel->SetScale(Vector3(4, 4, 4),i);
 	}
 	
 	tex = std::make_unique<Texture>();
@@ -113,7 +115,7 @@ void Play::Initialize()
 		PipelineType::PIPELINE_TYPE_MODEL,
 		&ilData,
 		typeid(FbxModel).name(),
-		2
+		1
 	);
 	fbxModel->SetPipelineAllSet(&fbxPipeline);
 
@@ -128,12 +130,28 @@ void Play::Update()
 	for (int i = 0; i < CREATE_NUM; i++)
 	{
 		fbxModel->PlayAnimation(i);
+		fbxModel->SetAngle(angle,i);
 	}
 	/*Vector2 sprPos = curve->GetVector2Position();
 	spr->SetPosition(sprPos);
 	curve->AddNumber(0.02f);*/
 
-	
+	if(DirectInput::KeyState(DIK_W))
+	{
+		angle.x += 2;
+	}
+	if (DirectInput::KeyState(DIK_S))
+	{
+		angle.x -= 2;
+	}
+	if (DirectInput::KeyState(DIK_A))
+	{
+		angle.y += 2;
+	}
+	if (DirectInput::KeyState(DIK_D))
+	{
+		angle.y -= 2;
+	}
 }
 
 void Play::Draw()

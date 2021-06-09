@@ -86,6 +86,7 @@ void Model::CreateModelHeapResourcesSetTexture
 	(
 		modelNum,
 		modelFileObjectNum,
+		pTextures.size(),
 		modelBufferData,
 		userBufferData
 	);
@@ -113,7 +114,7 @@ void Model::CreateModelHeapResourcesSetTexture
 
 
 	int heapSize =
-		modelFileObjectNum
+		pTextures.size()
 		+ commonConstBufferNum
 		+ eachModelConstBufferNum * modelNum
 		+ eachModelObjectConstBufferNum * modelNum * modelFileObjectNum;
@@ -142,7 +143,7 @@ void Model::CreateModelHeapResourcesSetTexture
 	(
 		modelNum,
 		modelFileObjectNum,
-		modelFileObjectNum,
+		pTextures.size(),
 		modelBufferData,
 		userBufferData
 	);
@@ -166,6 +167,7 @@ void Model::CreateModelHeapResourcesSelectColor
 	(
 		modelNum,
 		1,
+		1,
 		modelBufferData,
 		userBufferData
 	);
@@ -175,7 +177,7 @@ void Model::CreateModelHeapResourcesSelectColor
 
 	//ヒープ作成
 	int heapSize =
-		modelFileObjectNum
+		1
 		+ commonConstBufferNum
 		+ eachModelConstBufferNum * modelNum
 		+ eachModelObjectConstBufferNum * modelNum * modelFileObjectNum;
@@ -217,6 +219,7 @@ void Model::BufferCreatePreparation
 (
 	const int modelNum,
 	const int modelFileObjectNum,
+	const size_t textureNum,
 	BufferData* modelBufferData,
 	BufferData* userBufferData
 )
@@ -240,10 +243,12 @@ void Model::BufferCreatePreparation
 	//データを格納している配列をresize
 	modelConstDatas.resize(modelNum);
 	//モデル分ループ
-	for (int i = 0; i < modelNum; i++)
+	for (int i = 0; i < modelNum; i++) 
+	{
 		modelConstDatas[i].resize(modelFileObjectNum);
+	}
 
-	textureBuffer.resize(modelFileObjectNum);
+	textureBuffer.resize(textureNum);
 
 	//バッファをリサイズ
 	constBuffer.resize(modelNum);
@@ -372,23 +377,26 @@ void Model::CreateConstBuffer
 	};
 
 	//共通だったらここで生成
-	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON)
+	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON) 
+	{
 		CreateBuffer
 		(
 			&modelConstBuffer[0][0],
 			modelBufferData->bufferDataSize,
 			HeapBufferTag::HEAP_TAG_MODEL_CONST_BUFFER
 		);
-	
+	}
+
 	//共通だったらここで生成
-	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON)
+	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON) 
+	{
 		CreateBuffer
 		(
 			&userConstBuffer[0][0],
 			modelBufferData->bufferDataSize,
 			HeapBufferTag::HEAP_TAG_USER_CONST_BUFFER
 		);
-
+	}
 		
 
 
@@ -396,22 +404,26 @@ void Model::CreateConstBuffer
 	for (int i = 0; i < modelNum; i++) 
 	{
 		//モデル
-		if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+		if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL) 
+		{
 			CreateBuffer
 			(
 				&modelConstBuffer[i][0],
 				modelBufferData->bufferDataSize,
 				HeapBufferTag::HEAP_TAG_MODEL_CONST_BUFFER
 			);
+		}
 
 		//ユーザー
-		if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+		if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL) 
+		{
 			CreateBuffer
 			(
 				&userConstBuffer[i][0],
 				modelBufferData->bufferDataSize,
 				HeapBufferTag::HEAP_TAG_USER_CONST_BUFFER
 			);
+		}
 
 		//モデル内のオブジェクト分ループ
 		for (int j = 0; j < modelFileObjectNum; j++)
@@ -434,25 +446,28 @@ void Model::CreateConstBuffer
 			);
 
 			//モデル
-			if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+			if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT) 
+			{
 				CreateBuffer
 				(
 					&modelConstBuffer[i][j],
 					modelBufferData->bufferDataSize,
 					HeapBufferTag::HEAP_TAG_MODEL_CONST_BUFFER
 				);
+			}
 
 			
 
 			//ユーザー
-			if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+			if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT) 
+			{
 				CreateBuffer
 				(
 					&userConstBuffer[i][j],
 					modelBufferData->bufferDataSize,
 					HeapBufferTag::HEAP_TAG_USER_CONST_BUFFER
 				);
-
+			}
 		}
 	}
 
@@ -488,6 +503,7 @@ void Model::CreateTextureBuffer
 
 		heapTags.push_back(HeapBufferTag::HEAP_TAG_TEXTURE_BUFFER);
 	}
+
 
 	textureBufferNum = static_cast<int>(textureNum);
 }
@@ -679,11 +695,6 @@ void Model::Initialize
 	materialDescRangeCSV.BaseShaderRegister = 2;
 	materialDescRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	/*D3D12_DESCRIPTOR_RANGE commonRangeCSV{};
-	commonRangeCSV.NumDescriptors = 1;
-	commonRangeCSV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-	commonRangeCSV.BaseShaderRegister = 3;
-	commonRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;*/
 	
 	D3D12_DESCRIPTOR_RANGE modelRangeCSV{};
 	modelRangeCSV.NumDescriptors = 1;
@@ -692,47 +703,59 @@ void Model::Initialize
 	modelRangeCSV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 
-	D3D12_DESCRIPTOR_RANGE descRangeSRV{};
-	descRangeSRV.NumDescriptors = 1;
-	descRangeSRV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descRangeSRV.BaseShaderRegister = 0;
-	descRangeSRV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_DESCRIPTOR_RANGE descRangeSRV0{};
+	descRangeSRV0.NumDescriptors = 1;
+	descRangeSRV0.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descRangeSRV0.BaseShaderRegister = 0;
+	descRangeSRV0.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	
+	D3D12_DESCRIPTOR_RANGE descRangeSRV1{};
+	descRangeSRV1.NumDescriptors = 1;
+	descRangeSRV1.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descRangeSRV1.BaseShaderRegister = 1;
+	descRangeSRV1.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	
 
 
-	D3D12_ROOT_PARAMETER rootparam[5]{};
+	D3D12_ROOT_PARAMETER rootparam[6]{};
 
-	//テクスチャ
+	//定数
 	rootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[0].DescriptorTable.pDescriptorRanges = &descRangeSRV;
+	rootparam[0].DescriptorTable.pDescriptorRanges = &mainRangeCSV;
 	rootparam[0].DescriptorTable.NumDescriptorRanges = 1;
 	rootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-	//定数
+	//ユーザー定数
 	rootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[1].DescriptorTable.pDescriptorRanges = &mainRangeCSV;
+	rootparam[1].DescriptorTable.pDescriptorRanges = &userDescRangeCSV;
 	rootparam[1].DescriptorTable.NumDescriptorRanges = 1;
 	rootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-	//ユーザー定数
-	rootparam[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[2].DescriptorTable.pDescriptorRanges = &userDescRangeCSV;
-	rootparam[2].DescriptorTable.NumDescriptorRanges = 1;
-	rootparam[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
 	//マテリアル
-	rootparam[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[3].DescriptorTable.pDescriptorRanges = &materialDescRangeCSV;
-	rootparam[3].DescriptorTable.NumDescriptorRanges = 1;
-	rootparam[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootparam[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[2].DescriptorTable.pDescriptorRanges = &materialDescRangeCSV;
+	rootparam[2].DescriptorTable.NumDescriptorRanges = 1;
+	rootparam[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	
 	//モデル
-	rootparam[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootparam[4].DescriptorTable.pDescriptorRanges = &modelRangeCSV;
-	rootparam[4].DescriptorTable.NumDescriptorRanges = 1;
-	rootparam[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootparam[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[3].DescriptorTable.pDescriptorRanges = &modelRangeCSV;
+	rootparam[3].DescriptorTable.NumDescriptorRanges = 1;
+	rootparam[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	
+
+	//テクスチャ
+	rootparam[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[4].DescriptorTable.pDescriptorRanges = &descRangeSRV0;
+	rootparam[4].DescriptorTable.NumDescriptorRanges = 1;
+	rootparam[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	rootparam[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootparam[5].DescriptorTable.pDescriptorRanges = &descRangeSRV1;
+	rootparam[5].DescriptorTable.NumDescriptorRanges = 1;
+	rootparam[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 
 	//共通
@@ -772,6 +795,21 @@ void Model::Initialize
 		&rootSignatureDesc,
 		D3D_ROOT_SIGNATURE_VERSION_1_0,
 		&rootSigBlob, &errorBlob);
+
+
+	if (FAILED(result))
+	{
+		std::string errstr;
+		errstr.resize(errorBlob->GetBufferSize());
+
+		std::copy_n((char*)errorBlob->GetBufferPointer(),
+			errorBlob->GetBufferSize(),
+			errstr.begin());
+		errstr += "\n";
+
+		OutputDebugStringA(errstr.c_str());
+		exit(1);
+	}
 
 	result = device->CreateRootSignature(
 		0,
@@ -883,27 +921,27 @@ void Model::SetCmdList(const int modelNum)
 	constBufferHandleNum = modelObjectNum;
 	//モデル特有バッファセット
 	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON)
-		SetConstBufferDesTable(4);
+		SetConstBufferDesTable(3);
 
 	//ユーザーモデルバッファセット
 	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON)
-		SetConstBufferDesTable(2);
+		SetConstBufferDesTable(1);
 
 
 	//モデルごとをセット
 	constBufferHandleNum =
-		modelObjectNum
+		textureBufferNum
 		+ commonConstBufferNum
 		+ eachModelConstBufferNum * modelNum
 		+ eachModelObjectConstBufferNum * modelObjectNum * modelNum;
 
 	//モデル特有バッファセット
 	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
-		SetConstBufferDesTable(4);
+		SetConstBufferDesTable(3);
 
 	//ユーザーモデルバッファセット
 	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
-		SetConstBufferDesTable(2);
+		SetConstBufferDesTable(1);
 
 	
 	//モデルのオブジェクトごとをセット
@@ -920,17 +958,17 @@ void Model::SetCmdList(const int modelNum)
 
 
 		int textureBufferHandleNum = 0;
-		//紐づけ
-		for (int j = 0; j < vertexBufferNum; j++)
-		{
-			//マテリアル紐づけ
-			//紐づけ失敗(マテリアル名未設定などで)だと、一番最初のテクスチャが選ばれる
-			if (vertexBufferSet[i].materialName == materials[j].materialName)
-			{
-				textureBufferHandleNum = j;
-				break;
-			}
-		}
+		////紐づけ
+		//for (int j = 0; j < vertexBufferNum; j++)
+		//{
+		//	//マテリアル紐づけ
+		//	//紐づけ失敗(マテリアル名未設定などで)だと、一番最初のテクスチャが選ばれる
+		//	if (vertexBufferSet[i].materialName == materials[j].materialName)
+		//	{
+		//		textureBufferHandleNum = j;
+		//		break;
+		//	}
+		//}
 
 		//テクスチャバッファ
 		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
@@ -939,7 +977,19 @@ void Model::SetCmdList(const int modelNum)
 			textureBufferHandleNum,
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
-		cmdLists[0]->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
+		cmdLists[0]->SetGraphicsRootDescriptorTable(4, gpuDescHandle);
+
+
+
+		//2枚目(テスト用)
+		textureBufferHandleNum = 1;
+		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		(
+			desHeap->GetGPUDescriptorHandleForHeapStart(),
+			textureBufferHandleNum,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+		cmdLists[0]->SetGraphicsRootDescriptorTable(5, gpuDescHandle);
 
 #pragma endregion
 
@@ -948,18 +998,18 @@ void Model::SetCmdList(const int modelNum)
 		
 
 		//定数バッファセット
-		SetConstBufferDesTable(1);
+		SetConstBufferDesTable(0);
 
 		//マテリアルバッファセット
-		SetConstBufferDesTable(3);
+		SetConstBufferDesTable(2);
 
 		//モデルバッファセット
 		if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
-			SetConstBufferDesTable(4);
+			SetConstBufferDesTable(3);
 
 		//ユーザー定数バッファセット
 		if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
-			SetConstBufferDesTable(2);
+			SetConstBufferDesTable(1);
 		
 #pragma endregion
 

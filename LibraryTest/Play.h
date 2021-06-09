@@ -10,7 +10,7 @@
 class Play:public Scene
 {
 private:
-	static const int CREATE_NUM = 30;
+	static const int CREATE_NUM = 1;
 	std::unique_ptr<FbxModel> fbxModel;
 	std::unique_ptr<Sprite2D> spr;
 	std::unique_ptr<Texture> tex;

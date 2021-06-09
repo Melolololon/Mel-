@@ -34,7 +34,7 @@ public:
 	Sprite2D(){}
 	Sprite2D(const Color& color);
 	Sprite2D(Texture* pTexture);
-	~Sprite2D();
+	virtual ~Sprite2D();
 
 
  	static bool Initialize(const int winWidth,const int winHeight);

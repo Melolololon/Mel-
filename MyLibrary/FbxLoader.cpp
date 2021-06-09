@@ -232,7 +232,7 @@ void FbxLoader::ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
 				FbxVector2 uvs;
 				bool lUnmappedUV;
 
-				if(fbxMesh->GetPolygonVertexUV(i,j,uvNames[0],uvs,lUnmappedUV))
+				if (fbxMesh->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
 				{
 					vertices[index].uv.x = (float)uvs[0];
 					vertices[index].uv.y = (float)uvs[1];
@@ -333,7 +333,9 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 		{
 			//ライブラリで実装してるべた塗りテクスチャを持たせるようにするので、
 			//そのうちここ変更する
-			fbxModel->textures.resize(1);
+			
+			//テストの為、無理やり2つのテクスチャ用意
+			fbxModel->textures.resize(2);
 			fbxModel->textures[0] = std::make_unique<Texture>();
 			fbxModel->textures[0]->LoadModelTexture(modelDirectryPath + "WhiteTex.png");
 		}

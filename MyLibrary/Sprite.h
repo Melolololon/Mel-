@@ -29,7 +29,7 @@ private:
 
 #pragma region •Ï”
 	static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 10;
-	\
+	
 
 #pragma endregion
 

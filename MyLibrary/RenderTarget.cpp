@@ -164,6 +164,10 @@ RenderTarget::~RenderTarget() {}
 
 bool RenderTarget::Initialize()
 {
+
+
+
+
 	PipelineData data;
 	data.alphaWriteMode = ALPHA_WRITE_TRUE;
 	data.blendMode = BLEND_ADD;
