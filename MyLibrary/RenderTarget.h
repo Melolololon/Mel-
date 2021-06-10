@@ -19,6 +19,7 @@ private:
 	static std::vector<RenderTarget*>pRenderTarget;
 	static float clearColor[4];
 	static PipelineState defaultPipeline;
+	static ComPtr<ID3D12RootSignature>rootSignature;
 
 	ComPtr<ID3D12Resource>textureBuffer[2];
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー

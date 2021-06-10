@@ -4,6 +4,7 @@
 ID3D12Device* PipelineState::device;
 ID3D12RootSignature* PipelineState::modelRootSignature;
 ID3D12RootSignature* PipelineState::spriteRootSignature;
+ID3D12RootSignature* PipelineState::renderTargetRootSignature;
 
 PipelineState::PipelineState()
 {
@@ -171,6 +172,10 @@ bool PipelineState::CreatePipeline
 	case PIPELINE_TYPE_SPRITE:
 		pDesc.pRootSignature = spriteRootSignature;
 		break;
+	
+	case PIPELINE_TYPE_RENDER_TARGET:
+		pDesc.pRootSignature = renderTargetRootSignature;
+		break;
 
 	}
 
@@ -317,6 +322,7 @@ bool PipelineState::CreatePipeline
 			};
 			break;
 		case PIPELINE_TYPE_SPRITE:
+		case PIPELINE_TYPE_RENDER_TARGET:
 			inputLayoutVector.resize(2);
 			inputLayoutVector[0] =
 			{

@@ -184,6 +184,22 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 		D3D_ROOT_SIGNATURE_VERSION_1_0,
 		&rootSigBlob, &errorBlob);
 
+
+
+	 if (FAILED(result))
+	 {
+		 std::string errstr;
+		 errstr.resize(errorBlob->GetBufferSize());
+
+		 std::copy_n((char*)errorBlob->GetBufferPointer(),
+			 errorBlob->GetBufferSize(),
+			 errstr.begin());
+		 errstr += "\n";
+
+		 OutputDebugStringA(errstr.c_str());
+		 exit(1);
+	 }
+
 	result = device->CreateRootSignature(
 		0,
 		rootSigBlob->GetBufferPointer(),

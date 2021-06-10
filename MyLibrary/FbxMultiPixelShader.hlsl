@@ -7,10 +7,10 @@ SamplerState smp:register(s0);
 struct PSOutput
 {
 	float4 target0 : SV_TARGET0;
-	//float4 target1 : SV_TARGET1;
+	float4 target1 : SV_TARGET1;
 };
 
-float4 main(GSOutput input) : SV_TARGET
+PSOutput main(GSOutput input)
 {
 	float4 texColor = tex.Sample(smp, input.uv);
 	
@@ -36,14 +36,13 @@ float4 main(GSOutput input) : SV_TARGET
 
 	texColor += addColor - subColor;
 	texColor *= mulColor;
-	return shaderColor * texColor;
+	//return shaderColor * texColor;
 
-	//PSOutput output;
-	//output.target0 = texColor;
+	PSOutput output;
 
-	//output.target0 = shaderColor * texColor;
-	//output.target1 = float4(1 - (shaderColor * texColor).rgb, 1);
+	output.target0 = texColor;
+	output.target1 = float4(1 - texColor.rgb, 1);
 	
-
+	return output;
 
 }

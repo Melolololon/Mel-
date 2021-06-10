@@ -962,7 +962,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	Sprite3D::Initialize();
 	RenderTarget::Initialize();
 
-	renderTarget = std::make_unique<RenderTarget>(Color(255, 255, 255, 255));
+	renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));
 
 
 #pragma region テスト用
@@ -982,7 +982,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		{ L"NULL","","" },
 		{ L"NULL","","" },
 		{ L"../MyLibrary/PostEffectTestPixelShader.hlsl","PSmain","ps_5_0" },
-		PipelineType::PIPELINE_TYPE_SPRITE,
+		PipelineType::PIPELINE_TYPE_RENDER_TARGET,
 		nullptr,
 		typeid(RenderTarget).name(),
 		1

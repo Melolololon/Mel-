@@ -6,7 +6,7 @@
 std::vector<RenderTarget*>RenderTarget::pRenderTarget;
 PipelineState RenderTarget::defaultPipeline;
 float RenderTarget::clearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
-
+ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
 RenderTarget::RenderTarget(const Color& color):
 	Sprite2D(color)
 {
@@ -165,6 +165,73 @@ RenderTarget::~RenderTarget() {}
 bool RenderTarget::Initialize()
 {
 
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV1;
+	descRangeSRV1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV2;
+	descRangeSRV2.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+
+	CD3DX12_ROOT_PARAMETER rootparam[3] = {};
+	rootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
+	rootparam[1].InitAsDescriptorTable(1, &descRangeSRV1, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootparam[2].InitAsDescriptorTable(1, &descRangeSRV2, D3D12_SHADER_VISIBILITY_PIXEL);
+
+#pragma region ルートシグネチャ
+
+
+	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
+	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	rootSignatureDesc.pParameters = rootparam;
+	rootSignatureDesc.NumParameters = _countof(rootparam);
+
+
+	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
+	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
+	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
+	samplerDesc.MinLOD = 0.0f;
+	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootSignatureDesc.pStaticSamplers = &samplerDesc;
+	rootSignatureDesc.NumStaticSamplers = 1;
+
+	ComPtr<ID3DBlob>rootSigBlob;
+	ComPtr<ID3DBlob>errorBlob;
+
+	auto result = D3D12SerializeRootSignature(
+		&rootSignatureDesc,
+		D3D_ROOT_SIGNATURE_VERSION_1_0,
+		&rootSigBlob, &errorBlob);
+
+
+
+	if (FAILED(result))
+	{
+		std::string errstr;
+		errstr.resize(errorBlob->GetBufferSize());
+
+		std::copy_n((char*)errorBlob->GetBufferPointer(),
+			errorBlob->GetBufferSize(),
+			errstr.begin());
+		errstr += "\n";
+
+		OutputDebugStringA(errstr.c_str());
+		exit(1);
+	}
+
+	result = device->CreateRootSignature(
+		0,
+		rootSigBlob->GetBufferPointer(),
+		rootSigBlob->GetBufferSize(),
+		IID_PPV_ARGS(&rootSignature));
+
+#pragma endregion
+
+	PipelineState::SetRenderTargetRootSignature(rootSignature.Get());
 
 
 
@@ -175,7 +242,7 @@ bool RenderTarget::Initialize()
 	data.depthMode = DEPTH_NONE;
 	data.drawMode = DRAW_SOLID;
 
-	auto result = defaultPipeline.CreatePipeline
+	bool bResult  = defaultPipeline.CreatePipeline
 	(
 		data,
 		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },
@@ -188,7 +255,7 @@ bool RenderTarget::Initialize()
 		typeid(RenderTarget).name(),
 		1
 	);
-	if (!result)
+	if (!bResult)
 	{
 		OutputDebugString(L"RenderTargetの初期化に失敗しました。デフォルトパイプラインを生成できませんでした\n");
 		return false;
@@ -307,6 +374,14 @@ void RenderTarget::Draw()
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 	);
 	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
+
+	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	(
+		descHeap->GetGPUDescriptorHandleForHeapStart(),
+		1,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
 
 	//定数セット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());

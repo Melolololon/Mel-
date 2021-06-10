@@ -981,15 +981,15 @@ void Model::SetCmdList(const int modelNum)
 
 
 
-		//2枚目(テスト用)
-		textureBufferHandleNum = 1;
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			desHeap->GetGPUDescriptorHandleForHeapStart(),
-			textureBufferHandleNum,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdLists[0]->SetGraphicsRootDescriptorTable(5, gpuDescHandle);
+		////2枚目(テスト用)
+		//textureBufferHandleNum = 1;
+		//gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		//(
+		//	desHeap->GetGPUDescriptorHandleForHeapStart(),
+		//	textureBufferHandleNum,
+		//	device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		//);
+		//cmdLists[0]->SetGraphicsRootDescriptorTable(5, gpuDescHandle);
 
 #pragma endregion
 

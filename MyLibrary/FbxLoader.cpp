@@ -335,7 +335,7 @@ void FbxLoader::ParseMaterial(FbxModel* fbxModel, FbxNode* fbxNode)
 			//そのうちここ変更する
 			
 			//テストの為、無理やり2つのテクスチャ用意
-			fbxModel->textures.resize(2);
+			fbxModel->textures.resize(1);
 			fbxModel->textures[0] = std::make_unique<Texture>();
 			fbxModel->textures[0]->LoadModelTexture(modelDirectryPath + "WhiteTex.png");
 		}

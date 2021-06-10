@@ -115,7 +115,7 @@ void Play::Initialize()
 		PipelineType::PIPELINE_TYPE_MODEL,
 		&ilData,
 		typeid(FbxModel).name(),
-		1
+		2
 	);
 	fbxModel->SetPipelineAllSet(&fbxPipeline);
 
