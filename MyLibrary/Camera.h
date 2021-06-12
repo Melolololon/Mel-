@@ -1,6 +1,5 @@
 #pragma once
 #include"Vector.h"
-#include"LibMath.h"
 class Camera
 {
 	
@@ -22,7 +21,7 @@ public:
 	void SetPosition(const Vector3& position) { this->position = position; }
 
 	/// <summary>
-	/// 角度をセットします。角度が0,0,0の場合、0,0,1の方向を向きます。
+	/// 角度をセットします。角度が0,0,0の場合、カメラは0,0,1の方向を向きます。
 	/// </summary>
 	/// <param name="angle"></param>
 	void SetAngle(const Vector3& angle) { this->angle = angle; }
@@ -33,16 +32,29 @@ public:
 	/// <param name="fovY"></param>
 	void SetFovY(const float fovY) { this->fovY = fovY; }
 
+	/// <summary>
+	/// カメラからカメラの表示範囲の一番近い場所までの距離をセットします。
+	/// </summary>
+	/// <param name="num"></param>
 	void SetNear(const float num) { nearNum = num; }
+
+	/// <summary>
+	/// カメラからカメラの表示範囲の一番遠い場所までの距離をセットします。
+	/// </summary>
+	/// <param name="num"></param>
 	void SetFar(const float num) { farNum = num; }
 
 #pragma endregion
 
+#pragma region ゲット
+
 
 	/// <summary>
-	/// ビューとプロジェクションを掛けた行列を取得。
+	/// ビュー行列とプロジェクション行列を掛けた行列を取得します。
 	/// </summary>
 	/// <returns></returns>
 	DirectX::XMMATRIX GetViewAndProjectionMat();
+
+#pragma endregion
 };
 

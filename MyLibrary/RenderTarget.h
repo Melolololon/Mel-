@@ -6,6 +6,7 @@
 #include"DirectXStruct.h"
 #include"Vector.h"
 #include"PipelineState.h"
+#include"Camera.h"
 
 
 //レンダーターゲットクラス
@@ -30,7 +31,8 @@ private:
 	ComPtr<ID3D12DescriptorHeap>depthHeap;
 
 	//カメラのポインタ
-	//Camera* pCamera = nullptr;
+	Camera* pCamera = nullptr;
+
 public:
 	/// <summary>
 	/// 
@@ -55,7 +57,7 @@ public:
 	/// レンダーターゲットにカメラをセットします。レンダーターゲットには、セットされたカメラに映っているものが描画されます。
 	/// </summary>
 	/// <param name="camera">カメラのポインタ</param>
-	//void SetCamera(Camera* pCamera){ this->pCamera = pCamera; }
+	void SetCamera(Camera* pCamera){ this->pCamera = pCamera; }
 
 };
 
