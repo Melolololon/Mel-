@@ -8,8 +8,13 @@ private:
 	Vector3 position = 0;
 	Vector3 angle = 0;
 	float fovY = 60.0f;
+	float nearNum = 0.01f;
+	float farNum = 1000.0f;
 	
 public:
+
+#pragma region セット
+
 	/// <summary>
 	/// 座標をセットします。
 	/// </summary>
@@ -27,6 +32,11 @@ public:
 	/// </summary>
 	/// <param name="fovY"></param>
 	void SetFovY(const float fovY) { this->fovY = fovY; }
+
+	void SetNear(const float num) { nearNum = num; }
+	void SetFar(const float num) { farNum = num; }
+
+#pragma endregion
 
 
 	/// <summary>
