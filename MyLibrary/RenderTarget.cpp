@@ -239,7 +239,7 @@ bool RenderTarget::Initialize()
 	data.alphaWriteMode = ALPHA_WRITE_TRUE;
 	data.blendMode = BLEND_ADD;
 	data.cullMode = CULL_NONE;
-	data.depthMode = DEPTH_NONE;
+	data.depthMode = DEPTH_FALSE;
 	data.drawMode = DRAW_SOLID;
 
 	bool bResult  = defaultPipeline.CreatePipeline

@@ -972,7 +972,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	data.alphaWriteMode = ALPHA_WRITE_TRUE;
 	data.blendMode = BLEND_ADD;
 	data.cullMode = CULL_NONE;
-	data.depthMode = DEPTH_NONE;
+	data.depthMode = DEPTH_FALSE;
 	data.drawMode = DRAW_SOLID;
 	auto result = postEffectTestPipeline.CreatePipeline
 	(
@@ -1402,7 +1402,7 @@ bool DirectX12::CreateUserPipelineState
 
 	switch (pipelineData.depthMode)
 	{
-	case DEPTH_NONE:
+	case DEPTH_FALSE:
 		gpipeline.DepthStencilState.DepthEnable = false;
 		break;
 
@@ -1413,7 +1413,7 @@ bool DirectX12::CreateUserPipelineState
 
 	switch (pipelineData.alphaWriteMode)
 	{
-	case ALPHA_WRITE_NONE:
+	case ALPHA_WRITE_FALSE:
 		gpipeline.BlendState.AlphaToCoverageEnable = true;
 		break;
 

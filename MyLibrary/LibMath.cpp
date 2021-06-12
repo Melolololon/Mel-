@@ -109,6 +109,16 @@ float LibMath::AngleConversion(int paterrn, float angle)
 
 }
 
+int LibMath::ReverseRangeNumber(const int num, const int minNum, const int maxNum)
+{
+	if (num < minNum 
+		|| num > maxNum
+		|| minNum > maxNum)return num;
+
+	return maxNum - num + minNum;
+	
+}
+
 bool LibMath::Difference(const float num1, const float num2, const float difference)
 {
 	float sum = num1 - num2;

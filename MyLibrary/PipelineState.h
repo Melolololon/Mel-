@@ -81,6 +81,13 @@ public:
 		return pipeline;
 	}
 
+	/// <summary>
+	/// ライブラリで使用しているパイプラインの情報を引数dataにセットします。
+	/// </summary>
+	/// <param name="data"></param>
+	/// <param name="type"></param>
+	static void GetDefaultPipelineData(PipelineData& data, const PipelineType type);
+
 	static void SetModelRootSignature(ID3D12RootSignature* sig) { modelRootSignature = sig; }
 	static void SetSpriteRootSignature(ID3D12RootSignature* sig) { spriteRootSignature = sig; }
 	static void SetRenderTargetRootSignature(ID3D12RootSignature* sig) { renderTargetRootSignature = sig; }

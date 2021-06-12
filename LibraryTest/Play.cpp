@@ -119,7 +119,10 @@ void Play::Initialize()
 	);
 	fbxModel->SetPipelineAllSet(&fbxPipeline);
 
+
+	
 }
+
 void Play::Update()
 {
 	if (DirectInput::KeyState(DIK_SPACE))

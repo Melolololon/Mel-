@@ -30,6 +30,19 @@ public:
 	static int Pow(const float num,const int index);
 	
 
+	/// <summary>
+	/// 円周率を取得します
+	/// </summary>
+	/// <returns></returns>
+	static float GetFloatPI();
+
+	/// <summary>
+	/// 円周率を取得します
+	/// </summary>
+	/// <returns></returns>
+	static double GetDoublePI();
+
+
 #pragma region クランプ
 	
 
@@ -79,6 +92,8 @@ public:
 
 #pragma endregion
 
+#pragma region 変換
+
 
 	/// <summary>
 		/// 度数法の角度をラジアンに　ラジアンを度数法の角度に
@@ -87,20 +102,16 @@ public:
 		/// <param name="angle">角度</param>
 	static float AngleConversion(int pattern, float angle);
 
-
 	/// <summary>
-	/// 円周率を取得します
+	/// 引数numを範囲の数値を基準に逆にします。例 num = 2 範囲0から8の場合、numは6。
 	/// </summary>
+	/// <param name="num"></param>
+	/// <param name="minNum"></param>
+	/// <param name="maxNum"></param>
 	/// <returns></returns>
-	static float GetFloatPI();
+	static int ReverseRangeNumber(const int num, const int minNum, const int maxNum);
 
-	/// <summary>
-	/// 円周率を取得します
-	/// </summary>
-	/// <returns></returns>
-	static double GetDoublePI();
-
-
+#pragma endregion
 
 #pragma region ベクトル
 

@@ -65,7 +65,7 @@ void PipelineState::SetPipelineDesc
 
 	switch (pipelineData.depthMode)
 	{
-	case DepthMode::DEPTH_NONE:
+	case DepthMode::DEPTH_FALSE:
 		desc.DepthStencilState.DepthEnable = false;//
 		desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 		break;
@@ -116,7 +116,7 @@ void PipelineState::SetPipelineDesc
 	//ƒAƒ‹ƒtƒ@‘‚«ž‚Ý
 	switch (pipelineData.alphaWriteMode)
 	{
-	case AlphaWriteMode::ALPHA_WRITE_NONE:
+	case AlphaWriteMode::ALPHA_WRITE_FALSE:
 		desc.BlendState.AlphaToCoverageEnable = true;
 		break;
 	case AlphaWriteMode::ALPHA_WRITE_TRUE:
@@ -534,6 +534,30 @@ bool PipelineState::CreatePipeline
 
 	this->modelClassName = modelClassName;
 	return true;
+}
+
+void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineType type)
+{
+	switch (type)
+	{
+	case PipelineType::PIPELINE_TYPE_MODEL:
+		data.drawMode = DRAW_SOLID;
+		data.cullMode = CULL_BACK;
+		data.blendMode = BLEND_ADD;
+		data.depthMode = DEPTH_TRUE;
+		data.alphaWriteMode = ALPHA_WRITE_TRUE;
+		break;
+
+
+	case PipelineType::PIPELINE_TYPE_SPRITE:
+	case PipelineType::PIPELINE_TYPE_RENDER_TARGET:
+		data.drawMode = DRAW_SOLID;
+		data.cullMode = CULL_NONE;
+		data.blendMode = BLEND_ADD;
+		data.depthMode = DEPTH_FALSE;
+		data.alphaWriteMode = ALPHA_WRITE_TRUE;
+		break;
+	}
 }
 
 bool PipelineState::Initialize
