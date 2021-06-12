@@ -13,6 +13,13 @@ public:
 		const Vector3& startPos,
 		const Vector3& endPos
 	);
+	
+	static Vector3 EaseOut
+	(
+		const float time,
+		const Vector3& startPos,
+		const Vector3& endPos
+	);
 
 };
 

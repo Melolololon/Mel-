@@ -7,12 +7,10 @@ Vector3 Easing::EaseIn
 	const Vector3& endPos
 )
 {
-	//ç∑
-	Vector3 dis = 0;
-	/*dis.x = abs(endPos.x - startPos.x);
-	dis.y = abs(endPos.y - startPos.y);
-	dis.z = abs(endPos.z - startPos.z);*/
+	return startPos * (1.0f - (time * time)) + endPos * (time * time);
+}
 
-	return dis * (time * time);
-
+Vector3 Easing::EaseOut(const float time, const Vector3& startPos, const Vector3& endPos)
+{
+	return startPos * (1.0f - (time * (2 - time))) + endPos * (time * (2 - time));
 }
