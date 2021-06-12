@@ -7,15 +7,15 @@ SamplerState smp:register(s0);
 
 float4 PSmain(VSOutput input) : SV_TARGET
 {
-	float texColor = tex.Sample(smp, input.uv);
-	float texColor2 = tex2.Sample(smp, input.uv);
+	float4 texColor = tex.Sample(smp, input.uv);
+	float4 texColor2 = tex2.Sample(smp, input.uv);
 
 	float4 color = texColor;
 	if(fmod(input.uv.y,0.1f) < 0.05f)
 	{
 		color = texColor2;
 	}
-	return texColor;
+	return color;
 
 	//return float4(tex.Sample(smp, input.uv) + color + addColor - subColor) * mulColor;
 }

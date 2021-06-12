@@ -41,7 +41,8 @@ PSOutput main(GSOutput input)
 	PSOutput output;
 
 	output.target0 = texColor;
-	output.target1 = float4(1 - texColor.rgb, 1);
+	//output.target1 = float4(1 - texColor.rgb, 1);
+	output.target1 = float4(0,1,0, 1);
 	
 	return output;
 
