@@ -91,7 +91,7 @@ void Sprite3D::Create(Texture* pTexture)
 	pipeline = defaultPipeline.GetPipelineState();
 }
 
-void Sprite3D::Draw()
+void Sprite3D::Draw(RenderTarget* pRenderTarget)
 {
 	
 #pragma region map
@@ -118,15 +118,23 @@ void Sprite3D::Draw()
 	UnmapVertexBuffer();
 #pragma endregion
 
-
+	
 	ConstDataMat();
-	MatrixMap();
-	SetCmdList(pTexture);
-
+	
+	if (pRenderTarget) 
+	{
+		MatrixMap(pRenderTarget->GetCamera());
+		SetCmdList(pTexture);
+	}
+	else
+	{
+		MatrixMap(RenderTarget::Get().GetCamera());
+		SetCmdList(pTexture);
+	}
 }
 
 
-void Sprite3D::MatrixMap()
+void Sprite3D::MatrixMap(Camera& camera)
 {
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
@@ -150,7 +158,8 @@ void Sprite3D::MatrixMap()
 		constData.position.z
 	);
 
-	constBufferData->mat = matWorld * viewAndProjectionMatrix;
+
+	constBufferData->mat = matWorld * camera.GetViewAndProjectionMat();
 
 
 	constBuffer->Unmap(0, nullptr);

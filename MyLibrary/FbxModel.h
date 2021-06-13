@@ -116,7 +116,7 @@ public:
 
 
 	static bool Initialize();
-	void Draw(const int modelNum)override;
+	void Draw(const int modelNum, RenderTarget* pRenderTarget = nullptr)override;
 
 #pragma region アニメーション
 

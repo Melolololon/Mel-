@@ -9,17 +9,15 @@
 #include"Camera.h"
 
 
-//レンダーターゲットクラス
-//描画時に渡すことで、渡したレンダーターゲットに描画できるようにする
-//セットしない場合は、バックバッファに直接または1枚目のレンダーターゲットに描画
 
 class RenderTarget :public Sprite2D
 {
 private:
 
 
-	static std::unordered_map<std::string,std::unique_ptr<RenderTarget>>pRenderTarget;
+	static std::unordered_map<std::string,std::unique_ptr<RenderTarget>>pRenderTargets;
 	static UINT createCount;
+	static std::string mainRenderTargetNama;
 
 	static float clearColor[4];
 	static PipelineState defaultPipeline;
@@ -60,9 +58,9 @@ public:
 	/// </summary>
 	/// <param name="name">名前</param>
 	/// <returns>nameで指定したレンダーターゲットの参照</returns>
-	static RenderTarget& GetRenderTarget(std::string name)
+	static RenderTarget& Get(std::string name = mainRenderTargetNama)
 	{
-		return *pRenderTarget[name];
+		return *pRenderTargets[name];
 	}
 
 	static bool Initialize();
@@ -72,7 +70,7 @@ public:
 	/// </summary>
 	void PreDrawProcess();
 
-	void Draw()override;
+	void SetCmdList();
 	static void AllDraw();
 
 	/// <summary>
@@ -81,5 +79,9 @@ public:
 	/// <param name="camera">カメラのポインタ</param>
 	void SetCamera(Camera* pCamera){ this->pCamera = pCamera; }
 
+	/// <summary>
+	/// 設定されているカメラを参照します。
+	/// </summary>
+	Camera& GetCamera() { return *pCamera; }
 };
 

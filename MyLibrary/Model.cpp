@@ -828,7 +828,7 @@ void Model::Initialize
 #pragma endregion
 
 
-void Model::MapConstData(const int modelNum)
+void Model::MapConstData(const int modelNum,  Camera& camera)
 {
 	ModelConstBufferData* constBufferData;
 	for (int i = 0; i < modelObjectNum; i++) 
@@ -865,7 +865,8 @@ void Model::MapConstData(const int modelNum)
 			modelConstDatas[modelNum][i].position.z
 		);
 
-		constBufferData->mat = matWorld * viewAndProjectionMat;
+	
+		constBufferData->mat = matWorld * camera.GetViewAndProjectionMat();
 		constBufferData->worldMat = matWorld;
 	
 #pragma endregion
@@ -887,6 +888,20 @@ void Model::MapConstData(const int modelNum)
 
 #pragma endregion
 
+	}
+}
+
+void Model::DrawCommonProcessing(const int modelNum, RenderTarget* pRenderTarget)
+{
+	if (pRenderTarget) 
+	{
+		MapConstData(modelNum, pRenderTarget->GetCamera());
+		SetCmdList(modelNum);
+	}
+	else
+	{
+		MapConstData(modelNum,RenderTarget::Get().GetCamera());
+		SetCmdList(modelNum);
 	}
 }
 
@@ -1021,11 +1036,9 @@ void Model::SetCmdList(const int modelNum)
 
 }
 
-void Model::Draw(const int modelNum)
+void Model::Draw(const int modelNum ,RenderTarget* pRenderTarget)
 {
-	MapConstData(modelNum);
-	SetCmdList(modelNum);
-
+	DrawCommonProcessing(modelNum, pRenderTarget);
 }
 
 void Model::AllDraw(){}

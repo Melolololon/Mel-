@@ -107,6 +107,10 @@ void Sprite::SetCmdList(Texture* texture)
 }
 
 
+void DrawCommonProcessing(RenderTarget* pRenderTarget)
+{
+}
+
 void Sprite::MapVertexBuffer(void** data)
 {
 	vertexBufferSet.vertexBuffer->Map(0, nullptr, data);

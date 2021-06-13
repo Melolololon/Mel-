@@ -175,11 +175,11 @@ bool FbxModel::Initialize()
 	return true;
 }
 
-void FbxModel::Draw(const int modelNum)
+void FbxModel::Draw(const int modelNum, RenderTarget* pRenderTarget)
 {
-	MapConstData(modelNum);
 	MapSkinData(modelNum);
-	SetCmdList(modelNum);
+
+	DrawCommonProcessing(modelNum, pRenderTarget);
 }
 
 void FbxModel::MapSkinData(const int modelNum)

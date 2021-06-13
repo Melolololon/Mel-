@@ -99,7 +99,7 @@ void Sprite2D::Create(Texture* pTexture)
 	pipeline = defaultPipeline.GetPipelineState();
 }
 
-void Sprite2D::Draw()
+void Sprite2D::Draw(RenderTarget* pRenderTarget)
 {
 	SpriteVertex* vertex;
 	MapVertexBuffer((void**)&vertex);

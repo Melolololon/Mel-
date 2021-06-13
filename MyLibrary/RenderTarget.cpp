@@ -3,8 +3,9 @@
 #include<d3dx12.h>
 #include"Library.h"
 
-std::unordered_map<std::string, std::unique_ptr<RenderTarget>> RenderTarget::pRenderTarget;
+std::unordered_map<std::string, std::unique_ptr<RenderTarget>> RenderTarget::pRenderTargets;
 UINT RenderTarget::createCount = 0;
+std::string RenderTarget::mainRenderTargetNama = "";
 
 PipelineState RenderTarget::defaultPipeline;
 float RenderTarget::clearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
@@ -170,13 +171,14 @@ void RenderTarget::Create(const Color& initColor, std::string name)
 	//配列に追加
 	std::string keyName = name;
 	if (keyName.size() == 0)keyName = "RenderTarget_" + std::to_string(createCount);
-	pRenderTarget.emplace(keyName, std::make_unique<RenderTarget>(initColor));
+	pRenderTargets.emplace(keyName, std::make_unique<RenderTarget>(initColor));
 	createCount++;
+	if (mainRenderTargetNama == "")mainRenderTargetNama = name;
 }
 
 void RenderTarget::Delete(std::string name)
 {
-	pRenderTarget.erase(name);
+	pRenderTargets.erase(name);
 }
 
 bool RenderTarget::Initialize()
@@ -346,12 +348,9 @@ void RenderTarget::PreDrawProcess()
 #pragma endregion
 }
 
-void RenderTarget::Draw()
+
+void RenderTarget::SetCmdList()
 {
-
-	ConstDataMat();
-	MatrixMap(nullptr);
-
 	//戻す
 	for (int i = 0; i < _countof(textureBuffer); i++)
 	{
@@ -413,9 +412,11 @@ void RenderTarget::AllDraw()
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 
 	//ここで各レンダーターゲットのDrawを呼び出す
-	for(auto& p : pRenderTarget)
+	for(auto& p : pRenderTargets)
 	{
-		p.second->Draw();
+		p.second->ConstDataMat();
+		p.second->MatrixMap(nullptr);
+		p.second->SetCmdList();
 	}
 }
 

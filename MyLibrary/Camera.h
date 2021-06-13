@@ -1,16 +1,33 @@
 #pragma once
 #include"Vector.h"
+#include<vector>
+#include<string>
+#include<memory>
+#include<unordered_map>
+
 class Camera
 {
-	
+
 private:
-	Vector3 position = 0;
+	using UINT = unsigned int;
+
+	static std::unordered_map<std::string, std::unique_ptr<Camera>>pCameras;
+	static UINT createCount;
+	static std::string mainCameraName;
+
+	Vector3 position = Vector3(0,0,-10);
 	Vector3 angle = 0;
 	float fovY = 60.0f;
 	float nearNum = 0.01f;
 	float farNum = 1000.0f;
 	
+	
 public:
+	Camera(){}
+	~Camera(){}
+
+	static void Create(std::string name = "");
+	static void Delete(std::string name);
 
 #pragma region セット
 
@@ -48,6 +65,12 @@ public:
 
 #pragma region ゲット
 
+	/// <summary>
+	/// カメラを参照します。
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	static Camera& Get(std::string name = mainCameraName) { return *pCameras[name]; }
 
 	/// <summary>
 	/// ビュー行列とプロジェクション行列を掛けた行列を取得します。

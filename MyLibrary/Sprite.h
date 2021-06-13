@@ -3,6 +3,7 @@
 #include"Texture.h"
 #include"Vector.h"
 #include"PipelineState.h"
+#include"RenderTarget.h"
 
 #include<d3d12.h>
 #include<dxgi.h>
@@ -22,6 +23,9 @@
 //これを継承して2D、3Dスプライトクラスを作る
 //Drawは仮想関数。それぞれにmap処理を書く
 //
+
+class Sprite2D;
+class RenderTarget;
 
 class Sprite
 {
@@ -74,8 +78,6 @@ protected:
 	Texture* pTexture = nullptr;
 
 #pragma region 関数
-
-
 	void ConstDataMat();
 	void SetCmdList(Texture* texture);
 
@@ -107,7 +109,7 @@ public:
 
 
 
-	virtual void Draw() = 0;
+	virtual void Draw(RenderTarget* pRenderTarget = nullptr) = 0;
 	
 	
 	void SetDrawArea(const Vector2& leftUpPos, const Vector2& rightDownPos)

@@ -12,6 +12,7 @@
 
 #include"PipelineState.h"
 #include"Texture.h"
+#include"RenderTarget.h"
 
 
 struct BufferData
@@ -166,8 +167,10 @@ protected:
 
 #pragma region 関数
 
-	void MapConstData(const int modelNum);
+	void DrawCommonProcessing(const int modelNum, RenderTarget* pRenderTarget);
+	void MapConstData(const int modelNum, Camera& camera);
 	void SetCmdList(const int modelNum);
+
 
 #pragma region バッファ生成
 
@@ -336,7 +339,7 @@ public:
 
 #pragma region 描画
 
-	virtual void Draw(const int modelNum);
+	virtual void Draw(const int modelNum, RenderTarget* pRenderTarget = nullptr);
 	virtual void AllDraw();
 #pragma endregion
 
