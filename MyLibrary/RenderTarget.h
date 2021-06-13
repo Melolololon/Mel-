@@ -17,7 +17,10 @@ class RenderTarget :public Sprite2D
 {
 private:
 
-	static std::vector<RenderTarget*>pRenderTarget;
+
+	static std::unordered_map<std::string,std::unique_ptr<RenderTarget>>pRenderTarget;
+	static UINT createCount;
+
 	static float clearColor[4];
 	static PipelineState defaultPipeline;
 	static ComPtr<ID3D12RootSignature>rootSignature;
@@ -34,14 +37,33 @@ private:
 	Camera* pCamera = nullptr;
 
 public:
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="color">初期化色</param>
+
+
 	RenderTarget(const Color& color);
 	~RenderTarget();
-
-	//void Create(const Color& color);
+	
+	/// <summary>
+	/// レンダーターゲットを生成します。
+	/// </summary>
+	/// <param name="initColor">初期化色</param>
+	/// <param name="name">名前</param>
+	static void Create(const Color& initColor, std::string name = "");
+	/// <summary>
+	/// レンダーターゲットを削除します。
+	/// </summary>
+	/// <param name="name">名前</param>
+	/// <returns></returns>
+	static void Delete(std::string name);
+	
+	/// <summary>
+	/// レンダーターゲットを参照します。
+	/// </summary>
+	/// <param name="name">名前</param>
+	/// <returns>nameで指定したレンダーターゲットの参照</returns>
+	static RenderTarget& GetRenderTarget(std::string name)
+	{
+		return *pRenderTarget[name];
+	}
 
 	static bool Initialize();
 

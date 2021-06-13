@@ -3,10 +3,13 @@
 #include<d3dx12.h>
 #include"Library.h"
 
-std::vector<RenderTarget*>RenderTarget::pRenderTarget;
+std::unordered_map<std::string, std::unique_ptr<RenderTarget>> RenderTarget::pRenderTarget;
+UINT RenderTarget::createCount = 0;
+
 PipelineState RenderTarget::defaultPipeline;
 float RenderTarget::clearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
 ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
+
 RenderTarget::RenderTarget(const Color& color):
 	Sprite2D(color)
 {
@@ -155,12 +158,26 @@ RenderTarget::RenderTarget(const Color& color):
 	constData.scale = DirectX::XMFLOAT2(Library::GetWindowWidth(), Library::GetWindowHeight());
 	
 
-	//配列に追加
-	pRenderTarget.push_back(this);
 }
 
-RenderTarget::~RenderTarget() {}
+RenderTarget::~RenderTarget() 
+{
+}
 
+
+void RenderTarget::Create(const Color& initColor, std::string name)
+{
+	//配列に追加
+	std::string keyName = name;
+	if (keyName.size() == 0)keyName = "RenderTarget_" + std::to_string(createCount);
+	pRenderTarget.emplace(keyName, std::make_unique<RenderTarget>(initColor));
+	createCount++;
+}
+
+void RenderTarget::Delete(std::string name)
+{
+	pRenderTarget.erase(name);
+}
 
 bool RenderTarget::Initialize()
 {
@@ -398,7 +415,7 @@ void RenderTarget::AllDraw()
 	//ここで各レンダーターゲットのDrawを呼び出す
 	for(auto& p : pRenderTarget)
 	{
-		p->Draw();
+		p.second->Draw();
 	}
 }
 

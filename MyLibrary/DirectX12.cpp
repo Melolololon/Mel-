@@ -962,7 +962,9 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	Sprite3D::Initialize();
 	RenderTarget::Initialize();
 
-	renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));
+
+	RenderTarget::Create(Color(255, 0, 255, 255),"main");
+	//renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));
 
 
 #pragma region テスト用
@@ -987,7 +989,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		typeid(RenderTarget).name(),
 		1
 	);
-	renderTarget->SetPipeline(&postEffectTestPipeline);
+	RenderTarget::GetRenderTarget("main").SetPipeline(&postEffectTestPipeline);
+	//renderTarget->SetPipeline(&postEffectTestPipeline);
 #pragma endregion
 
 	
@@ -1014,7 +1017,7 @@ void DirectX12::LoopStartProcess()
 	cmdList->ResourceBarrier(1, &barrierDesc);*/
 #pragma endregion
 
-	renderTarget->PreDrawProcess();
+	RenderTarget::GetRenderTarget("main").PreDrawProcess();
 
 #pragma region 画面クリア
 
