@@ -46,7 +46,7 @@ public:
 	
 	
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
-	 void Draw()override;
+	 void Draw(const std::string& rtName = "")override;
 	
 	
 

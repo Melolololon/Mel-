@@ -336,12 +336,12 @@ bool ObjModel::Initialize()
 	return true;
 }
 
-void ObjModel::Draw(const int modelNum, RenderTarget* pRenderTarget )
+void ObjModel::Draw(const int modelNum, const std::string& rtName)
 {
 	
 	MapBoneMatrix(modelNum);
 
-	DrawCommonProcessing(modelNum, pRenderTarget);
+	DrawCommonProcessing(modelNum, rtName);
 }
 
 void ObjModel::AllDraw()

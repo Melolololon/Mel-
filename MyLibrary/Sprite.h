@@ -5,6 +5,7 @@
 #include"PipelineState.h"
 #include"Camera.h"
 
+
 #include<d3d12.h>
 #include<dxgi.h>
 #include<d3dx12.h>
@@ -28,6 +29,7 @@
 class Sprite
 {
 private:
+
 
 #pragma region ïœêî
 	static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 10;
@@ -107,7 +109,7 @@ public:
 
 
 
-	virtual void Draw() = 0;
+	virtual void Draw(const std::string& rtName = "") = 0;
 	
 	
 	void SetDrawArea(const Vector2& leftUpPos, const Vector2& rightDownPos)

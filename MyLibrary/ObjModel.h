@@ -202,7 +202,7 @@ public:
 
 
 	static bool Initialize();
-	void Draw(const int modelNum, RenderTarget* pRenderTarget = nullptr)override;
+	void Draw(const int modelNum,  const std::string& rtName = "")override;
 	void AllDraw()override;
 
 	static PipelineState GetDefaultPipeline() { return defaultPipeline; }

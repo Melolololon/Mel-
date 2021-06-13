@@ -167,7 +167,7 @@ protected:
 
 #pragma region ä÷êî
 
-	void DrawCommonProcessing(const int modelNum, RenderTarget* pRenderTarget);
+	void DrawCommonProcessing(const int modelNum, const std::string& rtName);
 	void MapConstData(const int modelNum, Camera& camera);
 	void SetCmdList(const int modelNum);
 
@@ -339,7 +339,7 @@ public:
 
 #pragma region ï`âÊ
 
-	virtual void Draw(const int modelNum, RenderTarget* pRenderTarget = nullptr);
+	virtual void Draw(const int modelNum,const std::string& rtName = "");
 	virtual void AllDraw();
 #pragma endregion
 

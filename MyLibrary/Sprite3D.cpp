@@ -1,4 +1,6 @@
 #include "Sprite3D.h"
+#include"RenderTarget.h"
+
 PipelineState Sprite3D::defaultPipeline;
 DirectX::XMMATRIX Sprite3D::viewAndProjectionMatrix;
 DirectX::XMFLOAT3 Sprite3D::cameraPosition;
@@ -91,7 +93,7 @@ void Sprite3D::Create(Texture* pTexture)
 	pipeline = defaultPipeline.GetPipelineState();
 }
 
-void Sprite3D::Draw()
+void Sprite3D::Draw(const std::string& rtName)
 {
 	
 #pragma region map
@@ -120,15 +122,15 @@ void Sprite3D::Draw()
 
 	
 	ConstDataMat();
-	//
-	//if (pRenderTarget) 
-	//{
-	//	MatrixMap(pRenderTarget->GetCamera());
-	//	SetCmdList(pTexture);
-	//}
-	//else
+	
+	if (rtName != "") 
 	{
-		MatrixMap(Camera::Get());
+		MatrixMap(RenderTarget::Get(rtName).GetCamera());
+		SetCmdList(pTexture);
+	}
+	else
+	{
+		MatrixMap(RenderTarget::Get().GetCamera());
 		SetCmdList(pTexture);
 	}
 }

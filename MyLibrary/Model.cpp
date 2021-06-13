@@ -891,11 +891,11 @@ void Model::MapConstData(const int modelNum,  Camera& camera)
 	}
 }
 
-void Model::DrawCommonProcessing(const int modelNum, RenderTarget* pRenderTarget)
+void Model::DrawCommonProcessing(const int modelNum, const std::string& rtName)
 {
-	if (pRenderTarget) 
+	if (rtName != "")
 	{
-		MapConstData(modelNum, pRenderTarget->GetCamera());
+		MapConstData(modelNum, RenderTarget::Get(rtName).GetCamera());
 		SetCmdList(modelNum);
 	}
 	else
@@ -1036,9 +1036,9 @@ void Model::SetCmdList(const int modelNum)
 
 }
 
-void Model::Draw(const int modelNum ,RenderTarget* pRenderTarget)
+void Model::Draw(const int modelNum , const std::string& rtName)
 {
-	DrawCommonProcessing(modelNum, pRenderTarget);
+	DrawCommonProcessing(modelNum, rtName);
 }
 
 void Model::AllDraw(){}

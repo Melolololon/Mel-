@@ -31,7 +31,7 @@ public:
 	~Sprite3D();
 
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
-	virtual void Draw()override;
+	virtual void Draw(const std::string& rtName = "")override;
 
 #pragma region 開発者用関数
 
