@@ -12,7 +12,7 @@ void Camera::Create(std::string name)
 	if (key == "")key = "Camera_" + std::to_string(createCount);
 	createCount++;
 
-	pCameras.emplace(key, std::unique_ptr<Camera>());
+	pCameras.emplace(key, std::make_unique<Camera>());
 
 	if (mainCameraName == "")mainCameraName = name;
 

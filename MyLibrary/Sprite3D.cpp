@@ -91,7 +91,7 @@ void Sprite3D::Create(Texture* pTexture)
 	pipeline = defaultPipeline.GetPipelineState();
 }
 
-void Sprite3D::Draw(RenderTarget* pRenderTarget)
+void Sprite3D::Draw()
 {
 	
 #pragma region map
@@ -120,15 +120,15 @@ void Sprite3D::Draw(RenderTarget* pRenderTarget)
 
 	
 	ConstDataMat();
-	
-	if (pRenderTarget) 
+	//
+	//if (pRenderTarget) 
+	//{
+	//	MatrixMap(pRenderTarget->GetCamera());
+	//	SetCmdList(pTexture);
+	//}
+	//else
 	{
-		MatrixMap(pRenderTarget->GetCamera());
-		SetCmdList(pTexture);
-	}
-	else
-	{
-		MatrixMap(RenderTarget::Get().GetCamera());
+		MatrixMap(Camera::Get());
 		SetCmdList(pTexture);
 	}
 }

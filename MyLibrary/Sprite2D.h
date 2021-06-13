@@ -2,7 +2,8 @@
 #include"Sprite.h"
 #include"PipelineState.h"
 
-class Sprite;
+
+
 
 class Sprite2D :public Sprite
 {
@@ -45,7 +46,7 @@ public:
 	
 	
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
-	 void Draw(RenderTarget* pRenderTarget = nullptr)override;
+	 void Draw()override;
 	
 	
 

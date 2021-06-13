@@ -3,7 +3,7 @@
 #include"Texture.h"
 #include"Vector.h"
 #include"PipelineState.h"
-#include"RenderTarget.h"
+#include"Camera.h"
 
 #include<d3d12.h>
 #include<dxgi.h>
@@ -24,8 +24,6 @@
 //Draw‚Í‰¼‘zŠÖ”B‚»‚ê‚¼‚ê‚Émapˆ—‚ğ‘‚­
 //
 
-class Sprite2D;
-class RenderTarget;
 
 class Sprite
 {
@@ -109,7 +107,7 @@ public:
 
 
 
-	virtual void Draw(RenderTarget* pRenderTarget = nullptr) = 0;
+	virtual void Draw() = 0;
 	
 	
 	void SetDrawArea(const Vector2& leftUpPos, const Vector2& rightDownPos)

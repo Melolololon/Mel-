@@ -31,7 +31,7 @@ public:
 	~Sprite3D();
 
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
-	virtual void Draw(RenderTarget* pRenderTarget = nullptr)override;
+	virtual void Draw()override;
 
 #pragma region 開発者用関数
 

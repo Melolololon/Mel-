@@ -9,7 +9,6 @@
 #include"Camera.h"
 
 
-
 class RenderTarget :public Sprite2D
 {
 private:
