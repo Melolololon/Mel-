@@ -297,6 +297,7 @@ struct WorldMatData
 //バッファー、Mapするための変数、ビューのセット
 #pragma region 頂点
 
+
 struct VertexBufferSet
 {
 	ComPtr<ID3D12Resource> vertexBuffer;

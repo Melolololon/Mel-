@@ -1,5 +1,20 @@
 #pragma once
-#include"Model.h"
+#include"Vector.h"
+#include"Color.h"
+#include"DirectXStruct.h"
+
+#include<DirectXMath.h>
+#include<vector>
+#include<d3d12.h>
+#include<d3dx12.h>
+#include<dxgi.h>
+
+#include"ModelData.h"
+#include"PipelineState.h"
+#include"Texture.h"
+#include"Camera.h"
+#include"RenderTarget.h"
+#include"BufferData.h"
 
 //AddColorとかまとめよう!
 
@@ -12,7 +27,7 @@ private:
 
 
 	//モデル(クリエイトしたら割り当てる)
-	Model* model = nullptr;
+	ModelData* model = nullptr;
 	int modelFileObjectNum = 0;
 	
 	std::vector<PipelineState*> pPipeline;
