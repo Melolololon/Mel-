@@ -41,23 +41,21 @@ public:
 
 	
 	static void Create(const Color& initColor, const std::string& name = "");
-
-
 	static void Delete(const std::string& name);
-
-	static RenderTarget& Get(const std::string& name = mainRenderTargetNama) { return *pRenderTargets[name]; }
+	static RenderTarget* Get(const std::string& name = mainRenderTargetNama) { return pRenderTargets[name].get(); }
 
 	static bool Initialize();
 
 	void PreDrawProcess();
-
 	void SetCmdList();
 	static void AllDraw();
 
 
-	void SetCamera(const std::string& name = Camera::GetMainCameraName()) { this->pCamera = &Camera::Get(name); }
+	void SetCamera(const std::string& name = Camera::GetMainCameraName()) { this->pCamera = Camera::Get(name); }
 
 
-	Camera& GetCamera() { return *pCamera; }
+	static const std::string& GetMainRenderTargetNama() {return mainRenderTargetNama;}
+
+	Camera* GetCamera() { return pCamera; }
 };
 

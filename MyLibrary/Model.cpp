@@ -828,7 +828,7 @@ void Model::Initialize
 #pragma endregion
 
 
-void Model::MapConstData(const int modelNum, const Camera& camera)
+void Model::MapConstData(const int modelNum, const Camera* camera)
 {
 	ModelConstBufferData* constBufferData;
 	for (int i = 0; i < modelObjectNum; i++) 
@@ -857,7 +857,7 @@ void Model::MapConstData(const int modelNum, const Camera& camera)
 		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas[modelNum][i].angle.y));
 
 		DirectX::XMMATRIX cameraMat = DirectX::XMMatrixIdentity();
-		DirectX::XMFLOAT3 cameraAngle = camera.GetCameraAngle().ToXMFLOAT3();
+		DirectX::XMFLOAT3 cameraAngle = camera->GetCameraAngle().ToXMFLOAT3();
 		cameraMat = DirectX::XMMatrixRotationZ(-cameraAngle.z);
 		cameraMat = DirectX::XMMatrixRotationX(-cameraAngle.x);
 		cameraMat = DirectX::XMMatrixRotationY(-cameraAngle.y);
@@ -871,7 +871,7 @@ void Model::MapConstData(const int modelNum, const Camera& camera)
 		);
 
 	
-		constBufferData->mat = matWorld * camera.GetViewAndProjectionMat();
+		constBufferData->mat = matWorld * camera->GetViewAndProjectionMat();
 		constBufferData->worldMat = matWorld;
 	
 #pragma endregion
@@ -900,12 +900,12 @@ void Model::DrawCommonProcessing(const int modelNum, const std::string& rtName)
 {
 	if (rtName != "")
 	{
-		MapConstData(modelNum, RenderTarget::Get(rtName).GetCamera());
+		MapConstData(modelNum, RenderTarget::Get(rtName)->GetCamera());
 		SetCmdList(modelNum);
 	}
 	else
 	{
-		MapConstData(modelNum,RenderTarget::Get().GetCamera());
+		MapConstData(modelNum,RenderTarget::Get()->GetCamera());
 		SetCmdList(modelNum);
 	}
 }

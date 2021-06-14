@@ -211,7 +211,7 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ModelObject.cpp">
-      <Filter>ソース ファイル\Object</Filter>
+      <Filter>ソース ファイル\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

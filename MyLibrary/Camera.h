@@ -39,11 +39,11 @@ public:
 	static void Delete(const std::string& name);
 
 	/// <summary>
-/// カメラを参照します。
+/// カメラのポインタを取得します。
 /// </summary>
 /// <param name="name"></param>
 /// <returns></returns>
-	static Camera& Get(const std::string& name = mainCameraName) { return  *pCameras[name]; }
+	static Camera* Get(const std::string& name = mainCameraName) { return pCameras[name].get(); }
 
 
 #pragma region セット

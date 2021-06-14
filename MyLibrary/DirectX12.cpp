@@ -966,7 +966,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 	RenderTarget::Create(Color(255, 0, 255, 255),"main");
 	Camera::Create("main");
-	RenderTarget::Get("main").SetCamera();
+	RenderTarget::Get("main")->SetCamera();
 	DirectionalLight::Create("main");
 
 	//renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));
@@ -994,7 +994,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		typeid(RenderTarget).name(),
 		1
 	);
-	RenderTarget::Get("main").SetPipeline(&postEffectTestPipeline);
+	RenderTarget::Get("main")->SetPipeline(&postEffectTestPipeline);
 	//renderTarget->SetPipeline(&postEffectTestPipeline);
 #pragma endregion
 
@@ -1022,7 +1022,7 @@ void DirectX12::LoopStartProcess()
 	cmdList->ResourceBarrier(1, &barrierDesc);*/
 #pragma endregion
 
-	RenderTarget::Get("main").PreDrawProcess();
+	RenderTarget::Get("main")->PreDrawProcess();
 
 #pragma region ‰æ–ÊƒNƒŠƒA
 

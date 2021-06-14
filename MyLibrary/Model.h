@@ -25,8 +25,8 @@ struct BufferData
 		BUFFER_TYPE_EACH_MODEL_OBJECT,//各モデル各オブジェクトごと
 	};
 
-	BufferType bufferType;
-	size_t bufferDataSize;
+	BufferType bufferType;//バッファの数
+	size_t bufferDataSize;//バッファ1つのサイズ
 };
 
 //モデルクラスに継承するためのクラス
@@ -168,7 +168,7 @@ protected:
 #pragma region 関数
 
 	void DrawCommonProcessing(const int modelNum, const std::string& rtName);
-	void MapConstData(const int modelNum, const Camera& camera);
+	void MapConstData(const int modelNum, const Camera* camera);
 	void SetCmdList(const int modelNum);
 
 
