@@ -187,6 +187,7 @@
     <ClCompile Include="CreatePolygon.cpp" />
     <ClCompile Include="Curve.cpp" />
     <ClCompile Include="DirectInput.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX12.cpp" />
     <ClCompile Include="DirectXTexLoader.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
@@ -531,6 +532,7 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="CreatePipeline.h" />
     <ClInclude Include="Curve.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX12.h" />
     <ClInclude Include="DirectXStruct.h" />
     <ClInclude Include="CreateBuffer.h" />

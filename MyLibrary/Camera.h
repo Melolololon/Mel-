@@ -30,13 +30,13 @@ public:
 	/// カメラを生成します。
 	/// </summary>
 	/// <param name="name"></param>
-	static void Create(std::string name = "");
+	static void Create(const std::string& name = "");
 	
 	/// <summary>
 	/// カメラを削除します。
 	/// </summary>
 	/// <param name="name"></param>
-	static void Delete(std::string name);
+	static void Delete(const std::string& name);
 
 #pragma region セット
 

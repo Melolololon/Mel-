@@ -6,7 +6,7 @@ std::unordered_map<std::string, std::unique_ptr<Camera>>Camera::pCameras;
 UINT Camera::createCount = 0;
 std::string Camera::mainCameraName = "";
 
-void Camera::Create(std::string name)
+void Camera::Create(const std::string& name)
 {
 	std::string key = name;
 	if (key == "")key = "Camera_" + std::to_string(createCount);
@@ -18,7 +18,7 @@ void Camera::Create(std::string name)
 
 }
 
-void Camera::Delete(std::string name)
+void Camera::Delete(const std::string& name)
 {
 	pCameras.erase(name);
 }

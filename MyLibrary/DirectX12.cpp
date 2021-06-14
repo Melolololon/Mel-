@@ -3,6 +3,7 @@
 #include"FbxLoader.h"
 #include"ObjModel.h"
 #include"PrimitiveModel.h"
+#include"DirectionalLight.h"
 
 
 DirectX12::DirectX12()
@@ -966,6 +967,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	RenderTarget::Create(Color(255, 0, 255, 255),"main");
 	Camera::Create("main");
 	RenderTarget::Get("main").SetCamera();
+	DirectionalLight::Create("main");
+
 	//renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));
 
 
@@ -1070,7 +1073,8 @@ void DirectX12::LoopEndProcess()
 
 	CommonConstData commonData;
 	commonData.cameraPos = { mainCameraData.nowEye.x,mainCameraData.nowEye.y,mainCameraData.nowEye.z,1 };
-	commonData.light = { lightVector.x,lightVector.y,lightVector.z,1 };
+	DirectX::XMFLOAT3 lightDirection = DirectionalLight::Get().GetDirection().ToXMFLOAT3();
+	commonData.light = DirectX::XMFLOAT4(lightDirection.x, lightDirection.y, lightDirection.z, 1);
 	commonData.lightColor = { lightColor.x,lightColor.y,lightColor.z,1 };
 	commonData.lightMat = cameraMat;
 	//共通バッファのMap

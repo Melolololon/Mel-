@@ -166,7 +166,7 @@ RenderTarget::~RenderTarget()
 }
 
 
-void RenderTarget::Create(const Color& initColor, std::string name)
+void RenderTarget::Create(const Color& initColor, const std::string& name)
 {
 	//”z—ñ‚É’Ç‰Á
 	std::string keyName = name;
@@ -176,7 +176,7 @@ void RenderTarget::Create(const Color& initColor, std::string name)
 	if (mainRenderTargetNama == "")mainRenderTargetNama = name;
 }
 
-void RenderTarget::Delete(std::string name)
+void RenderTarget::Delete(const std::string& name)
 {
 	pRenderTargets.erase(name);
 }
@@ -255,11 +255,7 @@ bool RenderTarget::Initialize()
 
 
 	PipelineData data;
-	data.alphaWriteMode = ALPHA_WRITE_TRUE;
-	data.blendMode = BLEND_ADD;
-	data.cullMode = CULL_NONE;
-	data.depthMode = DEPTH_FALSE;
-	data.drawMode = DRAW_SOLID;
+	PipelineState::GetDefaultPipelineData(data, PipelineType::PIPELINE_TYPE_SPRITE);
 
 	bool bResult  = defaultPipeline.CreatePipeline
 	(

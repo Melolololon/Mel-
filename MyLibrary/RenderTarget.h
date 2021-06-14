@@ -40,10 +40,10 @@ public:
 	~RenderTarget();
 
 	
-	static void Create(const Color& initColor, std::string name = "");
+	static void Create(const Color& initColor, const std::string& name = "");
 
 
-	static void Delete(std::string name);
+	static void Delete(const std::string& name);
 
 	static RenderTarget& Get(const std::string& name = mainRenderTargetNama) { return *pRenderTargets[name]; }
 
