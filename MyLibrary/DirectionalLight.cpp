@@ -4,13 +4,7 @@ std::unordered_map<std::string, std::unique_ptr<DirectionalLight>>DirectionalLig
 DirectionalLight::UINT DirectionalLight::createCount = 0;
 std::string DirectionalLight::mainCameraName = "";
 
-DirectionalLight::DirectionalLight()
-{
-}
 
-DirectionalLight::~DirectionalLight()
-{
-}
 
 void DirectionalLight::Create(const std::string& name)
 {
