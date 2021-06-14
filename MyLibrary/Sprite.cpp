@@ -145,6 +145,7 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 	);
 #pragma endregion
 
+#pragma region テーブル_ルートパラメーター
 
 	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
@@ -152,6 +153,9 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 	CD3DX12_ROOT_PARAMETER rootparam[2] = {};
 	rootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparam[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_PIXEL);
+
+#pragma endregion
+
 
 #pragma region ルートシグネチャ
 

@@ -180,6 +180,11 @@ public:
 
 	static void SetMatrixAndNearFar(DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX projectionMatrix,float nearNumber ,float farNumber);
 
+	static void SetViewMatrix(const DirectX::XMMATRIX& viewMatrix) { viewMat = viewMatrix; }
+	static void SetProjectionMatrix(const DirectX::XMMATRIX& projectionMatrix) { projectionMat = projectionMatrix; }
+	static void SetNear(const float nearNumber) { nearNum = nearNumber; }
+	static void SetFar(const float farNumber) { farNum = farNumber; }
+
 	/// <summary>
 	/// クライアント座標に変換し、最初に設定したウィンドウサイズに応じて補正したマウスの座標を取得します
 	/// </summary>

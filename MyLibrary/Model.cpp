@@ -856,7 +856,12 @@ void Model::MapConstData(const int modelNum, const Camera& camera)
 		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas[modelNum][i].angle.x));
 		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas[modelNum][i].angle.y));
 
-		constBufferData->normalMat = matWorld * cameraRotateMat;
+		DirectX::XMMATRIX cameraMat = DirectX::XMMatrixIdentity();
+		DirectX::XMFLOAT3 cameraAngle = camera.GetCameraAngle().ToXMFLOAT3();
+		cameraMat = DirectX::XMMatrixRotationZ(-cameraAngle.z);
+		cameraMat = DirectX::XMMatrixRotationX(-cameraAngle.x);
+		cameraMat = DirectX::XMMatrixRotationY(-cameraAngle.y);
+		constBufferData->normalMat = matWorld * cameraMat;
 
 		matWorld *= DirectX::XMMatrixTranslation
 		(

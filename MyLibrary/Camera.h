@@ -38,19 +38,41 @@ public:
 	/// <param name="name"></param>
 	static void Delete(const std::string& name);
 
+	/// <summary>
+/// カメラを参照します。
+/// </summary>
+/// <param name="name"></param>
+/// <returns></returns>
+	static Camera& Get(const std::string& name = mainCameraName) { return  *pCameras[name]; }
+
+
 #pragma region セット
 
 	/// <summary>
 	/// 座標をセットします。
 	/// </summary>
 	/// <param name="pos"></param>
-	void SetPosition(const Vector3& position) { this->position = position; }
+	void SetPosition(const Vector3& position) 
+	{
+		this->position = position; 
+
+		//仮
+		DirectInput::SetViewMatrix(GetViewMatrix());
+		DirectInput::SetProjectionMatrix(GetProjectionMatrix());
+	}
 
 	/// <summary>
 	/// 角度をセットします。角度が0,0,0の場合、カメラは0,0,1の方向を向きます。
 	/// </summary>
 	/// <param name="angle"></param>
-	void SetAngle(const Vector3& angle) { this->angle = angle; }
+	void SetAngle(const Vector3& angle)
+	{
+		this->angle = angle; 
+
+		//仮
+		DirectInput::SetViewMatrix(GetViewMatrix());
+		DirectInput::SetProjectionMatrix(GetProjectionMatrix());
+	}
 
 	/// <summary>
 	/// 画角をセットします。
@@ -62,13 +84,22 @@ public:
 	/// カメラからカメラの表示範囲の一番近い場所までの距離をセットします。
 	/// </summary>
 	/// <param name="num"></param>
-	void SetNear(const float num) { nearNum = num; }
+	void SetNear(const float num) 
+	{
+		nearNum = num; 
+		DirectInput::SetNear(nearNum);
+	}
 
 	/// <summary>
 	/// カメラからカメラの表示範囲の一番遠い場所までの距離をセットします。
 	/// </summary>
 	/// <param name="num"></param>
-	void SetFar(const float num) { farNum = num; }
+	void SetFar(const float num) 
+	{
+		farNum = num; 
+		DirectInput::SetFar(farNum);
+	}
+
 
 #pragma endregion
 
@@ -81,18 +112,17 @@ public:
 	/// <returns></returns>
 	static const std::string& GetMainCameraName() { return mainCameraName; }
 
-	/// <summary>
-	/// カメラを参照します。
-	/// </summary>
-	/// <param name="name"></param>
-	/// <returns></returns>
-	static Camera& Get(const std::string& name = mainCameraName) { return  *pCameras[name]; }
+
+	DirectX::XMMATRIX GetViewMatrix()const;
+	DirectX::XMMATRIX GetProjectionMatrix()const;
 
 	/// <summary>
 	/// ビュー行列とプロジェクション行列を掛けた行列を取得します。
 	/// </summary>
 	/// <returns></returns>
 	DirectX::XMMATRIX GetViewAndProjectionMat()const;
+
+	Vector3 GetCameraAngle()const { return angle; }
 
 #pragma endregion
 };

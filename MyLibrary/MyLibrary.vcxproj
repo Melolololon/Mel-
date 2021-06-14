@@ -202,6 +202,7 @@
     <ClCompile Include="ModelBone.cpp" />
     <ClCompile Include="ModelLoaer.cpp" />
     <ClCompile Include="Library.cpp" />
+    <ClCompile Include="ModelObject.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
@@ -551,6 +552,7 @@
     <ClInclude Include="ModelBone.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Library.h" />
+    <ClInclude Include="ModelObject.h" />
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectManager.h" />

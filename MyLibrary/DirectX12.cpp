@@ -1789,13 +1789,13 @@ void DirectX12::SetCameraAngre(DirectX::XMFLOAT3 eyeAngle, DirectX::XMFLOAT3 tar
 	mainCameraData.targetAngle = targetAngle;
 	mainCameraData.upAngle = upAngle;
 
-	DirectInput::SetMatrixAndNearFar
-	(
-		mainCamera->GetViewMatrix(mainCameraData),
-		mainCamera->GetProjectionMatrix(mainCameraData),
-		mainCameraData.nearNumber,
-		mainCameraData.farNumber
-	);
+	//DirectInput::SetMatrixAndNearFar
+	//(
+	//	mainCamera->GetViewMatrix(mainCameraData),
+	//	mainCamera->GetProjectionMatrix(mainCameraData),
+	//	mainCameraData.nearNumber,
+	//	mainCameraData.farNumber
+	//);
 
 	cameraMat = DirectX::XMMatrixIdentity();
 	cameraMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(-mainCameraData.eyeAngle.z));
@@ -1810,13 +1810,13 @@ void DirectX12::SetNearAndFar(float nearNum, float farNum)
 	mainCameraData.nearNumber = nearNum;
 	mainCameraData.farNumber = farNum;
 
-	DirectInput::SetMatrixAndNearFar
+	/*DirectInput::SetMatrixAndNearFar
 	(
 		mainCamera->GetViewMatrix(mainCameraData),
 		mainCamera->GetProjectionMatrix(mainCameraData),
 		mainCameraData.nearNumber,
 		mainCameraData.farNumber
-	);
+	);*/
 }
 #pragma endregion
 

@@ -67,6 +67,11 @@ void Quaternion::operator*= (const Quaternion& q)
 	w = p.w;
 }
 
+Matrix Quaternion::GetQuaternionToMatrix()
+{
+	return Matrix();
+}
+
 
 Quaternion GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle)
 {
