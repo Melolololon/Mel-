@@ -133,7 +133,7 @@ void Play::Update()
 	for (int i = 0; i < CREATE_NUM; i++)
 	{
 		fbxModel->PlayAnimation(i);
-		fbxModel->SetAngle(angle,i);
+		//fbxModel->SetAngle(angle,i);
 	}
 	/*Vector2 sprPos = curve->GetVector2Position();
 	spr->SetPosition(sprPos);
@@ -155,6 +155,7 @@ void Play::Update()
 	{
 		angle.y -= 2;
 	}
+	Camera::Get().SetAngle(angle);
 }
 
 void Play::Draw()

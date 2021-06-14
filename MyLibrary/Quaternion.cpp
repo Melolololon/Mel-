@@ -30,7 +30,7 @@ Quaternion::Quaternion(const float w, const Vector2& v)
 
 Quaternion::Quaternion(const Vector3& v)
 {
-	w = 0;
+	w = 1;
 	x = v.x;
 	y = v.y;
 	z = v.z;
@@ -38,7 +38,7 @@ Quaternion::Quaternion(const Vector3& v)
 
 Quaternion::Quaternion(const Vector2& v)
 {
-	w = 0;
+	w = 1;
 	x = v.x;
 	y = v.y;
 	z = 0;
@@ -72,7 +72,7 @@ Quaternion GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const 
 {
 	float rad = LibMath::AngleConversion(0, angle);
 	Vector3 nVector = Vector3Normalize(vector);//ê≥ãKâª
-	Quaternion p(0.0f, pos);
+	Quaternion p(pos);
 	Quaternion q
 	(
 		std::cos(rad / 2),

@@ -26,7 +26,7 @@ void Camera::Delete(std::string name)
 DirectX::XMMATRIX Camera::GetViewAndProjectionMat()
 {
 	//eyeからtargetへのベクトル
-	Vector3 target = position + Vector3(0, 0, 1);
+	Vector3 target = Vector3(0, 0, 1);
 	Vector3 upVector = Vector3(0, 1, 0);
 
 	//ベクトルをカメラの角度に応じて回転させる関数
@@ -38,6 +38,8 @@ DirectX::XMMATRIX Camera::GetViewAndProjectionMat()
 	};
 
 	RotateVectorCameraAngle(target);
+	target += position;
+	
 	RotateVectorCameraAngle(upVector);
 
 
