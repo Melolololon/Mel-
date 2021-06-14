@@ -366,23 +366,19 @@ void RenderTarget::SetCmdList()
 		);
 	}
 
-	//パイプラインセット
 	cmdList->SetPipelineState(pipeline.Get());
 
 
-	//コマンドセット
 	std::vector<ID3D12DescriptorHeap*> ppHeaps;
-
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 
-	//頂点
 	cmdList->IASetVertexBuffers(0, 1, &vertexBufferSet.vertexBufferView);
 
-	//ヒープ
 	ppHeaps.push_back(descHeap.Get());
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
+	
 
-	//テクスチャ
+	//テクスチャ1
 	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 	(
 		descHeap->GetGPUDescriptorHandleForHeapStart(),
@@ -391,6 +387,7 @@ void RenderTarget::SetCmdList()
 	);
 	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
 
+	//テクスチャ2
 	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 	(
 		descHeap->GetGPUDescriptorHandleForHeapStart(),
@@ -399,7 +396,7 @@ void RenderTarget::SetCmdList()
 	);
 	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
 
-	//定数セット
+	//定数
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
 
 	cmdList->DrawInstanced(vertices.size(), 1, 0, 0);

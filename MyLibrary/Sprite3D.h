@@ -17,7 +17,7 @@ private:
 	static DirectX::XMFLOAT3 cameraTargetPosition;
 	static DirectX::XMFLOAT3 cameraUpVector;
 
-	void MatrixMap(Camera& camera);
+	void MatrixMap(const Camera& camera);
 
 	void Create(const Color& color)override;
 	void Create(Texture* pTexture)override;

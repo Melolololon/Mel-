@@ -136,7 +136,7 @@ void Sprite3D::Draw(const std::string& rtName)
 }
 
 
-void Sprite3D::MatrixMap(Camera& camera)
+void Sprite3D::MatrixMap(const Camera& camera)
 {
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);

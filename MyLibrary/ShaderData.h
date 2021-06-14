@@ -23,15 +23,15 @@ struct InputLayoutData
 
 enum DrawMode 
 {
-	DRAW_SOLID,
-	DRAW_WIREFRAME,
+	DRAW_SOLID,//通常通りモデルを表示します
+	DRAW_WIREFRAME,//ワイヤーフレームで表示します
 };
 
 enum CullMode 
 {
-	CULL_NONE,
-	CULL_FRONT,
-	CULL_BACK
+	CULL_NONE,//カリングしません
+	CULL_FRONT,//表面をカリングします
+	CULL_BACK//裏面をカリングします
 };
 
 enum BlendMode 

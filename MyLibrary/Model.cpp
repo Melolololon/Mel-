@@ -828,7 +828,7 @@ void Model::Initialize
 #pragma endregion
 
 
-void Model::MapConstData(const int modelNum,  Camera& camera)
+void Model::MapConstData(const int modelNum, const Camera& camera)
 {
 	ModelConstBufferData* constBufferData;
 	for (int i = 0; i < modelObjectNum; i++) 

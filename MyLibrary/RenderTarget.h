@@ -14,6 +14,7 @@ class RenderTarget :public Sprite2D
 private:
 
 
+
 	static std::unordered_map<std::string,std::unique_ptr<RenderTarget>>pRenderTargets;
 	static UINT createCount;
 	static std::string mainRenderTargetNama;
@@ -35,52 +36,28 @@ private:
 
 public:
 
-
 	RenderTarget(const Color& color);
 	~RenderTarget();
+
 	
-	/// <summary>
-	/// レンダーターゲットを生成します。
-	/// </summary>
-	/// <param name="initColor">初期化色</param>
-	/// <param name="name">名前</param>
 	static void Create(const Color& initColor, std::string name = "");
-	/// <summary>
-	/// レンダーターゲットを削除します。
-	/// </summary>
-	/// <param name="name">名前</param>
-	/// <returns></returns>
+
+
 	static void Delete(std::string name);
-	
-	/// <summary>
-	/// レンダーターゲットを参照します。
-	/// </summary>
-	/// <param name="name">名前</param>
-	/// <returns>nameで指定したレンダーターゲットの参照</returns>
-	static RenderTarget& Get(std::string name = mainRenderTargetNama)
-	{
-		return *pRenderTargets[name];
-	}
+
+	static RenderTarget& Get(const std::string& name = mainRenderTargetNama) { return *pRenderTargets[name]; }
 
 	static bool Initialize();
 
-	/// <summary>
-	/// 描画前の処理
-	/// </summary>
 	void PreDrawProcess();
 
 	void SetCmdList();
 	static void AllDraw();
 
-	/// <summary>
-	/// レンダーターゲットにカメラをセットします。レンダーターゲットには、セットされたカメラに映っているものが描画されます。
-	/// </summary>
-	/// <param name="camera">カメラのポインタ</param>
-	void SetCamera(Camera* pCamera){ this->pCamera = pCamera; }
 
-	/// <summary>
-	/// 設定されているカメラを参照します。
-	/// </summary>
+	void SetCamera(const std::string& name = Camera::GetMainCameraName()) { this->pCamera = &Camera::Get(name); }
+
+
 	Camera& GetCamera() { return *pCamera; }
 };
 

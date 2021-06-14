@@ -26,7 +26,16 @@ public:
 	Camera(){}
 	~Camera(){}
 
+	/// <summary>
+	/// カメラを生成します。
+	/// </summary>
+	/// <param name="name"></param>
 	static void Create(std::string name = "");
+	
+	/// <summary>
+	/// カメラを削除します。
+	/// </summary>
+	/// <param name="name"></param>
 	static void Delete(std::string name);
 
 #pragma region セット
@@ -65,18 +74,25 @@ public:
 
 #pragma region ゲット
 
+	
+	/// <summary>
+	/// メインカメラ(ライブラリで用意されたカメラ)の名前を取得します。
+	/// </summary>
+	/// <returns></returns>
+	static const std::string& GetMainCameraName() { return mainCameraName; }
+
 	/// <summary>
 	/// カメラを参照します。
 	/// </summary>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	static Camera& Get(std::string name = mainCameraName) { return *pCameras[name]; }
+	static Camera& Get(const std::string& name = mainCameraName) { return  *pCameras[name]; }
 
 	/// <summary>
 	/// ビュー行列とプロジェクション行列を掛けた行列を取得します。
 	/// </summary>
 	/// <returns></returns>
-	DirectX::XMMATRIX GetViewAndProjectionMat();
+	DirectX::XMMATRIX GetViewAndProjectionMat()const;
 
 #pragma endregion
 };

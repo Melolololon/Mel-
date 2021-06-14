@@ -23,12 +23,8 @@ void Camera::Delete(std::string name)
 	pCameras.erase(name);
 }
 
-DirectX::XMMATRIX Camera::GetViewAndProjectionMat()
+DirectX::XMMATRIX Camera::GetViewAndProjectionMat()const
 {
-	//eyeからtargetへのベクトル
-	Vector3 target = Vector3(0, 0, 1);
-	Vector3 upVector = Vector3(0, 1, 0);
-
 	//ベクトルをカメラの角度に応じて回転させる関数
 	auto RotateVectorCameraAngle = [&](Vector3& vector)
 	{
@@ -37,9 +33,11 @@ DirectX::XMMATRIX Camera::GetViewAndProjectionMat()
 		vector = LibMath::RotateVector3(vector, Vector3(0, 1, 0), angle.y);
 	};
 
+	Vector3 target = Vector3(0, 0, 1);
 	RotateVectorCameraAngle(target);
 	target += position;
 	
+	Vector3 upVector = Vector3(0, 1, 0);
 	RotateVectorCameraAngle(upVector);
 
 
@@ -49,7 +47,6 @@ DirectX::XMMATRIX Camera::GetViewAndProjectionMat()
 		DirectX::XMLoadFloat3(&target.ToXMFLOAT3()),
 		DirectX::XMLoadFloat3(&upVector.ToXMFLOAT3())
 	);
-
 
 	DirectX::XMMATRIX mapProjection = DirectX::XMMatrixPerspectiveFovLH
 	(

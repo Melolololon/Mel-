@@ -168,7 +168,7 @@ protected:
 #pragma region ä÷êî
 
 	void DrawCommonProcessing(const int modelNum, const std::string& rtName);
-	void MapConstData(const int modelNum, Camera& camera);
+	void MapConstData(const int modelNum, const Camera& camera);
 	void SetCmdList(const int modelNum);
 
 
