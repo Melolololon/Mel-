@@ -214,7 +214,11 @@ void LibMath::GetAStarCalcResult
 	std::vector<std::vector<int>>nodeStepNumbers(nodeYArrayNum, std::vector<int>(nodeXArrayNum, -1));
 	nodeStepNumbers[startNodeIndexY][startNodeIndexX] = 0;
 
-	
+	//前のルートへのベクトルを格納する配列
+	//[ノードY][ノードX][自分を指定したノードごと]
+	std::vector<std::vector<std::vector<Vector2>>>preNodeVectors(nodeYArrayNum,std::vector<std::vector<Vector2>>(nodeXArrayNum));
+	//上の配列の、[自分を指定したノードごと]を指定する添え字の配列(インクリメントを行う)
+	std::vector<std::vector<int>>preNodeVectorsIndices(nodeYArrayNum, std::vector<int>(nodeXArrayNum, 0));
 
 	//打ち切りフラグ(これがtrueだと計算しない)
 	std::vector<std::vector<bool>>calcStopFlag(nodeYArrayNum, std::vector<bool>(nodeXArrayNum, false));
@@ -234,7 +238,7 @@ void LibMath::GetAStarCalcResult
 	//ゴールにたどり着けたかどうか
 	bool calcResult = false;
 
-	for(int i = 0;;i++)
+	while(1)
 	{
 		//現在の最短距離で計算できるかどうか
 		bool noneMinDistanceRoute = false;
@@ -289,12 +293,14 @@ void LibMath::GetAStarCalcResult
 						stepNum = nodeStepNumbers[indexY][indexX];
 					}
 
+
 					////ステップ数が同じだったら計算しない
 					//if(nodeStepNumbers[routeIndexY[j]][routeIndexX[j]]
 					//	== nodeStepNumbers[indexY][indexX])
 					//{
 					//}
 
+					//これいらなくなる
 					auto CheckNodeStartNode = [&]()
 					{
 						//スタートかどうか
@@ -311,6 +317,71 @@ void LibMath::GetAStarCalcResult
 					//minDistanceと比較する数値(ノードからゴールの距離 + i + コスト)
 					int nodeNum = CalcEndNodeDistance(indexX, indexY) + stepNum + node.cost;
 					
+					//スタートノードの周り調べてるときは入らない
+					if (routeIndexY[j] != startNodeIndexY
+						|| routeIndexX[j] != startNodeIndexX)
+					{
+						//選んだノードへのベクトルを求める
+						Vector2 myNodeToSelectNodeVector = Vector2(indexX - routeIndexX[j], indexY - routeIndexY[j]);
+						
+						
+
+						//向きを代入
+						enum NodeDistance
+						{
+							NODE_LEFT,
+							NODE_RIGHT,
+							NODE_UP,
+							NODE_DOWN,
+							NODE_SAME
+						};
+
+						bool isContinue = false;
+						for (int k = 0, size = preNodeVectors[routeIndexY[j]][routeIndexX[j]].size(); k < size; k++)
+						{
+
+							NodeDistance preNodeVectorsDirX;
+							NodeDistance preNodeVectorsDirY;
+							if (preNodeVectors[routeIndexY[j]][routeIndexX[j]][k].x > 0)preNodeVectorsDirX = NODE_LEFT;
+							else if (preNodeVectors[routeIndexY[j]][routeIndexX[j]][k].x < 0) preNodeVectorsDirX = NODE_RIGHT;
+							else preNodeVectorsDirX = NODE_SAME;
+
+							if (preNodeVectors[routeIndexY[j]][routeIndexX[j]][k].y > 0)preNodeVectorsDirY = NODE_DOWN;
+							else if (preNodeVectors[routeIndexY[j]][routeIndexX[j]][k].y < 0)preNodeVectorsDirY = NODE_UP;
+							else preNodeVectorsDirY = NODE_SAME;
+
+
+							NodeDistance myNodeToSelectNodeVectorDirX;
+							NodeDistance myNodeToSelectNodeVectorDirY;
+							if (myNodeToSelectNodeVector.x > 0)myNodeToSelectNodeVectorDirX = NODE_LEFT;
+							else if (myNodeToSelectNodeVector.x < 0)myNodeToSelectNodeVectorDirX = NODE_RIGHT;
+							else myNodeToSelectNodeVectorDirX = NODE_SAME;
+
+							if (myNodeToSelectNodeVector.y > 0)myNodeToSelectNodeVectorDirY = NODE_DOWN;
+							else if (myNodeToSelectNodeVector.y < 0)myNodeToSelectNodeVectorDirY = NODE_UP;
+							else myNodeToSelectNodeVectorDirY = NODE_SAME;
+
+							//preNodeVectorsの方向にあるノードは無視
+							if (preNodeVectorsDirX == myNodeToSelectNodeVectorDirX
+								&& preNodeVectorsDirX != NODE_SAME && myNodeToSelectNodeVectorDirX != NODE_SAME
+								|| preNodeVectorsDirY == myNodeToSelectNodeVectorDirY
+								&& preNodeVectorsDirY != NODE_SAME && myNodeToSelectNodeVectorDirY != NODE_SAME)
+							{
+								isContinue = true;
+								break;
+							}
+						}
+
+						if (isContinue)continue;
+
+					}
+					//指定したノードから自分へのベクトルを求める
+					preNodeVectors[indexY][indexX].push_back
+					(
+						Vector2(routeIndexX[j] - indexX, routeIndexY[j] - indexY)
+					);
+
+
 					//minDistanceと比較する数値と最短距離が同じ
 					//かつ、障害物がなければ入る
 					if(nodeNum == minNodeNum
@@ -482,11 +553,19 @@ void LibMath::GetAStarCalcResult
 					}
 
 
+					
 				}
 				if (calcEnd)break;
 			}
 
-			
+			////カウントリセット
+			//for(auto& i : preNodeVectorsIndices)
+			//{
+			//	for(auto& i2 : i)
+			//	{
+			//		i2 = 0;
+			//	}
+			//}
 
 			if (calcEnd)break;
 		}
