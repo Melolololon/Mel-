@@ -46,9 +46,6 @@
 #include"Sprite2D.h"
 #include"Sprite3D.h"
 
-#include"RenderTarget.h"
-#include"Camera.h"
-
 enum LibraryPipeline
 {
 	PIPELINE_NOT_DEPTH_TEST,//深度テスト無し(zにかかわらず、関数の呼び出した順番で描画されます)
@@ -63,7 +60,6 @@ using namespace Microsoft::WRL;
 
 class DirectX12 final
 {
-	
 
 	enum DrawType
 	{
@@ -495,7 +491,7 @@ private:
 #pragma endregion
 
 
-	std::unique_ptr<RenderTarget> renderTarget;
+
 
 	DirectX12();
 	~DirectX12();

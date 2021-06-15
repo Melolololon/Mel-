@@ -2,6 +2,8 @@
 #include"CreateBuffer.h"
 #include"PipelineState.h"
 
+#include"RenderTarget.h"
+
 ID3D12Device* Model::device;
 std::vector<ID3D12GraphicsCommandList*>Model::cmdLists;
 ComPtr<ID3D12RootSignature>Model::rootSignature;

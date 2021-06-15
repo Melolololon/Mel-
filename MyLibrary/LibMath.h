@@ -1,10 +1,10 @@
 #pragma once
-#include<vector>
 #include"Vector.h"
 #include"Matrix.h"
 #include"Quaternion.h"
 #define _USE_MATH_DEFINES
 #include<math.h>
+#include"Library.h"
 #include"CollisionType.h"
 //GameにMathクラスがあったから名前をMathにするとエラーが出る
 //Math意外だとエラー出なかったので、Mathという名前自体がいけないのかもしれない
@@ -13,64 +13,100 @@
 //lib(スタティックライブラリのプロジェクト)に作らなければエラー出ない?
 
 
+//Aスターのノード
+struct AStarNode
+{
+	//座標
+	Vector2 position = 0;
+
+	//進行不能オブジェクトと重なっているノード
+	bool hitObjectNode = false;
+
+	//自分を隣接してるノードと指定したノードのポインタの配列
+	std::vector<AStarNode*> pAStarNodes;
+
+	//コスト
+	UINT cost = 1;
+
+};
+
 class LibMath
 {
 private:
 	LibMath(){}
 	~LibMath(){}
 public:
+	//今度でいいから、プレイヤーや敵の大きさを考慮して経路を計算できるようにする
+
+#pragma region 最短経路
+
+	/// <summary>
+	/// ノードの座標をセットします。
+	/// </summary>
+	/// <param name="leftUpPos"></param>
+	/// <param name="rightDownPos"></param>
+	/// <param name="nodeNumX">分割数</param>
+	/// <param name="nodeNumY">分割数</param>
+	/// <param name="nodes"></param>
+	/// <param name="upPlus">上方向がプラスかどうか</param>
+	static void SetAStarNodePosition
+	(
+		const Vector2& leftUpPos,
+		const Vector2& rightDownPos,
+		const UINT& nodeNumX,
+		const UINT& nodeNumY,
+		std::vector< std::vector<AStarNode>>& nodes,
+		const bool upPlus
+	);
+
+	//この関数でコストが1じゃないオブジェクトとそのコストを渡すようにする
+	/// <summary>
+	/// ノードが進行不能オブジェクトにヒットしてるかを確認します。
+	/// </summary>
+	/// <param name="hitObjectsPos"></param>
+	/// <param name="hitObjectsSize"></param>
+	/// <param name="nodes"></param>
+	static void SetAStarNodeHitObjectNodeFlag
+	(
+		const std::vector<Vector2>& hitObjectsPos,
+		const std::vector<Vector2>& hitObjectsSize,
+		std::vector< std::vector<AStarNode>>& nodes
+	);
+
+	/// <summary>
+	/// 渡されたデータをもとに最短経路を求めます。
+	/// </summary>
+	/// <param name="startPos"></param>
+	/// <param name="endPos"></param>
+	/// <param name="nodes"></param>
+	/// <param name="routeVector"></param>
+	static void GetAStarCalcResult
+	(
+		const Vector2& startPos,
+		const Vector2& endPos,
+		const std::vector< std::vector<AStarNode>>& nodes,
+		std::vector<Vector2>& routeVector
+	);
+
+#pragma endregion
 
 
 	/// <summary>
-	/// 階乗(整数のみ)
+	/// 階乗
+	/// </summary>
+	/// <param name="num"></param>
+	/// <returns></returns>
+	static int Factorial(const int num);
+
+	/// <summary>
+	/// 累乗
 	/// </summary>
 	/// <param name="num"></param>
 	/// <param name="index"></param>
 	/// <returns></returns>
 	static int Pow(const float num,const int index);
 	
-
-	/// <summary>
-	/// 円周率を取得します
-	/// </summary>
-	/// <returns></returns>
-	static float GetFloatPI();
-
-	/// <summary>
-	/// 円周率を取得します
-	/// </summary>
-	/// <returns></returns>
-	static double GetDoublePI();
-
-
-#pragma region クランプ
 	
-
-	enum MultipleClampType
-	{
-		CLAMP_TYPE_BIG,//大きい値を返す
-		CLAMP_TYPE_SMALL,//小さい値を返す
-		CLAMP_TYPE_NEAR_BIG,//大きい値と小さい値のうち近いほうを返し、差が同等だった場合、大きいほうを返します
-		CLAMP_TYPE_NEAR_SMALL,//大きい値と小さい値のうち近いほうを返し、差が同等だった場合、小さいほうを返します
-	};
-
-	/// <summary>
-	/// multipleの倍数でnumをクランプします。返す値はMultipleClampTypeでセットします。
-	/// </summary>
-	/// <param name="num">数値</param>
-	/// <param name="multiple">倍率</param>
-	/// <param name="type">返す値の種類</param>
-	/// <returns></returns>
-	static float MultipleClamp
-	(
-		const float num, 
-		const float multiple,
-		const MultipleClampType type
-	);
-#pragma endregion
-
-#pragma region 範囲
-
 	/// <summary>
 	/// num1とnum2の値の差を求め、差が基準の値より多かったらtrueを返します
 	/// </summary>
@@ -89,12 +125,6 @@ public:
 	/// <returns></returns>
 	static bool AngleDifference(const float angle1, const float angle2, const float difference);
 
-
-#pragma endregion
-
-#pragma region 変換
-
-
 	/// <summary>
 		/// 度数法の角度をラジアンに　ラジアンを度数法の角度に
 		/// </summary>
@@ -102,21 +132,35 @@ public:
 		/// <param name="angle">角度</param>
 	static float AngleConversion(int pattern, float angle);
 
-	/// <summary>
-	/// 引数numを範囲の数値を基準に逆にします。例 num = 2 範囲0から8の場合、numは6。
-	/// </summary>
-	/// <param name="num"></param>
-	/// <param name="minNum"></param>
-	/// <param name="maxNum"></param>
-	/// <returns></returns>
-	static int ReverseRangeNumber(const int num, const int minNum, const int maxNum);
 
-#pragma endregion
+	/// <summary>
+	/// 円周率を取得します
+	/// </summary>
+	/// <returns></returns>
+	static float GetFloatPI();
+
+	/// <summary>
+	/// 円周率を取得します
+	/// </summary>
+	/// <returns></returns>
+	static double GetDoublePI();
+
+
 
 #pragma region ベクトル
 
 
 #pragma region vector2
+
+
+	/// <summary>
+	/// 2つの座標の距離を取得します
+	/// </summary>
+	/// <param name="pos1">座標1</param>
+	/// <param name="pos2">座標2</param>
+	/// <returns></returns>
+	static float CalcDistance2D(const Vector2& pos1, const Vector2& pos2);
+
 
 	/// <summary>
 	/// 左右判定を行います。点がベクトルより右の場合は1、左の場合は-1、ベクトル上の場合は0を返します。
@@ -208,9 +252,9 @@ public:
 	/// 四角の当たり判定です
 	/// </summary>
 	/// <param name="start1">1つ目の左上座標</param>
-	/// <param name="end1">1つ目の右下上座標</param>
-	/// <param name="start2">1つ目の左上座標</param>
-	/// <param name="end2">1つ目の右下座標</param>
+	/// <param name="size1">1つ目のサイズ</param>
+	/// <param name="start2">2つ目の左上座標</param>
+	/// <param name="size2">2つ目のサイズ</param>
 	/// <returns>当たったかどうか</returns>
 	static bool RectAndRectCollision
 	(

@@ -192,6 +192,7 @@ void ModelObject::SetCmdList()
 	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
 	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	ID3D12DescriptorHeap* textureDescHeap = pModelData->GetTextureDesctiptorHeap();
 	std::vector<ID3D12DescriptorHeap*> ppHeaps;
 	ppHeaps.push_back(textureDescHeap);
 	cmdLists[0]->SetDescriptorHeaps(1, &ppHeaps[0]);
@@ -207,6 +208,10 @@ void ModelObject::SetCmdList()
 
 
 
+	const std::vector<VertexBufferSet>& vertexBufferSets = pModelData->GetVertexBufferSet();
+	const std::vector<IndexBufferSet>& indexBufferSets = pModelData->GetIndexBufferSet();
+
+
 	//モデルのオブジェクトごとをセット
 	//頂点バッファ分ループ
 	for (int i = 0; i < modelFileObjectNum; i++)
@@ -214,14 +219,11 @@ void ModelObject::SetCmdList()
 		cmdLists[0]->SetPipelineState(pPipeline[i]->GetPipelineState().Get());
 
 
-		cmdLists[0]->IASetIndexBuffer(&indexBufferSet[i].indexBufferView);
-		cmdLists[0]->IASetVertexBuffers(0, 1, &vertexBufferSet[i].vertexBufferView);
-
+		cmdLists[0]->IASetVertexBuffers(0, 1, &vertexBufferSets[i].vertexBufferView);
+		cmdLists[0]->IASetIndexBuffer(&indexBufferSets[i].indexBufferView);
 
 #pragma region テクスチャ
 
-
-		int textureBufferHandleNum = 0;
 		////紐づけ
 		//for (int j = 0; j < vertexBufferNum; j++)
 		//{
@@ -233,12 +235,12 @@ void ModelObject::SetCmdList()
 		//		break;
 		//	}
 		//}
-
-		//テクスチャバッファ
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		//読み取ったモデルとモデルのテクスチャの順番同じだろうから紐づけいらない?
+		
+		D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 		(
-			desHeap->GetGPUDescriptorHandleForHeapStart(),
-			textureBufferHandleNum,
+			textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
+			i,
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
 		cmdLists[0]->SetGraphicsRootDescriptorTable(4, gpuDescHandle);
@@ -281,7 +283,7 @@ void ModelObject::SetCmdList()
 
 
 		//描画
-		cmdLists[0]->DrawIndexedInstanced(static_cast<UINT>(indices[i].size()), 1, 0, 0, 0);
+		cmdLists[0]->DrawIndexedInstanced(static_cast<UINT>(pModelData->GetIndices()[i].size()), 1, 0, 0, 0);
 
 	}
 	

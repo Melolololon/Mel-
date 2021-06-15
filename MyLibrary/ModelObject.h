@@ -18,6 +18,7 @@
 
 //AddColorとかまとめよう!
 
+//モデルの座標などをまとめたもの
 class ModelObject
 {
 private:
@@ -27,13 +28,12 @@ private:
 
 
 	//モデル(クリエイトしたら割り当てる)
-	ModelData* model = nullptr;
+	ModelData* pModelData = nullptr;
 	int modelFileObjectNum = 0;
 	
 	std::vector<PipelineState*> pPipeline;
 
 
-	ID3D12DescriptorHeap* textureDescHeap;
 
 	//定数バッファ
 	static const int CONST_BUFFER_REGISTER = 0;
@@ -80,10 +80,17 @@ public:
 
 	virtual void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
+	void SetPModel(ModelData* pModel) 
+	{
+		pModelData = pModel; 
+	}
+
 	void SetPosition(const Vector3& position);
 	void SetScale(const Vector3& scale);
 	void SetAngle(const Vector3& angle);
 	
 	void SetPipeline(PipelineState* pipelineState);
+
+
 };
 
