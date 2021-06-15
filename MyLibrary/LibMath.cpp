@@ -118,6 +118,9 @@ void LibMath::GetAStarCalcResult
 
 	//スタート地点とゴール地点がどこに所属するか調べる
 
+	//自分を指定したノード側は検索品ようにする?
+	//ステップ数が同じだったら計算しなければいい?
+
 	//経路のノードの添え字(これに入ってる添え字でノードを取得して計算する)
 	std::vector<int>routeIndexX(1);
 	routeIndexX.reserve(9);
@@ -186,13 +189,14 @@ void LibMath::GetAStarCalcResult
 
 	};
 
+	//一時的に構造体作って計算に使うパラメーターまとめる?
 
 	//最短ルート上のノード(最短ルート上のノードをいれる配列)
 	std::vector<Vector2>minRouteNodePositions;
 
 	//最短距離を求める
 	//最短距離を入れる変数
-	int minNodeNum = CalcEndNodeDistance(routeIndexX[0], routeIndexY[0]);
+	int minNodeNum = CalcEndNodeDistance(routeIndexX[0], routeIndexY[0]) + nodes[routeIndexX[0]][routeIndexY[0]].cost;
 	//2番目を入れる変数
 	int secondMinNodeNum = INT_MAX;
 
@@ -203,7 +207,14 @@ void LibMath::GetAStarCalcResult
 	//最短経路候補の経路のノードをの座標を格納する配列
 	//[ルートごと][ルートのノードごと]
 	std::vector<std::vector<Vector2>>candidateRouteNodePositions;
+	//2番目の経路候補の経路のノードをの座標を格納する配列
 	std::vector<std::vector<Vector2>>secondCandidateRouteNodePositions;
+
+	//ノードのステップ数を格納する配列
+	std::vector<std::vector<int>>nodeStepNumbers(nodeYArrayNum, std::vector<int>(nodeXArrayNum, -1));
+	nodeStepNumbers[startNodeIndexY][startNodeIndexX] = 0;
+
+	
 
 	//打ち切りフラグ(これがtrueだと計算しない)
 	std::vector<std::vector<bool>>calcStopFlag(nodeYArrayNum, std::vector<bool>(nodeXArrayNum, false));
@@ -211,6 +222,7 @@ void LibMath::GetAStarCalcResult
 	//nodeNumがsecondNumDistanceと同じノードの添え字を格納(最短距離での探索が不可能になった時用)
 	std::vector<int>secondNumRouteNodesIndexX;
 	std::vector<int>secondNumRouteNodesIndexY;
+
 
 	//candidateRouteNodesにルート(配列)を追加するループかどうか
 	bool addCandidateRouteNodesLoop = true;
@@ -229,9 +241,12 @@ void LibMath::GetAStarCalcResult
 		
 		//現在の最短距離で計算できた回数
 		int calcCurrentMinDistanceRouteCount = 0;
+		//上のやつの2番目版
+		int secondCalcCurrentMinDistanceRouteCount = 0;
 
 		//進行不能になったかどうか(今のノードから進行できなくなったかどうか)
 		bool calcRoute = false;
+
 
 		for(int j = 0,size = routeIndexX.size(); j < size;j++)
 		{
@@ -252,6 +267,7 @@ void LibMath::GetAStarCalcResult
 				for (int x = -1; x < 2; x++)
 				{
 					int indexX = routeIndexX[j] + x;
+					
 					//範囲外アクセス&自分を計算に使うの防止
 					//打ち切りフラグがtrueでもダメ
 					if (routeIndexX[j] + x <= -1
@@ -260,7 +276,24 @@ void LibMath::GetAStarCalcResult
 						&& y == 0
 						/*|| calcStopFlag[indexY][indexX]*/)continue;
 
+					//ステップ数を求める
+					int stepNum = 0;
+					//ステップ数が決まってなかったら計算して代入
+					if (nodeStepNumbers[indexY][indexX] == -1)
+					{
+						stepNum = nodeStepNumbers[routeIndexY[j]][routeIndexX[j]] + 1;
+						nodeStepNumbers[indexY][indexX] = stepNum;
+					}
+					else//決まってたら決められたやつを使う
+					{
+						stepNum = nodeStepNumbers[indexY][indexX];
+					}
 
+					////ステップ数が同じだったら計算しない
+					//if(nodeStepNumbers[routeIndexY[j]][routeIndexX[j]]
+					//	== nodeStepNumbers[indexY][indexX])
+					//{
+					//}
 
 					auto CheckNodeStartNode = [&]()
 					{
@@ -276,7 +309,7 @@ void LibMath::GetAStarCalcResult
 					if (node.hitObjectNode)continue;
 
 					//minDistanceと比較する数値(ノードからゴールの距離 + i + コスト)
-					int nodeNum = CalcEndNodeDistance(indexX, indexY) + i + node.cost;
+					int nodeNum = CalcEndNodeDistance(indexX, indexY) + stepNum + node.cost;
 					
 					//minDistanceと比較する数値と最短距離が同じ
 					//かつ、障害物がなければ入る
@@ -415,7 +448,7 @@ void LibMath::GetAStarCalcResult
 							else
 							{
 								//ノードの座標を追加
-								secondCandidateRouteNodePositions[calcCurrentMinDistanceRouteCount].push_back(node.position);
+								secondCandidateRouteNodePositions[secondCalcCurrentMinDistanceRouteCount].push_back(node.position);
 							}
 
 							secondRouteFirstRoute = true;
@@ -429,7 +462,7 @@ void LibMath::GetAStarCalcResult
 							}
 							else
 							{	//別のルートをコピー
-								std::vector<Vector2>copyRoute = candidateRouteNodePositions[calcCurrentMinDistanceRouteCount - 1];
+								std::vector<Vector2>copyRoute = candidateRouteNodePositions[secondCalcCurrentMinDistanceRouteCount - 1];
 
 								//最後(別のルートのノード)と入れ替え
 								copyRoute[copyRoute.size() - 1] = node.position;
@@ -437,13 +470,13 @@ void LibMath::GetAStarCalcResult
 								//生成したルートを追加
 								secondCandidateRouteNodePositions.insert
 								(
-									candidateRouteNodePositions.begin() + calcCurrentMinDistanceRouteCount,
+									candidateRouteNodePositions.begin() + secondCalcCurrentMinDistanceRouteCount,
 									copyRoute
 								);
 							}
 						}
 
-						
+						secondCalcCurrentMinDistanceRouteCount++;
 
 						calcRoute = true;
 					}
