@@ -194,6 +194,7 @@
     <ClCompile Include="FbxModel.cpp" />
     <ClCompile Include="FreamTimer.cpp" />
     <ClCompile Include="HeapIndexManager.cpp" />
+    <ClCompile Include="Integers.cpp" />
     <ClCompile Include="LibMath.cpp" />
     <ClCompile Include="LibWinAPI.cpp" />
     <ClCompile Include="Matrix.cpp" />
@@ -501,6 +502,7 @@
     <ClInclude Include="FbxModel.h" />
     <ClInclude Include="FreamTimer.h" />
     <ClInclude Include="HeapIndexManager.h" />
+    <ClInclude Include="Integers.h" />
     <ClInclude Include="LibMath.h" />
     <ClInclude Include="LibWinAPI.h" />
     <ClInclude Include="Matrix.h" />

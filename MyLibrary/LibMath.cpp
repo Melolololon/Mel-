@@ -188,7 +188,7 @@ void LibMath::GetAStarCalcResult
 		return startYToEndYDiff;
 
 	};
-
+	
 	//一時的に構造体作って計算に使うパラメーターまとめる?
 
 	//最短ルート上のノード(最短ルート上のノードをいれる配列)
