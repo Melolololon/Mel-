@@ -56,15 +56,7 @@ public:
 		}
 	};
 
-	static const int MAX_BONE_INDICES = 4;
-	struct FbxVertex
-	{
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT2 uv;
-		DirectX::XMFLOAT3 normal;
-		UINT boneIndex[MAX_BONE_INDICES];
-		float boneWeight[MAX_BONE_INDICES];
-	};
+
 
 private:
 	FbxScene* fbxScene = nullptr;

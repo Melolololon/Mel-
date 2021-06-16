@@ -27,54 +27,109 @@ private:
 
 	//インデックス
 	std::vector < IndexBufferSet> indexBufferSet;
-	std::vector<std::vector<USHORT>> indices;
 
 	//テクスチャバッファ用ヒープ
 	ComPtr<ID3D12DescriptorHeap>textureDescHeap;
 	std::vector<ComPtr<ID3D12Resource>> textureBuffers;
-	std::vector<Texture*>pTextures;
 
 	//読み取ったマテリアル
 	Material material;
 
-	void CreateDescriptorHeap(const UINT textureNum);
+	//テクスチャを使わない場合の色
+	Color color;
 
-protected:
 
-	std::vector<Texture>textures;
+#pragma region 頂点
 
+
+	template<class VERTEX>
 	/// <summary>
 	/// 頂点バッファ、ビューの生成を行います。
 	/// </summary>
-	/// <param name="verticesSize"></param>
-	/// <param name="verticesNum"></param>
-	void CreateVertexBuffer
+	/// <param name="vertexSize"></param>
+	/// <param name="vertices"></param>
+	void CreateVertexBufferSet
 	(
-		const size_t verticesSize,
-		const std::vector<size_t>& verticesNum
+		const size_t vertexSize,
+		const  std::vector<size_t>& vertexNum,
+		const std::vector<std::vector<VERTEX>>& vertices
 	);
 
+	template<class VERTEX>
+	void MapVertices(const std::vector<std::vector<VERTEX>>& vertices);
+
+#pragma endregion
+
+#pragma region インデックス
+
+
 	/// <summary>
-	/// インデックスバッファ、ビューの生成、Mapを行います。
+	/// インデックスバッファ、ビューの生成を行います。
 	/// </summary>
 	/// <param name="indices"></param>
-	void CreateIndexBuffer
+	void CreateIndexBufferSet
 	(
 		const std::vector<std::vector<USHORT>>& indices
 	);
 
+	void MapIndices(const std::vector<std::vector<USHORT>>& indices);
+#pragma endregion
+
+#pragma region テクスチャ
+
+	/// <summary>
+	/// ディスクリプタヒープの生成
+	/// </summary>
+	/// <param name="textureNum"></param>
+	void CreateDescriptorHeap(const UINT textureNum);
+
 	/// <summary>
 	/// テクスチャバッファ、ビューの生成を行います。
 	/// </summary>
-	/// <param name="pTextures"></param>
-	void CteateTextureBuffer(const std::vector<Texture*>& pTextures);
+	void CteateTextureBufferAndView();
 
 	/// <summary>
 	/// テクスチャバッファ、ビューの生成を行います。
 	/// </summary>
 	/// <param name="color"></param>
-	void CteateTextureBufferSetColor(const Color& color);
+	void CteateTextureBufferAndView();
 
+#pragma endregion
+
+
+
+protected:
+
+	std::vector<std::unique_ptr<Texture>>pTextures;
+	std::vector<std::vector<USHORT>> indices;
+	
+	/// <summary>
+	/// 頂点インデックスバッファセットの生成とMapを行います。
+	/// </summary>
+	/// <typeparam name="VERTEX">頂点</typeparam>
+	/// <param name="vertexSize"></param>
+	/// <param name="vertexNum"></param>
+	/// <param name="vertices"></param>
+	/// <param name="indices"></param>
+	template<class VERTEX>
+	void BufferPreparationSetTexture
+	(
+		const size_t vertexSize,
+		const  std::vector<size_t>& vertexNum,
+		const std::vector<std::vector<VERTEX>>& vertices,
+		const std::vector<std::vector<USHORT>>& indices
+	);
+
+	template<class VERTEX>
+	void BufferPreparationSetColor
+	(
+		const size_t vertexSize,
+		const  std::vector<size_t>& vertexNum,
+		const std::vector<std::vector<VERTEX>>& vertices,
+		const std::vector<std::vector<USHORT>>& indices
+	);
+
+	
 public:
 	
 	ModelData(){}

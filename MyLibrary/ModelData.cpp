@@ -14,14 +14,16 @@ void ModelData::CreateDescriptorHeap(const UINT textureNum)
 
 }
 
-void ModelData::CreateVertexBuffer
+template<class VERTEX>
+void ModelData::CreateVertexBufferSet
 (
-	const size_t verticesSize,
-	const std::vector<size_t>& verticesNum
+	const size_t vertexSize,
+	const std::vector<size_t>& vertexNum,
+	const std::vector<std::vector<VERTEX>>& vertices
 )
 {
-
-	modelFileObjectNum = verticesNum.size();
+	
+	modelFileObjectNum = vertices.size();
 
 	//オブジェクト分リサイズ
 	vertexBufferSet.resize(modelFileObjectNum);
@@ -31,15 +33,45 @@ void ModelData::CreateVertexBuffer
 		CreateBuffer::GetInstance()->CreateVertexBuffer
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			verticesSize,
-			verticesNum[i],
+			vertexSize,
+			vertexNum[i],
 			vertexBufferSet[i]
 		);
 	}
 
-}
 
-void ModelData::CreateIndexBuffer(const std::vector<std::vector<USHORT>>& indices)
+}
+template void ModelData::CreateVertexBufferSet<Vertex>
+(const size_t vertexSize, const std::vector<size_t>& vertexNum, const std::vector<std::vector<Vertex>>& vertices);
+template void ModelData::CreateVertexBufferSet<ObjAnimationVertex>
+(const size_t vertexSize, const std::vector<size_t>& vertexNum, const std::vector<std::vector<ObjAnimationVertex>>& vertices);
+template void ModelData::CreateVertexBufferSet<FbxVertex>
+(const size_t vertexSize, const std::vector<size_t>& vertexNum, const std::vector<std::vector<FbxVertex>>& vertices);
+
+
+
+template<class VERTEX>
+void ModelData::MapVertices(const std::vector<std::vector<VERTEX>>& vertices)
+{
+	for (int i = 0; i < modelFileObjectNum; i++)
+	{
+		//Map
+		VERTEX* pVertices;
+		vertexBufferSet[i].vertexBuffer->Map(0, nullptr, (void**)&pVertices);
+		std::copy(vertices[i].begin(), vertices[i].end(), pVertices);
+		vertexBufferSet[i].vertexBuffer->Unmap(0, nullptr);
+	}
+}
+template void ModelData::MapVertices<Vertex>
+( const std::vector<std::vector<Vertex>>& vertices);
+template void ModelData::MapVertices<ObjAnimationVertex>
+(const std::vector<std::vector<ObjAnimationVertex>>& vertices);
+template void ModelData::MapVertices<FbxVertex>
+( const std::vector<std::vector<FbxVertex>>& vertices);
+
+
+
+void ModelData::CreateIndexBufferSet(const std::vector<std::vector<USHORT>>& indices)
 {
 
 	indexBufferSet.resize(modelFileObjectNum);
@@ -52,13 +84,25 @@ void ModelData::CreateIndexBuffer(const std::vector<std::vector<USHORT>>& indice
 			indices[i],
 			indexBufferSet[i]
 		);
+
+		
 	}
 }
 
-void ModelData::CteateTextureBuffer(const std::vector<Texture*>& pTextures)
+void ModelData::MapIndices(const std::vector<std::vector<USHORT>>& indices)
 {
-	CreateDescriptorHeap(pTextures.size());
+	for (int i = 0; i < modelFileObjectNum; i++)
+	{
+		//Map
+		USHORT* pIndices;
+		indexBufferSet[i].indexBuffer->Map(0, nullptr, (void**)&pIndices);
+		std::copy(indices[i].begin(), indices[i].end(), pIndices);
+		indexBufferSet[i].indexBuffer->Unmap(0, nullptr);
+	}
+}
 
+void ModelData::CteateTextureBufferAndView()
+{
 	auto textureNum = pTextures.size();
 	for (int i = 0; i < textureNum; i++)
 	{
@@ -78,14 +122,12 @@ void ModelData::CteateTextureBuffer(const std::vector<Texture*>& pTextures)
 
 }
 
-void ModelData::CteateTextureBufferSetColor(const Color& color)
+void ModelData::CteateTextureBufferAndView()
 {
-
-	CreateDescriptorHeap(pTextures.size());
 
 	CreateBuffer::GetInstance()->CreateOneColorTextureBuffer
 	(
-		color,
+		Color(0, 0, 0, 0), 
 		CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
 			textureDescHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -96,3 +138,90 @@ void ModelData::CteateTextureBufferSetColor(const Color& color)
 	);
 
 }
+
+
+
+template<class VERTEX>
+void ModelData::BufferPreparationSetTexture
+(
+	const size_t vertexSize,
+	const std::vector<size_t>& vertexNum,
+	const std::vector<std::vector<VERTEX>>& vertices,
+	const std::vector<std::vector<USHORT>>& indices
+)
+{
+	CreateVertexBufferSet
+	(
+		vertexSize,
+		vertexNum,
+		vertices
+	);
+	MapVertices(vertices);
+
+	CreateIndexBufferSet(indices);
+	MapIndices(index);
+
+	CreateDescriptorHeap(pTextures.size());
+	CteateTextureBufferAndView(pTextures);
+
+
+}
+template void ModelData::BufferPreparationSetTexture<Vertex>
+(const size_t vertexSize,
+	const std::vector<size_t>& vertexNum,
+	const std::vector<std::vector<Vertex>>& vertices,
+	const std::vector<std::vector<USHORT>>& indices);
+template void ModelData::BufferPreparationSetTexture<ObjAnimationVertex>
+(const size_t vertexSize,
+	const std::vector<size_t>& vertexNum,
+	const std::vector<std::vector<ObjAnimationVertex>>& vertices,
+	const std::vector<std::vector<USHORT>>& indices);
+template void ModelData::BufferPreparationSetTexture<FbxVertex>
+(const size_t vertexSize,
+	const std::vector<size_t>& vertexNum,
+	const std::vector<std::vector<FbxVertex>>& vertices,
+	const std::vector<std::vector<USHORT>>& indices);
+
+
+
+template<class VERTEX>
+void ModelData::BufferPreparationSetColor
+(
+	const size_t vertexSize,
+	const  std::vector<size_t>& vertexNum,
+	const std::vector<std::vector<VERTEX>>& vertices,
+	const std::vector<std::vector<USHORT>>& indices
+)
+{
+
+	CreateVertexBufferSet
+	(
+		vertexSize,
+		vertexNum,
+		vertices
+	);
+	MapVertices(vertices);
+
+	CreateIndexBufferSet(indices);
+	MapIndices(index);
+
+	CreateDescriptorHeap(1);
+	CteateTextureBufferAndView(Color(0, 0, 0, 0));
+
+
+}
+template void ModelData::BufferPreparationSetColor<Vertex>
+(const size_t vertexSize,
+	const std::vector<size_t>& vertexNum,
+	const std::vector<std::vector<Vertex>>& vertices,
+	const std::vector<std::vector<USHORT>>& indices);
+template void ModelData::BufferPreparationSetColor<ObjAnimationVertex>
+(const size_t vertexSize,
+	const std::vector<size_t>& vertexNum,
+	const std::vector<std::vector<ObjAnimationVertex>>& vertices,
+	const std::vector<std::vector<USHORT>>& indices);
+template void ModelData::BufferPreparationSetColor<FbxVertex>
+(const size_t vertexSize,
+	const std::vector<size_t>& vertexNum,
+	const std::vector<std::vector<FbxVertex>>& vertices,
+	const std::vector<std::vector<USHORT>>& indices);
