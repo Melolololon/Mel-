@@ -234,6 +234,9 @@ void LibMath::GetAStarCalcResult
 	std::vector<int>secondNumRouteNodesIndexX;
 	std::vector<int>secondNumRouteNodesIndexY;
 
+	//確認完了したかどうか
+	std::vector<std::vector<bool>>checkEndFlag(nodeYArrayNum,std::vector<bool>(nodeXArrayNum,false));
+
 
 	//candidateRouteNodesにルート(配列)を追加するループかどうか
 	bool addCandidateRouteNodesLoop = true;
@@ -261,8 +264,6 @@ void LibMath::GetAStarCalcResult
 
 		for(int j = 0,size = routeIndexX.size(); j < size;j++)
 		{
-			
-
 			//secondじゃないルートがあるかどうか(最短ルート候補があるかどうか)
 			bool minRouteFirstRoute = false;
 			bool secondRouteFirstRoute = false;
@@ -271,6 +272,7 @@ void LibMath::GetAStarCalcResult
 			for(int y = -1; y < 2;y++)
 			{
 				int indexY = routeIndexY[j] + y;
+
 				//範囲外アクセス防止
 				if (routeIndexY[j] + y <= -1
 					|| routeIndexY[j] + y >= nodeYArrayNum)continue;
@@ -280,11 +282,12 @@ void LibMath::GetAStarCalcResult
 					int indexX = routeIndexX[j] + x;
 					
 					//範囲外アクセス&自分を計算に使うの防止
-					//打ち切りフラグがtrueでもダメ
+					//確認フラグがtrueでもダメ
 					if (routeIndexX[j] + x <= -1
 						|| routeIndexX[j] + x >= nodeXArrayNum
 						|| x == 0
 						&& y == 0
+						|| checkEndFlag[indexY][indexX]
 						/*|| calcStopFlag[indexY][indexX]*/)continue;
 
 					//ステップ数を求める
@@ -307,14 +310,6 @@ void LibMath::GetAStarCalcResult
 					//{
 					//}
 
-					//これいらなくなる
-					auto CheckNodeStartNode = [&]()
-					{
-						//スタートかどうか
-						if (startNodeIndexX == indexX && startNodeIndexY == indexY)return true;
-						return false;
-					};
-
 					//ノードを取得
 					const AStarNode& node = nodes[indexY][indexX];
 
@@ -324,75 +319,10 @@ void LibMath::GetAStarCalcResult
 					//minDistanceと比較する数値(ノードからゴールの距離 + i + コスト)
 					int nodeNum = CalcEndNodeDistance(indexX, indexY) + stepNum + node.cost;
 					
-					//スタートノードの周り調べてるときは入らない
-					if (routeIndexY[j] != startNodeIndexY
-						|| routeIndexX[j] != startNodeIndexX)
-					{
-						//選んだノードへのベクトルを求める
-						Vector2 myNodeToSelectNodeVector = Vector2(indexX - routeIndexX[j], indexY - routeIndexY[j]);
-						
-						
-
-						//向きを代入
-						enum NodeDistance
-						{
-							NODE_LEFT,
-							NODE_RIGHT,
-							NODE_UP,
-							NODE_DOWN,
-							NODE_SAME
-						};
-
-						bool isContinue = false;
-						for (int k = 0, size = preNodeVectors[routeIndexY[j]][routeIndexX[j]].size(); k < size; k++)
-						{
-
-							NodeDistance preNodeVectorsDirX;
-							NodeDistance preNodeVectorsDirY;
-							if (preNodeVectors[routeIndexY[j]][routeIndexX[j]][k].x > 0)preNodeVectorsDirX = NODE_LEFT;
-							else if (preNodeVectors[routeIndexY[j]][routeIndexX[j]][k].x < 0) preNodeVectorsDirX = NODE_RIGHT;
-							else preNodeVectorsDirX = NODE_SAME;
-
-							if (preNodeVectors[routeIndexY[j]][routeIndexX[j]][k].y > 0)preNodeVectorsDirY = NODE_DOWN;
-							else if (preNodeVectors[routeIndexY[j]][routeIndexX[j]][k].y < 0)preNodeVectorsDirY = NODE_UP;
-							else preNodeVectorsDirY = NODE_SAME;
-
-
-							NodeDistance myNodeToSelectNodeVectorDirX;
-							NodeDistance myNodeToSelectNodeVectorDirY;
-							if (myNodeToSelectNodeVector.x > 0)myNodeToSelectNodeVectorDirX = NODE_LEFT;
-							else if (myNodeToSelectNodeVector.x < 0)myNodeToSelectNodeVectorDirX = NODE_RIGHT;
-							else myNodeToSelectNodeVectorDirX = NODE_SAME;
-
-							if (myNodeToSelectNodeVector.y > 0)myNodeToSelectNodeVectorDirY = NODE_DOWN;
-							else if (myNodeToSelectNodeVector.y < 0)myNodeToSelectNodeVectorDirY = NODE_UP;
-							else myNodeToSelectNodeVectorDirY = NODE_SAME;
-
-							//preNodeVectorsの方向にあるノードは無視
-							if (preNodeVectorsDirX == myNodeToSelectNodeVectorDirX
-								&& preNodeVectorsDirX != NODE_SAME && myNodeToSelectNodeVectorDirX != NODE_SAME
-								|| preNodeVectorsDirY == myNodeToSelectNodeVectorDirY
-								&& preNodeVectorsDirY != NODE_SAME && myNodeToSelectNodeVectorDirY != NODE_SAME)
-							{
-								isContinue = true;
-								break;
-							}
-						}
-
-						if (isContinue)continue;
-
-					}
-					//指定したノードから自分へのベクトルを求める
-					preNodeVectors[indexY][indexX].push_back
-					(
-						Vector2(routeIndexX[j] - indexX, routeIndexY[j] - indexY)
-					);
-
 
 					//minDistanceと比較する数値と最短距離が同じ
 					//かつ、障害物がなければ入る
-					if(nodeNum == minNodeNum
-						&& !CheckNodeStartNode())
+					if(nodeNum == minNodeNum)
 					{
 						//計算対象ノードに追加
 						nextRouteIndexX.push_back(indexX);
@@ -495,8 +425,7 @@ void LibMath::GetAStarCalcResult
 					//最大じゃないかつ、今セットされてる値よりも小さい値
 					//(つまり、2番目に大きい値)かどうかの確認
 					if (nodeNum != minNodeNum
-						&& secondMinNodeNum >= nodeNum
-						&& !CheckNodeStartNode())
+						&& secondMinNodeNum >= nodeNum)
 					{
 						secondMinNodeNum = nodeNum;
 						secondNumRouteNodesIndexX.push_back(indexX);
@@ -564,6 +493,9 @@ void LibMath::GetAStarCalcResult
 				}
 				if (calcEnd)break;
 			}
+			
+			//探索終了
+			checkEndFlag[routeIndexY[j]][routeIndexX[j]] = true;
 
 			////カウントリセット
 			//for(auto& i : preNodeVectorsIndices)
