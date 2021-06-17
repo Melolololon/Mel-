@@ -28,6 +28,16 @@ struct AStarNode
 	//コスト
 	UINT cost = 1;
 
+	//計算結果(ステップ + 距離 + コスト)
+	UINT calcNum = UINT_MAX;
+
+	//配列のインデックス
+	int indexX = INT_MAX;
+	int indexY = INT_MAX;
+
+	AStarNode* parentNode = nullptr;
+	bool closeFlag = false;
+
 };
 
 class LibMath
@@ -84,7 +94,7 @@ public:
 	(
 		const Vector2& startPos,
 		const Vector2& endPos,
-		const std::vector< std::vector<AStarNode>>& nodes,
+		std::vector< std::vector<AStarNode>>& nodes,
 		std::vector<Vector2>& routeVector
 	);
 
