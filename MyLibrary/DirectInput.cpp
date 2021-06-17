@@ -210,6 +210,13 @@ void DirectInput::Update()
 #pragma endregion
 
 
+#ifdef _DEBUG
+	if (DirectInput::KeyTrigger(DIK_SPACE))
+	{
+		int a = 0;
+	}
+
+#endif // _DEBUG
 
 }
 
