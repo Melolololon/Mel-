@@ -4,7 +4,7 @@
 #include"ObjModel.h"
 #include"PrimitiveModel.h"
 #include"DirectionalLight.h"
-
+#include"RenderTarget.h"
 
 DirectX12::DirectX12()
 {
@@ -3497,7 +3497,7 @@ void DirectX12::CreateUserPolygon
 
 #pragma region 削除関数
 
-void DirectX12::DeletePolygonData(const ModelData& m)
+void DirectX12::DeletePolygonData(const ModelDataAndKey& m)
 {
 	std::string key = m.key;
 	vertices.erase(key);
@@ -3517,7 +3517,7 @@ void DirectX12::DeletePolygonData(const ModelData& m)
 
 }
 
-void DirectX12::DeleteHeapData(const ModelData& m)
+void DirectX12::DeleteHeapData(const ModelDataAndKey& m)
 {
 
 	std::string key = m.key;
@@ -3627,7 +3627,7 @@ void DirectX12::CalcBillboardMat(DirectX::XMMATRIX& matWorld)
 }
 
 //バッファをセット
-void DirectX12::SetCmdList(const ModelData& modelData,  int number)
+void DirectX12::SetCmdList(const ModelDataAndKey& modelData,  int number)
 {
 	//if ( despNum >= 0 && number >= 0)
 	{
@@ -3789,7 +3789,7 @@ void DirectX12::SetCmdList(const ModelData& modelData,  int number)
 }
 
 //Map処理
-void DirectX12::DataMap(const ModelData& modelData,int number )
+void DirectX12::DataMap(const ModelDataAndKey& modelData,int number )
 {
 
 
@@ -4405,7 +4405,7 @@ void DirectX12::SetObjModelRotatePoint
 (
 	const DirectX::XMFLOAT3& position,
 	const UINT& boneNum,
-	const ModelData& modelData
+	const ModelDataAndKey& modelData
 )
 {
 }
@@ -4945,35 +4945,35 @@ void DirectX12::calcSmoothingNormals(const std::string key)
 
 }
 #pragma endregion
-
-#pragma region ライブラリ使用関数
-void DirectX12::SortModelData(std::vector<std::tuple<ModelData, int>>& modelDatas)
-{
-	std::sort(modelDatas.begin(), modelDatas.end(), [&]
-	(
-		const std::tuple<ModelData, int>& m1,
-		const std::tuple<ModelData, int>& m2
-		)
-	{
-		ModelData m1Data = std::get<0>(m1);
-		ModelData m2Data = std::get<0>(m2);
-		int m1Num = std::get<1>(m1);
-		int m2Num = std::get<1>(m2);
-
-		DirectX::XMFLOAT3 m1Pos = modelConstData[m1Data.key][m1Num].position;
-		DirectX::XMFLOAT3 m2Pos = modelConstData[m2Data.key][m2Num].position;
-
-		Vector3 nearPos;
-		Vector3 farPos;
-		DirectInput::GetMouse3DLine(nearPos, farPos);
-		float dis1 = LibMath::CalcDistance3D(m1Pos, nearPos);
-		float dis2 = LibMath::CalcDistance3D(m2Pos, nearPos);
-
-		return dis1 > dis2;
-
-	});
-}
-
-
-#pragma endregion
-
+//
+//#pragma region ライブラリ使用関数
+//void DirectX12::SortModelData(std::vector<std::tuple<ModelDataAndKey, int>>& modelDatas)
+//{
+//	std::sort(modelDatas.begin(), modelDatas.end(), [&]
+//	(
+//		const std::tuple<ModelDataAndKey, int>& m1,
+//		const std::tuple<ModelDataAndKey, int>& m2
+//		)
+//	{
+//		ModelDataAndKey m1Data = std::get<0>(m1);
+//		ModelDataAndKey m2Data = std::get<0>(m2);
+//		int m1Num = std::get<1>(m1);
+//		int m2Num = std::get<1>(m2);
+//
+//		DirectX::XMFLOAT3 m1Pos = modelConstData[m1Data.key][m1Num].position;
+//		DirectX::XMFLOAT3 m2Pos = modelConstData[m2Data.key][m2Num].position;
+//
+//		Vector3 nearPos;
+//		Vector3 farPos;
+//		DirectInput::GetMouse3DLine(nearPos, farPos);
+//		float dis1 = LibMath::CalcDistance3D(m1Pos, nearPos);
+//		float dis2 = LibMath::CalcDistance3D(m2Pos, nearPos);
+//
+//		return dis1 > dis2;
+//
+//	});
+//}
+//
+//
+//#pragma endregion
+//

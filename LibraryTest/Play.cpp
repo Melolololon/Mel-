@@ -155,7 +155,7 @@ void Play::Update()
 	{
 		angle.y -= 2;
 	}
-	Camera::Get().SetAngle(angle);
+	Camera::Get()->SetAngle(angle);
 }
 
 void Play::Draw()

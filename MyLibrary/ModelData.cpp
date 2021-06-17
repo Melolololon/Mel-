@@ -101,7 +101,7 @@ void ModelData::MapIndices(const std::vector<std::vector<USHORT>>& indices)
 	}
 }
 
-void ModelData::CteateTextureBufferAndView()
+void ModelData::CteateTextureBufferAndViewSetTexture()
 {
 	auto textureNum = pTextures.size();
 	for (int i = 0; i < textureNum; i++)
@@ -122,7 +122,7 @@ void ModelData::CteateTextureBufferAndView()
 
 }
 
-void ModelData::CteateTextureBufferAndView()
+void ModelData::CteateTextureBufferAndViewSetColor()
 {
 
 	CreateBuffer::GetInstance()->CreateOneColorTextureBuffer
@@ -159,10 +159,10 @@ void ModelData::BufferPreparationSetTexture
 	MapVertices(vertices);
 
 	CreateIndexBufferSet(indices);
-	MapIndices(index);
+	MapIndices(indices);
 
 	CreateDescriptorHeap(pTextures.size());
-	CteateTextureBufferAndView(pTextures);
+	CteateTextureBufferAndViewSetTexture();
 
 
 }
@@ -203,10 +203,10 @@ void ModelData::BufferPreparationSetColor
 	MapVertices(vertices);
 
 	CreateIndexBufferSet(indices);
-	MapIndices(index);
+	MapIndices(indices);
 
 	CreateDescriptorHeap(1);
-	CteateTextureBufferAndView(Color(0, 0, 0, 0));
+	CteateTextureBufferAndViewSetColor();
 
 
 }

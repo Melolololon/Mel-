@@ -80,7 +80,7 @@ public:
 
 	virtual void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
-	void SetPModel(ModelData* pModel) 
+	void SetPModel(ModelData* pModel)
 	{
 		pModelData = pModel; 
 	}
