@@ -98,9 +98,14 @@ bool  ModelLoader::LoadObjModel
 	obj.open(path);
 	if(!obj)
 	{
-		OutputDebugString(L"読み込みに失敗しました。.objファイルが見つかりません。\n");
+		OutputDebugStringA(path.data());
+		OutputDebugString(L"の読み込みに失敗しました。.objファイルが見つかりません。\n" );
 		return false;
 	}
+
+	//bool loadVertex = false;
+	//bool loadUV = false;
+	//bool loadNormal = false;
 
 	//マテリアル読み込みでtrueにし、座標読み込み時にtrueだったら配列clear
 	bool loadPreparation = false;
@@ -160,7 +165,8 @@ bool  ModelLoader::LoadObjModel
 		{ 
 			if(!loadMtlFile)
 			{
-				OutputDebugString(L"読み込みに失敗しました。.mtlファイルが.objに記述されていません。\n");
+				OutputDebugStringA(path.data());
+				OutputDebugString(L"の読み込みに失敗しました。.mtlファイルが.objに記述されていません。\n");
 				return false;
 			}
 
@@ -390,12 +396,21 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 {
 	//読み込んだ回数
 	int loadNum = 0;
+	bool loadAmbient = false;
+	bool loadDiffuse = false;
+	bool loadSupecular= false;
+	bool loadTexture = false;
 
-	std::string kari;
 
 	std::ifstream file;
-	file.open(materialDirectoryPath + materialFileName);
-	if (file.fail()) assert(0);
+	std::string fullPath = materialDirectoryPath + materialFileName;
+	file.open(fullPath);
+	if (file.fail())
+	{
+		OutputDebugStringA(fullPath.data());
+		OutputDebugString(L"の読み込みに失敗しました。.mtlファイルが見つかりません。\n");
+		return false;
+	}
 
 	std::string line;
 
@@ -439,28 +454,35 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 			lineStream >> material[loadNum - 1].ambient.x;
 			lineStream >> material[loadNum - 1].ambient.y;
 			lineStream >> material[loadNum - 1].ambient.z;
+			loadAmbient = true;
 		}
 		if (materialData == "Kd") 
 		{
 			lineStream >> material[loadNum - 1].diffuse.x;
 			lineStream >> material[loadNum - 1].diffuse.y;
 			lineStream >> material[loadNum - 1].diffuse.z;
+			loadDiffuse = true;
 		}
 		if (materialData == "Ks") 
 		{
 			lineStream >> material[loadNum - 1].specular.x;
 			lineStream >> material[loadNum - 1].specular.y;
 			lineStream >> material[loadNum - 1].specular.z;
+			loadSupecular = true;
 		}
 		if (materialData == "map_Kd") 
 		{
 			lineStream >> material[loadNum - 1].textureName;
+			loadTexture = true;
 		}
-
-
 	}
 	file.close();
 
 	*loadCount = loadNum;
+
+	if(!loadAmbient)material[loadNum - 1].ambient = DirectX::XMFLOAT3(0.3f, 0.3f, 0.3f);
+	if(!loadDiffuse)material[loadNum - 1].diffuse = DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f);
+	if(!loadSupecular)material[loadNum - 1].specular = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 	return true;
 }
