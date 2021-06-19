@@ -67,6 +67,18 @@
     <Filter Include="ソース ファイル\Support">
       <UniqueIdentifier>{eb4fc17b-c1c6-4b1b-8786-d35c34ff5696}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Model\ModelData">
+      <UniqueIdentifier>{3cbf2554-4f90-40a7-93e6-d47f4169fc18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model\ModelObject">
+      <UniqueIdentifier>{5595be7c-8146-43d1-a5c1-5eb81fc33d33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model\ModelData">
+      <UniqueIdentifier>{2f0dd654-9eb5-40b6-980d-0c0b59fb1af7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model\ModelObject">
+      <UniqueIdentifier>{44d122f5-8c52-4763-b178-3e551ac9b9c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CreateBuffer.cpp">
@@ -210,17 +222,26 @@
     <ClCompile Include="DirectionalLight.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ModelObject.cpp">
+    <ClCompile Include="ModelManager.cpp">
       <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxModelData.cpp">
+      <Filter>ソース ファイル\Model\ModelData</Filter>
     </ClCompile>
     <ClCompile Include="ModelData.cpp">
-      <Filter>ソース ファイル\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="PrimitiveModelData.cpp">
-      <Filter>ソース ファイル\Model</Filter>
+      <Filter>ソース ファイル\Model\ModelData</Filter>
     </ClCompile>
     <ClCompile Include="ObjModelData.cpp">
-      <Filter>ソース ファイル\Model</Filter>
+      <Filter>ソース ファイル\Model\ModelData</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjModelObject.cpp">
+      <Filter>ソース ファイル\Model\ModelObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelObject.cpp">
+      <Filter>ソース ファイル\Model\ModelObject</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimitiveModelData.cpp">
+      <Filter>ソース ファイル\Model\ModelData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -401,20 +422,29 @@
     <ClInclude Include="DirectionalLight.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="ModelObject.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
-    </ClInclude>
     <ClInclude Include="BufferData.h">
       <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
-    <ClInclude Include="ModelData.h">
+    <ClInclude Include="ModelManager.h">
       <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
-    <ClInclude Include="PrimitiveModelData.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
+    <ClInclude Include="FbxModelData.h">
+      <Filter>ヘッダー ファイル\Model\ModelData</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelData.h">
+      <Filter>ヘッダー ファイル\Model\ModelData</Filter>
     </ClInclude>
     <ClInclude Include="ObjModelData.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
+      <Filter>ヘッダー ファイル\Model\ModelData</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjModelObject.h">
+      <Filter>ヘッダー ファイル\Model\ModelObject</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveModelData.h">
+      <Filter>ヘッダー ファイル\Model\ModelData</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelObject.h">
+      <Filter>ヘッダー ファイル\Model\ModelObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

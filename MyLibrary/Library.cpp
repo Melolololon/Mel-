@@ -41,7 +41,7 @@ int Library::refReat;
 DWORD Library::startProsessTime;
 DWORD Library::nowTime;
 
-std::vector<std::tuple<ModelDataAndKey, int>> Library::modelDatas;
+//std::vector<std::tuple<ModelDataAndKey, int>> Library::modelDatas;
 
 int Library::winWidth;
 int Library::winHeight;
@@ -1491,10 +1491,10 @@ void Library::DrawsSpriteFontString(Vector2 position, Vector2 size, std::string 
 
 
 #pragma region eŽq\‘¢
-void Library::SetParent(const ModelDataAndKey& modelData, int number, const ModelDataAndKey& parentmodelData, int parentNum)
+void Library::SetParent(const ModelDataAndKey& modelDataAndKey, int number, const ModelDataAndKey& parentModelDataAndKey, int parentNum)
 {
 
-	dx12->SetParent(modelData.key, number, parentmodelData.key, parentNum);
+	dx12->SetParent(modelDataAndKey.key, number, parentModelDataAndKey.key, parentNum);
 }
 
 #pragma endregion

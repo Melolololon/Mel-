@@ -16,10 +16,11 @@ private:
 	//[モデルごと(keyでアクセス)][ボーンごと]
 	std::vector<DirectX::XMFLOAT3> objBonePositions;//ボーン座標
 
+
 public:
 
 	bool Load(const std::string& path);
 
-	static void Initialize();
+	static bool Initialize();
 };
 

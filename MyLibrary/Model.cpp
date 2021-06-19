@@ -79,8 +79,8 @@ void Model::CreateModelHeapResourcesSetTexture
 	const std::vector<Texture*>& pTextures,
 	const int modelNum,
 	const int modelFileObjectNum,
-	BufferData* modelBufferData,
-	BufferData* userBufferData
+	ConstBufferData* modelBufferData,
+	ConstBufferData* userBufferData
 )
 {
 
@@ -161,8 +161,8 @@ void Model::CreateModelHeapResourcesSelectColor
 	const Color& color,
 	const int modelNum,
 	const int modelFileObjectNum,
-	BufferData* modelBufferData,
-	BufferData* userBufferData
+	ConstBufferData* modelBufferData,
+	ConstBufferData* userBufferData
 )
 {
 	BufferCreatePreparation
@@ -222,8 +222,8 @@ void Model::BufferCreatePreparation
 	const int modelNum,
 	const int modelFileObjectNum,
 	const size_t textureNum,
-	BufferData* modelBufferData,
-	BufferData* userBufferData
+	ConstBufferData* modelBufferData,
+	ConstBufferData* userBufferData
 )
 {
 	this->modelNum = modelNum;
@@ -234,12 +234,12 @@ void Model::BufferCreatePreparation
 	if (modelBufferData)
 		modelConstBufferType = modelBufferData->bufferType;
 	else
-		modelConstBufferType = BufferData::BufferType::BUFFER_TYPE_NONE;
+		modelConstBufferType = ConstBufferData::BufferType::BUFFER_TYPE_NONE;
 
 	if (userBufferData)
 		userConstBufferType = userBufferData->bufferType;
 	else
-		userConstBufferType = BufferData::BufferType::BUFFER_TYPE_NONE;
+		userConstBufferType = ConstBufferData::BufferType::BUFFER_TYPE_NONE;
 
 
 	//データを格納している配列をresize
@@ -267,19 +267,19 @@ void Model::BufferCreatePreparation
 	switch (modelConstBufferType)
 	{
 
-	case BufferData::BufferType::BUFFER_TYPE_COMMON:
+	case ConstBufferData::BufferType::BUFFER_TYPE_COMMON:
 		commonConstBufferNum++;
 		modelConstBuffer.resize(1);
 		break;
 
-	case BufferData::BufferType::BUFFER_TYPE_EACH_MODEL:
+	case ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL:
 		eachModelConstBufferNum++;
 		modelConstBuffer.resize(modelNum);
 		for (auto& buff : modelConstBuffer)
 			buff.resize(1);
 		break;
 
-	case BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT:
+	case ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT:
 		eachModelObjectConstBufferNum++;
 
 		modelConstBuffer.resize(modelNum);
@@ -292,19 +292,19 @@ void Model::BufferCreatePreparation
 	switch (userConstBufferType)
 	{
 
-	case BufferData::BufferType::BUFFER_TYPE_COMMON:
+	case ConstBufferData::BufferType::BUFFER_TYPE_COMMON:
 		commonConstBufferNum++;
 		userConstBuffer.resize(1);
 		break;
 
-	case BufferData::BufferType::BUFFER_TYPE_EACH_MODEL:
+	case ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL:
 		eachModelConstBufferNum++;
 		userConstBuffer.resize(modelNum);
 		for (auto& buff : userConstBuffer)
 			buff.resize(1);
 		break;
 
-	case BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT:
+	case ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT:
 		eachModelObjectConstBufferNum++;
 
 		userConstBuffer.resize(modelNum);
@@ -337,8 +337,8 @@ void Model::CreateConstBuffer
 	const int modelNum,
 	const int modelFileObjectNum,
 	const int heapTop, 
-	BufferData * modelBufferData,
-	BufferData* userBufferData 
+	ConstBufferData * modelBufferData,
+	ConstBufferData* userBufferData 
 )
 {
 
@@ -379,7 +379,7 @@ void Model::CreateConstBuffer
 	};
 
 	//共通だったらここで生成
-	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON) 
+	if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_COMMON) 
 	{
 		CreateBuffer
 		(
@@ -390,7 +390,7 @@ void Model::CreateConstBuffer
 	}
 
 	//共通だったらここで生成
-	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON) 
+	if (userConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_COMMON) 
 	{
 		CreateBuffer
 		(
@@ -406,7 +406,7 @@ void Model::CreateConstBuffer
 	for (int i = 0; i < modelNum; i++) 
 	{
 		//モデル
-		if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL) 
+		if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL) 
 		{
 			CreateBuffer
 			(
@@ -417,7 +417,7 @@ void Model::CreateConstBuffer
 		}
 
 		//ユーザー
-		if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL) 
+		if (userConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL) 
 		{
 			CreateBuffer
 			(
@@ -448,7 +448,7 @@ void Model::CreateConstBuffer
 			);
 
 			//モデル
-			if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT) 
+			if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT) 
 			{
 				CreateBuffer
 				(
@@ -461,7 +461,7 @@ void Model::CreateConstBuffer
 			
 
 			//ユーザー
-			if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT) 
+			if (userConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT) 
 			{
 				CreateBuffer
 				(
@@ -942,11 +942,11 @@ void Model::SetCmdList(const int modelNum)
 	//共通をセット
 	constBufferHandleNum = modelObjectNum;
 	//モデル特有バッファセット
-	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON)
+	if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_COMMON)
 		SetConstBufferDesTable(3);
 
 	//ユーザーモデルバッファセット
-	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_COMMON)
+	if (userConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_COMMON)
 		SetConstBufferDesTable(1);
 
 
@@ -958,11 +958,11 @@ void Model::SetCmdList(const int modelNum)
 		+ eachModelObjectConstBufferNum * modelObjectNum * modelNum;
 
 	//モデル特有バッファセット
-	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+	if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
 		SetConstBufferDesTable(3);
 
 	//ユーザーモデルバッファセット
-	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+	if (userConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
 		SetConstBufferDesTable(1);
 
 	
@@ -1026,11 +1026,11 @@ void Model::SetCmdList(const int modelNum)
 		SetConstBufferDesTable(2);
 
 		//モデルバッファセット
-		if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+		if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 			SetConstBufferDesTable(3);
 
 		//ユーザー定数バッファセット
-		if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+		if (userConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 			SetConstBufferDesTable(1);
 		
 #pragma endregion

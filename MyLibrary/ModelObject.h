@@ -25,7 +25,7 @@ private:
 	static ID3D12Device* device;
 	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
 	static ComPtr<ID3D12RootSignature>rootSignature;
-
+	static PipelineState defaultPipeline;
 
 	//モデル(クリエイトしたら割り当てる)
 	ModelData* pModelData = nullptr;
@@ -45,11 +45,12 @@ private:
 
 	static const int USER_BUFFER_REGISTER = 1;
 	std::vector<ComPtr<ID3D12Resource>> userConstBuffer;//ユーザー
-	BufferData::BufferType userConstBufferType = BufferData::BufferType::BUFFER_TYPE_NONE;
+	ConstBufferData userConstBufferData;
 
 	static const int MODEL_BUFFER_REGISTER = 3;
 	std::vector<ComPtr<ID3D12Resource>> modelConstBuffer;//モデル特有
-	BufferData::BufferType modelConstBufferType = BufferData::BufferType::BUFFER_TYPE_NONE;
+	ConstBufferData::BufferType modelConstBufferType = ConstBufferData::BufferType::BUFFER_TYPE_NONE;
+	
 
 	//定数にセットする座標などの値
 	//[モデルごと][モデル内のオブジェクト数]
@@ -63,8 +64,7 @@ protected:
 
 	void CreateConstBuffer
 	(
-		BufferData* modelBufferData,
-		BufferData* userBufferData
+		ConstBufferData* modelBufferData
 	);
 
 	void DrawCommonProcessing(const std::string& rtName);
@@ -73,17 +73,13 @@ protected:
 
 
 public:
-	ModelObject(){}
+	ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
 	~ModelObject(){}
 	
 	static bool Initialize(ID3D12Device* dev, const std::vector<ID3D12GraphicsCommandList*>& cmdList);
 
 	virtual void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
-	void SetPModel(ModelData* pModel)
-	{
-		pModelData = pModel; 
-	}
 
 	void SetPosition(const Vector3& position);
 	void SetScale(const Vector3& scale);

@@ -214,14 +214,14 @@ void ObjModel::LoadModelMaterial
 	}
 	
 	//ボーンバッファの情報セット
-	std::unique_ptr<BufferData> boneBufferData;
+	std::unique_ptr<ConstBufferData> boneBufferData;
 	//ボーンがあったらボーンバッファ生成
 	if (boneNum != 0) 
 	{
-		boneBufferData = std::make_unique<BufferData>();
+		boneBufferData = std::make_unique<ConstBufferData>();
 		
 		//モデルのオブジェクトごとのスケールを掛けるため、モデルのオブジェクトごとに作る
-		boneBufferData->bufferType = BufferData::BUFFER_TYPE_EACH_MODEL_OBJECT;
+		boneBufferData->bufferType = ConstBufferData::BUFFER_TYPE_EACH_MODEL_OBJECT;
 		boneBufferData->bufferDataSize = sizeof(BoneConstBufferData);
 	}
 	CreateModelHeapResourcesSetTexture

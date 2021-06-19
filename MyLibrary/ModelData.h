@@ -144,5 +144,27 @@ public:
 
 #pragma endregion
 
+#pragma region セット
+
+#pragma endregion
+
+
+#pragma region ゲット
+	
+	/// <summary>
+	/// モデルファイルに含まれているオブジェクト(モデル)の数を取得します。
+	/// </summary>
+	/// <returns></returns>
+	int GetModelFileObjectNumber() { return modelFileObjectNum; }
+
+	/// <summary>
+	/// マテリアルを取得します。
+	/// </summary>
+	/// <returns></returns>
+	Material GetMaterial()const { return material; }
+
+
+#pragma endregion
+
 };
 

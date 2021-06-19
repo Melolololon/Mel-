@@ -97,7 +97,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -119,7 +119,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -140,7 +140,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -165,7 +165,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -192,6 +192,7 @@
     <ClCompile Include="DirectXTexLoader.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FbxModel.cpp" />
+    <ClCompile Include="FbxModelData.cpp" />
     <ClCompile Include="FreamTimer.cpp" />
     <ClCompile Include="HeapIndexManager.cpp" />
     <ClCompile Include="LibMath.cpp" />
@@ -203,12 +204,14 @@
     <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="ModelLoaer.cpp" />
     <ClCompile Include="Library.cpp" />
+    <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="ModelObject.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="ObjModelData.cpp" />
+    <ClCompile Include="ObjModelObject.cpp" />
     <ClCompile Include="PipelineManager.cpp" />
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="PolygonManager.cpp" />
@@ -546,6 +549,7 @@
     <ClInclude Include="DirectXTexLoader.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FbxModel.h" />
+    <ClInclude Include="FbxModelData.h" />
     <ClInclude Include="FreamTimer.h" />
     <ClInclude Include="HeapIndexManager.h" />
     <ClInclude Include="LibMath.h" />
@@ -557,12 +561,14 @@
     <ClInclude Include="ModelData.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Library.h" />
+    <ClInclude Include="ModelManager.h" />
     <ClInclude Include="ModelObject.h" />
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="ObjModelData.h" />
+    <ClInclude Include="ObjModelObject.h" />
     <ClInclude Include="PipelineManager.h" />
     <ClInclude Include="PipelineState.h" />
     <ClInclude Include="PolygonManager.h" />

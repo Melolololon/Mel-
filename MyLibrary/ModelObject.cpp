@@ -5,31 +5,39 @@ ID3D12Device* ModelObject::device;
 std::vector<ID3D12GraphicsCommandList*>ModelObject::cmdLists;
 ComPtr<ID3D12RootSignature>ModelObject::rootSignature;
 
-void ModelObject::CreateConstBuffer(BufferData* modelBufferData, BufferData* userBufferData)
+
+ModelObject::ModelObject(ModelData* pModelData ,ConstBufferData* userConstBufferData)
+	: pModelData(pModelData)
+{
+	if (userConstBufferData)this->userConstBufferData = *userConstBufferData;
+	modelFileObjectNum = pModelData->GetModelFileObjectNumber();
+}
+
+void ModelObject::CreateConstBuffer(ConstBufferData* modelBufferData)
 {
 	if (modelBufferData)modelConstBufferType = modelBufferData->bufferType;
-	if (userBufferData)userConstBufferType = userBufferData->bufferType;
+	ConstBufferData::BufferType userConstBufferType = userConstBufferData.bufferType;
 
 #pragma region リサイズ
 
 	constBuffer.resize(modelFileObjectNum);
 	materialConstBuffer.resize(modelFileObjectNum);
 
-	if(modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+	if(modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
 	{
 		modelConstBuffer.resize(1);
 	}
-	else if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+	else if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 	{
 		modelConstBuffer.resize(modelFileObjectNum);
 	}
 
 
-	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+	if (userConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
 	{
 		userConstBuffer.resize(1);
 	}
-	else if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+	else if (userConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 	{
 		userConstBuffer.resize(modelFileObjectNum);
 	}
@@ -53,7 +61,7 @@ void ModelObject::CreateConstBuffer(BufferData* modelBufferData, BufferData* use
 
 
 		//モデル
-	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+	if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
 	{
 		CreateBuffer
 		(
@@ -63,12 +71,12 @@ void ModelObject::CreateConstBuffer(BufferData* modelBufferData, BufferData* use
 	}
 
 	//ユーザー
-	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+	if (userConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
 	{
 		CreateBuffer
 		(
 			&userConstBuffer[0],
-			modelBufferData->bufferDataSize
+			userConstBufferData.bufferDataSize
 		);
 	}
 
@@ -91,7 +99,7 @@ void ModelObject::CreateConstBuffer(BufferData* modelBufferData, BufferData* use
 		);
 
 		//モデル
-		if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+		if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 		{
 			CreateBuffer
 			(
@@ -101,12 +109,12 @@ void ModelObject::CreateConstBuffer(BufferData* modelBufferData, BufferData* use
 		}
 
 		//ユーザー
-		if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+		if (userConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 		{
 			CreateBuffer
 			(
 				&userConstBuffer[j],
-				modelBufferData->bufferDataSize
+				userConstBufferData.bufferDataSize
 			);
 		}
 	}
@@ -116,6 +124,7 @@ void ModelObject::CreateConstBuffer(BufferData* modelBufferData, BufferData* use
 
 void ModelObject::DrawCommonProcessing(const std::string& rtName)
 {
+	if (!pModelData)return;
 	MapConstData(RenderTarget::Get(rtName)->GetCamera());
 	SetCmdList();
 }
@@ -189,6 +198,7 @@ void ModelObject::MapConstData(const Camera* camera)
 
 void ModelObject::SetCmdList()
 {
+
 	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
 	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -199,11 +209,11 @@ void ModelObject::SetCmdList()
 
 
 	//モデル特有バッファセット
-	if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+	if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
 		cmdLists[0]->SetGraphicsRootConstantBufferView(MODEL_BUFFER_REGISTER, modelConstBuffer[0]->GetGPUVirtualAddress());
 
 	//ユーザーモデルバッファセット
-	if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+	if (userConstBufferData.bufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
 		cmdLists[0]->SetGraphicsRootConstantBufferView(MODEL_BUFFER_REGISTER, userConstBuffer[0]->GetGPUVirtualAddress());
 
 
@@ -271,11 +281,11 @@ void ModelObject::SetCmdList()
 
 
 		//モデルバッファセット
-		if (modelConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+		if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 			cmdLists[0]->SetGraphicsRootConstantBufferView(MODEL_BUFFER_REGISTER, modelConstBuffer[i]->GetGPUVirtualAddress());
 
 		//ユーザー定数バッファセット
-		if (userConstBufferType == BufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+		if (userConstBufferData.bufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 			cmdLists[0]->SetGraphicsRootConstantBufferView(MODEL_BUFFER_REGISTER, userConstBuffer[i]->GetGPUVirtualAddress());
 
 
@@ -317,6 +327,7 @@ void ModelObject::SetAngle(const Vector3& angle)
 		modelConstDatas[i].angle = angle.ToXMFLOAT3();
 	}
 }
+
 
 bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12GraphicsCommandList*>& cmdList)
 {

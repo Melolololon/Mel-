@@ -676,8 +676,8 @@ public:
 #pragma region 描画
 	//描画時じゃなくて座標とかセットしたときに毎回マップする?
 //そうすると処理が遅くなる?
-	void SetCmdList(const ModelDataAndKey& ModelDataAndKey, int number);
-	void DataMap(const ModelDataAndKey& ModelDataAndKey, int number);
+	void SetCmdList(const ModelDataAndKey& modelData, int number);
+	void DataMap(const ModelDataAndKey& modelData, int number);
 
 	void SpriteSetCmdList(int spriteNum, int textureNum,const bool& sprite3DFlag);
 
@@ -792,7 +792,7 @@ public:
 	(
 		const DirectX::XMFLOAT3& position,
 		const UINT& boneNum,
-		const ModelDataAndKey& ModelDataAndKey
+		const ModelDataAndKey& modelData
 	);
 
 	/// <summary>
@@ -842,7 +842,7 @@ public:
 /// </summary>
 /// <param name="boneNum">ボーン番号</param>
 /// <param name="parentBoneNum">親ボーン番号</param>
-/// <param name="ModelDataAndKey">モデルデータ</param>
+/// <param name="modelData">モデルデータ</param>
 	void SetParentObjBone
 	(
 		const UINT& boneNum,
@@ -974,7 +974,7 @@ public:
 
 #pragma region ライブラリ使用関数
 
-	//void SortModelDataAndKey(std::vector<std::tuple<ModelDataAndKeyAndKey, int>>& ModelDataAndKeys);
+	void SortModelData(std::vector<std::tuple<ModelDataAndKey, int>>& modelDatas);
 #pragma endregion
 
 };

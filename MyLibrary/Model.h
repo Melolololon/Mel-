@@ -44,8 +44,8 @@ private:
 	int eachModelConstBufferNum = 0;
 	//モデルのオブジェクトごと
 	int eachModelObjectConstBufferNum = 0;
-	BufferData::BufferType modelConstBufferType;
-	BufferData::BufferType userConstBufferType;
+	ConstBufferData::BufferType modelConstBufferType;
+	ConstBufferData::BufferType userConstBufferType;
 
 	static ID3D12Device* device;
 	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
