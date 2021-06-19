@@ -87,8 +87,8 @@ private:
 		const int modelNum,
 		const int modelFileObjectNum,
 		const int heapTop,
-		BufferData* modelBufferData,
-		BufferData* userBufferData
+		ConstBufferData* modelBufferData,
+		ConstBufferData* userBufferData
 	);
 
 	void CreateTextureBuffer
@@ -193,8 +193,8 @@ protected:
 		const std::vector<Texture*>& pTextures,
 		const int modelNum,
 		const int modelFileObjectNum,
-		BufferData* modelBufferData,
-		BufferData* userBufferData
+		ConstBufferData* modelBufferData,
+		ConstBufferData* userBufferData
 	);
 
 	void CreateModelHeapResourcesSelectColor
@@ -202,8 +202,8 @@ protected:
 		const Color& color,
 		const int modelNum,
 		const int modelFileObjectNum,
-		BufferData* modelBufferData,
-		BufferData* userBufferData
+		ConstBufferData* modelBufferData,
+		ConstBufferData* userBufferData
 	);
 
 	void BufferCreatePreparation
@@ -211,8 +211,8 @@ protected:
 		const int modelNum,
 		const int modelFileObjectNum,
 		const size_t textureNum,
-		BufferData* modelBufferData,
-		BufferData* userBufferData 
+		ConstBufferData* modelBufferData,
+		ConstBufferData* userBufferData 
 	);
 #pragma endregion
 

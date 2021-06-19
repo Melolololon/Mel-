@@ -8,6 +8,7 @@ bool ObjModelData::Load(const std::string& path)
 	std::string materialFileName;
 	std::vector<std::string>materialName;
 	
+
 	bool result = ModelLoader::GetInstance()->LoadObjModel
 	(
 		path,

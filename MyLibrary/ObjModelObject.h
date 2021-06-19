@@ -1,17 +1,22 @@
 #pragma once
 #include "ModelObject.h"
+#include"ObjModelData.h"
+
 class ObjModelObject :
     public ModelObject
 {
 private:
 	static PipelineState defaultPipeline;
 
+	UINT boneNum = 0;
     std::vector<BoneData>boneDatas;
     std::vector<ParentBoneData> parentBoneDatas;//親ボーンと影響度
-
-
+	
+	//ボーン情報取得用
+	ObjModelData* pObjModelData = nullptr;
+	void MapBoneMatrix();
 public:
-	ObjModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
+	ObjModelObject(ObjModelData* pModelData, ConstBufferData* userConstBufferData);
 	~ObjModelObject();
 
 #pragma region セット
@@ -64,7 +69,7 @@ public:
 	}
 #pragma endregion
 
-	static void Initialize();
+	static bool Initialize();
 	void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama())override;
 };
 

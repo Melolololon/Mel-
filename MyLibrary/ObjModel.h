@@ -54,7 +54,7 @@ private:
 	//[.obj内のオブジェクトごと][頂点ごと]
 	std::vector<std::vector<int>> objBoneNums;//頂点に割り当てられているボーン番号
 	//[モデルごと(keyでアクセス)][ボーンごと]
-	std::vector<DirectX::XMFLOAT3> objBonePositions;//ボーン座標
+	std::vector<Vector3> objBonePositions;//ボーン座標
 	//[ボーンごと](オブジェクトごとに変える必要なさそうなので、こうしてる)
 
 	//ボーン数

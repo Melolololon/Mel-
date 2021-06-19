@@ -57,7 +57,7 @@ bool  ModelLoader::LoadObjModel
 	std::vector<std::string>& materialName,
 	std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
 	int* loadNum,
-	std::vector<DirectX::XMFLOAT3>* bonePosVector,
+	std::vector<Vector3>* bonePosVector,
 	std::vector<std::vector<int>>* boneNumVector
 )
 {

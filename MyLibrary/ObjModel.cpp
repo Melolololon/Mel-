@@ -401,7 +401,7 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 			boneMat = DirectX::XMMatrixIdentity();
 
 			//ボーンから頂点の距離分移動
-			bonePos = objBonePositions[j];
+			bonePos = objBonePositions[j].ToXMFLOAT3();
 			boneMat *= DirectX::XMMatrixTranslation(-bonePos.x, -bonePos.y, -bonePos.z);
 
 			boneScale = boneDatas[modelNum][j].scale;
@@ -418,9 +418,9 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 			//割って増減を抑えている
 			boneMat *= DirectX::XMMatrixTranslation
 			(
-				boneMoveVector.x / modelConstDatas[i][0].scale.x,
-				boneMoveVector.y / modelConstDatas[i][0].scale.y,
-				boneMoveVector.z / modelConstDatas[i][0].scale.z
+				boneMoveVector.x / modelConstDatas[modelNum][i].scale.x,
+				boneMoveVector.y / modelConstDatas[modelNum][i].scale.y,
+				boneMoveVector.z / modelConstDatas[modelNum][i].scale.z
 			);
 
 			//回転させたら戻す
@@ -536,9 +536,9 @@ void ObjModel::MapBoneMatrix(const int modelNum)
 				//modelConstDatas[i][0].scale に boneScale掛ける必要あるか要確認
 				mulMat *= DirectX::XMMatrixTranslation
 				(
-					pMoveVector.x / (modelConstDatas[i][0].scale.x * boneScale.x),
-					pMoveVector.y / (modelConstDatas[i][0].scale.y * boneScale.y),
-					pMoveVector.z / (modelConstDatas[i][0].scale.z * boneScale.z)
+					pMoveVector.x / (modelConstDatas[modelNum][i].scale.x * boneScale.x),
+					pMoveVector.y / (modelConstDatas[modelNum][i].scale.y * boneScale.y),
+					pMoveVector.z / (modelConstDatas[modelNum][i].scale.z * boneScale.z)
 				);
 
 				//回転させたら戻す

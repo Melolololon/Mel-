@@ -23,8 +23,7 @@ private:
 
 	//頂点
 	std::vector<VertexBufferSet> vertexBufferSet;
-	int modelFileObjectNum = 0;
-
+	
 	//インデックス
 	std::vector < IndexBufferSet> indexBufferSet;
 
@@ -100,8 +99,11 @@ private:
 
 protected:
 
-	std::vector<std::unique_ptr<Texture>>pTextures;
+	int modelFileObjectNum = 0;
+
 	std::vector<std::vector<USHORT>> indices;
+
+	std::vector<std::unique_ptr<Texture>>pTextures;
 	
 	/// <summary>
 	/// 頂点インデックスバッファセットの生成とMapを行います。

@@ -27,18 +27,22 @@ private:
 	static ComPtr<ID3D12RootSignature>rootSignature;
 	static PipelineState defaultPipeline;
 
-	//モデル(クリエイトしたら割り当てる)
-	ModelData* pModelData = nullptr;
-	int modelFileObjectNum = 0;
 	
 	std::vector<PipelineState*> pPipeline;
 
 
 
+
+	//[モデル内のオブジェクトごと]
+	std::vector < Material> materials;
+
+
+
+protected:
+
 	//定数バッファ
 	static const int CONST_BUFFER_REGISTER = 0;
 	std::vector<ComPtr<ID3D12Resource>> constBuffer;//メイン(基本的な情報)
-
 
 	static const int MATERIAL_BUFFER_REGISTER = 2;
 	std::vector<ComPtr<ID3D12Resource>> materialConstBuffer;//マテリアル
@@ -50,17 +54,16 @@ private:
 	static const int MODEL_BUFFER_REGISTER = 3;
 	std::vector<ComPtr<ID3D12Resource>> modelConstBuffer;//モデル特有
 	ConstBufferData::BufferType modelConstBufferType = ConstBufferData::BufferType::BUFFER_TYPE_NONE;
-	
+
 
 	//定数にセットする座標などの値
-	//[モデルごと][モデル内のオブジェクト数]
+	//[モデル内のオブジェクト数]
 	std::vector < ModelConstData> modelConstDatas;
-	//[モデル内のオブジェクトごと]
-	std::vector < Material> materials;
 
 
-
-protected:
+	//モデル(クリエイトしたら割り当てる)
+	ModelData* pModelData = nullptr;
+	UINT modelFileObjectNum = 0;
 
 	void CreateConstBuffer
 	(
