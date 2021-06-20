@@ -27,7 +27,7 @@ void RenderTarget::MapMotionBlurConstData()
 		SpriteConstBufferData* rtConstData;
 		constBuffer->Map(0, nullptr, (void**)&rtConstData);
 		*data = *rtConstData;
-		data->subColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.8f/* + i * 0.1f*/);
+		data->subColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.1f + i * 0.1f);
 
 		motionBlurConstBuffer[i]->Unmap(0, nullptr);
 		constBuffer->Unmap(0, nullptr);
