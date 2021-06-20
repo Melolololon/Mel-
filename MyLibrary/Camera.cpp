@@ -47,7 +47,7 @@ DirectX::XMMATRIX Camera::GetViewMatrix() const
 		DirectX::XMLoadFloat3(&target.ToXMFLOAT3()),
 		DirectX::XMLoadFloat3(&upVector.ToXMFLOAT3())
 	);
-	return matView;
+
 }
 
 DirectX::XMMATRIX Camera::GetProjectionMatrix() const
@@ -59,7 +59,6 @@ DirectX::XMMATRIX Camera::GetProjectionMatrix() const
 		(float)Library::GetWindowWidth() / (float)Library::GetWindowHeight(),//アスペクト比
 		nearNum, farNum//描画範囲
 	);
-	return mapProjection;
 }
 
 DirectX::XMMATRIX Camera::GetViewAndProjectionMat()const

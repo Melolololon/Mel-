@@ -85,13 +85,13 @@ private:
 	/// <summary>
 	/// テクスチャバッファ、ビューの生成を行います。
 	/// </summary>
-	void CteateTextureBufferAndViewSetTexture();
+	void CteateTextureBufferAndView();
 
 	/// <summary>
 	/// テクスチャバッファ、ビューの生成を行います。
 	/// </summary>
 	/// <param name="color"></param>
-	void CteateTextureBufferAndViewSetColor();
+	void CteateTextureBufferAndView();
 
 #pragma endregion
 

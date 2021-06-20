@@ -41,7 +41,7 @@ int Library::refReat;
 DWORD Library::startProsessTime;
 DWORD Library::nowTime;
 
-//std::vector<std::tuple<ModelDataAndKey, int>> Library::modelDatas;
+std::vector<std::tuple<ModelData, int>> Library::modelDatas;
 
 int Library::winWidth;
 int Library::winHeight;
@@ -362,7 +362,7 @@ void Library::SetPipeline(pipeline num)
 //	dx12->setConstMapData(dataP, dataSize);
 //}
 
-void Library::GetMatrix(float matrix[4][4], const ModelDataAndKey& modelData, int number)
+void Library::GetMatrix(float matrix[4][4], const ModelData& modelData, int number)
 {
 	dx12->GetMatrix(matrix, modelData.key, number);
 }
@@ -431,7 +431,7 @@ void  Library::LoadObjVertex
 	bool loadUV,
 	bool loadNormal,
 	std::string* materialFireName,
-	ModelDataAndKey& modelData
+	ModelData& modelData
 )
 {
 	if (!checkSetKeyName(modelData.key))return;
@@ -459,7 +459,7 @@ void Library::CreatePoint(int createNum, point* p)
 	createPointCount++;
 }
 
-void Library::CreateBoard(const Vector2& size, ModelDataAndKey& modelData)
+void Library::CreateBoard(const Vector2& size, ModelData& modelData)
 {
 	if (!checkSetKeyName(modelData.key))return;
 
@@ -540,7 +540,7 @@ void Library::CreateTriangularPyramid
 	const int& vertexNumber,
 	const Vector3& centerPosition,
 	const float& upVertex,
-	ModelDataAndKey& modelData
+	ModelData& modelData
 )
 {
 	if (!checkSetKeyName(modelData.key))return;
@@ -563,7 +563,7 @@ void Library::CreateTriangularPyramid
 }
 
 
-void Library::Create3DBox(const Vector3& size,  ModelDataAndKey& modelData)
+void Library::Create3DBox(const Vector3& size,  ModelData& modelData)
 {
 	if (!checkSetKeyName(modelData.key))return;
 	
@@ -585,7 +585,7 @@ void Library::CreateUserObject
 	const std::vector<Vector3>& vertexPos,
 	const std::vector<Vector2>& vertexUV,
 	const std::vector<USHORT>& indices,
-	ModelDataAndKey& modelData
+	ModelData& modelData
 )
 {
 	size_t posSize = vertexPos.size();
@@ -623,7 +623,7 @@ void Library::CreateUserObject2
 	UINT vertexDataSize,
 	UINT vertexSumDataSize,
 	std::vector<USHORT>&index,
-	ModelDataAndKey& modelData
+	ModelData& modelData
 )
 {
 	if (!checkSetKeyName(modelData.key))return;
@@ -652,7 +652,7 @@ void Library::LoadObjMaterial
 	std::string materialDirectoryPath, 
 	std::string materialFileName, 
 	int objectNum, 
-	 ModelDataAndKey& modelData
+	 ModelData& modelData
 )
 {
 	if (!checkCreateVertexBuffer(modelData.type))return;
@@ -669,7 +669,7 @@ void Library::LoadObjMaterialUseUserData
 	int objectNum,
 	void** dataP,
 	UINT dataSize,
-	 ModelDataAndKey& modelData
+	 ModelData& modelData
 )
 {
 	if (!checkCreateVertexBuffer(modelData.type))return;
@@ -683,7 +683,7 @@ void Library::CreateHeapData
 (
 	const wchar_t* texturePath, 
 	int objectNum,
-	ModelDataAndKey& modelData
+	ModelData& modelData
 )
 {
 	
@@ -700,7 +700,7 @@ void Library::CreateHeapData2
 (
 	Color color, 
 	int objectNum,
-	ModelDataAndKey& modelData
+	ModelData& modelData
 )
 {
 
@@ -716,7 +716,7 @@ void Library::CreateUserHeapData
 	int objectNum, 
 	void** dataP, 
 	UINT dataSize,
-	ModelDataAndKey& modelData
+	ModelData& modelData
 )
 {
 
@@ -734,7 +734,7 @@ void Library::CreateUserHeapData2
 	int objectNum,
 	void** dataP,
 	UINT dataSize,
-	ModelDataAndKey& modelData
+	ModelData& modelData
 )
 {
 
@@ -828,7 +828,7 @@ void Library::CreateSprite(sprite* sprite)
 
 void Library::DrawGraphic
 (
-	const ModelDataAndKey& modelData,
+	const ModelData& modelData,
 	int number
 )
 {
@@ -982,7 +982,7 @@ void Library::DrawSprite3DBox
 #pragma endregion
 
 #pragma region 削除
-void Library::DeleteModelData(const ModelDataAndKey& modelData)
+void Library::DeleteModelData(const ModelData& modelData)
 {
 	dx12->DeletePolygonData(modelData);
 	dx12->DeleteHeapData(modelData);
@@ -1005,17 +1005,17 @@ void Library::SetSmoothingFlag(bool flag)
 }
 #pragma endregion
 
-void Library::SetMulColor(Color color,const ModelDataAndKey& modelData, int number)
+void Library::SetMulColor(Color color,const ModelData& modelData, int number)
 {
 	
 	dx12->SetMulColor(color, modelData.key, number);
 }
-void Library::SetAddColor(Color color,const ModelDataAndKey& modelData, int number)
+void Library::SetAddColor(Color color,const ModelData& modelData, int number)
 {
 
 	dx12->SetAddColor(color, modelData.key, number);
 }
-void Library::SetSubColor(Color color,const ModelDataAndKey& modelData, int number)
+void Library::SetSubColor(Color color,const ModelData& modelData, int number)
 {
 	
 	dx12->SetSubColor(color, modelData.key, number);
@@ -1097,25 +1097,25 @@ void Library::SetLightColor(Color lightColor)
 #pragma endregion
 
 #pragma region 操作
-void Library::SetPosition(Vector3 position, const ModelDataAndKey& modelData , int number)
+void Library::SetPosition(Vector3 position, const ModelData& modelData , int number)
 {
 	
 	dx12->SetObjectPosition({ position.x,position.y,position.z }, modelData.key, number);
 }
 
 
-void Library::SetAngle(Vector3 angle, const ModelDataAndKey& modelData,  int number)
+void Library::SetAngle(Vector3 angle, const ModelData& modelData,  int number)
 {
 
 	dx12->SetObjectAngle({ angle.x,angle.y,angle.z }, modelData.key, number);
 }
 
-void Library::SetScale(Vector3 scale, const ModelDataAndKey& modelData , int number)
+void Library::SetScale(Vector3 scale, const ModelData& modelData , int number)
 {
 	dx12->SetObjectScale({ scale.x,scale.y,scale.z }, modelData.key, number);
 }
 
-void Library::SetPushPorigonNumber(float ex, const ModelDataAndKey& modelData, int number)
+void Library::SetPushPorigonNumber(float ex, const ModelData& modelData, int number)
 {
 	dx12->SetObjectPushNum(ex, modelData.key, number);
 }
@@ -1191,7 +1191,7 @@ void Library::SetObjBoneMoveVector
 (
 	const Vector3& vector, 
 	const UINT& boneNum,
-	const ModelDataAndKey& modelData,
+	const ModelData& modelData,
 	const UINT& objectNum
 )
 {
@@ -1206,7 +1206,7 @@ void Library::SetObjBoneScale
 (
 	const Vector3& scale,
 	const UINT& boneNum,
-	const ModelDataAndKey& modelData,
+	const ModelData& modelData,
 	const UINT& objectNum
 )
 {
@@ -1219,7 +1219,7 @@ void Library::SetObjBoneAngle
 (
 	const Vector3& angle, 
 	const UINT& boneNum,
-	const ModelDataAndKey& modelData,
+	const ModelData& modelData,
 	const UINT& objectNum
 )
 {
@@ -1232,7 +1232,7 @@ void Library::SetParentObjBone
 (
 	const UINT& boneNum,
 	const UINT& parentBoneNum,
-	const ModelDataAndKey& modelData
+	const ModelData& modelData
 )
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
@@ -1250,7 +1250,7 @@ void Library::SetParentObjBoneScaleImpact
 (
 	const UINT& boneNum,
 	const Vector3& scaleImpact,
-	const ModelDataAndKey& modelData
+	const ModelData& modelData
 )
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
@@ -1267,7 +1267,7 @@ void Library::SetParentObjBoneAngleImpact
 (
 	const UINT& boneNum,
 	const Vector3& angleImpact,
-	const ModelDataAndKey& modelData
+	const ModelData& modelData
 )
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
@@ -1284,7 +1284,7 @@ void Library::SetParentObjBoneMoveVectorImpact
 (
 	const UINT& boneNum,
 	const Vector3& moveVectorImpact,
-	const ModelDataAndKey& modelData
+	const ModelData& modelData
 )
 {
 	if (modelData.type != VertexType::VERTEX_TYPE_OBJ_ANIMATION)
@@ -1341,7 +1341,7 @@ void Library::SetPointBoardAnimation
 #pragma endregion
 
 #pragma region 情報取得取得
-std::vector<std::vector<Vector3>> Library::GetModelVerticesPosition(const ModelDataAndKey& modelData)
+std::vector<std::vector<Vector3>> Library::GetModelVerticesPosition(const ModelData& modelData)
 {
 	std::vector<std::vector<Vector3>>vector3VertexPos;
 	std::vector<std::vector<DirectX::XMFLOAT3>> xmFloat3VertexPos;
@@ -1365,7 +1365,7 @@ std::vector<std::vector<Vector3>> Library::GetModelVerticesPosition(const ModelD
 
 }
 
-bool Library::OverrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const ModelDataAndKey& modelData)
+bool Library::OverrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const ModelData& modelData)
 {
 	
 
@@ -1394,7 +1394,7 @@ bool Library::OverrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertP
 #pragma region アニメーション
 
 
-std::vector<Vector3> Library::GetBonePosition(const ModelDataAndKey& modelData)
+std::vector<Vector3> Library::GetBonePosition(const ModelData& modelData)
 {
 	std::vector<DirectX::XMFLOAT3>getVector = dx12->GetBonePosition(modelData.key);
 	std::vector<Vector3>returnVector(getVector.size());
@@ -1412,7 +1412,7 @@ std::vector<Vector3> Library::GetBonePosition(const ModelDataAndKey& modelData)
 #pragma region 当たり判定
 void Library::GetModelBoxCollisionData
 (
-	const ModelDataAndKey& modelData,
+	const ModelData& modelData,
 	Vector3* pointPosition,
 	Vector3* minPosition,
 	Vector3* maxPosition,
@@ -1491,7 +1491,7 @@ void Library::DrawsSpriteFontString(Vector2 position, Vector2 size, std::string 
 
 
 #pragma region 親子構造
-void Library::SetParent(const ModelDataAndKey& modelDataAndKey, int number, const ModelDataAndKey& parentModelDataAndKey, int parentNum)
+void Library::SetParent(const ModelDataAndKey& modelData, int number, const ModelDataAndKey& parentmodelData, int parentNum)
 {
 
 	dx12->SetParent(modelDataAndKey.key, number, parentModelDataAndKey.key, parentNum);

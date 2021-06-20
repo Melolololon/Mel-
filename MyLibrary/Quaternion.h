@@ -21,4 +21,3 @@ struct Quaternion
 	Matrix GetQuaternionToMatrix();
 };
 
-

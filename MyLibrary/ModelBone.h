@@ -5,7 +5,7 @@ class ModelBone:public Object
 private:
 
 public:
-	ModelBone(const Color& color, const ModelDataAndKey& modelData);
+	ModelBone(const Color& color, const ModelData& modelData);
 	~ModelBone();
 
 	void Initialize()override;

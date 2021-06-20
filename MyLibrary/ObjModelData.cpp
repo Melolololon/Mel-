@@ -172,5 +172,4 @@ bool ObjModelData::Load(const std::string& path)
 		indices
 	);
 
-	return true;
 }

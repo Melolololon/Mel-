@@ -83,6 +83,10 @@ public:
 
 	virtual void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
+	void SetPModel(ModelData* pModel) 
+	{
+		pModelData = pModel; 
+	}
 
 	void SetPosition(const Vector3& position);
 	void SetScale(const Vector3& scale);

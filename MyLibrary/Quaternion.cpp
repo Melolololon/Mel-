@@ -73,7 +73,7 @@ Matrix Quaternion::GetQuaternionToMatrix()
 }
 
 
-Quaternion Quaternion::GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle)
+Quaternion GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle)
 {
 	float rad = LibMath::AngleConversion(0, angle);
 	Vector3 nVector = Vector3Normalize(vector);//ê≥ãKâª

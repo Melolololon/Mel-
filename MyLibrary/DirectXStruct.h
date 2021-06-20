@@ -25,7 +25,7 @@ enum VertexType
 };
 
 //モデルのデータを所持します。
-struct ModelDataAndKey
+struct ModelData
 {
 	std::string key;//モデルデータを呼び出すための文字列
 	VertexType type;//頂点構造体の種類
@@ -62,9 +62,9 @@ struct Vertex
 	DirectX::XMFLOAT3 normal;
 };
 
+static const int MAX_BONE_INDICES = 4;
 struct FbxVertex
 {
-	static const int MAX_BONE_INDICES = 4;
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT3 normal;

@@ -432,11 +432,11 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 			vertices[i].boneIndex[weightArrayIndex] = weightSet.index;
 			vertices[i].boneWeight[weightArrayIndex] = weightSet.weight;
 
-			if(++weightArrayIndex >= FbxVertex::MAX_BONE_INDICES)
+			if(++weightArrayIndex >= FbxModel::MAX_BONE_INDICES)
 			{
 				float weight = 0.0f;
 
-				for(int j = 1; j < FbxVertex::MAX_BONE_INDICES;j++)
+				for(int j = 1; j < FbxModel::MAX_BONE_INDICES;j++)
 					weight += vertices[i].boneWeight[j];
 
 				vertices[i].boneWeight[0] = 1.0f - weight;

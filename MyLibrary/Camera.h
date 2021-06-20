@@ -4,7 +4,6 @@
 #include<string>
 #include<memory>
 #include<unordered_map>
-#include"DirectInput.h"
 
 class Camera
 {

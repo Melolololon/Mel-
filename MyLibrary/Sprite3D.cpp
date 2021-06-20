@@ -125,18 +125,18 @@ void Sprite3D::Draw(const std::string& rtName)
 	
 	if (rtName != "") 
 	{
-		MatrixMap(RenderTarget::Get(rtName)->GetCamera());
+		MatrixMap(RenderTarget::Get(rtName).GetCamera());
 		SetCmdList(pTexture);
 	}
 	else
 	{
-		MatrixMap(RenderTarget::Get()->GetCamera());
+		MatrixMap(RenderTarget::Get().GetCamera());
 		SetCmdList(pTexture);
 	}
 }
 
 
-void Sprite3D::MatrixMap(const Camera* camera)
+void Sprite3D::MatrixMap(const Camera& camera)
 {
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
@@ -161,7 +161,7 @@ void Sprite3D::MatrixMap(const Camera* camera)
 	);
 
 
-	constBufferData->mat = matWorld * camera->GetViewAndProjectionMat();
+	constBufferData->mat = matWorld * camera.GetViewAndProjectionMat();
 
 
 	constBuffer->Unmap(0, nullptr);
