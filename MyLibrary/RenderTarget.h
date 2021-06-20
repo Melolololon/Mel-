@@ -15,7 +15,7 @@ private:
 
 
 
-	static std::unordered_map<std::string,std::unique_ptr<RenderTarget>>pRenderTargets;
+	static std::unordered_map<std::string, std::unique_ptr<RenderTarget>>pRenderTargets;
 	static UINT createCount;
 	static std::string mainRenderTargetNama;
 
@@ -23,8 +23,13 @@ private:
 	static PipelineState defaultPipeline;
 	static ComPtr<ID3D12RootSignature>rootSignature;
 
-	ComPtr<ID3D12Resource>textureBuffer[2];
+	static const UINT RT_NUM = 2;
+	static const UINT MOTION_BLAR_RT_NUM = 2;
+	//[モーションブラー用レンダーターゲット(前のフレームの結果描画に使用)][同時描画数]
+	std::array<std::array<ComPtr<ID3D12Resource>, RT_NUM>, MOTION_BLAR_RT_NUM>textureBuffer;
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
+	ComPtr<ID3D12Resource>motionBlurConstBuffer;
+	static std::vector<Color>rtColor;
 
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;
 
@@ -34,12 +39,21 @@ private:
 	//カメラのポインタ
 	Camera* pCamera = nullptr;
 
+	//モーションブラーを行うかどうか
+	bool isMotionBlur = false;
+	/// <summary>
+	/// モーションブラーを行うために前フレームのレンダリング結果をコピーする関数
+	/// </summary>
+	void CopyPreviousRenderingTexture();
+
+	void MapMotionBlurConstData();
+
 public:
 
 	RenderTarget(const Color& color);
 	~RenderTarget();
 
-	
+
 	static void Create(const Color& initColor, const std::string& name = "");
 	static void Delete(const std::string& name);
 	static RenderTarget* Get(const std::string& name = mainRenderTargetNama) { return pRenderTargets[name].get(); }
@@ -51,11 +65,23 @@ public:
 	static void AllDraw();
 
 
+
+#pragma region セット
+
+
 	void SetCamera(const std::string& name = Camera::GetMainCameraName()) { this->pCamera = Camera::Get(name); }
 
+	void SetMotionBlurFlag(const bool flag) { isMotionBlur = flag; }
 
-	static const std::string& GetMainRenderTargetNama() {return mainRenderTargetNama;}
+#pragma endregion
+
+#pragma region ゲット
+
+	static const std::string& GetMainRenderTargetNama() { return mainRenderTargetNama; }
 
 	Camera* GetCamera() { return pCamera; }
+#pragma endregion
+
+
 };
 

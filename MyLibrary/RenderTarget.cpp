@@ -1,3 +1,5 @@
+
+
 #include "RenderTarget.h"
 #include"CreateBuffer.h"
 #include<d3dx12.h>
@@ -11,12 +13,68 @@ PipelineState RenderTarget::defaultPipeline;
 float RenderTarget::clearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
 ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
 
-RenderTarget::RenderTarget(const Color& color):
+std::vector<Color>RenderTarget::rtColor;
+
+void RenderTarget::CopyPreviousRenderingTexture()
+{
+
+	for (int i = MOTION_BLAR_RT_NUM - 1; i > 0; i--)
+	{
+		for (int j = 0; j < RT_NUM; j++)
+		{
+			//色情報取得
+			auto result = textureBuffer[i - 1][j]->ReadFromSubresource
+			(
+				rtColor.data(),
+				Library::GetWindowWidth() * sizeof(Color),
+				Library::GetWindowWidth() * Library::GetWindowHeight() * sizeof(Color),
+				0,
+				nullptr
+			);
+
+			//取得したやつを書き込む
+			textureBuffer[i][j]->WriteToSubresource
+			(
+				0,
+				nullptr,
+				rtColor.data(),
+				Library::GetWindowWidth() * sizeof(Color),
+				Library::GetWindowWidth() * Library::GetWindowHeight() * sizeof(Color)
+			);
+		}
+	}
+
+}
+
+void RenderTarget::MapMotionBlurConstData()
+{
+	SpriteConstBufferData* data;
+	motionBlurConstBuffer->Map(0, nullptr, (void**)&data);
+
+	SpriteConstBufferData* rtConstData;
+	constBuffer->Map(0, nullptr, (void**)&rtConstData);
+	*data = *rtConstData;
+	data->subColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.9f);
+
+	motionBlurConstBuffer->Unmap(0, nullptr);
+	constBuffer->Unmap(0, nullptr);
+}
+
+RenderTarget::RenderTarget(const Color& color) :
 	Sprite2D(color)
 {
 	//頂点、定数バッファ作成
 	CreateBuffer();
 	InitializeVertices();
+
+
+	//モーションブラー用定数バッファ作成
+	CreateBuffer::GetInstance()->CreateConstBuffer
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		sizeof(SpriteConstBufferData),
+		&motionBlurConstBuffer
+	);
 
 	HRESULT result;
 
@@ -25,19 +83,19 @@ RenderTarget::RenderTarget(const Color& color):
 	//ヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
 	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	peHeapDesc.NumDescriptors = _countof(textureBuffer);
+	peHeapDesc.NumDescriptors = RT_NUM * MOTION_BLAR_RT_NUM;
 	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	peHeapDesc.NodeMask = 0;
 	result = device->CreateDescriptorHeap
 	(
-		&peHeapDesc, 
+		&peHeapDesc,
 		IID_PPV_ARGS(&descHeap)
 	);
 	assert(SUCCEEDED(result));
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = _countof(textureBuffer);
+	rtvHeapDesc.NumDescriptors = RT_NUM;
 	result = device->CreateDescriptorHeap
 	(
 		&rtvHeapDesc,
@@ -46,12 +104,19 @@ RenderTarget::RenderTarget(const Color& color):
 	assert(SUCCEEDED(result));
 
 
-	CD3DX12_RESOURCE_DESC textureDesc = CD3DX12_RESOURCE_DESC::Tex2D
+	CD3DX12_RESOURCE_DESC texRTDesc = CD3DX12_RESOURCE_DESC::Tex2D
 	(
 		DXGI_FORMAT_R8G8B8A8_UNORM,
 		Library::GetWindowWidth(),
 		Library::GetWindowHeight(),
 		1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
+	);
+	CD3DX12_RESOURCE_DESC motionBlurTexDesc = CD3DX12_RESOURCE_DESC::Tex2D
+	(
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		Library::GetWindowWidth(),
+		Library::GetWindowHeight(),
+		1, 0, 1, 0, D3D12_RESOURCE_FLAG_NONE
 	);
 
 	//色セット
@@ -65,56 +130,85 @@ RenderTarget::RenderTarget(const Color& color):
 	peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
 
 
-	for (int i = 0; i < _countof(textureBuffer); i++) 
+	D3D12_HEAP_PROPERTIES p = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+	p.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	p.Type = D3D12_HEAP_TYPE_CUSTOM;
+	p.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	p.CreationNodeMask = 0;
+	p.VisibleNodeMask = 0;
+
+
+	for (int i = 0; i < MOTION_BLAR_RT_NUM; i++)
 	{
-	
-		result = device->CreateCommittedResource
-		(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-			D3D12_HEAP_FLAG_NONE,
-			&textureDesc,
-			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			&peClesrValue,
-			IID_PPV_ARGS(&textureBuffer[i])
-		);
+		for (int j = 0; j < RT_NUM; j++)
+		{
+			if (i == 0)
+			{
+				result = device->CreateCommittedResource
+				(
+					//&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+					&p,
+					D3D12_HEAP_FLAG_NONE,
+					&texRTDesc,
+					D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+					&peClesrValue,
+					IID_PPV_ARGS(&textureBuffer[i][j])
+				);
+			}
+			else
+			{
+				result = device->CreateCommittedResource
+				(
+					//&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+					&p,
+					D3D12_HEAP_FLAG_NONE,
+					&motionBlurTexDesc,
+					D3D12_RESOURCE_STATE_GENERIC_READ,
+					nullptr,
+					IID_PPV_ARGS(&textureBuffer[i][j])
+				);
+			}
 
-		//ビュー作成
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+			//ビュー作成
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 
-		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MipLevels = 1;
+			srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Texture2D.MipLevels = 1;
 
-		CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-		(
-			descHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-			i,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
+			CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+			(
+				descHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+				i * RT_NUM + j,
+				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			);
 
-		device->CreateShaderResourceView
-		(
-			textureBuffer[i].Get(),
-			&srvDesc,
-			handle
-		);
+			device->CreateShaderResourceView
+			(
+				textureBuffer[i][j].Get(),
+				&srvDesc,
+				handle
+			);
 
 
+			if (i == 0)
+			{
+				handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+				(
+					rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+					j,
+					device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+				);
 
-		handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-		(
-			rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-			i,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
-		);
-
-		device->CreateRenderTargetView
-		(
-			textureBuffer[i].Get(),
-			nullptr,
-			handle
-		);
+				device->CreateRenderTargetView
+				(
+					textureBuffer[i][j].Get(),
+					nullptr,
+					handle
+				);
+			}
+		}
 	}
 
 #pragma region 深度バッファ_ヒープ_ビュー作成
@@ -141,10 +235,10 @@ RenderTarget::RenderTarget(const Color& color):
 
 	CreateBuffer::GetInstance()->CreateDepthBuffer
 	(
-		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), 
-		depthResDesc, 
-		CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D32_FLOAT, 1.0f, 0), 
-		depthHeapHandle, 
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		depthResDesc,
+		CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D32_FLOAT, 1.0f, 0),
+		depthHeapHandle,
 		&depthBuffer
 	);
 
@@ -157,11 +251,11 @@ RenderTarget::RenderTarget(const Color& color):
 
 	//ウィンドウサイズをスケールに
 	constData.scale = DirectX::XMFLOAT2(Library::GetWindowWidth(), Library::GetWindowHeight());
-	
+
 
 }
 
-RenderTarget::~RenderTarget() 
+RenderTarget::~RenderTarget()
 {
 }
 
@@ -183,6 +277,8 @@ void RenderTarget::Delete(const std::string& name)
 
 bool RenderTarget::Initialize()
 {
+	rtColor.resize(Library::GetWindowHeight() * Library::GetWindowWidth());
+
 
 	CD3DX12_DESCRIPTOR_RANGE descRangeSRV1;
 	descRangeSRV1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
@@ -257,7 +353,7 @@ bool RenderTarget::Initialize()
 	PipelineData data;
 	PipelineState::GetDefaultPipelineData(data, PipelineType::PIPELINE_TYPE_SPRITE);
 
-	bool bResult  = defaultPipeline.CreatePipeline
+	bool bResult = defaultPipeline.CreatePipeline
 	(
 		data,
 		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },
@@ -281,7 +377,7 @@ bool RenderTarget::Initialize()
 
 void RenderTarget::PreDrawProcess()
 {
-	for (int i = 0; i < _countof(textureBuffer); i++) 
+	for (int i = 0; i < RT_NUM; i++)
 	{
 		//セット
 		cmdList->ResourceBarrier
@@ -289,7 +385,7 @@ void RenderTarget::PreDrawProcess()
 			1,
 			&CD3DX12_RESOURCE_BARRIER::Transition
 			(
-				textureBuffer[i].Get(),
+				textureBuffer[0][i].Get(),
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 				D3D12_RESOURCE_STATE_RENDER_TARGET
 			)
@@ -297,8 +393,8 @@ void RenderTarget::PreDrawProcess()
 	}
 
 	//レンダーターゲットセット
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[_countof(textureBuffer)];
-	for(int i = 0; i < _countof(textureBuffer);i++)
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[RT_NUM];
+	for (int i = 0; i < RT_NUM; i++)
 	{
 		rtvHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
@@ -308,23 +404,26 @@ void RenderTarget::PreDrawProcess()
 		);
 	}
 
+
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	cmdList->OMSetRenderTargets(2, rtvHandle, false, &dsvHandle);
+	cmdList->OMSetRenderTargets(RT_NUM, rtvHandle, false, &dsvHandle);
 
 	//画面のクリア
-	for (int i = 0; i < _countof(textureBuffer); i++) 
+	for (int i = 0; i < RT_NUM; i++)
 	{
 		cmdList->ClearRenderTargetView(rtvHandle[i], clearColor, 0, nullptr);
 	}
+
 	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 
 
 #pragma region ビューポート_シザー矩形
 
-	D3D12_VIEWPORT viewport[_countof(textureBuffer)]{};
-	D3D12_RECT scissorRect[_countof(textureBuffer)]{};
-	for (int i = 0; i < _countof(textureBuffer); i++) 
+	D3D12_VIEWPORT viewport[RT_NUM]{};
+	D3D12_RECT scissorRect[RT_NUM]{};
+
+	for (int i = 0; i < RT_NUM; i++)
 	{
 		viewport[i].Width = Library::GetWindowWidth();
 		viewport[i].Height = Library::GetWindowHeight();
@@ -341,61 +440,79 @@ void RenderTarget::PreDrawProcess()
 		scissorRect[i].bottom = scissorRect[i].top + Library::GetWindowHeight();
 		cmdList->RSSetScissorRects(1, &scissorRect[i]);
 	}
+
 #pragma endregion
 }
 
 
 void RenderTarget::SetCmdList()
 {
+
 	//戻す
-	for (int i = 0; i < _countof(textureBuffer); i++)
+	for (int i = 0; i < RT_NUM; i++)
 	{
 		cmdList->ResourceBarrier
 		(
 			1,
 			&CD3DX12_RESOURCE_BARRIER::Transition
 			(
-				textureBuffer[i].Get(),
+				textureBuffer[0][i].Get(),
 				D3D12_RESOURCE_STATE_RENDER_TARGET,
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 			)
 		);
 	}
 
-	cmdList->SetPipelineState(pipeline.Get());
+	//レンダリング結果をコピー
+	CopyPreviousRenderingTexture();
 
+	cmdList->SetPipelineState(pipeline.Get());
 
 	std::vector<ID3D12DescriptorHeap*> ppHeaps;
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 
+	//頂点
 	cmdList->IASetVertexBuffers(0, 1, &vertexBufferSet.vertexBufferView);
 
 	ppHeaps.push_back(descHeap.Get());
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
-	
 
-	//テクスチャ1
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	(
-		descHeap->GetGPUDescriptorHandleForHeapStart(),
-		0,
-		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
-	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
+	int loopNum = 1;
+	if (isMotionBlur)loopNum = MOTION_BLAR_RT_NUM;
+	for (int i = 0; i < loopNum; i++)
+	{
+		//定数
+		if (i == 0)
+		{
+			cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
+		}
+		else
+		{
+			cmdList->SetGraphicsRootConstantBufferView(0, motionBlurConstBuffer->GetGPUVirtualAddress());
+		}
 
-	//テクスチャ2
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	(
-		descHeap->GetGPUDescriptorHandleForHeapStart(),
-		1,
-		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
-	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
+		//テクスチャ1
+		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		(
+			descHeap->GetGPUDescriptorHandleForHeapStart(),
+			i * RT_NUM,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+		cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
 
-	//定数
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
+		//テクスチャ2
+		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		(
+			descHeap->GetGPUDescriptorHandleForHeapStart(),
+			i * RT_NUM + 1,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+		cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
 
-	cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
+		cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
+	}
+
+
 }
 
 void RenderTarget::AllDraw()
@@ -405,9 +522,10 @@ void RenderTarget::AllDraw()
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 
 	//ここで各レンダーターゲットのDrawを呼び出す
-	for(auto& p : pRenderTargets)
+	for (auto& p : pRenderTargets)
 	{
 		p.second->ConstDataMat();
+		p.second->MapMotionBlurConstData();
 		p.second->MatrixMap(nullptr);
 		p.second->SetCmdList();
 	}
