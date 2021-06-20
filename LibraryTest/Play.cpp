@@ -138,7 +138,7 @@ void Play::Update()
 
 	for (int i = 0; i < CREATE_NUM; i++)
 	{
-		fbxModel->PlayAnimation(i);
+		//fbxModel->PlayAnimation(i);
 		//fbxModel->SetAngle(angle,i);
 	}
 	/*Vector2 sprPos = curve->GetVector2Position();

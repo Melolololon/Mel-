@@ -19,16 +19,19 @@ std::vector<Color>RenderTarget::rtColor;
 
 void RenderTarget::MapMotionBlurConstData()
 {
-	SpriteConstBufferData* data;
-	motionBlurConstBuffer->Map(0, nullptr, (void**)&data);
+	for (int i = 0; i < MOTION_BLAR_RT_NUM - 1; i++) 
+	{
+		SpriteConstBufferData* data;
+		motionBlurConstBuffer[i]->Map(0, nullptr, (void**)&data);
 
-	SpriteConstBufferData* rtConstData;
-	constBuffer->Map(0, nullptr, (void**)&rtConstData);
-	*data = *rtConstData;
-	data->subColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.9f);
+		SpriteConstBufferData* rtConstData;
+		constBuffer->Map(0, nullptr, (void**)&rtConstData);
+		*data = *rtConstData;
+		data->subColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.1f + i * 0.1f);
 
-	motionBlurConstBuffer->Unmap(0, nullptr);
-	constBuffer->Unmap(0, nullptr);
+		motionBlurConstBuffer[i]->Unmap(0, nullptr);
+		constBuffer->Unmap(0, nullptr);
+	}
 }
 
 RenderTarget::RenderTarget(const Color& color) :
@@ -40,12 +43,15 @@ RenderTarget::RenderTarget(const Color& color) :
 
 
 	//モーションブラー用定数バッファ作成
-	CreateBuffer::GetInstance()->CreateConstBuffer
-	(
-		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		sizeof(SpriteConstBufferData),
-		&motionBlurConstBuffer
-	);
+	for (int i = 0; i < MOTION_BLAR_RT_NUM - 1; i++) 
+	{
+		CreateBuffer::GetInstance()->CreateConstBuffer
+		(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			sizeof(SpriteConstBufferData),
+			&motionBlurConstBuffer[i]
+		);
+	}
 
 	HRESULT result;
 
@@ -419,8 +425,9 @@ void RenderTarget::SetCmdList()
 	ppHeaps.push_back(descHeap.Get());
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
-	for (int i = renderingRTNum, count = 0; count < MOTION_BLAR_RT_NUM; i++, count++)
+ 	for (int i = renderingRTNum, count = 0; count < MOTION_BLAR_RT_NUM; i--, count++)
 	{
+
 		//定数
 		if (i == renderingRTNum)
 		{
@@ -428,7 +435,7 @@ void RenderTarget::SetCmdList()
 		}
 		else
 		{
-			cmdList->SetGraphicsRootConstantBufferView(0, motionBlurConstBuffer->GetGPUVirtualAddress());
+			cmdList->SetGraphicsRootConstantBufferView(0, motionBlurConstBuffer[count - 1]->GetGPUVirtualAddress());
 		}
 
 		//テクスチャ1
@@ -451,7 +458,7 @@ void RenderTarget::SetCmdList()
 
 		cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
 
-		if (i == MOTION_BLAR_RT_NUM - 1)i = -1;
+		if (i == 0)i = MOTION_BLAR_RT_NUM;
 	}
 
 
