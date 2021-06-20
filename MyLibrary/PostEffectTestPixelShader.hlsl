@@ -15,6 +15,8 @@ float4 PSmain(VSOutput input) : SV_TARGET
 	{
 		retColor = texColor2;
 	}
+
+
 	return retColor + color + addColor - subColor * mulColor;
 
 	//return float4(tex.Sample(smp, input.uv) + color + addColor - subColor) * mulColor;

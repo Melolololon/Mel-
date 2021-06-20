@@ -15,36 +15,7 @@ ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
 
 std::vector<Color>RenderTarget::rtColor;
 
-void RenderTarget::CopyPreviousRenderingTexture()
-{
 
-	for (int i = MOTION_BLAR_RT_NUM - 1; i > 0; i--)
-	{
-		for (int j = 0; j < RT_NUM; j++)
-		{
-			//色情報取得
-			auto result = textureBuffer[i - 1][j]->ReadFromSubresource
-			(
-				rtColor.data(),
-				Library::GetWindowWidth() * sizeof(Color),
-				Library::GetWindowWidth() * Library::GetWindowHeight() * sizeof(Color),
-				0,
-				nullptr
-			);
-
-			//取得したやつを書き込む
-			textureBuffer[i][j]->WriteToSubresource
-			(
-				0,
-				nullptr,
-				rtColor.data(),
-				Library::GetWindowWidth() * sizeof(Color),
-				Library::GetWindowWidth() * Library::GetWindowHeight() * sizeof(Color)
-			);
-		}
-	}
-
-}
 
 void RenderTarget::MapMotionBlurConstData()
 {
@@ -95,7 +66,7 @@ RenderTarget::RenderTarget(const Color& color) :
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = RT_NUM;
+	rtvHeapDesc.NumDescriptors = RT_NUM * MOTION_BLAR_RT_NUM;
 	result = device->CreateDescriptorHeap
 	(
 		&rtvHeapDesc,
@@ -111,13 +82,7 @@ RenderTarget::RenderTarget(const Color& color) :
 		Library::GetWindowHeight(),
 		1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
 	);
-	CD3DX12_RESOURCE_DESC motionBlurTexDesc = CD3DX12_RESOURCE_DESC::Tex2D
-	(
-		DXGI_FORMAT_R8G8B8A8_UNORM,
-		Library::GetWindowWidth(),
-		Library::GetWindowHeight(),
-		1, 0, 1, 0, D3D12_RESOURCE_FLAG_NONE
-	);
+
 
 	//色セット
 	clearColor[0] = color.r / 255;
@@ -142,32 +107,15 @@ RenderTarget::RenderTarget(const Color& color) :
 	{
 		for (int j = 0; j < RT_NUM; j++)
 		{
-			if (i == 0)
-			{
-				result = device->CreateCommittedResource
-				(
-					//&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-					&p,
-					D3D12_HEAP_FLAG_NONE,
-					&texRTDesc,
-					D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-					&peClesrValue,
-					IID_PPV_ARGS(&textureBuffer[i][j])
-				);
-			}
-			else
-			{
-				result = device->CreateCommittedResource
-				(
-					//&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-					&p,
-					D3D12_HEAP_FLAG_NONE,
-					&motionBlurTexDesc,
-					D3D12_RESOURCE_STATE_GENERIC_READ,
-					nullptr,
-					IID_PPV_ARGS(&textureBuffer[i][j])
-				);
-			}
+			result = device->CreateCommittedResource
+			(
+				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+				D3D12_HEAP_FLAG_NONE,
+				&texRTDesc,
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+				&peClesrValue,
+				IID_PPV_ARGS(&textureBuffer[i][j])
+			);
 
 			//ビュー作成
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -191,23 +139,19 @@ RenderTarget::RenderTarget(const Color& color) :
 				handle
 			);
 
+			handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+			(
+				rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+				i * RT_NUM + j,
+				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+			);
 
-			if (i == 0)
-			{
-				handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-				(
-					rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-					j,
-					device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
-				);
-
-				device->CreateRenderTargetView
-				(
-					textureBuffer[i][j].Get(),
-					nullptr,
-					handle
-				);
-			}
+			device->CreateRenderTargetView
+			(
+				textureBuffer[i][j].Get(),
+				nullptr,
+				handle
+			);
 		}
 	}
 
@@ -385,7 +329,7 @@ void RenderTarget::PreDrawProcess()
 			1,
 			&CD3DX12_RESOURCE_BARRIER::Transition
 			(
-				textureBuffer[0][i].Get(),
+				textureBuffer[renderingRTNum][i].Get(),
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 				D3D12_RESOURCE_STATE_RENDER_TARGET
 			)
@@ -399,7 +343,7 @@ void RenderTarget::PreDrawProcess()
 		rtvHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
 			rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-			i,
+			i + renderingRTNum * RT_NUM,
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
 		);
 	}
@@ -456,15 +400,13 @@ void RenderTarget::SetCmdList()
 			1,
 			&CD3DX12_RESOURCE_BARRIER::Transition
 			(
-				textureBuffer[0][i].Get(),
+				textureBuffer[renderingRTNum][i].Get(),
 				D3D12_RESOURCE_STATE_RENDER_TARGET,
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 			)
 		);
 	}
 
-	//レンダリング結果をコピー
-	CopyPreviousRenderingTexture();
 
 	cmdList->SetPipelineState(pipeline.Get());
 
@@ -477,12 +419,10 @@ void RenderTarget::SetCmdList()
 	ppHeaps.push_back(descHeap.Get());
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
-	int loopNum = 1;
-	if (isMotionBlur)loopNum = MOTION_BLAR_RT_NUM;
-	for (int i = 0; i < loopNum; i++)
+	for (int i = renderingRTNum, count = 0; count < MOTION_BLAR_RT_NUM; i++, count++)
 	{
 		//定数
-		if (i == 0)
+		if (i == renderingRTNum)
 		{
 			cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
 		}
@@ -510,9 +450,13 @@ void RenderTarget::SetCmdList()
 		cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
 
 		cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
+
+		if (i == MOTION_BLAR_RT_NUM - 1)i = -1;
 	}
 
 
+	renderingRTNum++;
+	if (renderingRTNum >= MOTION_BLAR_RT_NUM)renderingRTNum = 0;
 }
 
 void RenderTarget::AllDraw()
