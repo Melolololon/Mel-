@@ -23,10 +23,6 @@ bool ObjModelData::Load(const std::string& path)
 		&objBonePositions,
 		&objBoneNums
 	);
-
-	if (!result)return false;
-	
-
 	int modelFileObjectNum = vertices.size();
 	int boneNum = objBonePositions.size();
 
@@ -145,7 +141,7 @@ bool ObjModelData::Load(const std::string& path)
 
 	int materialNum = 0;
 	std::vector<Material>materials;
-	result = ModelLoader::GetInstance()->LoadObjMaterial
+	ModelLoader::GetInstance()->LoadObjMaterial
 	(
 		directoryPath,
 		materialFileName,
