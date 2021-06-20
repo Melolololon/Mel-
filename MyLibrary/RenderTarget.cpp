@@ -27,7 +27,7 @@ void RenderTarget::MapMotionBlurConstData()
 		SpriteConstBufferData* rtConstData;
 		constBuffer->Map(0, nullptr, (void**)&rtConstData);
 		*data = *rtConstData;
-		data->subColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.1f + i * 0.1f);
+		data->subColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.4f + i * 0.1f);
 
 		motionBlurConstBuffer[i]->Unmap(0, nullptr);
 		constBuffer->Unmap(0, nullptr);
@@ -97,9 +97,8 @@ RenderTarget::RenderTarget(const Color& color) :
 	clearColor[3] = color.a / 255;
 
 	//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
-	D3D12_CLEAR_VALUE peClesrValue;
-	peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
-
+	D3D12_CLEAR_VALUE renderTargetClearValue;
+	renderTargetClearValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
 
 	D3D12_HEAP_PROPERTIES p = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 	p.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
@@ -119,7 +118,7 @@ RenderTarget::RenderTarget(const Color& color) :
 				D3D12_HEAP_FLAG_NONE,
 				&texRTDesc,
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-				&peClesrValue,
+				&renderTargetClearValue,
 				IID_PPV_ARGS(&textureBuffer[i][j])
 			);
 

@@ -964,7 +964,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	RenderTarget::Initialize();
 
 
-	RenderTarget::Create(Color(255, 0, 255, 255),"main");
+	RenderTarget::Create(Color(255, 0, 255, 0),"main");
 	Camera::Create("main");
 	RenderTarget::Get("main")->SetCamera();
 	DirectionalLight::Create("main");
