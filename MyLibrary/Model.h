@@ -327,6 +327,7 @@ public:
 #pragma endregion
 
 #pragma region •`‰æ
+	void SetSubColor(const Color& color, const int modelNum);
 
 	virtual void Draw(const int modelNum,const std::string& rtName = "");
 	virtual void AllDraw();

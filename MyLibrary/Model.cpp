@@ -902,6 +902,7 @@ void Model::DrawCommonProcessing(const int modelNum, const std::string& rtName)
 {
 	if (rtName != "")
 	{
+		
 		MapConstData(modelNum, RenderTarget::Get(rtName)->GetCamera());
 		SetCmdList(modelNum);
 	}
@@ -1041,6 +1042,18 @@ void Model::SetCmdList(const int modelNum)
 
 	}
 
+}
+
+void Model::SetSubColor(const Color& color, const int modelNum)
+{
+	for (int i = 0; i < modelObjectNum; i++)
+		modelConstDatas[modelNum][i].subColor =
+	{
+		(float)color.r / 255,
+		(float)color.g / 255,
+		(float)color.b / 255,
+		(float)color.a / 255
+	};
 }
 
 void Model::Draw(const int modelNum , const std::string& rtName)

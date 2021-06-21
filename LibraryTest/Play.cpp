@@ -126,11 +126,7 @@ void Play::Initialize()
 
 void Play::Update()
 {
-	RenderTarget::Get()->SetMotionBlurFlag(false);
-	if (DirectInput::KeyState(DIK_M))
-	{
-		RenderTarget::Get()->SetMotionBlurFlag(true);
-	}
+	
 	if (DirectInput::KeyState(DIK_SPACE))
 	{
 		isEnd = true;

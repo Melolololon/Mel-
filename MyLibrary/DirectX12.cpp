@@ -964,8 +964,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	RenderTarget::Initialize();
 
 
-	RenderTarget::Create(Color(0, 0, 0, 0),"main");
-	RenderTarget::Create(Color(255, 0, 255, 255),"blur");
+	RenderTarget::Create(Color(255, 255, 0, 0),"main");
+	RenderTarget::Create(Color(255, 0, 0, 0),"blur");
 	Camera::Create("main");
 	RenderTarget::Get("main")->SetCamera();
 	RenderTarget::Get("blur")->SetCamera();
@@ -1003,6 +1003,11 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 void DirectX12::LoopStartProcess()
 {
+	RenderTarget::Get("blur")->SetMotionBlurFlag(false);
+	if (DirectInput::KeyState(DIK_M))
+	{
+		RenderTarget::Get("blur")->SetMotionBlurFlag(true);
+	}
 
 	RenderTarget::Get("blur")->PreDrawProcess();
 
@@ -1025,8 +1030,8 @@ void DirectX12::LoopEndProcess()
 	Model::SetCommonConstData(commonData);
 
 	RenderTarget::Get()->PreDrawProcess();
-	RenderTarget::Get("blur")->Draw();
 
+	RenderTarget::Get("blur")->Draw();
 
 #pragma region バックバッファ描画準備
 
@@ -1048,6 +1053,7 @@ void DirectX12::LoopEndProcess()
 
 #pragma endregion
 
+	//RenderTarget::Get("blur")->Draw(); 
 	RenderTarget::Get()->Draw();
 
 

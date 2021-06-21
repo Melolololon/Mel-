@@ -384,10 +384,6 @@ void RenderTarget::PreDrawProcess()
 
 }
 
-void RenderTarget::EndDrawProcess()
-{
-}
-
 
 void RenderTarget::SetCmdList()
 {
@@ -406,6 +402,7 @@ void RenderTarget::SetCmdList()
 			)
 		);
 	}
+
 
 
 	cmdList->SetPipelineState(pipeline.Get());
@@ -461,6 +458,8 @@ void RenderTarget::SetCmdList()
 
 void RenderTarget::Draw()
 {
+
+
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 

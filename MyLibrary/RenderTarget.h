@@ -56,7 +56,6 @@ public:
 	static bool Initialize();
 
 	void PreDrawProcess();
-	void EndDrawProcess();
 	void SetCmdList();
 	void Draw();
 	static void AllDraw();
