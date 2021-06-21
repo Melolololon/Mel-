@@ -22,12 +22,11 @@ private:
 	static ComPtr<ID3D12RootSignature>rootSignature;
 
 	static const UINT RT_NUM = 2;
+	static const UINT BLUR_RT_NUM = 3;
 	//[モーションブラー用レンダーターゲット(前のフレームの結果描画に使用)][同時描画数]
-	std::array<ComPtr<ID3D12Resource>, RT_NUM>textureBuffer;
+	ComPtr<ID3D12Resource>textureBuffer[BLUR_RT_NUM][RT_NUM];
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果)
 
-	static const UINT BLUR_RT_NUM = 3;
-	std::array<ComPtr<ID3D12Resource>, BLUR_RT_NUM>blurTextureBuffer;
 
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;
 

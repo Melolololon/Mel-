@@ -28,21 +28,21 @@ RenderTarget::RenderTarget(const Color& color) :
 	HRESULT result;
 
 	//ヒープ作成
-	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
-	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	peHeapDesc.NumDescriptors = RT_NUM;
-	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	peHeapDesc.NodeMask = 0;
+	D3D12_DESCRIPTOR_HEAP_DESC texHeapDesc{};
+	texHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	texHeapDesc.NumDescriptors = RT_NUM * BLUR_RT_NUM;
+	texHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	texHeapDesc.NodeMask = 0;
 	result = device->CreateDescriptorHeap
 	(
-		&peHeapDesc,
+		&texHeapDesc,
 		IID_PPV_ARGS(&descHeap)
 	);
 	assert(SUCCEEDED(result));
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = RT_NUM;
+	rtvHeapDesc.NumDescriptors = RT_NUM * BLUR_RT_NUM;
 	result = device->CreateDescriptorHeap
 	(
 		&rtvHeapDesc,
@@ -69,63 +69,57 @@ RenderTarget::RenderTarget(const Color& color) :
 	//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
 	D3D12_CLEAR_VALUE renderTargetClearValue;
 	renderTargetClearValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
-
-	D3D12_HEAP_PROPERTIES p = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-	p.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
-	p.Type = D3D12_HEAP_TYPE_CUSTOM;
-	p.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
-	p.CreationNodeMask = 0;
-	p.VisibleNodeMask = 0;
-
-	for (int i = 0; i < RT_NUM; i++)
+	for (int i = 0; i < BLUR_RT_NUM; i++)
 	{
-		result = device->CreateCommittedResource
-		(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-			D3D12_HEAP_FLAG_NONE,
-			&texRTDesc,
-			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			&renderTargetClearValue,
-			IID_PPV_ARGS(&textureBuffer[i])
-		);
+		for (int j = 0; j < RT_NUM; j++)
+		{
+			result = device->CreateCommittedResource
+			(
+				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+				D3D12_HEAP_FLAG_NONE,
+				&texRTDesc,
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+				&renderTargetClearValue,
+				IID_PPV_ARGS(&textureBuffer[i][j])
+			);
 
-		//ビュー作成
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+			//ビュー作成
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 
-		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MipLevels = 1;
+			srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Texture2D.MipLevels = 1;
 
-		CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-		(
-			descHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-			i ,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
+			CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+			(
+				descHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+				i * RT_NUM + j,
+				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			);
 
-		device->CreateShaderResourceView
-		(
-			textureBuffer[i].Get(),
-			&srvDesc,
-			handle
-		);
+			device->CreateShaderResourceView
+			(
+				textureBuffer[i][j].Get(),
+				&srvDesc,
+				handle
+			);
 
-		handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-		(
-			rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-			i  ,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
-		);
+			handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+			(
+				rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+				i * RT_NUM + j,
+				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+			);
 
-		device->CreateRenderTargetView
-		(
-			textureBuffer[i].Get(),
-			nullptr,
-			handle
-		);
+			device->CreateRenderTargetView
+			(
+				textureBuffer[i][j].Get(),
+				nullptr,
+				handle
+			);
+		}
 	}
-
 
 #pragma region 深度バッファ_ヒープ_ビュー作成
 	//深度用ヒープ作成
