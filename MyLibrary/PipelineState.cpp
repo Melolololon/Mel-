@@ -536,6 +536,8 @@ bool PipelineState::CreatePipeline
 	return true;
 }
 
+
+
 void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineType type)
 {
 	switch (type)
@@ -558,6 +560,31 @@ void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineTyp
 		data.alphaWriteMode = ALPHA_WRITE_TRUE;
 		break;
 	}
+}
+
+void PipelineState::GetDefaultPipelineInputLayout(std::vector<InputLayoutData>& layoutData, const PipelineType type)
+{
+	switch (type)
+	{
+	case PipelineType::PIPELINE_TYPE_MODEL:
+		layoutData[0].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+		layoutData[0].number = 3;
+		layoutData[0].semantics = "POSITION";
+		layoutData[1].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+		layoutData[1].number = 2;
+		layoutData[1].semantics = "TEXCOORD";
+		layoutData[2].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+		layoutData[2].number = 3;
+		layoutData[2].semantics = "NORMAL";
+		break;
+
+
+	case PipelineType::PIPELINE_TYPE_SPRITE:
+	case PipelineType::PIPELINE_TYPE_RENDER_TARGET:
+
+		break;
+	}
+
 }
 
 bool PipelineState::Initialize

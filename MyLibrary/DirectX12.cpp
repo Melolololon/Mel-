@@ -964,12 +964,12 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	RenderTarget::Initialize();
 
 
-	RenderTarget::Create(Color(255, 0, 255, 0),"main");
+	RenderTarget::Create(Color(0, 0, 0, 0),"main");
+	RenderTarget::Create(Color(255, 0, 255, 255),"blur");
 	Camera::Create("main");
 	RenderTarget::Get("main")->SetCamera();
+	RenderTarget::Get("blur")->SetCamera();
 	DirectionalLight::Create("main");
-
-	//renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));
 
 
 #pragma region テスト用
@@ -994,8 +994,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		typeid(RenderTarget).name(),
 		1
 	);
-	RenderTarget::Get("main")->SetPipeline(&postEffectTestPipeline);
-	//renderTarget->SetPipeline(&postEffectTestPipeline);
+	RenderTarget::Get("blur")->SetPipeline(&postEffectTestPipeline);
+
 #pragma endregion
 
 	
@@ -1003,63 +1003,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 void DirectX12::LoopStartProcess()
 {
-#pragma region DInput
-#pragma endregion
 
-#pragma region バリア生成_PSResourceからRTVへ
-
-	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
-
-	/*barrierDesc.Transition.pResource = backBuffer[bbIndex].Get();
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;*/
-
-	//板ポリの状態を、RESOURCEからRTに切り替え
-	/*barrierDesc.Transition.pResource = postEffectResources[0].Get();
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-	cmdList->ResourceBarrier(1, &barrierDesc);*/
-#pragma endregion
-
-	RenderTarget::Get("main")->PreDrawProcess();
-
-#pragma region 画面クリア
-
-	////D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
-	////rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvH = postEffectRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	//cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
-
-	////画面のクリア
-	//cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
-	//cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-
-
-#pragma region ビューポート_シザー矩形
-
-	D3D12_VIEWPORT viewport{};
-	viewport.Width = (float)winWidth;
-	viewport.Height = (float)winHeight;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-	cmdList->RSSetViewports(1, &viewport);
-
-
-	D3D12_RECT scissorrect{};
-	scissorrect.left = 0;
-	scissorrect.right = scissorrect.left + winWidth;
-	scissorrect.top = 0;
-	scissorrect.bottom = scissorrect.top + winHeight;
-	cmdList->RSSetScissorRects(1, &scissorrect);
-
-#pragma endregion
-
-#pragma endregion
+	RenderTarget::Get("blur")->PreDrawProcess();
 
 	DirectX::XMMATRIX cameraMat = mainCamera->Get3DCameraMatrix(mainCameraData);
 
@@ -1076,56 +1021,14 @@ void DirectX12::LoopEndProcess()
 	DirectX::XMFLOAT3 lightDirection = DirectionalLight::Get().GetDirection().ToXMFLOAT3();
 	commonData.light = DirectX::XMFLOAT4(lightDirection.x, lightDirection.y, lightDirection.z, 1);
 	commonData.lightColor = { lightColor.x,lightColor.y,lightColor.z,1 };
-	commonData.lightMat = cameraMat;
-	//共通バッファのMap
-	for (auto& cBuf : commonBuffers)
-	{
-		cBuf.second->Map(0, nullptr, (void**)&commonConstData3D);
-		//commonConstData3D->lightColor = commonData.lightColor;
-		//commonConstData3D->light = commonData.light;
-		/*commonConstData3D->lightMat = commonData.lightMat;
-		commonConstData3D->cameraPos = commonData.cameraPos;*/
-
-		cBuf.second->Unmap(0, nullptr);
-	}
-
+	commonData.lightMat = cameraMat; 
 	Model::SetCommonConstData(commonData);
 
-#pragma region ポストエフェクト処理
+	RenderTarget::Get()->PreDrawProcess();
+	RenderTarget::Get("blur")->Draw();
 
 
-	////ポストエフェクトレンダーターゲットのMap
-	//DirectX::XMMATRIX peWorldMat = DirectX::XMMatrixIdentity();
-	//peWorldMat *= DirectX::XMMatrixScaling
-	//(
-	//	postEffectWorldMatData[0].scale.x,
-	//	postEffectWorldMatData[0].scale.y,
-	//	postEffectWorldMatData[0].scale.z
-	//);
-	//peWorldMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(postEffectWorldMatData[0].angle.z));
-	//peWorldMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(postEffectWorldMatData[0].angle.x));
-	//peWorldMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(postEffectWorldMatData[0].angle.y));
-
-	//peWorldMat *= DirectX::XMMatrixTranslation
-	//(
-	//	postEffectWorldMatData[0].pos.x,
-	//	postEffectWorldMatData[0].pos.y,
-	//	postEffectWorldMatData[0].pos.z
-	//);
-	//if (postEffectCametaFlag)peWorldMat *= mainCamera->Get3DCameraMatrix(mainCameraData);
-
-	//postEffectConstDataP->worldMat = peWorldMat;
-
-
-	////Mapここまで
-	//
-	//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-	//cmdList->ResourceBarrier(1, &barrierDesc);
-
-#pragma endregion
-
-
+#pragma region バックバッファ描画準備
 
 	//板ポリをバックバッファーに描画する準備
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
@@ -1136,7 +1039,6 @@ void DirectX12::LoopEndProcess()
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 	rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvH = postEffectResourcesRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
 	cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
 
@@ -1144,60 +1046,17 @@ void DirectX12::LoopEndProcess()
 	cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
 	cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-#pragma region ポストエフェクト用板ポリの描画コマンドセット
-
-	//cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	//std::vector<ID3D12DescriptorHeap*> ppHeaps;
-
-	//////ハンドルvectorやめてfor内に毎回宣言したほうがいい?そうすればずらしたやつを勝手に直してくれる
-	//CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
-
-	//////cmdList->SetGraphicsRootSignature(postEffectRootSigneture.Get());
-	//cmdList->SetGraphicsRootSignature(postEffectRootSigneture.Get());
-	//cmdList->SetPipelineState(postEffectPipeline[currentPostEffectPipeline].Get());
-	////cmdList->SetPipelineState(spritePipelineStates[0].Get());
-
-	//cmdList->IASetVertexBuffers(0, 1, &postEffectVertexBufferSet.vertexBufferView);
-	////cmdList->IASetIndexBuffer(&spriteIndexBufferSet[0].indexBufferView);
-
-	//ppHeaps.push_back(postEffectHeap.Get());
-	//cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
-
-	//gpuDescHandle = postEffectHeap->GetGPUDescriptorHandleForHeapStart();
-	//gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//(
-	//	gpuDescHandle, 
-	//	0, 
-	//	dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//);
-	////////テクスチャ
-	//cmdList->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
-
-	////定数
-	//gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//(
-	//	gpuDescHandle, 
-	//	1,
-	//	dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//);
-	//cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
-
-	//cmdList->DrawInstanced(4, 1, 0, 0);
-	////cmdList->DrawIndexedInstanced(spriteIndices[0].size(), 1, 0, 0, 0);
-
-
 #pragma endregion
 
-	RenderTarget::AllDraw();
+	RenderTarget::Get()->Draw();
+
 
 #pragma region RTVからPRESENTへ
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	cmdList->ResourceBarrier(1, &barrierDesc);
 
-	//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-	//cmdList->ResourceBarrier(1, &barrierDesc);
+	
 #pragma endregion
 
 #pragma region 実行

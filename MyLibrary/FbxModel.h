@@ -104,6 +104,7 @@ public:
 		const int modelNum,
 		//const size_t vertexSize,
 		const size_t constDataSize
+
 	);
 
 

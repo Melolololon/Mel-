@@ -13,24 +13,21 @@ class RenderTarget :public Sprite2D
 {
 private:
 
-
-
 	static std::unordered_map<std::string, std::unique_ptr<RenderTarget>>pRenderTargets;
 	static UINT createCount;
 	static std::string mainRenderTargetNama;
 
-	static float clearColor[4];
+	float clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
 	static PipelineState defaultPipeline;
 	static ComPtr<ID3D12RootSignature>rootSignature;
 
 	static const UINT RT_NUM = 2;
-	static const UINT MOTION_BLAR_RT_NUM = 4;
+	static const UINT MOTION_BLUR_RT_NUM = 6;
 	//[モーションブラー用レンダーターゲット(前のフレームの結果描画に使用)][同時描画数]
-	std::array<std::array<ComPtr<ID3D12Resource>, RT_NUM>, MOTION_BLAR_RT_NUM>textureBuffer;
+	std::array<std::array<ComPtr<ID3D12Resource>, RT_NUM>, MOTION_BLUR_RT_NUM>textureBuffer;
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
-	ComPtr<ID3D12Resource>motionBlurConstBuffer[MOTION_BLAR_RT_NUM - 1];
+	ComPtr<ID3D12Resource>motionBlurConstBuffer[MOTION_BLUR_RT_NUM - 1];
 	int renderingRTNum = 0;
-	static std::vector<Color>rtColor;
 
 
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;
@@ -59,22 +56,23 @@ public:
 	static bool Initialize();
 
 	void PreDrawProcess();
+	void EndDrawProcess();
 	void SetCmdList();
+	void Draw();
 	static void AllDraw();
 
 
 
 #pragma region セット
 
-
 	void SetCamera(const std::string& name = Camera::GetMainCameraName()) { this->pCamera = Camera::Get(name); }
 
 	void SetMotionBlurFlag(const bool flag) { isMotionBlur = flag; }
 
+
 #pragma endregion
 
 #pragma region ゲット
-
 	static const std::string& GetMainRenderTargetNama() { return mainRenderTargetNama; }
 
 	Camera* GetCamera() { return pCamera; }

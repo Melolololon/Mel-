@@ -1,5 +1,7 @@
 #include"ObjShaderHeader.hlsli"
 
+
+
 VSOutput VSmain(float4 pos : POSITION, float2 uv : TEXCOORD, float3 normal : NORMAL)
 {
 

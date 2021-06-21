@@ -41,3 +41,11 @@ struct GSOutput
 	float3 normal : NORMAL;
 	float2 uv : TEXCOORD;
 };
+
+
+////Úü‚ÌŒvZ
+//float3 CalcTangent()
+//{
+//
+//}
+//

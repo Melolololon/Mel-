@@ -10,14 +10,12 @@ float4 PSmain(VSOutput input) : SV_TARGET
 	float4 texColor = tex.Sample(smp, input.uv);
 	float4 texColor2 = tex2.Sample(smp, input.uv);
 
-	float4 retColor = texColor;
+	float4 returnColor = texColor;
 	if(fmod(input.uv.y,0.1f) < 0.05f)
 	{
-		retColor = texColor2;
+		returnColor = texColor2;
 	}
 
 
-	return (retColor + color + addColor - subColor) * mulColor;
-
-	//return float4(tex.Sample(smp, input.uv) + color + addColor - subColor) * mulColor;
+	return (returnColor + color + addColor - subColor) * mulColor;
 }

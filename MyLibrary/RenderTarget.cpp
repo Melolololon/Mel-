@@ -10,16 +10,14 @@ UINT RenderTarget::createCount = 0;
 std::string RenderTarget::mainRenderTargetNama = "";
 
 PipelineState RenderTarget::defaultPipeline;
-float RenderTarget::clearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
 ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
 
-std::vector<Color>RenderTarget::rtColor;
 
 
 
 void RenderTarget::MapMotionBlurConstData()
 {
-	for (int i = 0; i < MOTION_BLAR_RT_NUM - 1; i++) 
+	for (int i = 0; i < MOTION_BLUR_RT_NUM - 1; i++) 
 	{
 		SpriteConstBufferData* data;
 		motionBlurConstBuffer[i]->Map(0, nullptr, (void**)&data);
@@ -43,7 +41,7 @@ RenderTarget::RenderTarget(const Color& color) :
 
 
 	//モーションブラー用定数バッファ作成
-	for (int i = 0; i < MOTION_BLAR_RT_NUM - 1; i++) 
+	for (int i = 0; i < MOTION_BLUR_RT_NUM - 1; i++) 
 	{
 		CreateBuffer::GetInstance()->CreateConstBuffer
 		(
@@ -60,7 +58,7 @@ RenderTarget::RenderTarget(const Color& color) :
 	//ヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
 	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	peHeapDesc.NumDescriptors = RT_NUM * MOTION_BLAR_RT_NUM;
+	peHeapDesc.NumDescriptors = RT_NUM * MOTION_BLUR_RT_NUM;
 	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	peHeapDesc.NodeMask = 0;
 	result = device->CreateDescriptorHeap
@@ -72,7 +70,7 @@ RenderTarget::RenderTarget(const Color& color) :
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = RT_NUM * MOTION_BLAR_RT_NUM;
+	rtvHeapDesc.NumDescriptors = RT_NUM * MOTION_BLUR_RT_NUM;
 	result = device->CreateDescriptorHeap
 	(
 		&rtvHeapDesc,
@@ -108,7 +106,7 @@ RenderTarget::RenderTarget(const Color& color) :
 	p.VisibleNodeMask = 0;
 
 
-	for (int i = 0; i < MOTION_BLAR_RT_NUM; i++)
+	for (int i = 0; i < MOTION_BLUR_RT_NUM; i++)
 	{
 		for (int j = 0; j < RT_NUM; j++)
 		{
@@ -216,7 +214,7 @@ void RenderTarget::Create(const Color& initColor, const std::string& name)
 	if (keyName.size() == 0)keyName = "RenderTarget_" + std::to_string(createCount);
 	pRenderTargets.emplace(keyName, std::make_unique<RenderTarget>(initColor));
 	createCount++;
-	if (mainRenderTargetNama == "")mainRenderTargetNama = name;
+	if (mainRenderTargetNama.size() == 0)mainRenderTargetNama = name;
 }
 
 void RenderTarget::Delete(const std::string& name)
@@ -226,8 +224,6 @@ void RenderTarget::Delete(const std::string& name)
 
 bool RenderTarget::Initialize()
 {
-	rtColor.resize(Library::GetWindowHeight() * Library::GetWindowWidth());
-
 
 	CD3DX12_DESCRIPTOR_RANGE descRangeSRV1;
 	descRangeSRV1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
@@ -326,6 +322,7 @@ bool RenderTarget::Initialize()
 
 void RenderTarget::PreDrawProcess()
 {
+	//切り替え
 	for (int i = 0; i < RT_NUM; i++)
 	{
 		//セット
@@ -352,23 +349,17 @@ void RenderTarget::PreDrawProcess()
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
 		);
 	}
-
-
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
 	cmdList->OMSetRenderTargets(RT_NUM, rtvHandle, false, &dsvHandle);
 
-	//画面のクリア
+	//クリア
 	for (int i = 0; i < RT_NUM; i++)
 	{
 		cmdList->ClearRenderTargetView(rtvHandle[i], clearColor, 0, nullptr);
 	}
-
 	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-
-
-#pragma region ビューポート_シザー矩形
-
+	//ビューポートシザー矩形セット
 	D3D12_VIEWPORT viewport[RT_NUM]{};
 	D3D12_RECT scissorRect[RT_NUM]{};
 
@@ -390,7 +381,11 @@ void RenderTarget::PreDrawProcess()
 		cmdList->RSSetScissorRects(1, &scissorRect[i]);
 	}
 
-#pragma endregion
+
+}
+
+void RenderTarget::EndDrawProcess()
+{
 }
 
 
@@ -424,9 +419,8 @@ void RenderTarget::SetCmdList()
 	ppHeaps.push_back(descHeap.Get());
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
- 	for (int i = renderingRTNum, count = 0; count < MOTION_BLAR_RT_NUM; i--, count++)
+ 	for (int i = renderingRTNum, count = 0; count < MOTION_BLUR_RT_NUM; i--, count++)
 	{
-
 		//定数
 		if (i == renderingRTNum)
 		{
@@ -434,6 +428,7 @@ void RenderTarget::SetCmdList()
 		}
 		else
 		{
+			if (!isMotionBlur)break;
 			cmdList->SetGraphicsRootConstantBufferView(0, motionBlurConstBuffer[count - 1]->GetGPUVirtualAddress());
 		}
 
@@ -457,12 +452,22 @@ void RenderTarget::SetCmdList()
 
 		cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
 
-		if (i == 0)i = MOTION_BLAR_RT_NUM;
+		if (i == 0)i = MOTION_BLUR_RT_NUM;
 	}
 
-
 	renderingRTNum++;
-	if (renderingRTNum >= MOTION_BLAR_RT_NUM)renderingRTNum = 0;
+	if (renderingRTNum >= MOTION_BLUR_RT_NUM)renderingRTNum = 0;
+}
+
+void RenderTarget::Draw()
+{
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	cmdList->SetGraphicsRootSignature(rootSignature.Get());
+
+	ConstDataMat();
+	MapMotionBlurConstData();
+	MatrixMap(nullptr);
+	SetCmdList();
 }
 
 void RenderTarget::AllDraw()
