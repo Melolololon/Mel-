@@ -160,8 +160,10 @@ void Play::Update()
 	Camera::Get()->SetAngle(angle);
 }
 
+#include"Camera.h"
 void Play::Draw()
 {
+
 	for (int i = 0; i < CREATE_NUM; i++)
 	{
 		fbxModel->Draw(i);

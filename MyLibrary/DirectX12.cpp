@@ -965,10 +965,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 
 	RenderTarget::Create(Color(255, 255, 0, 0),"main");
-	RenderTarget::Create(Color(255, 0, 0, 0),"blur");
 	Camera::Create("main");
 	RenderTarget::Get("main")->SetCamera();
-	RenderTarget::Get("blur")->SetCamera();
 	DirectionalLight::Create("main");
 
 
@@ -994,7 +992,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		typeid(RenderTarget).name(),
 		1
 	);
-	RenderTarget::Get("blur")->SetPipeline(&postEffectTestPipeline);
+	RenderTarget::Get()->SetPipeline(&postEffectTestPipeline);
 
 #pragma endregion
 
@@ -1003,13 +1001,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 void DirectX12::LoopStartProcess()
 {
-	RenderTarget::Get("blur")->SetMotionBlurFlag(false);
-	if (DirectInput::KeyState(DIK_M))
-	{
-		RenderTarget::Get("blur")->SetMotionBlurFlag(true);
-	}
 
-	RenderTarget::Get("blur")->PreDrawProcess();
+	RenderTarget::Get()->PreDrawProcess();
 
 	DirectX::XMMATRIX cameraMat = mainCamera->Get3DCameraMatrix(mainCameraData);
 
@@ -1028,10 +1021,6 @@ void DirectX12::LoopEndProcess()
 	commonData.lightColor = { lightColor.x,lightColor.y,lightColor.z,1 };
 	commonData.lightMat = cameraMat; 
 	Model::SetCommonConstData(commonData);
-
-	RenderTarget::Get()->PreDrawProcess();
-
-	RenderTarget::Get("blur")->Draw();
 
 #pragma region バックバッファ描画準備
 
@@ -1052,8 +1041,7 @@ void DirectX12::LoopEndProcess()
 	cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 #pragma endregion
-
-	//RenderTarget::Get("blur")->Draw(); 
+ 
 	RenderTarget::Get()->Draw();
 
 

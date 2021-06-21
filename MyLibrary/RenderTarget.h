@@ -22,12 +22,10 @@ private:
 	static ComPtr<ID3D12RootSignature>rootSignature;
 
 	static const UINT RT_NUM = 2;
-	static const UINT MOTION_BLUR_RT_NUM = 6;
 	//[モーションブラー用レンダーターゲット(前のフレームの結果描画に使用)][同時描画数]
-	std::array<std::array<ComPtr<ID3D12Resource>, RT_NUM>, MOTION_BLUR_RT_NUM>textureBuffer;
+	std::array<ComPtr<ID3D12Resource>, RT_NUM>textureBuffer;
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
-	ComPtr<ID3D12Resource>motionBlurConstBuffer[MOTION_BLUR_RT_NUM - 1];
-	int renderingRTNum = 0;
+
 
 
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;
@@ -38,10 +36,7 @@ private:
 	//カメラのポインタ
 	Camera* pCamera = nullptr;
 
-	//モーションブラーを行うかどうか
-	bool isMotionBlur = false;
 
-	void MapMotionBlurConstData();
 
 public:
 
@@ -66,7 +61,6 @@ public:
 
 	void SetCamera(const std::string& name = Camera::GetMainCameraName()) { this->pCamera = Camera::Get(name); }
 
-	void SetMotionBlurFlag(const bool flag) { isMotionBlur = flag; }
 
 
 #pragma endregion
@@ -74,7 +68,7 @@ public:
 #pragma region ゲット
 	static const std::string& GetMainRenderTargetNama() { return mainRenderTargetNama; }
 
-	Camera* GetCamera() { return pCamera; }
+	Camera* GetPCamera() ;//{ return pCamera; }
 #pragma endregion
 
 

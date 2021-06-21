@@ -116,7 +116,7 @@ void ModelObject::CreateConstBuffer(BufferData* modelBufferData, BufferData* use
 
 void ModelObject::DrawCommonProcessing(const std::string& rtName)
 {
-	MapConstData(RenderTarget::Get(rtName)->GetCamera());
+	MapConstData(RenderTarget::Get(rtName)->GetPCamera());
 	SetCmdList();
 }
 

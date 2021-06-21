@@ -15,22 +15,6 @@ ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
 
 
 
-void RenderTarget::MapMotionBlurConstData()
-{
-	for (int i = 0; i < MOTION_BLUR_RT_NUM - 1; i++) 
-	{
-		SpriteConstBufferData* data;
-		motionBlurConstBuffer[i]->Map(0, nullptr, (void**)&data);
-
-		SpriteConstBufferData* rtConstData;
-		constBuffer->Map(0, nullptr, (void**)&rtConstData);
-		*data = *rtConstData;
-		data->subColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.4f + i * 0.1f);
-
-		motionBlurConstBuffer[i]->Unmap(0, nullptr);
-		constBuffer->Unmap(0, nullptr);
-	}
-}
 
 RenderTarget::RenderTarget(const Color& color) :
 	Sprite2D(color)
@@ -40,16 +24,6 @@ RenderTarget::RenderTarget(const Color& color) :
 	InitializeVertices();
 
 
-	//モーションブラー用定数バッファ作成
-	for (int i = 0; i < MOTION_BLUR_RT_NUM - 1; i++) 
-	{
-		CreateBuffer::GetInstance()->CreateConstBuffer
-		(
-			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			sizeof(SpriteConstBufferData),
-			&motionBlurConstBuffer[i]
-		);
-	}
 
 	HRESULT result;
 
@@ -58,7 +32,7 @@ RenderTarget::RenderTarget(const Color& color) :
 	//ヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
 	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	peHeapDesc.NumDescriptors = RT_NUM * MOTION_BLUR_RT_NUM;
+	peHeapDesc.NumDescriptors = RT_NUM;
 	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	peHeapDesc.NodeMask = 0;
 	result = device->CreateDescriptorHeap
@@ -70,7 +44,7 @@ RenderTarget::RenderTarget(const Color& color) :
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = RT_NUM * MOTION_BLUR_RT_NUM;
+	rtvHeapDesc.NumDescriptors = RT_NUM;
 	result = device->CreateDescriptorHeap
 	(
 		&rtvHeapDesc,
@@ -105,58 +79,55 @@ RenderTarget::RenderTarget(const Color& color) :
 	p.CreationNodeMask = 0;
 	p.VisibleNodeMask = 0;
 
-
-	for (int i = 0; i < MOTION_BLUR_RT_NUM; i++)
+	for (int i = 0; i < RT_NUM; i++)
 	{
-		for (int j = 0; j < RT_NUM; j++)
-		{
-			result = device->CreateCommittedResource
-			(
-				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-				D3D12_HEAP_FLAG_NONE,
-				&texRTDesc,
-				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-				&renderTargetClearValue,
-				IID_PPV_ARGS(&textureBuffer[i][j])
-			);
+		result = device->CreateCommittedResource
+		(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE,
+			&texRTDesc,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			&renderTargetClearValue,
+			IID_PPV_ARGS(&textureBuffer[i])
+		);
 
-			//ビュー作成
-			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		//ビュー作成
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 
-			srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-			srvDesc.Texture2D.MipLevels = 1;
+		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = 1;
 
-			CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-			(
-				descHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-				i * RT_NUM + j,
-				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-			);
+		CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			descHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+			i ,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
 
-			device->CreateShaderResourceView
-			(
-				textureBuffer[i][j].Get(),
-				&srvDesc,
-				handle
-			);
+		device->CreateShaderResourceView
+		(
+			textureBuffer[i].Get(),
+			&srvDesc,
+			handle
+		);
 
-			handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-			(
-				rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-				i * RT_NUM + j,
-				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
-			);
+		handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+			i  ,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+		);
 
-			device->CreateRenderTargetView
-			(
-				textureBuffer[i][j].Get(),
-				nullptr,
-				handle
-			);
-		}
+		device->CreateRenderTargetView
+		(
+			textureBuffer[i].Get(),
+			nullptr,
+			handle
+		);
 	}
+
 
 #pragma region 深度バッファ_ヒープ_ビュー作成
 	//深度用ヒープ作成
@@ -331,7 +302,7 @@ void RenderTarget::PreDrawProcess()
 			1,
 			&CD3DX12_RESOURCE_BARRIER::Transition
 			(
-				textureBuffer[renderingRTNum][i].Get(),
+				textureBuffer[i].Get(),
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 				D3D12_RESOURCE_STATE_RENDER_TARGET
 			)
@@ -345,7 +316,7 @@ void RenderTarget::PreDrawProcess()
 		rtvHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
 			rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-			i + renderingRTNum * RT_NUM,
+			i,
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
 		);
 	}
@@ -396,7 +367,7 @@ void RenderTarget::SetCmdList()
 			1,
 			&CD3DX12_RESOURCE_BARRIER::Transition
 			(
-				textureBuffer[renderingRTNum][i].Get(),
+				textureBuffer[i].Get(),
 				D3D12_RESOURCE_STATE_RENDER_TARGET,
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 			)
@@ -416,44 +387,30 @@ void RenderTarget::SetCmdList()
 	ppHeaps.push_back(descHeap.Get());
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
- 	for (int i = renderingRTNum, count = 0; count < MOTION_BLUR_RT_NUM; i--, count++)
-	{
-		//定数
-		if (i == renderingRTNum)
-		{
-			cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
-		}
-		else
-		{
-			if (!isMotionBlur)break;
-			cmdList->SetGraphicsRootConstantBufferView(0, motionBlurConstBuffer[count - 1]->GetGPUVirtualAddress());
-		}
 
-		//テクスチャ1
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			descHeap->GetGPUDescriptorHandleForHeapStart(),
-			i * RT_NUM,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
+	//定数
+	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
 
-		//テクスチャ2
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			descHeap->GetGPUDescriptorHandleForHeapStart(),
-			i * RT_NUM + 1,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
+	//テクスチャ1
+	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	(
+		descHeap->GetGPUDescriptorHandleForHeapStart(),
+		0,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
 
-		cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
+	//テクスチャ2
+	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	(
+		descHeap->GetGPUDescriptorHandleForHeapStart(),
+		1,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
 
-		if (i == 0)i = MOTION_BLUR_RT_NUM;
-	}
+	cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
 
-	renderingRTNum++;
-	if (renderingRTNum >= MOTION_BLUR_RT_NUM)renderingRTNum = 0;
 }
 
 void RenderTarget::Draw()
@@ -464,7 +421,6 @@ void RenderTarget::Draw()
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 
 	ConstDataMat();
-	MapMotionBlurConstData();
 	MatrixMap(nullptr);
 	SetCmdList();
 }
@@ -479,9 +435,13 @@ void RenderTarget::AllDraw()
 	for (auto& p : pRenderTargets)
 	{
 		p.second->ConstDataMat();
-		p.second->MapMotionBlurConstData();
 		p.second->MatrixMap(nullptr);
 		p.second->SetCmdList();
 	}
 }
 
+
+Camera* RenderTarget::GetPCamera()
+{
+	return pCamera;
+}

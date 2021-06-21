@@ -903,12 +903,12 @@ void Model::DrawCommonProcessing(const int modelNum, const std::string& rtName)
 	if (rtName != "")
 	{
 		
-		MapConstData(modelNum, RenderTarget::Get(rtName)->GetCamera());
+		MapConstData(modelNum, RenderTarget::Get(rtName)->GetPCamera());
 		SetCmdList(modelNum);
 	}
 	else
 	{
-		MapConstData(modelNum,RenderTarget::Get()->GetCamera());
+		MapConstData(modelNum,RenderTarget::Get()->GetPCamera());
 		SetCmdList(modelNum);
 	}
 }

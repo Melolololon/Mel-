@@ -125,12 +125,12 @@ void Sprite3D::Draw(const std::string& rtName)
 	
 	if (rtName != "") 
 	{
-		MatrixMap(RenderTarget::Get(rtName)->GetCamera());
+		MatrixMap(RenderTarget::Get(rtName)->GetPCamera());
 		SetCmdList(pTexture);
 	}
 	else
 	{
-		MatrixMap(RenderTarget::Get()->GetCamera());
+		MatrixMap(RenderTarget::Get()->GetPCamera());
 		SetCmdList(pTexture);
 	}
 }
