@@ -68,7 +68,7 @@ public:
 #pragma region ƒQƒbƒg
 	static const std::string& GetMainRenderTargetNama() { return mainRenderTargetNama; }
 
-	Camera* GetPCamera() ;//{ return pCamera; }
+	Camera* GetPCamera(){ return pCamera; }
 #pragma endregion
 
 

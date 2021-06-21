@@ -440,8 +440,3 @@ void RenderTarget::AllDraw()
 	}
 }
 
-
-Camera* RenderTarget::GetPCamera()
-{
-	return pCamera;
-}
