@@ -24,9 +24,10 @@ private:
 	static const UINT RT_NUM = 2;
 	//[モーションブラー用レンダーターゲット(前のフレームの結果描画に使用)][同時描画数]
 	std::array<ComPtr<ID3D12Resource>, RT_NUM>textureBuffer;
-	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
+	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果)
 
-
+	static const UINT BLUR_RT_NUM = 3;
+	std::array<ComPtr<ID3D12Resource>, BLUR_RT_NUM>blurTextureBuffer;
 
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;
 

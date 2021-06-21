@@ -27,8 +27,6 @@ RenderTarget::RenderTarget(const Color& color) :
 
 	HRESULT result;
 
-
-
 	//ヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
 	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
@@ -202,10 +200,24 @@ bool RenderTarget::Initialize()
 	CD3DX12_DESCRIPTOR_RANGE descRangeSRV2;
 	descRangeSRV2.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
 
-	CD3DX12_ROOT_PARAMETER rootparam[3] = {};
+
+	//ブラー用
+	CD3DX12_DESCRIPTOR_RANGE preTexSRV1;
+	descRangeSRV2.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2);
+	CD3DX12_DESCRIPTOR_RANGE preTexSRV2;
+	descRangeSRV2.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3);
+	CD3DX12_DESCRIPTOR_RANGE preTexSRV3;
+	descRangeSRV2.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4);
+
+
+	CD3DX12_ROOT_PARAMETER rootparam[6] = {};
 	rootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparam[1].InitAsDescriptorTable(1, &descRangeSRV1, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootparam[2].InitAsDescriptorTable(1, &descRangeSRV2, D3D12_SHADER_VISIBILITY_PIXEL);
+	
+	rootparam[3].InitAsDescriptorTable(1, &preTexSRV1, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootparam[4].InitAsDescriptorTable(1, &preTexSRV2, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootparam[5].InitAsDescriptorTable(1, &preTexSRV3, D3D12_SHADER_VISIBILITY_PIXEL);
 
 #pragma region ルートシグネチャ
 
