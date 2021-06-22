@@ -22,7 +22,7 @@ private:
 	static ComPtr<ID3D12RootSignature>rootSignature;
 
 	static const UINT RT_NUM = 2;
-	static const UINT BLUR_RT_NUM = 2;
+	static const UINT BLUR_RT_NUM = 3;
 	//[モーションブラー用レンダーターゲット(前のフレームの結果描画に使用)][同時描画数]
 	ComPtr<ID3D12Resource>textureBuffer[BLUR_RT_NUM][RT_NUM];
 	ComPtr<ID3D12DescriptorHeap>textureDescHeap;//テクスチャ(レンダリング結果)
