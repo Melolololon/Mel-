@@ -417,8 +417,10 @@ void RenderTarget::SetCmdList()
 	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
 	
 	//‘OƒtƒŒ[ƒ€
-	for (int i = 0,handleNum = renderingRTNum * RT_NUM + 2; i < (BLUR_RT_NUM - 1) * RT_NUM; i++)
+	for (int i = 0,handleNum = (renderingRTNum + 1) * RT_NUM ; i < (BLUR_RT_NUM - 1) * RT_NUM; i++)
 	{
+		if (handleNum >= BLUR_RT_NUM * RT_NUM)handleNum = 0;
+
 		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 		(
 			textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
@@ -428,7 +430,6 @@ void RenderTarget::SetCmdList()
 		cmdList->SetGraphicsRootDescriptorTable(handleNum + 1, gpuDescHandle);
 		handleNum++;
 
-		if (handleNum >= BLUR_RT_NUM * RT_NUM)handleNum = 2;
 	}
 
 	cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
@@ -438,7 +439,7 @@ void RenderTarget::SetCmdList()
 #pragma endregion
 
 	renderingRTNum++;
-	if (renderingRTNum >= BLUR_RT_NUM - 1)renderingRTNum = 0;
+	if (renderingRTNum >= BLUR_RT_NUM)renderingRTNum = 0;
 	
 }
 
