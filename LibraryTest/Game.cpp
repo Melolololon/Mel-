@@ -44,7 +44,7 @@ void Game::Initialize()
 
 	Library::SetCameraNearAndFar(0.1, 1000.0f);
 	Library::SetLightVector({ 0,1,0 });
-	DirectionalLight::Get().SetDirection({ 1,0,0 });
+	DirectionalLight::Get().SetDirection({ 0,0,1 });
 	
 #pragma region マネージャー初期化
 

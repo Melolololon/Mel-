@@ -36,7 +36,6 @@ PSOutput main(GSOutput input)
 
 	texColor += addColor - subColor;
 	texColor *= mulColor;
-	//return shaderColor * texColor;
 
 	PSOutput output;
 	output.target0 = shaderColor * texColor;
