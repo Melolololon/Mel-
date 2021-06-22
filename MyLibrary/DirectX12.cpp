@@ -946,6 +946,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	std::vector<ID3D12GraphicsCommandList*>cmdLists(1);
 	cmdLists[0] = cmdList.Get();
 
+
 	PipelineState::Initialize(dev.Get());
 	Model::Initialize
 	(
@@ -963,8 +964,13 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	Sprite3D::Initialize();
 	RenderTarget::Initialize();
 
+	Color cColor;
+	cColor.r = (USHORT)clearColor[0];
+	cColor.g = (USHORT)clearColor[1];
+	cColor.b = (USHORT)clearColor[2];
+	cColor.a = (USHORT)clearColor[3];
 
-	RenderTarget::Create(Color(255, 255, 0, 0),"main");
+	RenderTarget::Create(cColor,"main");
 	Camera::Create("main");
 	RenderTarget::Get("main")->SetCamera();
 	DirectionalLight::Create("main");

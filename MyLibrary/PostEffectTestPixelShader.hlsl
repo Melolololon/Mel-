@@ -10,17 +10,24 @@ SamplerState smp:register(s0);
 
 float4 PSmain(VSOutput input) : SV_TARGET
 {
-	float4 texColor = tex.Sample(smp, input.uv);
+	//現在フレーム
+	float4 texColor1 = tex.Sample(smp, input.uv);
 	float4 texColor2 = tex2.Sample(smp, input.uv);
+	
+	//過去フレーム
 	float4 texColor3 = tex3.Sample(smp, input.uv);
 	float4 texColor4 = tex4.Sample(smp, input.uv);
 
-	float4 returnColor = texColor ;
-	if(fmod(input.uv.y,0.1f) < 0.05f)
+	float4 blurSubColor = float4(0.0f, 0.0f, 0.0f, 0.5f);
+
+	float4 returnColor = texColor1 + (texColor3 - blurSubColor);
+	
+	/*if(fmod(input.uv.y,0.1f) < 0.05f)
 	{
-		returnColor = texColor2;
-	}
+		returnColor = texColor2 +(texColor4 - blurSubColor);
+
+	}*/
 
 
-	return (returnColor + color + addColor - subColor) * mulColor;
+	return saturate(returnColor + color + addColor - subColor) * mulColor;
 }

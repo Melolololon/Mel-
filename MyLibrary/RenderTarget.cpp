@@ -196,7 +196,7 @@ bool RenderTarget::Initialize()
 
 
 
-	CD3DX12_DESCRIPTOR_RANGE tex[BLUR_RT_NUM* RT_NUM] = {};
+	CD3DX12_DESCRIPTOR_RANGE tex[(BLUR_RT_NUM - 1) * RT_NUM] = {};
 	const int texArray = _countof(tex);
 	CD3DX12_ROOT_PARAMETER rootparam[3 + texArray] = {};
 	for (int i = 0; i < texArray; i++)
@@ -415,7 +415,7 @@ void RenderTarget::SetCmdList()
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 	);
 	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
-	
+
 	//ëOÉtÉåÅ[ÉÄ
 	for (int i = 0,handleNum = (renderingRTNum + 1) * RT_NUM ; i < (BLUR_RT_NUM - 1) * RT_NUM; i++)
 	{
@@ -427,10 +427,15 @@ void RenderTarget::SetCmdList()
 			handleNum,
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
-		cmdList->SetGraphicsRootDescriptorTable(handleNum + 1, gpuDescHandle);
+
+		int tableNum = handleNum + 1;
+		cmdList->SetGraphicsRootDescriptorTable(i + 3, gpuDescHandle);
 		handleNum++;
 
 	}
+
+	
+
 
 	cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
 
@@ -440,6 +445,7 @@ void RenderTarget::SetCmdList()
 
 	renderingRTNum++;
 	if (renderingRTNum >= BLUR_RT_NUM)renderingRTNum = 0;
+	
 	
 }
 
