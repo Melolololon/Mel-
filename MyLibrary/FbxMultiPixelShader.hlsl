@@ -39,10 +39,9 @@ PSOutput main(GSOutput input)
 	//return shaderColor * texColor;
 
 	PSOutput output;
+	output.target0 = shaderColor * texColor;
+	output.target1 = shaderColor * float4(0, 1, 0, 1);
 
-	output.target0 = texColor;
-	output.target1 = float4(0, 1, 0, 1);
-	
 	return output;
 
 }

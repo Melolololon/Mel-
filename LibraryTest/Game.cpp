@@ -4,6 +4,7 @@
 #include"ObjectManager.h"
 #include"Play.h"
 #include"Camera.h"
+#include"DirectionalLight.h"
 
 
 Game::Game() {}
@@ -36,14 +37,15 @@ void Game::Initialize()
 {
 	
 
-	Library::Initialize(1280, 720, {0,0,200,255},L"MyLib");
+	Library::Initialize(1280, 720, Color(255,255,0,255),L"MyLib");
 	Library::SetFramesPerSecond60(true);
 	Library::SetCamera(Vector3( 0,0,-40 ), Vector3( 0,0,0 ), Vector3(0,1,0 ));
 	Camera::Get()->SetPosition(Vector3(0, 0, -30));
 
 	Library::SetCameraNearAndFar(0.1, 1000.0f);
-	Library::SetLightVector({ 0,0,1 });
-
+	Library::SetLightVector({ 0,1,0 });
+	DirectionalLight::Get().SetDirection({ 1,0,0 });
+	
 #pragma region マネージャー初期化
 
 	CollisionFlag initFlag;

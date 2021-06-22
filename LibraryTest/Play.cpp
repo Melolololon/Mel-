@@ -20,10 +20,14 @@ Play::Play(){}
 
 Play::~Play(){}
 
-Vector3 angle = 0;
+Vector3 cameraAngle = 0;
+Vector3 modelAngle = 0;
 
 void Play::Initialize()
 {
+	pModel = std::make_unique<PrimitiveModel>();
+	pModel->CreateBox(Vector3(100, 100, 1), Color(255, 255, 255, 255), 1);
+
 
 	fbxModel = std::make_unique<FbxModel>();
 	fbxModel->Load
@@ -36,14 +40,8 @@ void Play::Initialize()
 
 	for (int i = 0; i < CREATE_NUM; i++)
 	{
-		Vector3 pos =
-		Vector3
-		(
-			Random::GetRandomNumberRangeSelect(-20,20) ,
-			Random::GetRandomNumberRangeSelect(-20,20) ,
-			0
-		);
-		fbxModel->SetPosition(pos, i);
+		
+		fbxModel->SetPosition(Vector3(0,0,0), i);
 
 		//アニメーション開始位置セット
 		fbxModel->SetCurrentFream(Random::GetRandomNumber(10), i);
@@ -143,21 +141,45 @@ void Play::Update()
 
 	if(DirectInput::KeyState(DIK_W))
 	{
-		angle.x += 2;
+		cameraAngle.x += 2;
 	}
 	if (DirectInput::KeyState(DIK_S))
 	{
-		angle.x -= 2;
+		cameraAngle.x -= 2;
 	}
 	if (DirectInput::KeyState(DIK_A))
 	{
-		angle.y += 2;
+		cameraAngle.y += 2;
 	}
 	if (DirectInput::KeyState(DIK_D))
 	{
-		angle.y -= 2;
+		cameraAngle.y -= 2;
 	}
-	Camera::Get()->SetAngle(angle);
+	Camera::Get()->SetAngle(cameraAngle);
+
+
+	if (DirectInput::KeyState(DIK_UP))
+	{
+		modelAngle.x += 2;
+	}
+	if (DirectInput::KeyState(DIK_DOWN))
+	{
+		modelAngle.x -= 2;
+	}
+	if (DirectInput::KeyState(DIK_LEFT))
+	{
+		modelAngle.y += 2;
+	}
+	if (DirectInput::KeyState(DIK_RIGHT))
+	{
+		modelAngle.y -= 2;
+	}
+
+
+	for (int i = 0; i < CREATE_NUM; i++)
+	{
+		fbxModel->SetAngle(modelAngle,i);
+	}
 }
 
 #include"Camera.h"

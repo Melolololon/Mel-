@@ -1010,10 +1010,10 @@ void DirectX12::LoopStartProcess()
 
 	RenderTarget::Get()->PreDrawProcess();
 
-	DirectX::XMMATRIX cameraMat = mainCamera->Get3DCameraMatrix(mainCameraData);
+	DirectX::XMMATRIX viewAndMatrixMat = mainCamera->Get3DCameraMatrix(mainCameraData);
 
-	Model::SetViewAndProjectionMatrix(cameraMat);
-	Sprite3D::SetViewAndProjectionMatrix(cameraMat);
+	Model::SetViewAndProjectionMatrix(viewAndMatrixMat);
+	Sprite3D::SetViewAndProjectionMatrix(viewAndMatrixMat);
 	Sprite3D::SetCameraPosTargetUpVector(mainCameraData.nowEye, mainCameraData.nowTarget, mainCameraData.nowUp);
 }
 
@@ -3689,7 +3689,7 @@ void DirectX12::DataMap(const ModelDataAndKey& modelData,int number )
 	normalMat = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstData[modelData.key][number].angle.z));
 	normalMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstData[modelData.key][number].angle.x));
 	normalMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstData[modelData.key][number].angle.y));
-	constData3D->normalMat = normalMat * cameraMat;
+	constData3D->normalMat = normalMat;
 
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
 

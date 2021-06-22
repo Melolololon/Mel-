@@ -123,6 +123,8 @@ public:
 	/// <returns></returns>
 	DirectX::XMMATRIX GetViewAndProjectionMat()const;
 
+	Vector3 GetCameraPosition()const { return position; }
+
 	Vector3 GetCameraAngle()const { return angle; }
 
 #pragma endregion
