@@ -17,7 +17,7 @@ private:
 	static UINT createCount;
 	static std::string mainRenderTargetNama;
 
-	float clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
+	float clearColor[4] = { 0.0f,0.0f,0.0f,0.0f };
 	static PipelineState defaultPipeline;
 	static ComPtr<ID3D12RootSignature>rootSignature;
 
@@ -25,10 +25,10 @@ private:
 	static const UINT BLUR_RT_NUM = 3;
 	//[モーションブラー用レンダーターゲット(前のフレームの結果描画に使用)][同時描画数]
 	ComPtr<ID3D12Resource>textureBuffer[BLUR_RT_NUM][RT_NUM];
-	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果)
+	ComPtr<ID3D12DescriptorHeap>textureDescHeap;//テクスチャ(レンダリング結果)
+	ComPtr<ID3D12DescriptorHeap>rtvDescHeap;
+	int renderingRTNum = 0;
 
-
-	ComPtr<ID3D12DescriptorHeap>rtvHeap;
 
 	ComPtr<ID3D12Resource>depthBuffer;
 	ComPtr<ID3D12DescriptorHeap>depthHeap;
