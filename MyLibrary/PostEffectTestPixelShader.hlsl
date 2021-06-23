@@ -16,24 +16,22 @@ float4 PSmain(VSOutput input) : SV_TARGET
 	float4 texColor1 = tex.Sample(smp, input.uv);
 	float4 texColor2 = tex2.Sample(smp, input.uv);
 	
-	//âﬂãéÉtÉåÅ[ÉÄ
-	float4 texColor3 = tex3.Sample(smp, input.uv);
-	float4 texColor4 = tex4.Sample(smp, input.uv);
-	float4 texColor5 = tex5.Sample(smp, input.uv);
-	float4 texColor6 = tex6.Sample(smp, input.uv);
 
-	float4 blurSubColor = float4(0.0f, 0.0f, 0.0f, 0.6f);
-	float4 blurSubColor2 = float4(0.0f, 0.0f, 0.0f, 0.8f);
 
-	float4 texColor = texColor1 + saturate(texColor3 - blurSubColor) + saturate(texColor5 - blurSubColor2);
+	float4 texColor = texColor1;
 	float4 returnColor = (texColor + color + addColor - subColor) * mulColor;
 
 	if(fmod(input.uv.y,0.1f) < 0.05f)
 	{
-		texColor = texColor2 + saturate(texColor4 - blurSubColor) + saturate(texColor6 - blurSubColor2);
+		texColor = texColor2;
 		returnColor = (texColor + color + addColor - subColor) * mulColor;
 	
-
+		//Ç⁄Ç©Çµ
+	}
+	else
+	{
+		//êFîΩì]
+		//returnColor = float4(float3(1, 1, 1) - texColor.rgb, texColor.a);
 	}
 
 

@@ -970,7 +970,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	cColor.b = (USHORT)clearColor[2] * 255;
 	cColor.a = (USHORT)clearColor[3] * 255;
 
-	RenderTarget::Create(Color(0,0,0,0),"main");
+	RenderTarget::Create(Color(0,200,0,255),"main");
 	Camera::Create("main");
 	RenderTarget::Get("main")->SetCamera();
 	DirectionalLight::Create("main");

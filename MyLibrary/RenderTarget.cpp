@@ -28,7 +28,7 @@ RenderTarget::RenderTarget(const Color& color) :
 
 	D3D12_DESCRIPTOR_HEAP_DESC texHeapDesc{};
 	texHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	texHeapDesc.NumDescriptors = RT_NUM * BLUR_RT_NUM;
+	texHeapDesc.NumDescriptors = RT_NUM;
 	texHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	texHeapDesc.NodeMask = 0;
 	result = device->CreateDescriptorHeap
@@ -40,7 +40,7 @@ RenderTarget::RenderTarget(const Color& color) :
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = RT_NUM * BLUR_RT_NUM;
+	rtvHeapDesc.NumDescriptors = RT_NUM;
 	result = device->CreateDescriptorHeap
 	(
 		&rtvHeapDesc,
@@ -62,66 +62,64 @@ RenderTarget::RenderTarget(const Color& color) :
 
 
 	//色セット
-	clearColor[0] = color.r / 255;
-	clearColor[1] = color.g / 255;
-	clearColor[2] = color.b / 255;
-	clearColor[3] = color.a / 255;
+	clearColor[0] = (float)color.r / 255;
+	clearColor[1] = (float)color.g / 255;
+	clearColor[2] = (float)color.b / 255;
+	clearColor[3] = (float)color.a / 255;
 
 	//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
 	D3D12_CLEAR_VALUE renderTargetClearValue;
 	renderTargetClearValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
 
-	for (int i = 0; i < BLUR_RT_NUM; i++) 
+	for (int i = 0; i < RT_NUM; i++)
 	{
-		for (int j = 0; j < RT_NUM; j++)
-		{
-			result = device->CreateCommittedResource
-			(
-				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-				D3D12_HEAP_FLAG_NONE,
-				&texRTDesc,
-				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-				&renderTargetClearValue,
-				IID_PPV_ARGS(&textureBuffer[i][j])
-			);
+		result = device->CreateCommittedResource
+		(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE,
+			&texRTDesc,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			&renderTargetClearValue,
+			IID_PPV_ARGS(&textureBuffer[i])
+		);
 
-			//ビュー作成
-			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		//ビュー作成
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 
-			srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-			srvDesc.Texture2D.MipLevels = 1;
+		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = 1;
 
-			CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-			(
-				textureDescHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-				i * RT_NUM + j,
-				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-			);
+		CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			textureDescHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+			i,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
 
-			device->CreateShaderResourceView
-			(
-				textureBuffer[i][j].Get(),
-				&srvDesc,
-				handle
-			);
+		device->CreateShaderResourceView
+		(
+			textureBuffer[i].Get(),
+			&srvDesc,
+			handle
+		);
 
-			handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
-			(
-				rtvDescHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-				i * RT_NUM + j,
-				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
-			);
+		handle = CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			rtvDescHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+			i,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+		);
 
-			device->CreateRenderTargetView
-			(
-				textureBuffer[i][j].Get(),
-				nullptr,
-				handle
-			);
-		}
+		device->CreateRenderTargetView
+		(
+			textureBuffer[i].Get(),
+			nullptr,
+			handle
+		);
 	}
+
 
 #pragma region 深度バッファ_ヒープ_ビュー作成
 	//深度用ヒープ作成
@@ -195,16 +193,8 @@ bool RenderTarget::Initialize()
 	descRangeSRV2.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
 
 
-	//透過する過去フレームの画像用
-	CD3DX12_DESCRIPTOR_RANGE tex[(BLUR_RT_NUM - 1) * RT_NUM] = {};
-	const int texArray = _countof(tex);
-	CD3DX12_ROOT_PARAMETER rootparam[3 + texArray] = {};
-	for (int i = 0; i < texArray; i++)
-	{
-		tex[i].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2 + i);
-		rootparam[3 + i].InitAsDescriptorTable(1, &tex[i], D3D12_SHADER_VISIBILITY_PIXEL);
-	}
-
+	CD3DX12_ROOT_PARAMETER rootparam[3] = {};
+	
 	rootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparam[1].InitAsDescriptorTable(1, &descRangeSRV1, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootparam[2].InitAsDescriptorTable(1, &descRangeSRV2, D3D12_SHADER_VISIBILITY_PIXEL);
@@ -306,7 +296,7 @@ void RenderTarget::PreDrawProcess()
 			1,
 			&CD3DX12_RESOURCE_BARRIER::Transition
 			(
-				textureBuffer[renderingRTNum][i].Get(),
+				textureBuffer[i].Get(),
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 				D3D12_RESOURCE_STATE_RENDER_TARGET
 			)
@@ -320,7 +310,7 @@ void RenderTarget::PreDrawProcess()
 		rtvHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
 			rtvDescHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-			renderingRTNum * RT_NUM + i,
+			i,
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
 		);
 	}
@@ -374,7 +364,7 @@ void RenderTarget::SetCmdList()
 			1,
 			&CD3DX12_RESOURCE_BARRIER::Transition
 			(
-				textureBuffer[renderingRTNum][i].Get(),
+				textureBuffer[i].Get(),
 				D3D12_RESOURCE_STATE_RENDER_TARGET,
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 			)
@@ -398,105 +388,25 @@ void RenderTarget::SetCmdList()
 
 #pragma region 現在の画面
 
-	////テクスチャ1
-	//gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//(
-	//	textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-	//	renderingRTNum * RT_NUM,
-	//	device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//);
-	//cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
+	//テクスチャ1
+	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	(
+		textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
+		renderingRTNum * RT_NUM,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
 
-	////テクスチャ2
-	//gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//(
-	//	textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-	//	renderingRTNum * RT_NUM + 1,
-	//	device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//);
-	//cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
+	//テクスチャ2
+	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	(
+		textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
+		renderingRTNum * RT_NUM + 1,
+		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	);
+	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
 
-	//前フレーム
-	//for (int i = 0,handleNum = (renderingRTNum + 1) * RT_NUM ; i < (BLUR_RT_NUM - 1) * RT_NUM; i++)
-	//{
-	//	if (handleNum >= BLUR_RT_NUM * RT_NUM)handleNum = 0;
-
-	//	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//	(
-	//		textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-	//		handleNum,
-	//		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//	);
-
-	//	cmdList->SetGraphicsRootDescriptorTable(i + 3, gpuDescHandle);
-	//	handleNum++;
-
-	//}
-
-
-	//int handleNum = (renderingRTNum - 1) * RT_NUM;
-	//int rootParamNum = 3;
-	//for (int i = 0; i < BLUR_RT_NUM - 1; i++)
-	//{
-	//	if (handleNum <= 0)handleNum = (BLUR_RT_NUM - 1) * RT_NUM;
-
-	//	//テクスチャ1
-	//	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//	(
-	//		textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-	//		handleNum,
-	//		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//	);
-	//	cmdList->SetGraphicsRootDescriptorTable(rootParamNum, gpuDescHandle);
-
-	//	handleNum++;
-	//	rootParamNum++;
-
-	//	//テクスチャ2
-	//	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//	(
-	//		textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-	//		handleNum,
-	//		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//	);
-	//	cmdList->SetGraphicsRootDescriptorTable(rootParamNum, gpuDescHandle);
-
-	//	handleNum -= 3;
-	//}
 	
-
-	int handleNum = renderingRTNum * RT_NUM;
-	int rootParamIndex = 1;
-	for (int i = 0; i < BLUR_RT_NUM ; i++)
-	{
-		if (handleNum < 0)handleNum = (BLUR_RT_NUM - 1) * RT_NUM;
-
-		//テクスチャ1
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-			handleNum,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdList->SetGraphicsRootDescriptorTable(rootParamIndex, gpuDescHandle);
-
-		handleNum++;
-		rootParamIndex++;
-
-		//テクスチャ2
-		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-			handleNum,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdList->SetGraphicsRootDescriptorTable(rootParamIndex, gpuDescHandle);
-
-		handleNum -= 3;
-		rootParamIndex++;
-
-	}
-
 
 	cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
 
@@ -504,8 +414,7 @@ void RenderTarget::SetCmdList()
 
 #pragma endregion
 
-	renderingRTNum++;
-	if (renderingRTNum >= BLUR_RT_NUM)renderingRTNum = 0;
+
 	
 	
 }
