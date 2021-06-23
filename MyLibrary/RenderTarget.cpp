@@ -62,10 +62,10 @@ RenderTarget::RenderTarget(const Color& color) :
 
 
 	//色セット
-	clearColor[0] = color.r / 255;
-	clearColor[1] = color.g / 255;
-	clearColor[2] = color.b / 255;
-	clearColor[3] = color.a / 255;
+	clearColor[0] = (float)color.r / 255;
+	clearColor[1] = (float)color.g / 255;
+	clearColor[2] = (float)color.b / 255;
+	clearColor[3] = (float)color.a / 255;
 
 	//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
 	D3D12_CLEAR_VALUE renderTargetClearValue;
