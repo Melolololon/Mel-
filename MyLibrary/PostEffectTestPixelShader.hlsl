@@ -17,54 +17,34 @@ float4 PSmain(VSOutput input) : SV_TARGET
 	float4 texColor2 = tex2.Sample(smp, input.uv);
 	
 
-
 	float4 texColor = texColor1;
 
 
 	if(fmod(input.uv.y,0.1f) < 0.05f)
 	{
-		////ぼかし
-		//float4 sum = float4(0, 0, 0, 0);
-		//float num = 0.0025f;
-		//sum += tex2.Sample(smp, float2(input.uv.x - num, input.uv.y + num));
-		//sum += tex2.Sample(smp, float2(input.uv.x - num, input.uv.y));
-		//sum += tex2.Sample(smp, float2(input.uv.x - num, input.uv.y - num));
-
-		//sum += tex2.Sample(smp, float2(input.uv.x, input.uv.y + num));
-		//sum += tex2.Sample(smp, float2(input.uv.x, input.uv.y));
-		//sum += tex2.Sample(smp, float2(input.uv.x, input.uv.y - num));
-
-		//sum += tex2.Sample(smp, float2(input.uv.x + num, input.uv.y + num));
-		//sum += tex2.Sample(smp, float2(input.uv.x + num, input.uv.y));
-		//sum += tex2.Sample(smp, float2(input.uv.x + num, input.uv.y - num));
-
-		//sum /= 9;
-		//texColor = sum;
-
+		//ぼかし
+		
 		//移動量
 		float uShift = 1.0f / 1280.0f;
 		float vShift = 1.0f / 720.0f;
 		float4 sum = float4(0, 0, 0, 0);
 
 		//範囲(1で隣1ピクセル)
-		int areaX = 2;
-		int areaY = 2;
+		int areaX = 1;
+		int areaY = 1;
 
 		//sumに加算
-		for (int y = -areaY; y < areaY; y++)
+		int loopNum = 0;
+		for (int y = -areaY; y < areaY + 1; y++)
 		{
-			for (int x = -areaX; x < areaX; x++)
+			for (int x = -areaX; x < areaX + 1; x++)
 			{
 				sum += tex2.Sample(smp, float2(input.uv.x + (uShift * x), input.uv.y + (vShift * y)));
+				loopNum++;
 			}
 		}
 
-		//メモ
-		//squaresNumXを1にした時に、中心からかいしする
-		//もう資料通りでもいい?
-
-
-		sum /= areaX * areaY;
+		sum /= loopNum;
 		texColor = float4(sum.r, sum.g, sum.b, texColor.a);
 	}
 	else
@@ -72,7 +52,6 @@ float4 PSmain(VSOutput input) : SV_TARGET
 		//色反転
 		texColor = float4(float3(1, 1, 1) - texColor.rgb, texColor.a);
 	}
-
 
 
 	return texColor;
