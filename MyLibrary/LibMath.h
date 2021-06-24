@@ -19,9 +19,6 @@ struct AStarNode
 	//座標
 	Vector2 position = 0;
 
-	//進行不能オブジェクトと重なっているノード
-	bool hitObjectNode = false;
-
 	//自分を隣接してるノードと指定したノードのポインタの配列
 	std::vector<AStarNode*> pAStarNodes;
 
@@ -36,8 +33,10 @@ struct AStarNode
 	int indexY = INT_MAX;
 
 	AStarNode* parentNode = nullptr;
+	bool openFlag = false;
 	bool closeFlag = false;
-
+	//進行不能オブジェクトと重なっているノード
+	bool hitObjectNode = false;
 };
 
 class LibMath
@@ -90,7 +89,7 @@ public:
 	/// <param name="endPos"></param>
 	/// <param name="nodes"></param>
 	/// <param name="routeVector"></param>
-	static void GetAStarCalcResult
+	static bool GetAStarCalcResult
 	(
 		const Vector2& startPos,
 		const Vector2& endPos,

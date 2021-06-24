@@ -93,7 +93,7 @@ void LibMath::SetAStarNodeHitObjectNodeFlag
 	}
 }
 
-void LibMath::GetAStarCalcResult
+bool LibMath::GetAStarCalcResult
 (
 	const Vector2& startPos,
 	const Vector2& endPos,
@@ -127,6 +127,12 @@ void LibMath::GetAStarCalcResult
 	//選ばれたノードの周りを調べたら、中心(基準)ノードは調べないようにする
 	//これやれば、向きで検索するかどうか調べる必要がない?
 
+
+	//オープンに入ってるのに、また入れちゃってる(1,1のノード)
+	//(0,0)と(0,1)をメインとした検索時に入れてる
+	//そもそもやり方違うかも
+
+	//
 
 	//経路のノードの添え字(これに入ってる添え字でノードを取得して計算する)
 	std::vector<int>routeIndexX(1);
@@ -213,6 +219,7 @@ void LibMath::GetAStarCalcResult
 	
 	std::vector<AStarNode*>closeNode;
 
+	
 	AStarNode* endNode;
 	
 
@@ -220,7 +227,12 @@ void LibMath::GetAStarCalcResult
 
 	while(1)
 	{
-		if (openNode.size() == 0)break;
+		//ゴールにたどり着けない場合
+		if (openNode.size() == 0)
+		{
+			return false;
+		}
+		
 
 		//並び替え
 		std::sort
@@ -251,18 +263,28 @@ void LibMath::GetAStarCalcResult
 		{
 			int indexY = mainNode->indexY + y;
 
-			if (indexY <= -1 || indexY >= nodeYArrayNum - 1)continue;
+			//Y範囲外指定防止
+			if (indexY <= -1 || indexY >= nodeYArrayNum)continue;
 
 			for (int x = -1; x < 2; x++)
 			{
 				int indexX = mainNode->indexX + x;
-				if (indexX <= -1 || indexX >= nodeXArrayNum - 1)continue;
+				
+				//X範囲外指定防止
+				if (indexX <= -1 || indexX >= nodeXArrayNum )continue;
 
+				//基準検索防止
 				if (indexX == mainNode->indexX && indexY == mainNode->indexY)continue;
 
 				AStarNode* checkNode = &nodes[indexY][indexX];
 
-				if(checkNode->hitObjectNode || mainNode->closeFlag)continue;
+				if (checkNode->closeFlag || checkNode->openFlag)continue;
+				if (checkNode->hitObjectNode)
+				{
+					checkNode->closeFlag = true;
+					continue;
+				}
+				
 
 				//calcNum = スタートからの距離 + ゴールまでの距離 + コスト
 				checkNode->calcNum = CalcNodeDistance(startNodeIndexX, startNodeIndexY, indexX, indexY)
@@ -279,7 +301,7 @@ void LibMath::GetAStarCalcResult
 
 
 				openPushBackNode.push_back(checkNode);
-
+				checkNode->openFlag = true;
 			}
 		}
 
@@ -288,7 +310,10 @@ void LibMath::GetAStarCalcResult
 		closeNode.push_back(mainNode);
 		mainNode->closeFlag = true;
 
+		//検索したやつを取り出す(ソートで最小が最後に来るようになっている)
+		openNode[openNode.size() - 1]->openFlag = false;
 		openNode.erase(openNode.begin() + openNode.size() - 1);
+
 
 		for(auto& n : openPushBackNode)
 		{
@@ -318,6 +343,8 @@ void LibMath::GetAStarCalcResult
 	//{
 	//	routeVector[i] = minRouteNodePositions[i + 1] - minRouteNodePositions[i];
 	//}
+
+	return true;
 }
 
 #pragma endregion
