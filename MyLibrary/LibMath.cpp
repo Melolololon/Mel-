@@ -101,44 +101,9 @@ bool LibMath::GetAStarCalcResult
 	std::vector<Vector2>& routeVector
 )
 {
-
-	//スタートに一番近い分を隣接ノードと選んだノードを前のノードに選ぶ?
-	//そうじゃなくて、隣接してるかつ、計算結果が最短距離と同等のノードを配列に格納し、
-	//ゴールについたらそのノードをたどっていき、ゴールにたどり着くルートを見つける
-	//それとも最短候補のルート上のノードを格納してく?
-	//障害物があるノードに隣接してるかつ、XまたはYが障害物があるノードのX、Yに移動前より近づくようだったら斜め移動禁止
-	//多分基本的に1度しか最短ルート候補認定しないから、自分を選んだノードの座標をそれぞれのノードに持たせちゃってもいいかも
-	//同じところ通るパターンある。無理
-	 
-	
-	//途中で分岐したらどうするか
-	//もう一つ少ないコストのノードがあったら、今のルートの配列をコピーして新しい配列を作る?
-	//スタート基準で調べるときは上の処理いらん
-	//これsecondでもやる?
-
-	//スタート地点とゴール地点がどこに所属するか調べる
-
-	//自分を指定したノード側は検索品ようにする?
-	//ステップ数が同じだったら計算しなければいい?
-	
-	//合流する場合があるが、合流する場合は基本的に距離が同じなので、一回計算したら計算しなくていい?
-	//タイミングが違う場合、先についたほうが近いので一回計算すればいい
-	
-	//選ばれたノードの周りを調べたら、中心(基準)ノードは調べないようにする
-	//これやれば、向きで検索するかどうか調べる必要がない?
-
-
-	//オープンに入ってるのに、また入れちゃってる(1,1のノード)
-	//(0,0)と(0,1)をメインとした検索時に入れてる
-	//そもそもやり方違うかも
-
-	//
-
-	//経路のノードの添え字(これに入ってる添え字でノードを取得して計算する)
-	std::vector<int>routeIndexX(1);
-	routeIndexX.reserve(9);
-	std::vector<int>routeIndexY(1);
-	routeIndexY.reserve(9);
+	//やること
+	//openに再追加、closeからの移動(wikiの7.のところ)実装する
+	//ブロックに隣接してるマスから、同じブロックに隣接してるマスへ移動しないようにする
 
 
 
@@ -150,7 +115,7 @@ bool LibMath::GetAStarCalcResult
 	auto nodeXArrayNum = nodes[0].size();
 	auto nodeYArrayNum = nodes.size();
 
-
+	//スタートの添え字
 	int startNodeIndexX = 0;
 	int startNodeIndexY = 0;
 
@@ -277,8 +242,11 @@ bool LibMath::GetAStarCalcResult
 				if (indexX == mainNode->indexX && indexY == mainNode->indexY)continue;
 
 				AStarNode* checkNode = &nodes[indexY][indexX];
-
+				
+				//リスト追加済かどうかの確認
 				if (checkNode->closeFlag || checkNode->openFlag)continue;
+				
+				//オブジェクトに重なってるかどうか
 				if (checkNode->hitObjectNode)
 				{
 					checkNode->closeFlag = true;

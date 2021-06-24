@@ -52,11 +52,11 @@ public:
 	/// <summary>
 	/// ノードの座標をセットします。
 	/// </summary>
-	/// <param name="leftUpPos"></param>
-	/// <param name="rightDownPos"></param>
-	/// <param name="nodeNumX">分割数</param>
-	/// <param name="nodeNumY">分割数</param>
-	/// <param name="nodes"></param>
+	/// <param name="leftUpPos">左上座標</param>
+	/// <param name="rightDownPos">右下座標</param>
+	/// <param name="nodeNumX">横分割数</param>
+	/// <param name="nodeNumY">縦分割数</param>
+	/// <param name="nodes">ノードのvector(sizeは0でよい)</param>
 	/// <param name="upPlus">上方向がプラスかどうか</param>
 	static void SetAStarNodePosition
 	(
@@ -72,9 +72,9 @@ public:
 	/// <summary>
 	/// ノードが進行不能オブジェクトにヒットしてるかを確認します。
 	/// </summary>
-	/// <param name="hitObjectsPos"></param>
-	/// <param name="hitObjectsSize"></param>
-	/// <param name="nodes"></param>
+	/// <param name="hitObjectsPos">障害物の座標のvector</param>
+	/// <param name="hitObjectsSize">障害物のサイズのvector</param>
+	/// <param name="nodes">ノードのvector(SetAStarNodePositionに渡した後の配列)</param>
 	static void SetAStarNodeHitObjectNodeFlag
 	(
 		const std::vector<Vector2>& hitObjectsPos,
@@ -85,10 +85,11 @@ public:
 	/// <summary>
 	/// 渡されたデータをもとに最短経路を求めます。
 	/// </summary>
-	/// <param name="startPos"></param>
-	/// <param name="endPos"></param>
-	/// <param name="nodes"></param>
-	/// <param name="routeVector"></param>
+	/// <param name="startPos">スタート地点の座標</param>
+	/// <param name="endPos">ゴール地点の座標</param>
+	/// <param name="nodes">ノードのvector(SetAStarNodeHitObjectNodeFlagに渡した後の配列)</param>
+	/// <param name="routeVector">ゴールまでのルートを格納するvector(sizeは0でよい)</param>
+	/// <returns>探索が成功したかどうか</returns>
 	static bool GetAStarCalcResult
 	(
 		const Vector2& startPos,
