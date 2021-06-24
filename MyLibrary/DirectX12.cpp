@@ -1012,9 +1012,9 @@ void DirectX12::LoopStartProcess()
 
 	DirectX::XMMATRIX viewAndMatrixMat = mainCamera->Get3DCameraMatrix(mainCameraData);
 
-	Model::SetViewAndProjectionMatrix(viewAndMatrixMat);
-	Sprite3D::SetViewAndProjectionMatrix(viewAndMatrixMat);
-	Sprite3D::SetCameraPosTargetUpVector(mainCameraData.nowEye, mainCameraData.nowTarget, mainCameraData.nowUp);
+	//Model::SetViewAndProjectionMatrix(viewAndMatrixMat);
+	//Sprite3D::SetViewAndProjectionMatrix(viewAndMatrixMat);
+	//Sprite3D::SetCameraPosTargetUpVector(mainCameraData.nowEye, mainCameraData.nowTarget, mainCameraData.nowUp);
 }
 
 void DirectX12::LoopEndProcess()

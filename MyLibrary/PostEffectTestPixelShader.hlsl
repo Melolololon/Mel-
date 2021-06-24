@@ -25,18 +25,14 @@ float4 PSmain(VSOutput input) : SV_TARGET
 	float4 blurSubColor = float4(0.0f, 0.0f, 0.0f, 0.6f);
 	float4 blurSubColor2 = float4(0.0f, 0.0f, 0.0f, 0.8f);
 
-	float4 texColor = texColor1 + saturate(texColor3 - blurSubColor) + saturate(texColor5 - blurSubColor2);
-	float4 returnColor = (texColor + color + addColor - subColor) * mulColor;
-
+	float4 texColor = texColor1 + saturate(texColor3 - blurSubColor) +saturate(texColor5 - blurSubColor2);
+	
 	if(fmod(input.uv.y,0.1f) < 0.05f)
 	{
 		texColor = texColor2 + saturate(texColor4 - blurSubColor) + saturate(texColor6 - blurSubColor2);
-		returnColor = (texColor + color + addColor - subColor) * mulColor;
-	
-
 	}
 
 
 
-	return returnColor;
+	return texColor;
 }

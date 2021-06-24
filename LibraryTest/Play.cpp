@@ -47,7 +47,7 @@ void Play::Initialize()
 		fbxModel->SetCurrentFream(Random::GetRandomNumber(10), i);
 		
 		//速度倍率セット
-		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 2), i);
+		fbxModel->SetAnimationSpeedMagnification(Random::GetRandomNumberRangeSelect(1, 20), i);
 
 		fbxModel->SetScale(Vector3(4, 4, 4),i);
 	}
@@ -119,7 +119,8 @@ void Play::Initialize()
 	fbxModel->SetPipelineAllSet(&fbxPipeline);
 
 
-	
+
+
 }
 
 void Play::Update()

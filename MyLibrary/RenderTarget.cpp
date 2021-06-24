@@ -363,9 +363,6 @@ void RenderTarget::PreDrawProcess()
 
 void RenderTarget::SetCmdList()
 {
-#pragma region 結果を別のテクスチャバッファに描画
-
-
 	//戻す
 	for (int i = 0; i < RT_NUM; i++)
 	{
@@ -396,74 +393,6 @@ void RenderTarget::SetCmdList()
 	//定数
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());
 
-#pragma region 現在の画面
-
-	////テクスチャ1
-	//gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//(
-	//	textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-	//	renderingRTNum * RT_NUM,
-	//	device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//);
-	//cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
-
-	////テクスチャ2
-	//gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//(
-	//	textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-	//	renderingRTNum * RT_NUM + 1,
-	//	device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//);
-	//cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
-
-	//前フレーム
-	//for (int i = 0,handleNum = (renderingRTNum + 1) * RT_NUM ; i < (BLUR_RT_NUM - 1) * RT_NUM; i++)
-	//{
-	//	if (handleNum >= BLUR_RT_NUM * RT_NUM)handleNum = 0;
-
-	//	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//	(
-	//		textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-	//		handleNum,
-	//		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//	);
-
-	//	cmdList->SetGraphicsRootDescriptorTable(i + 3, gpuDescHandle);
-	//	handleNum++;
-
-	//}
-
-
-	//int handleNum = (renderingRTNum - 1) * RT_NUM;
-	//int rootParamNum = 3;
-	//for (int i = 0; i < BLUR_RT_NUM - 1; i++)
-	//{
-	//	if (handleNum <= 0)handleNum = (BLUR_RT_NUM - 1) * RT_NUM;
-
-	//	//テクスチャ1
-	//	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//	(
-	//		textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-	//		handleNum,
-	//		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//	);
-	//	cmdList->SetGraphicsRootDescriptorTable(rootParamNum, gpuDescHandle);
-
-	//	handleNum++;
-	//	rootParamNum++;
-
-	//	//テクスチャ2
-	//	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	//	(
-	//		textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-	//		handleNum,
-	//		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	//	);
-	//	cmdList->SetGraphicsRootDescriptorTable(rootParamNum, gpuDescHandle);
-
-	//	handleNum -= 3;
-	//}
-	
 
 	int handleNum = renderingRTNum * RT_NUM;
 	int rootParamIndex = 1;
@@ -500,9 +429,7 @@ void RenderTarget::SetCmdList()
 
 	cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
 
-#pragma endregion
 
-#pragma endregion
 
 	renderingRTNum++;
 	if (renderingRTNum >= BLUR_RT_NUM)renderingRTNum = 0;
@@ -512,8 +439,6 @@ void RenderTarget::SetCmdList()
 
 void RenderTarget::Draw()
 {
-
-
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 
