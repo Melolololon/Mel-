@@ -349,71 +349,71 @@ UInt2::UInt2(const UInt4& uInt4)
 
 
 
-void UInt2::operator+=(const UInt2& int1)
+void UInt2::operator+=(const UInt2& uInt1)
 {
-	x = x + int1.x;
-	y = y + int1.y;
+	x = x + uInt1.x;
+	y = y + uInt1.y;
 }
 
-void UInt2::operator-=(const UInt2& int1)
+void UInt2::operator-=(const UInt2& uInt1)
 {
-	x = x - int1.x;
-	y = y - int1.y;
+	x = x - uInt1.x;
+	y = y - uInt1.y;
 }
 
-void UInt2::operator*=(const UInt2& int1)
+void UInt2::operator*=(const UInt2& uInt1)
 {
-	x = x * int1.x;
-	y = y * int1.y;
+	x = x * uInt1.x;
+	y = y * uInt1.y;
 }
 
-void UInt2::operator/=(const UInt2& int1)
+void UInt2::operator/=(const UInt2& uInt1)
 {
-	x = x / int1.x;
-	y = y / int1.y;
+	x = x / uInt1.x;
+	y = y / uInt1.y;
 }
 
-void UInt2::operator%=(const UInt2& int1)
+void UInt2::operator%=(const UInt2& uInt1)
 {
-	x = x % int1.x;
-	y = y % int1.y;
+	x = x % uInt1.x;
+	y = y % uInt1.y;
 }
 
-bool UInt2::operator==(const UInt2& int1)
+bool UInt2::operator==(const UInt2& uInt1)
 {
-	return x == int1.x && y == int1.y;
+	return x == uInt1.x && y == uInt1.y;
 }
 
-bool UInt2::operator!=(const UInt2& int1)
+bool UInt2::operator!=(const UInt2& uInt1)
 {
-	return x != int1.x || y != int1.y;
+	return x != uInt1.x || y != uInt1.y;
 }
 
 
 
-UInt2 operator+(const UInt2& int1, const UInt2& int2)
+UInt2 operator+(const UInt2& uInt1, const UInt2& uInt2)
 {
-	return UInt2(int1.x + int2.x, int1.y + int2.y);
+	return UInt2(uInt1.x + uInt2.x, uInt1.y + uInt2.y);
 }
 
-UInt2 operator-(const UInt2& int1, const UInt2& int2)
+UInt2 operator-(const UInt2& uInt1, const UInt2& uInt2)
 {
-	return UInt2(int1.x - int2.x, int1.y - int2.y);
+	return UInt2(uInt1.x - uInt2.x, uInt1.y - uInt2.y);
 }
 
-UInt2 operator*(const UInt2& int1, const UInt2& int2)
+UInt2 operator*(const UInt2& uInt1, const UInt2& uInt2)
 {
-	return UInt2(int1.x * int2.x, int1.y * int2.y);
+	return UInt2(uInt1.x * uInt2.x, uInt1.y * uInt2.y);
 }
 
-UInt2 operator/(const UInt2& int1, const UInt2& int2)
+UInt2 operator/(const UInt2& uInt1, const UInt2& uInt2)
 {
-	return UInt2(int1.x / int2.x, int1.y / int2.y);
+	return UInt2(uInt1.x / uInt2.x, uInt1.y / uInt2.y);
 }
 
-UInt2 operator%(const UInt2& int1, const UInt2& int2)
+UInt2 operator%(const UInt2& uInt1, const UInt2& uInt2)
 {
-	return UInt2(int1.x % int2.x, int1.y % int2.y);
+	return UInt2(uInt1.x % uInt2.x, uInt1.y % uInt2.y);
 }
 
 #pragma endregion
@@ -453,76 +453,76 @@ UInt3::UInt3(const UInt4& uInt4)
 
 
 
-void UInt3::operator+=(const UInt3& int1)
+void UInt3::operator+=(const UInt3& uInt1)
 {
-	x = x + int1.x;
-	y = y + int1.y;
-	z = z + int1.z;
+	x = x + uInt1.x;
+	y = y + uInt1.y;
+	z = z + uInt1.z;
 }
 
-void UInt3::operator-=(const UInt3& int1)
+void UInt3::operator-=(const UInt3& uInt1)
 {
-	x = x - int1.x;
-	y = y - int1.y;
-	z = z - int1.z;
+	x = x - uInt1.x;
+	y = y - uInt1.y;
+	z = z - uInt1.z;
 }
 
-void UInt3::operator*=(const UInt3& int1)
+void UInt3::operator*=(const UInt3& uInt1)
 {
-	x = x * int1.x;
-	y = y * int1.y;
-	z = z * int1.z;
+	x = x * uInt1.x;
+	y = y * uInt1.y;
+	z = z * uInt1.z;
 }
 
-void UInt3::operator/=(const UInt3& int1)
+void UInt3::operator/=(const UInt3& uInt1)
 {
-	x = x / int1.x;
-	y = y / int1.y;
-	z = z / int1.z;
+	x = x / uInt1.x;
+	y = y / uInt1.y;
+	z = z / uInt1.z;
 }
 
-void UInt3::operator%=(const UInt3& int1)
+void UInt3::operator%=(const UInt3& uInt1)
 {
-	x = x % int1.x;
-	y = y % int1.y;
-	z = z % int1.z;
+	x = x % uInt1.x;
+	y = y % uInt1.y;
+	z = z % uInt1.z;
 }
 
-bool UInt3::operator==(const UInt3& int1)
+bool UInt3::operator==(const UInt3& uInt1)
 {
-	return x == int1.x && y == int1.y && z == int1.z;
+	return x == uInt1.x && y == uInt1.y && z == uInt1.z;
 }
 
-bool UInt3::operator!=(const UInt3& int1)
+bool UInt3::operator!=(const UInt3& uInt1)
 {
-	return x != int1.x || y != int1.y || z != int1.z;
+	return x != uInt1.x || y != uInt1.y || z != uInt1.z;
 }
 
 
 
-UInt3 operator+(const UInt3& int1, const UInt3& int2)
+UInt3 operator+(const UInt3& uInt1, const UInt3& uInt2)
 {
-	return UInt3(int1.x + int2.x, int1.y + int2.y, int1.z + int2.z);
+	return UInt3(uInt1.x + uInt2.x, uInt1.y + uInt2.y, uInt1.z + uInt2.z);
 }
 
-UInt3 operator-(const UInt3& int1, const UInt3& int2)
+UInt3 operator-(const UInt3& uInt1, const UInt3& uInt2)
 {
-	return UInt3(int1.x - int2.x, int1.y - int2.y, int1.z - int2.z);
+	return UInt3(uInt1.x - uInt2.x, uInt1.y - uInt2.y, uInt1.z - uInt2.z);
 }
 
-UInt3 operator*(const UInt3& int1, const UInt3& int2)
+UInt3 operator*(const UInt3& uInt1, const UInt3& uInt2)
 {
-	return UInt3(int1.x * int2.x, int1.y * int2.y, int1.z * int2.z);
+	return UInt3(uInt1.x * uInt2.x, uInt1.y * uInt2.y, uInt1.z * uInt2.z);
 }
 
-UInt3 operator/(const UInt3& int1, const UInt3& int2)
+UInt3 operator/(const UInt3& uInt1, const UInt3& uInt2)
 {
-	return UInt3(int1.x / int2.x, int1.y / int2.y, int1.z / int2.z);
+	return UInt3(uInt1.x / uInt2.x, uInt1.y / uInt2.y, uInt1.z / uInt2.z);
 }
 
-UInt3 operator%(const UInt3& int1, const UInt3& int2)
+UInt3 operator%(const UInt3& uInt1, const UInt3& uInt2)
 {
-	return UInt3(int1.x % int2.x, int1.y % int2.y, int1.z % int2.z);
+	return UInt3(uInt1.x % uInt2.x, uInt1.y % uInt2.y, uInt1.z % uInt2.z);
 }
 
 #pragma endregion
@@ -564,80 +564,80 @@ UInt4::UInt4(const UInt3& uInt3)
 
 
 
-void UInt4::operator+=(const UInt4& int1)
+void UInt4::operator+=(const UInt4& uInt1)
 {
-	x = x + int1.x;
-	y = y + int1.y;
-	z = z + int1.z;
-	w = w + int1.w;
+	x = x + uInt1.x;
+	y = y + uInt1.y;
+	z = z + uInt1.z;
+	w = w + uInt1.w;
 }
 
-void UInt4::operator-=(const UInt4& int1)
+void UInt4::operator-=(const UInt4& uInt1)
 {
-	x = x - int1.x;
-	y = y - int1.y;
-	z = z - int1.z;
-	w = w - int1.w;
+	x = x - uInt1.x;
+	y = y - uInt1.y;
+	z = z - uInt1.z;
+	w = w - uInt1.w;
 }
 
-void UInt4::operator*=(const UInt4& int1)
+void UInt4::operator*=(const UInt4& uInt1)
 {
-	x = x * int1.x;
-	y = y * int1.y;
-	z = z * int1.z;
-	w = w * int1.w;
+	x = x * uInt1.x;
+	y = y * uInt1.y;
+	z = z * uInt1.z;
+	w = w * uInt1.w;
 }
 
-void UInt4::operator/=(const UInt4& int1)
+void UInt4::operator/=(const UInt4& uInt1)
 {
-	x = x / int1.x;
-	y = y / int1.y;
-	z = z / int1.z;
-	w = w / int1.w;
+	x = x / uInt1.x;
+	y = y / uInt1.y;
+	z = z / uInt1.z;
+	w = w / uInt1.w;
 }
 
-void UInt4::operator%=(const UInt4& int1)
+void UInt4::operator%=(const UInt4& uInt1)
 {
-	x = x % int1.x;
-	y = y % int1.y;
-	z = z % int1.z;
-	w = w % int1.w;
+	x = x % uInt1.x;
+	y = y % uInt1.y;
+	z = z % uInt1.z;
+	w = w % uInt1.w;
 }
 
-bool UInt4::operator==(const UInt4& int1)
+bool UInt4::operator==(const UInt4& uInt1)
 {
-	return x == int1.x && y == int1.y && z == int1.z && w == int1.w;
+	return x == uInt1.x && y == uInt1.y && z == uInt1.z && w == uInt1.w;
 }
 
-bool UInt4::operator!=(const UInt4& int1)
+bool UInt4::operator!=(const UInt4& uInt1)
 {
-	return x != int1.x || y != int1.y || z != int1.z || w != int1.w;
+	return x != uInt1.x || y != uInt1.y || z != uInt1.z || w != uInt1.w;
 }
 
 
 
-UInt4 operator+(const UInt4& int1, const UInt4& int2)
+UInt4 operator+(const UInt4& uInt1, const UInt4& uInt2)
 {
-	return UInt4(int1.x + int2.x, int1.y + int2.y, int1.z + int2.z, int1.w + int2.w);
+	return UInt4(uInt1.x + uInt2.x, uInt1.y + uInt2.y, uInt1.z + uInt2.z, uInt1.w + uInt2.w);
 }
 
-UInt4 operator-(const UInt4& int1, const UInt4& int2)
+UInt4 operator-(const UInt4& uInt1, const UInt4& uInt2)
 {
-	return UInt4(int1.x - int2.x, int1.y - int2.y, int1.z - int2.z, int1.w - int2.w);
+	return UInt4(uInt1.x - uInt2.x, uInt1.y - uInt2.y, uInt1.z - uInt2.z, uInt1.w - uInt2.w);
 }
 
-UInt4 operator*(const UInt4& int1, const UInt4& int2)
+UInt4 operator*(const UInt4& uInt1, const UInt4& uInt2)
 {
-	return UInt4(int1.x * int2.x, int1.y * int2.y, int1.z * int2.z, int1.w * int2.w);
+	return UInt4(uInt1.x * uInt2.x, uInt1.y * uInt2.y, uInt1.z * uInt2.z, uInt1.w * uInt2.w);
 }
 
-UInt4 operator/(const UInt4& int1, const UInt4& int2)
+UInt4 operator/(const UInt4& uInt1, const UInt4& uInt2)
 {
-	return UInt4(int1.x / int2.x, int1.y / int2.y, int1.z / int2.z, int1.w / int2.w);
+	return UInt4(uInt1.x / uInt2.x, uInt1.y / uInt2.y, uInt1.z / uInt2.z, uInt1.w / uInt2.w);
 }
 
-UInt4 operator%(const UInt4& int1, const UInt4& int2)
+UInt4 operator%(const UInt4& uInt1, const UInt4& uInt2)
 {
-	return UInt4(int1.x % int2.x, int1.y % int2.y, int1.z % int2.z, int1.w % int2.w);
+	return UInt4(uInt1.x % uInt2.x, uInt1.y % uInt2.y, uInt1.z % uInt2.z, uInt1.w % uInt2.w);
 }
 #pragma endregion

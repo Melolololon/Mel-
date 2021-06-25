@@ -97,12 +97,12 @@ struct UInt2
 	bool operator==(const UInt2& int1);
 	bool operator!=(const UInt2& int1);
 };
-UInt2 operator+(const UInt2& int1, const UInt2& int2);
-UInt2 operator-(const UInt2& int1, const UInt2& int2);
-UInt2 operator*(const UInt2& int1, const UInt2& int2);
-UInt2 operator/(const UInt2& int1, const UInt2& int2);
-UInt2 operator%(const UInt2& int1, const UInt2& int2);
-
+UInt2 operator+(const UInt2& uInt1, const UInt2& uInt2);
+UInt2 operator-(const UInt2& uInt1, const UInt2& uInt2);
+UInt2 operator*(const UInt2& uInt1, const UInt2& uInt2);
+UInt2 operator/(const UInt2& uInt1, const UInt2& uInt2);
+UInt2 operator%(const UInt2& uInt1, const UInt2& uInt2);
+							
 struct UInt3
 {
 	UInt3(const unsigned int value = 0);
@@ -119,12 +119,12 @@ struct UInt3
 	bool operator==(const UInt3& int1);
 	bool operator!=(const UInt3& int1);
 };
-UInt3 operator+(const UInt3& int1, const UInt3& int2);
-UInt3 operator-(const UInt3& int1, const UInt3& int2);
-UInt3 operator*(const UInt3& int1, const UInt3& int2);
-UInt3 operator/(const UInt3& int1, const UInt3& int2);
-UInt3 operator%(const UInt3& int1, const UInt3& int2);
-
+UInt3 operator+(const UInt3& uInt1, const UInt3& uInt2);
+UInt3 operator-(const UInt3& uInt1, const UInt3& uInt2);
+UInt3 operator*(const UInt3& uInt1, const UInt3& uInt2);
+UInt3 operator/(const UInt3& uInt1, const UInt3& uInt2);
+UInt3 operator%(const UInt3& uInt1, const UInt3& uInt2);
+						
 struct UInt4
 {
 	UInt4(const unsigned int value = 0);
@@ -141,11 +141,11 @@ struct UInt4
 	bool operator==(const UInt4& int1);
 	bool operator!=(const UInt4& int1);
 };
-UInt4 operator+(const UInt4& int1, const UInt4& int2);
-UInt4 operator-(const UInt4& int1, const UInt4& int2);
-UInt4 operator*(const UInt4& int1, const UInt4& int2);
-UInt4 operator/(const UInt4& int1, const UInt4& int2);
-UInt4 operator%(const UInt4& int1, const UInt4& int2);
+UInt4 operator+(const UInt4& uInt1, const UInt4& uInt2);
+UInt4 operator-(const UInt4& uInt1, const UInt4& uInt2);
+UInt4 operator*(const UInt4& uInt1, const UInt4& uInt2);
+UInt4 operator/(const UInt4& uInt1, const UInt4& uInt2);
+UInt4 operator%(const UInt4& uInt1, const UInt4& uInt2);
 
 
 
