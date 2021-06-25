@@ -193,12 +193,8 @@ bool LibMath::GetAStarCalcResult
 	while(1)
 	{
 		//ゴールにたどり着けない場合
-		if (openNode.size() == 0)
-		{
-			return false;
-		}
+		if (openNode.size() == 0) return false;
 		
-
 		//並び替え
 		std::sort
 		(
@@ -259,7 +255,7 @@ bool LibMath::GetAStarCalcResult
 					+ CalcNodeDistance(indexX, indexY, endNodeIndexX, endNodeIndexY)
 					+ checkNode->cost;
 
-				checkNode->parentNode = &nodes[mainNode->indexY][mainNode->indexX];
+				checkNode->previousNode = &nodes[mainNode->indexY][mainNode->indexX];
 
 				if (checkNode->indexX == endNodeIndexX && checkNode->indexY == endNodeIndexY)
 				{
@@ -290,27 +286,16 @@ bool LibMath::GetAStarCalcResult
 		openPushBackNode.clear();
 	}
 
-	std::vector<AStarNode*>nodeVector;
-	nodeVector.push_back(endNode);
+	std::vector<Vector3>nodePositions;
+	AStarNode* currentNode = endNode;
 	while(1)
 	{
-		nodeVector.push_back(endNode->parentNode);
+		if (!currentNode)break;
+		nodePositions.push_back(currentNode->position);
+		currentNode = currentNode->previousNode;
 	}
 
 
-	////リサイズ
-	//auto minRouteNodesArrayNum = minRouteNodePositions.size();
-	//routeVector.resize(minRouteNodesArrayNum - 1);
-
-	////スタート地点をセット
-	////routeVector[0] = nodes[startNodeIndexY][startNodeIndexX].position;
-	//
-
-	////ノードからノードの計算と代入(前ノードから後ノード)
-	//for(int i = 0 ,size = routeVector.size();i < size ;i++)
-	//{
-	//	routeVector[i] = minRouteNodePositions[i + 1] - minRouteNodePositions[i];
-	//}
 
 	return true;
 }

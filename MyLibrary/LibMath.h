@@ -32,7 +32,7 @@ struct AStarNode
 	int indexX = INT_MAX;
 	int indexY = INT_MAX;
 
-	AStarNode* parentNode = nullptr;
+	AStarNode* previousNode = nullptr;
 	bool openFlag = false;
 	bool closeFlag = false;
 	//進行不能オブジェクトと重なっているノード
@@ -50,7 +50,7 @@ public:
 #pragma region 最短経路
 
 	/// <summary>
-	/// ノードの座標をセットします。
+	/// 引数を基準にノードの座標をセットします。
 	/// </summary>
 	/// <param name="leftUpPos">左上座標</param>
 	/// <param name="rightDownPos">右下座標</param>
@@ -68,7 +68,7 @@ public:
 		const bool upPlus
 	);
 
-	//この関数でコストが1じゃないオブジェクトとそのコストを渡すようにする
+	//この関数でコストが1じゃないオブジェクトとそのコストを渡すようにする?
 	/// <summary>
 	/// ノードが進行不能オブジェクトにヒットしてるかを確認します。
 	/// </summary>

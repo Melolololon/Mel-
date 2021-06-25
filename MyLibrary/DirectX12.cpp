@@ -1049,6 +1049,7 @@ void DirectX12::LoopEndProcess()
 
 	Model::SetCommonConstData(commonData);
 
+
 	//ポストエフェクトレンダーターゲットのMap
 	DirectX::XMMATRIX peWorldMat = DirectX::XMMatrixIdentity();
 	peWorldMat *= DirectX::XMMatrixScaling
