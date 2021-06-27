@@ -35,6 +35,9 @@ DirectX::XMMATRIX Camera::GetViewMatrix() const
 
 	Vector3 cameraPosition = 0;
 	Vector3 target = 0;
+	
+	//このアルゴリズムで、カメラを90度回転(Xの-方向に向いてる)ときに、FPSからTPS切り替えると、
+	//カメラがプレイヤーの後ろに行って、スカイリムのカメラ切り替えみたいになる
 	if (cameraMode == CameraMode::CAMERA_MODE_FPS) 
 	{
 		target = Vector3(0, 0, cameraToTargetDistance);
