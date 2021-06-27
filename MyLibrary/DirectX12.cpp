@@ -994,7 +994,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		typeid(RenderTarget).name(),
 		1
 	);
-	RenderTarget::Get("main")->SetPipeline(&postEffectTestPipeline);
+	//RenderTarget::Get("main")->SetPipeline(&postEffectTestPipeline);
 	//renderTarget->SetPipeline(&postEffectTestPipeline);
 #pragma endregion
 
@@ -1076,7 +1076,7 @@ void DirectX12::LoopEndProcess()
 	DirectX::XMFLOAT3 lightDirection = DirectionalLight::Get().GetDirection().ToXMFLOAT3();
 	commonData.light = DirectX::XMFLOAT4(lightDirection.x, lightDirection.y, lightDirection.z, 1);
 	commonData.lightColor = { lightColor.x,lightColor.y,lightColor.z,1 };
-	commonData.lightMat = cameraMat;
+	commonData.lightMat = DirectX::XMMatrixIdentity();
 	//共通バッファのMap
 	for (auto& cBuf : commonBuffers)
 	{

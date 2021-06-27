@@ -20,7 +20,7 @@ Play::Play(){}
 Play::~Play(){}
 
 Vector3 angle = 0;
-
+Vector3 modelAngle = 0;
 void Play::Initialize()
 {
 
@@ -38,8 +38,8 @@ void Play::Initialize()
 		Vector3 pos =
 		Vector3
 		(
-			Random::GetRandomNumberRangeSelect(-20,20) ,
-			Random::GetRandomNumberRangeSelect(-20,20) ,
+			0 ,
+			0 ,
 			0
 		);
 		fbxModel->SetPosition(pos, i);
@@ -117,26 +117,9 @@ void Play::Initialize()
 		typeid(FbxModel).name(),
 		2
 	);
-	fbxModel->SetPipelineAllSet(&fbxPipeline);
+	//fbxModel->SetPipelineAllSet(&fbxPipeline);
 
 
-
-
-
-	//テスト これXYZ三回やれば3Dでもいける?
-	Vector2 p3 = Vector2(0, 1);
-	Vector2 p4 = Vector2(1, 0);
-	float p3Angle = atan2(p3.y, p3.x);
-	float p4Angle = atan2(p4.y, p4.x);
-	float p3ToP4Angle = LibMath::AngleConversion(1,p3Angle - p4Angle);
-	int z = 0;
-	//Vector3 p1 = Vector3(0, 0, 1);
-	//Vector3 p2 = Vector3(1, 0, 0);
-	//Vector3 angle = Vector3
-	//(
-	//	atan2()
-	//);
-	
 }
 
 void Play::Update()
@@ -148,7 +131,7 @@ void Play::Update()
 
 	for (int i = 0; i < CREATE_NUM; i++)
 	{
-		fbxModel->PlayAnimation(i);
+		//fbxModel->PlayAnimation(i);
 		//fbxModel->SetAngle(angle,i);
 	}
 	/*Vector2 sprPos = curve->GetVector2Position();
@@ -157,21 +140,42 @@ void Play::Update()
 
 	if(DirectInput::KeyState(DIK_W))
 	{
-		angle.x += 2;
+		angle.x += 5;
 	}
 	if (DirectInput::KeyState(DIK_S))
 	{
-		angle.x -= 2;
+		angle.x -= 5;
 	}
 	if (DirectInput::KeyState(DIK_A))
 	{
-		angle.y += 2;
+		angle.y += 5;
 	}
 	if (DirectInput::KeyState(DIK_D))
 	{
-		angle.y -= 2;
+		angle.y -= 5;
 	}
+	Camera::Get()->SetCameraMode(Camera::CameraMode::CAMERA_MODE_TPS);
+	Camera::Get()->SetPosition(Vector3(0,0,0));
+	Camera::Get()->SetCameraToTargetDistance(60.0f);
 	Camera::Get()->SetAngle(angle);
+
+	if (DirectInput::KeyState(DIK_UP))
+	{
+		modelAngle.x += 5;
+	}
+	if (DirectInput::KeyState(DIK_DOWN))
+	{
+		modelAngle.x -= 5;
+	}
+	if (DirectInput::KeyState(DIK_LEFT))
+	{
+		modelAngle.y += 5;
+	}
+	if (DirectInput::KeyState(DIK_RIGHT))
+	{
+		modelAngle.y -= 5;
+	}
+	fbxModel->SetAngle(modelAngle, 0);
 }
 
 void Play::Draw()

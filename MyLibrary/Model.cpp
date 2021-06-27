@@ -863,7 +863,7 @@ void Model::MapConstData(const int modelNum, const Camera* camera)
 		cameraMat = DirectX::XMMatrixRotationZ(-cameraAngle.z);
 		cameraMat = DirectX::XMMatrixRotationX(-cameraAngle.x);
 		cameraMat = DirectX::XMMatrixRotationY(-cameraAngle.y);
-		constBufferData->normalMat = matWorld * cameraMat;
+		constBufferData->normalMat = matWorld;
 
 		matWorld *= DirectX::XMMatrixTranslation
 		(

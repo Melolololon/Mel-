@@ -9,10 +9,11 @@
 class Camera
 {
 public:
-	enum CameraMode
+	//カメラのモード
+	enum class CameraMode
 	{
-		CAMERA_MODE_FPS,
-		CAMERA_MODE_TPS,
+		CAMERA_MODE_FPS,//1人称視点
+		CAMERA_MODE_TPS,//3人称視点
 	};
 
 private:
@@ -22,7 +23,7 @@ private:
 	static UINT createCount;
 	static std::string mainCameraName;
 
-	CameraMode cameraMode = CAMERA_MODE_FPS;
+	CameraMode cameraMode = CameraMode::CAMERA_MODE_FPS;
 	
 	//位置(FPSモードではカメラ座標、TPS視点では注視点座標)
 	Vector3 position = Vector3(0,0,-10);
@@ -69,7 +70,7 @@ public:
 	/// <summary>
 	/// FPSモード時はカメラの座標を、TPS視点時は注視点の座標をセットします。
 	/// </summary>
-	/// <param name="pos"></param>
+	/// <param name="position">座標</param>
 	void SetPosition(const Vector3& position) 
 	{
 		this->position = position; 
@@ -121,7 +122,7 @@ public:
 	/// <summary>
 	/// カメラと注視点の距離をセットします。主にTPS視点のカメラを実装するために使用します。初期値は1.0fです。
 	/// </summary>
-	/// <param name="distance"></param>
+	/// <param name="distance">カメラと注視点の距離</param>
 	void SetCameraToTargetDistance(const float distance)
 	{
 		cameraToTargetDistance = distance;
@@ -130,7 +131,7 @@ public:
 	/// <summary>
 	/// カメラモードをセットします。
 	/// </summary>
-	/// <param name="mode"></param>
+	/// <param name="mode">カメラのモード</param>
 	void SetCameraMode(const CameraMode mode)
 	{
 		cameraMode = mode;
