@@ -20,6 +20,7 @@ Play::Play(){}
 Play::~Play(){}
 
 Vector3 angle = 0;
+Vector3 mAngle = 0;
 
 void Play::Initialize()
 {
@@ -38,8 +39,7 @@ void Play::Initialize()
 		Vector3 pos =
 		Vector3
 		(
-			Random::GetRandomNumberRangeSelect(-20,20) ,
-			Random::GetRandomNumberRangeSelect(-20,20) ,
+			0,0,
 			0
 		);
 		fbxModel->SetPosition(pos, i);
@@ -117,25 +117,11 @@ void Play::Initialize()
 		typeid(FbxModel).name(),
 		2
 	);
-	fbxModel->SetPipelineAllSet(&fbxPipeline);
+	//fbxModel->SetPipelineAllSet(&fbxPipeline);
 
 
 
 
-
-	//テスト これXYZ三回やれば3Dでもいける?
-	Vector2 p3 = Vector2(0, 1);
-	Vector2 p4 = Vector2(1, 0);
-	float p3Angle = atan2(p3.y, p3.x);
-	float p4Angle = atan2(p4.y, p4.x);
-	float p3ToP4Angle = LibMath::AngleConversion(1,p3Angle - p4Angle);
-	int z = 0;
-	//Vector3 p1 = Vector3(0, 0, 1);
-	//Vector3 p2 = Vector3(1, 0, 0);
-	//Vector3 angle = Vector3
-	//(
-	//	atan2()
-	//);
 	
 }
 
@@ -155,6 +141,25 @@ void Play::Update()
 	spr->SetPosition(sprPos);
 	curve->AddNumber(0.02f);*/
 
+	if (DirectInput::KeyState(DIK_UP))
+	{
+		mAngle.x += 2;
+	}
+	if (DirectInput::KeyState(DIK_DOWN))
+	{
+		mAngle.x -= 2;
+	}
+	if (DirectInput::KeyState(DIK_LEFT))
+	{
+		mAngle.y += 2;
+	}
+	if (DirectInput::KeyState(DIK_RIGHT))
+	{
+		mAngle.y -= 2;
+	}
+	fbxModel->SetAngle(mAngle, 0);
+
+
 	if(DirectInput::KeyState(DIK_W))
 	{
 		angle.x += 2;
@@ -171,6 +176,9 @@ void Play::Update()
 	{
 		angle.y -= 2;
 	}
+	Camera::Get()->SetCameraMode(Camera::CameraMode::CAMERA_MODE_TPS);
+	Camera::Get()->SetPosition(Vector3(0, 0, 0));
+	Camera::Get()->SetCameraToTargetDistance(30.0f);
 	Camera::Get()->SetAngle(angle);
 }
 

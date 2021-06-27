@@ -973,28 +973,28 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 
 #pragma region テスト用
-	PipelineState postEffectTestPipeline;
+	//PipelineState postEffectTestPipeline;
 
-	PipelineData data;
-	data.alphaWriteMode = ALPHA_WRITE_TRUE;
-	data.blendMode = BLEND_ADD;
-	data.cullMode = CULL_NONE;
-	data.depthMode = DEPTH_FALSE;
-	data.drawMode = DRAW_SOLID;
-	auto result = postEffectTestPipeline.CreatePipeline
-	(
-		data,
-		{ L"../MyLibrary/PostEffectTestVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"NULL","","" },
-		{ L"NULL","","" },
-		{ L"NULL","","" },
-		{ L"../MyLibrary/PostEffectTestPixelShader.hlsl","PSmain","ps_5_0" },
-		PipelineType::PIPELINE_TYPE_RENDER_TARGET,
-		nullptr,
-		typeid(RenderTarget).name(),
-		1
-	);
-	RenderTarget::Get("main")->SetPipeline(&postEffectTestPipeline);
+	//PipelineData data;
+	//data.alphaWriteMode = ALPHA_WRITE_TRUE;
+	//data.blendMode = BLEND_ADD;
+	//data.cullMode = CULL_NONE;
+	//data.depthMode = DEPTH_FALSE;
+	//data.drawMode = DRAW_SOLID;
+	//auto result = postEffectTestPipeline.CreatePipeline
+	//(
+	//	data,
+	//	{ L"../MyLibrary/PostEffectTestVertexShader.hlsl","VSmain","vs_5_0" },
+	//	{ L"NULL","","" },
+	//	{ L"NULL","","" },
+	//	{ L"NULL","","" },
+	//	{ L"../MyLibrary/PostEffectTestPixelShader.hlsl","PSmain","ps_5_0" },
+	//	PipelineType::PIPELINE_TYPE_RENDER_TARGET,
+	//	nullptr,
+	//	typeid(RenderTarget).name(),
+	//	1
+	//);
+	//RenderTarget::Get("main")->SetPipeline(&postEffectTestPipeline);
 	//renderTarget->SetPipeline(&postEffectTestPipeline);
 #pragma endregion
 

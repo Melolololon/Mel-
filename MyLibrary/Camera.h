@@ -9,7 +9,7 @@
 class Camera
 {
 public:
-	enum CameraMode
+	enum class CameraMode
 	{
 		CAMERA_MODE_FPS,
 		CAMERA_MODE_TPS,
@@ -22,7 +22,7 @@ private:
 	static UINT createCount;
 	static std::string mainCameraName;
 
-	CameraMode cameraMode = CAMERA_MODE_FPS;
+	CameraMode cameraMode = CameraMode::CAMERA_MODE_FPS;
 	
 	//位置(FPSモードではカメラ座標、TPS視点では注視点座標)
 	Vector3 position = Vector3(0,0,-10);
@@ -156,7 +156,7 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	DirectX::XMMATRIX GetViewAndProjectionMat()const;
-
+	Vector3 GetCameraPosition()const { return position; }
 	Vector3 GetCameraAngle()const { return angle; }
 
 #pragma endregion
