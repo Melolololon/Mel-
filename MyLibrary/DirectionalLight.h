@@ -4,6 +4,7 @@
 #include<memory>
 
 #include"Vector.h"
+#include"Color.h"
 
 class DirectionalLight
 {
@@ -14,7 +15,7 @@ private:
 	static std::string mainCameraName;
 
 	Vector3 direction = Vector3(0, 0, 1);
-
+	Color color = Color(255, 255, 255, 255);
 public:
 	
 	DirectionalLight(){}
@@ -27,8 +28,9 @@ public:
 
 	//ライトの向きをセットします。
 	void SetDirection(const Vector3& vector);
+	void SetColor(const Color& color) { this->color = color; }
 
 	Vector3 GetDirection()const { return direction; }
-
+	Color GetColor()const { return color; }
 };
 

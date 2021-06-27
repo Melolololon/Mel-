@@ -3,6 +3,7 @@
 #include"PipelineState.h"
 
 #include"RenderTarget.h"
+#include"DirectionalLight.h"
 
 ID3D12Device* Model::device;
 std::vector<ID3D12GraphicsCommandList*>Model::cmdLists;
@@ -877,7 +878,18 @@ void Model::MapConstData(const int modelNum, const Camera* camera)
 		constBufferData->worldMat = matWorld;
 	
 #pragma endregion
+		//ライト、カメラ
+		Vector3 lightDir = DirectionalLight::Get().GetDirection();
+		constBufferData->light = DirectX::XMFLOAT4(lightDir.x, lightDir.y, lightDir.z, 0);
 
+		Color lightColor = DirectionalLight::Get().GetColor();
+		constBufferData->lightColor =
+			DirectX::XMFLOAT4((float)lightColor.r / 255, (float)lightColor.g / 255, (float)lightColor.b / 255, (float)lightColor.a / 255);
+
+		constBufferData->lightMat = DirectX::XMMatrixIdentity();
+
+		Vector3 cameraPos = camera->GetCameraPosition();
+		constBufferData->cameraPos = DirectX::XMFLOAT4(cameraPos.x, cameraPos.y, cameraPos.z, 0);
 
 		constBuffer[modelNum][i]->Unmap(0, nullptr);
 

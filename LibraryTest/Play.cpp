@@ -156,7 +156,7 @@ void Play::Update()
 	}
 	Camera::Get()->SetCameraMode(Camera::CameraMode::CAMERA_MODE_TPS);
 	Camera::Get()->SetPosition(Vector3(0,0,0));
-	Camera::Get()->SetCameraToTargetDistance(60.0f);
+	Camera::Get()->SetCameraToTargetDistance(40.0f);
 	Camera::Get()->SetAngle(angle);
 
 	if (DirectInput::KeyState(DIK_UP))
