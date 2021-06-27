@@ -180,6 +180,8 @@ void Play::Update()
 	Camera::Get()->SetPosition(Vector3(0, 0, 0));
 	Camera::Get()->SetCameraToTargetDistance(30.0f);
 	Camera::Get()->SetAngle(angle);
+
+
 }
 
 void Play::Draw()

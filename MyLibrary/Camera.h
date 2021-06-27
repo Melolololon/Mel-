@@ -24,22 +24,27 @@ private:
 
 	CameraMode cameraMode = CameraMode::CAMERA_MODE_FPS;
 	
-	//位置(FPSモードではカメラ座標、TPS視点では注視点座標)
-	Vector3 position = Vector3(0,0,-10);
-	Vector3 angle = 0;
 
 	//画角
 	float fovY = 60.0f;
-	
+
 	//最近点
 	float nearNum = 0.01f;
 	//最遠点
 	float farNum = 1000.0f;
-	
+
 	//カメラ座標から注視点の距離
 	float cameraToTargetDistance = 1.0f;
-	
-	
+
+	//位置(FPSモードではカメラ座標、TPS視点では注視点座標)
+	Vector3 position = Vector3(0,0,-10);
+	Vector3 angle = 0;
+
+	Vector3 cameraPosition = position;
+	Vector3 targetPosition = position + Vector3(0, 0, cameraToTargetDistance);
+	Vector3 upVector = Vector3(0, 1, 0);
+
+	void CalcCameraData();
 public:
 	Camera(){}
 	~Camera(){}
@@ -69,28 +74,15 @@ public:
 	/// <summary>
 	/// FPSモード時はカメラの座標を、TPS視点時は注視点の座標をセットします。
 	/// </summary>
-	/// <param name="pos"></param>
-	void SetPosition(const Vector3& position) 
-	{
-		this->position = position; 
-
-		//仮
-		DirectInput::SetViewMatrix(GetViewMatrix());
-		DirectInput::SetProjectionMatrix(GetProjectionMatrix());
-	}
+	/// <param name="position"></param>
+	void SetPosition(const Vector3& position);
+	
 
 	/// <summary>
 	/// 角度をセットします。角度が0,0,0の場合、カメラは0,0,1の方向を向きます。FPSモード時はカメラ座標を基準に注視点を、TPS視点時は注視点を基準にカメラの座標を回転させます。
 	/// </summary>
 	/// <param name="angle"></param>
-	void SetAngle(const Vector3& angle)
-	{
-		this->angle = angle; 
-
-		//仮
-		DirectInput::SetViewMatrix(GetViewMatrix());
-		DirectInput::SetProjectionMatrix(GetProjectionMatrix());
-	}
+	void SetAngle(const Vector3& angle);
 
 	/// <summary>
 	/// 画角をセットします。
@@ -122,19 +114,13 @@ public:
 	/// カメラと注視点の距離をセットします。主にTPS視点のカメラを実装するために使用します。初期値は1.0fです。
 	/// </summary>
 	/// <param name="distance"></param>
-	void SetCameraToTargetDistance(const float distance)
-	{
-		cameraToTargetDistance = distance;
-	}
+	void SetCameraToTargetDistance(const float distance);
 
 	/// <summary>
 	/// カメラモードをセットします。
 	/// </summary>
 	/// <param name="mode"></param>
-	void SetCameraMode(const CameraMode mode)
-	{
-		cameraMode = mode;
-	}
+	void SetCameraMode(const CameraMode mode);
 
 #pragma endregion
 
@@ -156,7 +142,9 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	DirectX::XMMATRIX GetViewAndProjectionMat()const;
-	Vector3 GetCameraPosition()const { return position; }
+	Vector3 GetCameraPosition()const { return cameraPosition; }
+	Vector3 GetTargetPosition()const { return targetPosition; }
+	Vector3 GetUpVector()const { return upVector; }
 	Vector3 GetCameraAngle()const { return angle; }
 
 #pragma endregion
