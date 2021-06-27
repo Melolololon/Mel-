@@ -120,6 +120,22 @@ void Play::Initialize()
 	fbxModel->SetPipelineAllSet(&fbxPipeline);
 
 
+
+
+
+	//テスト これXYZ三回やれば3Dでもいける?
+	Vector2 p3 = Vector2(0, 1);
+	Vector2 p4 = Vector2(1, 0);
+	float p3Angle = atan2(p3.y, p3.x);
+	float p4Angle = atan2(p4.y, p4.x);
+	float p3ToP4Angle = LibMath::AngleConversion(1,p3Angle - p4Angle);
+	int z = 0;
+	//Vector3 p1 = Vector3(0, 0, 1);
+	//Vector3 p2 = Vector3(1, 0, 0);
+	//Vector3 angle = Vector3
+	//(
+	//	atan2()
+	//);
 	
 }
 

@@ -108,7 +108,7 @@ public:
 	
 	
 	/// <summary>
-	/// num1とnum2の値の差を求め、差が基準の値より多かったらtrueを返します
+	/// num1とnum2の値の差を求め、差が基準の値より多かったらtrueを返します。
 	/// </summary>
 	/// <param name="num1">値1</param>
 	/// <param name="num2">値2</param>
@@ -117,7 +117,7 @@ public:
 	static bool Difference(const float num1, const float num2, const float difference);
 
 	/// <summary>
-	/// 
+	/// angle1とangle2の差を求め、差が基準の値より多かったらtrueを返します。
 	/// </summary>
 	/// <param name="angle1">角度(0から359)</param>
 	/// <param name="angle2">角度(0から359 )</param>
@@ -201,6 +201,13 @@ public:
 	/// <param name="angle"></param>
 	/// <returns></returns>
 	static Vector2 RotateVector2(const Vector2& v, const float& angle);
+
+	/// <summary>
+	/// pos1を原点を基準に回転させたとき、pos2まで移動するのに必要な角度を返します。
+	/// </summary>
+	/// <returns></returns>
+	static float Pos1ToPos2Angle(const Vector2& pos1,const Vector2& pos2);
+
 #pragma endregion
 
 #pragma region Vector3

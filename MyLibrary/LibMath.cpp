@@ -833,6 +833,12 @@ Vector2 LibMath::RotateVector2(const Vector2& v, const float& angle)
 	Quaternion q = Quaternion::GetRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
 	return { q.x,q.y };
 }
+float LibMath::Pos1ToPos2Angle(const Vector2& pos1, const Vector2& pos2)
+{
+	float pos1Angle = atan2(pos1.y, pos1.x);
+	float pos2Angle = atan2(pos2.y, pos2.x);
+	return LibMath::AngleConversion(1, pos1Angle - pos2Angle);
+}
 #pragma endregion
 
 #pragma region Vector3

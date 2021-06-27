@@ -33,9 +33,24 @@ DirectX::XMMATRIX Camera::GetViewMatrix() const
 		vector = LibMath::RotateVector3(vector, Vector3(0, 1, 0), angle.y);
 	};
 
-	Vector3 target = Vector3(0, 0, 1);
-	RotateVectorCameraAngle(target);
-	target += position;
+	Vector3 cameraPosition = 0;
+	Vector3 target = 0;
+	if (cameraMode == CameraMode::CAMERA_MODE_FPS) 
+	{
+		target = Vector3(0, 0, cameraToTargetDistance);
+		RotateVectorCameraAngle(target);
+		target += position;
+
+		cameraPosition = position;
+	}
+	else
+	{
+		cameraPosition = Vector3(0, 0, -cameraToTargetDistance);
+		RotateVectorCameraAngle(cameraPosition);
+		cameraPosition += position;
+
+		target = position;
+	}
 
 	Vector3 upVector = Vector3(0, 1, 0);
 	RotateVectorCameraAngle(upVector);
@@ -43,7 +58,7 @@ DirectX::XMMATRIX Camera::GetViewMatrix() const
 
 	DirectX::XMMATRIX matView = DirectX::XMMatrixLookAtLH
 	(
-		DirectX::XMLoadFloat3(&position.ToXMFLOAT3()),
+		DirectX::XMLoadFloat3(&cameraPosition.ToXMFLOAT3()),
 		DirectX::XMLoadFloat3(&target.ToXMFLOAT3()),
 		DirectX::XMLoadFloat3(&upVector.ToXMFLOAT3())
 	);
