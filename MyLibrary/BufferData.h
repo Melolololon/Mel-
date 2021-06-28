@@ -1,5 +1,5 @@
 #pragma once
-struct BufferData
+struct ConstBufferData
 {
 	enum BufferType
 	{

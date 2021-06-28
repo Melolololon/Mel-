@@ -177,7 +177,7 @@ void Play::Update()
 		angle.y -= 2;
 	}
 	Camera::Get()->SetCameraMode(Camera::CameraMode::CAMERA_MODE_TPS);
-	Camera::Get()->SetPosition(Vector3(0, 0, 0));
+	Camera::Get()->SetRotatePosition(Vector3(0, 0, 0));
 	Camera::Get()->SetCameraToTargetDistance(30.0f);
 	Camera::Get()->SetAngle(angle);
 

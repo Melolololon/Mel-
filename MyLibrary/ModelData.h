@@ -23,7 +23,6 @@ private:
 
 	//頂点
 	std::vector<VertexBufferSet> vertexBufferSet;
-	int modelFileObjectNum = 0;
 
 	//インデックス
 	std::vector < IndexBufferSet> indexBufferSet;
@@ -100,9 +99,12 @@ private:
 
 protected:
 
-	std::vector<std::unique_ptr<Texture>>pTextures;
+	int modelFileObjectNum = 0;
+
 	std::vector<std::vector<USHORT>> indices;
-	
+
+	std::vector<std::unique_ptr<Texture>>pTextures;
+
 	/// <summary>
 	/// 頂点インデックスバッファセットの生成とMapを行います。
 	/// </summary>
@@ -129,11 +131,11 @@ protected:
 		const std::vector<std::vector<USHORT>>& indices
 	);
 
-	
+
 public:
-	
-	ModelData(){}
-	~ModelData(){}
+
+	ModelData() {}
+	~ModelData() {}
 
 #pragma region コマンドセット用関数
 	const std::vector<std::vector<USHORT>>& GetIndices()const { return indices; }
@@ -141,6 +143,28 @@ public:
 	const std::vector<VertexBufferSet>& GetVertexBufferSet()const { return vertexBufferSet; }
 	const std::vector<IndexBufferSet>& GetIndexBufferSet()const { return indexBufferSet; }
 	ID3D12DescriptorHeap* GetTextureDesctiptorHeap()const { return textureDescHeap.Get(); }
+
+#pragma endregion
+
+#pragma region セット
+
+#pragma endregion
+
+
+#pragma region ゲット
+
+	/// <summary>
+	/// モデルファイルに含まれているオブジェクト(モデル)の数を取得します。
+	/// </summary>
+	/// <returns></returns>
+	int GetModelFileObjectNumber() { return modelFileObjectNum; }
+
+	/// <summary>
+	/// マテリアルを取得します。
+	/// </summary>
+	/// <returns></returns>
+	Material GetMaterial()const { return material; }
+
 
 #pragma endregion
 

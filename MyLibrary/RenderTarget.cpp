@@ -25,7 +25,7 @@ RenderTarget::RenderTarget(const Color& color):
 	//ヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
 	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	peHeapDesc.NumDescriptors = _countof(textureBuffer);
+	peHeapDesc.NumDescriptors = RT_NUM;
 	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	peHeapDesc.NodeMask = 0;
 	result = device->CreateDescriptorHeap
@@ -37,7 +37,7 @@ RenderTarget::RenderTarget(const Color& color):
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = _countof(textureBuffer);
+	rtvHeapDesc.NumDescriptors = RT_NUM;
 	result = device->CreateDescriptorHeap
 	(
 		&rtvHeapDesc,
@@ -65,7 +65,7 @@ RenderTarget::RenderTarget(const Color& color):
 	peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
 
 
-	for (int i = 0; i < _countof(textureBuffer); i++) 
+	for (int i = 0; i < RT_NUM; i++)
 	{
 	
 		result = device->CreateCommittedResource
@@ -184,17 +184,18 @@ void RenderTarget::Delete(const std::string& name)
 bool RenderTarget::Initialize()
 {
 
-	CD3DX12_DESCRIPTOR_RANGE descRangeSRV1;
-	descRangeSRV1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	
 
-	CD3DX12_DESCRIPTOR_RANGE descRangeSRV2;
-	descRangeSRV2.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
 
-	CD3DX12_ROOT_PARAMETER rootparam[3] = {};
+	CD3DX12_ROOT_PARAMETER rootparam[1 + RT_NUM] = {};
 	rootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparam[1].InitAsDescriptorTable(1, &descRangeSRV1, D3D12_SHADER_VISIBILITY_PIXEL);
-	rootparam[2].InitAsDescriptorTable(1, &descRangeSRV2, D3D12_SHADER_VISIBILITY_PIXEL);
 
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV1[RT_NUM];
+	for (int i = 0; i < RT_NUM; i++) 
+	{
+		descRangeSRV1[i].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, i);
+		rootparam[1 + i].InitAsDescriptorTable(1, &descRangeSRV1[i], D3D12_SHADER_VISIBILITY_PIXEL);
+	}
 #pragma region ルートシグネチャ
 
 
@@ -281,7 +282,7 @@ bool RenderTarget::Initialize()
 
 void RenderTarget::PreDrawProcess()
 {
-	for (int i = 0; i < _countof(textureBuffer); i++) 
+	for (int i = 0; i < RT_NUM; i++)
 	{
 		//セット
 		cmdList->ResourceBarrier
@@ -297,8 +298,8 @@ void RenderTarget::PreDrawProcess()
 	}
 
 	//レンダーターゲットセット
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[_countof(textureBuffer)];
-	for(int i = 0; i < _countof(textureBuffer);i++)
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[RT_NUM];
+	for(int i = 0; i < RT_NUM;i++)
 	{
 		rtvHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
@@ -309,10 +310,10 @@ void RenderTarget::PreDrawProcess()
 	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	cmdList->OMSetRenderTargets(2, rtvHandle, false, &dsvHandle);
+	cmdList->OMSetRenderTargets(RT_NUM, rtvHandle, false, &dsvHandle);
 
 	//画面のクリア
-	for (int i = 0; i < _countof(textureBuffer); i++) 
+	for (int i = 0; i < RT_NUM; i++)
 	{
 		cmdList->ClearRenderTargetView(rtvHandle[i], clearColor, 0, nullptr);
 	}
@@ -322,9 +323,9 @@ void RenderTarget::PreDrawProcess()
 
 #pragma region ビューポート_シザー矩形
 
-	D3D12_VIEWPORT viewport[_countof(textureBuffer)]{};
-	D3D12_RECT scissorRect[_countof(textureBuffer)]{};
-	for (int i = 0; i < _countof(textureBuffer); i++) 
+	D3D12_VIEWPORT viewport[RT_NUM]{};
+	D3D12_RECT scissorRect[RT_NUM]{};
+	for (int i = 0; i < RT_NUM; i++)
 	{
 		viewport[i].Width = Library::GetWindowWidth();
 		viewport[i].Height = Library::GetWindowHeight();
@@ -348,7 +349,7 @@ void RenderTarget::PreDrawProcess()
 void RenderTarget::SetCmdList()
 {
 	//戻す
-	for (int i = 0; i < _countof(textureBuffer); i++)
+	for (int i = 0; i < RT_NUM; i++)
 	{
 		cmdList->ResourceBarrier
 		(
@@ -374,23 +375,17 @@ void RenderTarget::SetCmdList()
 	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 	
 
-	//テクスチャ1
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	(
-		descHeap->GetGPUDescriptorHandleForHeapStart(),
-		0,
-		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
-	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
-
-	//テクスチャ2
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	(
-		descHeap->GetGPUDescriptorHandleForHeapStart(),
-		1,
-		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
-	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandle);
+	//テクスチャ
+	for (int i = 0; i < RT_NUM; i++) 
+	{
+		gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+		(
+			descHeap->GetGPUDescriptorHandleForHeapStart(),
+			i,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		);
+		cmdList->SetGraphicsRootDescriptorTable(i + 1, gpuDescHandle);
+	}
 
 	//定数
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffer->GetGPUVirtualAddress());

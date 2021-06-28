@@ -44,8 +44,8 @@ private:
 	int eachModelConstBufferNum = 0;
 	//モデルのオブジェクトごと
 	int eachModelObjectConstBufferNum = 0;
-	BufferData::BufferType modelConstBufferType;
-	BufferData::BufferType userConstBufferType;
+	ConstBufferData::BufferType modelConstBufferType;
+	ConstBufferData::BufferType userConstBufferType;
 
 	static ID3D12Device* device;
 	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
@@ -87,8 +87,8 @@ private:
 		const int modelNum,
 		const int modelFileObjectNum,
 		const int heapTop,
-		BufferData* modelBufferData,
-		BufferData* userBufferData
+		ConstBufferData* modelBufferData,
+		ConstBufferData* userBufferData
 	);
 
 	void CreateTextureBuffer
@@ -193,8 +193,8 @@ protected:
 		const std::vector<Texture*>& pTextures,
 		const int modelNum,
 		const int modelFileObjectNum,
-		BufferData* modelBufferData,
-		BufferData* userBufferData
+		ConstBufferData* modelBufferData,
+		ConstBufferData* userBufferData
 	);
 
 	void CreateModelHeapResourcesSelectColor
@@ -202,8 +202,8 @@ protected:
 		const Color& color,
 		const int modelNum,
 		const int modelFileObjectNum,
-		BufferData* modelBufferData,
-		BufferData* userBufferData
+		ConstBufferData* modelBufferData,
+		ConstBufferData* userBufferData
 	);
 
 	void BufferCreatePreparation
@@ -211,8 +211,8 @@ protected:
 		const int modelNum,
 		const int modelFileObjectNum,
 		const size_t textureNum,
-		BufferData* modelBufferData,
-		BufferData* userBufferData 
+		ConstBufferData* modelBufferData,
+		ConstBufferData* userBufferData 
 	);
 #pragma endregion
 

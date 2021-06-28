@@ -21,6 +21,7 @@ void ObjModel::LoadModelVertices
 	//オブジェクトのマテリアル名格納
 	std::vector<std::string>materialName;
 
+	std::vector<Vector3>objBonePositionsV3;
 	ModelLoader::GetInstance()->LoadObjModel
 	(
 		path,
@@ -32,9 +33,16 @@ void ObjModel::LoadModelVertices
 		materialName,
 		smoothData,
 		&modelObjectNum,
-		&objBonePositions,
+		&objBonePositionsV3,
 		&objBoneNums
 	);
+
+	objBonePositions.resize(objBonePositionsV3.size());
+	for(int i = 0,size = objBonePositionsV3.size();i < size;i++)
+	{
+		objBonePositions[i] = objBonePositionsV3[i].ToXMFLOAT3();
+	}
+
 	boneNum = objBonePositions.size();
 
 	if(boneNum == 0)
@@ -214,14 +222,14 @@ void ObjModel::LoadModelMaterial
 	}
 	
 	//ボーンバッファの情報セット
-	std::unique_ptr<BufferData> boneBufferData;
+	std::unique_ptr<ConstBufferData> boneBufferData;
 	//ボーンがあったらボーンバッファ生成
 	if (boneNum != 0) 
 	{
-		boneBufferData = std::make_unique<BufferData>();
+		boneBufferData = std::make_unique<ConstBufferData>();
 		
 		//モデルのオブジェクトごとのスケールを掛けるため、モデルのオブジェクトごとに作る
-		boneBufferData->bufferType = BufferData::BUFFER_TYPE_EACH_MODEL_OBJECT;
+		boneBufferData->bufferType = ConstBufferData::BUFFER_TYPE_EACH_MODEL_OBJECT;
 		boneBufferData->bufferDataSize = sizeof(BoneConstBufferData);
 	}
 	CreateModelHeapResourcesSetTexture

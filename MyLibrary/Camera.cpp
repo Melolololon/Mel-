@@ -23,17 +23,17 @@ void Camera::CalcCameraData()
 	{
 		targetPosition = Vector3(0, 0, cameraToTargetDistance);
 		RotateVectorCameraAngle(targetPosition);
-		targetPosition += position;
+		targetPosition += rotatePosition;
 
-		cameraPosition = position;
+		cameraPosition = rotatePosition;
 	}
 	else
 	{
 		cameraPosition = Vector3(0, 0, -cameraToTargetDistance);
 		RotateVectorCameraAngle(cameraPosition);
-		cameraPosition += position;
+		cameraPosition += rotatePosition;
 
-		targetPosition = position;
+		targetPosition = rotatePosition;
 	}
 
 	upVector = Vector3(0, 1, 0);
@@ -58,9 +58,9 @@ void Camera::Delete(const std::string& name)
 	pCameras.erase(name);
 }
 
-void Camera::SetPosition(const Vector3& position)
+void Camera::SetRotatePosition(const Vector3& position)
 {
-	this->position = position;
+	this->rotatePosition = position;
 	CalcCameraData();
 	//‰¼
 	DirectInput::SetViewMatrix(GetViewMatrix());

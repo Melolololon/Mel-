@@ -13,13 +13,26 @@ private:
 
 	//[.obj内のオブジェクトごと][頂点ごと]
 	std::vector<std::vector<int>> objBoneNums;//頂点に割り当てられているボーン番号
-	//[モデルごと(keyでアクセス)][ボーンごと]
-	std::vector<DirectX::XMFLOAT3> objBonePositions;//ボーン座標
+	//[ボーンごと]
+	std::vector<Vector3> objBonePositions;//ボーン座標
 
 public:
 
 	bool Load(const std::string& path);
 
-	static void Initialize();
+	static bool Initialize();
+
+
+#pragma region セット
+
+#pragma endregion
+
+
+#pragma region ゲット
+	const std::vector<Vector3>& GetBonePositions() const { return objBonePositions; }
+
+
+#pragma endregion
+
 };
 

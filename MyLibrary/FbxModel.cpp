@@ -56,13 +56,13 @@ bool FbxModel::Load
 
 
 	//ボーンバッファの情報セット
-	std::unique_ptr<BufferData> boneBufferData;
+	std::unique_ptr<ConstBufferData> boneBufferData;
 	//ボーンがあったらバッファ生成
 	if (bones.size() != 0)
 	{
-		boneBufferData = std::make_unique<BufferData>();
+		boneBufferData = std::make_unique<ConstBufferData>();
 
-		boneBufferData->bufferType = BufferData::BUFFER_TYPE_EACH_MODEL;
+		boneBufferData->bufferType = ConstBufferData::BUFFER_TYPE_EACH_MODEL;
 		boneBufferData->bufferDataSize = sizeof(SkinConstBufferData);
 	}
 

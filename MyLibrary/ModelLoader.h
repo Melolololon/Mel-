@@ -2,6 +2,8 @@
 #include<vector>
 #include"DirectXStruct.h"
 #include<unordered_map>
+#include"Vector.h"
+
 class ModelLoader
 {
 private:
@@ -15,7 +17,7 @@ public:
 
 
 	bool LoadPmdModel(const char* path, std::vector<PMDVertex>& vertex, std::vector<unsigned short>& indices);
-	
+
 	/// <summary>
 	/// objÇì«Ç›çûÇ›Ç‹Ç∑
 	/// </summary>
@@ -37,14 +39,14 @@ public:
 		std::vector<std::string>& materialName,
 		std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
 		int* loadNum,
-		std::vector<DirectX::XMFLOAT3>* bonePosVector,
+		std::vector<Vector3>* bonePosVector,
 		std::vector<std::vector<int>>* boneNumVector
 	);
-	
+
 	bool LoadObjMaterial
 	(
-		std::string materialDirectoryPath, 
-		std::string materialFileName, 
+		std::string materialDirectoryPath,
+		std::string materialFileName,
 		std::vector<Material>& material,
 		int* loadCount
 	);

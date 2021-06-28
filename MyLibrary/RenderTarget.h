@@ -13,7 +13,7 @@ class RenderTarget :public Sprite2D
 {
 private:
 
-
+	static const int RT_NUM = 1;
 
 	static std::unordered_map<std::string,std::unique_ptr<RenderTarget>>pRenderTargets;
 	static UINT createCount;
@@ -23,7 +23,7 @@ private:
 	static PipelineState defaultPipeline;
 	static ComPtr<ID3D12RootSignature>rootSignature;
 
-	ComPtr<ID3D12Resource>textureBuffer[2];
+	ComPtr<ID3D12Resource>textureBuffer[RT_NUM];
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
 
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;

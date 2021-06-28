@@ -22,7 +22,7 @@ void ModelData::CreateVertexBufferSet
 	const std::vector<std::vector<VERTEX>>& vertices
 )
 {
-	
+
 	modelFileObjectNum = vertices.size();
 
 	//オブジェクト分リサイズ
@@ -63,11 +63,11 @@ void ModelData::MapVertices(const std::vector<std::vector<VERTEX>>& vertices)
 	}
 }
 template void ModelData::MapVertices<Vertex>
-( const std::vector<std::vector<Vertex>>& vertices);
+(const std::vector<std::vector<Vertex>>& vertices);
 template void ModelData::MapVertices<ObjAnimationVertex>
 (const std::vector<std::vector<ObjAnimationVertex>>& vertices);
 template void ModelData::MapVertices<FbxVertex>
-( const std::vector<std::vector<FbxVertex>>& vertices);
+(const std::vector<std::vector<FbxVertex>>& vertices);
 
 
 
@@ -85,7 +85,7 @@ void ModelData::CreateIndexBufferSet(const std::vector<std::vector<USHORT>>& ind
 			indexBufferSet[i]
 		);
 
-		
+
 	}
 }
 
@@ -127,7 +127,7 @@ void ModelData::CteateTextureBufferAndViewSetColor()
 
 	CreateBuffer::GetInstance()->CreateOneColorTextureBuffer
 	(
-		Color(0, 0, 0, 0), 
+		Color(0, 0, 0, 0),
 		CD3DX12_CPU_DESCRIPTOR_HANDLE
 		(
 			textureDescHeap->GetCPUDescriptorHandleForHeapStart(),

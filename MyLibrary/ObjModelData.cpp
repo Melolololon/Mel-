@@ -7,7 +7,8 @@ bool ObjModelData::Load(const std::string& path)
 	//オブジェクトのマテリアル名格納
 	std::string materialFileName;
 	std::vector<std::string>materialName;
-	
+
+
 	bool result = ModelLoader::GetInstance()->LoadObjModel
 	(
 		path,
@@ -24,7 +25,7 @@ bool ObjModelData::Load(const std::string& path)
 	);
 
 	if (!result)return false;
-	
+
 
 	int modelFileObjectNum = vertices.size();
 	int boneNum = objBonePositions.size();
@@ -52,7 +53,7 @@ bool ObjModelData::Load(const std::string& path)
 	//テクスチャ反転
 	for (auto& v : vertices)
 	{
-		for (auto& v2 : v) 
+		for (auto& v2 : v)
 		{
 			v2.uv.y = (v2.uv.y - 1) * -1;
 		}
@@ -151,10 +152,10 @@ bool ObjModelData::Load(const std::string& path)
 		materials,
 		&materialNum
 	);
-	
+
 	//テクスチャ読み込み
 	pTextures.resize(materialNum);
-	for(int i = 0; i < materialNum;i++)
+	for (int i = 0; i < materialNum; i++)
 	{
 		pTextures[i] = std::make_unique<Texture>();
 		pTextures[i]->LoadModelTexture(materials[i].textureName);

@@ -2050,6 +2050,7 @@ VertexType DirectX12::LoadObjVertex
 	std::vector<std::string>materialName;
 
 	std::vector<DirectX::XMFLOAT3>bonePos;
+	std::vector<Vector3>bonePosV3;
 	std::vector<std::vector<int>>boneNum;
 
 	//‰¼”z—ñ
@@ -2067,11 +2068,15 @@ VertexType DirectX12::LoadObjVertex
 		materialName,
 		smoothData,
 		&loadNum,
-		&bonePos,
+		&bonePosV3,
 		&boneNum
 	);
 
-	
+	bonePos.resize(bonePosV3.size());
+	for (int i = 0, size = bonePosV3.size(); i < size; i++)
+	{
+		bonePos[i] = bonePosV3[i].ToXMFLOAT3();
+	}
 
 	std::vector<std::vector<Vertex>> normalVertices(temporaryVertex.size());
 	auto size = temporaryVertex.size();
