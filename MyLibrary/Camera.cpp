@@ -19,21 +19,21 @@ void Camera::CalcCameraData()
 
 	//このアルゴリズムで、カメラを90度回転(Xの-方向に向いてる)ときに、FPSからTPS切り替えると、
 	//カメラがプレイヤーの後ろに行って、スカイリムのカメラ切り替えみたいになる
-	if (cameraMode == CameraMode::CAMERA_MODE_FPS)
+	if (rotatePoint == RotatePoint::ROTATE_POINT_CAMERA_POSITION)
 	{
 		targetPosition = Vector3(0, 0, cameraToTargetDistance);
 		RotateVectorCameraAngle(targetPosition);
-		targetPosition += rotatePosition;
+		targetPosition += rotatePointPosition;
 
-		cameraPosition = rotatePosition;
+		cameraPosition = rotatePointPosition;
 	}
 	else
 	{
 		cameraPosition = Vector3(0, 0, -cameraToTargetDistance);
 		RotateVectorCameraAngle(cameraPosition);
-		cameraPosition += rotatePosition;
+		cameraPosition += rotatePointPosition;
 
-		targetPosition = rotatePosition;
+		targetPosition = rotatePointPosition;
 	}
 
 	upVector = Vector3(0, 1, 0);
@@ -60,7 +60,7 @@ void Camera::Delete(const std::string& name)
 
 void Camera::SetRotatePosition(const Vector3& position)
 {
-	this->rotatePosition = position;
+	this->rotatePointPosition = position;
 	CalcCameraData();
 	//仮
 	DirectInput::SetViewMatrix(GetViewMatrix());
@@ -83,9 +83,9 @@ void Camera::SetCameraToTargetDistance(const float distance)
 	CalcCameraData();
 }
 
-void Camera::SetCameraMode(const CameraMode mode)
+void Camera::SetRotatePoint(const RotatePoint rotatePoint)
 {
-	cameraMode = mode;
+	this->rotatePoint = rotatePoint;
 	CalcCameraData();
 }
 

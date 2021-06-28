@@ -25,9 +25,8 @@ private:
 	std::vector<VertexBufferSet> vertexBufferSet;
 
 	//インデックス
-	std::vector < IndexBufferSet> indexBufferSet;
+	std::vector <IndexBufferSet> indexBufferSet;
 
-	//テクスチャバッファ用ヒープ
 	ComPtr<ID3D12DescriptorHeap>textureDescHeap;
 	std::vector<ComPtr<ID3D12Resource>> textureBuffers;
 
@@ -39,7 +38,6 @@ private:
 
 
 #pragma region 頂点
-
 
 	template<class VERTEX>
 	/// <summary>
@@ -99,6 +97,7 @@ private:
 
 protected:
 
+	//モデルファイルに何個モデルがあるか
 	int modelFileObjectNum = 0;
 
 	std::vector<std::vector<USHORT>> indices;
@@ -138,10 +137,29 @@ public:
 	~ModelData() {}
 
 #pragma region コマンドセット用関数
-	const std::vector<std::vector<USHORT>>& GetIndices()const { return indices; }
 
+	/// <summary>
+	/// インデックスを取得。
+	/// </summary>
+	/// <returns></returns>
+	const std::vector<std::vector<USHORT>>& GetIndices()const { return indices; }
+	
+	/// <summary>
+	/// 頂点バッファを取得。
+	/// </summary>
+	/// <returns></returns>
 	const std::vector<VertexBufferSet>& GetVertexBufferSet()const { return vertexBufferSet; }
+	
+	/// <summary>
+	/// インデックスバッファの取得。
+	/// </summary>
+	/// <returns></returns>
 	const std::vector<IndexBufferSet>& GetIndexBufferSet()const { return indexBufferSet; }
+	
+	/// <summary>
+	/// ディスクリプタヒープの取得。
+	/// </summary>
+	/// <returns></returns>
 	ID3D12DescriptorHeap* GetTextureDesctiptorHeap()const { return textureDescHeap.Get(); }
 
 #pragma endregion
@@ -157,7 +175,7 @@ public:
 	/// モデルファイルに含まれているオブジェクト(モデル)の数を取得します。
 	/// </summary>
 	/// <returns></returns>
-	int GetModelFileObjectNumber() { return modelFileObjectNum; }
+	int GetModelFileObjectNumber()const { return modelFileObjectNum; }
 
 	/// <summary>
 	/// マテリアルを取得します。

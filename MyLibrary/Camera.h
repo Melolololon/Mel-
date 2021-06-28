@@ -9,10 +9,12 @@
 class Camera
 {
 public:
-	enum class CameraMode
+	
+	//回転させるときの基準となる位置
+	enum class RotatePoint
 	{
-		CAMERA_MODE_FPS,//1人称視点
-		CAMERA_MODE_TPS,//3人称視点
+		ROTATE_POINT_CAMERA_POSITION,//カメラの座標
+		ROTATE_POINT_TARGET_POSITION,//注視点の座標
 	};
 
 private:
@@ -22,7 +24,7 @@ private:
 	static UINT createCount;
 	static std::string mainCameraName;
 
-	CameraMode cameraMode = CameraMode::CAMERA_MODE_FPS;
+	RotatePoint rotatePoint = RotatePoint::ROTATE_POINT_CAMERA_POSITION;
 	
 
 	//画角
@@ -36,12 +38,12 @@ private:
 	//カメラ座標から注視点の距離
 	float cameraToTargetDistance = 1.0f;
 
-	//回転させるときの基準位置(FPSモードではカメラ座標、TPS視点では注視点座標)
-	Vector3 rotatePosition = Vector3(0,0,-10);
+	//回転させるときの基準位置
+	Vector3 rotatePointPosition = Vector3(0,0,-10);
 	Vector3 angle = 0;
 
-	Vector3 cameraPosition = rotatePosition;
-	Vector3 targetPosition = rotatePosition + Vector3(0, 0, cameraToTargetDistance);
+	Vector3 cameraPosition = rotatePointPosition;
+	Vector3 targetPosition = rotatePointPosition + Vector3(0, 0, cameraToTargetDistance);
 	Vector3 upVector = Vector3(0, 1, 0);
 
 	void CalcCameraData();
@@ -72,14 +74,14 @@ public:
 #pragma region セット
 
 	/// <summary>
-	/// カメラを回転させるときの基準位置を設定します。FPSモード時はカメラの座標を、TPS視点時は注視点の座標をセットします。
+	/// カメラを回転させるときに基準となる座標をセットします。
 	/// </summary>
-	/// <param name="position">回転するときの基準となる座標</param>
+	/// <param name="position">回転させるときに基準となる座標</param>
 	void SetRotatePosition(const Vector3& position);
 	
 
 	/// <summary>
-	/// 角度をセットします。角度が(0,0,0)の場合、カメラは0,0,1の方向を向きます。FPSモード時はカメラ座標を基準に注視点を、TPS視点時は注視点を基準にカメラの座標を回転させます。
+	/// 角度をセットします。角度が(0,0,0)の場合、カメラは0,0,1の方向を向きます。
 	/// </summary>
 	/// <param name="angle">カメラの角度</param>
 	void SetAngle(const Vector3& angle);
@@ -111,16 +113,16 @@ public:
 	}
 
 	/// <summary>
-	/// カメラと注視点の距離をセットします。主にTPS視点のカメラを実装するために使用します。初期値は1.0fです。
+	/// カメラと注視点の距離をセットします。初期値は1.0fです。
 	/// </summary>
 	/// <param name="distance">カメラと注視点の距離</param>
 	void SetCameraToTargetDistance(const float distance);
 
 	/// <summary>
-	/// カメラのモードをセットします。
+	/// カメラを回転させるとき、どこを基準に回転させるかを決めます。
 	/// </summary>
-	/// <param name="mode">カメラのモード</param>
-	void SetCameraMode(const CameraMode mode);
+	/// <param name="rotatePoint"></param>
+	void SetRotatePoint(const RotatePoint rotatePoint);
 
 #pragma endregion
 
