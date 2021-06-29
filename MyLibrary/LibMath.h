@@ -19,9 +19,6 @@ struct AStarNode
 	//座標
 	Vector2 position = 0;
 
-	//自分を隣接してるノードと指定したノードのポインタの配列
-	std::vector<AStarNode*> pAStarNodes;
-
 	//コスト
 	UINT cost = 1;
 

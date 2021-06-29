@@ -46,6 +46,15 @@ void LibMath::SetAStarNodeHitObjectNodeFlag
 	std::vector< std::vector<AStarNode>>& nodes
 )
 {
+	for(auto& n1 : nodes)
+	{
+		for(auto& n2 : n1)
+		{
+			n2.hitObjectNode = false;
+		}
+	}
+
+
 	//サイズを求める
 	Vector2 size = 0;
 	size.x = abs(nodes[0][0].position.x - nodes[0][1].position.x);
@@ -101,11 +110,23 @@ bool LibMath::GetAStarCalcResult
 	std::vector<Vector2>& routeVector
 )
 {
+
 	//やること
 	//openに再追加、closeからの移動(wikiの7.のところ)実装する
 	//ブロックに隣接してるマスから、同じブロックに隣接してるマスへ移動しないようにする
 
 
+	//初期化
+	for (auto& n1 : nodes)
+	{
+		for (auto& n2 : n1)
+		{
+			n2.closeFlag = false;
+			n2.openFlag = false;
+			n2.previousNode = nullptr;
+			n2.calcNum = 0;
+		}
+	}
 
 	//スタート地点に一番近いノードの距離を格納する変数
 	float startMinDistance = FLT_MAX;
