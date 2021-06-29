@@ -258,8 +258,7 @@ bool LibMath::GetAStarCalcResult
 
 				AStarNode* checkNode = &nodes[indexY][indexX];
 
-				//リスト追加済かどうかの確認
-				if (checkNode->closeFlag || checkNode->openFlag)continue;
+				
 
 				//オブジェクトに重なってるかどうか
 				if (checkNode->hitObjectNode)
@@ -270,10 +269,44 @@ bool LibMath::GetAStarCalcResult
 
 
 				//calcNum = スタートからの距離 + ゴールまでの距離 + コスト
-				checkNode->calcNum = CalcNodeDistance(startNodeIndexX, startNodeIndexY, indexX, indexY)
+				int calcNum = CalcNodeDistance(startNodeIndexX, startNodeIndexY, indexX, indexY)
 					+ CalcNodeDistance(indexX, indexY, endNodeIndexX, endNodeIndexY)
 					+ checkNode->cost;
 
+				//条件を満たしたら代入
+				if (checkNode->openFlag)
+				{
+					if (calcNum < checkNode->calcNum)
+					{
+						checkNode->calcNum = calcNum;
+						checkNode->previousNode = &nodes[mainNode->indexY][mainNode->indexX];
+					}
+
+					continue;
+				}
+
+				//条件を満たしたら、closeからopenに移動&代入
+				if (checkNode->closeFlag)
+				{
+					if (calcNum < checkNode->calcNum)
+					{
+						//closeから削除
+						closeNodes.erase(closeNodes.begin() + checkNode->closeIndex);
+						checkNode->closeFlag = false;
+						checkNode->closeIndex = INT_MAX;
+
+						//openに追加
+						openNodes.push_back(checkNode);
+						checkNode->openFlag = true;
+
+						checkNode->calcNum = calcNum;
+						checkNode->previousNode = &nodes[mainNode->indexY][mainNode->indexX];
+					}
+					continue;
+				}
+
+
+				checkNode->calcNum = calcNum;
 				checkNode->previousNode = &nodes[mainNode->indexY][mainNode->indexX];
 
 				if (checkNode->indexX == endNodeIndexX && checkNode->indexY == endNodeIndexY)
@@ -292,6 +325,7 @@ bool LibMath::GetAStarCalcResult
 
 		closeNodes.push_back(mainNode);
 		mainNode->closeFlag = true;
+		mainNode->closeIndex = closeNodes.size() - 1;
 
 		//検索したやつを取り出す(ソートで最小が最後に来るようになっている)
 		openNodes[openNodes.size() - 1]->openFlag = false;
@@ -305,15 +339,15 @@ bool LibMath::GetAStarCalcResult
 		openPushBackNode.clear();
 	}
 
-	std::vector<Vector3>nodePositions;
+	routeVector.clear();
 	AStarNode* currentNode = endNode;
 	while(1)
 	{
 		if (!currentNode)break;
-		nodePositions.push_back(currentNode->position);
+		routeVector.push_back(currentNode->position);
 		currentNode = currentNode->previousNode;
 	}
-
+	std::reverse(routeVector.begin(), routeVector.end());
 
 
 	return true;
