@@ -115,6 +115,14 @@ void Play::Initialize()
 		vectors
 	);
 
+	res = LibMath::GetAStarCalcResult
+	(
+		Vector2(50, 50),
+		Vector2(-50, 50),
+		nodes,
+		vectors
+	);
+
 	int a = 0;
 
 }

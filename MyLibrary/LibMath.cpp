@@ -124,7 +124,7 @@ bool LibMath::GetAStarCalcResult
 			n2.closeFlag = false;
 			n2.openFlag = false;
 			n2.previousNode = nullptr;
-			n2.calcNum = 0;
+			n2.calcNum = UINT_MAX;
 			n2.closeIndex = INT_MAX;
 		}
 	}
