@@ -116,7 +116,7 @@ bool LibMath::GetAStarCalcResult
 	//ブロックに隣接してるマスから、同じブロックに隣接してるマスへ移動しないようにする
 
 
-	//初期化
+	//リセット
 	for (auto& n1 : nodes)
 	{
 		for (auto& n2 : n1)
@@ -125,6 +125,7 @@ bool LibMath::GetAStarCalcResult
 			n2.openFlag = false;
 			n2.previousNode = nullptr;
 			n2.calcNum = 0;
+			n2.closeIndex = INT_MAX;
 		}
 	}
 
@@ -198,12 +199,9 @@ bool LibMath::GetAStarCalcResult
 	int startToEndDis = CalcNodeDistance(startNodeIndexX, startNodeIndexY, endNodeIndexX, endNodeIndexY);
 
 	nodes[startNodeIndexY][startNodeIndexX].calcNum = startToEndDis + nodes[startNodeIndexY][startNodeIndexX].cost;
-	std::vector<AStarNode*>openNode(1, &nodes[startNodeIndexY][startNodeIndexX]);
 	
-	//メモリ確保時の並び変え防止
-	openNode.reserve(nodes.size() * nodes[0].size());
-	
-	std::vector<AStarNode*>closeNode;
+	std::vector<AStarNode*>openNodes(1, &nodes[startNodeIndexY][startNodeIndexX]);
+	std::vector<AStarNode*>closeNodes;
 
 	
 	AStarNode* endNode;
@@ -211,16 +209,16 @@ bool LibMath::GetAStarCalcResult
 
 	//ステップの計算は周りのノード調べるときにやる?
 
-	while(1)
+	while (1)
 	{
 		//ゴールにたどり着けない場合
-		if (openNode.size() == 0) return false;
-		
+		if (openNodes.size() == 0) return false;
+
 		//並び替え
 		std::sort
 		(
-			openNode.begin(),
-			openNode.end(),
+			openNodes.begin(),
+			openNodes.end(),
 			[]
 		(
 			const AStarNode* node1,
@@ -234,7 +232,7 @@ bool LibMath::GetAStarCalcResult
 		});
 
 		//calcNumが一番少ないやつを取得
-		AStarNode* mainNode = openNode[openNode.size() - 1];
+		AStarNode* mainNode = openNodes[openNodes.size() - 1];
 
 		bool checkEnd = false;
 
@@ -251,25 +249,25 @@ bool LibMath::GetAStarCalcResult
 			for (int x = -1; x < 2; x++)
 			{
 				int indexX = mainNode->indexX + x;
-				
+
 				//X範囲外指定防止
-				if (indexX <= -1 || indexX >= nodeXArrayNum )continue;
+				if (indexX <= -1 || indexX >= nodeXArrayNum)continue;
 
 				//基準検索防止
 				if (indexX == mainNode->indexX && indexY == mainNode->indexY)continue;
 
 				AStarNode* checkNode = &nodes[indexY][indexX];
-				
+
 				//リスト追加済かどうかの確認
 				if (checkNode->closeFlag || checkNode->openFlag)continue;
-				
+
 				//オブジェクトに重なってるかどうか
 				if (checkNode->hitObjectNode)
 				{
 					checkNode->closeFlag = true;
 					continue;
 				}
-				
+
 
 				//calcNum = スタートからの距離 + ゴールまでの距離 + コスト
 				checkNode->calcNum = CalcNodeDistance(startNodeIndexX, startNodeIndexY, indexX, indexY)
@@ -292,17 +290,17 @@ bool LibMath::GetAStarCalcResult
 
 		if (checkEnd)break;
 
-		closeNode.push_back(mainNode);
+		closeNodes.push_back(mainNode);
 		mainNode->closeFlag = true;
 
 		//検索したやつを取り出す(ソートで最小が最後に来るようになっている)
-		openNode[openNode.size() - 1]->openFlag = false;
-		openNode.erase(openNode.begin() + openNode.size() - 1);
+		openNodes[openNodes.size() - 1]->openFlag = false;
+		openNodes.erase(openNodes.begin() + openNodes.size() - 1);
 
 
-		for(auto& n : openPushBackNode)
+		for (auto& n : openPushBackNode)
 		{
-			openNode.push_back(n);
+			openNodes.push_back(n);
 		}
 		openPushBackNode.clear();
 	}

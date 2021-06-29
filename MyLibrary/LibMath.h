@@ -25,13 +25,21 @@ struct AStarNode
 	//計算結果(ステップ + 距離 + コスト)
 	UINT calcNum = UINT_MAX;
 
+
+	//以下探索用変数
+
 	//配列のインデックス
 	int indexX = INT_MAX;
 	int indexY = INT_MAX;
 
+	//close配列のインデックス
+	int closeIndex = INT_MAX;
+
 	AStarNode* previousNode = nullptr;
+	
 	bool openFlag = false;
 	bool closeFlag = false;
+	
 	//進行不能オブジェクトと重なっているノード
 	bool hitObjectNode = false;
 };
