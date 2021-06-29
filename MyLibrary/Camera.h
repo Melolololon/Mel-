@@ -13,8 +13,8 @@ public:
 	//回転させるときの基準となる位置
 	enum class RotatePoint
 	{
-		ROTATE_POINT_CAMERA_POSITION,//カメラの座標
-		ROTATE_POINT_TARGET_POSITION,//注視点の座標
+		ROTATE_POINT_CAMERA_POSITION,//カメラの座標を中心に注視点を回転
+		ROTATE_POINT_TARGET_POSITION,//注視点の座標を中心にカメラ座標を回転
 	};
 
 private:
