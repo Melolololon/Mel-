@@ -9,6 +9,6 @@ struct ConstBufferData
 		BUFFER_TYPE_EACH_MODEL_OBJECT,//各モデル各オブジェクトごと
 	};
 
-	BufferType bufferType;//バッファの数
-	size_t bufferDataSize;//バッファ1つのサイズ
+	BufferType bufferType = BUFFER_TYPE_NONE;//バッファの数
+	size_t bufferDataSize = 0;//バッファ1つのサイズ
 };

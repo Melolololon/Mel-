@@ -7,10 +7,10 @@ ComPtr<ID3D12RootSignature>ModelObject::rootSignature;
 
 
 ModelObject::ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
-	: pModelData(pModelData)
 {
 	if (userConstBufferData)this->userConstBufferData = *userConstBufferData;
 	modelFileObjectNum = pModelData->GetModelFileObjectNumber();
+	this->pModelData = pModelData;
 }
 
 void ModelObject::CreateConstBuffer(ConstBufferData* modelBufferData)

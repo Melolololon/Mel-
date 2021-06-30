@@ -94,7 +94,7 @@ public:
 	/// <summary>
 	/// ŠKæ
 	/// </summary>
-	/// <param name="num"></param>
+	/// <param name="num">”’l</param>
 	/// <returns></returns>
 	static int Factorial(const int num);
 
