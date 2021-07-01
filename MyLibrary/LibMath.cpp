@@ -87,6 +87,8 @@ void LibMath::SetAStarNodeHitObjectNodeFlag
 	{
 		for (int x = 0; x < nodesXNum; x++)
 		{
+			//1つでもぶつかってたらリターン
+			if (nodes[y][x].hitObjectNode)break;
 			for (int i = 0; i < hitObjectNum; i++)
 			{
 					nodes[y][x].hitObjectNode =
@@ -98,8 +100,6 @@ void LibMath::SetAStarNodeHitObjectNodeFlag
 						hitObjectsSize[i]
 					);
 
-					//1つでもぶつかってたらリターン
-					if (nodes[y][x].hitObjectNode)break;;
 			}
 		}
 	}
@@ -113,10 +113,17 @@ bool LibMath::GetAStarCalcResult
 	std::vector<Vector2>& routeVector
 )
 {
-
+	 
 	//やること
 	//openに再追加、closeからの移動(wikiの7.のところ)実装する
 	//ブロックに隣接してるマスから、同じブロックに隣接してるマスへ移動しないようにする
+
+
+	//数字が同じときに、遠い場所のノード(目的地の逆側のノード)を取得するときがある
+	//ゴールノードとの距離を求め、一番近いノードを取り出すようにする
+	//calcNum = CalcNodeDistance(startNodeIndexX, startNodeIndexY, indexX, indexY)
+	//ステップ数は壁を考慮しないといけないから、この方法じゃstepを求められない
+	//なので、ステップ数をノードに持たせ、calcNum計算時に、親のステップ数 + 1をcheckNodeのステップ数とする
 
 
 	//リセット
@@ -342,16 +349,24 @@ bool LibMath::GetAStarCalcResult
 		openPushBackNode.clear();
 	}
 
-	routeVector.clear();
 	AStarNode* currentNode = endNode;
+	std::vector<Vector2>routeNodeVectors;
 	while(1)
 	{
 		if (!currentNode)break;
-		routeVector.push_back(currentNode->position);
+		routeNodeVectors.push_back(currentNode->position);
 		currentNode = currentNode->previousNode;
 	}
-	std::reverse(routeVector.begin(), routeVector.end());
+	std::reverse(routeNodeVectors.begin(), routeNodeVectors.end());
 
+	//ベクトルを求める
+	routeVector.clear();
+	auto routeVectorSize = routeNodeVectors.size() - 1;
+	routeVector.resize(routeVectorSize);
+	for(int i = 0; i < routeVectorSize;i++)
+	{
+		routeVector[i] = routeNodeVectors[i + 1] - routeNodeVectors[i];
+	}
 
 	return true;
 }
