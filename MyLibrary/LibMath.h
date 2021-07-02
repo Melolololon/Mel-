@@ -35,6 +35,9 @@ struct AStarNode
 	//close配列のインデックス
 	int closeIndex = INT_MAX;
 
+	//スタートからの距離
+	int stepNum = 0;
+
 	AStarNode* previousNode = nullptr;
 	
 	bool openFlag = false;
@@ -42,6 +45,7 @@ struct AStarNode
 	
 	//進行不能オブジェクトと重なっているノード
 	bool hitObjectNode = false;
+
 };
 
 class LibMath
