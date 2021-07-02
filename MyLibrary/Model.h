@@ -331,6 +331,8 @@ public:
 	void SetPosition(const Vector3& position, const int modelNum);
 	void SetAngle(const Vector3& angle,const int modelNum);
 	void SetScale(const Vector3& scale, const int modelNum);
+
+	void AddColor(const Color& color,const int& modelNum);
 #pragma endregion
 
 #pragma region •`‰æ

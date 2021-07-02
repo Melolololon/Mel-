@@ -268,7 +268,7 @@ public:
 #pragma region 2D
 
 	/// <summary>
-	/// 四角の当たり判定です
+	/// 四角の当たり判定です。座標が左上の場合のみ正しく計算できます。
 	/// </summary>
 	/// <param name="start1">1つ目の左上座標</param>
 	/// <param name="size1">1つ目のサイズ</param>
@@ -284,7 +284,7 @@ public:
 	);
 
 	/// <summary>
-	/// 円の当たり判定です
+	/// 円の当たり判定です。
 	/// </summary>
 	/// <param name="centerPosition1">1つ目の座標</param>
 	/// <param name="r1">1つ目の半径</param>

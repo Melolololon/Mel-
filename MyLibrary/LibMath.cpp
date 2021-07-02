@@ -4,7 +4,6 @@
 
 #pragma region 最短経路
 
-
 void LibMath::SetAStarNodePosition
 (
 	const Vector2& leftUpPos,
@@ -17,7 +16,6 @@ void LibMath::SetAStarNodePosition
 {
 	nodes.clear();
 
-
 	//マスのサイズを求める
 	Vector2 size = rightDownPos - leftUpPos;
 	size.x = abs(size.x);
@@ -27,7 +25,7 @@ void LibMath::SetAStarNodePosition
 
 	//ノードリサイズ
 	nodes.resize(nodeNumY, std::vector<AStarNode>(nodeNumX));
-	
+
 	//ノードの座標をセットしていく
 	Vector2 addPos = 0;
 	for (int y = 0; y < nodeNumY; y++)
@@ -49,22 +47,13 @@ void LibMath::SetAStarNodeHitObjectNodeFlag
 	std::vector< std::vector<AStarNode>>& nodes
 )
 {
-	for(auto& n1 : nodes)
-	{
-		for(auto& n2 : n1)
-		{
-			n2.hitObjectNode = false;
-		}
-	}
-
-
 	//サイズを求める
-	Vector2 size = 0;
-	size.x = abs(nodes[0][0].position.x - nodes[0][1].position.x);
-	
+	Vector2 nodeSize = 0;
+	nodeSize.x = abs(nodes[0][0].position.x - nodes[0][1].position.x);
+
 	float smallPos = 0.0f;
 	float bigPos = 0.0f;
-	if(nodes[0][0].position.y >= nodes[1][0].position.y)
+	if (nodes[0][0].position.y >= nodes[1][0].position.y)
 	{
 		bigPos = nodes[0][0].position.y;
 		smallPos = nodes[1][0].position.y;
@@ -74,32 +63,36 @@ void LibMath::SetAStarNodeHitObjectNodeFlag
 		bigPos = nodes[1][0].position.y;
 		smallPos = nodes[0][0].position.y;
 	}
-	size.y = abs(smallPos - bigPos);
-	
+	nodeSize.y = abs(smallPos - bigPos);
+
 	//判定
 	auto nodesXNum = nodes[0].size();
 	auto nodesYNum = nodes.size();
 	auto hitObjectNum = hitObjectsPos.size();
-	
+
 	//当たってるか確認
-	Vector2 addPos = 0;
 	for (int y = 0; y < nodesYNum; y++)
 	{
 		for (int x = 0; x < nodesXNum; x++)
 		{
+
 			for (int i = 0; i < hitObjectNum; i++)
 			{
-					nodes[y][x].hitObjectNode =
+				nodes[y][x].hitObjectNode =
 					LibMath::RectAndRectCollision
 					(
-						nodes[y][x].position,
-						size,
-						hitObjectsPos[i],
+						nodes[y][x].position - nodeSize / 2,
+						nodeSize,
+						hitObjectsPos[i] - hitObjectsSize[i] / 2,
 						hitObjectsSize[i]
 					);
 
-					//1つでもぶつかってたらリターン
-					if (nodes[y][x].hitObjectNode)break;
+				//ぶつかってたらbreak
+				if (nodes[y][x].hitObjectNode)
+				{
+					break;
+				}
+
 			}
 		}
 	}
@@ -113,7 +106,7 @@ bool LibMath::GetAStarCalcResult
 	std::vector<Vector2>& routeVector
 )
 {
-	 
+
 	//やること
 	//openに再追加、closeからの移動(wikiの7.のところ)実装する
 	//ブロックに隣接してるマスから、同じブロックに隣接してるマスへ移動しないようにする
@@ -143,30 +136,41 @@ bool LibMath::GetAStarCalcResult
 	float startMinDistance = FLT_MAX;
 	//ゴール地点に一番近いノードの距離を格納する変数
 	float endMinDistance = FLT_MAX;
-	
+
 	auto nodeXArrayNum = nodes[0].size();
 	auto nodeYArrayNum = nodes.size();
 
 	//スタートの添え字
 	int startNodeIndexX = 0;
 	int startNodeIndexY = 0;
+	bool trueStartNodeHitFlag = false;
 
 	//ノードの配列のゴール地点の場所を示す添え字
 	int endNodeIndexX = 0;
 	int endNodeIndexY = 0;
+	bool trueEndNodeHitFlag = false;
 
-	for(int y = 0; y < nodeYArrayNum;y++)
+	//一時的にfalseにしたときに戻す処理
+	auto ReturnHitObjectNode = [&]()
+	{
+		if (trueStartNodeHitFlag)nodes[startNodeIndexY][startNodeIndexX].hitObjectNode = true;
+		if (trueEndNodeHitFlag)nodes[endNodeIndexY][endNodeIndexX].hitObjectNode = true;
+
+	};
+
+	for (int y = 0; y < nodeYArrayNum; y++)
 	{
 		for (int x = 0; x < nodeXArrayNum; x++)
 		{
 			float distance = 0.0f;
 			distance = CalcDistance2D(nodes[y][x].position, startPos);
-			
+
 			if (distance <= startMinDistance)
 			{
 				startMinDistance = distance;
 				startNodeIndexX = x;
 				startNodeIndexY = y;
+
 			}
 
 			distance = CalcDistance2D(nodes[y][x].position, endPos);
@@ -175,15 +179,29 @@ bool LibMath::GetAStarCalcResult
 				endMinDistance = distance;
 				endNodeIndexX = x;
 				endNodeIndexY = y;
+
+
 			}
 
 			//インデックス代入
 			nodes[y][x].indexX = x;
 			nodes[y][x].indexY = y;
-
 		}
 	}
 
+	if (nodes[startNodeIndexY][startNodeIndexX].hitObjectNode)
+	{
+		//一時的にfalse
+		nodes[startNodeIndexY][startNodeIndexX].hitObjectNode = false;
+		trueStartNodeHitFlag = true;
+	}
+
+	if (nodes[endNodeIndexY][endNodeIndexX].hitObjectNode)
+	{
+		//一時的にfalse
+		nodes[endNodeIndexY][endNodeIndexX].hitObjectNode = false;
+		trueEndNodeHitFlag = true;
+	}
 
 	//ゴールのノードまでの距離を求めるラムダ式
 	auto CalcNodeDistance = []
@@ -208,13 +226,13 @@ bool LibMath::GetAStarCalcResult
 	//スタートのノードのインデックスを代入
 	int startToEndDis = CalcNodeDistance(startNodeIndexX, startNodeIndexY, endNodeIndexX, endNodeIndexY);
 	nodes[startNodeIndexY][startNodeIndexX].calcNum = startToEndDis + nodes[startNodeIndexY][startNodeIndexX].cost;
-	
+
 	std::vector<AStarNode*>openNodes(1, &nodes[startNodeIndexY][startNodeIndexX]);
 	std::vector<AStarNode*>closeNodes;
 
-	
+
 	AStarNode* endNode;
-	
+
 
 	//ステップの計算は周りのノード調べるときにやる?
 
@@ -224,7 +242,11 @@ bool LibMath::GetAStarCalcResult
 		bool checkEnd = false;
 
 		//ゴールにたどり着けない場合
-		if (openNodes.size() == 0) return false;
+		if (openNodes.size() == 0)
+		{
+			ReturnHitObjectNode();
+			return false;
+		}
 
 		//並び替え
 		std::sort
@@ -260,7 +282,7 @@ bool LibMath::GetAStarCalcResult
 			if (openNodes[i]->calcNum != minCalcNum || i == 0)break;
 		}
 
-		
+
 
 		//オープンに追加するノードを格納する配列
 		std::vector<AStarNode*>openPushBackNode;
@@ -368,7 +390,7 @@ bool LibMath::GetAStarCalcResult
 
 	AStarNode* currentNode = endNode;
 	std::vector<Vector2>routeNodeVectors;
-	while(1)
+	while (1)
 	{
 		if (!currentNode)break;
 		routeNodeVectors.push_back(currentNode->position);
@@ -380,13 +402,16 @@ bool LibMath::GetAStarCalcResult
 	routeVector.clear();
 	auto routeVectorSize = routeNodeVectors.size() - 1;
 	routeVector.resize(routeVectorSize);
-	for(int i = 0; i < routeVectorSize;i++)
+	for (int i = 0; i < routeVectorSize; i++)
 	{
 		routeVector[i] = Vector3::Normalize(routeNodeVectors[i + 1] - routeNodeVectors[i]);
 	}
 
+	ReturnHitObjectNode();
 	return true;
 }
+
+
 
 #pragma endregion
 
@@ -604,7 +629,7 @@ bool LibMath::RectAndRectCollision
 	const Vector2& size1,
 	const Vector2& pos2,
 	const Vector2& size2
-)//四角判定
+)
 {
 	if (size2.x + pos2.x > pos1.x &&
 		pos2.x < size1.x + pos1.x &&

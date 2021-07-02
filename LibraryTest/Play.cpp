@@ -23,6 +23,18 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
+	//ƒeƒXƒg
+	bool f = 
+		LibMath::RectAndRectCollision
+	(
+		Vector2(0,0),
+		Vector2(5,5),
+		Vector2(2,2),
+		Vector2(2,2)
+	);
+
+
+
 
 	fbxModel = std::make_unique<FbxModel>();
 	fbxModel->Load

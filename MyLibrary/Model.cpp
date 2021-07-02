@@ -997,6 +997,20 @@ void Model::SetScale(const Vector3& scale, const int modelNum)
 		modelConstDatas[modelNum][i].scale = scale.ToXMFLOAT3();
 }
 
+void Model::AddColor(const Color& color, const int& modelNum)
+{
+	for (int i = 0; i < modelObjectNum; i++) 
+	{
+		modelConstDatas[modelNum][i].addColor =
+		{
+			(float)color.r / 255.0f,
+			(float)color.g / 255.0f,
+			(float)color.b / 255.0f,
+			(float)color.a / 255.0f
+		};
+	}
+}
+
 #pragma endregion
 
 
