@@ -22,6 +22,25 @@
 class ModelObject
 {
 private:
+	static const UINT BONE_MAX = 64;
+	struct SkinConstBufferData
+	{
+		DirectX::XMMATRIX bones[BONE_MAX];
+	};
+
+
+	//fbxモデルのアニメーション用の情報をまとめたもの
+	struct FbxAnimationData
+	{
+		FbxTime freamTime;
+		FbxTime startTime;
+		FbxTime endTime;
+		std::vector<FbxTime> currentTime;
+		std::vector<int> animationMag;
+	};
+
+	static std::unordered_map<std::string, std::unique_ptr<ModelObject>>pModelObjects;
+
 	static ID3D12Device* device;
 	static std::vector<ID3D12GraphicsCommandList*>cmdLists;
 	static ComPtr<ID3D12RootSignature>rootSignature;
@@ -52,8 +71,8 @@ protected:
 	ConstBufferData userConstBufferData;
 
 	static const int MODEL_BUFFER_REGISTER = 3;
-	std::vector<ComPtr<ID3D12Resource>> modelConstBuffer;//モデル特有
-	ConstBufferData::BufferType modelConstBufferType = ConstBufferData::BufferType::BUFFER_TYPE_NONE;
+	std::vector<ComPtr<ID3D12Resource>> modelConstBuffer;//モデル特有(アニメーション関係の情報)
+	ConstBufferData modelConstBufferData;
 
 
 	//定数にセットする座標などの値
@@ -65,10 +84,7 @@ protected:
 	ModelData* pModelData = nullptr;
 	UINT modelFileObjectNum = 0;
 
-	void CreateConstBuffer
-	(
-		ConstBufferData* modelBufferData
-	);
+	void CreateConstBuffer();
 
 	void DrawCommonProcessing(const std::string& rtName);
 	void MapConstData(const Camera* camera);
@@ -76,13 +92,18 @@ protected:
 
 
 public:
+	
+	//nullptr渡される可能性を考えると、boolをreturnできるようにしたほうがいい?
 	ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
 	~ModelObject() {}
 
 	static bool Initialize(ID3D12Device* dev, const std::vector<ID3D12GraphicsCommandList*>& cmdList);
 
+	static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData,const std::string& name);
+
 	virtual void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
+	bool CreateObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
 
 	void SetPosition(const Vector3& position);
 	void SetScale(const Vector3& scale);

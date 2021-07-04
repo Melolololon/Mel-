@@ -51,7 +51,7 @@ bool  ModelLoader::LoadObjModel
 	const std::string& path,
 	bool loadUV,
 	bool loadNormal,
-	std::vector<std::vector<ObjAnimationVertex>>& vertices,
+	std::vector<std::vector<FbxVertex>>& vertices,
 	std::vector<std::vector<USHORT>>& indices,
 	std::string& materialFileName,
 	std::vector<std::string>& materialName,
@@ -250,7 +250,7 @@ bool  ModelLoader::LoadObjModel
 			char sluch;
 
 			//頂点。これに一時的に入れてから、配列に入れる
-			ObjAnimationVertex vertex;
+			FbxVertex vertex;
 
 			//三角形ポリゴンを読み込むので3
 			int polygonValue = 3;
@@ -392,7 +392,7 @@ bool  ModelLoader::LoadObjModel
 
 }
 
-bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<Material>& material, int* loadCount)
+bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<Material>& materials, int* loadCount)
 {
 	//読み込んだ回数
 	int loadNum = 0;
@@ -429,10 +429,10 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 		if (materialData == "newmtl")
 		{
 			loadNum++;
-			material.resize(loadNum);
+			materials.resize(loadNum);
 
 			//名前取得
-			lineStream >> material[loadNum - 1].materialName;
+			lineStream >> materials[loadNum - 1].materialName;
 
 			//for (UINT i = 0; i < materialName.size(); i++) 
 			//{
@@ -451,28 +451,28 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 		}
 		if (materialData == "Ka") //アンビエント
 		{
-			lineStream >> material[loadNum - 1].ambient.x;
-			lineStream >> material[loadNum - 1].ambient.y;
-			lineStream >> material[loadNum - 1].ambient.z;
+			lineStream >> materials[loadNum - 1].ambient.x;
+			lineStream >> materials[loadNum - 1].ambient.y;
+			lineStream >> materials[loadNum - 1].ambient.z;
 			loadAmbient = true;
 		}
 		if (materialData == "Kd")
 		{
-			lineStream >> material[loadNum - 1].diffuse.x;
-			lineStream >> material[loadNum - 1].diffuse.y;
-			lineStream >> material[loadNum - 1].diffuse.z;
+			lineStream >> materials[loadNum - 1].diffuse.x;
+			lineStream >> materials[loadNum - 1].diffuse.y;
+			lineStream >> materials[loadNum - 1].diffuse.z;
 			loadDiffuse = true;
 		}
 		if (materialData == "Ks")
 		{
-			lineStream >> material[loadNum - 1].specular.x;
-			lineStream >> material[loadNum - 1].specular.y;
-			lineStream >> material[loadNum - 1].specular.z;
+			lineStream >> materials[loadNum - 1].specular.x;
+			lineStream >> materials[loadNum - 1].specular.y;
+			lineStream >> materials[loadNum - 1].specular.z;
 			loadSupecular = true;
 		}
 		if (materialData == "map_Kd")
 		{
-			lineStream >> material[loadNum - 1].textureName;
+			lineStream >> materials[loadNum - 1].textureName;
 			loadTexture = true;
 		}
 	}
@@ -480,9 +480,9 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 
 	*loadCount = loadNum;
 
-	if (!loadAmbient)material[loadNum - 1].ambient = DirectX::XMFLOAT3(0.3f, 0.3f, 0.3f);
-	if (!loadDiffuse)material[loadNum - 1].diffuse = DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f);
-	if (!loadSupecular)material[loadNum - 1].specular = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	if (!loadAmbient)materials[loadNum - 1].ambient = DirectX::XMFLOAT3(0.3f, 0.3f, 0.3f);
+	if (!loadDiffuse)materials[loadNum - 1].diffuse = DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f);
+	if (!loadSupecular)materials[loadNum - 1].specular = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	return true;
 }

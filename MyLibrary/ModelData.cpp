@@ -1,6 +1,10 @@
 #include "ModelData.h"
 
 #include"CreateBuffer.h"
+#include"ModelLoader.h"
+#include"FbxLoader.h"
+
+std::unordered_map<std::string, std::unique_ptr<ModelData>>pModelDatas;
 
 void ModelData::CreateDescriptorHeap(const UINT textureNum)
 {
@@ -14,16 +18,13 @@ void ModelData::CreateDescriptorHeap(const UINT textureNum)
 
 } 
 
-template<class VERTEX>
+
 void ModelData::CreateVertexBufferSet
 (
 	const size_t vertexSize,
-	const std::vector<size_t>& vertexNum,
-	const std::vector<std::vector<VERTEX>>& vertices
+	const std::vector<size_t>& vertexNum
 )
 {
-
-	modelFileObjectNum = vertices.size();
 
 	//オブジェクト分リサイズ
 	vertexBufferSet.resize(modelFileObjectNum);
@@ -41,34 +42,16 @@ void ModelData::CreateVertexBufferSet
 
 
 }
-template void ModelData::CreateVertexBufferSet<Vertex>
-(const size_t vertexSize, const std::vector<size_t>& vertexNum, const std::vector<std::vector<Vertex>>& vertices);
-template void ModelData::CreateVertexBufferSet<ObjAnimationVertex>
-(const size_t vertexSize, const std::vector<size_t>& vertexNum, const std::vector<std::vector<ObjAnimationVertex>>& vertices);
-template void ModelData::CreateVertexBufferSet<FbxVertex>
-(const size_t vertexSize, const std::vector<size_t>& vertexNum, const std::vector<std::vector<FbxVertex>>& vertices);
 
-
-
-template<class VERTEX>
-void ModelData::MapVertices(const std::vector<std::vector<VERTEX>>& vertices)
+void ModelData::MapVertices(void** data, const int bufferNum)
 {
-	for (int i = 0; i < modelFileObjectNum; i++)
-	{
-		//Map
-		VERTEX* pVertices;
-		vertexBufferSet[i].vertexBuffer->Map(0, nullptr, (void**)&pVertices);
-		std::copy(vertices[i].begin(), vertices[i].end(), pVertices);
-		vertexBufferSet[i].vertexBuffer->Unmap(0, nullptr);
-	}
+	vertexBufferSet[bufferNum].vertexBuffer->Map(0, nullptr, data);
 }
-template void ModelData::MapVertices<Vertex>
-(const std::vector<std::vector<Vertex>>& vertices);
-template void ModelData::MapVertices<ObjAnimationVertex>
-(const std::vector<std::vector<ObjAnimationVertex>>& vertices);
-template void ModelData::MapVertices<FbxVertex>
-(const std::vector<std::vector<FbxVertex>>& vertices);
 
+void ModelData::UnmapVertices(const int bufferNum)
+{
+	vertexBufferSet[bufferNum].vertexBuffer->Unmap(0, nullptr);
+}
 
 
 void ModelData::CreateIndexBufferSet(const std::vector<std::vector<USHORT>>& indices)
@@ -101,7 +84,7 @@ void ModelData::MapIndices(const std::vector<std::vector<USHORT>>& indices)
 	}
 }
 
-void ModelData::CteateTextureBufferAndViewSetTexture()
+void ModelData::CteateTextureBuffer()
 {
 	auto textureNum = pTextures.size();
 	for (int i = 0; i < textureNum; i++)
@@ -139,57 +122,296 @@ void ModelData::CteateTextureBufferAndViewSetColor()
 
 }
 
+bool ModelData::Load(const std::string& path, const std::string& name)
+{
+	pModelDatas.emplace(name, std::make_unique<ModelData>());
+	bool result = pModelDatas[name]->LoadModel(path, name);
+
+	if(!result)
+	{
+		pModelDatas.erase(name);
+		return false;
+	}
+	
+	return true;
+}
+
+void ModelData::Delete(const std::string& name)
+{
+	pModelDatas.erase(name);
+}
+
+bool ModelData::LoadModel(const std::string& path, const std::string& name)
+{
+	
+
+	if (path.find(".obj") != std::string::npos)
+	{
+		//オブジェクトのマテリアル名格納
+		std::string materialFileName;
+		std::vector<std::string>materialName;
+
+		std::vector<Vector3> objBonePositions;
+		std::vector<std::vector<int>> objBoneNums;
+		
+		//[obj内のオブジェクト分]スムーズシェーディングの計算用データ
+		std::vector< std::unordered_map < USHORT, std::vector<USHORT> >>smoothData;
+		bool result = ModelLoader::GetInstance()->LoadObjModel
+		(
+			path,
+			true,
+			true,
+			vertices,
+			indices,
+			materialFileName,
+			materialName,
+			smoothData,
+			nullptr,
+			&objBonePositions,
+			&objBoneNums
+		);
+
+		if (!result)return false;
 
 
-template<class VERTEX>
+		int modelFileObjectNum = vertices.size();
+		int boneNum = objBonePositions.size();
+
+		if (boneNum == 0)
+		{
+			//ボーンがなかったら0にしとく
+			for (int i = 0; i < modelFileObjectNum; i++)
+			{
+				auto vertexNum = vertices[i].size();
+				for (int j = 0; j < vertexNum; j++) 
+				{
+					for (int k = 0; k < FbxVertex::MAX_BONE_INDICES; k++) 
+					{
+						vertices[i][j].boneIndex[k] = 0;
+					}
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < modelFileObjectNum; i++)
+			{
+				auto vertexNum = vertices[i].size();
+
+				for (int j = 0; j < vertexNum; j++)
+				{
+					vertices[i][j].boneIndex[0] = objBoneNums[i][j];
+
+					for (int k = 1; k < FbxVertex::MAX_BONE_INDICES; k++)
+					{
+						vertices[i][j].boneIndex[k] = 0;
+					}
+				}
+			}
+		}
+
+		//テクスチャ反転
+		for (auto& v : vertices)
+		{
+			for (auto& v2 : v)
+			{
+				v2.uv.y = (v2.uv.y - 1) * -1;
+			}
+		}
+
+
+#pragma region 法線計算
+
+		auto vertNum = vertices.size();
+		smoothNormal.resize(vertNum);
+		for (int i = 0; i < vertNum; i++)
+			smoothNormal[i].resize(vertices[i].size());
+
+		for (int i = 0; i < vertNum; i++)
+		{
+			for (int j = 0; j < vertices[i].size(); j++)
+			{
+				smoothNormal[i][j] = vertices[i][j].normal;
+			}
+		}
+
+		//法線(平均求める用配列。ここに入れて、平均を求める)
+		std::vector<DirectX::XMFLOAT3>sNor;
+
+		//オブジェクト分ループ
+		for (int i = 0; i < smoothData.size(); i++)
+		{
+			auto itr = smoothData[i].begin();
+			std::vector<USHORT>ver;
+			for (; itr != smoothData[i].end(); ++itr)
+			{
+				ver = itr->second;
+				for (auto& v : ver)
+				{
+					//一気に24個入ってるし、clearしてないからおかしかった
+					sNor.push_back(vertices[i][v].normal);
+				}
+
+				//法線平均化
+				DirectX::XMVECTOR aveNormal = { 0,0,0 };
+				for (auto& n : sNor)
+				{
+					aveNormal.m128_f32[0] += n.x;
+					aveNormal.m128_f32[1] += n.y;
+					aveNormal.m128_f32[2] += n.z;
+				}
+				aveNormal.m128_f32[0] /= sNor.size();
+				aveNormal.m128_f32[1] /= sNor.size();
+				aveNormal.m128_f32[2] /= sNor.size();
+				aveNormal = DirectX::XMVector3Normalize(aveNormal);
+				for (auto& v : ver)
+				{
+					smoothNormal[i][v] = { aveNormal.m128_f32[0],aveNormal.m128_f32[1], aveNormal.m128_f32[2] };
+				}
+				sNor.clear();
+			}
+		}
+
+
+#pragma endregion
+
+
+
+#pragma region ディレクトリパス取得
+		std::string directoryPath;
+		std::string fullPath = path;
+
+		auto fullPathSize = fullPath.size();
+		int loopCount = 0;
+		for (int i = fullPathSize - 1;; i--)
+		{
+			if (fullPath[i] == '/' ||
+				fullPath[i] == '\\')
+			{
+				directoryPath.resize(fullPathSize - loopCount);
+				std::copy
+				(
+					fullPath.begin(),
+					fullPath.begin() + i + 1,
+					directoryPath.begin()
+				);
+				break;
+			}
+
+			loopCount++;
+		}
+
+#pragma endregion
+
+		int materialNum = 0;
+		result = ModelLoader::GetInstance()->LoadObjMaterial
+		(
+			directoryPath,
+			materialFileName,
+			materials,
+			&materialNum
+		);
+
+		//テクスチャ読み込み
+		pTextures.resize(materialNum);
+		for (int i = 0; i < materialNum; i++)
+		{
+			pTextures[i] = std::make_unique<Texture>();
+			result = pTextures[i]->LoadModelTexture(materials[i].textureName);
+			if(!result)
+			{
+				OutputDebugStringA(path.data());
+				OutputDebugStringW(L"のテクスチャの読み込みに失敗しました。\n");
+
+				return false;
+			}
+		}
+
+
+
+
+		return true;
+
+	}
+	else 
+	if (path.find(".fbx") != std::string::npos)
+	{	
+		FbxLoader::GetInstance()->LoadFbxModel(path, this);
+
+		//一時的に書いてる
+		materials[0].ambient = { 0.1f,0.1f,0.1f };
+		materials[0].diffuse = { 1.0f,1.0f,1.0f };
+
+		return true;
+	}
+	else
+	{
+		OutputDebugStringA(path.data());
+		OutputDebugStringW(L"を読み込めませんでした。対応していないモデル形式、または、pathの入力ミスの可能性が考えられます。\n");
+
+		return false;
+	}
+
+	//頂点、インデックス、テクスチャバッファ作成
+	modelFileObjectNum = vertices.size();
+	std::vector<size_t>verticesNum(modelFileObjectNum);
+	for (int i = 0; i < modelFileObjectNum; i++)
+	{
+		verticesNum[i] = vertices[i].size();
+	}
+
+
+	BufferPreparationSetTexture
+	(
+		sizeof(FbxVertex),
+		verticesNum,
+		indices
+	);
+
+	//Map
+	for (int i = 0; i < modelFileObjectNum; i++) 
+	{
+		FbxVertex* pFbxVertex = nullptr;
+		MapVertices((void**)&pFbxVertex, i);
+
+		for(int j = 0; j < verticesNum[i];j++)
+		{
+			pFbxVertex[j] = vertices[i][j];
+		}
+	}
+}
+
+
+
 void ModelData::BufferPreparationSetTexture
 (
 	const size_t vertexSize,
 	const std::vector<size_t>& vertexNum,
-	const std::vector<std::vector<VERTEX>>& vertices,
 	const std::vector<std::vector<USHORT>>& indices
 )
 {
 	CreateVertexBufferSet
 	(
 		vertexSize,
-		vertexNum,
-		vertices
+		vertexNum
 	);
-	MapVertices(vertices);
+
 
 	CreateIndexBufferSet(indices);
 	MapIndices(indices);
 
 	CreateDescriptorHeap(pTextures.size());
-	CteateTextureBufferAndViewSetTexture();
+	CteateTextureBuffer();
 
 
 }
-template void ModelData::BufferPreparationSetTexture<Vertex>
-(const size_t vertexSize,
-	const std::vector<size_t>& vertexNum,
-	const std::vector<std::vector<Vertex>>& vertices,
-	const std::vector<std::vector<USHORT>>& indices);
-template void ModelData::BufferPreparationSetTexture<ObjAnimationVertex>
-(const size_t vertexSize,
-	const std::vector<size_t>& vertexNum,
-	const std::vector<std::vector<ObjAnimationVertex>>& vertices,
-	const std::vector<std::vector<USHORT>>& indices);
-template void ModelData::BufferPreparationSetTexture<FbxVertex>
-(const size_t vertexSize,
-	const std::vector<size_t>& vertexNum,
-	const std::vector<std::vector<FbxVertex>>& vertices,
-	const std::vector<std::vector<USHORT>>& indices);
 
 
-
-template<class VERTEX>
 void ModelData::BufferPreparationSetColor
 (
 	const size_t vertexSize,
 	const  std::vector<size_t>& vertexNum,
-	const std::vector<std::vector<VERTEX>>& vertices,
+	const std::vector<std::vector<FbxVertex>>& vertices,
 	const std::vector<std::vector<USHORT>>& indices
 )
 {
@@ -197,10 +419,8 @@ void ModelData::BufferPreparationSetColor
 	CreateVertexBufferSet
 	(
 		vertexSize,
-		vertexNum,
-		vertices
+		vertexNum
 	);
-	MapVertices(vertices);
 
 	CreateIndexBufferSet(indices);
 	MapIndices(indices);
@@ -210,18 +430,3 @@ void ModelData::BufferPreparationSetColor
 
 
 }
-template void ModelData::BufferPreparationSetColor<Vertex>
-(const size_t vertexSize,
-	const std::vector<size_t>& vertexNum,
-	const std::vector<std::vector<Vertex>>& vertices,
-	const std::vector<std::vector<USHORT>>& indices);
-template void ModelData::BufferPreparationSetColor<ObjAnimationVertex>
-(const size_t vertexSize,
-	const std::vector<size_t>& vertexNum,
-	const std::vector<std::vector<ObjAnimationVertex>>& vertices,
-	const std::vector<std::vector<USHORT>>& indices);
-template void ModelData::BufferPreparationSetColor<FbxVertex>
-(const size_t vertexSize,
-	const std::vector<size_t>& vertexNum,
-	const std::vector<std::vector<FbxVertex>>& vertices,
-	const std::vector<std::vector<USHORT>>& indices);

@@ -1,21 +1,27 @@
 #include"ModelObject.h"
 #include"CreateBuffer.h"
 
+std::unordered_map<std::string, std::unique_ptr<ModelObject>>ModelObject::pModelObjects;
+
 ID3D12Device* ModelObject::device;
 std::vector<ID3D12GraphicsCommandList*>ModelObject::cmdLists;
 ComPtr<ID3D12RootSignature>ModelObject::rootSignature;
 
-
 ModelObject::ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
 	if (userConstBufferData)this->userConstBufferData = *userConstBufferData;
+	modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL;
+	modelConstBufferData.bufferDataSize = sizeof(SkinConstBufferData);
+
 	modelFileObjectNum = pModelData->GetModelFileObjectNumber();
 	this->pModelData = pModelData;
+
+
 }
 
-void ModelObject::CreateConstBuffer(ConstBufferData* modelBufferData)
+void ModelObject::CreateConstBuffer()
 {
-	if (modelBufferData)modelConstBufferType = modelBufferData->bufferType;
+	ConstBufferData::BufferType modelConstBufferType = modelConstBufferData.bufferType;
 	ConstBufferData::BufferType userConstBufferType = userConstBufferData.bufferType;
 
 #pragma region リサイズ
@@ -66,7 +72,7 @@ void ModelObject::CreateConstBuffer(ConstBufferData* modelBufferData)
 		CreateBuffer
 		(
 			&modelConstBuffer[0],
-			modelBufferData->bufferDataSize
+			modelConstBufferData.bufferDataSize
 		);
 	}
 
@@ -104,7 +110,7 @@ void ModelObject::CreateConstBuffer(ConstBufferData* modelBufferData)
 			CreateBuffer
 			(
 				&modelConstBuffer[j],
-				modelBufferData->bufferDataSize
+				modelConstBufferData.bufferDataSize
 			);
 		}
 
@@ -209,7 +215,7 @@ void ModelObject::SetCmdList()
 
 
 	//モデル特有バッファセット
-	if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
+	if (modelConstBufferData.bufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
 		cmdLists[0]->SetGraphicsRootConstantBufferView(MODEL_BUFFER_REGISTER, modelConstBuffer[0]->GetGPUVirtualAddress());
 
 	//ユーザーモデルバッファセット
@@ -281,7 +287,7 @@ void ModelObject::SetCmdList()
 
 
 		//モデルバッファセット
-		if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
+		if (modelConstBufferData.bufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
 			cmdLists[0]->SetGraphicsRootConstantBufferView(MODEL_BUFFER_REGISTER, modelConstBuffer[i]->GetGPUVirtualAddress());
 
 		//ユーザー定数バッファセット
@@ -418,4 +424,31 @@ void ModelObject::SetPipeline(PipelineState* pipelineState)
 	{
 		pPipeline[i] = pipelineState;
 	}
+}
+
+bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name)
+{
+	if(!pModelData)
+	{
+		OutputDebugStringA(name.data());
+		OutputDebugStringW(L"の生成に失敗しました。pModelDataがnullptrです。\n");
+		return false;
+	}
+
+	pModelObjects.emplace(name, std::make_unique<ModelObject>(pModelData, userConstBufferData));
+	bool result = pModelObjects[name]->CreateObject(pModelData, userConstBufferData);
+
+	if(!result)
+	{
+		/*OutputDebugStringA(name.data());
+		OutputDebugStringW(L"の生成に失敗しました。\n");*/
+		pModelObjects.erase(name);
+		return false;
+	}
+	return true;
+}
+
+bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
+{
+	CreateConstBuffer();
 }

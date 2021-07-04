@@ -33,7 +33,7 @@ public:
 		const std::string& path,
 		bool loadUV,
 		bool loadNormal,
-		std::vector<std::vector<ObjAnimationVertex>>& vertices,
+		std::vector<std::vector<FbxVertex>>& vertices,
 		std::vector<std::vector<USHORT>>& indices,
 		std::string& materialFileName,
 		std::vector<std::string>& materialName,
@@ -47,7 +47,7 @@ public:
 	(
 		std::string materialDirectoryPath,
 		std::string materialFileName,
-		std::vector<Material>& material,
+		std::vector<Material>& materials,
 		int* loadCount
 	);
 };
