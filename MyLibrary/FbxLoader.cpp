@@ -44,8 +44,8 @@ void FbxLoader::Finalize()
 
 void FbxLoader::LoadFbxModel(const std::string& modelPath, ModelData* fbxModel)
 {
-
-	ExtractFileName(modelPath, &modelDirectryPath, nullptr);
+	std::string modelName;
+	ExtractFileName(modelPath, &modelDirectryPath, &modelName);
 
 	if (!fbxImporter->Initialize
 	(
@@ -56,16 +56,16 @@ void FbxLoader::LoadFbxModel(const std::string& modelPath, ModelData* fbxModel)
 
 	ModelData* model = fbxModel;
 
-	FbxScene*& fbxScene = model->fbxData->fbxScene;
+	FbxScene*& fbxScene = model->fbxData.fbxScene;
 	fbxScene = FbxScene::Create(fbxManager, "fbxScene");
 	fbxImporter->Import(fbxScene);
 
-	model->modelName = "";
+	model->modelName = modelName;
 
 	//ノード数取得
 	int nodeCount = fbxScene->GetNodeCount();
 	//parseNodeRecursive()で配列を参照してるので、メモリを確保しなおさないようにするためにreserveしてる
-	model->fbxData->bones.reserve(nodeCount);
+	model->fbxData.bones.reserve(nodeCount);
 
 	ParseNodeRecursive(model, fbxScene->GetRootNode());
 
@@ -81,8 +81,8 @@ void FbxLoader::ParseNodeRecursive
 {
 	using namespace DirectX;
 
-	fbxModel->fbxData->nodes.emplace_back();
-	Node& node = fbxModel->fbxData->nodes.back();
+	fbxModel->fbxData.nodes.emplace_back();
+	Node& node = fbxModel->fbxData.nodes.back();
 
 	node.nodeName = fbxNode->GetName();
 
@@ -142,7 +142,7 @@ void FbxLoader::ParseNodeRecursive
 		if(fbxNodeAttribute->GetAttributeType() == 
 			FbxNodeAttribute::eMesh)
 		{
-			fbxModel->fbxData->meshNode = &node;
+			fbxModel->fbxData.meshNode = &node;
 			ParseMesh(fbxModel, fbxNode);
 		}
 	}
@@ -186,7 +186,6 @@ void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh)
 void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh)
 {
 	auto& vertices = fbxModel->vertices;
-	auto& m = fbxModel->GetMaterial();
 	auto& indicesVector = fbxModel->indices;
 	indicesVector.resize(1);
 	auto& indices = indicesVector[0];
@@ -351,7 +350,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 	//スキニング情報がない場合return
 	if (!fbxSkin)
 	{
-		auto vertSize = fbxModel->vertices.size();
+		auto vertSize = fbxModel->vertices[0].size();
 		for(int i = 0; i < vertSize;i++)
 		{
 			//最初のボーンの影響度を100%にする(単位行列の結果を反映させるため)
@@ -361,7 +360,8 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 		return;
 	}
 
-	std::vector<ModelData::FbxBone>& bones = fbxModel->fbxData->bones;
+
+	std::vector<ModelData::FbxBone>& bones = fbxModel->fbxData.bones;
 
 	const int clusterCount = fbxSkin->GetClusterCount();
 	bones.reserve(clusterCount);

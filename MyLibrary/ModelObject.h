@@ -21,23 +21,8 @@
 //モデルの座標などをまとめたもの
 class ModelObject
 {
+
 private:
-	static const UINT BONE_MAX = 64;
-	struct SkinConstBufferData
-	{
-		DirectX::XMMATRIX bones[BONE_MAX];
-	};
-
-
-	//fbxモデルのアニメーション用の情報をまとめたもの
-	struct FbxAnimationData
-	{
-		FbxTime freamTime;
-		FbxTime startTime;
-		FbxTime endTime;
-		std::vector<FbxTime> currentTime;
-		std::vector<int> animationMag;
-	};
 
 	static std::unordered_map<std::string, std::unique_ptr<ModelObject>>pModelObjects;
 
@@ -49,14 +34,35 @@ private:
 
 	std::vector<PipelineState*> pPipeline;
 
-
-
-
 	//[モデル内のオブジェクトごと]
 	std::vector < Material> materials;
 
 
+#pragma region ボーンとアニメーションの情報
+	static const UINT BONE_MAX = 64;
+	struct SkinConstBufferData
+	{
+		DirectX::XMMATRIX bones[BONE_MAX];
+	};
 
+	//fbxモデルのアニメーション用の情報をまとめたもの
+	struct FbxAnimationData
+	{
+		FbxTime freamTime;
+		FbxTime startTime;
+		FbxTime endTime;
+		FbxTime currentTime;
+		int animationMag;
+	};
+
+
+	//[ボーンごと]
+	std::vector<BoneData>boneDatas;
+	std::vector<ParentBoneData> parentBoneDatas;//親ボーンと影響度
+
+	FbxAnimationData fbxAnimationData;
+
+#pragma endregion
 protected:
 
 	//定数バッファ
@@ -77,7 +83,7 @@ protected:
 
 	//定数にセットする座標などの値
 	//[モデル内のオブジェクト数]
-	std::vector < ModelConstData> modelConstDatas;
+	std::vector<ModelConstData> modelConstDatas;
 
 
 	//モデル(クリエイトしたら割り当てる)
@@ -101,13 +107,18 @@ public:
 
 	static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData,const std::string& name);
 
-	virtual void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
+	void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
 	bool CreateObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
+
+#pragma region 操作見た目変更
+
 
 	void SetPosition(const Vector3& position);
 	void SetScale(const Vector3& scale);
 	void SetAngle(const Vector3& angle);
+
+#pragma endregion
 
 	void SetPipeline(PipelineState* pipelineState);
 

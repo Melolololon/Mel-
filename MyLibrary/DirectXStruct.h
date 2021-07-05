@@ -228,7 +228,7 @@ struct Material
 	}
 };
 
-struct MaterialConstData
+struct MaterialConstBufferData
 {
 	DirectX::XMFLOAT3 ambient;
 	float pad1;

@@ -294,7 +294,7 @@ private:
 	void** userConstData3D;
 	unsigned int userConstDataSize3D;
 	//マテリアル用
-	MaterialConstData* materialData;
+	MaterialConstBufferData* materialData;
 
 	//下なくす
 	std::vector<ModelConstBufferData*>spriteConstBufferDatas;

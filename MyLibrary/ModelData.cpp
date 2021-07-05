@@ -170,12 +170,11 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 			&objBonePositions,
 			&objBoneNums
 		);
+		boneNum = objBonePositions.size();
+		modelFileObjectNum = vertices.size();
 
 		if (!result)return false;
 
-
-		int modelFileObjectNum = vertices.size();
-		int boneNum = objBonePositions.size();
 
 		if (boneNum == 0)
 		{
@@ -185,10 +184,9 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 				auto vertexNum = vertices[i].size();
 				for (int j = 0; j < vertexNum; j++) 
 				{
-					for (int k = 0; k < FbxVertex::MAX_BONE_INDICES; k++) 
-					{
-						vertices[i][j].boneIndex[k] = 0;
-					}
+					vertices[i][j].boneIndex[0] = 0;
+					vertices[i][j].boneWeight[0] = 1;
+
 				}
 			}
 		}
@@ -201,10 +199,14 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 				for (int j = 0; j < vertexNum; j++)
 				{
 					vertices[i][j].boneIndex[0] = objBoneNums[i][j];
+					vertices[i][j].boneWeight[0] = 1;
 
-					for (int k = 1; k < FbxVertex::MAX_BONE_INDICES; k++)
+					//objでは0しか使わないので、0
+					for (int k = 1; k < _countof(vertices[i][j].boneIndex); k++)
 					{
 						vertices[i][j].boneIndex[k] = 0;
+						vertices[i][j].boneWeight[k] = 1;
+
 					}
 				}
 			}
@@ -277,7 +279,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 
 
 
-#pragma region ディレクトリパス取得
+#pragma region ディレクトリパスとモデル名取得
 		std::string directoryPath;
 		std::string fullPath = path;
 
@@ -297,10 +299,15 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 				);
 				break;
 			}
+			else
+			{
+				modelName.push_back(fullPath[i]);
+			}
 
 			loopCount++;
 		}
 
+		std::reverse(modelName.begin(), modelName.end());
 #pragma endregion
 
 		int materialNum = 0;
@@ -327,8 +334,9 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 			}
 		}
 
+		modelName = path;
 
-
+		modelFormat = ModelFormat::MODEL_FORMAT_OBJ;
 
 		return true;
 
@@ -341,6 +349,9 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		//一時的に書いてる
 		materials[0].ambient = { 0.1f,0.1f,0.1f };
 		materials[0].diffuse = { 1.0f,1.0f,1.0f };
+
+		boneNum = fbxData.bones.size();
+		modelFormat = ModelFormat::MODEL_FORMAT_FBX;
 
 		return true;
 	}

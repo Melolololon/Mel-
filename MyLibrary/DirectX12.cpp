@@ -947,16 +947,16 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	cmdLists[0] = cmdList.Get();
 
 	PipelineState::Initialize(dev.Get());
-	Model::Initialize
-	(
-		dev.Get(),
-		cmdLists
-	);
+	//Model::Initialize
+	//(
+	//	dev.Get(),
+	//	cmdLists
+	//);
 
-	
-	ObjModel::Initialize();
-	FbxModel::Initialize();
-	PrimitiveModel::Initialize();
+	//
+	//ObjModel::Initialize();
+	//FbxModel::Initialize();
+	//PrimitiveModel::Initialize();
 
 	Sprite::Initialize(dev.Get(), cmdList.Get());
 	Sprite2D::Initialize(windouWidth, windowHeight);
@@ -964,7 +964,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	RenderTarget::Initialize();
 
 
-	RenderTarget::Create(Color(255, 0, 255, 255),"main");
+	RenderTarget::Create(Color(0, 200, 0, 255),"main");
 	Camera::Create("main");
 	RenderTarget::Get("main")->SetCamera();
 	DirectionalLight::Create("main");
@@ -1063,7 +1063,7 @@ void DirectX12::LoopStartProcess()
 
 	DirectX::XMMATRIX cameraMat = mainCamera->Get3DCameraMatrix(mainCameraData);
 
-	Model::SetViewAndProjectionMatrix(cameraMat);
+	//Model::SetViewAndProjectionMatrix(cameraMat);
 	Sprite3D::SetViewAndProjectionMatrix(cameraMat);
 	Sprite3D::SetCameraPosTargetUpVector(mainCameraData.nowEye, mainCameraData.nowTarget, mainCameraData.nowUp);
 }
@@ -1089,7 +1089,7 @@ void DirectX12::LoopEndProcess()
 		cBuf.second->Unmap(0, nullptr);
 	}
 
-	Model::SetCommonConstData(commonData);
+	//Model::SetCommonConstData(commonData);
 
 #pragma region ポストエフェクト処理
 
@@ -1802,7 +1802,7 @@ void DirectX12::SetCameraAngre(DirectX::XMFLOAT3 eyeAngle, DirectX::XMFLOAT3 tar
 	cameraMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-mainCameraData.eyeAngle.x));
 	cameraMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(-mainCameraData.eyeAngle.y));
 
-	Model::SetCameraRotateMat(cameraMat);
+	//Model::SetCameraRotateMat(cameraMat);
 }
 
 void DirectX12::SetNearAndFar(float nearNum, float farNum)
@@ -2042,193 +2042,194 @@ VertexType DirectX12::LoadObjVertex
 	const std::string& key
 )
 {
-
-	//objにあるモデル数
-	int loadNum = 0;
-
-	//マテリアル
-	std::vector<std::string>materialName;
-
-	std::vector<DirectX::XMFLOAT3>bonePos;
-	std::vector<Vector3>bonePosV3;
-	std::vector<std::vector<int>>boneNum;
-
-	//仮配列
-	std::vector<std::vector<ObjAnimationVertex>>temporaryVertex;
-	std::vector<std::vector<USHORT>>temporaryIndex;
-
-	ModelLoader::GetInstance()->LoadObjModel
-	(
-		path,
-		loadUV,
-		loadNormal,
-		temporaryVertex,
-		temporaryIndex,
-		*materialFireName,
-		materialName,
-		smoothData,
-		&loadNum,
-		&bonePosV3,
-		&boneNum
-	);
-
-	bonePos.resize(bonePosV3.size());
-	for (int i = 0, size = bonePosV3.size(); i < size; i++)
-	{
-		bonePos[i] = bonePosV3[i].ToXMFLOAT3();
-	}
-
-	std::vector<std::vector<Vertex>> normalVertices(temporaryVertex.size());
-	auto size = temporaryVertex.size();
-	for(int i = 0; i < size;i++)
-	{
-		auto size2 = temporaryVertex[i].size();
-		normalVertices[i].resize(size2);
-		for(int j = 0; j < size2;j++)
-		{
-			normalVertices[i][j].pos = temporaryVertex[i][j].pos;
-			normalVertices[i][j].uv = temporaryVertex[i][j].uv;
-			normalVertices[i][j].normal = temporaryVertex[i][j].normal;
-		}
-	}
-
-	vertices.emplace(key, normalVertices);
-
-	//ボーンあったら入れる
-	bool loadBone = false;
-	if (bonePos.size() != 0)
-	{
-		loadBone = true;
-		objBoneNums.emplace(key, boneNum);
-		objBonePositions.emplace(key, bonePos);
-	}
-
-	indices.emplace(key, temporaryIndex);
-	
-
-#pragma region テクスチャ反転
-
-	int count = 0;
-	float upx = 0;
-	float upy = 0;
-	float downx = 0;
-	float downy = 0;
-	for (int i = 0; i < vertices[key].size(); i++)
-	{
-		for (int j = 0; j < vertices[key][i].size(); j++)
-		{
-			//反転(ブレンダー、MAYAは2次元でも下が0で上に行くほど1に近づく)
-			vertices[key][i][j].uv.y = (vertices[key][i][j].uv.y - 1) * -1;
-
-			count++;
-			count = count >= 4 ? 0 : count;
-
-		}
-	}
-#pragma endregion
-
-
-
-	//スムースシェーディング法線計算
-	std::vector<std::vector<DirectX::XMFLOAT3>>normals;
-	
-	normals.resize(vertices[key].size());
-	for (int i = 0; i < vertices[key].size(); i++)
-	{
-		normals[i].resize(vertices[key][i].size());
-	}
-	smoothNormal.emplace(key, normals);
-	//calcSmoothingNormals(key);
-
-#pragma region 頂点 インデックスバッファ作成
-
-#pragma region 頂点バッファ
-
-	std::vector<VertexBufferSet> vBuffs(loadNum);
-
-	//バッファ作成
-	if (!loadBone) //ボーンなし
-	{
-		for (int i = 0; i < loadNum; i++)
-		{
-			createBuffer->CreateVertexBufferSet
-			(
-				CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-				CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[key][i].size()),
-				vertices[key][i],
-				vBuffs[i]
-			);
-			vBuffs[i].materialName = materialName[i];
-		}
-	}
-	else//ボーンあり
-	{
-		for (int i = 0; i < loadNum; i++)
-		{
-			size_t vertexSize = sizeof(ObjAnimationVertex) * vertices[key][i].size();
-			auto result = dev->CreateCommittedResource(
-				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-				D3D12_HEAP_FLAG_NONE,
-				&CD3DX12_RESOURCE_DESC::Buffer(vertexSize),
-				D3D12_RESOURCE_STATE_GENERIC_READ,
-				nullptr,
-				IID_PPV_ARGS(&vBuffs[i].vertexBuffer)
-			);
-
-			ObjAnimationVertex* aniVertex;
-			result = vBuffs[i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
-			
-			size_t size = vertices[key][i].size();
-			for (size_t j = 0; j < size; j++)
-			{
-				aniVertex[j].pos = vertices[key][i][j].pos;
-				aniVertex[j].uv = vertices[key][i][j].uv;
-				aniVertex[j].normal = vertices[key][i][j].normal;
-				aniVertex[j].boneNumber = objBoneNums[key][i][j];
-			}
-
-			vBuffs[i].vertexBuffer->Unmap(0, nullptr);
-
-			vBuffs[i].vertexBufferView.BufferLocation = vBuffs[i].vertexBuffer->GetGPUVirtualAddress();
-			vBuffs[i].vertexBufferView.SizeInBytes = vertexSize;
-			vBuffs[i].vertexBufferView.StrideInBytes = sizeof(ObjAnimationVertex);
-
-			vBuffs[i].materialName = materialName[i];
-		}
-	}
-
-	vertexBufferSet.emplace(key, vBuffs);
-#pragma endregion
-
-#pragma region インデックスバッファ
-	std::vector<IndexBufferSet>iBuffs(loadNum);
-	
-
-	for (int i = 0; i < loadNum; i++)
-	{
-		createBuffer->CreateIndexBufferSet
-		(
-			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer(sizeof(USHORT) * indices[key][i].size()),
-			indices[key][i],
-			iBuffs[i]
-		);
-	}
-	indexBufferSet.emplace(key,iBuffs);
-
-#pragma endregion
-
-
-#pragma endregion
-
-
-
-	if (bonePos.size() != 0 && 
-		boneNum.size() != 0)
-		return VERTEX_TYPE_OBJ_ANIMATION;
-
-	//ボーンなかったらこれ返す
-	return VertexType::VERTEX_TYPE_NORMAL;
+//
+//	//objにあるモデル数
+//	int loadNum = 0;
+//
+//	//マテリアル
+//	std::vector<std::string>materialName;
+//
+//	std::vector<DirectX::XMFLOAT3>bonePos;
+//	std::vector<Vector3>bonePosV3;
+//	std::vector<std::vector<int>>boneNum;
+//
+//	//仮配列
+//	std::vector<std::vector<ObjAnimationVertex>>temporaryVertex;
+//	std::vector<std::vector<USHORT>>temporaryIndex;
+//
+//	ModelLoader::GetInstance()->LoadObjModel
+//	(
+//		path,
+//		loadUV,
+//		loadNormal,
+//		temporaryVertex,
+//		temporaryIndex,
+//		*materialFireName,
+//		materialName,
+//		smoothData,
+//		&loadNum,
+//		&bonePosV3,
+//		&boneNum
+//	);
+//
+//	bonePos.resize(bonePosV3.size());
+//	for (int i = 0, size = bonePosV3.size(); i < size; i++)
+//	{
+//		bonePos[i] = bonePosV3[i].ToXMFLOAT3();
+//	}
+//
+//	std::vector<std::vector<Vertex>> normalVertices(temporaryVertex.size());
+//	auto size = temporaryVertex.size();
+//	for(int i = 0; i < size;i++)
+//	{
+//		auto size2 = temporaryVertex[i].size();
+//		normalVertices[i].resize(size2);
+//		for(int j = 0; j < size2;j++)
+//		{
+//			normalVertices[i][j].pos = temporaryVertex[i][j].pos;
+//			normalVertices[i][j].uv = temporaryVertex[i][j].uv;
+//			normalVertices[i][j].normal = temporaryVertex[i][j].normal;
+//		}
+//	}
+//
+//	vertices.emplace(key, normalVertices);
+//
+//	//ボーンあったら入れる
+//	bool loadBone = false;
+//	if (bonePos.size() != 0)
+//	{
+//		loadBone = true;
+//		objBoneNums.emplace(key, boneNum);
+//		objBonePositions.emplace(key, bonePos);
+//	}
+//
+//	indices.emplace(key, temporaryIndex);
+//	
+//
+//#pragma region テクスチャ反転
+//
+//	int count = 0;
+//	float upx = 0;
+//	float upy = 0;
+//	float downx = 0;
+//	float downy = 0;
+//	for (int i = 0; i < vertices[key].size(); i++)
+//	{
+//		for (int j = 0; j < vertices[key][i].size(); j++)
+//		{
+//			//反転(ブレンダー、MAYAは2次元でも下が0で上に行くほど1に近づく)
+//			vertices[key][i][j].uv.y = (vertices[key][i][j].uv.y - 1) * -1;
+//
+//			count++;
+//			count = count >= 4 ? 0 : count;
+//
+//		}
+//	}
+//#pragma endregion
+//
+//
+//
+//	//スムースシェーディング法線計算
+//	std::vector<std::vector<DirectX::XMFLOAT3>>normals;
+//	
+//	normals.resize(vertices[key].size());
+//	for (int i = 0; i < vertices[key].size(); i++)
+//	{
+//		normals[i].resize(vertices[key][i].size());
+//	}
+//	smoothNormal.emplace(key, normals);
+//	//calcSmoothingNormals(key);
+//
+//#pragma region 頂点 インデックスバッファ作成
+//
+//#pragma region 頂点バッファ
+//
+//	std::vector<VertexBufferSet> vBuffs(loadNum);
+//
+//	//バッファ作成
+//	if (!loadBone) //ボーンなし
+//	{
+//		for (int i = 0; i < loadNum; i++)
+//		{
+//			createBuffer->CreateVertexBufferSet
+//			(
+//				CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//				CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[key][i].size()),
+//				vertices[key][i],
+//				vBuffs[i]
+//			);
+//			vBuffs[i].materialName = materialName[i];
+//		}
+//	}
+//	else//ボーンあり
+//	{
+//		for (int i = 0; i < loadNum; i++)
+//		{
+//			size_t vertexSize = sizeof(ObjAnimationVertex) * vertices[key][i].size();
+//			auto result = dev->CreateCommittedResource(
+//				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//				D3D12_HEAP_FLAG_NONE,
+//				&CD3DX12_RESOURCE_DESC::Buffer(vertexSize),
+//				D3D12_RESOURCE_STATE_GENERIC_READ,
+//				nullptr,
+//				IID_PPV_ARGS(&vBuffs[i].vertexBuffer)
+//			);
+//
+//			ObjAnimationVertex* aniVertex;
+//			result = vBuffs[i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
+//			
+//			size_t size = vertices[key][i].size();
+//			for (size_t j = 0; j < size; j++)
+//			{
+//				aniVertex[j].pos = vertices[key][i][j].pos;
+//				aniVertex[j].uv = vertices[key][i][j].uv;
+//				aniVertex[j].normal = vertices[key][i][j].normal;
+//				aniVertex[j].boneNumber = objBoneNums[key][i][j];
+//			}
+//
+//			vBuffs[i].vertexBuffer->Unmap(0, nullptr);
+//
+//			vBuffs[i].vertexBufferView.BufferLocation = vBuffs[i].vertexBuffer->GetGPUVirtualAddress();
+//			vBuffs[i].vertexBufferView.SizeInBytes = vertexSize;
+//			vBuffs[i].vertexBufferView.StrideInBytes = sizeof(ObjAnimationVertex);
+//
+//			vBuffs[i].materialName = materialName[i];
+//		}
+//	}
+//
+//	vertexBufferSet.emplace(key, vBuffs);
+//#pragma endregion
+//
+//#pragma region インデックスバッファ
+//	std::vector<IndexBufferSet>iBuffs(loadNum);
+//	
+//
+//	for (int i = 0; i < loadNum; i++)
+//	{
+//		createBuffer->CreateIndexBufferSet
+//		(
+//			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//			CD3DX12_RESOURCE_DESC::Buffer(sizeof(USHORT) * indices[key][i].size()),
+//			indices[key][i],
+//			iBuffs[i]
+//		);
+//	}
+//	indexBufferSet.emplace(key,iBuffs);
+//
+//#pragma endregion
+//
+//
+//#pragma endregion
+//
+//
+//
+//	if (bonePos.size() != 0 && 
+//		boneNum.size() != 0)
+//		return VERTEX_TYPE_OBJ_ANIMATION;
+//
+//	//ボーンなかったらこれ返す
+//	return VertexType::VERTEX_TYPE_NORMAL;
+return VertexType::VERTEX_TYPE_NORMAL;
 }
 
 void DirectX12::LoadObjMaterial
@@ -2461,7 +2462,7 @@ void DirectX12::LoadObjMaterial
 				createBuffer->CreateConstBufferSet
 				(
 					CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstData) + 0xff)&~0xff),
+					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstBufferData) + 0xff)&~0xff),
 					basicHeapHandle,
 					(void**)&materialData,
 					constSetV[i],
@@ -2517,7 +2518,7 @@ void DirectX12::LoadObjMaterial
 				createBuffer->CreateConstBufferSet
 				(
 					CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstData) + 0xff)&~0xff),
+					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstBufferData) + 0xff)&~0xff),
 					basicHeapHandle,
 					(void**)&materialData,
 					constSetV[i],
@@ -2978,7 +2979,7 @@ void DirectX12::CreateHeapData
 		createBuffer->CreateConstBufferSet
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstData) + 0xff)&~0xff),
+			CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstBufferData) + 0xff)&~0xff),
 			basicHeapHandle,
 			(void**)&materialData,
 			constSetV[objectNum],

@@ -48,25 +48,16 @@ struct Node
 //モデルの頂点、インデックス、テクスチャをまとめたクラス
 class ModelData
 {
-private:
-
-	static std::unordered_map<std::string, std::unique_ptr<ModelData>>pModelDatas;
-
-
-	
-#pragma region obj構造体
-
-	//objのボーン情報をまとめたもの
-	struct ObjBone
+public:
+	enum class ModelFormat
 	{
-		int boneNum = 0;
-		std::vector<Vector3>bonePosition;
+		MODEL_FORMAT_NONE,
+		MODEL_FORMAT_OBJ,
+		MODEL_FORMAT_FBX,
 	};
 
-#pragma endregion
 
 #pragma region fbx構造体
-
 	//fbxのボーン情報をまとめたもの
 	struct FbxBone
 	{
@@ -82,6 +73,24 @@ private:
 			this->boneName = name;
 		}
 	};
+#pragma endregion
+
+
+private:
+
+#pragma region obj構造体
+
+	//objのボーン情報をまとめたもの
+	struct ObjBone
+	{
+		std::vector<Vector3>bonePosition;
+	};
+
+#pragma endregion
+
+
+#pragma region fbx構造体
+
 
 
 	//fbxのデータをまとめたもの
@@ -96,10 +105,13 @@ private:
 		Node* meshNode = nullptr;
 
 		std::vector<FbxBone>bones;
-		std::vector<FbxBone>& GetBones() { return bones; }
+		
 	};
 
 #pragma endregion
+
+
+	static std::unordered_map<std::string, std::unique_ptr<ModelData>>pModelDatas;
 
 	static ID3D12Device* device;
 
@@ -116,6 +128,8 @@ private:
 #pragma endregion
 
 #pragma region モデル情報
+	ModelFormat modelFormat = ModelFormat::MODEL_FORMAT_NONE;
+
 	//モデル名
 	std::string modelName;
 
@@ -135,9 +149,9 @@ private:
 	std::vector<std::unique_ptr<Texture>>pTextures;
 
 
-
-	std::unique_ptr<ObjBone>objBone;
-	std::unique_ptr<FbxData>fbxData;
+	int boneNum = 0;
+	ObjBone objData;
+	FbxData fbxData;
 
 #pragma endregion
 
@@ -248,7 +262,7 @@ public:
 	/// <param name="name"></param>
 	bool LoadModel(const std::string& path, const std::string& name);
 
-#pragma region コマンドセット用関数
+#pragma region 開発者用関数
 
 	/// <summary>
 	/// インデックスを取得。
@@ -274,6 +288,19 @@ public:
 	/// <returns></returns>
 	ID3D12DescriptorHeap* GetTextureDesctiptorHeap()const { return textureDescHeap.Get(); }
 
+
+#pragma region fbx関係
+
+
+	std::vector<FbxBone>& GetFbxBone() { return fbxData.bones; }
+
+#pragma endregion
+
+#pragma region obj関係
+	const std::vector<Vector3>& GetObjBonePosition()const { return objData.bonePosition; }
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma region セット
@@ -281,6 +308,10 @@ public:
 #pragma endregion
 
 #pragma region ゲット
+
+	ModelFormat GetModelFormat() const{ return modelFormat; }
+
+	int GetBoneNum() const{ return boneNum; }
 
 	/// <summary>
 	/// モデルファイルに含まれているオブジェクト(モデル)の数を取得します。
