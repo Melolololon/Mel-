@@ -14,6 +14,8 @@
 
 #include"Random.h"
 
+#include"ModelData.h"
+
 Play::Play(){}
 
 
@@ -24,7 +26,7 @@ Vector3 mAngle = 0;
 
 void Play::Initialize()
 {
-
+	ModelData::Load("Resources/Obj/tank_body.obj","model1");
 
 }
 

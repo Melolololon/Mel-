@@ -958,6 +958,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	//FbxModel::Initialize();
 	//PrimitiveModel::Initialize();
 
+	ModelData::Initialize(dev.Get());
+
 	Sprite::Initialize(dev.Get(), cmdList.Get());
 	Sprite2D::Initialize(windouWidth, windowHeight);
 	Sprite3D::Initialize();

@@ -216,6 +216,14 @@ private:
 
 
 	/// <summary>
+	/// モデルの頂点データ、マテリアルを読み込みます。
+	/// </summary>
+	/// <param name="path"></param>
+	/// <param name="name"></param>
+	bool LoadModel(const std::string& path, const std::string& name);
+
+
+	/// <summary>
 	/// 頂点インデックスバッファテクスチャバッファの生成とインデックスとテクスチャのMapを行います。
 	/// </summary>
 	/// <param name="vertexSize"></param>
@@ -255,14 +263,8 @@ public:
 
 	static void Delete(const std::string& name);
 
-	/// <summary>
-	/// モデルの頂点データ、マテリアルを読み込みます。
-	/// </summary>
-	/// <param name="path"></param>
-	/// <param name="name"></param>
-	bool LoadModel(const std::string& path, const std::string& name);
-
 #pragma region 開発者用関数
+	static void Initialize(ID3D12Device* pDevice);
 
 	/// <summary>
 	/// インデックスを取得。

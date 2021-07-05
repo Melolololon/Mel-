@@ -68,8 +68,8 @@ struct FbxVertex
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT3 normal;
-	UINT boneIndex[MAX_BONE_INDICES];
-	float boneWeight[MAX_BONE_INDICES];
+	UINT boneIndex[MAX_BONE_INDICES] = { 0,0,0,0 };
+	float boneWeight[MAX_BONE_INDICES] = { 1,1,1,1 };
 };
 
 struct SpriteVertex

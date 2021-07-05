@@ -90,6 +90,8 @@ protected:
 	ModelData* pModelData = nullptr;
 	UINT modelFileObjectNum = 0;
 
+	bool CreateObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
+
 	void CreateConstBuffer();
 
 	void DrawCommonProcessing(const std::string& rtName);
@@ -108,8 +110,6 @@ public:
 	static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData,const std::string& name);
 
 	void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
-
-	bool CreateObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
 
 #pragma region ëÄçÏå©ÇΩñ⁄ïœçX
 

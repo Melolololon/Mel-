@@ -4,7 +4,10 @@
 #include"ModelLoader.h"
 #include"FbxLoader.h"
 
-std::unordered_map<std::string, std::unique_ptr<ModelData>>pModelDatas;
+std::unordered_map<std::string, std::unique_ptr<ModelData>>ModelData::pModelDatas;
+
+ID3D12Device* ModelData::device = nullptr;
+
 
 void ModelData::CreateDescriptorHeap(const UINT textureNum)
 {
@@ -87,6 +90,7 @@ void ModelData::MapIndices(const std::vector<std::vector<USHORT>>& indices)
 void ModelData::CteateTextureBuffer()
 {
 	auto textureNum = pTextures.size();
+	textureBuffers.resize(textureNum);
 	for (int i = 0; i < textureNum; i++)
 	{
 		CreateBuffer::GetInstance()->CreateTextureBuffer
@@ -139,6 +143,11 @@ bool ModelData::Load(const std::string& path, const std::string& name)
 void ModelData::Delete(const std::string& name)
 {
 	pModelDatas.erase(name);
+}
+
+void ModelData::Initialize(ID3D12Device* pDevice)
+{
+	device = pDevice;
 }
 
 bool ModelData::LoadModel(const std::string& path, const std::string& name)
@@ -338,7 +347,6 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 
 		modelFormat = ModelFormat::MODEL_FORMAT_OBJ;
 
-		return true;
 
 	}
 	else 
@@ -353,7 +361,6 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		boneNum = fbxData.bones.size();
 		modelFormat = ModelFormat::MODEL_FORMAT_FBX;
 
-		return true;
 	}
 	else
 	{
@@ -390,6 +397,9 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 			pFbxVertex[j] = vertices[i][j];
 		}
 	}
+
+
+	return true;
 }
 
 
