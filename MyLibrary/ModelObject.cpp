@@ -15,7 +15,14 @@ ModelObject::ModelObject(ModelData* pModelData, ConstBufferData* userConstBuffer
 	if (userConstBufferData)this->userConstBufferData = *userConstBufferData;
 
 	//objのボーンのMoveVectorの割る処理のために、オブジェクトごとにバッファ作成
-	modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT;
+	if (pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_OBJ) 
+	{
+		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT;
+	}
+	else
+	{
+		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL;
+	}
 	modelConstBufferData.bufferDataSize = sizeof(SkinConstBufferData);
 
 	modelFileObjectNum = pModelData->GetModelFileObjectNumber();
@@ -217,7 +224,10 @@ void ModelObject::MapConstData(const Camera* camera)
 #pragma region ボーンのマップ
 
 		int boneNum = pModelData->GetBoneNum();
-		if (boneNum == 0)return;
+
+		if (boneNum == 0
+			|| pModelData->GetModelFormat() != ModelData::ModelFormat::MODEL_FORMAT_OBJ
+			&& i != 0)return;
 
 		SkinConstBufferData* skinConstData;
 
