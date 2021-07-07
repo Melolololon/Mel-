@@ -169,7 +169,8 @@ void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh)
 	const int vertexNum = fbxMesh->GetControlPointsCount();
 
 	auto& vertices = fbxModel->vertices;
-	vertices.resize(vertexNum);
+	vertices.resize(1);
+	vertices[0].resize(vertexNum);
 
 	//À•WŽæ“¾
 	FbxVector4* pCount = fbxMesh->GetControlPoints();
@@ -372,7 +373,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 		UINT index;
 		float weight;
 	};
-	std::vector<std::list<WeightSet>>weightLists(fbxModel->vertices.size());
+	std::vector<std::list<WeightSet>>weightLists(fbxModel->vertices[0].size());
 
 	for(int i = 0; i < clusterCount;i++)
 	{
@@ -414,7 +415,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 
 
 	auto& vertices = fbxModel->vertices;
-	auto verticesSize = vertices.size();
+	auto verticesSize = vertices[0].size();
 	for(int i = 0; i < verticesSize;i++)
 	{
 		auto& weightList = weightLists[i];

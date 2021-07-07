@@ -30,7 +30,10 @@ void Play::Initialize()
 	bool result = false;
 	result = ModelData::Load("Resources/Obj/tank_body.obj","model1");
 	result = ModelObject::Create(ModelData::Get("model1"), nullptr, "model1");
-	
+
+	result = ModelData::Load("Resources/boneTest/boneTest.fbx", "model2");
+	result = ModelObject::Create(ModelData::Get("model2"), nullptr, "model2");
+
 }
 
 void Play::Update()
@@ -41,6 +44,7 @@ void Play::Update()
 void Play::Draw()
 {
 	ModelObject::Get("model1")->Draw();
+	ModelObject::Get("model2")->Draw();
 }
 
 void Play::Finitialize()

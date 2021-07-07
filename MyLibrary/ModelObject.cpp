@@ -564,10 +564,6 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	cmdLists = cmdList;
 
 
-
-
-
-
 #pragma region ディスクリプタレンジ_ルートパラメーター
 	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
