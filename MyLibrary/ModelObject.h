@@ -63,7 +63,7 @@ private:
 	FbxAnimationData fbxAnimationData;
 
 #pragma endregion
-protected:
+//protected:
 
 	//定数バッファ
 	static const int CONST_BUFFER_REGISTER = 0;
@@ -107,7 +107,7 @@ public:
 
 	static bool Initialize(ID3D12Device* dev, const std::vector<ID3D12GraphicsCommandList*>& cmdList);
 
-	static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData,const std::string& name);
+	static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name);
 
 	void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 

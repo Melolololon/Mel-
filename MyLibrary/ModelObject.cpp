@@ -7,6 +7,7 @@ std::unordered_map<std::string, std::unique_ptr<ModelObject>>ModelObject::pModel
 ID3D12Device* ModelObject::device;
 std::vector<ID3D12GraphicsCommandList*>ModelObject::cmdLists;
 ComPtr<ID3D12RootSignature>ModelObject::rootSignature;
+PipelineState ModelObject::defaultPipeline;
 
 ModelObject::ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
@@ -727,6 +728,8 @@ bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConst
 		skinConstData->bones[i] = DirectX::XMMatrixIdentity();
 	}
 	modelConstBuffer[0]->Unmap(0, nullptr);
+
+	pPipeline.resize(modelFileObjectNum, &defaultPipeline);
 
 	return true;
 }
