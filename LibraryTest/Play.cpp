@@ -44,6 +44,9 @@ void Play::Update()
 void Play::Draw()
 {
 	ModelObject::Get("model1")->Draw();
+
+	ModelObject::Get("model2")->SetAnimationFlag(true);
+	ModelObject::Get("model2")->SetAnimationSpeedMagnification(10);
 	ModelObject::Get("model2")->Draw();
 }
 

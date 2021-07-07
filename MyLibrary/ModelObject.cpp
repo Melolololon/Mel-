@@ -530,6 +530,8 @@ void ModelObject::SetCmdList()
 
 void ModelObject::Draw(const std::string& rtName)
 {
+	FbxAnimation();
+
 	DrawCommonProcessing(rtName);
 }
 
@@ -729,6 +731,35 @@ void ModelObject::Delete(const std::string& name)
 	pModelObjects.erase(name);
 }
 
+void ModelObject::ResetAnimation()
+{
+	fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
+}
+
+void ModelObject::SetCurrentFream(const UINT fream)
+{
+	FbxTime setTime = fbxAnimationData.animationTimes.startTime * fream;
+	if (setTime > fbxAnimationData.animationTimes.endTime)
+		setTime = fbxAnimationData.animationTimes.endTime;
+
+	fbxAnimationData.currentTime = setTime;
+}
+
+
+
+void ModelObject::FbxAnimation()
+{
+	if (!isAnimation)return;
+
+	//タイムを進める
+	fbxAnimationData.currentTime += fbxAnimationData.animationTimes.freamTime * fbxAnimationData.timeMag;
+
+	if (fbxAnimationData.currentTime  > fbxAnimationData.animationTimes.endTime)
+		fbxAnimationData.currentTime  = fbxAnimationData.animationTimes.startTime;
+	if (fbxAnimationData.currentTime  < fbxAnimationData.animationTimes.startTime)
+		fbxAnimationData.currentTime  = fbxAnimationData.animationTimes.endTime;
+}
+
 bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
 	CreateConstBuffer();
@@ -747,7 +778,7 @@ bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConst
 
 #pragma endregion
 
-#pragma region ボーン
+#pragma region アニメーション関係
 
 
 	boneDatas.resize(pModelData->GetBoneNum());
@@ -760,6 +791,7 @@ bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConst
 	}
 	modelConstBuffer[0]->Unmap(0, nullptr);
 
+	fbxAnimationData.animationTimes = pModelData->GetFbxAnimationTimes();
 #pragma endregion
 
 	pPipeline.resize(modelFileObjectNum, &defaultPipeline);

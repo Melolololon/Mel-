@@ -48,11 +48,9 @@ private:
 	//fbxモデルのアニメーション用の情報をまとめたもの
 	struct FbxAnimationData
 	{
-		FbxTime freamTime;
-		FbxTime startTime;
-		FbxTime endTime;
+		ModelData::FbxAnimationTimes animationTimes;
 		FbxTime currentTime;
-		int animationMag;
+		int timeMag = 1;
 	};
 
 
@@ -61,9 +59,8 @@ private:
 	std::vector<ParentBoneData> parentBoneDatas;//親ボーンと影響度
 
 	FbxAnimationData fbxAnimationData;
-
+	bool isAnimation = false;
 #pragma endregion
-//protected:
 
 	//定数バッファ
 	static const int CONST_BUFFER_REGISTER = 0;
@@ -97,8 +94,8 @@ private:
 	void DrawCommonProcessing(const std::string& rtName);
 	void MapConstData(const Camera* camera);
 	void SetCmdList();
-
-
+	 
+	void FbxAnimation();
 public:
 	
 	//nullptr渡される可能性を考えると、boolをreturnできるようにしたほうがいい?
@@ -118,10 +115,30 @@ public:
 
 #pragma region 操作見た目変更
 
+#pragma region 共通
+
 
 	void SetPosition(const Vector3& position);
 	void SetScale(const Vector3& scale);
 	void SetAngle(const Vector3& angle);
+
+
+#pragma endregion
+
+#pragma region アニメーション
+
+	void SetAnimationFlag(const bool flag) { isAnimation = flag; }
+
+		/// <summary>
+	/// アニメーションをリセットします。
+	/// </summary>
+	void ResetAnimation();
+
+	void SetCurrentFream(const UINT fream);
+
+	void SetAnimationSpeedMagnification(const int magnification) { fbxAnimationData.timeMag = magnification; }
+#pragma endregion
+
 
 #pragma endregion
 

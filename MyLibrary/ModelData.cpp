@@ -150,6 +150,7 @@ void ModelData::Initialize(ID3D12Device* pDevice)
 	device = pDevice;
 }
 
+
 bool ModelData::LoadModel(const std::string& path, const std::string& name)
 {
 	
@@ -360,6 +361,27 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 
 		boneNum = fbxData.bones.size();
 		modelFormat = ModelFormat::MODEL_FORMAT_FBX;
+
+
+
+
+#pragma region アニメーション関係準備
+		if (fbxData.bones.size() != 0)
+		{
+			
+			FbxAnimStack* animstack = fbxData.fbxScene->GetSrcObject<FbxAnimStack>(0);
+			const char* animstackname = animstack->GetName();
+			FbxTakeInfo* takeinfo = fbxData.fbxScene->GetTakeInfo(animstackname);
+
+			fbxData.animationTimes.startTime = takeinfo->mLocalTimeSpan.GetStart();
+			fbxData.animationTimes.endTime = takeinfo->mLocalTimeSpan.GetStop();
+
+			//1秒60フレームで設定されてるアニメーションの場合、eFream60って設定する?
+			fbxData.animationTimes.freamTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+		}
+
+
+#pragma endregion
 
 	}
 	else

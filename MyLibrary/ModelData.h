@@ -73,6 +73,15 @@ public:
 			this->boneName = name;
 		}
 	};
+
+	//fbxのアニメーションに必要なFbxTimeをまとめた構造体
+	struct FbxAnimationTimes
+	{
+		FbxTime startTime;
+		FbxTime endTime;
+		FbxTime freamTime;
+	};
+
 #pragma endregion
 
 
@@ -92,7 +101,6 @@ private:
 #pragma region fbx構造体
 
 
-
 	//fbxのデータをまとめたもの
 	struct FbxData
 	{
@@ -106,7 +114,10 @@ private:
 
 		std::vector<FbxBone>bones;
 		
+		FbxAnimationTimes animationTimes;
+
 	};
+
 
 #pragma endregion
 
@@ -150,7 +161,9 @@ private:
 
 
 	int boneNum = 0;
+	
 	ObjBone objData;
+	
 	FbxData fbxData;
 
 #pragma endregion
@@ -296,6 +309,12 @@ public:
 
 	std::vector<FbxBone>& GetFbxBone() { return fbxData.bones; }
 
+	/// <summary>
+	/// モデルのFbxAnimationTimesを返します。
+	/// </summary>
+	/// <returns></returns>
+	FbxAnimationTimes GetFbxAnimationTimes()const { return fbxData.animationTimes; }
+
 #pragma endregion
 
 #pragma region obj関係
@@ -326,12 +345,12 @@ public:
 	/// </summary>
 	/// <param name="objectNum">モデルファイル内のモデルを指定する値</param>
 	/// <returns></returns>
-	const Material& GetMaterial(const int objectNum)const { return materials[objectNum]; }
+	Material GetMaterial(const int objectNum)const { return materials[objectNum]; }
 
 
 #pragma endregion
 
-	//フレンドクラスは、privateの変数、関数を参照できる
+	//フレンドクラスは、privateの変数、関数にアクセスできる
 	friend class FbxLoader;
 };
 
