@@ -109,6 +109,11 @@ public:
 
 	static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name);
 
+	static ModelObject* Get(const std::string& name) { return pModelObjects[name].get(); }
+
+	static void Delete(const std::string& name);
+
+
 	void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
 #pragma region ‘€ìŒ©‚½–Ú•ÏX

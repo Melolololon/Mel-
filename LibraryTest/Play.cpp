@@ -30,7 +30,7 @@ void Play::Initialize()
 	bool result = false;
 	result = ModelData::Load("Resources/Obj/tank_body.obj","model1");
 	result = ModelObject::Create(ModelData::Get("model1"), nullptr, "model1");
-	int z = 0;
+	
 }
 
 void Play::Update()
@@ -40,7 +40,7 @@ void Play::Update()
 
 void Play::Draw()
 {
-	
+	ModelObject::Get("model1")->Draw();
 }
 
 void Play::Finitialize()

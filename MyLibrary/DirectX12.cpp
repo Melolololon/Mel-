@@ -6,6 +6,9 @@
 #include"DirectionalLight.h"
 #include"RenderTarget.h"
 
+#include"ModelData.h"
+#include"ModelObject.h"
+
 DirectX12::DirectX12()
 {
 }
@@ -943,8 +946,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 #pragma endregion
 
 
-	std::vector<ID3D12GraphicsCommandList*>cmdLists(1);
-	cmdLists[0] = cmdList.Get();
+
 
 	PipelineState::Initialize(dev.Get());
 	//Model::Initialize
@@ -959,6 +961,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	//PrimitiveModel::Initialize();
 
 	ModelData::Initialize(dev.Get());
+	std::vector<ID3D12GraphicsCommandList*> cmdLists(1, cmdList.Get());
+	ModelObject::Initialize(dev.Get(), cmdLists);
 
 	Sprite::Initialize(dev.Get(), cmdList.Get());
 	Sprite2D::Initialize(windouWidth, windowHeight);

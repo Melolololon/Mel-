@@ -1,12 +1,13 @@
 #include"ModelObject.h"
 #include"CreateBuffer.h"
 #include"FbxLoader.h"
+#include"DirectionalLight.h"
 
 std::unordered_map<std::string, std::unique_ptr<ModelObject>>ModelObject::pModelObjects;
 
 ID3D12Device* ModelObject::device;
 std::vector<ID3D12GraphicsCommandList*>ModelObject::cmdLists;
-ComPtr<ID3D12RootSignature>ModelObject::rootSignature;
+ComPtr<ID3D12RootSignature> ModelObject::rootSignature;
 PipelineState ModelObject::defaultPipeline;
 
 ModelObject::ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
@@ -151,6 +152,20 @@ void ModelObject::MapConstData(const Camera* camera)
 		constBufferData->mulColor = modelConstDatas[i].mulColor;
 		constBufferData->ex = modelConstDatas[i].pushPolygonNum;
 
+		Vector3 lightDir = DirectionalLight::Get().GetDirection();
+		constBufferData->light = DirectX::XMFLOAT4(lightDir.x, lightDir.y, lightDir.z, 0);
+		Color lightCor = DirectionalLight::Get().GetColor();
+		constBufferData->lightColor = DirectX::XMFLOAT4
+		(
+			(float)lightCor.r / 255.0f, 
+			(float)lightCor.g / 255.0f, 
+			(float)lightCor.b / 255.0f, 
+			(float)lightCor.a / 255.0f
+		);
+		constBufferData->lightMat = DirectX::XMMatrixIdentity();
+
+		Vector3 cameraPos = camera->GetCameraPosition();
+		constBufferData->cameraPos = DirectX::XMFLOAT4(cameraPos.x, cameraPos.y, cameraPos.z, 0);
 
 #pragma region 行列計算
 		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
@@ -165,12 +180,7 @@ void ModelObject::MapConstData(const Camera* camera)
 		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas[i].angle.x));
 		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas[i].angle.y));
 
-		DirectX::XMMATRIX cameraMat = DirectX::XMMatrixIdentity();
-		DirectX::XMFLOAT3 cameraAngle = camera->GetCameraAngle().ToXMFLOAT3();
-		cameraMat = DirectX::XMMatrixRotationZ(-cameraAngle.z);
-		cameraMat = DirectX::XMMatrixRotationX(-cameraAngle.x);
-		cameraMat = DirectX::XMMatrixRotationY(-cameraAngle.y);
-		constBufferData->normalMat = matWorld * cameraMat;
+		constBufferData->normalMat = matWorld;
 
 		matWorld *= DirectX::XMMatrixTranslation
 		(
@@ -554,9 +564,13 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	cmdLists = cmdList;
 
 
+
+
+
+
 #pragma region ディスクリプタレンジ_ルートパラメーター
 	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
-	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 0);
+	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 	CD3DX12_ROOT_PARAMETER rootparam[5] = {};
 
@@ -570,7 +584,7 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	rootparam[MODEL_BUFFER_REGISTER].InitAsConstantBufferView(3, 0, D3D12_SHADER_VISIBILITY_ALL);
 
 	//テクスチャ
-	rootparam[4].InitAsDescriptorTable(0, &descRangeSRV, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootparam[4].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_PIXEL);
 
 #pragma endregion
 
@@ -714,13 +728,34 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	return true;
 }
 
+void ModelObject::Delete(const std::string& name)
+{
+	pModelObjects.erase(name);
+}
+
 bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
 	CreateConstBuffer();
 	
+	modelConstDatas.resize(modelFileObjectNum);
+	
+#pragma region マテリアル
+
+
+	materials.resize(modelFileObjectNum);
+
+	for(int i = 0; i < modelFileObjectNum;i++)
+	{
+		materials[i] = pModelData->GetMaterial(i);
+	}
+
+#pragma endregion
+
+#pragma region ボーン
+
+
 	boneDatas.resize(pModelData->GetBoneNum());
 	parentBoneDatas.resize(pModelData->GetBoneNum());
-
 	SkinConstBufferData* skinConstData = nullptr;
 	modelConstBuffer[0]->Map(0, nullptr, (void**)&skinConstData);
 	for (int i = 0; i < BONE_MAX; i++)
@@ -728,6 +763,8 @@ bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConst
 		skinConstData->bones[i] = DirectX::XMMatrixIdentity();
 	}
 	modelConstBuffer[0]->Unmap(0, nullptr);
+
+#pragma endregion
 
 	pPipeline.resize(modelFileObjectNum, &defaultPipeline);
 
