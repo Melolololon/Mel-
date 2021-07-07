@@ -82,7 +82,6 @@ private:
 	//[モデル内のオブジェクト数]
 	std::vector<ModelConstData> modelConstDatas;
 
-
 	//モデル(クリエイトしたら割り当てる)
 	ModelData* pModelData = nullptr;
 	UINT modelFileObjectNum = 0;
