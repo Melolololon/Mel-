@@ -228,16 +228,30 @@ float XInputManager::RightStickAngle(const UCHAR& padNum)
 
 void XInputManager::PadVibration(const float& leftPar, const float& rightPar, const UCHAR& padNum)
 {
-	if (leftPar > 100 || rightPar > 100)
+	float leftParsent = leftPar;
+	float rightParsent = rightPar;
+	if (leftPar > 100.0f)
 	{
-		OutputDebugString(L"leftPar‚Ü‚½‚ÍrightPar‚ª0%`100%‚Ì”ÍˆÍ‚ğ’´‚¦‚Ä‚¢‚Ü‚·\n");
-		return;
+		leftParsent = 100.0f;
 	}
+	if (leftPar < 0.0f)
+	{
+		leftParsent = 0.0f;
+	}
+	if (rightPar > 100.0f)
+	{
+		rightParsent = 100.0f;
+	}
+	if (rightPar < 0.0f)
+	{
+		rightParsent = 0.0f;
+	}
+
 	if (!padCheck(padNum))return;
 
 	XINPUT_VIBRATION v;
-	v.wLeftMotorSpeed = static_cast<WORD>(leftPar / 100.0f) * MAX_VIBRATION_VALUE;
-	v.wRightMotorSpeed = static_cast<WORD>(rightPar / 100.0f) * MAX_VIBRATION_VALUE;
+	v.wLeftMotorSpeed = static_cast<WORD>(leftParsent / 100.0f) * MAX_VIBRATION_VALUE;
+	v.wRightMotorSpeed = static_cast<WORD>(rightParsent / 100.0f) * MAX_VIBRATION_VALUE;
 	XInputSetState(padNum - 1, &v);
 }
 
