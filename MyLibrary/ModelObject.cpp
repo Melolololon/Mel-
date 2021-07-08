@@ -269,6 +269,7 @@ void ModelObject::MapConstData(const Camera* camera)
 
 				//モデル自体のスケールの乗算により、ボーンの平行移動の値にスケールが乗算されるため、
 				//割って増減を抑えている
+				//ボーン→行列の順番で掛けるからモデルの倍率が影響しちゃう
 				boneMat *= DirectX::XMMatrixTranslation
 				(
 					boneMoveVector.x / modelConstDatas[i].scale.x,

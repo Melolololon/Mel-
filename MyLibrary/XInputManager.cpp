@@ -112,93 +112,93 @@ float XInputManager::DirectionalButtonAngle(const UCHAR& padNum)
 bool XInputManager::LeftStickLeft(const float& lXPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
-	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLX)
+	if (-lXPar >= padState[padNum - 1].Gamepad.sThumbLX)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::LeftStickRight(const float&  lXPar, const UCHAR& padNum)
+bool XInputManager::LeftStickRight(const float& lXPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
-	if (lXPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbLX)
+	if (lXPar <= padState[padNum - 1].Gamepad.sThumbLX)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::LeftStickUp(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::LeftStickUp(const float& lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
-	if (lYPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbLY)
+	if (lYPar <= padState[padNum - 1].Gamepad.sThumbLY)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::LeftStickDown(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::LeftStickDown(const float& lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
-	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLY)
+	if (-lYPar >= padState[padNum - 1].Gamepad.sThumbLY)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::RightStickLeft(const float&  lXPar, const UCHAR& padNum)
-{
-
-	if (!padCheck(padNum))return false;
-
-	if (-lXPar / 100.0f * MAX_AXIS_VALUE >=padState[padNum - 1].Gamepad.sThumbRX)
-		return true;
-	
-	return false;
-}
-
-bool XInputManager::RightStickRight(const float&  lXPar, const UCHAR& padNum)
-{
-
-	if (!padCheck(padNum))return false;
-	if (lXPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbRX)
-		return true;
-	
-	return false;
-}
-
-bool XInputManager::RightStickUp(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::RightStickLeft(const float& lXPar, const UCHAR& padNum)
 {
 
 	if (!padCheck(padNum))return false;
 
-	if (lYPar / 100.0f * MAX_AXIS_VALUE <=padState[padNum - 1].Gamepad.sThumbRY)
+	if (-lXPar >= padState[padNum - 1].Gamepad.sThumbRX)
 		return true;
-	
+
 	return false;
 }
 
-bool XInputManager::RightStickDown(const float&  lYPar, const UCHAR& padNum)
+bool XInputManager::RightStickRight(const float& lXPar, const UCHAR& padNum)
+{
+
+	if (!padCheck(padNum))return false;
+	if (lXPar <= padState[padNum - 1].Gamepad.sThumbRX)
+		return true;
+
+	return false;
+}
+
+bool XInputManager::RightStickUp(const float& lYPar, const UCHAR& padNum)
+{
+
+	if (!padCheck(padNum))return false;
+
+	if (lYPar <= padState[padNum - 1].Gamepad.sThumbRY)
+		return true;
+
+	return false;
+}
+
+bool XInputManager::RightStickDown(const float& lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
-	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbRY)
+	if (-lYPar >= padState[padNum - 1].Gamepad.sThumbRY)
 		return true;
-	
+
 	return false;
 }
 
 
-float XInputManager::LeftStickAngle( const UCHAR& padNum)
+float XInputManager::LeftStickAngle(const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return -1.0f;
 
 	float x = static_cast<float>(padState[padNum - 1].Gamepad.sThumbLX);
 	float y = static_cast<float>(padState[padNum - 1].Gamepad.sThumbLY);
-	
-	//未入力はリターン
+
+	//未入力は-1をリターン
 	if (x == 0 && y == 0)
 		return -1.0f;
 
@@ -206,19 +206,19 @@ float XInputManager::LeftStickAngle( const UCHAR& padNum)
 	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }), true);
 }
 
-float XInputManager::RightStickAngle( const UCHAR& padNum)
+float XInputManager::RightStickAngle(const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return -1.0f;
 
 	float x = static_cast<float>(padState[padNum - 1].Gamepad.sThumbRX);
 	float y = static_cast<float>(padState[padNum - 1].Gamepad.sThumbRY);
-	
 
-	if (x == 0 && y == 0 )
+
+	if (x == 0 && y == 0)
 		return -1.0f;
 
 
-	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }),true);
+	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }), true);
 }
 
 #pragma endregion
