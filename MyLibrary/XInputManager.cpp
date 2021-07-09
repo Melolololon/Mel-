@@ -107,12 +107,13 @@ float XInputManager::DirectionalButtonAngle(const UCHAR& padNum)
 #pragma endregion
 
 
+
 #pragma region スティック
 
 bool XInputManager::LeftStickLeft(const float& lXPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
-	if (-lXPar >= padState[padNum - 1].Gamepad.sThumbLX)
+	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLX)
 		return true;
 
 	return false;
@@ -122,7 +123,7 @@ bool XInputManager::LeftStickRight(const float& lXPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
-	if (lXPar <= padState[padNum - 1].Gamepad.sThumbLX)
+	if (lXPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbLX)
 		return true;
 
 	return false;
@@ -132,7 +133,7 @@ bool XInputManager::LeftStickUp(const float& lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
-	if (lYPar <= padState[padNum - 1].Gamepad.sThumbLY)
+	if (lYPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbLY)
 		return true;
 
 	return false;
@@ -142,7 +143,7 @@ bool XInputManager::LeftStickDown(const float& lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
-	if (-lYPar >= padState[padNum - 1].Gamepad.sThumbLY)
+	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLY)
 		return true;
 
 	return false;
@@ -153,7 +154,7 @@ bool XInputManager::RightStickLeft(const float& lXPar, const UCHAR& padNum)
 
 	if (!padCheck(padNum))return false;
 
-	if (-lXPar >= padState[padNum - 1].Gamepad.sThumbRX)
+	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbRX)
 		return true;
 
 	return false;
@@ -163,7 +164,7 @@ bool XInputManager::RightStickRight(const float& lXPar, const UCHAR& padNum)
 {
 
 	if (!padCheck(padNum))return false;
-	if (lXPar <= padState[padNum - 1].Gamepad.sThumbRX)
+	if (lXPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbRX)
 		return true;
 
 	return false;
@@ -174,7 +175,7 @@ bool XInputManager::RightStickUp(const float& lYPar, const UCHAR& padNum)
 
 	if (!padCheck(padNum))return false;
 
-	if (lYPar <= padState[padNum - 1].Gamepad.sThumbRY)
+	if (lYPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbRY)
 		return true;
 
 	return false;
@@ -184,11 +185,12 @@ bool XInputManager::RightStickDown(const float& lYPar, const UCHAR& padNum)
 {
 	if (!padCheck(padNum))return false;
 
-	if (-lYPar >= padState[padNum - 1].Gamepad.sThumbRY)
+	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbRY)
 		return true;
 
 	return false;
 }
+
 
 
 float XInputManager::LeftStickAngle(const UCHAR& padNum)
