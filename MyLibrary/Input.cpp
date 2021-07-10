@@ -623,10 +623,10 @@ float Input::DirectionalButtonAngle(const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return -1.0f;
 
-	bool right = Input::ButtonState(GamePadButton::RIGHT_BUTTON, padNum);
-	bool left = Input::ButtonState(GamePadButton::LEFT_BUTTON, padNum);
-	bool up = Input::ButtonState(GamePadButton::UP_BUTTON, padNum);
-	bool down = Input::ButtonState(GamePadButton::DOWN_BUTTON, padNum);
+	bool right = Input::ButtonState(GamePadButton::RIGHT, padNum);
+	bool left = Input::ButtonState(GamePadButton::LEFT, padNum);
+	bool up = Input::ButtonState(GamePadButton::UP, padNum);
+	bool down = Input::ButtonState(GamePadButton::DOWN, padNum);
 
 	if (right && up)return 45.0f;
 	if (up && left)return 135.0f;

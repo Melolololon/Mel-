@@ -71,7 +71,7 @@ void Play::Initialize()
 
 
 	std::vector<Vector2>vectors;
-	bool res =LibMath::GetAStarCalcResult
+	bool res = LibMath::GetAStarCalcResult
 	(
 		Vector2(-50,50),
 		Vector2(50,50),
