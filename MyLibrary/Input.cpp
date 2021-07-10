@@ -1,7 +1,8 @@
 #include "Input.h"
-
 #include"LibMath.h"
 #include<string>
+
+
 
 HINSTANCE Input::hInstance;//ハンドル
 HRESULT Input::dIResult;//結果取得
@@ -147,50 +148,50 @@ std::vector<std::unordered_map<UCHAR, char>>Input::returnChars =
 
 
 };
-std::vector<std::vector<wchar_t>>hiragana =
+const std::vector<wchar_t>Input::hiragana =
 {
-	{L'あ',L'い',L'う',L'え',L'お'},
-	{L'か',L'き',L'く',L'け',L'こ'},
-	{L'さ',L'し',L'す',L'せ',L'そ'},
-	{L'た',L'ち',L'つ',L'て',L'と'},
-	{L'な',L'に',L'ぬ',L'ね',L'の'},
-	{L'は',L'ひ',L'ふ',L'へ',L'ほ'},
-	{L'ま',L'み',L'む',L'め',L'も'},
-	{L'や',L'い',L'ゆ',L'え',L'よ'},
-	{L'ら',L'り',L'る',L'れ',L'ろ'},
-	{L'わ',L' ',L' ',L' ',L'を'},
-	{L'ん',L' ',L' ',L' ',L' '},
-	{L'が',L'ぎ',L'ぐ',L'げ',L'ご'},
-	{L'ざ',L'じ',L'ず',L'ぜ',L'ぞ'},
-	{L'だ',L'ぢ',L'づ',L'で',L'ど'},
-	{L'ば',L'び',L'ぶ',L'べ',L'ぼ'},
-	{L'ぱ',L'ぴ',L'ぷ',L'ぺ',L'ぽ'},
-	{L'ぁ',L'ぃ',L'ぅ',L'ぇ',L'ぉ'},
-	{L'っ',L'ゃ',L'ゅ',L'ょ',L'ー'},
-	{L'ゎ',L' ',L' ',L' ',L' '}
+	L'あ',L'い',L'う',L'え',L'お',
+	L'か',L'き',L'く',L'け',L'こ',
+	L'さ',L'し',L'す',L'せ',L'そ',
+	L'た',L'ち',L'つ',L'て',L'と',
+	L'な',L'に',L'ぬ',L'ね',L'の',
+	L'は',L'ひ',L'ふ',L'へ',L'ほ',
+	L'ま',L'み',L'む',L'め',L'も',
+	L'や',L'い',L'ゆ',L'え',L'よ',
+	L'ら',L'り',L'る',L'れ',L'ろ',
+	L'わ',L' ' ,L' ' ,L' ' ,L'を',
+	L'ん',L' ' ,L' ' ,L' ' ,L'  ',
+	L'が',L'ぎ',L'ぐ',L'げ',L'ご',
+	L'ざ',L'じ',L'ず',L'ぜ',L'ぞ',
+	L'だ',L'ぢ',L'づ',L'で',L'ど',
+	L'ば',L'び',L'ぶ',L'べ',L'ぼ',
+	L'ぱ',L'ぴ',L'ぷ',L'ぺ',L'ぽ',
+	L'ぁ',L'ぃ',L'ぅ',L'ぇ',L'ぉ',
+	L'っ',L'ゃ',L'ゅ',L'ょ',L'ー',
+	L'ゎ',L' ' ,L' ' ,L' ' ,L' '
 };
-std::vector<std::vector<wchar_t>>katakana =
+const std::vector<wchar_t>Input::katakana =
 {
-	{L'ア',L'イ',L'ウ',L'エ',L'オ'},
-	{L'カ',L'キ',L'ク',L'ケ',L'コ'},
-	{L'サ',L'シ',L'ス',L'セ',L'ソ'},
-	{L'タ',L'チ',L'ツ',L'テ',L'ト'},
-	{L'ナ',L'ニ',L'ヌ',L'ネ',L'ノ'},
-	{L'ハ',L'ヒ',L'フ',L'ヘ',L'ホ'},
-	{L'マ',L'ミ',L'ム',L'メ',L'モ'},
-	{L'ヤ',L'イ',L'ユ',L'エ',L'ヨ'},
-	{L'ラ',L'リ',L'ル',L'レ',L'ロ'},
-	{L'ワ',L'イ',L'ウ',L'エ',L'ヲ'},
-	{L'ン',L'イ',L'ウ',L'エ',L'オ'},
-	{L'ガ',L'ギ',L'グ',L'ゲ',L'ゴ'},
-	{L'ザ',L'ジ',L'ズ',L'ゼ',L'ゾ'},
-	{L'ダ',L'ヂ',L'ヅ',L'デ',L'ド'},
-	{L'バ',L'ビ',L'ブ',L'ベ',L'ボ'},
-	{L'パ',L'ピ',L'プ',L'ペ',L'ポ'},
-	{L'ヴ',L' ',L' ',L' ',L' '},
-	{L'ァ',L'ィ',L'ゥ',L'ェ',L'ォ'},
-	{L'ッ',L'ャ',L'ュ',L'ョ',L'ー'},
-	{L'ヮ',L'ヵ',L'ヶ',L' ',L' '},
+	L'ア',L'イ',L'ウ',L'エ',L'オ',
+	L'カ',L'キ',L'ク',L'ケ',L'コ',
+	L'サ',L'シ',L'ス',L'セ',L'ソ',
+	L'タ',L'チ',L'ツ',L'テ',L'ト',
+	L'ナ',L'ニ',L'ヌ',L'ネ',L'ノ',
+	L'ハ',L'ヒ',L'フ',L'ヘ',L'ホ',
+	L'マ',L'ミ',L'ム',L'メ',L'モ',
+	L'ヤ',L'イ',L'ユ',L'エ',L'ヨ',
+	L'ラ',L'リ',L'ル',L'レ',L'ロ',
+	L'ワ',L'イ',L'ウ',L'エ',L'ヲ',
+	L'ン',L'イ',L'ウ',L'エ',L'オ',
+	L'ガ',L'ギ',L'グ',L'ゲ',L'ゴ',
+	L'ザ',L'ジ',L'ズ',L'ゼ',L'ゾ',
+	L'ダ',L'ヂ',L'ヅ',L'デ',L'ド',
+	L'バ',L'ビ',L'ブ',L'ベ',L'ボ',
+	L'パ',L'ピ',L'プ',L'ペ',L'ポ',
+	L'ヴ',L' ' ,L' ' ,L' ' ,L' ' ,
+	L'ァ',L'ィ',L'ゥ',L'ェ',L'ォ',
+	L'ッ',L'ャ',L'ュ',L'ョ',L'ー',
+	L'ヮ',L'ヵ',L'ヶ',L' ' ,L' '
 };
 
 DIMOUSESTATE Input::mouseState;
@@ -583,7 +584,7 @@ bool Input::PadCheck(const UCHAR padNum)
 #pragma region ボタン
 
 
-bool Input::ButtonState(const XInputButton button, const UCHAR padNum)
+bool Input::ButtonState(const GamePadButton button, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 
@@ -594,7 +595,7 @@ bool Input::ButtonState(const XInputButton button, const UCHAR padNum)
 	return false;
 }
 
-bool Input::ButtonTrigger(const XInputButton button, const UCHAR padNum)
+bool Input::ButtonTrigger(const GamePadButton button, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 
@@ -606,7 +607,7 @@ bool Input::ButtonTrigger(const XInputButton button, const UCHAR padNum)
 	return false;
 }
 
-bool Input::ButtonRelease(const XInputButton button, const UCHAR padNum)
+bool Input::ButtonRelease(const GamePadButton button, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 
@@ -622,10 +623,10 @@ float Input::DirectionalButtonAngle(const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return -1.0f;
 
-	bool right = Input::ButtonState(XInputButton::RIGHT_BUTTON, padNum);
-	bool left = Input::ButtonState(XInputButton::LEFT_BUTTON, padNum);
-	bool up = Input::ButtonState(XInputButton::UP_BUTTON, padNum);
-	bool down = Input::ButtonState(XInputButton::DOWN_BUTTON, padNum);
+	bool right = Input::ButtonState(GamePadButton::RIGHT_BUTTON, padNum);
+	bool left = Input::ButtonState(GamePadButton::LEFT_BUTTON, padNum);
+	bool up = Input::ButtonState(GamePadButton::UP_BUTTON, padNum);
+	bool down = Input::ButtonState(GamePadButton::DOWN_BUTTON, padNum);
 
 	if (right && up)return 45.0f;
 	if (up && left)return 135.0f;

@@ -15,31 +15,36 @@
 #include<unordered_map>
 
 //これPadButtonに変える
-enum class XInputButton
+enum class GamePadButton
 {
-	UP_BUTTON = 0x0001,//十字キー上
-	DOWN_BUTTON = 0x0002,//十字キー下
-	LEFT_BUTTON = 0x0004,//十字キー左
-	RIGHT_BUTTON = 0x0008,//十字キー右
-	START_BUTTON = 0x00010,
-	BACK_BUTTON = 0x00020,
-	A_BUTTON = 0x1000,//PSの× SwitchのB
-	B_BUTTON = 0x2000,//PSの○ SwitchのA
-	X_BUTTON = 0x4000,//PSの□ SwitchのY
-	Y_BUTTON = 0x8000,//PSの△ SwitchのX
-	R_STICK_BUTTON = 0x0040,//PSのR3
-	L_STICK_BUTTON = 0x0080,//PSのL3
-	RB_BUTTON = 0x0200,//PSのR1 SwitchのR
-	LB_BUTTON = 0x0100,//PSのL1 SwitchのL
+	UP = 0x0001,//十字キー上
+	DOWN = 0x0002,//十字キー下
+	LEFT = 0x0004,//十字キー左
+	RIGHT = 0x0008,//十字キー右
+	START = 0x00010,
+	BACK = 0x00020,
+	A = 0x1000,//PSの× SwitchのB
+	B = 0x2000,//PSの○ SwitchのA
+	X = 0x4000,//PSの□ SwitchのY
+	Y = 0x8000,//PSの△ SwitchのX
+	R_STICK = 0x0040,//PSのR3
+	L_STICK = 0x0080,//PSのL3
+	RB = 0x0200,//PSのR1 SwitchのR
+	LB = 0x0100,//PSのL1 SwitchのL
 };
 
 enum class MouseButton
 {
-	MOUSE_BUTTON_LEFT,
-	MOUSE_BUTTON_RIGHT,
-	MOUSE_BUTTON_CENTER,
+	LEFT,
+	RIGHT,
+	CENTER,
 };
 
+//GetPressKeyChars使わずに、WinAPIのエディットボックスで文字取得するようにする?
+//エディットボックスを透明にできるか試す
+//そもそも子ウィンドウ扱いだからゲーム画面に表示できない?できる?
+
+//入力クラス
 class Input
 {
 private:
@@ -77,8 +82,10 @@ private:
 
 	//キーを押した時に入力文字を返すための配列
 	static std::vector<std::unordered_map<UCHAR, char>>returnChars;
-	static std::vector<std::vector<wchar_t>>hiragana;
-	static std::vector<std::vector<wchar_t>>katakana;
+
+	//パッドでの入力に使えるかもと思い、用意したもの
+	static const std::vector<wchar_t>hiragana;
+	static const std::vector<wchar_t>katakana;
 
 
 	//マウス
@@ -155,6 +162,14 @@ public:
 	/// <returns></returns>
 	static std::string GetTriggerKeyChars();
 
+
+	/*static void CreateMessageInputWindow
+	(
+		const std::wstring& initStr,
+		const UINT 
+	);*/
+
+
 	/// <summary>
 	/// 現在押されているキーを取得します。
 	/// </summary>
@@ -224,9 +239,9 @@ public:
 
 
 #pragma region ボタン
-	static bool ButtonState(const XInputButton button, const UCHAR padNum);
-	static bool ButtonTrigger(const XInputButton button, const UCHAR padNum);
-	static bool ButtonRelease(const XInputButton button, const UCHAR padNum);
+	static bool ButtonState(const GamePadButton button, const UCHAR padNum);
+	static bool ButtonTrigger(const GamePadButton button, const UCHAR padNum);
+	static bool ButtonRelease(const GamePadButton button, const UCHAR padNum);
 
 	/// <summary>
 	/// 十字ボタンが示す角度を取得します。
