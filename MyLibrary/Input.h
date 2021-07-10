@@ -65,11 +65,18 @@ private:
 
 	//現在のキー情報
 	static BYTE keysState[256];
+
 	//1フレーム前のキー情報
 	static BYTE preKeysState[256];
 
 	//現在押されているキー
 	static std::vector<BYTE> currentPressKeys;
+	
+	//GetPressKeyChars()から文字列を取得したかどうか
+	static bool callGetPressKeyChars;
+	//前フレームでGetPressKeyChars()から文字列を取得したかどうか
+	static bool callPreGetPressKeyChars;
+
 
 	//マウス
 	static DIMOUSESTATE mouseState;
@@ -78,6 +85,7 @@ private:
 
 	//取得したウィンドウハンドル
 	static HWND mHwnd;
+
 
 #pragma endregion
 
@@ -134,16 +142,22 @@ public:
 	static bool KeyRelease(const BYTE keyDef);
 
 	/// <summary>
-	/// キーの文字を返します
+	/// 現在押されているキーの文字を返します。
 	/// </summary>
 	/// <returns></returns>
-	static std::vector<char> GetPressKeyChars();
+	static std::string GetPressKeyChars();
+
+	/// <summary>
+	/// 押された瞬間にキーの文字を返します。
+	/// </summary>
+	/// <returns></returns>
+	static std::string GetTriggerKeyChars();
 
 	/// <summary>
 	/// 現在押されているキーを取得します。
 	/// </summary>
 	/// <returns></returns>
-	static std::vector<BYTE> GetStateKeys() { return currentPressKeys; }
+	static const std::vector<BYTE>& GetStateKeys() { return currentPressKeys; }
 
 	/// <summary>
 	/// アローキーが何度を示しているかを角度で返します。	

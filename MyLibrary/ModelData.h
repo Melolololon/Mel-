@@ -307,13 +307,13 @@ public:
 #pragma region fbx関係
 
 
-	std::vector<FbxBone>& GetFbxBone() { return fbxData.bones; }
+	const std::vector<FbxBone>& GetFbxBone() const{ return fbxData.bones; }
 
 	/// <summary>
 	/// モデルのFbxAnimationTimesを返します。
 	/// </summary>
 	/// <returns></returns>
-	FbxAnimationTimes GetFbxAnimationTimes()const { return fbxData.animationTimes; }
+	const FbxAnimationTimes& GetFbxAnimationTimes()const { return fbxData.animationTimes; }
 
 #pragma endregion
 
@@ -345,7 +345,7 @@ public:
 	/// </summary>
 	/// <param name="objectNum">モデルファイル内のモデルを指定する値</param>
 	/// <returns></returns>
-	Material GetMaterial(const int objectNum)const { return materials[objectNum]; }
+	const Material& GetMaterial(const int objectNum)const { return materials[objectNum]; }
 
 
 #pragma endregion

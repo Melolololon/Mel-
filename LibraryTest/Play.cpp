@@ -38,13 +38,15 @@ void Play::Initialize()
 
 }
 
+std::string getStr = "";
 void Play::Update()
 {
-	std::vector<char>getC = Input::GetPressKeyChars();
-	if(Input::KeyState(DIK_A))
+	if (Input::KeyState(DIK_SPACE))
 	{
-		int z = 0;
+  		int z = 0;
 	}
+	getStr += Input::GetTriggerKeyChars();
+	
 }
 
 void Play::Draw()

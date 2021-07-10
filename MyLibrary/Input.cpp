@@ -18,6 +18,9 @@ IDirectInputDevice8* Input::devMouse;
 BYTE Input::keysState[256];
 BYTE Input::preKeysState[256];
 std::vector<BYTE> Input::currentPressKeys;
+
+bool Input::callGetPressKeyChars = false;
+bool Input::callPreGetPressKeyChars = false;
 std::vector<std::unordered_map<UCHAR, char>>Input::returnChars =
 {
 	{
@@ -212,15 +215,20 @@ void Input::Update()
 		preKeysState[i] = keysState[i];
 	}
 
-	//キー情報取得
-	//dIResult = keyDev->GetDeviceState(256, key);
 	result = devKeyBoard->GetDeviceState(sizeof(keysState), keysState);
 	
 	currentPressKeys.clear();
 	for (int i = 0; i < 256; i++)
 	{
-		if (keysState[i] != 0)currentPressKeys.push_back(i);
+		if (keysState[i] != 0)
+		{
+			currentPressKeys.push_back(i);
+		}
 	}
+
+
+	callPreGetPressKeyChars = callGetPressKeyChars;
+	callGetPressKeyChars = false;
 #pragma endregion
 
 #pragma region マウス
@@ -256,65 +264,27 @@ void Input::Finitialize()
 
 bool Input::KeyState(const BYTE keyDef)
 {
-	
-	if (keysState[keyDef])
-	{
-		//押してるとき
-		return true;
-	}
-	else
-	{
-		//押してないとき
-		return false;
-	}
+	if (keysState[keyDef]) return true;
+	return false;
+
 }
 
 bool Input::KeyTrigger(const BYTE keyDef)
 {
-	//1フレーム前がtrueかfalseか
-	bool check;
-	if (preKeysState[keyDef])
-	{
-		check = true;
-	}
-	else
-	{
-		check = false;
-	}
-
-	if (KeyState(keyDef) && !check)
-	{
-		//押された瞬間(前フレーム押されてない&現フレーム押された)か
-		return true;
-	}
-
+	if (KeyState(keyDef) && !preKeysState[keyDef]) return true;
 	return false;
 }
 
 bool Input::KeyRelease(const BYTE keyDef)
 {
-	bool check;
-	if (preKeysState[keyDef])
-	{
-		check = true;
-	}
-	else
-	{
-		check = false;
-	}
-
-	if (!KeyState(keyDef) && check)
-	{
-		return true;
-	}
-
+	if (!KeyState(keyDef) && preKeysState[keyDef]) return true;
 	return false;
 }
 
-std::vector<char> Input::GetPressKeyChars()
+std::string Input::GetPressKeyChars()
 {
-	std::vector<char>charVector;
-	charVector.reserve(sizeof(char));
+	std::string returnString;
+	returnString.reserve(sizeof(char));
 	for (const auto& key : currentPressKeys)
 	{
 		bool isThere = false;
@@ -328,11 +298,21 @@ std::vector<char> Input::GetPressKeyChars()
 		}
 		if (!isThere)continue;
 
-		charVector.push_back(returnChars[KeyState(DIK_LSHIFT) | KeyState(DIK_RSHIFT)][key]);
+		returnString.push_back(returnChars[KeyState(DIK_LSHIFT) | KeyState(DIK_RSHIFT)][key]);
 	}
-	return charVector;
+
+	if(returnString != "")callGetPressKeyChars = true;
+
+	return returnString;
 }
 
+std::string Input::GetTriggerKeyChars()
+{
+	std::string returnString = GetPressKeyChars();
+
+	if (!callPreGetPressKeyChars && callGetPressKeyChars) return returnString;
+	return std::string();
+}
 
 float Input::ArrowKeyAngle()
 {
