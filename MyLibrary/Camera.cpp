@@ -63,8 +63,8 @@ void Camera::SetRotatePosition(const Vector3& position)
 	this->rotatePointPosition = position;
 	CalcCameraData();
 	//‰¼
-	DirectInput::SetViewMatrix(GetViewMatrix());
-	DirectInput::SetProjectionMatrix(GetProjectionMatrix());
+	Input::SetViewMatrix(GetViewMatrix());
+	Input::SetProjectionMatrix(GetProjectionMatrix());
 
 }
 
@@ -73,8 +73,8 @@ void Camera::SetAngle(const Vector3& angle)
 	this->angle = angle;
 	CalcCameraData();
 	//‰¼
-	DirectInput::SetViewMatrix(GetViewMatrix());
-	DirectInput::SetProjectionMatrix(GetProjectionMatrix());
+	Input::SetViewMatrix(GetViewMatrix());
+	Input::SetProjectionMatrix(GetProjectionMatrix());
 }
 
 void Camera::SetCameraToTargetDistance(const float distance)

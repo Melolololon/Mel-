@@ -1,7 +1,7 @@
 #include "Library.h"
 #include"LibMath.h"
 
-#include"XInputManager.h"
+#include"Input.h"
 
 #pragma comment(lib,"winmm.lib")//timeGetTime‚Æ
 #include"ObjectManager.h"
@@ -135,7 +135,7 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 #pragma endregion
 
 #pragma region Input
-	DirectInput::Initialize(hwnd, windowWidth, windowHeight);
+	Input::Initialize(hwnd, windowWidth, windowHeight);
 #pragma endregion
 
 
@@ -177,11 +177,7 @@ void Library::LoopStartProcess()
 
 	dx12->LoopStartProcess();
 
-#pragma region Input
-
-	DirectInput::Update();
-	XInputManager::Update();
-#pragma endregion
+	Input::Update();
 
 }
 
@@ -253,6 +249,8 @@ void Library::Finalize()
 	SceneManager::GetInstace()->Finitialize();
 	ObjectManager::GetInstance()->Finitialize();
 
+	Input::Finitialize();
+
 	dx12->Finalize();
 
 	if (!isDestroy)
@@ -261,6 +259,8 @@ void Library::Finalize()
 	}
 
 	UnregisterClass(w.lpszClassName, w.hInstance);
+
+
 }
 
 int Library::GetRandomNumber(int number)

@@ -4,8 +4,7 @@
 #include<string>
 #include<memory>
 #include<unordered_map>
-#include"DirectInput.h"
-
+#include"Input.h"
 class Camera
 {
 public:
@@ -99,7 +98,7 @@ public:
 	void SetNear(const float num) 
 	{
 		nearNum = num; 
-		DirectInput::SetNear(nearNum);
+		Input::SetNear(nearNum);
 	}
 
 	/// <summary>
@@ -109,7 +108,7 @@ public:
 	void SetFar(const float num) 
 	{
 		farNum = num; 
-		DirectInput::SetFar(farNum);
+		Input::SetFar(farNum);
 	}
 
 	/// <summary>

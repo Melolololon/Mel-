@@ -17,6 +17,8 @@
 #include"ModelData.h"
 #include"ModelObject.h"
 
+#include"Input.h"
+
 Play::Play(){}
 
 
@@ -38,11 +40,16 @@ void Play::Initialize()
 
 void Play::Update()
 {
-
+	std::vector<char>getC = Input::GetPressKeyChars();
+	if(Input::KeyState(DIK_A))
+	{
+		int z = 0;
+	}
 }
 
 void Play::Draw()
 {
+
 	ModelObject::Get("model1")->Draw();
 
 	ModelObject::Get("model2")->SetAnimationFlag(true);

@@ -115,13 +115,13 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	createPolygon = CreatePolygon::GetInstance();
 
 	mainCamera = new CreateCamera(winWidth, winHeight);
-	DirectInput::SetMatrixAndNearFar
-	(
-		mainCamera->GetViewMatrix(mainCameraData),
-		mainCamera->GetProjectionMatrix(mainCameraData),
-		mainCameraData.nearNumber,
-		mainCameraData.farNumber
-	);
+	//Input::SetMatrixAndNearFar
+	//(
+	//	mainCamera->GetViewMatrix(mainCameraData),
+	//	mainCamera->GetProjectionMatrix(mainCameraData),
+	//	mainCameraData.nearNumber,
+	//	mainCameraData.farNumber
+	//);
 
 	gpipeline = {};
 	spriteGpipeline = {};
@@ -1236,7 +1236,6 @@ void DirectX12::Finalize()
 	delete CreatePipelineState;
 	delete mainCamera;
 
-	DirectInput::Release();
 	FbxLoader::GetInstance()->Finalize();
 }
 
@@ -1752,13 +1751,13 @@ void DirectX12::SetCameraDataMatrixPoint(Vector3 eye, Vector3 target, Vector3 up
 	mainCameraData.up.y = up.y;
 	mainCameraData.up.z = up.z;
 
-	DirectInput::SetMatrixAndNearFar
+	/*Input::SetMatrixAndNearFar
 	(
 		mainCamera->GetViewMatrix(mainCameraData),
 		mainCamera->GetProjectionMatrix(mainCameraData),
 		mainCameraData.nearNumber,
 		mainCameraData.farNumber
-	);
+	);*/
 }
 void DirectX12::SetCameraData(Vector3 eye, Vector3 target, Vector3 up)
 {
@@ -1772,13 +1771,13 @@ void DirectX12::SetCameraData(Vector3 eye, Vector3 target, Vector3 up)
 	mainCameraData.nowUp.y = up.y;
 	mainCameraData.nowUp.z = up.z;
 
-	DirectInput::SetMatrixAndNearFar
-	(
-		mainCamera->GetViewMatrix(mainCameraData),
-		mainCamera->GetProjectionMatrix(mainCameraData),
-		mainCameraData.nearNumber,
-		mainCameraData.farNumber
-	);
+	//Input::SetMatrixAndNearFar
+	//(
+	//	mainCamera->GetViewMatrix(mainCameraData),
+	//	mainCamera->GetProjectionMatrix(mainCameraData),
+	//	mainCameraData.nearNumber,
+	//	mainCameraData.farNumber
+	//);
 
 }
 
@@ -1795,7 +1794,7 @@ void DirectX12::SetCameraAngre(DirectX::XMFLOAT3 eyeAngle, DirectX::XMFLOAT3 tar
 	mainCameraData.targetAngle = targetAngle;
 	mainCameraData.upAngle = upAngle;
 
-	//DirectInput::SetMatrixAndNearFar
+	//Input::SetMatrixAndNearFar
 	//(
 	//	mainCamera->GetViewMatrix(mainCameraData),
 	//	mainCamera->GetProjectionMatrix(mainCameraData),
@@ -1816,7 +1815,7 @@ void DirectX12::SetNearAndFar(float nearNum, float farNum)
 	mainCameraData.nearNumber = nearNum;
 	mainCameraData.farNumber = farNum;
 
-	/*DirectInput::SetMatrixAndNearFar
+	/*Input::SetMatrixAndNearFar
 	(
 		mainCamera->GetViewMatrix(mainCameraData),
 		mainCamera->GetProjectionMatrix(mainCameraData),
@@ -4977,7 +4976,7 @@ void DirectX12::calcSmoothingNormals(const std::string key)
 //
 //		Vector3 nearPos;
 //		Vector3 farPos;
-//		DirectInput::GetMouse3DLine(nearPos, farPos);
+//		Input::GetMouse3DLine(nearPos, farPos);
 //		float dis1 = LibMath::CalcDistance3D(m1Pos, nearPos);
 //		float dis2 = LibMath::CalcDistance3D(m2Pos, nearPos);
 //

@@ -1,5 +1,5 @@
 #include "MouseCursor.h"
-#include"DirectInput.h"
+#include"Input.h"
 
 
 MouseCursor::MouseCursor()
@@ -19,7 +19,7 @@ void MouseCursor::Initialize()
 
 void MouseCursor::Update()
 {
-	position2D = DirectInput::GetMousePosition();
-	DirectInput::GetMouse3DLine(nearPos, farPos);
+	position2D = Input::GetMousePosition();
+	Input::GetMouse3DLine(nearPos, farPos);
 
 }

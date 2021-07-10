@@ -1,6 +1,5 @@
 #include "SceneManager.h"
-
-
+#include<assert.h>
 
 SceneManager::SceneManager()
 {
@@ -20,6 +19,7 @@ SceneManager* SceneManager::GetInstace()
 
 void SceneManager::SetStartScene(Scene* startScene)
 {
+
 	if (!startScene)
 		assert(0);
 
