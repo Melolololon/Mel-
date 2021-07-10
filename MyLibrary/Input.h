@@ -44,8 +44,6 @@ class Input
 {
 private:
 
-	//キーを押した時に入力文字を返すための配列
-	static std::vector<std::unordered_map<UCHAR, char>>returnChars;
 
 	Input() {}
 	~Input() {}
@@ -62,7 +60,6 @@ private:
 	static IDirectInputDevice8* devKeyBoard;
 	static IDirectInputDevice8* devMouse;
 
-
 	//現在のキー情報
 	static BYTE keysState[256];
 
@@ -78,10 +75,15 @@ private:
 	static bool callPreGetPressKeyChars;
 
 
+	//キーを押した時に入力文字を返すための配列
+	static std::vector<std::unordered_map<UCHAR, char>>returnChars;
+	static std::vector<std::vector<wchar_t>>hiragana;
+	static std::vector<std::vector<wchar_t>>katakana;
+
+
 	//マウス
 	static DIMOUSESTATE mouseState;
 	static DIMOUSESTATE mousePrevious;
-
 
 	//取得したウィンドウハンドル
 	static HWND mHwnd;
@@ -269,4 +271,3 @@ public:
 #pragma endregion
 
 };
-
