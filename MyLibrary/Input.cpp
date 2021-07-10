@@ -1,5 +1,7 @@
 #include "Input.h"
 #include"LibMath.h"
+#include"LibWinAPI.h"
+
 #include<string>
 
 
@@ -22,6 +24,8 @@ std::vector<BYTE> Input::currentPressKeys;
 
 bool Input::callGetPressKeyChars = false;
 bool Input::callPreGetPressKeyChars = false;
+
+std::unordered_map<std::string, HWND>Input::hwnds;
 std::vector<std::unordered_map<UCHAR, char>>Input::returnChars =
 {
 	{
@@ -213,7 +217,10 @@ XINPUT_STATE Input::padState[4];
 XINPUT_STATE Input::padPrevious[4];
 bool Input::padConnected[4];
 
-
+LRESULT Input::ParamChildWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	return DefWindowProc(hwnd, msg, wparam, lparam);
+}
 
 void Input::Initialize(HWND hwnd, const int windowWidth, const int windowHeight)
 {
@@ -359,6 +366,53 @@ std::string Input::GetTriggerKeyChars()
 	if (!callPreGetPressKeyChars && callGetPressKeyChars) return returnString;
 	return std::string();
 }
+
+void Input::CreateStringInputWindow
+(
+	const std::wstring& initStr,
+	const Vector3& position,
+	const Vector3& size,
+	HWND parentHWND,
+	const std::string& name
+)
+{
+	if (!parentHWND)parentHWND = mHwnd;
+
+	hwnds.emplace
+	(
+		name,
+		LibWinAPI::CreateNormalWindow
+		(
+			L"EDIT",
+			initStr.data(),
+			WS_CHILD | WS_VISIBLE,
+			(DWORD)position.x,
+			(DWORD)position.y,
+			(DWORD)size.x,
+			(DWORD)size.y,
+			parentHWND,
+			ParamChildWindowProc
+		)
+	);
+
+
+}
+
+void Input::DeleteStringInputWindow(const std::string& name)
+{
+	DestroyWindow(hwnds[name]);
+	hwnds.erase(name);
+}
+
+std::wstring Input::GetInputString(const std::string& name)
+{
+	std::wstring returnStr;
+	returnStr.resize(99);
+	SendMessage(hwnds[name], WM_GETTEXT, (WPARAM)returnStr.size(), (LPARAM)returnStr.data());
+
+	return returnStr;
+}
+
 
 float Input::ArrowKeyAngle()
 {

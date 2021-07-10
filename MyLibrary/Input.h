@@ -9,10 +9,11 @@
 #include<dinput.h>
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
-#include"Vector.h"
-#include<DirectXMath.h>
 
+#include<DirectXMath.h>
 #include<unordered_map>
+#include"Vector.h"
+#include"Integers.h"
 
 //これPadButtonに変える
 enum class GamePadButton
@@ -43,16 +44,16 @@ enum class MouseButton
 //GetPressKeyChars使わずに、WinAPIのエディットボックスで文字取得するようにする?
 //エディットボックスを透明にできるか試す
 //そもそも子ウィンドウ扱いだからゲーム画面に表示できない?できる?
+//できなかった
+//もしかして隠れてても入力はできる?ウィンドウタイプで設定すればいける
 
 //入力クラス
 class Input
 {
 private:
-
-
 	Input() {}
 	~Input() {}
-
+	
 #pragma region DirectInput
 
 
@@ -80,6 +81,7 @@ private:
 	static bool callPreGetPressKeyChars;
 
 
+	static std::unordered_map<std::string, HWND>hwnds;
 	//キーを押した時に入力文字を返すための配列
 	static std::vector<std::unordered_map<UCHAR, char>>returnChars;
 
@@ -95,7 +97,7 @@ private:
 	//取得したウィンドウハンドル
 	static HWND mHwnd;
 
-
+	static LRESULT ParamChildWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 #pragma endregion
 
 #pragma region XInput
@@ -150,6 +152,9 @@ public:
 	//離した瞬間か
 	static bool KeyRelease(const BYTE keyDef);
 
+#pragma region 文字取得
+
+
 	/// <summary>
 	/// 現在押されているキーの文字を返します。
 	/// </summary>
@@ -162,13 +167,21 @@ public:
 	/// <returns></returns>
 	static std::string GetTriggerKeyChars();
 
-
-	/*static void CreateMessageInputWindow
+	
+	static void CreateStringInputWindow
 	(
 		const std::wstring& initStr,
-		const UINT 
-	);*/
+		const Vector3& position,
+		const Vector3& size,
+		HWND parentHWND,
+		const std::string& name 
+	);
 
+	static void DeleteStringInputWindow(const std::string& name);
+
+	static std::wstring GetInputString(const std::string& name);
+
+#pragma endregion
 
 	/// <summary>
 	/// 現在押されているキーを取得します。

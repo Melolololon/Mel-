@@ -79,19 +79,32 @@ void Play::Initialize()
 		vectors
 	);
 
-	int a = 0;
 
+	Input::CreateStringInputWindow
+	(
+		L"ÇøÇ≠ÇÌëÂñæê_",
+		Vector2(0,0),
+		Vector2(600,40),
+		nullptr,
+		"test"
+	);
+
+	int z = 0;
 }
 
 std::string getStr = "";
+std::wstring testWStr;
 void Play::Update()
 {
 	if (Input::KeyState(DIK_SPACE))
 	{
-  		int z = 0;
+		Input::DeleteStringInputWindow("test");
 	}
 	getStr += Input::GetTriggerKeyChars();
 	
+	testWStr.clear();
+	testWStr = Input::GetInputString("test");
+
 }
 
 void Play::Draw()
