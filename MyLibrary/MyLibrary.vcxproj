@@ -190,10 +190,12 @@
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX12.cpp" />
     <ClCompile Include="DirectXTexLoader.cpp" />
+    <ClCompile Include="Easing.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FbxModel.cpp" />
     <ClCompile Include="FreamTimer.cpp" />
     <ClCompile Include="HeapIndexManager.cpp" />
+    <ClCompile Include="Integers.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="LibMath.cpp" />
     <ClCompile Include="LibWinAPI.cpp" />
@@ -547,10 +549,12 @@
     <ClInclude Include="CreatePolygon.h" />
     <ClInclude Include="DirectInput.h" />
     <ClInclude Include="DirectXTexLoader.h" />
+    <ClInclude Include="Easing.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FbxModel.h" />
     <ClInclude Include="FreamTimer.h" />
     <ClInclude Include="HeapIndexManager.h" />
+    <ClInclude Include="Integers.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LibMath.h" />
     <ClInclude Include="LibWinAPI.h" />

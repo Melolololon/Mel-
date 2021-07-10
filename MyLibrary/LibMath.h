@@ -19,15 +19,29 @@ struct AStarNode
 	//座標
 	Vector2 position = 0;
 
-	//進行不能オブジェクトと重なっているノード
-	bool hitObjectNode = false;
-
-	//自分を隣接してるノードと指定したノードのポインタの配列
-	std::vector<AStarNode*> pAStarNodes;
-
 	//コスト
 	UINT cost = 1;
 
+	//計算結果(ステップ + 距離 + コスト)
+	UINT calcNum = UINT_MAX;
+
+
+	//以下探索用変数
+
+	//配列のインデックス
+	int indexX = INT_MAX;
+	int indexY = INT_MAX;
+
+	//close配列のインデックス
+	int closeIndex = INT_MAX;
+
+	AStarNode* previousNode = nullptr;
+	
+	bool openFlag = false;
+	bool closeFlag = false;
+	
+	//進行不能オブジェクトと重なっているノード
+	bool hitObjectNode = false;
 };
 
 class LibMath
@@ -41,13 +55,13 @@ public:
 #pragma region 最短経路
 
 	/// <summary>
-	/// ノードの座標をセットします。
+	/// 引数を基準にノードの座標をセットします。
 	/// </summary>
-	/// <param name="leftUpPos"></param>
-	/// <param name="rightDownPos"></param>
-	/// <param name="nodeNumX">分割数</param>
-	/// <param name="nodeNumY">分割数</param>
-	/// <param name="nodes"></param>
+	/// <param name="leftUpPos">左上座標</param>
+	/// <param name="rightDownPos">右下座標</param>
+	/// <param name="nodeNumX">横分割数</param>
+	/// <param name="nodeNumY">縦分割数</param>
+	/// <param name="nodes">ノードのvector(sizeは0でよい)</param>
 	/// <param name="upPlus">上方向がプラスかどうか</param>
 	static void SetAStarNodePosition
 	(
@@ -59,13 +73,13 @@ public:
 		const bool upPlus
 	);
 
-	//この関数でコストが1じゃないオブジェクトとそのコストを渡すようにする
+	//この関数でコストが1じゃないオブジェクトとそのコストを渡すようにする?
 	/// <summary>
 	/// ノードが進行不能オブジェクトにヒットしてるかを確認します。
 	/// </summary>
-	/// <param name="hitObjectsPos"></param>
-	/// <param name="hitObjectsSize"></param>
-	/// <param name="nodes"></param>
+	/// <param name="hitObjectsPos">障害物の座標のvector</param>
+	/// <param name="hitObjectsSize">障害物のサイズのvector</param>
+	/// <param name="nodes">ノードのvector(SetAStarNodePositionに渡した後の配列)</param>
 	static void SetAStarNodeHitObjectNodeFlag
 	(
 		const std::vector<Vector2>& hitObjectsPos,
@@ -76,15 +90,16 @@ public:
 	/// <summary>
 	/// 渡されたデータをもとに最短経路を求めます。
 	/// </summary>
-	/// <param name="startPos"></param>
-	/// <param name="endPos"></param>
-	/// <param name="nodes"></param>
-	/// <param name="routeVector"></param>
-	static void GetAStarCalcResult
+	/// <param name="startPos">スタート地点の座標</param>
+	/// <param name="endPos">ゴール地点の座標</param>
+	/// <param name="nodes">ノードのvector(SetAStarNodeHitObjectNodeFlagに渡した後の配列)</param>
+	/// <param name="routeVector">ゴールまでのルートを格納するvector(sizeは0でよい)</param>
+	/// <returns>探索が成功したかどうか</returns>
+	static bool GetAStarCalcResult
 	(
 		const Vector2& startPos,
 		const Vector2& endPos,
-		const std::vector< std::vector<AStarNode>>& nodes,
+		std::vector< std::vector<AStarNode>>& nodes,
 		std::vector<Vector2>& routeVector
 	);
 
@@ -94,7 +109,7 @@ public:
 	/// <summary>
 	/// 階乗
 	/// </summary>
-	/// <param name="num">数値</param>
+	/// <param name="num"></param>
 	/// <returns></returns>
 	static int Factorial(const int num);
 

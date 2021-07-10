@@ -36,6 +36,51 @@ void Play::Initialize()
 	result = ModelData::Load("Resources/boneTest/boneTest.fbx", "model2");
 	result = ModelObject::Create(ModelData::Get("model2"), nullptr, "model2");
 
+	Vector2 leftUpPos = Vector2(-50, 50);
+	Vector2 rightDownPos = Vector2(50, -50);
+	std::vector<std::vector<AStarNode>>nodes;
+	LibMath::SetAStarNodePosition
+	(
+		leftUpPos,
+		rightDownPos,
+		5,
+		5,
+		nodes,
+		true
+	);
+
+	std::vector<Vector2> blockPos = 
+	{
+		Vector2(0, 50) ,
+		Vector2(-25,25),
+		Vector2(0,25),
+		Vector2(25,25),
+		Vector2(-25,0),
+		Vector2(-25,-25),
+		Vector2(25,-25),
+		Vector2(25,-50),
+	};
+	std::vector<Vector2> blockSize(blockPos.size(),1);
+	
+	LibMath::SetAStarNodeHitObjectNodeFlag
+	(
+		blockPos,
+		blockSize,
+		nodes
+	);
+
+
+	std::vector<Vector2>vectors;
+	bool res =LibMath::GetAStarCalcResult
+	(
+		Vector2(-50,50),
+		Vector2(50,50),
+		nodes,
+		vectors
+	);
+
+	int a = 0;
+
 }
 
 std::string getStr = "";
