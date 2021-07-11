@@ -58,7 +58,7 @@ void Camera::Delete(const std::string& name)
 	pCameras.erase(name);
 }
 
-void Camera::SetRotatePosition(const Vector3& position)
+void Camera::SetRotateCriteriaPosition(const Vector3& position)
 {
 	this->rotatePointPosition = position;
 	CalcCameraData();

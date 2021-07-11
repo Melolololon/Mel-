@@ -76,7 +76,7 @@ public:
 	/// カメラを回転させるときに基準となる座標をセットします。
 	/// </summary>
 	/// <param name="position">回転させるときに基準となる座標</param>
-	void SetRotatePosition(const Vector3& position);
+	void SetRotateCriteriaPosition(const Vector3& position);
 	
 
 	/// <summary>

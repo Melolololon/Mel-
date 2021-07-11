@@ -294,7 +294,7 @@ private:
 	void** userConstData3D;
 	unsigned int userConstDataSize3D;
 	//マテリアル用
-	MaterialConstData* materialData;
+	MaterialConstBufferData* materialData;
 
 	//下なくす
 	std::vector<ModelConstBufferData*>spriteConstBufferDatas;
@@ -676,8 +676,8 @@ public:
 #pragma region 描画
 	//描画時じゃなくて座標とかセットしたときに毎回マップする?
 //そうすると処理が遅くなる?
-	void SetCmdList(const ModelData& modelData, int number);
-	void DataMap(const ModelData& modelData, int number);
+	void SetCmdList(const ModelDataAndKey& ModelDataAndKey, int number);
+	void DataMap(const ModelDataAndKey& ModelDataAndKey, int number);
 
 	void SpriteSetCmdList(int spriteNum, int textureNum,const bool& sprite3DFlag);
 
@@ -701,8 +701,8 @@ public:
 #pragma endregion
 
 #pragma region 削除
-	void DeletePolygonData(const ModelData& m);
-	void DeleteHeapData(const ModelData& m);
+	void DeletePolygonData(const ModelDataAndKey& m);
+	void DeleteHeapData(const ModelDataAndKey& m);
 
 	void DeleteSprite(int sprite);
 #pragma endregion
@@ -792,7 +792,7 @@ public:
 	(
 		const DirectX::XMFLOAT3& position,
 		const UINT& boneNum,
-		const ModelData& modelData
+		const ModelDataAndKey& ModelDataAndKey
 	);
 
 	/// <summary>
@@ -842,7 +842,7 @@ public:
 /// </summary>
 /// <param name="boneNum">ボーン番号</param>
 /// <param name="parentBoneNum">親ボーン番号</param>
-/// <param name="modelData">モデルデータ</param>
+/// <param name="ModelDataAndKey">モデルデータ</param>
 	void SetParentObjBone
 	(
 		const UINT& boneNum,
@@ -974,7 +974,7 @@ public:
 
 #pragma region ライブラリ使用関数
 
-	void SortModelData(std::vector<std::tuple<ModelData, int>>& modelDatas);
+	void SortModelData(std::vector<std::tuple<ModelDataAndKey, int>>& modelDatas);
 #pragma endregion
 
 };

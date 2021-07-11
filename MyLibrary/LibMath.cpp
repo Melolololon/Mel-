@@ -563,7 +563,7 @@ float LibMath::Vecto2ToAngle(const Vector2& v, const bool& v3)
 
 Vector2 LibMath::AngleToVector2(const float& angle, const bool& v3)
 {
-	Quaternion q = GetRotateQuaternion({ 1,0,0 }, { 0,0,1 }, angle);
+	Quaternion q = Quaternion::GetRotateQuaternion({ 1,0,0 }, { 0,0,1 }, angle);
 
 	if (v3)
 		return { q.x,q.y };
@@ -573,7 +573,7 @@ Vector2 LibMath::AngleToVector2(const float& angle, const bool& v3)
 
 Vector2 LibMath::RotateVector2(const Vector2& v, const float& angle)
 {
-	Quaternion q = GetRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
+	Quaternion q = Quaternion::GetRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
 	return { q.x,q.y };
 }
 #pragma endregion
@@ -599,7 +599,7 @@ Vector3 LibMath::OtherVector(const Vector3& vec1, const Vector3& vec2)
 
 Vector3 LibMath::RotateVector3(const Vector3& rotateV, const Vector3& vec, const float& angle)
 {
-	Quaternion q = GetRotateQuaternion(rotateV, vec, angle);
+	Quaternion q = Quaternion::GetRotateQuaternion(rotateV, vec, angle);
 	return { q.x, q.y, q.z };
 }
 

@@ -1,7 +1,9 @@
 #pragma once
 
-#include<DirectXMath.h>
+#include<memory>
 #include<vector>
+
+#include<DirectXMath.h>
 #include<d3d12.h>
 #include<d3dx12.h>
 #include<dxgi.h>
@@ -11,30 +13,165 @@
 #include"Color.h"
 #include"BufferData.h"
 
-//objとfbxまとめる?
-//分けたほうがいい　プリミティブとかあるし
-//生成と呼び出しだけ同じクラスの関数使う?
+
+#include<fbxsdk.h>
+
+#ifdef _DEBUG
+#pragma comment(lib,"libfbxsdk-md.lib")
+#pragma comment(lib,"libxml2-md.lib")
+#pragma comment(lib,"zlib-md.lib")
+#else
+#pragma comment(lib,"libfbxsdk-mt.lib")
+#pragma comment(lib,"libxml2-mt.lib")
+#pragma comment(lib,"zlib-mt.lib")
+#endif // _DEBUG
+
+
+struct Node
+{
+	std::string nodeName;
+
+	DirectX::XMVECTOR scaling = { 1,1,1,0 };
+	DirectX::XMVECTOR rotation = { 1,1,1,0 };
+	DirectX::XMVECTOR translation = { 1,1,1,0 };
+
+	DirectX::XMMATRIX transform;
+	DirectX::XMMATRIX globalTransform;
+
+	Node* parentNode;
+};
+
+
+//objとかがfbxのデータ持ってるのメモリもったいないから、
+//構造体でまとめて、fbxの時だけnewでメモリ確保するようにすればもったいなくない
 
 //モデルの頂点、インデックス、テクスチャをまとめたクラス
 class ModelData
 {
+public:
+	enum class ModelFormat
+	{
+		MODEL_FORMAT_NONE,
+		MODEL_FORMAT_OBJ,
+		MODEL_FORMAT_FBX,
+	};
+
+
+#pragma region fbx構造体
+	//fbxのボーン情報をまとめたもの
+	struct FbxBone
+	{
+		//ボーン名
+		std::string boneName;
+		//初期姿勢の逆行列
+		DirectX::XMMATRIX invInitialPose;
+		//ボーン情報
+		FbxCluster* fbxCluster;
+
+		FbxBone(const std::string& name)
+		{
+			this->boneName = name;
+		}
+	};
+
+	//fbxのアニメーションに必要なFbxTimeをまとめた構造体
+	struct FbxAnimationTimes
+	{
+		FbxTime startTime;
+		FbxTime endTime;
+		FbxTime freamTime;
+	};
+
+#pragma endregion
+
+
 private:
+
+#pragma region obj構造体
+
+	//objのボーン情報をまとめたもの
+	struct ObjBone
+	{
+		std::vector<Vector3>bonePosition;
+	};
+
+#pragma endregion
+
+
+#pragma region fbx構造体
+
+
+	//fbxのデータをまとめたもの
+	struct FbxData
+	{
+		FbxScene* fbxScene = nullptr;
+
+		//モデルのノード
+		std::vector<Node>nodes;
+
+		//メッシュを持つノード
+		Node* meshNode = nullptr;
+
+		std::vector<FbxBone>bones;
+
+		FbxAnimationTimes animationTimes;
+
+	};
+
+
+#pragma endregion
+
+
+	static std::unordered_map<std::string, std::unique_ptr<ModelData>>pModelDatas;
+
 	static ID3D12Device* device;
+
+#pragma region バッファ_ヒープ
+
 
 	//頂点
 	std::vector<VertexBufferSet> vertexBufferSet;
-
 	//インデックス
 	std::vector <IndexBufferSet> indexBufferSet;
-
 	ComPtr<ID3D12DescriptorHeap>textureDescHeap;
 	std::vector<ComPtr<ID3D12Resource>> textureBuffers;
 
+#pragma endregion
+
+#pragma region モデル情報
+	ModelFormat modelFormat = ModelFormat::MODEL_FORMAT_NONE;
+
+	//モデル名
+	std::string modelName;
+
 	//読み取ったマテリアル
-	Material material;
+	std::vector<Material> materials;
 
 	//テクスチャを使わない場合の色
 	Color color;
+
+	//モデルファイルに何個モデルがあるか
+	int modelFileObjectNum = 0;
+	std::vector<std::vector<FbxVertex>>vertices;
+	//スムーズシェーディング用法線
+	std::vector<std::vector<DirectX::XMFLOAT3>> smoothNormal;
+
+	std::vector<std::vector<USHORT>> indices;
+	std::vector<std::unique_ptr<Texture>>pTextures;
+
+
+	int boneNum = 0;
+
+	ObjBone objData;
+
+	FbxData fbxData;
+
+#pragma endregion
+
+
+
+
+
 
 
 #pragma region 頂点
@@ -50,8 +187,8 @@ private:
 		const  std::vector<size_t>& vertexNum
 	);
 
-	void MapVertices();
-
+	void MapVertices(void** data, const int bufferNum);
+	void UnmapVertices(const int bufferNum);
 #pragma endregion
 
 #pragma region インデックス
@@ -80,7 +217,7 @@ private:
 	/// <summary>
 	/// テクスチャバッファ、ビューの生成を行います。
 	/// </summary>
-	void CteateTextureBufferAndViewSetTexture();
+	void CteateTextureBuffer();
 
 	/// <summary>
 	/// テクスチャバッファ、ビューの生成を行います。
@@ -91,18 +228,17 @@ private:
 #pragma endregion
 
 
+	/// <summary>
+	/// モデルの頂点データ、マテリアルを読み込みます。
+	/// </summary>
+	/// <param name="path"></param>
+	/// <param name="name"></param>
+	bool LoadModel(const std::string& path, const std::string& name);
 
-	//モデルファイルに何個モデルがあるか
-	int modelFileObjectNum = 0;
-
-	std::vector<std::vector<USHORT>> indices;
-
-	std::vector<std::unique_ptr<Texture>>pTextures;
 
 	/// <summary>
-	/// 頂点インデックスバッファセットの生成とMapを行います。
+	/// 頂点インデックスバッファテクスチャバッファの生成とインデックスとテクスチャのMapを行います。
 	/// </summary>
-	/// <typeparam name="VERTEX">頂点</typeparam>
 	/// <param name="vertexSize"></param>
 	/// <param name="vertexNum"></param>
 	/// <param name="vertices"></param>
@@ -110,7 +246,7 @@ private:
 	void BufferPreparationSetTexture
 	(
 		const size_t vertexSize,
-		const  std::vector<size_t>& vertexNum,
+		const std::vector<size_t>& vertexNum,
 		const std::vector<std::vector<USHORT>>& indices
 	);
 
@@ -118,6 +254,7 @@ private:
 	(
 		const size_t vertexSize,
 		const  std::vector<size_t>& vertexNum,
+		const std::vector<std::vector<FbxVertex>>& vertices,
 		const std::vector<std::vector<USHORT>>& indices
 	);
 
@@ -127,31 +264,63 @@ public:
 	ModelData() {}
 	~ModelData() {}
 
-#pragma region コマンドセット用関数
+	/// <summary>
+	/// モデルを読み込みます。
+	/// </summary>
+	/// <param name="path"></param>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	static bool Load(const std::string& path, const std::string& name);
+
+	static ModelData* Get(const std::string& name) { return pModelDatas[name].get(); }
+
+	static void Delete(const std::string& name);
+
+#pragma region 開発者用関数
+	static void Initialize(ID3D12Device* pDevice);
 
 	/// <summary>
 	/// インデックスを取得。
 	/// </summary>
 	/// <returns></returns>
 	const std::vector<std::vector<USHORT>>& GetIndices()const { return indices; }
-	
+
 	/// <summary>
 	/// 頂点バッファを取得。
 	/// </summary>
 	/// <returns></returns>
 	const std::vector<VertexBufferSet>& GetVertexBufferSet()const { return vertexBufferSet; }
-	
+
 	/// <summary>
 	/// インデックスバッファの取得。
 	/// </summary>
 	/// <returns></returns>
 	const std::vector<IndexBufferSet>& GetIndexBufferSet()const { return indexBufferSet; }
-	
+
 	/// <summary>
 	/// ディスクリプタヒープの取得。
 	/// </summary>
 	/// <returns></returns>
 	ID3D12DescriptorHeap* GetTextureDesctiptorHeap()const { return textureDescHeap.Get(); }
+
+
+#pragma region fbx関係
+
+
+	const std::vector<FbxBone>& GetFbxBone() const { return fbxData.bones; }
+
+	/// <summary>
+	/// モデルのFbxAnimationTimesを返します。
+	/// </summary>
+	/// <returns></returns>
+	const FbxAnimationTimes& GetFbxAnimationTimes()const { return fbxData.animationTimes; }
+
+#pragma endregion
+
+#pragma region obj関係
+	const std::vector<Vector3>& GetObjBonePosition()const { return objData.bonePosition; }
+#pragma endregion
+
 
 #pragma endregion
 
@@ -159,8 +328,11 @@ public:
 
 #pragma endregion
 
-
 #pragma region ゲット
+
+	ModelFormat GetModelFormat() const { return modelFormat; }
+
+	int GetBoneNum() const { return boneNum; }
 
 	/// <summary>
 	/// モデルファイルに含まれているオブジェクト(モデル)の数を取得します。
@@ -171,11 +343,14 @@ public:
 	/// <summary>
 	/// マテリアルを取得します。
 	/// </summary>
+	/// <param name="objectNum">モデルファイル内のモデルを指定する値</param>
 	/// <returns></returns>
-	Material GetMaterial()const { return material; }
+	const Material& GetMaterial(const int objectNum)const { return materials[objectNum]; }
 
 
 #pragma endregion
 
+	//フレンドクラスは、privateの変数、関数にアクセスできる
+	friend class FbxLoader;
 };
 

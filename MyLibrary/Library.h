@@ -75,7 +75,7 @@ private:
 
 	//描画用(これにモデルデータ入れて、カメラから遠い順に並び替えて、これを拡張forで回して描画コマンドをセットすることで、
     //関数の呼び出し順にかかわらず、αブレンドが適切に行うことができる)
-	static std::vector<std::tuple<ModelData,int>>modelDatas;
+	static std::vector<std::tuple<ModelDataAndKey,int>>modelDatas;
 
 #pragma region プライベート関数
 	static bool checkSetKeyName(const std::string& key);
@@ -177,7 +177,7 @@ public:
 	/// <param name="matrix"></param>
 	/// <param name="heapNum"></param>
 	/// <param name="number"></param>
-	static void GetMatrix(float matrix[4][4],const ModelData& modelData, int number);
+	static void GetMatrix(float matrix[4][4],const ModelDataAndKey& ModelDataAndKey, int number);
 
 	/// <summary>
 	/// ビュー、プロジェクション行列を乗算した行列を取得します
@@ -264,7 +264,7 @@ public:
 		bool loadUV, 
 		bool loadNormal,
 		std::string* materialFireName, 
-		ModelData& modelData
+		ModelDataAndKey& ModelDataAndKey
 	);
 #pragma endregion
 
@@ -284,7 +284,7 @@ public:
 	/// <param name="dimention">次元</param>
 	/// <param name="p">データを入れる変数のポインタ</param>
 	/// <returns></returns>
-	static void CreateBoard(const Vector2& size,   ModelData& modelData);
+	static void CreateBoard(const Vector2& size,   ModelDataAndKey& ModelDataAndKey);
 
 	/// <summary>
 	/// 円の頂点情報を作成します
@@ -293,7 +293,7 @@ public:
 	/// <param name="dimention"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	//static void createCircle(float r, int dimention,  ModelData& modelData);
+	//static void createCircle(float r, int dimention,  ModelDataAndKey& ModelDataAndKey);
 
 	/*/// <summary>
 	/// 立方体の頂点情報を作成します
@@ -318,7 +318,7 @@ public:
 		const int& vertexNumber, 
 		const Vector3& centerPosition, 
 		const float& upVertex, 
-		ModelData& modelData
+		ModelDataAndKey& ModelDataAndKey
 	);
 
 	/// <summary>
@@ -327,7 +327,7 @@ public:
 	/// <param name="size"></param>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	static void Create3DBox(const Vector3& size,  ModelData& modelData);
+	static void Create3DBox(const Vector3& size,  ModelDataAndKey& ModelDataAndKey);
 
 #pragma endregion
 
@@ -346,7 +346,7 @@ public:
 		const std::vector<Vector3>& vertexPos, 
 		const std::vector<Vector2>& vertexUV,
 		const std::vector<USHORT>& indices,
-		ModelData& modelData
+		ModelDataAndKey& ModelDataAndKey
 	);
 
 
@@ -364,7 +364,7 @@ public:
 		UINT vertexDataSize, 
 		UINT vertexSumDataSize,
 		std::vector<USHORT>&index, 
-		ModelData& modelData
+		ModelDataAndKey& ModelDataAndKey
 	);
 
 
@@ -387,7 +387,7 @@ public:
 		std::string materialDirectoryPath, 
 		std::string materialFileName, 
 		int objectNum,
-		ModelData& modelData
+		ModelDataAndKey& ModelDataAndKey
 	);
 
 	/// <summary>
@@ -406,7 +406,7 @@ public:
 		int objectNum,
 		void** dataP,
 		UINT dataSize,
-		ModelData& modelData
+		ModelDataAndKey& ModelDataAndKey
 	);
 
 	/// <summary>
@@ -420,7 +420,7 @@ public:
 	(
 		const wchar_t* texturePath, 
 		int objectNum,
-		ModelData& modelData
+		ModelDataAndKey& ModelDataAndKey
 	);
 
 	/// <summary>
@@ -434,7 +434,7 @@ public:
 	(
 		Color color, 
 		int objectNum, 
-		ModelData& modelData
+		ModelDataAndKey& ModelDataAndKey
 	);
 
 
@@ -454,7 +454,7 @@ public:
 		int objectNum, 
 		void** dataP, 
 		UINT dataSize, 
-		ModelData& modelData
+		ModelDataAndKey& ModelDataAndKey
 	);
 
 	static void CreateUserHeapData2
@@ -463,7 +463,7 @@ public:
 		int objectNum,
 		void** dataP,
 		UINT dataSize,
-		ModelData& modelData
+		ModelDataAndKey& ModelDataAndKey
 	);
 
 
@@ -546,7 +546,7 @@ public:
 	/// <param name="dataNum">createDataで生成したデータの番号</param>
 	/// <param name="number">何個目のやつを描画するか(ヒープの何個目のCBVを指定するか)</param>
 	/// <returns></returns>
-	static void DrawGraphic(const ModelData& modelData, int numbe);
+	static void DrawGraphic(const ModelDataAndKey& ModelDataAndKey, int numbe);
 
 #pragma region スプライト
 
@@ -680,7 +680,7 @@ public:
 #pragma endregion
 
 #pragma region 削除
-	static void DeleteModelData(const ModelData& modelData);
+	static void DeleteModelData(const ModelDataAndKey& ModelDataAndKey);
 
 	/// <summary>
 	/// スプライトを削除します
@@ -707,7 +707,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void SetMulColor(Color color, const ModelData& modelData, int number);
+	static void SetMulColor(Color color, const ModelDataAndKey& ModelDataAndKey, int number);
 
 	/// <summary>
 	/// 色を加算します
@@ -715,7 +715,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void SetAddColor(Color color, const ModelData& modelData, int number);
+	static void SetAddColor(Color color, const ModelDataAndKey& ModelDataAndKey, int number);
 
 	/// <summary>
 	/// 色を減算します
@@ -723,7 +723,7 @@ public:
 	/// <param name="color"></param>
 	/// <param name="polygonDataNum"></param>
 	/// <param name="number"></param>
-	static void SetSubColor(Color color, const ModelData& modelData, int number);
+	static void SetSubColor(Color color, const ModelDataAndKey& ModelDataAndKey, int number);
 
 #pragma endregion
 
@@ -776,7 +776,7 @@ public:
 	/// <param name="position">座標</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void SetPosition(Vector3 position, const ModelData& modelData, int number);
+	static void SetPosition(Vector3 position, const ModelDataAndKey& ModelDataAndKey, int number);
 
 	/// <summary>
 	/// サイズを変更します
@@ -784,7 +784,7 @@ public:
 	/// <param name="scale">サイズ((1,1,1)で等倍)</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void SetScale(Vector3 scale, const ModelData& modelData, int number);
+	static void SetScale(Vector3 scale, const ModelDataAndKey& ModelDataAndKey, int number);
 
 	/// <summary>
 	/// オブジェクトをZ、X、Yの順に回転させます
@@ -792,7 +792,7 @@ public:
 	/// <param name="angle">角度</param>
 	/// <param name="dataNum"></param>
 	/// <param name="number"></param>
-	static void SetAngle(Vector3 angle, const ModelData& modelData, int number);
+	static void SetAngle(Vector3 angle, const ModelDataAndKey& ModelDataAndKey, int number);
 
 	/// <summary>
 	/// ポリゴンを法線ベクトルの方向に押し出します
@@ -800,7 +800,7 @@ public:
 	/// <param name="ex">押し出し具合(0で通常のモデルを表示)</param>
 	/// <param name="polygonDataNumber"></param>
 	/// <param name="number"></param>
-	static void SetPushPorigonNumber(float ex, const ModelData& modelData, int number);
+	static void SetPushPorigonNumber(float ex, const ModelDataAndKey& ModelDataAndKey, int number);
 
 #pragma endregion
 
@@ -869,12 +869,12 @@ public:
 	/// ボーンを回転させるときの基準座標をセットします。ボーンを操作してモデルを動かすとき、この座標を基準に回転します。
 	/// </summary>
 	/// <param name="position"></param>
-	/// <param name="modelData"></param>
+	/// <param name="ModelDataAndKey"></param>
 	//static void setOBJModelRotatePoint
 	//(
 	//	const Vector3& position, 
 	//	const UINT& boneNum,
-	//	const ModelData& modelData
+	//	const ModelDataAndKey& ModelDataAndKey
 	//);
 
 	/// <summary>
@@ -882,12 +882,12 @@ public:
 	/// </summary>
 	/// <param name="vector">移動量</param>
 	/// <param name="boneNum">操作するボーン番号</param>
-	/// <param name="modelData">モデルデータ</param>
+	/// <param name="ModelDataAndKey">モデルデータ</param>
 	static void SetObjBoneMoveVector
 	(
 		const Vector3& vector,
 		const UINT& boneNum ,
-		const ModelData& modelData,
+		const ModelDataAndKey& ModelDataAndKey,
 		const UINT& objectNum
 	);
 
@@ -896,12 +896,12 @@ public:
 	/// </summary>
 	/// <param name="scale"></param>
 	/// <param name="boneNum"></param>
-	/// <param name="modelData"></param>
+	/// <param name="ModelDataAndKey"></param>
 	static void SetObjBoneScale
 	(
 		const Vector3& scale, 
 		const UINT& boneNum,
-		const ModelData& modelData, 
+		const ModelDataAndKey& ModelDataAndKey, 
 		const UINT& objectNum
 	);
 
@@ -910,12 +910,12 @@ public:
 	/// </summary>
 	/// <param name="angle"></param>
 	/// <param name="boneNum"></param>
-	/// <param name="modelData"></param>
+	/// <param name="ModelDataAndKey"></param>
 	static void SetObjBoneAngle
 	(
 		const Vector3& angle, 
 		const UINT& boneNum,
-		const ModelData& modelData, 
+		const ModelDataAndKey& ModelDataAndKey, 
 		const UINT& objectNum
 	);
 
@@ -924,12 +924,12 @@ public:
 	/// </summary>
 	/// <param name="boneNum">ボーン番号</param>
 	/// <param name="parentBoneNum">親ボーン番号</param>
-	/// <param name="modelData">モデルデータ</param>
+	/// <param name="ModelDataAndKey">モデルデータ</param>
 	static void SetParentObjBone
 	(
 		const UINT& boneNum,
 		const UINT& parentBoneNum,
-		const ModelData& modelData
+		const ModelDataAndKey& ModelDataAndKey
 	);
 
 	/// <summary>
@@ -940,7 +940,7 @@ public:
 	(
 		const UINT& boneNum, 
 		const Vector3& scaleImpact,
-		const ModelData& modelData
+		const ModelDataAndKey& ModelDataAndKey
 	);
 
 	/// <summary>
@@ -951,7 +951,7 @@ public:
 	(
 		const UINT& boneNum,
 		const Vector3& angleImpact,
-		const ModelData& modelData
+		const ModelDataAndKey& ModelDataAndKey
 	);
 
 	/// <summary>
@@ -962,7 +962,7 @@ public:
 	(
 		const UINT& boneNum, 
 		const Vector3& moveVectorImpact,
-		const ModelData& modelData
+		const ModelDataAndKey& ModelDataAndKey
 	);
 
 #pragma endregion
@@ -1070,7 +1070,7 @@ public:
 	/// </summary>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static std::vector<std::vector<Vector3>> GetModelVerticesPosition(const ModelData& modelData);
+	static std::vector<std::vector<Vector3>> GetModelVerticesPosition(const ModelDataAndKey& ModelDataAndKey);
 
 	/// <summary>
 	/// オブジェクトの頂点座標を上書きします
@@ -1078,7 +1078,7 @@ public:
 	/// <param name="vertPos"></param>
 	/// <param name="vertNum"></param>
 	/// <returns></returns>
-	static bool OverrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const ModelData& modelData);
+	static bool OverrideWriteVertexPosition(std::vector<std::vector<Vector3>>vertPos, const ModelDataAndKey& ModelDataAndKey);
 
 #pragma region スプライト
 	static Vector2 GetTextureSize(texture textureHandle);
@@ -1088,9 +1088,9 @@ public:
 	/// <summary>
 	/// ボーンの座標を取得します
 	/// </summary>
-	/// <param name="modelData"></param>
+	/// <param name="ModelDataAndKey"></param>
 	/// <returns></returns>
-	static std::vector<Vector3> GetBonePosition(const ModelData& modelData);
+	static std::vector<Vector3> GetBonePosition(const ModelDataAndKey& ModelDataAndKey);
 	
 
 #pragma endregion
@@ -1100,14 +1100,14 @@ public:
 	/// <summary>
 	/// モデルの頂点座標からボックスの判定の値を求めます。
 	/// </summary>
-	/// <param name="modelData"></param>
+	/// <param name="ModelDataAndKey"></param>
 	/// <param name="pointPosition"></param>
 	/// <param name="minPosition"></param>
 	/// <param name="maxPosition"></param>
 	/// <param name="boxSize"></param>
 	static void GetModelBoxCollisionData
 	(
-		const ModelData& modelData,
+		const ModelDataAndKey& ModelDataAndKey,
 		Vector3* pointPosition,
 		Vector3* minPosition,
 		Vector3* maxPosition,
@@ -1167,7 +1167,7 @@ public:
 	/// <param name="number"></param>
 	/// <param name="parentObjHeapNum"></param>
 	/// <param name="parentNum"></param>
-	static void SetParent(const ModelData& modelData,  int number, const ModelData& parentmodelData, int parentNum);
+	static void SetParent(const ModelDataAndKey& modelData,  int number, const ModelDataAndKey& parentmodelData, int parentNum);
 
 #pragma endregion
 

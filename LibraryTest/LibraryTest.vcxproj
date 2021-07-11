@@ -160,12 +160,10 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Play.cpp" />
-    <ClCompile Include="Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
     <ClInclude Include="Play.h" />
-    <ClInclude Include="Test.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
