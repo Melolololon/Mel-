@@ -153,7 +153,8 @@ public:
 	static bool KeyRelease(const BYTE keyDef);
 
 #pragma region 文字取得
-
+	//GetPressKeyCharsとかは気軽に文字取得できるし、
+	//タイピングゲームみたいに枠用意する必要ないときや、必要ないときに使えるから残しといていい
 
 	/// <summary>
 	/// 現在押されているキーの文字を返します。
