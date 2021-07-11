@@ -1,5 +1,6 @@
 #pragma once
 #include"Vector.h"
+#include"Matrix.h"
 struct Quaternion
 {
 	float w, x, y, z;
@@ -13,6 +14,11 @@ struct Quaternion
 	Quaternion operator* (const Quaternion& q)const;
 	
 	void operator*= (const Quaternion& q);
+
+
+	static Quaternion GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle);
+
+	Matrix GetQuaternionToMatrix();
 };
 
-Quaternion GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle);
+

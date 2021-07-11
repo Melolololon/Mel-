@@ -2,6 +2,9 @@
 #include"Sprite.h"
 #include"PipelineState.h"
 
+
+
+
 class Sprite2D :public Sprite
 {
 public:
@@ -19,7 +22,7 @@ private:
 	//2Dのカメラは固定だから、行列生成関数このクラスに持たせてもいいかも
 	static DirectX::XMMATRIX cameraMatrix;
 
-	void MatrixMap(Texture* texture);
+
 	
 	void Create(const Color& color)override;
 	void Create(Texture* pTexture)override;
@@ -27,11 +30,15 @@ protected:
 	static PipelineState defaultPipeline;
 
 
+	void MatrixMap(Texture* texture);
+
+	void InitializeVertices();
 public:
 	Sprite2D(){}
 	Sprite2D(const Color& color);
 	Sprite2D(Texture* pTexture);
-	~Sprite2D();
+	virtual ~Sprite2D();
+
 
  	static bool Initialize(const int winWidth,const int winHeight);
 	
@@ -39,7 +46,7 @@ public:
 	
 	
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
-	virtual void Draw()override;
+	 void Draw(const std::string& rtName = "")override;
 	
 	
 

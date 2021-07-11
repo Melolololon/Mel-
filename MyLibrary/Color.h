@@ -1,5 +1,7 @@
 #pragma once
 
+#include<DirectXMath.h>
+
 struct Color
 {
 	//rgbaは型を統一しないといけないっぽい
@@ -22,7 +24,13 @@ struct Color
 	Color operator*(const Color& color);
 	Color operator/(const Color& color);
 
+	/// <summary>
+	/// パーセント(0から100)を0から255に変換します。
+	/// </summary>
+	/// <param name="par"></param>
+	/// <returns></returns>
 	static unsigned char ToPar(const float par){ return (unsigned char)(par / 100 * 255); }
+
 private:
 	
 

@@ -31,6 +31,7 @@ public:
 	void deletePolygonHeap(std::string keyName);
 	int* getPolygonHeap(std::string keyName);
 	void clearPolygonHeap();*/
+	
 
 	void AddSprite(std::string keyName, sprite sprite);
 	void DeleteSprite(std::string keyName);

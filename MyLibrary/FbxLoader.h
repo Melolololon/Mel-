@@ -1,6 +1,7 @@
 #pragma once
 
 #include"FbxModel.h"
+#include"ModelData.h"
 
 #include<string>
 #include<d3dx12.h>
@@ -38,42 +39,42 @@ private:
 	/// <param name="model">モデルのポインタ</param>
 	/// <param name="fbxNode">解析するノード</param>
 	/// <param name="parentNode">親ノード</param>
-	void ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode,Node* parentNode = nullptr);
+	void ParseNodeRecursive(ModelData* fbxModel, FbxNode* fbxNode,Node* parentNode = nullptr);
 
 	/// <summary>
 	/// メッシュ読み込み関数
 	/// </summary>
 	/// <param name="">モデル</param>
 	/// <param name="node">ノード</param>
-	void ParseMesh(FbxModel* fbxModel, FbxNode* node);
+	void ParseMesh(ModelData* fbxModel, FbxNode* node);
 
 	/// <summary>
 	/// 頂点読み込み
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="fbxMesh">メッシュ</param>
-	void ParseMeshVertices(FbxModel* fbxModel, FbxMesh* fbxMesh);
+	void ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// 面情報(インデックス、UV、法線)読み取り
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="fbxMesh">メッシュ</param>
-	void ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh);
+	void ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh);
 
 	/// <summary>
 	/// マテリアル読み取り
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="fbxNode">ノード</param>
-	void ParseMaterial(FbxModel* fbxModel,FbxNode* fbxNode);
+	void ParseMaterial(ModelData* fbxModel,FbxNode* fbxNode);
 	
 	/// <summary>
 	/// スキニング情報読み取り
 	/// </summary>
 	/// <param name="model"></param>
 	/// <param name="fbxMesh"></param>
-	void ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh);
+	void ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh);
 
 
 
@@ -103,7 +104,7 @@ public:
 	/// </summary>
 	/// <param name="modelPath">モデルのパス</param>
 	/// <param name="fbxModel">モデルのポインタ</param>
-	void LoadFbxModel(const std::string& modelPath,FbxModel* fbxModel);
+	void LoadFbxModel(const std::string& modelPath, ModelData* fbxModel);
 
 	/// <summary>
 	/// Fbxの行列からXMMATRIXに変換するクラス

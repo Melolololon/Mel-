@@ -6,7 +6,6 @@
 ID3D12Device* Sprite::device;
 ID3D12GraphicsCommandList* Sprite::cmdList;
 ComPtr<ID3D12RootSignature>Sprite::rootSignature;
-ComPtr<ID3D12PipelineState>Sprite::defaultPipeline;
 
 std::vector<ComPtr<ID3D12Resource>> Sprite::textureBuffer;
 ComPtr<ID3D12DescriptorHeap> Sprite::textureHeap;
@@ -37,26 +36,7 @@ void Sprite::CreateBuffer()
 		&constBuffer
 	);
 	
-	SpriteVertex* vertex;
-	MapVertexBuffer((void**)&vertex);
-	vertices[0].pos = { -0.5f,-0.5f ,0.0f };
-	vertices[1].pos = {-0.5f,0.5f ,0.0f };
-	vertices[2].pos = { 0.5f,-0.5f ,0.0f };
-	vertices[3].pos = { 0.5f,0.5f,0.0f };
-	vertex[0].pos = vertices[0].pos;
-	vertex[1].pos = vertices[1].pos;
-	vertex[2].pos = vertices[2].pos;
-	vertex[3].pos = vertices[3].pos;
-
-	vertices[0].uv = { 0,1 };
-	vertices[1].uv = { 0,0 };
-	vertices[2].uv = { 1,1 };
-	vertices[3].uv = { 1,0 };
-	vertex[0].uv = vertices[0].uv;
-	vertex[1].uv = vertices[1].uv;
-	vertex[2].uv = vertices[2].uv;
-	vertex[3].uv = vertices[3].uv;
-	UnmapVertexBuffer();
+	
 
 
 }
@@ -107,7 +87,7 @@ void Sprite::SetCmdList(Texture* texture)
 
 	//テクスチャ
 	UINT heapNum = 0;
-	if (pTexture) texture->GetTextureNumber();
+	if (pTexture)heapNum = texture->GetTextureNumber();
 	
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
@@ -138,8 +118,6 @@ void Sprite::UnmapVertexBuffer()
 }
 
 
-
-
 void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 {
 	device = dev;
@@ -167,13 +145,17 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 	);
 #pragma endregion
 
+#pragma region テーブル_ルートパラメーター
 
-	CD3DX12_DESCRIPTOR_RANGE spriteDescRangeSRV;
-	spriteDescRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
+	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
-	CD3DX12_ROOT_PARAMETER spriteRootparam[2] = {};
-	spriteRootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	spriteRootparam[1].InitAsDescriptorTable(1, &spriteDescRangeSRV, D3D12_SHADER_VISIBILITY_PIXEL);
+	CD3DX12_ROOT_PARAMETER rootparam[2] = {};
+	rootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
+	rootparam[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_PIXEL);
+
+#pragma endregion
+
 
 #pragma region ルートシグネチャ
 
@@ -181,8 +163,8 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	rootSignatureDesc.pParameters = spriteRootparam;
-	rootSignatureDesc.NumParameters = _countof(spriteRootparam);
+	rootSignatureDesc.pParameters = rootparam;
+	rootSignatureDesc.NumParameters = _countof(rootparam);
 
 
 	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
@@ -205,6 +187,22 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 		&rootSignatureDesc,
 		D3D_ROOT_SIGNATURE_VERSION_1_0,
 		&rootSigBlob, &errorBlob);
+
+
+
+	 if (FAILED(result))
+	 {
+		 std::string errstr;
+		 errstr.resize(errorBlob->GetBufferSize());
+
+		 std::copy_n((char*)errorBlob->GetBufferPointer(),
+			 errorBlob->GetBufferSize(),
+			 errstr.begin());
+		 errstr += "\n";
+
+		 OutputDebugStringA(errstr.c_str());
+		 exit(1);
+	 }
 
 	result = device->CreateRootSignature(
 		0,

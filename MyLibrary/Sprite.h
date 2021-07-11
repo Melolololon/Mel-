@@ -3,6 +3,8 @@
 #include"Texture.h"
 #include"Vector.h"
 #include"PipelineState.h"
+#include"Camera.h"
+
 
 #include<d3d12.h>
 #include<dxgi.h>
@@ -23,16 +25,15 @@
 //Draw‚Í‰¼‘zŠÖ”B‚»‚ê‚¼‚ê‚Émapˆ—‚ğ‘‚­
 //
 
+
 class Sprite
 {
 private:
 
+
 #pragma region •Ï”
 	static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 10;
 	
-	static ID3D12GraphicsCommandList* cmdList;
-	static ComPtr<ID3D12RootSignature>rootSignature;
-	static ComPtr<ID3D12PipelineState>defaultPipeline;
 
 #pragma endregion
 
@@ -43,9 +44,11 @@ private:
 
 protected:
 
+	static ID3D12GraphicsCommandList* cmdList;
 	static ID3D12Device* device;
 	ComPtr<ID3D12PipelineState> pipeline;
 	std::array<SpriteVertex, 4> vertices;
+	static ComPtr<ID3D12RootSignature>rootSignature;
 
 
 	//•`‰æ‚·‚é‚Æ‚«‚Ì¶ã‚ÌÀ•W
@@ -75,8 +78,6 @@ protected:
 	Texture* pTexture = nullptr;
 
 #pragma region ŠÖ”
-
-
 	void ConstDataMat();
 	void SetCmdList(Texture* texture);
 
@@ -108,7 +109,7 @@ public:
 
 
 
-	virtual void Draw() = 0;
+	virtual void Draw(const std::string& rtName = "") = 0;
 	
 	
 	void SetDrawArea(const Vector2& leftUpPos, const Vector2& rightDownPos)

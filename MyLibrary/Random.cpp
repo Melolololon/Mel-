@@ -47,4 +47,8 @@ float Random::GetRandomFloatNumberRangeSelect(const float start, const float end
 	else addNum = 1.0f / mag;
 
 	return GetRandomFloatNumber(abs(end - start) + addNum, digits) + start;
+
+
+	
+
 }

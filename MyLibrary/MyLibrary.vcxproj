@@ -187,6 +187,7 @@
     <ClCompile Include="CreatePolygon.cpp" />
     <ClCompile Include="Curve.cpp" />
     <ClCompile Include="DirectInput.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX12.cpp" />
     <ClCompile Include="DirectXTexLoader.cpp" />
     <ClCompile Include="Easing.cpp" />
@@ -195,22 +196,29 @@
     <ClCompile Include="FreamTimer.cpp" />
     <ClCompile Include="HeapIndexManager.cpp" />
     <ClCompile Include="Integers.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="LibMath.cpp" />
     <ClCompile Include="LibWinAPI.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="MicroTimer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelBone.cpp" />
+    <ClCompile Include="ModelData.cpp" />
     <ClCompile Include="ModelLoaer.cpp" />
     <ClCompile Include="Library.cpp" />
+    <ClCompile Include="ModelManager.cpp" />
+    <ClCompile Include="ModelObject.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="ObjModel.cpp" />
+    <ClCompile Include="ObjModelData.cpp" />
+    <ClCompile Include="ObjModelObject.cpp" />
     <ClCompile Include="PipelineManager.cpp" />
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="PolygonManager.cpp" />
     <ClCompile Include="PrimitiveModel.cpp" />
+    <ClCompile Include="PrimitiveModelData.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
@@ -279,6 +287,28 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="FbxMultiGeometryShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+    </FxCompile>
+    <FxCompile Include="FbxMultiPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="FbxMultiVertexShader.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="FbxPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -424,6 +454,26 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PSmain</EntryPointName>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PSmain</EntryPointName>
     </FxCompile>
+    <FxCompile Include="PostEffectTestPixelShader.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PSmain</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PSmain</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PSmain</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PSmain</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="PostEffectTestVertexShader.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VSmain</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">VSmain</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VSmain</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VSmain</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="PostEffectVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
@@ -485,12 +535,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="BufferData.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollisionType.h" />
     <ClInclude Include="CreateCamera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="CreatePipeline.h" />
     <ClInclude Include="Curve.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX12.h" />
     <ClInclude Include="DirectXStruct.h" />
     <ClInclude Include="CreateBuffer.h" />
@@ -503,22 +555,29 @@
     <ClInclude Include="FreamTimer.h" />
     <ClInclude Include="HeapIndexManager.h" />
     <ClInclude Include="Integers.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="LibMath.h" />
     <ClInclude Include="LibWinAPI.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MicroTimer.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelBone.h" />
+    <ClInclude Include="ModelData.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Library.h" />
+    <ClInclude Include="ModelManager.h" />
+    <ClInclude Include="ModelObject.h" />
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="ObjModel.h" />
+    <ClInclude Include="ObjModelData.h" />
+    <ClInclude Include="ObjModelObject.h" />
     <ClInclude Include="PipelineManager.h" />
     <ClInclude Include="PipelineState.h" />
     <ClInclude Include="PolygonManager.h" />
     <ClInclude Include="PrimitiveModel.h" />
+    <ClInclude Include="PrimitiveModelData.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="RenderTarget.h" />
@@ -537,11 +596,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicShaderHeader.hlsli" />
+    <None Include="FbxMultiShaderHeader.hlsli" />
     <None Include="FbxShaderHeader.hlsli" />
     <None Include="NotShadowShaderHeader.hlsli" />
     <None Include="OBJShaderHeader.hlsli" />
     <None Include="PointShaderHeader.hlsli" />
     <None Include="PostEffectShaderHeader.hlsli" />
+    <None Include="PostEffectTestShaderHeader.hlsli" />
     <None Include="SpriteShaderHeader.hlsli" />
     <None Include="ToonShaderHeader.hlsli" />
   </ItemGroup>

@@ -8,17 +8,22 @@
 #include"PipelineState.h"
 #include"Camera.h"
 
-//レンダーターゲットクラス
-//描画時に渡すことで、渡したレンダーターゲットに描画できるようにする
-//セットしない場合は、バックバッファに直接または1枚目のレンダーターゲットに描画
 
 class RenderTarget :public Sprite2D
 {
 private:
-	static std::vector<RenderTarget*>pRenderTarget;
-	static float clearColor[4];
 
-	ComPtr<ID3D12Resource>textureBuffer;
+	static const int RT_NUM = 1;
+
+	static std::unordered_map<std::string,std::unique_ptr<RenderTarget>>pRenderTargets;
+	static UINT createCount;
+	static std::string mainRenderTargetNama;
+
+	static float clearColor[4];
+	static PipelineState defaultPipeline;
+	static ComPtr<ID3D12RootSignature>rootSignature;
+
+	ComPtr<ID3D12Resource>textureBuffer[RT_NUM];
 	ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
 
 	ComPtr<ID3D12DescriptorHeap>rtvHeap;
@@ -28,15 +33,29 @@ private:
 
 	//カメラのポインタ
 	Camera* pCamera = nullptr;
+
 public:
-	RenderTarget();
+
+	RenderTarget(const Color& color);
 	~RenderTarget();
 
-	/// <summary>
-	/// レンダーターゲットにカメラをセットします。レンダーターゲットには、セットされたカメラに映っているものが描画されます。
-	/// </summary>
-	/// <param name="camera">カメラのポインタ</param>
-	void SetCamera(Camera* pCamera){ this->pCamera = pCamera; }
+	
+	static void Create(const Color& initColor, const std::string& name = "");
+	static void Delete(const std::string& name);
+	static RenderTarget* Get(const std::string& name = mainRenderTargetNama) { return pRenderTargets[name].get(); }
 
+	static bool Initialize();
+
+	void PreDrawProcess();
+	void SetCmdList();
+	static void AllDraw();
+
+
+	void SetCamera(const std::string& name = Camera::GetMainCameraName()) { this->pCamera = Camera::Get(name); }
+
+
+	static const std::string& GetMainRenderTargetNama() {return mainRenderTargetNama;}
+
+	Camera* GetCamera() { return pCamera; }
 };
 

@@ -7,15 +7,41 @@ PipelineState Sprite2D::defaultPipeline;
 Sprite2D::Sprite2D(const Color& color)
 {
 	Create(color);
+	InitializeVertices();
 }
 
 Sprite2D::Sprite2D(Texture* pTexture)
 {
 	Create(pTexture);
+	InitializeVertices();
 }
 
 
 Sprite2D::~Sprite2D(){}
+
+void Sprite2D::InitializeVertices()
+{
+	SpriteVertex* vertex;
+	MapVertexBuffer((void**)&vertex);
+	vertices[0].pos = { -0.5f,0.5f ,0.0f };
+	vertices[1].pos = { -0.5f,-0.5f ,0.0f };
+	vertices[2].pos = { 0.5f,0.5f ,0.0f };
+	vertices[3].pos = { 0.5f,-0.5f,0.0f };
+	vertex[0].pos = vertices[0].pos;
+	vertex[1].pos = vertices[1].pos;
+	vertex[2].pos = vertices[2].pos;
+	vertex[3].pos = vertices[3].pos;
+
+	vertices[0].uv = { 0,1 };
+	vertices[1].uv = { 0,0 };
+	vertices[2].uv = { 1,1 };
+	vertices[3].uv = { 1,0 };
+	vertex[0].uv = vertices[0].uv;
+	vertex[1].uv = vertices[1].uv;
+	vertex[2].uv = vertices[2].uv;
+	vertex[3].uv = vertices[3].uv;
+	UnmapVertexBuffer();
+}
 
 
 bool Sprite2D::Initialize(const int winWidth, const int winHeight)
@@ -34,7 +60,7 @@ bool Sprite2D::Initialize(const int winWidth, const int winHeight)
 	data.alphaWriteMode = ALPHA_WRITE_TRUE;
 	data.blendMode = BLEND_ADD;
 	data.cullMode = CULL_NONE;
-	data.depthMode = DEPTH_NONE;
+	data.depthMode = DEPTH_FALSE;
 	data.drawMode = DRAW_SOLID;
 	auto result = defaultPipeline.CreatePipeline
 	(
@@ -46,7 +72,8 @@ bool Sprite2D::Initialize(const int winWidth, const int winHeight)
 		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
 		PipelineType::PIPELINE_TYPE_SPRITE,
 		nullptr,
-		typeid(Sprite2D).name()
+		typeid(Sprite2D).name(),
+		1
 	);
 	if (!result)
 	{
@@ -72,7 +99,7 @@ void Sprite2D::Create(Texture* pTexture)
 	pipeline = defaultPipeline.GetPipelineState();
 }
 
-void Sprite2D::Draw()
+void Sprite2D::Draw(const std::string& rtName)
 {
 	SpriteVertex* vertex;
 	MapVertexBuffer((void**)&vertex);
@@ -138,6 +165,7 @@ void Sprite2D::MatrixMap(Texture* texture)
 	float height = textureSize.y;
 	width /= 2;
 	height /= 2;
+
 
 
 	//ç∂è„äÓèÄägèk

@@ -2,9 +2,9 @@
 
 enum FORMAT_TYPE
 {
-	FORMAT_TYPE_UNSIGNED_INT,
-	FORMAT_TYPE_SIGNED_INT,
-	FORMAT_TYPE_FLOAT,
+	FORMAT_TYPE_UNSIGNED_INT,//unsigned int
+	FORMAT_TYPE_SIGNED_INT,//int
+	FORMAT_TYPE_FLOAT,//float
 };
 
 //パイプライン作成時に
@@ -23,15 +23,15 @@ struct InputLayoutData
 
 enum DrawMode 
 {
-	DRAW_SOLID,
-	DRAW_WIREFRAME,
+	DRAW_SOLID,//通常通りモデルを表示します
+	DRAW_WIREFRAME,//ワイヤーフレームで表示します
 };
 
 enum CullMode 
 {
-	CULL_NONE,
-	CULL_FRONT,
-	CULL_BACK
+	CULL_NONE,//カリングしません
+	CULL_FRONT,//表面をカリングします
+	CULL_BACK//裏面をカリングします
 };
 
 enum BlendMode 
@@ -43,26 +43,27 @@ enum BlendMode
 
 enum DepthMode 
 {
-	DEPTH_NONE,
+	DEPTH_FALSE,
 	DEPTH_TRUE,
 };
 
 enum AlphaWriteMode 
 {
-	ALPHA_WRITE_NONE,
+	ALPHA_WRITE_FALSE,
 	ALPHA_WRITE_TRUE,
 };
 
+//パイプラインの設定をまとめた構造体
 struct PipelineData
 {
-	DrawMode drawMode;
-	CullMode cullMode;
-	BlendMode blendMode;
-	DepthMode depthMode;
-	AlphaWriteMode alphaWriteMode;
+	DrawMode drawMode = DRAW_SOLID;
+	CullMode cullMode = CULL_BACK;
+	BlendMode blendMode = BLEND_ADD;
+	DepthMode depthMode = DEPTH_TRUE;
+	AlphaWriteMode alphaWriteMode = ALPHA_WRITE_TRUE;
 };
 
-
+//シェーダーの情報をまとめた構造体
 struct ShaderData
 {
 	const wchar_t* shaderPath;

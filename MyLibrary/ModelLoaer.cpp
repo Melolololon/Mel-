@@ -51,13 +51,13 @@ bool  ModelLoader::LoadObjModel
 	const std::string& path,
 	bool loadUV,
 	bool loadNormal,
-	std::vector<std::vector<ObjAnimationVertex>>& vertices,
+	std::vector<std::vector<FbxVertex>>& vertices,
 	std::vector<std::vector<USHORT>>& indices,
 	std::string& materialFileName,
 	std::vector<std::string>& materialName,
 	std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
 	int* loadNum,
-	std::vector<DirectX::XMFLOAT3>* bonePosVector,
+	std::vector<Vector3>* bonePosVector,
 	std::vector<std::vector<int>>* boneNumVector
 )
 {
@@ -67,7 +67,7 @@ bool  ModelLoader::LoadObjModel
 	vertices.clear();
 	indices.clear();
 	smoothNormalCalcData.clear();
-	
+
 
 	//読み取って一時的に入れる配列
 	std::vector<DirectX::XMFLOAT3>loadPosVector;
@@ -96,11 +96,16 @@ bool  ModelLoader::LoadObjModel
 	//ファイルストリーム
 	std::ifstream obj;
 	obj.open(path);
-	if(!obj)
+	if (!obj)
 	{
-		OutputDebugString(L"読み込みに失敗しました。.objファイルが見つかりません。\n");
+		OutputDebugStringA(path.data());
+		OutputDebugString(L"の読み込みに失敗しました。.objファイルが見つかりません。\n");
 		return false;
 	}
+
+	//bool loadVertex = false;
+	//bool loadUV = false;
+	//bool loadNormal = false;
 
 	//マテリアル読み込みでtrueにし、座標読み込み時にtrueだったら配列clear
 	bool loadPreparation = false;
@@ -127,7 +132,7 @@ bool  ModelLoader::LoadObjModel
 	int boneNum = 0;//ボーンの番号
 	bool loadBoneData = false;
 	std::vector< std::vector<int>>temporaryBoneNumVec;//temporary は　仮
-	
+
 
 	while (std::getline(obj, objText))
 	{
@@ -136,11 +141,11 @@ bool  ModelLoader::LoadObjModel
 		//先頭文字取得
 		topStr.clear();
 		lineStream >> topStr;
-		
+
 #pragma region 頂点データ取得
 
 
-		if(topStr.find("vt") != std::string::npos &&
+		if (topStr.find("vt") != std::string::npos &&
 			loadUV)
 		{
 			lineStream >> uv.x;
@@ -148,90 +153,91 @@ bool  ModelLoader::LoadObjModel
 			loadUvVector.push_back(uv);
 		}
 		else
-		if(topStr.find("vn") != std::string::npos)
-		{
-			lineStream >> normal.x;
-			lineStream >> normal.y;
-			lineStream >> normal.z;
-			loadNormalVector.push_back(normal);
-		}
-		else 
-		if (topStr.find("v") != std::string::npos)
-		{ 
-			if(!loadMtlFile)
+			if (topStr.find("vn") != std::string::npos)
 			{
-				OutputDebugString(L"読み込みに失敗しました。.mtlファイルが.objに記述されていません。\n");
-				return false;
+				lineStream >> normal.x;
+				lineStream >> normal.y;
+				lineStream >> normal.z;
+				loadNormalVector.push_back(normal);
 			}
+			else
+				if (topStr.find("v") != std::string::npos)
+				{
+					if (!loadMtlFile)
+					{
+						OutputDebugStringA(path.data());
+						OutputDebugString(L"の読み込みに失敗しました。.mtlファイルが.objに記述されていません。\n");
+						return false;
+					}
 
-			if(!loadPreparation)
-			{
+					if (!loadPreparation)
+					{
 
-				loadPreparation = true;
+						loadPreparation = true;
 
-				//クリア
-				//次のモデルのインデックスが前回の途中から始まるからリセットいらない
-			/*	loadPosVector.clear();
-				loadUvVector.clear();
-				loadNormalVector.clear();*/
+						//クリア
+						//次のモデルのインデックスが前回の途中から始まるからリセットいらない
+					/*	loadPosVector.clear();
+						loadUvVector.clear();
+						loadNormalVector.clear();*/
 
-				//スムーズシェーディング用配列修正
-				smoothNormalCalcData.resize(smoothNormalCalcData.size() + 1);
-				smoothVertexPos.resize(smoothVertexPos.size() + 1);
-
-
-				//読み込み数カウントインクリメント
-				LoadModel++;
-
-				//カウント初期化
-				vertexLoadCount = 0;
-				polygonCount = 0;
-
-				//参照した配列のメモリ確保
-				vertices.resize(vertices.size() + 1);
-				vertices[vertices.size() - 1].reserve(1000);
-				indices.resize(indices.size() + 1);
-				indices[indices.size() - 1].reserve(1000);
-
-			}
-
-			lineStream >> pos.x;
-			lineStream >> pos.y;
-			lineStream >> pos.z;
-			loadPosVector.push_back(pos);
+						//スムーズシェーディング用配列修正
+						smoothNormalCalcData.resize(smoothNormalCalcData.size() + 1);
+						smoothVertexPos.resize(smoothVertexPos.size() + 1);
 
 
-			std::vector<USHORT>u;
-			smoothNormalCalcData[LoadModel - 1].emplace(vertexLoadCount, u);
-			smoothVertexPos[LoadModel - 1].emplace(vertexLoadCount, pos);
-			vertexLoadCount++;
-		}
+						//読み込み数カウントインクリメント
+						LoadModel++;
+
+						//カウント初期化
+						vertexLoadCount = 0;
+						polygonCount = 0;
+
+						//参照した配列のメモリ確保
+						vertices.resize(vertices.size() + 1);
+						vertices[vertices.size() - 1].reserve(1000);
+						indices.resize(indices.size() + 1);
+						indices[indices.size() - 1].reserve(1000);
+
+					}
+
+					lineStream >> pos.x;
+					lineStream >> pos.y;
+					lineStream >> pos.z;
+					loadPosVector.push_back(pos);
+
+
+					std::vector<USHORT>u;
+					smoothNormalCalcData[LoadModel - 1].emplace(vertexLoadCount, u);
+					smoothVertexPos[LoadModel - 1].emplace(vertexLoadCount, pos);
+					vertexLoadCount++;
+				}
 
 #pragma endregion
 
 #pragma region マテリアル関係
 
 		//マテリアルのファイル名取得
-		if (topStr.find("mtllib") != std::string::npos) 
+		if (topStr.find("mtllib") != std::string::npos)
 		{
 			lineStream >> materialFileName;
 			loadMtlFile = true;
 		}
 		//マテリアル名取得
-		if (topStr.find("usemtl") != std::string::npos) 
+		if (topStr.find("usemtl") != std::string::npos)
 		{
 			lineStream >> mtlNama;
 			materialName.push_back(mtlNama);
-			
-			
+
+
 			loadPreparation = false;
-			
+
 		}
 
 #pragma endregion
 
 #pragma region 割り当て
-		
+
 		if (topStr.find("f") != std::string::npos)
 		{
 			//アルゴリズムメモ
@@ -239,12 +245,12 @@ bool  ModelLoader::LoadObjModel
 
 			//メモここまで
 
-			
+
 			//スラッシュ入れる用
 			char sluch;
-			
+
 			//頂点。これに一時的に入れてから、配列に入れる
-			ObjAnimationVertex vertex;
+			FbxVertex vertex;
 
 			//三角形ポリゴンを読み込むので3
 			int polygonValue = 3;
@@ -254,8 +260,8 @@ bool  ModelLoader::LoadObjModel
 				//インデックス読み込み
 				lineStream >> index[0];
 				lineStream >> sluch;
-				if(loadUV)
-				lineStream >> index[1];
+				if (loadUV)
+					lineStream >> index[1];
 				lineStream >> sluch;
 				lineStream >> index[2];
 
@@ -272,11 +278,11 @@ bool  ModelLoader::LoadObjModel
 				indices[LoadModel - 1].push_back(polygonCount);
 				polygonCount++;
 			}
-			
+
 
 		}
 #pragma endregion
-		
+
 #pragma region ボーン読み込み
 		//読み込み準備
 		if (objText.find("BoneData") != std::string::npos)
@@ -322,18 +328,18 @@ bool  ModelLoader::LoadObjModel
 
 	}
 
-	if(loadNum)
-	*loadNum = LoadModel;
+	if (loadNum)
+		*loadNum = LoadModel;
 
 	//仮配列から移動
 	if (boneNumVector)
 		*boneNumVector = temporaryBoneNumVec;
-	
-	
+
+
 	vertices.shrink_to_fit();
-	for(auto& v : vertices)
+	for (auto& v : vertices)
 		v.shrink_to_fit();
-	
+
 	indices.shrink_to_fit();
 	for (auto& i : indices)
 		i.shrink_to_fit();
@@ -386,38 +392,47 @@ bool  ModelLoader::LoadObjModel
 
 }
 
-bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<Material>& material,  int* loadCount)
+bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<Material>& materials, int* loadCount)
 {
 	//読み込んだ回数
 	int loadNum = 0;
+	bool loadAmbient = false;
+	bool loadDiffuse = false;
+	bool loadSupecular = false;
+	bool loadTexture = false;
 
-	std::string kari;
 
 	std::ifstream file;
-	file.open(materialDirectoryPath + materialFileName);
-	if (file.fail()) assert(0);
+	std::string fullPath = materialDirectoryPath + materialFileName;
+	file.open(fullPath);
+	if (file.fail())
+	{
+		OutputDebugStringA(fullPath.data());
+		OutputDebugString(L"の読み込みに失敗しました。.mtlファイルが見つかりません。\n");
+		return false;
+	}
 
 	std::string line;
 
 
-	
+
 	//int materialArrayNum = 0;//マテリアル情報を書き込む場所の番号
 	//std::string materialNameKari;//マテリアル名を一時的に入れるstring
 
-	while (std::getline(file, line)) 
+	while (std::getline(file, line))
 	{
 		std::istringstream lineStream(line);
 		std::string materialData;
-		std::getline(lineStream, materialData,' ');
+		std::getline(lineStream, materialData, ' ');
 
 		if (materialData[0] == '\t')materialData.erase(materialData.begin());
 		if (materialData == "newmtl")
 		{
 			loadNum++;
-			material.resize(loadNum);
+			materials.resize(loadNum);
 
 			//名前取得
-			lineStream >> material[loadNum - 1].materialName;
+			lineStream >> materials[loadNum - 1].materialName;
 
 			//for (UINT i = 0; i < materialName.size(); i++) 
 			//{
@@ -432,35 +447,42 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 			//		break;
 			//	}
 			//}
-		
+
 		}
 		if (materialData == "Ka") //アンビエント
 		{
-			lineStream >> material[loadNum - 1].ambient.x;
-			lineStream >> material[loadNum - 1].ambient.y;
-			lineStream >> material[loadNum - 1].ambient.z;
+			lineStream >> materials[loadNum - 1].ambient.x;
+			lineStream >> materials[loadNum - 1].ambient.y;
+			lineStream >> materials[loadNum - 1].ambient.z;
+			loadAmbient = true;
 		}
-		if (materialData == "Kd") 
+		if (materialData == "Kd")
 		{
-			lineStream >> material[loadNum - 1].diffuse.x;
-			lineStream >> material[loadNum - 1].diffuse.y;
-			lineStream >> material[loadNum - 1].diffuse.z;
+			lineStream >> materials[loadNum - 1].diffuse.x;
+			lineStream >> materials[loadNum - 1].diffuse.y;
+			lineStream >> materials[loadNum - 1].diffuse.z;
+			loadDiffuse = true;
 		}
-		if (materialData == "Ks") 
+		if (materialData == "Ks")
 		{
-			lineStream >> material[loadNum - 1].specular.x;
-			lineStream >> material[loadNum - 1].specular.y;
-			lineStream >> material[loadNum - 1].specular.z;
+			lineStream >> materials[loadNum - 1].specular.x;
+			lineStream >> materials[loadNum - 1].specular.y;
+			lineStream >> materials[loadNum - 1].specular.z;
+			loadSupecular = true;
 		}
-		if (materialData == "map_Kd") 
+		if (materialData == "map_Kd")
 		{
-			lineStream >> material[loadNum - 1].textureName;
+			lineStream >> materials[loadNum - 1].textureName;
+			loadTexture = true;
 		}
-
-
 	}
 	file.close();
 
 	*loadCount = loadNum;
+
+	if (!loadAmbient)materials[loadNum - 1].ambient = DirectX::XMFLOAT3(0.3f, 0.3f, 0.3f);
+	if (!loadDiffuse)materials[loadNum - 1].diffuse = DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f);
+	if (!loadSupecular)materials[loadNum - 1].specular = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 	return true;
 }

@@ -335,6 +335,8 @@ void CreateBuffer::CreateDepthBufferSet(D3D12_HEAP_PROPERTIES depthheapprop, D3D
 
 #pragma endregion
 
+
+
 #pragma region 新
 
 #pragma region バッファ
@@ -540,6 +542,36 @@ void CreateBuffer::CreateOneColorTextureBuffer
 	);
 }
 
+void CreateBuffer::CreateDepthBuffer
+(
+	const D3D12_HEAP_PROPERTIES& depthheapprop,
+	const D3D12_RESOURCE_DESC& debthresdesc,
+	const 	D3D12_CLEAR_VALUE& depthclearvalue,
+	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+	ID3D12Resource** depthBuffer
+)
+{
+	device->CreateCommittedResource
+	(
+		&depthheapprop,
+		D3D12_HEAP_FLAG_NONE,
+		&debthresdesc,
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		&depthclearvalue,
+		IID_PPV_ARGS(depthBuffer)
+	);
+
+	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
+	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	device->CreateDepthStencilView
+	(
+		*depthBuffer,
+		&dsvDesc,
+		heapHandle
+	);
+}
+
 void CreateBuffer::CreateDescriptorHeap
 (
 	ID3D12DescriptorHeap** heap,
@@ -559,6 +591,7 @@ void CreateBuffer::CreateDescriptorHeap
 		IID_PPV_ARGS(heap)
 	);
 }
+
 
 
 #pragma endregion

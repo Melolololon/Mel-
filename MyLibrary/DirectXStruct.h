@@ -25,7 +25,7 @@ enum VertexType
 };
 
 //モデルのデータを所持します。
-struct ModelData
+struct ModelDataAndKey
 {
 	std::string key;//モデルデータを呼び出すための文字列
 	VertexType type;//頂点構造体の種類
@@ -60,6 +60,16 @@ struct Vertex
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT2 uv;//ポリゴンのどこら辺かをあらわすもの　ポリゴン上の座標
 	DirectX::XMFLOAT3 normal;
+};
+
+struct FbxVertex
+{
+	static const int MAX_BONE_INDICES = 4;
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
+	DirectX::XMFLOAT3 normal;
+	UINT boneIndex[MAX_BONE_INDICES] = { 0,0,0,0 };
+	float boneWeight[MAX_BONE_INDICES] = { 1,1,1,1 };
 };
 
 struct SpriteVertex
@@ -212,13 +222,13 @@ struct Material
 	Material()
 	{
 		ambient = { 0.3f,0.3f,0.3f };
-		diffuse = { 1.0f,1.0f,1.0f };
+		diffuse = { 0.7f,0.7f,0.7f };
 		specular = { 0.0f,0.0f,0.0f };
 		alpha = 1.0f;
 	}
 };
 
-struct MaterialConstData
+struct MaterialConstBufferData
 {
 	DirectX::XMFLOAT3 ambient;
 	float pad1;
@@ -296,6 +306,7 @@ struct WorldMatData
 
 //バッファー、Mapするための変数、ビューのセット
 #pragma region 頂点
+
 
 struct VertexBufferSet
 {

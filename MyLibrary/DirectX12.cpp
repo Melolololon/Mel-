@@ -3,7 +3,11 @@
 #include"FbxLoader.h"
 #include"ObjModel.h"
 #include"PrimitiveModel.h"
+#include"DirectionalLight.h"
+#include"RenderTarget.h"
 
+#include"ModelData.h"
+#include"ModelObject.h"
 
 DirectX12::DirectX12()
 {
@@ -111,13 +115,13 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	createPolygon = CreatePolygon::GetInstance();
 
 	mainCamera = new CreateCamera(winWidth, winHeight);
-	DirectInput::SetMatrixAndNearFar
-	(
-		mainCamera->GetViewMatrix(mainCameraData),
-		mainCamera->GetProjectionMatrix(mainCameraData),
-		mainCameraData.nearNumber,
-		mainCameraData.farNumber
-	);
+	//Input::SetMatrixAndNearFar
+	//(
+	//	mainCamera->GetViewMatrix(mainCameraData),
+	//	mainCamera->GetProjectionMatrix(mainCameraData),
+	//	mainCameraData.nearNumber,
+	//	mainCameraData.farNumber
+	//);
 
 	gpipeline = {};
 	spriteGpipeline = {};
@@ -137,6 +141,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	materialData = {};
 
 	postEffectCametaFlag = false;
+
+	
 #pragma endregion
 
 
@@ -635,205 +641,205 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 #pragma endregion
 
 #pragma region ポストエフェクト
-
-
-
-#pragma region 描画先板ポリのリソース作成
-	postEfectConstBuffers.resize(1);
-	postEfectConstBuffers.reserve(20);
-
-	//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
-	D3D12_CLEAR_VALUE peClesrValue;
-
-
-	/*peClesrValue.Color[0] = clearColor[0];
-	peClesrValue.Color[1] = clearColor[1];
-	peClesrValue.Color[2] = clearColor[2];
-	peClesrValue.Color[3] = clearColor[3];
-	peClesrValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	D3D12_DEPTH_STENCIL_VALUE peSepthStencilValue;
-	peSepthStencilValue.Depth = 1.0f;
-	peSepthStencilValue.Stencil = 0.0f;
-	peClesrValue.DepthStencil = peSepthStencilValue;*/
-
-	peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
-	//リソース作成
-	postEffectResources.resize(1);
-
-	dev->CreateCommittedResource
-	(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-		D3D12_HEAP_FLAG_NONE,
-		&backBuffer[0].Get()->GetDesc(),
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-		&peClesrValue,
-		IID_PPV_ARGS(&postEffectResources[0])
-	);
-
-#pragma region ヒープとビュー作成
-	//テクスチャ
-
-	//ヒープ作成
-	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
-	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	peHeapDesc.NumDescriptors = 2;
-	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	peHeapDesc.NodeMask = 0;
-	dev->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&postEffectHeap));
-
-	//ビュー作成
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-
-	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-
-	dev->CreateShaderResourceView
-	(
-		postEffectResources[0].Get(),
-		&srvDesc,
-		postEffectHeap.Get()->GetCPUDescriptorHandleForHeapStart()
-	);
-
-	//定数バッファ作成
-	postEffectWorldMatData.resize(1);
-	postEffectWorldMatData[0].scale = { 1,1,1 };
-
-	postEfectConstBuffers[0].constBuffer.resize(1);
-	createBuffer->CreateConstBufferSet(
-		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		CD3DX12_RESOURCE_DESC::Buffer((sizeof(PostEffectConstData) + 0xff)&~0xff),
-		CD3DX12_CPU_DESCRIPTOR_HANDLE
-		(
-			postEffectHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-			1,
-			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		),
-		(void**)&postEffectConstDataP,
-		postEfectConstBuffers[0],
-		0);
-	postEffectConstDataP->worldMat = DirectX::XMMatrixIdentity();
-	//postEfectConstBuffers[0].constBuffer[0].Get()->Unmap(0, nullptr);
-
-	//レンダーターゲット
-
-	//ヒープ作成
-	peHeapDesc = {};
-	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	peHeapDesc.NumDescriptors = 10;
-	dev->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&postEffectRTVHeap));
-
-	//ビュー作成
-	D3D12_RENDER_TARGET_VIEW_DESC peRTVDesc = {};
-	peRTVDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-	peRTVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	dev.Get()->CreateRenderTargetView
-	(
-		postEffectResources[0].Get(),
-		&peRTVDesc,
-		postEffectRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart()
-	);
-#pragma endregion
-
-#pragma endregion
-
-#pragma region 描画先板ポリの頂点情報作成
-
-	postEffectVertex.resize(4);
-
-	postEffectVertex[0] = Vertex({ {-1,-1,0},{0,1},{0,0,0} });
-	postEffectVertex[1] = Vertex({ {-1,1,0},{0,0},{0,0,0} });
-	postEffectVertex[2] = Vertex({ {1,-1,0},{1,1},{0,0,0} });
-	postEffectVertex[3] = Vertex({ {1,1,0},{1,0},{0,0,0}  });
-
-	createBuffer->CreateVertexBufferSet
-	(
-		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * 4),
-		postEffectVertex,
-		postEffectVertexBufferSet
-	);
-#pragma endregion
-
-#pragma region ルートシグネチャとパイプラインを生成
-	postEffectPipeline.resize(1);
-	postEffectPipeline.reserve(20);
-
-	//レンジ
-	D3D12_DESCRIPTOR_RANGE peRangeSRV{};
-	peRangeSRV.NumDescriptors = 1;
-	peRangeSRV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	peRangeSRV.BaseShaderRegister = 0;
-	peRangeSRV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	D3D12_DESCRIPTOR_RANGE peRangeCBV{};
-	peRangeCBV.NumDescriptors = 1;
-	peRangeCBV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-	peRangeCBV.BaseShaderRegister = 0;
-	peRangeCBV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	//ルートパラメータ
-	D3D12_ROOT_PARAMETER peRootparam[2]{};
-
-	//テクスチャ
-	peRootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	peRootparam[0].DescriptorTable.pDescriptorRanges = &peRangeSRV;
-	peRootparam[0].DescriptorTable.NumDescriptorRanges = 1;
-	peRootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-	peRootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	peRootparam[1].DescriptorTable.pDescriptorRanges = &peRangeCBV;
-	peRootparam[1].DescriptorTable.NumDescriptorRanges = 1;
-	peRootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-	rootSignatureDesc.pParameters = peRootparam;
-	rootSignatureDesc.NumParameters = _countof(peRootparam);
-
-	/*D3D12_ROOT_SIGNATURE_DESC d = {};
-	d.NumParameters = 0;
-	d.NumStaticSamplers = 0;
-	d.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;*/
-
-	//ルートシグネチャ
-	CreatePipelineState->CreateRootSigneture(rootSignatureDesc, &postEffectRootSigneture);
-
-	////パイプライン
-	
-	ilData.resize(2);
-	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT };
-	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE_FLOAT };
-	CreatePipelineState->SetInputLayout(ilData);
-	ilData.clear();
-
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC pePLDesc = spriteGpipeline;
-	pePLDesc.pRootSignature = postEffectRootSigneture.Get();
-
-
-	//パイプラインの設定
-	pePLDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-	pePLDesc.BlendState.AlphaToCoverageEnable = false;
-
-
-	//バックバッファの色と加算したくないので、false
-	blenddesc.BlendEnable = false;//ブレンドを有効にするかのフラグ
-	pePLDesc.BlendState.RenderTarget[0] = blenddesc;
-
-	CreatePipelineState->CreateUserPipeline
-	(
-		1,
-		{ L"../MyLibrary/PostEffectVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"NULL","","" },
-		{ L"../MyLibrary/PostEffectPixelShader.hlsl","PSmain","ps_5_0" },
-		pePLDesc,
-		&postEffectPipeline[0],
-		true
-	);
-
-	CreatePipelineState->DeleteInputLayout();
-
-#pragma endregion
+//
+//
+//
+//#pragma region 描画先板ポリのリソース作成
+//	postEfectConstBuffers.resize(1);
+//	postEfectConstBuffers.reserve(20);
+//
+//	//D3D12_CLEAR_VALUE リソースをレンダーターゲットとして使う場合にどう初期化するかをまとめたもの
+//	D3D12_CLEAR_VALUE peClesrValue;
+//
+//
+//	/*peClesrValue.Color[0] = clearColor[0];
+//	peClesrValue.Color[1] = clearColor[1];
+//	peClesrValue.Color[2] = clearColor[2];
+//	peClesrValue.Color[3] = clearColor[3];
+//	peClesrValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+//	D3D12_DEPTH_STENCIL_VALUE peSepthStencilValue;
+//	peSepthStencilValue.Depth = 1.0f;
+//	peSepthStencilValue.Stencil = 0.0f;
+//	peClesrValue.DepthStencil = peSepthStencilValue;*/
+//
+//	peClesrValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor);
+//	//リソース作成
+//	postEffectResources.resize(1);
+//
+//	dev->CreateCommittedResource
+//	(
+//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+//		D3D12_HEAP_FLAG_NONE,
+//		&backBuffer[0].Get()->GetDesc(),
+//		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+//		&peClesrValue,
+//		IID_PPV_ARGS(&postEffectResources[0])
+//	);
+//
+//#pragma region ヒープとビュー作成
+//	//テクスチャ
+//
+//	//ヒープ作成
+//	D3D12_DESCRIPTOR_HEAP_DESC peHeapDesc{};
+//	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+//	peHeapDesc.NumDescriptors = 2;
+//	peHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+//	peHeapDesc.NodeMask = 0;
+//	dev->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&postEffectHeap));
+//
+//	//ビュー作成
+//	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+//
+//	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+//	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+//	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+//	srvDesc.Texture2D.MipLevels = 1;
+//
+//	dev->CreateShaderResourceView
+//	(
+//		postEffectResources[0].Get(),
+//		&srvDesc,
+//		postEffectHeap.Get()->GetCPUDescriptorHandleForHeapStart()
+//	);
+//
+//	//定数バッファ作成
+//	postEffectWorldMatData.resize(1);
+//	postEffectWorldMatData[0].scale = { 1,1,1 };
+//
+//	postEfectConstBuffers[0].constBuffer.resize(1);
+//	createBuffer->CreateConstBufferSet(
+//		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//		CD3DX12_RESOURCE_DESC::Buffer((sizeof(PostEffectConstData) + 0xff)&~0xff),
+//		CD3DX12_CPU_DESCRIPTOR_HANDLE
+//		(
+//			postEffectHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+//			1,
+//			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+//		),
+//		(void**)&postEffectConstDataP,
+//		postEfectConstBuffers[0],
+//		0);
+//	postEffectConstDataP->worldMat = DirectX::XMMatrixIdentity();
+//	//postEfectConstBuffers[0].constBuffer[0].Get()->Unmap(0, nullptr);
+//
+//	//レンダーターゲット
+//
+//	//ヒープ作成
+//	peHeapDesc = {};
+//	peHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+//	peHeapDesc.NumDescriptors = 10;
+//	dev->CreateDescriptorHeap(&peHeapDesc, IID_PPV_ARGS(&postEffectRTVHeap));
+//
+//	//ビュー作成
+//	D3D12_RENDER_TARGET_VIEW_DESC peRTVDesc = {};
+//	peRTVDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+//	peRTVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+//
+//	dev.Get()->CreateRenderTargetView
+//	(
+//		postEffectResources[0].Get(),
+//		&peRTVDesc,
+//		postEffectRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart()
+//	);
+//#pragma endregion
+//
+//#pragma endregion
+//
+//#pragma region 描画先板ポリの頂点情報作成
+//
+//	postEffectVertex.resize(4);
+//
+//	postEffectVertex[0] = Vertex({ {-1,-1,0},{0,1},{0,0,0} });
+//	postEffectVertex[1] = Vertex({ {-1,1,0},{0,0},{0,0,0} });
+//	postEffectVertex[2] = Vertex({ {1,-1,0},{1,1},{0,0,0} });
+//	postEffectVertex[3] = Vertex({ {1,1,0},{1,0},{0,0,0}  });
+//
+//	createBuffer->CreateVertexBufferSet
+//	(
+//		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//		CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * 4),
+//		postEffectVertex,
+//		postEffectVertexBufferSet
+//	);
+//#pragma endregion
+//
+//#pragma region ルートシグネチャとパイプラインを生成
+//	postEffectPipeline.resize(1);
+//	postEffectPipeline.reserve(20);
+//
+//	//レンジ
+//	D3D12_DESCRIPTOR_RANGE peRangeSRV{};
+//	peRangeSRV.NumDescriptors = 1;
+//	peRangeSRV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+//	peRangeSRV.BaseShaderRegister = 0;
+//	peRangeSRV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+//
+//	D3D12_DESCRIPTOR_RANGE peRangeCBV{};
+//	peRangeCBV.NumDescriptors = 1;
+//	peRangeCBV.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+//	peRangeCBV.BaseShaderRegister = 0;
+//	peRangeCBV.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+//
+//	//ルートパラメータ
+//	D3D12_ROOT_PARAMETER peRootparam[2]{};
+//
+//	//テクスチャ
+//	peRootparam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+//	peRootparam[0].DescriptorTable.pDescriptorRanges = &peRangeSRV;
+//	peRootparam[0].DescriptorTable.NumDescriptorRanges = 1;
+//	peRootparam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+//
+//	peRootparam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+//	peRootparam[1].DescriptorTable.pDescriptorRanges = &peRangeCBV;
+//	peRootparam[1].DescriptorTable.NumDescriptorRanges = 1;
+//	peRootparam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+//
+//	rootSignatureDesc.pParameters = peRootparam;
+//	rootSignatureDesc.NumParameters = _countof(peRootparam);
+//
+//	/*D3D12_ROOT_SIGNATURE_DESC d = {};
+//	d.NumParameters = 0;
+//	d.NumStaticSamplers = 0;
+//	d.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;*/
+//
+//	//ルートシグネチャ
+//	CreatePipelineState->CreateRootSigneture(rootSignatureDesc, &postEffectRootSigneture);
+//
+//	////パイプライン
+//	
+//	ilData.resize(2);
+//	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT };
+//	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE_FLOAT };
+//	CreatePipelineState->SetInputLayout(ilData);
+//	ilData.clear();
+//
+//	D3D12_GRAPHICS_PIPELINE_STATE_DESC pePLDesc = spriteGpipeline;
+//	pePLDesc.pRootSignature = postEffectRootSigneture.Get();
+//
+//
+//	//パイプラインの設定
+//	pePLDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+//	pePLDesc.BlendState.AlphaToCoverageEnable = false;
+//
+//
+//	//バックバッファの色と加算したくないので、false
+//	blenddesc.BlendEnable = false;//ブレンドを有効にするかのフラグ
+//	pePLDesc.BlendState.RenderTarget[0] = blenddesc;
+//
+//	CreatePipelineState->CreateUserPipeline
+//	(
+//		1,
+//		{ L"../MyLibrary/PostEffectVertexShader.hlsl","VSmain","vs_5_0" },
+//		{ L"NULL","","" },
+//		{ L"../MyLibrary/PostEffectPixelShader.hlsl","PSmain","ps_5_0" },
+//		pePLDesc,
+//		&postEffectPipeline[0],
+//		true
+//	);
+//
+//	CreatePipelineState->DeleteInputLayout();
+//
+//#pragma endregion
 
 
 #pragma endregion
@@ -940,27 +946,65 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 #pragma endregion
 
 
-	std::vector<ID3D12GraphicsCommandList*>cmdLists(1);
-	cmdLists[0] = cmdList.Get();
+
 
 	PipelineState::Initialize(dev.Get());
-	Model::Initialize
-	(
-		dev.Get(),
-		cmdLists
-	);
+	//Model::Initialize
+	//(
+	//	dev.Get(),
+	//	cmdLists
+	//);
 
-	
-	ObjModel::Initialize();
-	FbxModel::Initialize();
-	PrimitiveModel::Initialize();
+	//
+	//ObjModel::Initialize();
+	//FbxModel::Initialize();
+	//PrimitiveModel::Initialize();
+
+	ModelData::Initialize(dev.Get());
+	std::vector<ID3D12GraphicsCommandList*> cmdLists(1, cmdList.Get());
+	ModelObject::Initialize(dev.Get(), cmdLists);
 
 	Sprite::Initialize(dev.Get(), cmdList.Get());
 	Sprite2D::Initialize(windouWidth, windowHeight);
 	Sprite3D::Initialize();
+	RenderTarget::Initialize();
 
 
+	RenderTarget::Create(Color(0, 200, 0, 255),"main");
+	Camera::Create("main");
+	RenderTarget::Get("main")->SetCamera();
+	DirectionalLight::Create("main");
 
+	//renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));
+
+
+#pragma region テスト用
+	//PipelineState postEffectTestPipeline;
+
+	//PipelineData data;
+	//data.alphaWriteMode = ALPHA_WRITE_TRUE;
+	//data.blendMode = BLEND_ADD;
+	//data.cullMode = CULL_NONE;
+	//data.depthMode = DEPTH_FALSE;
+	//data.drawMode = DRAW_SOLID;
+	//auto result = postEffectTestPipeline.CreatePipeline
+	//(
+	//	data,
+	//	{ L"../MyLibrary/PostEffectTestVertexShader.hlsl","VSmain","vs_5_0" },
+	//	{ L"NULL","","" },
+	//	{ L"NULL","","" },
+	//	{ L"NULL","","" },
+	//	{ L"../MyLibrary/PostEffectTestPixelShader.hlsl","PSmain","ps_5_0" },
+	//	PipelineType::PIPELINE_TYPE_RENDER_TARGET,
+	//	nullptr,
+	//	typeid(RenderTarget).name(),
+	//	1
+	//);
+	//RenderTarget::Get("main")->SetPipeline(&postEffectTestPipeline);
+	//renderTarget->SetPipeline(&postEffectTestPipeline);
+#pragma endregion
+
+	
 }
 
 void DirectX12::LoopStartProcess()
@@ -976,24 +1020,27 @@ void DirectX12::LoopStartProcess()
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;*/
 
-	barrierDesc.Transition.pResource = postEffectResources[0].Get();
+	//板ポリの状態を、RESOURCEからRTに切り替え
+	/*barrierDesc.Transition.pResource = postEffectResources[0].Get();
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-	cmdList->ResourceBarrier(1, &barrierDesc);
+	cmdList->ResourceBarrier(1, &barrierDesc);*/
 #pragma endregion
+
+	RenderTarget::Get("main")->PreDrawProcess();
 
 #pragma region 画面クリア
 
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
-	//rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvH = postEffectRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
+	////D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+	////rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
+	//D3D12_CPU_DESCRIPTOR_HANDLE rtvH = postEffectRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+	//D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+	//cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
 
-	//画面のクリア
-	cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
-	cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	////画面のクリア
+	//cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
+	//cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 
 
@@ -1022,7 +1069,7 @@ void DirectX12::LoopStartProcess()
 
 	DirectX::XMMATRIX cameraMat = mainCamera->Get3DCameraMatrix(mainCameraData);
 
-	Model::SetViewAndProjectionMatrix(cameraMat);
+	//Model::SetViewAndProjectionMatrix(cameraMat);
 	Sprite3D::SetViewAndProjectionMatrix(cameraMat);
 	Sprite3D::SetCameraPosTargetUpVector(mainCameraData.nowEye, mainCameraData.nowTarget, mainCameraData.nowUp);
 }
@@ -1032,7 +1079,8 @@ void DirectX12::LoopEndProcess()
 
 	CommonConstData commonData;
 	commonData.cameraPos = { mainCameraData.nowEye.x,mainCameraData.nowEye.y,mainCameraData.nowEye.z,1 };
-	commonData.light = { lightVector.x,lightVector.y,lightVector.z,1 };
+	DirectX::XMFLOAT3 lightDirection = DirectionalLight::Get().GetDirection().ToXMFLOAT3();
+	commonData.light = DirectX::XMFLOAT4(lightDirection.x, lightDirection.y, lightDirection.z, 1);
 	commonData.lightColor = { lightColor.x,lightColor.y,lightColor.z,1 };
 	commonData.lightMat = cameraMat;
 	//共通バッファのMap
@@ -1047,37 +1095,43 @@ void DirectX12::LoopEndProcess()
 		cBuf.second->Unmap(0, nullptr);
 	}
 
-	Model::SetCommonConstData(commonData);
+	//Model::SetCommonConstData(commonData);
+
+#pragma region ポストエフェクト処理
 
 
-	//ポストエフェクトレンダーターゲットのMap
-	DirectX::XMMATRIX peWorldMat = DirectX::XMMatrixIdentity();
-	peWorldMat *= DirectX::XMMatrixScaling
-	(
-		postEffectWorldMatData[0].scale.x,
-		postEffectWorldMatData[0].scale.y,
-		postEffectWorldMatData[0].scale.z
-	);
-	peWorldMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(postEffectWorldMatData[0].angle.z));
-	peWorldMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(postEffectWorldMatData[0].angle.x));
-	peWorldMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(postEffectWorldMatData[0].angle.y));
+	////ポストエフェクトレンダーターゲットのMap
+	//DirectX::XMMATRIX peWorldMat = DirectX::XMMatrixIdentity();
+	//peWorldMat *= DirectX::XMMatrixScaling
+	//(
+	//	postEffectWorldMatData[0].scale.x,
+	//	postEffectWorldMatData[0].scale.y,
+	//	postEffectWorldMatData[0].scale.z
+	//);
+	//peWorldMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(postEffectWorldMatData[0].angle.z));
+	//peWorldMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(postEffectWorldMatData[0].angle.x));
+	//peWorldMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(postEffectWorldMatData[0].angle.y));
 
-	peWorldMat *= DirectX::XMMatrixTranslation
-	(
-		postEffectWorldMatData[0].pos.x,
-		postEffectWorldMatData[0].pos.y,
-		postEffectWorldMatData[0].pos.z
-	);
-	if (postEffectCametaFlag)peWorldMat *= mainCamera->Get3DCameraMatrix(mainCameraData);
+	//peWorldMat *= DirectX::XMMatrixTranslation
+	//(
+	//	postEffectWorldMatData[0].pos.x,
+	//	postEffectWorldMatData[0].pos.y,
+	//	postEffectWorldMatData[0].pos.z
+	//);
+	//if (postEffectCametaFlag)peWorldMat *= mainCamera->Get3DCameraMatrix(mainCameraData);
 
-	postEffectConstDataP->worldMat = peWorldMat;
+	//postEffectConstDataP->worldMat = peWorldMat;
 
 
-	//Mapここまで
-	
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-	cmdList->ResourceBarrier(1, &barrierDesc);
+	////Mapここまで
+	//
+	//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	//cmdList->ResourceBarrier(1, &barrierDesc);
+
+#pragma endregion
+
+
 
 	//板ポリをバックバッファーに描画する準備
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
@@ -1098,48 +1152,49 @@ void DirectX12::LoopEndProcess()
 
 #pragma region ポストエフェクト用板ポリの描画コマンドセット
 
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	std::vector<ID3D12DescriptorHeap*> ppHeaps;
+	//cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	//std::vector<ID3D12DescriptorHeap*> ppHeaps;
 
-	////ハンドルvectorやめてfor内に毎回宣言したほうがいい?そうすればずらしたやつを勝手に直してくれる
-	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
+	//////ハンドルvectorやめてfor内に毎回宣言したほうがいい?そうすればずらしたやつを勝手に直してくれる
+	//CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 
-	////cmdList->SetGraphicsRootSignature(postEffectRootSigneture.Get());
-	cmdList->SetGraphicsRootSignature(postEffectRootSigneture.Get());
-	cmdList->SetPipelineState(postEffectPipeline[currentPostEffectPipeline].Get());
-	//cmdList->SetPipelineState(spritePipelineStates[0].Get());
+	//////cmdList->SetGraphicsRootSignature(postEffectRootSigneture.Get());
+	//cmdList->SetGraphicsRootSignature(postEffectRootSigneture.Get());
+	//cmdList->SetPipelineState(postEffectPipeline[currentPostEffectPipeline].Get());
+	////cmdList->SetPipelineState(spritePipelineStates[0].Get());
 
-	cmdList->IASetVertexBuffers(0, 1, &postEffectVertexBufferSet.vertexBufferView);
-	//cmdList->IASetIndexBuffer(&spriteIndexBufferSet[0].indexBufferView);
+	//cmdList->IASetVertexBuffers(0, 1, &postEffectVertexBufferSet.vertexBufferView);
+	////cmdList->IASetIndexBuffer(&spriteIndexBufferSet[0].indexBufferView);
 
-	ppHeaps.push_back(postEffectHeap.Get());
-	cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
+	//ppHeaps.push_back(postEffectHeap.Get());
+	//cmdList->SetDescriptorHeaps(1, &ppHeaps[0]);
 
-	gpuDescHandle = postEffectHeap->GetGPUDescriptorHandleForHeapStart();
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	(
-		gpuDescHandle, 
-		0, 
-		dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
-	//////テクスチャ
-	cmdList->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
+	//gpuDescHandle = postEffectHeap->GetGPUDescriptorHandleForHeapStart();
+	//gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	//(
+	//	gpuDescHandle, 
+	//	0, 
+	//	dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	//);
+	////////テクスチャ
+	//cmdList->SetGraphicsRootDescriptorTable(0, gpuDescHandle);
 
-	//定数
-	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-	(
-		gpuDescHandle, 
-		1,
-		dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-	);
-	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
+	////定数
+	//gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	//(
+	//	gpuDescHandle, 
+	//	1,
+	//	dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+	//);
+	//cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandle);
 
-	cmdList->DrawInstanced(4, 1, 0, 0);
-	//cmdList->DrawIndexedInstanced(spriteIndices[0].size(), 1, 0, 0, 0);
+	//cmdList->DrawInstanced(4, 1, 0, 0);
+	////cmdList->DrawIndexedInstanced(spriteIndices[0].size(), 1, 0, 0, 0);
 
 
 #pragma endregion
 
+	RenderTarget::AllDraw();
 
 #pragma region RTVからPRESENTへ
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -1181,7 +1236,6 @@ void DirectX12::Finalize()
 	delete CreatePipelineState;
 	delete mainCamera;
 
-	DirectInput::Release();
 	FbxLoader::GetInstance()->Finalize();
 }
 
@@ -1362,7 +1416,7 @@ bool DirectX12::CreateUserPipelineState
 
 	switch (pipelineData.depthMode)
 	{
-	case DEPTH_NONE:
+	case DEPTH_FALSE:
 		gpipeline.DepthStencilState.DepthEnable = false;
 		break;
 
@@ -1373,7 +1427,7 @@ bool DirectX12::CreateUserPipelineState
 
 	switch (pipelineData.alphaWriteMode)
 	{
-	case ALPHA_WRITE_NONE:
+	case ALPHA_WRITE_FALSE:
 		gpipeline.BlendState.AlphaToCoverageEnable = true;
 		break;
 
@@ -1697,13 +1751,13 @@ void DirectX12::SetCameraDataMatrixPoint(Vector3 eye, Vector3 target, Vector3 up
 	mainCameraData.up.y = up.y;
 	mainCameraData.up.z = up.z;
 
-	DirectInput::SetMatrixAndNearFar
+	/*Input::SetMatrixAndNearFar
 	(
 		mainCamera->GetViewMatrix(mainCameraData),
 		mainCamera->GetProjectionMatrix(mainCameraData),
 		mainCameraData.nearNumber,
 		mainCameraData.farNumber
-	);
+	);*/
 }
 void DirectX12::SetCameraData(Vector3 eye, Vector3 target, Vector3 up)
 {
@@ -1717,13 +1771,13 @@ void DirectX12::SetCameraData(Vector3 eye, Vector3 target, Vector3 up)
 	mainCameraData.nowUp.y = up.y;
 	mainCameraData.nowUp.z = up.z;
 
-	DirectInput::SetMatrixAndNearFar
-	(
-		mainCamera->GetViewMatrix(mainCameraData),
-		mainCamera->GetProjectionMatrix(mainCameraData),
-		mainCameraData.nearNumber,
-		mainCameraData.farNumber
-	);
+	//Input::SetMatrixAndNearFar
+	//(
+	//	mainCamera->GetViewMatrix(mainCameraData),
+	//	mainCamera->GetProjectionMatrix(mainCameraData),
+	//	mainCameraData.nearNumber,
+	//	mainCameraData.farNumber
+	//);
 
 }
 
@@ -1740,20 +1794,20 @@ void DirectX12::SetCameraAngre(DirectX::XMFLOAT3 eyeAngle, DirectX::XMFLOAT3 tar
 	mainCameraData.targetAngle = targetAngle;
 	mainCameraData.upAngle = upAngle;
 
-	DirectInput::SetMatrixAndNearFar
-	(
-		mainCamera->GetViewMatrix(mainCameraData),
-		mainCamera->GetProjectionMatrix(mainCameraData),
-		mainCameraData.nearNumber,
-		mainCameraData.farNumber
-	);
+	//Input::SetMatrixAndNearFar
+	//(
+	//	mainCamera->GetViewMatrix(mainCameraData),
+	//	mainCamera->GetProjectionMatrix(mainCameraData),
+	//	mainCameraData.nearNumber,
+	//	mainCameraData.farNumber
+	//);
 
 	cameraMat = DirectX::XMMatrixIdentity();
 	cameraMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(-mainCameraData.eyeAngle.z));
 	cameraMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-mainCameraData.eyeAngle.x));
 	cameraMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(-mainCameraData.eyeAngle.y));
 
-	Model::SetCameraRotateMat(cameraMat);
+	//Model::SetCameraRotateMat(cameraMat);
 }
 
 void DirectX12::SetNearAndFar(float nearNum, float farNum)
@@ -1761,13 +1815,13 @@ void DirectX12::SetNearAndFar(float nearNum, float farNum)
 	mainCameraData.nearNumber = nearNum;
 	mainCameraData.farNumber = farNum;
 
-	DirectInput::SetMatrixAndNearFar
+	/*Input::SetMatrixAndNearFar
 	(
 		mainCamera->GetViewMatrix(mainCameraData),
 		mainCamera->GetProjectionMatrix(mainCameraData),
 		mainCameraData.nearNumber,
 		mainCameraData.farNumber
-	);
+	);*/
 }
 #pragma endregion
 
@@ -1993,188 +2047,194 @@ VertexType DirectX12::LoadObjVertex
 	const std::string& key
 )
 {
-
-	//objにあるモデル数
-	int loadNum = 0;
-
-	//マテリアル
-	std::vector<std::string>materialName;
-
-	std::vector<DirectX::XMFLOAT3>bonePos;
-	std::vector<std::vector<int>>boneNum;
-
-	//仮配列
-	std::vector<std::vector<ObjAnimationVertex>>temporaryVertex;
-	std::vector<std::vector<USHORT>>temporaryIndex;
-
-	ModelLoader::GetInstance()->LoadObjModel
-	(
-		path,
-		loadUV,
-		loadNormal,
-		temporaryVertex,
-		temporaryIndex,
-		*materialFireName,
-		materialName,
-		smoothData,
-		&loadNum,
-		&bonePos,
-		&boneNum
-	);
-
-	
-
-	std::vector<std::vector<Vertex>> normalVertices(temporaryVertex.size());
-	auto size = temporaryVertex.size();
-	for(int i = 0; i < size;i++)
-	{
-		auto size2 = temporaryVertex[i].size();
-		normalVertices[i].resize(size2);
-		for(int j = 0; j < size2;j++)
-		{
-			normalVertices[i][j].pos = temporaryVertex[i][j].pos;
-			normalVertices[i][j].uv = temporaryVertex[i][j].uv;
-			normalVertices[i][j].normal = temporaryVertex[i][j].normal;
-		}
-	}
-
-	vertices.emplace(key, normalVertices);
-
-	//ボーンあったら入れる
-	bool loadBone = false;
-	if (bonePos.size() != 0)
-	{
-		loadBone = true;
-		objBoneNums.emplace(key, boneNum);
-		objBonePositions.emplace(key, bonePos);
-	}
-
-	indices.emplace(key, temporaryIndex);
-	
-
-#pragma region テクスチャ反転
-
-	int count = 0;
-	float upx = 0;
-	float upy = 0;
-	float downx = 0;
-	float downy = 0;
-	for (int i = 0; i < vertices[key].size(); i++)
-	{
-		for (int j = 0; j < vertices[key][i].size(); j++)
-		{
-			//反転(ブレンダー、MAYAは2次元でも下が0で上に行くほど1に近づく)
-			vertices[key][i][j].uv.y = (vertices[key][i][j].uv.y - 1) * -1;
-
-			count++;
-			count = count >= 4 ? 0 : count;
-
-		}
-	}
-#pragma endregion
-
-
-
-	//スムースシェーディング法線計算
-	std::vector<std::vector<DirectX::XMFLOAT3>>normals;
-	
-	normals.resize(vertices[key].size());
-	for (int i = 0; i < vertices[key].size(); i++)
-	{
-		normals[i].resize(vertices[key][i].size());
-	}
-	smoothNormal.emplace(key, normals);
-	//calcSmoothingNormals(key);
-
-#pragma region 頂点 インデックスバッファ作成
-
-#pragma region 頂点バッファ
-
-	std::vector<VertexBufferSet> vBuffs(loadNum);
-
-	//バッファ作成
-	if (!loadBone) //ボーンなし
-	{
-		for (int i = 0; i < loadNum; i++)
-		{
-			createBuffer->CreateVertexBufferSet
-			(
-				CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-				CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[key][i].size()),
-				vertices[key][i],
-				vBuffs[i]
-			);
-			vBuffs[i].materialName = materialName[i];
-		}
-	}
-	else//ボーンあり
-	{
-		for (int i = 0; i < loadNum; i++)
-		{
-			size_t vertexSize = sizeof(ObjAnimationVertex) * vertices[key][i].size();
-			auto result = dev->CreateCommittedResource(
-				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-				D3D12_HEAP_FLAG_NONE,
-				&CD3DX12_RESOURCE_DESC::Buffer(vertexSize),
-				D3D12_RESOURCE_STATE_GENERIC_READ,
-				nullptr,
-				IID_PPV_ARGS(&vBuffs[i].vertexBuffer)
-			);
-
-			ObjAnimationVertex* aniVertex;
-			result = vBuffs[i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
-			
-			size_t size = vertices[key][i].size();
-			for (size_t j = 0; j < size; j++)
-			{
-				aniVertex[j].pos = vertices[key][i][j].pos;
-				aniVertex[j].uv = vertices[key][i][j].uv;
-				aniVertex[j].normal = vertices[key][i][j].normal;
-				aniVertex[j].boneNumber = objBoneNums[key][i][j];
-			}
-
-			vBuffs[i].vertexBuffer->Unmap(0, nullptr);
-
-			vBuffs[i].vertexBufferView.BufferLocation = vBuffs[i].vertexBuffer->GetGPUVirtualAddress();
-			vBuffs[i].vertexBufferView.SizeInBytes = vertexSize;
-			vBuffs[i].vertexBufferView.StrideInBytes = sizeof(ObjAnimationVertex);
-
-			vBuffs[i].materialName = materialName[i];
-		}
-	}
-
-	vertexBufferSet.emplace(key, vBuffs);
-#pragma endregion
-
-#pragma region インデックスバッファ
-	std::vector<IndexBufferSet>iBuffs(loadNum);
-	
-
-	for (int i = 0; i < loadNum; i++)
-	{
-		createBuffer->CreateIndexBufferSet
-		(
-			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer(sizeof(USHORT) * indices[key][i].size()),
-			indices[key][i],
-			iBuffs[i]
-		);
-	}
-	indexBufferSet.emplace(key,iBuffs);
-
-#pragma endregion
-
-
-#pragma endregion
-
-
-
-	if (bonePos.size() != 0 && 
-		boneNum.size() != 0)
-		return VERTEX_TYPE_OBJ_ANIMATION;
-
-	//ボーンなかったらこれ返す
-	return VertexType::VERTEX_TYPE_NORMAL;
+//
+//	//objにあるモデル数
+//	int loadNum = 0;
+//
+//	//マテリアル
+//	std::vector<std::string>materialName;
+//
+//	std::vector<DirectX::XMFLOAT3>bonePos;
+//	std::vector<Vector3>bonePosV3;
+//	std::vector<std::vector<int>>boneNum;
+//
+//	//仮配列
+//	std::vector<std::vector<ObjAnimationVertex>>temporaryVertex;
+//	std::vector<std::vector<USHORT>>temporaryIndex;
+//
+//	ModelLoader::GetInstance()->LoadObjModel
+//	(
+//		path,
+//		loadUV,
+//		loadNormal,
+//		temporaryVertex,
+//		temporaryIndex,
+//		*materialFireName,
+//		materialName,
+//		smoothData,
+//		&loadNum,
+//		&bonePosV3,
+//		&boneNum
+//	);
+//
+//	bonePos.resize(bonePosV3.size());
+//	for (int i = 0, size = bonePosV3.size(); i < size; i++)
+//	{
+//		bonePos[i] = bonePosV3[i].ToXMFLOAT3();
+//	}
+//
+//	std::vector<std::vector<Vertex>> normalVertices(temporaryVertex.size());
+//	auto size = temporaryVertex.size();
+//	for(int i = 0; i < size;i++)
+//	{
+//		auto size2 = temporaryVertex[i].size();
+//		normalVertices[i].resize(size2);
+//		for(int j = 0; j < size2;j++)
+//		{
+//			normalVertices[i][j].pos = temporaryVertex[i][j].pos;
+//			normalVertices[i][j].uv = temporaryVertex[i][j].uv;
+//			normalVertices[i][j].normal = temporaryVertex[i][j].normal;
+//		}
+//	}
+//
+//	vertices.emplace(key, normalVertices);
+//
+//	//ボーンあったら入れる
+//	bool loadBone = false;
+//	if (bonePos.size() != 0)
+//	{
+//		loadBone = true;
+//		objBoneNums.emplace(key, boneNum);
+//		objBonePositions.emplace(key, bonePos);
+//	}
+//
+//	indices.emplace(key, temporaryIndex);
+//	
+//
+//#pragma region テクスチャ反転
+//
+//	int count = 0;
+//	float upx = 0;
+//	float upy = 0;
+//	float downx = 0;
+//	float downy = 0;
+//	for (int i = 0; i < vertices[key].size(); i++)
+//	{
+//		for (int j = 0; j < vertices[key][i].size(); j++)
+//		{
+//			//反転(ブレンダー、MAYAは2次元でも下が0で上に行くほど1に近づく)
+//			vertices[key][i][j].uv.y = (vertices[key][i][j].uv.y - 1) * -1;
+//
+//			count++;
+//			count = count >= 4 ? 0 : count;
+//
+//		}
+//	}
+//#pragma endregion
+//
+//
+//
+//	//スムースシェーディング法線計算
+//	std::vector<std::vector<DirectX::XMFLOAT3>>normals;
+//	
+//	normals.resize(vertices[key].size());
+//	for (int i = 0; i < vertices[key].size(); i++)
+//	{
+//		normals[i].resize(vertices[key][i].size());
+//	}
+//	smoothNormal.emplace(key, normals);
+//	//calcSmoothingNormals(key);
+//
+//#pragma region 頂点 インデックスバッファ作成
+//
+//#pragma region 頂点バッファ
+//
+//	std::vector<VertexBufferSet> vBuffs(loadNum);
+//
+//	//バッファ作成
+//	if (!loadBone) //ボーンなし
+//	{
+//		for (int i = 0; i < loadNum; i++)
+//		{
+//			createBuffer->CreateVertexBufferSet
+//			(
+//				CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//				CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertices[key][i].size()),
+//				vertices[key][i],
+//				vBuffs[i]
+//			);
+//			vBuffs[i].materialName = materialName[i];
+//		}
+//	}
+//	else//ボーンあり
+//	{
+//		for (int i = 0; i < loadNum; i++)
+//		{
+//			size_t vertexSize = sizeof(ObjAnimationVertex) * vertices[key][i].size();
+//			auto result = dev->CreateCommittedResource(
+//				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//				D3D12_HEAP_FLAG_NONE,
+//				&CD3DX12_RESOURCE_DESC::Buffer(vertexSize),
+//				D3D12_RESOURCE_STATE_GENERIC_READ,
+//				nullptr,
+//				IID_PPV_ARGS(&vBuffs[i].vertexBuffer)
+//			);
+//
+//			ObjAnimationVertex* aniVertex;
+//			result = vBuffs[i].vertexBuffer.Get()->Map(0, nullptr, (void**)&aniVertex);
+//			
+//			size_t size = vertices[key][i].size();
+//			for (size_t j = 0; j < size; j++)
+//			{
+//				aniVertex[j].pos = vertices[key][i][j].pos;
+//				aniVertex[j].uv = vertices[key][i][j].uv;
+//				aniVertex[j].normal = vertices[key][i][j].normal;
+//				aniVertex[j].boneNumber = objBoneNums[key][i][j];
+//			}
+//
+//			vBuffs[i].vertexBuffer->Unmap(0, nullptr);
+//
+//			vBuffs[i].vertexBufferView.BufferLocation = vBuffs[i].vertexBuffer->GetGPUVirtualAddress();
+//			vBuffs[i].vertexBufferView.SizeInBytes = vertexSize;
+//			vBuffs[i].vertexBufferView.StrideInBytes = sizeof(ObjAnimationVertex);
+//
+//			vBuffs[i].materialName = materialName[i];
+//		}
+//	}
+//
+//	vertexBufferSet.emplace(key, vBuffs);
+//#pragma endregion
+//
+//#pragma region インデックスバッファ
+//	std::vector<IndexBufferSet>iBuffs(loadNum);
+//	
+//
+//	for (int i = 0; i < loadNum; i++)
+//	{
+//		createBuffer->CreateIndexBufferSet
+//		(
+//			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+//			CD3DX12_RESOURCE_DESC::Buffer(sizeof(USHORT) * indices[key][i].size()),
+//			indices[key][i],
+//			iBuffs[i]
+//		);
+//	}
+//	indexBufferSet.emplace(key,iBuffs);
+//
+//#pragma endregion
+//
+//
+//#pragma endregion
+//
+//
+//
+//	if (bonePos.size() != 0 && 
+//		boneNum.size() != 0)
+//		return VERTEX_TYPE_OBJ_ANIMATION;
+//
+//	//ボーンなかったらこれ返す
+//	return VertexType::VERTEX_TYPE_NORMAL;
+return VertexType::VERTEX_TYPE_NORMAL;
 }
 
 void DirectX12::LoadObjMaterial
@@ -2407,7 +2467,7 @@ void DirectX12::LoadObjMaterial
 				createBuffer->CreateConstBufferSet
 				(
 					CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstData) + 0xff)&~0xff),
+					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstBufferData) + 0xff)&~0xff),
 					basicHeapHandle,
 					(void**)&materialData,
 					constSetV[i],
@@ -2463,7 +2523,7 @@ void DirectX12::LoadObjMaterial
 				createBuffer->CreateConstBufferSet
 				(
 					CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstData) + 0xff)&~0xff),
+					CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstBufferData) + 0xff)&~0xff),
 					basicHeapHandle,
 					(void**)&materialData,
 					constSetV[i],
@@ -2924,7 +2984,7 @@ void DirectX12::CreateHeapData
 		createBuffer->CreateConstBufferSet
 		(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstData) + 0xff)&~0xff),
+			CD3DX12_RESOURCE_DESC::Buffer((sizeof(MaterialConstBufferData) + 0xff)&~0xff),
 			basicHeapHandle,
 			(void**)&materialData,
 			constSetV[objectNum],
@@ -3448,7 +3508,7 @@ void DirectX12::CreateUserPolygon
 
 #pragma region 削除関数
 
-void DirectX12::DeletePolygonData(const ModelData& m)
+void DirectX12::DeletePolygonData(const ModelDataAndKey& m)
 {
 	std::string key = m.key;
 	vertices.erase(key);
@@ -3468,7 +3528,7 @@ void DirectX12::DeletePolygonData(const ModelData& m)
 
 }
 
-void DirectX12::DeleteHeapData(const ModelData& m)
+void DirectX12::DeleteHeapData(const ModelDataAndKey& m)
 {
 
 	std::string key = m.key;
@@ -3578,7 +3638,7 @@ void DirectX12::CalcBillboardMat(DirectX::XMMATRIX& matWorld)
 }
 
 //バッファをセット
-void DirectX12::SetCmdList(const ModelData& modelData,  int number)
+void DirectX12::SetCmdList(const ModelDataAndKey& modelData,  int number)
 {
 	//if ( despNum >= 0 && number >= 0)
 	{
@@ -3740,7 +3800,7 @@ void DirectX12::SetCmdList(const ModelData& modelData,  int number)
 }
 
 //Map処理
-void DirectX12::DataMap(const ModelData& modelData,int number )
+void DirectX12::DataMap(const ModelDataAndKey& modelData,int number )
 {
 
 
@@ -4356,7 +4416,7 @@ void DirectX12::SetObjModelRotatePoint
 (
 	const DirectX::XMFLOAT3& position,
 	const UINT& boneNum,
-	const ModelData& modelData
+	const ModelDataAndKey& modelData
 )
 {
 }
@@ -4896,35 +4956,35 @@ void DirectX12::calcSmoothingNormals(const std::string key)
 
 }
 #pragma endregion
-
-#pragma region ライブラリ使用関数
-void DirectX12::SortModelData(std::vector<std::tuple<ModelData, int>>& modelDatas)
-{
-	std::sort(modelDatas.begin(), modelDatas.end(), [&]
-	(
-		const std::tuple<ModelData, int>& m1,
-		const std::tuple<ModelData, int>& m2
-		)
-	{
-		ModelData m1Data = std::get<0>(m1);
-		ModelData m2Data = std::get<0>(m2);
-		int m1Num = std::get<1>(m1);
-		int m2Num = std::get<1>(m2);
-
-		DirectX::XMFLOAT3 m1Pos = modelConstData[m1Data.key][m1Num].position;
-		DirectX::XMFLOAT3 m2Pos = modelConstData[m2Data.key][m2Num].position;
-
-		Vector3 nearPos;
-		Vector3 farPos;
-		DirectInput::GetMouse3DLine(nearPos, farPos);
-		float dis1 = LibMath::CalcDistance3D(m1Pos, nearPos);
-		float dis2 = LibMath::CalcDistance3D(m2Pos, nearPos);
-
-		return dis1 > dis2;
-
-	});
-}
-
-
-#pragma endregion
-
+//
+//#pragma region ライブラリ使用関数
+//void DirectX12::SortModelData(std::vector<std::tuple<ModelDataAndKey, int>>& modelDatas)
+//{
+//	std::sort(modelDatas.begin(), modelDatas.end(), [&]
+//	(
+//		const std::tuple<ModelDataAndKey, int>& m1,
+//		const std::tuple<ModelDataAndKey, int>& m2
+//		)
+//	{
+//		ModelDataAndKey m1Data = std::get<0>(m1);
+//		ModelDataAndKey m2Data = std::get<0>(m2);
+//		int m1Num = std::get<1>(m1);
+//		int m2Num = std::get<1>(m2);
+//
+//		DirectX::XMFLOAT3 m1Pos = modelConstData[m1Data.key][m1Num].position;
+//		DirectX::XMFLOAT3 m2Pos = modelConstData[m2Data.key][m2Num].position;
+//
+//		Vector3 nearPos;
+//		Vector3 farPos;
+//		Input::GetMouse3DLine(nearPos, farPos);
+//		float dis1 = LibMath::CalcDistance3D(m1Pos, nearPos);
+//		float dis2 = LibMath::CalcDistance3D(m2Pos, nearPos);
+//
+//		return dis1 > dis2;
+//
+//	});
+//}
+//
+//
+//#pragma endregion
+//

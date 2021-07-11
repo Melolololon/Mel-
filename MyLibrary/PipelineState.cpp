@@ -4,6 +4,7 @@
 ID3D12Device* PipelineState::device;
 ID3D12RootSignature* PipelineState::modelRootSignature;
 ID3D12RootSignature* PipelineState::spriteRootSignature;
+ID3D12RootSignature* PipelineState::renderTargetRootSignature;
 
 PipelineState::PipelineState()
 {
@@ -19,7 +20,8 @@ PipelineState::~PipelineState()
 void PipelineState::SetPipelineDesc
 (
 	const PipelineData& pipelineData,
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc,
+	const int renderTargetNum
 )
 {
 #pragma region カリング設定
@@ -63,7 +65,7 @@ void PipelineState::SetPipelineDesc
 
 	switch (pipelineData.depthMode)
 	{
-	case DepthMode::DEPTH_NONE:
+	case DepthMode::DEPTH_FALSE:
 		desc.DepthStencilState.DepthEnable = false;//
 		desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 		break;
@@ -105,7 +107,6 @@ void PipelineState::SetPipelineDesc
 	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
 	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
 	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	desc.BlendState.RenderTarget[0] = blenddesc;
 
 #pragma endregion
 
@@ -115,7 +116,7 @@ void PipelineState::SetPipelineDesc
 	//アルファ書き込み
 	switch (pipelineData.alphaWriteMode)
 	{
-	case AlphaWriteMode::ALPHA_WRITE_NONE:
+	case AlphaWriteMode::ALPHA_WRITE_FALSE:
 		desc.BlendState.AlphaToCoverageEnable = true;
 		break;
 	case AlphaWriteMode::ALPHA_WRITE_TRUE:
@@ -126,11 +127,17 @@ void PipelineState::SetPipelineDesc
 
 #pragma endregion
 
-	//
 	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	desc.NumRenderTargets = 1;
-	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.SampleDesc.Count = 1;
+
+
+
+	desc.NumRenderTargets = renderTargetNum;
+	for (int i = 0; i < renderTargetNum; i++)
+	{
+		desc.RTVFormats[i] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.BlendState.RenderTarget[i] = blenddesc;
+	}
 
 }
 
@@ -146,23 +153,33 @@ bool PipelineState::CreatePipeline
 	const ShaderData& pShaderData,
 	const PipelineType pipelineType,
 	const std::vector<InputLayoutData>* inputLayoutData,
-	const std::string& modelClassName
+	const std::string& modelClassName,
+	const int renderTargetNum
 )
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc = {};
-	SetPipelineDesc(pipelineData, pDesc);
-	//ルートシグネチャセット
+	SetPipelineDesc(pipelineData, pDesc, renderTargetNum);
+
+	
+
+	//非共通設定
 	switch (pipelineType)
 	{
 	case PIPELINE_TYPE_MODEL:
 		pDesc.pRootSignature = modelRootSignature;
+
 		break;
 	case PIPELINE_TYPE_SPRITE:
 		pDesc.pRootSignature = spriteRootSignature;
 		break;
-
 	
+	case PIPELINE_TYPE_RENDER_TARGET:
+		pDesc.pRootSignature = renderTargetRootSignature;
+		break;
+
 	}
+
+
 
 	HRESULT result;
 	ComPtr<ID3DBlob> vsBlob;
@@ -305,6 +322,7 @@ bool PipelineState::CreatePipeline
 			};
 			break;
 		case PIPELINE_TYPE_SPRITE:
+		case PIPELINE_TYPE_RENDER_TARGET:
 			inputLayoutVector.resize(2);
 			inputLayoutVector[0] =
 			{
@@ -516,6 +534,30 @@ bool PipelineState::CreatePipeline
 
 	this->modelClassName = modelClassName;
 	return true;
+}
+
+void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineType type)
+{
+	switch (type)
+	{
+	case PipelineType::PIPELINE_TYPE_MODEL:
+		data.drawMode = DRAW_SOLID;
+		data.cullMode = CULL_BACK;
+		data.blendMode = BLEND_ADD;
+		data.depthMode = DEPTH_TRUE;
+		data.alphaWriteMode = ALPHA_WRITE_TRUE;
+		break;
+
+
+	case PipelineType::PIPELINE_TYPE_SPRITE:
+	case PipelineType::PIPELINE_TYPE_RENDER_TARGET:
+		data.drawMode = DRAW_SOLID;
+		data.cullMode = CULL_NONE;
+		data.blendMode = BLEND_ADD;
+		data.depthMode = DEPTH_FALSE;
+		data.alphaWriteMode = ALPHA_WRITE_TRUE;
+		break;
+	}
 }
 
 bool PipelineState::Initialize

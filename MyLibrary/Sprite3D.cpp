@@ -1,4 +1,6 @@
 #include "Sprite3D.h"
+#include"RenderTarget.h"
+
 PipelineState Sprite3D::defaultPipeline;
 DirectX::XMMATRIX Sprite3D::viewAndProjectionMatrix;
 DirectX::XMFLOAT3 Sprite3D::cameraPosition;
@@ -8,15 +10,41 @@ DirectX::XMFLOAT3 Sprite3D::cameraUpVector;
 Sprite3D::Sprite3D(const Color& color)
 {
 	Create(color);
+	InitializeVertices();
 }
 
 Sprite3D::Sprite3D(Texture* pTexture)
 {
 	Create(pTexture);
+	InitializeVertices();
 }
 
 Sprite3D::~Sprite3D()
 {
+}
+
+void Sprite3D::InitializeVertices()
+{
+	SpriteVertex* vertex;
+	MapVertexBuffer((void**)&vertex);
+	vertices[0].pos = { -0.5f,-0.5f ,0.0f };
+	vertices[1].pos = { -0.5f,0.5f ,0.0f };
+	vertices[2].pos = { 0.5f,-0.5f ,0.0f };
+	vertices[3].pos = { 0.5f,0.5f,0.0f };
+	vertex[0].pos = vertices[0].pos;
+	vertex[1].pos = vertices[1].pos;
+	vertex[2].pos = vertices[2].pos;
+	vertex[3].pos = vertices[3].pos;
+
+	vertices[0].uv = { 0,1 };
+	vertices[1].uv = { 0,0 };
+	vertices[2].uv = { 1,1 };
+	vertices[3].uv = { 1,0 };
+	vertex[0].uv = vertices[0].uv;
+	vertex[1].uv = vertices[1].uv;
+	vertex[2].uv = vertices[2].uv;
+	vertex[3].uv = vertices[3].uv;
+	UnmapVertexBuffer();
 }
 
 bool Sprite3D::Initialize()
@@ -37,7 +65,8 @@ bool Sprite3D::Initialize()
 		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
 		PipelineType::PIPELINE_TYPE_SPRITE,
 		nullptr,
-		typeid(Sprite3D).name()
+		typeid(Sprite3D).name(),
+		1
 	);
 	if (!result)
 	{
@@ -64,7 +93,7 @@ void Sprite3D::Create(Texture* pTexture)
 	pipeline = defaultPipeline.GetPipelineState();
 }
 
-void Sprite3D::Draw()
+void Sprite3D::Draw(const std::string& rtName)
 {
 	
 #pragma region map
@@ -91,15 +120,23 @@ void Sprite3D::Draw()
 	UnmapVertexBuffer();
 #pragma endregion
 
-
+	
 	ConstDataMat();
-	MatrixMap();
-	SetCmdList(pTexture);
-
+	
+	if (rtName != "") 
+	{
+		MatrixMap(RenderTarget::Get(rtName)->GetCamera());
+		SetCmdList(pTexture);
+	}
+	else
+	{
+		MatrixMap(RenderTarget::Get()->GetCamera());
+		SetCmdList(pTexture);
+	}
 }
 
 
-void Sprite3D::MatrixMap()
+void Sprite3D::MatrixMap(const Camera* camera)
 {
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
@@ -123,7 +160,8 @@ void Sprite3D::MatrixMap()
 		constData.position.z
 	);
 
-	constBufferData->mat = matWorld * viewAndProjectionMatrix;
+
+	constBufferData->mat = matWorld * camera->GetViewAndProjectionMat();
 
 
 	constBuffer->Unmap(0, nullptr);
