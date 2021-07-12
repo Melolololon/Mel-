@@ -661,27 +661,27 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 #pragma region パイプライン
 	PipelineData data;
 	data.alphaWriteMode = ALPHA_WRITE_TRUE;
-	data.blendMode = BLEND_ADD;
-	data.cullMode = CULL_BACK;
+	data.blendMode = BlendMode::ADD;
+	data.cullMode = CullMode::BACK;
 	data.depthMode = DEPTH_TRUE;
-	data.drawMode = DRAW_SOLID;
+	data.drawMode = DrawMode::SOLID;
 
 	//インプットレイアウト
 	std::vector<InputLayoutData> ilData(5);
-	ilData[0].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[0].formatType = FORMAT_TYPE::FLOAT;
 	ilData[0].number = 3;
 	ilData[0].semantics = "POSITION";
-	ilData[1].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[1].formatType = FORMAT_TYPE::FLOAT;
 	ilData[1].number = 2;
 	ilData[1].semantics = "TEXCOORD";
-	ilData[2].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[2].formatType = FORMAT_TYPE::FLOAT;
 	ilData[2].number = 3;
 	ilData[2].semantics = "NORMAL";
 
-	ilData[3].formatType = FORMAT_TYPE::FORMAT_TYPE_UNSIGNED_INT;
+	ilData[3].formatType = FORMAT_TYPE::UNSIGNED_INT;
 	ilData[3].number = 4;
 	ilData[3].semantics = "BONEINDICES";
-	ilData[4].formatType = FORMAT_TYPE::FORMAT_TYPE_FLOAT;
+	ilData[4].formatType = FORMAT_TYPE::FLOAT;
 	ilData[4].number = 4;
 	ilData[4].semantics = "BONEWEIGHTS";
 

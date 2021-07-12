@@ -35,10 +35,10 @@ bool Sprite2D::Initialize(const int winWidth, const int winHeight)
 
 	PipelineData data;
 	data.alphaWriteMode = ALPHA_WRITE_TRUE;
-	data.blendMode = BLEND_ADD;
-	data.cullMode = CULL_NONE;
+	data.blendMode = BlendMode::ADD;
+	data.cullMode = CullMode::NONE;
 	data.depthMode = DEPTH_FALSE;
-	data.drawMode = DRAW_SOLID;
+	data.drawMode = DrawMode::SOLID;
 	auto result = defaultPipeline.CreatePipeline
 	(
 		data,

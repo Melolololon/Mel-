@@ -29,13 +29,13 @@ void PipelineState::SetPipelineDesc
 
 	switch (pipelineData.cullMode)
 	{
-	case CullMode::CULL_BACK:
+	case CullMode::BACK:
 		desc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;//カリング設定
 		break;
-	case CullMode::CULL_FRONT:
+	case CullMode::FRONT:
 		desc.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;//カリング設定
 		break;
-	case CullMode::CULL_NONE:
+	case CullMode::NONE:
 		desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;//カリング設定
 		break;
 	}
@@ -48,10 +48,10 @@ void PipelineState::SetPipelineDesc
 
 	switch (pipelineData.drawMode)
 	{
-	case DrawMode::DRAW_SOLID:
+	case DrawMode::SOLID:
 		desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//カリング設定
 		break;
-	case DrawMode::DRAW_WIREFRAME:
+	case DrawMode::WIREFRAME:
 		desc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;//カリング設定
 		break;
 	}
@@ -88,15 +88,15 @@ void PipelineState::SetPipelineDesc
 	blenddesc.BlendEnable = true;//ブレンドを有効にするかのフラグ
 	switch (pipelineData.blendMode)
 	{
-	case BlendMode::BLEND_ADD:
+	case BlendMode::ADD:
 		blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算(不透明度が100%以外の時自分と後ろの色を足す)
 		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
 		break;
-	case BlendMode::BLEND_SUB:
+	case BlendMode::SUB:
 		blenddesc.BlendOpAlpha = D3D12_BLEND_OP_SUBTRACT;//加算(不透明度が100%以外の時自分と後ろの色を足す)
 		blenddesc.BlendOp = D3D12_BLEND_OP_SUBTRACT;
 		break;
-	case BlendMode::BLEND_NONE:
+	case BlendMode::NONE:
 		blenddesc.BlendEnable = false;
 		break;
 	}
@@ -212,7 +212,7 @@ bool PipelineState::CreatePipeline
 
 			switch (ilData.formatType)
 			{
-			case FORMAT_TYPE_FLOAT:
+			case FORMAT_TYPE::FLOAT:
 				switch (ilData.number)
 				{
 				case 1:
@@ -230,7 +230,7 @@ bool PipelineState::CreatePipeline
 				}
 				break;
 
-			case FORMAT_TYPE_UNSIGNED_INT:
+			case FORMAT_TYPE::UNSIGNED_INT:
 				switch (ilData.number)
 				{
 				case 1:
@@ -248,7 +248,7 @@ bool PipelineState::CreatePipeline
 				}
 				break;
 
-			case FORMAT_TYPE_SIGNED_INT:
+			case FORMAT_TYPE::SIGNED_INT:
 				switch (ilData.number)
 				{
 				case 1:
@@ -541,9 +541,9 @@ void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineTyp
 	switch (type)
 	{
 	case PipelineType::PIPELINE_TYPE_MODEL:
-		data.drawMode = DRAW_SOLID;
-		data.cullMode = CULL_BACK;
-		data.blendMode = BLEND_ADD;
+		data.drawMode = DrawMode::SOLID;
+		data.cullMode = CullMode::BACK;
+		data.blendMode = BlendMode::ADD;
 		data.depthMode = DEPTH_TRUE;
 		data.alphaWriteMode = ALPHA_WRITE_TRUE;
 		break;
@@ -551,9 +551,9 @@ void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineTyp
 
 	case PipelineType::PIPELINE_TYPE_SPRITE:
 	case PipelineType::PIPELINE_TYPE_RENDER_TARGET:
-		data.drawMode = DRAW_SOLID;
-		data.cullMode = CULL_NONE;
-		data.blendMode = BLEND_ADD;
+		data.drawMode = DrawMode::SOLID;
+		data.cullMode = CullMode::NONE;
+		data.blendMode = BlendMode::ADD;
 		data.depthMode = DEPTH_FALSE;
 		data.alphaWriteMode = ALPHA_WRITE_TRUE;
 		break;

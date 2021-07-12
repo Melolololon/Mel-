@@ -2,12 +2,10 @@
 #include"CreateBuffer.h"
 #include"Sprite.h"
 
-std::unordered_map<std::string, std::unique_ptr<Texture*>>Texture::pTextures;
+std::unordered_map<std::string, std::unique_ptr<Texture>>Texture::pTextures;
+std::vector<UINT>Texture::eraseTextureNumber;
 UINT Texture::loadTextureNumber = 1;
 
-Texture::Texture(){}
-
-Texture::~Texture(){}
 
 bool Texture::LoadTexture(const std::string& texturePath)
 {
@@ -31,18 +29,22 @@ bool Texture::LoadTexture(const std::string& texturePath)
 		&metadata,
 		scratchImage
 	);
-	if (result != S_OK)
-		return false;
+
+
+	if (result != S_OK) return false;
 	return true;
 }
 
 bool Texture::Load(const std::string& path, const std::string& name)
 {
-	return false;
+	pTextures.emplace(name, std::make_unique<Texture>());
+	return pTextures[name]->LoadSpriteTexture(path);
+
 }
 
 void Texture::Delete(const std::string& name)
 {
+	eraseTextureNumber.push_back(pTextures[name]->GetTextureNumber());
 	pTextures.erase(name);
 }
 
@@ -50,10 +52,12 @@ bool Texture::LoadModelTexture(const std::string& texturePath)
 {
 	auto result = LoadTexture(texturePath);
 	//読み込み失敗
-	if(!result)
+	if (!result)
 	{
+#ifdef _DEBUG
 		OutputDebugString(L"モデルのテクスチャの読み込みに失敗しました。\n");
 		return false;
+#endif // _DEBUG
 	}
 
 	image = scratchImage.GetImage(0, 0, 0);
@@ -68,14 +72,26 @@ bool Texture::LoadSpriteTexture(const std::string& texturePath)
 	//読み込み失敗
 	if (!result)
 	{
-		OutputDebugString(L"スプライトのテクスチャの読み込みに失敗しました。\n");
+#ifdef _DEBUG
+		OutputDebugStringA(texturePath.c_str());
+		OutputDebugString(L"の読み込みに失敗しました。\n");
+#endif // _DEBUG
 		return false;
 	}
 
 	image = scratchImage.GetImage(0, 0, 0);
 
-	textureNumber = loadTextureNumber;
-	loadTextureNumber++;
+	if (eraseTextureNumber.size() == 0)
+	{
+		textureNumber = loadTextureNumber;
+		loadTextureNumber++;
+	}
+	else
+	{
+		textureNumber = eraseTextureNumber[eraseTextureNumber.size() - 1];
+		eraseTextureNumber.pop_back();
+	}
+
 	Sprite::CreateTextureBuffer(this);
 
 	return true;

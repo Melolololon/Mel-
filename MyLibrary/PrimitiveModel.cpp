@@ -53,10 +53,10 @@
 //{
 //	PipelineData pipelineData;
 //	pipelineData.alphaWriteMode = ALPHA_WRITE_TRUE;
-//	pipelineData.blendMode = BLEND_ADD;
-//	pipelineData.cullMode = CULL_BACK;
+//	pipelineData.blendMode = BlendMode::ADD;
+//	pipelineData.cullMode = CullMode::BACK;
 //	pipelineData.depthMode = DEPTH_TRUE;
-//	pipelineData.drawMode = DRAW_SOLID;
+//	pipelineData.drawMode = DrawMode::SOLID;
 //
 //	auto result = defaultPipeline.CreatePipeline
 //	(

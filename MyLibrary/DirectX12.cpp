@@ -562,9 +562,9 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 
 	ilData.resize(3);
-	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT };
-	ilData[1] = { "TEXCOORD", 2,FORMAT_TYPE_FLOAT };
-	ilData[2] = { "COLOR", 4 ,FORMAT_TYPE_FLOAT };
+	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE::FLOAT };
+	ilData[1] = { "TEXCOORD", 2,FORMAT_TYPE::FLOAT };
+	ilData[2] = { "COLOR", 4 ,FORMAT_TYPE::FLOAT };
 	CreatePipelineState->SetInputLayout(ilData);
 	ilData.clear();
 
@@ -808,8 +808,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 //	////パイプライン
 //	
 //	ilData.resize(2);
-//	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT };
-//	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE_FLOAT };
+//	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE::FLOAT };
+//	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE::FLOAT };
 //	CreatePipelineState->SetInputLayout(ilData);
 //	ilData.clear();
 //
@@ -983,10 +983,10 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 	//PipelineData data;
 	//data.alphaWriteMode = ALPHA_WRITE_TRUE;
-	//data.blendMode = BLEND_ADD;
-	//data.cullMode = CULL_NONE;
+	//data.blendMode = BlendMode::ADD;
+	//data.cullMode = CullMode::NONE;
 	//data.depthMode = DEPTH_FALSE;
-	//data.drawMode = DRAW_SOLID;
+	//data.drawMode = DrawMode::SOLID;
 	//auto result = postEffectTestPipeline.CreatePipeline
 	//(
 	//	data,
@@ -1336,10 +1336,10 @@ void DirectX12::Create3DObjectPipeline()
 
 	//ボーン読み込み可能
 	std::vector<InputLayoutData>ilData(4);
-	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT };
-	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE_FLOAT };
-	ilData[2] = { "NORMAL", 3,FORMAT_TYPE_FLOAT };
-	ilData[3] = { "BONENUM", 1,FORMAT_TYPE_UNSIGNED_INT };
+	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE::FLOAT };
+	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE::FLOAT };
+	ilData[2] = { "NORMAL", 3,FORMAT_TYPE::FLOAT };
+	ilData[3] = { "BONENUM", 1,FORMAT_TYPE::UNSIGNED_INT };
 	SetInputLayout(ilData);
 	CreatePipelineState->CreateUserPipeline
 	(
@@ -1374,40 +1374,40 @@ bool DirectX12::CreateUserPipelineState
 
 	switch (pipelineData.drawMode)
 	{
-	case DRAW_SOLID:
+	case DrawMode::SOLID:
 		gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 		break;
 
-	case DRAW_WIREFRAME:
+	case DrawMode::WIREFRAME:
 		gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		break;
 	}
 
 	switch (pipelineData.cullMode)
 	{
-	case CULL_NONE:
+	case CullMode::NONE:
 		gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 		break;
-	case CULL_FRONT:
+	case CullMode::FRONT:
 		gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;
 		break;
-	case CULL_BACK:
+	case CullMode::BACK:
 		gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
 		break;
 	}
 
 	switch (pipelineData.blendMode)
 	{
-	case BLEND_NONE:
+	case BlendMode::NONE:
 		blenddesc.BlendEnable = false;
 		break;
 
-	case BLEND_ADD:
+	case BlendMode::ADD:
 		blenddesc.BlendEnable = true;
 		blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
 		break;
 
-	case BLEND_SUB:
+	case BlendMode::SUB:
 		blenddesc.BlendEnable = true;
 		blenddesc.BlendOpAlpha = D3D12_BLEND_OP_SUBTRACT;
 		break;
@@ -1536,8 +1536,8 @@ bool DirectX12::CreateUserPostEffectPipelineState(const ShaderData& pShaderData)
 
 	////パイプライン
 	std::vector<InputLayoutData>ilData(2);
-	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE_FLOAT};
-	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE_FLOAT};
+	ilData[0] = { "POSITION", 3 ,FORMAT_TYPE::FLOAT};
+	ilData[1] = { "TEXCOORD", 2 ,FORMAT_TYPE::FLOAT};
 	CreatePipelineState->SetInputLayout(ilData);
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pePLDesc = spriteGpipeline;

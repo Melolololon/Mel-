@@ -1,10 +1,10 @@
 #pragma once
 
-enum FORMAT_TYPE
+enum class FORMAT_TYPE
 {
-	FORMAT_TYPE_UNSIGNED_INT,//unsigned int
-	FORMAT_TYPE_SIGNED_INT,//int
-	FORMAT_TYPE_FLOAT,//float
+	UNSIGNED_INT,//unsigned int
+	SIGNED_INT,//int
+	FLOAT,//float
 };
 
 //パイプライン作成時に
@@ -14,31 +14,31 @@ struct InputLayoutData
 	const char* semantics;
 
 	//送る値の数
-	UINT number;
+	UINT number = 4;
 
 	//送る値の型
-	FORMAT_TYPE formatType;
+	FORMAT_TYPE formatType = FORMAT_TYPE::FLOAT;
 };
 
 
-enum DrawMode 
+enum class DrawMode 
 {
-	DRAW_SOLID,//通常通りモデルを表示します
-	DRAW_WIREFRAME,//ワイヤーフレームで表示します
+	SOLID,//通常通りモデルを表示します
+	WIREFRAME,//ワイヤーフレームで表示します
 };
 
-enum CullMode 
+enum class CullMode 
 {
-	CULL_NONE,//カリングしません
-	CULL_FRONT,//表面をカリングします
-	CULL_BACK//裏面をカリングします
+	NONE,//カリングしません
+	FRONT,//表面をカリングします
+	BACK//裏面をカリングします
 };
 
-enum BlendMode 
+enum class BlendMode 
 {
-	BLEND_NONE,
-	BLEND_ADD,
-	BLEND_SUB,
+	NONE,
+	ADD,
+	SUB,
 };
 
 enum DepthMode 
@@ -56,9 +56,9 @@ enum AlphaWriteMode
 //パイプラインの設定をまとめた構造体
 struct PipelineData
 {
-	DrawMode drawMode = DRAW_SOLID;
-	CullMode cullMode = CULL_BACK;
-	BlendMode blendMode = BLEND_ADD;
+	DrawMode drawMode = DrawMode::SOLID;
+	CullMode cullMode = CullMode::BACK;
+	BlendMode blendMode = BlendMode::ADD;
 	DepthMode depthMode = DEPTH_TRUE;
 	AlphaWriteMode alphaWriteMode = ALPHA_WRITE_TRUE;
 };

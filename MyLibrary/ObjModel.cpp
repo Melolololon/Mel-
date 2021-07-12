@@ -303,23 +303,23 @@
 //{
 //	PipelineData pipelineData;
 //	pipelineData.alphaWriteMode = ALPHA_WRITE_TRUE;
-//	pipelineData.blendMode = BLEND_ADD;
-//	pipelineData.cullMode = CULL_BACK;
+//	pipelineData.blendMode = BlendMode::ADD;
+//	pipelineData.cullMode = CullMode::BACK;
 //	pipelineData.depthMode = DEPTH_TRUE;
-//	pipelineData.drawMode = DRAW_SOLID;
+//	pipelineData.drawMode = DrawMode::SOLID;
 //
 //	std::vector<InputLayoutData> layoutData(4);
 //	layoutData[0].semantics = "POSITION";
-//	layoutData[0].formatType = FORMAT_TYPE_FLOAT;
+//	layoutData[0].formatType = FORMAT_TYPE::FLOAT;
 //	layoutData[0].number = 3;
 //	layoutData[1].semantics = "TEXCOORD";
-//	layoutData[1].formatType = FORMAT_TYPE_FLOAT;
+//	layoutData[1].formatType = FORMAT_TYPE::FLOAT;
 //	layoutData[1].number = 2;
 //	layoutData[2].semantics = "NORMAL";
-//	layoutData[2].formatType = FORMAT_TYPE_FLOAT;
+//	layoutData[2].formatType = FORMAT_TYPE::FLOAT;
 //	layoutData[2].number = 3;
 //	layoutData[3].semantics = "BONENUM";
-//	layoutData[3].formatType = FORMAT_TYPE_UNSIGNED_INT;
+//	layoutData[3].formatType = FORMAT_TYPE::UNSIGNED_INT;
 //	layoutData[3].number = 1;
 //
 //	auto result = defaultPipeline.CreatePipeline

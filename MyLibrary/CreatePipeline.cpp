@@ -539,7 +539,7 @@ void CreatePipeline::SetInputLayout(const std::vector<InputLayoutData>& inputLay
 
 		switch (ilData.formatType)
 		{
-		case FORMAT_TYPE_FLOAT:
+		case FORMAT_TYPE::FLOAT:
 			switch (ilData.number)
 			{
 			case 1:
@@ -557,7 +557,7 @@ void CreatePipeline::SetInputLayout(const std::vector<InputLayoutData>& inputLay
 			}
 			break;
 
-		case FORMAT_TYPE_UNSIGNED_INT:
+		case FORMAT_TYPE::UNSIGNED_INT:
 			switch (ilData.number)
 			{
 			case 1:
@@ -575,7 +575,7 @@ void CreatePipeline::SetInputLayout(const std::vector<InputLayoutData>& inputLay
 			}
 			break;
 
-		case FORMAT_TYPE_SIGNED_INT:
+		case FORMAT_TYPE::SIGNED_INT:
 			switch (ilData.number)
 			{
 			case 1:
