@@ -1414,28 +1414,26 @@ bool DirectX12::CreateUserPipelineState
 	}
 	gpipeline.BlendState.RenderTarget[0] = blenddesc;
 
-	switch (pipelineData.depthMode)
+	if(pipelineData.depthTest)
 	{
-	case DEPTH_FALSE:
-		gpipeline.DepthStencilState.DepthEnable = false;
-		break;
-
-	case DEPTH_TRUE:
 		gpipeline.DepthStencilState.DepthEnable = true;
-		break;
 	}
-
-	switch (pipelineData.alphaWriteMode)
+	else
 	{
-	case ALPHA_WRITE_FALSE:
-		gpipeline.BlendState.AlphaToCoverageEnable = true;
-		break;
-
-	case ALPHA_WRITE_TRUE:
-		gpipeline.BlendState.AlphaToCoverageEnable = false;
-
-		break;
+		gpipeline.DepthStencilState.DepthEnable = false;
 	}
+	
+	if(pipelineData.alphaWrite)
+	{
+		gpipeline.BlendState.AlphaToCoverageEnable = false;
+	}
+	else
+	{
+		gpipeline.BlendState.AlphaToCoverageEnable = true;
+	}
+
+
+
 
 	pipelineStates.push_back(nullptr);
 

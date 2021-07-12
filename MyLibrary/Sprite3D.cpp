@@ -43,10 +43,10 @@ void Sprite3D::Delete(const std::string& name)
 bool Sprite3D::Initialize()
 {
 	PipelineData data;
-	data.alphaWriteMode = ALPHA_WRITE_TRUE;
+	data.alphaWrite = true;
 	data.blendMode = BlendMode::ADD;
 	data.cullMode = CullMode::NONE;
-	data.depthMode = DEPTH_TRUE;
+	data.depthTest = true;
 	data.drawMode = DrawMode::SOLID;
 	auto result = defaultPipeline.CreatePipeline
 	(

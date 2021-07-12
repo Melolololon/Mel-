@@ -660,10 +660,10 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 
 #pragma region パイプライン
 	PipelineData data;
-	data.alphaWriteMode = ALPHA_WRITE_TRUE;
+	data.alphaWrite = true;
 	data.blendMode = BlendMode::ADD;
 	data.cullMode = CullMode::BACK;
-	data.depthMode = DEPTH_TRUE;
+	data.depthTest = true;
 	data.drawMode = DrawMode::SOLID;
 
 	//インプットレイアウト

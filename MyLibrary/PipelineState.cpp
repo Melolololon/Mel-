@@ -63,17 +63,19 @@ void PipelineState::SetPipelineDesc
 
 #pragma region 深度設定
 
-	switch (pipelineData.depthMode)
+	if (pipelineData.depthTest)
 	{
-	case DepthMode::DEPTH_FALSE:
-		desc.DepthStencilState.DepthEnable = false;//
-		desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-		break;
-	case DepthMode::DEPTH_TRUE:
-		desc.DepthStencilState.DepthEnable = true;//
+		desc.DepthStencilState.DepthEnable = true;
 		desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		break;
 	}
+	else
+	{
+		desc.DepthStencilState.DepthEnable = false;
+		desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	}
+
+
+
 	desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	desc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
@@ -114,16 +116,14 @@ void PipelineState::SetPipelineDesc
 
 
 	//アルファ書き込み
-	switch (pipelineData.alphaWriteMode)
+	if (pipelineData.alphaWrite)
 	{
-	case AlphaWriteMode::ALPHA_WRITE_FALSE:
-		desc.BlendState.AlphaToCoverageEnable = true;
-		break;
-	case AlphaWriteMode::ALPHA_WRITE_TRUE:
 		desc.BlendState.AlphaToCoverageEnable = false;
-		break;
 	}
-
+	else
+	{
+		desc.BlendState.AlphaToCoverageEnable = true;
+	}
 
 #pragma endregion
 
@@ -544,8 +544,8 @@ void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineTyp
 		data.drawMode = DrawMode::SOLID;
 		data.cullMode = CullMode::BACK;
 		data.blendMode = BlendMode::ADD;
-		data.depthMode = DEPTH_TRUE;
-		data.alphaWriteMode = ALPHA_WRITE_TRUE;
+		data.depthTest = true;
+		data.alphaWrite = true;
 		break;
 
 
@@ -554,8 +554,8 @@ void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineTyp
 		data.drawMode = DrawMode::SOLID;
 		data.cullMode = CullMode::NONE;
 		data.blendMode = BlendMode::ADD;
-		data.depthMode = DEPTH_FALSE;
-		data.alphaWriteMode = ALPHA_WRITE_TRUE;
+		data.depthTest = false;
+		data.alphaWrite = true;
 		break;
 	}
 }

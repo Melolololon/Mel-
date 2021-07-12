@@ -59,8 +59,9 @@ struct PipelineData
 	DrawMode drawMode = DrawMode::SOLID;
 	CullMode cullMode = CullMode::BACK;
 	BlendMode blendMode = BlendMode::ADD;
-	DepthMode depthMode = DEPTH_TRUE;
-	AlphaWriteMode alphaWriteMode = ALPHA_WRITE_TRUE;
+	
+	bool depthTest = false;
+	bool alphaWrite = false;
 };
 
 //シェーダーの情報をまとめた構造体
