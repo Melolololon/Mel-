@@ -28,6 +28,7 @@ void Play::Initialize()
 	ModelData::Load("Resources/boneTest/boneTest.fbx","model");
 	ModelObject::Create(ModelData::Get("model"), nullptr, "model");
 	ModelObject::Get("model")->SetAnimationFlag(true);
+
 }
 void Play::Update()
 {

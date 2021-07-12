@@ -35,6 +35,16 @@ bool Texture::LoadTexture(const std::string& texturePath)
 	return true;
 }
 
+bool Texture::Load(const std::string& path, )
+{
+	return false;
+}
+
+void Texture::Delete(const std::string& name)
+{
+	pTextures.erase(name);
+}
+
 bool Texture::LoadModelTexture(const std::string& texturePath)
 {
 	auto result = LoadTexture(texturePath);

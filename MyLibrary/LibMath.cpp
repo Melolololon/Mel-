@@ -108,15 +108,7 @@ bool LibMath::GetAStarCalcResult
 {
 
 	//やること
-	//openに再追加、closeからの移動(wikiの7.のところ)実装する
 	//ブロックに隣接してるマスから、同じブロックに隣接してるマスへ移動しないようにする
-
-
-	//数字が同じときに、遠い場所のノード(目的地の逆側のノード)を取得するときがある
-	//ゴールノードとの距離を求め、一番近いノードを取り出すようにする
-	//calcNum = CalcNodeDistance(startNodeIndexX, startNodeIndexY, indexX, indexY)
-	//ステップ数は壁を考慮しないといけないから、この方法じゃstepを求められない
-	//なので、ステップ数をノードに持たせ、calcNum計算時に、親のステップ数 + 1をcheckNodeのステップ数とする
 
 
 	//リセット
@@ -376,7 +368,7 @@ bool LibMath::GetAStarCalcResult
 		mainNode->closeFlag = true;
 		mainNode->closeIndex = closeNodes.size() - 1;
 
-		//検索したやつを取り出す(ソートで最小が最後に来るようになっている)
+		//検索したやつを消す
 		openNodes[openNodes.size() - 1]->openFlag = false;
 		openNodes.erase(openNodes.begin() + mainNodeOpenIndex);
 

@@ -19,11 +19,11 @@ public:
 	};
 
 private:
+	static std::unordered_map<std::string, std::unique_ptr<Sprite2D>> pSprite2D;
+
 	//2Dのカメラは固定だから、行列生成関数このクラスに持たせてもいいかも
 	static DirectX::XMMATRIX cameraMatrix;
 
-
-	
 	void Create(const Color& color)override;
 	void Create(Texture* pTexture)override;
 protected:
@@ -32,7 +32,6 @@ protected:
 
 	void MatrixMap(Texture* texture);
 
-	void InitializeVertices();
 public:
 	Sprite2D(){}
 	Sprite2D(const Color& color);
@@ -42,7 +41,10 @@ public:
 
  	static bool Initialize(const int winWidth,const int winHeight);
 	
-
+	static void Create(const Color& color, const std::string& name);
+	static void Create(Texture* pTexture, const std::string& name);
+	static void Delete(const std::string& name);
+	static Sprite2D* Get(const std::string& name ) { return pSprite2D[name].get(); }
 	
 	
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる

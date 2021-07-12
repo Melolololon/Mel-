@@ -4,7 +4,7 @@
 class Sprite3D :public Sprite
 {
 private:
-
+	static std::unordered_map<std::string, std::unique_ptr<Sprite3D>> pSprite3D;
 	static DirectX::XMMATRIX viewAndProjectionMatrix;
 	static PipelineState defaultPipeline;
 
@@ -24,11 +24,15 @@ private:
 
 protected:
 
-	void InitializeVertices();
 public:
 	Sprite3D(const Color& color);
 	Sprite3D(Texture* pTexture);
 	~Sprite3D();
+
+	static void Create(const Color& color, const std::string& name);
+	static void Create(Texture* pTexture, const std::string& name);
+	static void Delete(const std::string& name);
+	static Sprite3D* Get(const std::string& name) { return pSprite3D[name].get(); }
 
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
 	virtual void Draw(const std::string& rtName = "")override;

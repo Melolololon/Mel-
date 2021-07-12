@@ -6,6 +6,8 @@
 #include"Vector.h"
 #include"Color.h"
 
+//spriteにヒープ持たせる?
+
 using namespace Microsoft::WRL;
 class Texture
 {
@@ -23,6 +25,12 @@ private:
 public:
 	Texture();
 	~Texture();
+
+	static std::unordered_map<std::string, std::unique_ptr<Texture*>>pTextures;
+
+	static bool Load(const std::string& path, const std::string& name);
+	static void Delete(const std::string& name);
+	static Texture* Get(const std::string& name) { pTextures[name].get(); }
 
 	/// <summary>
 	/// モデルのテクスチャを読み込みます。
