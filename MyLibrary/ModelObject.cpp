@@ -693,7 +693,7 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 		{ L"NULL","","" },
 		{ L"NULL","","" },
 		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" },
-		PipelineType::PIPELINE_TYPE_MODEL,
+		PipelineType::MODEL,
 		&ilData,
 		typeid(ModelObject).name(),
 		1

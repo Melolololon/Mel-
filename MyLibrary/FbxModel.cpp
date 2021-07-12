@@ -161,7 +161,7 @@
 //		{ L"NULL","","" },
 //		{ L"NULL","","" },
 //		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" },
-//		PipelineType::PIPELINE_TYPE_MODEL,
+//		PipelineType::MODEL,
 //		&ilData,
 //		typeid(FbxModel).name(),
 //		1

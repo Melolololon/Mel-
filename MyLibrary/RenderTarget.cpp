@@ -256,7 +256,7 @@ bool RenderTarget::Initialize()
 
 
 	PipelineData data;
-	PipelineState::GetDefaultPipelineData(data, PipelineType::PIPELINE_TYPE_SPRITE);
+	PipelineState::GetDefaultPipelineData(data, PipelineType::SPRITE);
 
 	bool bResult  = defaultPipeline.CreatePipeline
 	(
@@ -266,7 +266,7 @@ bool RenderTarget::Initialize()
 		{ L"NULL","","" },
 		{ L"NULL","","" },
 		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
-		PipelineType::PIPELINE_TYPE_SPRITE,
+		PipelineType::SPRITE,
 		nullptr,
 		typeid(RenderTarget).name(),
 		1

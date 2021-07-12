@@ -56,7 +56,7 @@ bool Sprite3D::Initialize()
 		{ L"NULL","","" },
 		{ L"NULL","","" },
 		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
-		PipelineType::PIPELINE_TYPE_SPRITE,
+		PipelineType::SPRITE,
 		nullptr,
 		typeid(Sprite3D).name(),
 		1

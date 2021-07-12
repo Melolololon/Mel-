@@ -1,6 +1,7 @@
 #include "PipelineState.h"
 #include<d3dcompiler.h>
 
+std::unordered_map<std::string, std::unique_ptr<PipelineState>>PipelineState::pPipelineState;
 ID3D12Device* PipelineState::device;
 ID3D12RootSignature* PipelineState::modelRootSignature;
 ID3D12RootSignature* PipelineState::spriteRootSignature;
@@ -141,6 +142,36 @@ void PipelineState::SetPipelineDesc
 
 }
 
+void PipelineState::Create
+(
+	const PipelineData& pipelineData,
+	const ShaderData& vShaderData,
+	const ShaderData& gShaderData,
+	const ShaderData& hShaderData,
+	const ShaderData& dShaderData,
+	const ShaderData& pShaderData,
+	const PipelineType pipelineType,
+	const std::vector<InputLayoutData>* inputLayoutData,
+	const std::string& modelClassName,
+	const int renderTargetNum,
+	const std::string& name
+)
+{
+	pPipelineState.emplace(name, std::make_unique<PipelineState>());
+	pPipelineState[name]->CreatePipeline
+	(
+		pipelineData,
+		vShaderData,
+		gShaderData,
+		hShaderData,
+		dShaderData,
+		pShaderData,
+		pipelineType,
+		inputLayoutData,
+		modelClassName,
+		renderTargetNum
+	);
+}
 
 
 bool PipelineState::CreatePipeline
@@ -165,15 +196,15 @@ bool PipelineState::CreatePipeline
 	//îÒã§í ê›íË
 	switch (pipelineType)
 	{
-	case PIPELINE_TYPE_MODEL:
+	case PipelineType::MODEL:
 		pDesc.pRootSignature = modelRootSignature;
 
 		break;
-	case PIPELINE_TYPE_SPRITE:
+	case PipelineType::SPRITE:
 		pDesc.pRootSignature = spriteRootSignature;
 		break;
 	
-	case PIPELINE_TYPE_RENDER_TARGET:
+	case PipelineType::RENDER_TARGET:
 		pDesc.pRootSignature = renderTargetRootSignature;
 		break;
 
@@ -288,7 +319,7 @@ bool PipelineState::CreatePipeline
 
 		switch (pipelineType)
 		{
-		case PIPELINE_TYPE_MODEL:
+		case PipelineType::MODEL:
 			inputLayoutVector.resize(3);
 			inputLayoutVector[0] =
 			{
@@ -321,8 +352,8 @@ bool PipelineState::CreatePipeline
 					0
 			};
 			break;
-		case PIPELINE_TYPE_SPRITE:
-		case PIPELINE_TYPE_RENDER_TARGET:
+		case PipelineType::SPRITE:
+		case PipelineType::RENDER_TARGET:
 			inputLayoutVector.resize(2);
 			inputLayoutVector[0] =
 			{
@@ -536,11 +567,16 @@ bool PipelineState::CreatePipeline
 	return true;
 }
 
+void PipelineState::Delete(const std::string& name)
+{
+	pPipelineState.erase(name);
+}
+
 void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineType type)
 {
 	switch (type)
 	{
-	case PipelineType::PIPELINE_TYPE_MODEL:
+	case PipelineType::MODEL:
 		data.drawMode = DrawMode::SOLID;
 		data.cullMode = CullMode::BACK;
 		data.blendMode = BlendMode::ADD;
@@ -549,8 +585,8 @@ void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineTyp
 		break;
 
 
-	case PipelineType::PIPELINE_TYPE_SPRITE:
-	case PipelineType::PIPELINE_TYPE_RENDER_TARGET:
+	case PipelineType::SPRITE:
+	case PipelineType::RENDER_TARGET:
 		data.drawMode = DrawMode::SOLID;
 		data.cullMode = CullMode::NONE;
 		data.blendMode = BlendMode::ADD;
@@ -569,3 +605,4 @@ bool PipelineState::Initialize
 	device = dev;
 	return  dev;
 }
+

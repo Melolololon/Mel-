@@ -330,7 +330,7 @@
 //		{ L"NULL","","" },
 //		{ L"NULL","","" },
 //		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" }, 
-//		PipelineType::PIPELINE_TYPE_MODEL,
+//		PipelineType::MODEL,
 //		&layoutData,
 //		typeid(ObjModel).name(),
 //		1

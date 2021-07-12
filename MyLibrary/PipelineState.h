@@ -2,17 +2,20 @@
 #include"DirectXStruct.h"
 #include"ShaderData.h"
 #include<string>
-
-enum PipelineType
+#include<unordered_map>
+#include<memory>
+enum class PipelineType
 {
-	PIPELINE_TYPE_MODEL,
-	PIPELINE_TYPE_SPRITE,
-	PIPELINE_TYPE_RENDER_TARGET,
+	MODEL,
+	SPRITE,
+	RENDER_TARGET,
 };
 class PipelineState
 {
 
 private:
+	static std::unordered_map<std::string, std::unique_ptr<PipelineState>>pPipelineState;
+
 	ComPtr<ID3D12PipelineState>pipeline;
 	static ID3D12Device* device;
 
@@ -40,6 +43,22 @@ public:
 		ID3D12Device* dev
 	);
 
+	static void Create
+	(
+		const PipelineData& pipelineData,
+		const ShaderData& vShaderData,
+		const ShaderData& gShaderData,
+		const ShaderData& hShaderData,
+		const ShaderData& dShaderData,
+		const ShaderData& pShaderData,
+		const PipelineType pipelineType,
+		const std::vector<InputLayoutData>* inputLayoutData,
+		const std::string& modelClassName,
+		const int renderTargetNum,
+		const std::string& name
+	);
+	static PipelineState* Get(const std::string& name) { return pPipelineState[name].get(); }
+	static void Delete(const std::string& name);
 
 	/// <summary>
 	/// パイプラインを生成します

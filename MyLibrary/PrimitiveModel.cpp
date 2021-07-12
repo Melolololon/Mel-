@@ -66,7 +66,7 @@
 //		{ L"NULL","","" },
 //		{ L"NULL","","" },
 //		{ L"../MyLibrary/ObjPixelShader.hlsl","PSmain","ps_5_0" },
-//		PipelineType::PIPELINE_TYPE_MODEL,
+//		PipelineType::MODEL,
 //		nullptr,
 //		typeid(PrimitiveModel).name(),
 //		1

@@ -995,7 +995,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	//	{ L"NULL","","" },
 	//	{ L"NULL","","" },
 	//	{ L"../MyLibrary/PostEffectTestPixelShader.hlsl","PSmain","ps_5_0" },
-	//	PipelineType::PIPELINE_TYPE_RENDER_TARGET,
+	//	PipelineType::RENDER_TARGET,
 	//	nullptr,
 	//	typeid(RenderTarget).name(),
 	//	1
