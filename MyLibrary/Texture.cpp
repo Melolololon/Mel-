@@ -2,6 +2,7 @@
 #include"CreateBuffer.h"
 #include"Sprite.h"
 
+std::unordered_map<std::string, std::unique_ptr<Texture*>>Texture::pTextures;
 UINT Texture::loadTextureNumber = 1;
 
 Texture::Texture(){}
@@ -35,7 +36,7 @@ bool Texture::LoadTexture(const std::string& texturePath)
 	return true;
 }
 
-bool Texture::Load(const std::string& path, )
+bool Texture::Load(const std::string& path, const std::string& name)
 {
 	return false;
 }

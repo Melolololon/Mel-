@@ -12,11 +12,11 @@ float RenderTarget::clearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
 ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
 
 RenderTarget::RenderTarget(const Color& color):
-	Sprite2D(color)
+	Sprite2D(Color(0,0,0,0))
 {
 	//頂点、定数バッファ作成
-	CreateBuffer();
-	InitializeVertices();
+	//CreateBuffer();
+	//InitializeVertices();
 
 	HRESULT result;
 

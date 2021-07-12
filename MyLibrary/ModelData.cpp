@@ -19,6 +19,7 @@ void ModelData::CreateDescriptorHeap(const UINT textureNum)
 
 	auto result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&textureDescHeap));
 
+
 } 
 
 

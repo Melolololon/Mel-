@@ -86,6 +86,10 @@ protected:
 	void UnmapVertexBuffer();
 #pragma endregion
 
+	
+	void InitializeVertices();
+	
+
 
 #pragma endregion
 

@@ -81,6 +81,7 @@ void Sprite2D::Create(const Color& color)
 {
 
 	CreateBuffer();
+	InitializeVertices();
 	SetOneColorSpriteColor(color);
 	pipeline = defaultPipeline.GetPipelineState();
 }
@@ -91,6 +92,7 @@ void Sprite2D::Create(Texture* pTexture)
 	//テクスチャがあったら描画範囲変更
 	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
 	CreateBuffer();
+	InitializeVertices();
 	pipeline = defaultPipeline.GetPipelineState();
 }
 
