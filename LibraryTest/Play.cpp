@@ -35,7 +35,10 @@ void Play::Initialize()
 
 void Play::Update()
 {
-
+	Vector3 pos1 = Vector3(0, 5, 0);
+	Vector3 pos2 = Vector3(5, 0, 0);
+	Vector3 pos3 = Vector3(0, 0, 0);
+	Vector3 test = LibMath::CalcNormal(pos1, pos2, pos3);
 
 	
 }

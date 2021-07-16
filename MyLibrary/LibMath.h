@@ -225,6 +225,15 @@ public:
 #pragma region Vector3
 
 	/// <summary>
+	/// 引数の座標3つから法線ベクトルを求めます。pos1からpos3を順番に辿ったときに、右手座標系の場合は右回り、左手座標系の場合は左回りになるようにしてください。
+	/// </summary>
+	/// <param name="pos1"></param>
+	/// <param name="pos2"></param>
+	/// <param name="pos3"></param>
+	/// <returns></returns>
+	static Vector3 CalcNormal(const Vector3 pos1, const Vector3 pos2, const Vector3 pos3);
+
+	/// <summary>
 	/// 2つの座標の距離を取得します
 	/// </summary>
 	/// <param name="pos1">座標1</param>

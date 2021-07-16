@@ -286,42 +286,6 @@ void Library::SetFramesPerSecond60(bool flag)
 
 #pragma endregion
 
-
-#pragma region 計算
-void Library::CalculationNormal
-(
-	Vector3 pos1, Vector3 pos2, Vector3 pos3,
-	Vector3& normal1, Vector3& normal2, Vector3& normal3
-)
-{
-	DirectX::XMFLOAT3 normal[3];
-
-	dx12->CalculationNormal
-	(
-		{ pos1.x,pos1.y,pos1.z },
-		{ pos2.x,pos2.y,pos2.z },
-		{ pos3.x,pos3.y,pos3.z },
-		normal[0],
-		normal[1],
-		normal[2]
-	);
-
-	normal1.x = normal[0].x;
-	normal1.y = normal[0].y;
-	normal1.z = normal[0].z;
-
-	normal2.x = normal[1].x;
-	normal2.y = normal[1].y;
-	normal2.z = normal[1].z;
-
-	normal3.x = normal[2].x;
-	normal3.y = normal[2].y;
-	normal3.z = normal[2].z;
-
-}
-
-#pragma endregion
-
 #pragma region サウンド
 void Library::PlaySoundEveryLoad(const char* path)
 {

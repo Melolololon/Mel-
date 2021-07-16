@@ -150,20 +150,7 @@ public:
 
 #pragma region 計算
 
-	/// <summary>
-	///  法線ベクトルを計算します(自作頂点データの法線ベクトルを計算するときなどに使用します)
-	/// </summary>
-	/// <param name="pos1">座標1</param>
-	/// <param name="pos2">2</param>
-	/// <param name="pos3">3</param>
-	/// <param name="normal1">法線ベクトルを入れる変数</param>
-	/// <param name="normal2">同じ</param>
-	/// <param name="normal3">同じ</param>
-	static void CalculationNormal
-	(
-		Vector3 pos1, Vector3 pos2, Vector3 pos3,
-		Vector3& normal1, Vector3& normal2, Vector3& normal3
-	);
+
 #pragma endregion
 
 #pragma region サウンド

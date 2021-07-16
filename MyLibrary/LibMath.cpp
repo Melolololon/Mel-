@@ -572,6 +572,11 @@ Vector2 LibMath::RotateVector2(const Vector2& v, const float& angle)
 
 #pragma region Vector3
 
+Vector3 LibMath::CalcNormal(const Vector3 pos1, const Vector3 pos2, const Vector3 pos3)
+{
+	return Vector3::Normalize(Vector3::Cross(pos2 - pos1, pos3 - pos1));
+}
+
 float LibMath::CalcDistance3D(Vector3 pos1, Vector3 pos2)
 {
 	return sqrt
@@ -1286,16 +1291,16 @@ bool LibMath::LineSegmentAndBoardCollision
 
 	//三角形1個目の判定
 	Vector3 normal1;
-	Library::CalculationNormal(vertexPoint[0], vertexPoint[1], crossPos, normal1, normal1, normal1);
+	normal1 = CalcNormal(vertexPoint[0], vertexPoint[1], crossPos);
 	Vector3 normal2;
-	Library::CalculationNormal(vertexPoint[1], vertexPoint[2], crossPos, normal2, normal2, normal2);
+	normal2 = CalcNormal(vertexPoint[1], vertexPoint[2], crossPos);
 	Vector3 normal3;
-	Library::CalculationNormal(vertexPoint[2], vertexPoint[0], crossPos, normal3, normal3, normal3);
+	normal3 = CalcNormal(vertexPoint[2], vertexPoint[0], crossPos);
 
 	//板ポリと法線が同じか調べる
 	bool equal1 = false;//板ポリと法線が同じかどうか
 
-	//同じだったらtrue
+	//ほぼ同じだったらtrue
 	if (Difference(normal.x, normal1.x, 0.0001f) &&
 		Difference(normal.y, normal1.y, 0.0001f) &&
 		Difference(normal.z, normal1.z, 0.0001f) &&
@@ -1311,14 +1316,14 @@ bool LibMath::LineSegmentAndBoardCollision
 
 
 	//三角形2個目の判定
-	Library::CalculationNormal(vertexPoint[2], vertexPoint[1], crossPos, normal1, normal1, normal1);
-	Library::CalculationNormal(vertexPoint[1], vertexPoint[3], crossPos, normal2, normal2, normal2);
-	Library::CalculationNormal(vertexPoint[3], vertexPoint[2], crossPos, normal3, normal3, normal3);
+	normal1 = CalcNormal(vertexPoint[2], vertexPoint[1], crossPos);
+	normal2 = CalcNormal(vertexPoint[1], vertexPoint[3], crossPos);
+	normal3 = CalcNormal(vertexPoint[3], vertexPoint[2], crossPos);
 
 	//板ポリと法線が同じか調べる
 	bool equal2 = false;//板ポリと法線が同じかどうか
 
-	//同じ(誤差0.0001以内)だったらtrue
+	//ほぼ同じ(誤差0.0001以内)だったらtrue
 	if (Difference(normal.x, normal1.x, 0.0001f) &&
 		Difference(normal.y, normal1.y, 0.0001f) &&
 		Difference(normal.z, normal1.z, 0.0001f) &&
@@ -1335,21 +1340,21 @@ bool LibMath::LineSegmentAndBoardCollision
 	//どちらかが同じ(板ポリの中)だったらifの中に
 	if (equal1 || equal2)
 	{
-
-
+		if (crossPosition) *crossPosition = crossPos;
 		return true;
 	}
 
-	//衝突位置と中心が同じだったらヒット
-	if (Difference(crossPos.x, pointPos.x, 0.01f) &&
-		Difference(crossPos.y, pointPos.y, 0.01f) &&
-		Difference(crossPos.z, pointPos.z, 0.01f))
+	//衝突位置と中心がほぼ同じだったらヒット
+	if (Difference(crossPos.x, pointPos.x, 0.01f)
+		&& Difference(crossPos.y, pointPos.y, 0.01f) 
+		&& Difference(crossPos.z, pointPos.z, 0.01f)
+		|| equal1
+		|| equal2)
 	{
+		if (crossPosition) *crossPosition = crossPos;
 		return true;
 	}
 
-	//衝突位置を返す
-	if (crossPosition) *crossPosition = { 0,0,0 };
 
 	return false;
 
