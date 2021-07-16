@@ -29,7 +29,9 @@ void Play::Initialize()
 	ModelObject::Create(ModelData::Get("model"), nullptr, "model");
 	ModelObject::Get("model")->SetAnimationFlag(true);
 
+
 }
+
 void Play::Update()
 {
 
