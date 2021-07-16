@@ -37,6 +37,8 @@ private:
 	//[モデル内のオブジェクトごと]
 	std::vector < Material> materials;
 
+	//テスト用PBR用マテリアルデータ
+	std::vector<PbrMaterial>pbrMaterials;
 
 #pragma region ボーンとアニメーションの情報
 	static const UINT BONE_MAX = 64;
@@ -69,6 +71,9 @@ private:
 	static const int MATERIAL_BUFFER_REGISTER = 2;
 	std::vector<ComPtr<ID3D12Resource>> materialConstBuffer;//マテリアル
 
+	static const int PBR_MATERIAL_BUFFER_REGISTER = 4;
+	std::vector<ComPtr<ID3D12Resource>> pbrMaterialConstBuffer;//PBRマテリアル
+
 	static const int USER_BUFFER_REGISTER = 1;
 	std::vector<ComPtr<ID3D12Resource>> userConstBuffer;//ユーザー
 	ConstBufferData userConstBufferData;
@@ -77,6 +82,7 @@ private:
 	std::vector<ComPtr<ID3D12Resource>> modelConstBuffer;//モデル特有(アニメーション関係の情報)
 	ConstBufferData modelConstBufferData;
 
+	static const int TEXURE_ROOTPARAM_NUM = 5;
 
 	//定数にセットする座標などの値
 	//[モデル内のオブジェクト数]

@@ -19,7 +19,17 @@ cbuffer cbuff2 : register(b2)
 	float3 m_diffuse : packoffset(c1);
 	float3 m_specular : packoffset(c2);
 	float m_alpha : packoffset(c2.w);
+
+
 };
+
+cbuffer cbuff4 : register(b4)
+{
+	float3 baseColor;
+	float metalness;
+	float specular;
+	float roughness;
+}
 
 cbuffer cbuff3 : register(b3)
 {

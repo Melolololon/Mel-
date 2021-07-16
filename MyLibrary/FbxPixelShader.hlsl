@@ -28,5 +28,6 @@ float4 main(GSOutput input) : SV_TARGET
 	texColor += addColor - subColor;
 	texColor *= mulColor;
 
-	return shaderColor * texColor;
+	//return shaderColor * texColor;
+	return float4(baseColor, 1);
 }

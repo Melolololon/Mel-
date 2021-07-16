@@ -147,6 +147,9 @@ private:
 	//読み取ったマテリアル
 	std::vector<Material> materials;
 
+	//PBR用マテリアルデータ
+	std::vector<PbrMaterial>pbrMaterials;
+
 	//テクスチャを使わない場合の色
 	Color color;
 
@@ -345,9 +348,9 @@ public:
 	/// </summary>
 	/// <param name="objectNum">モデルファイル内のモデルを指定する値</param>
 	/// <returns></returns>
-	const Material& GetMaterial(const int objectNum)const { return materials[objectNum]; }
+	Material GetMaterial(const int objectNum)const { return materials[objectNum]; }
 
-
+	PbrMaterial GetPbrMaterial(const int objectNum)const { return pbrMaterials[objectNum]; }
 #pragma endregion
 
 	//フレンドクラスは、privateの変数、関数にアクセスできる

@@ -263,6 +263,11 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 	materialVector.resize(1);
 	Material& modelMaterial = materialVector[0];
 
+	//テスト用
+	auto& pbrMaterialVector = fbxModel->pbrMaterials;
+	pbrMaterialVector.resize(1);
+	PbrMaterial& pbrModelMaterial = pbrMaterialVector[0];
+
 	const int materialCount = fbxNode->GetMaterialCount();
 
 	if(materialCount > 0)
@@ -321,16 +326,16 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 
 					FbxDouble3 baseColor = propBaseColor.Get<FbxDouble3>();
 
-					modelMaterial.baseColor.x = (float)baseColor.Buffer()[0];
-					modelMaterial.baseColor.y = (float)baseColor.Buffer()[1];
-					modelMaterial.baseColor.z = (float)baseColor.Buffer()[2];
+					pbrModelMaterial.baseColor.x = (float)baseColor.Buffer()[0];
+					pbrModelMaterial.baseColor.y = (float)baseColor.Buffer()[1];
+					pbrModelMaterial.baseColor.z = (float)baseColor.Buffer()[2];
 				}
 
 				const FbxProperty propMetalness =
 					FbxSurfaceMaterialUtils::GetProperty("metalness", materials);
 				if (propMetalness.IsValid())
 				{
-					modelMaterial.metalness = propBaseColor.Get<float>();
+					pbrModelMaterial.metalness = propBaseColor.Get<float>();
 				}
 
 
@@ -338,14 +343,14 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 					FbxSurfaceMaterialUtils::GetProperty("supecular", materials);
 				if (propSuecular.IsValid())
 				{
-					modelMaterial.fSpecular = propBaseColor.Get<float>();
+					pbrModelMaterial.fSpecular = propBaseColor.Get<float>();
 				}
 
 				const FbxProperty propSuecularRoughness =
 					FbxSurfaceMaterialUtils::GetProperty("supecularRoughnes", materials);
 				if (propSuecularRoughness.IsValid())
 				{
-					modelMaterial.roughness = propBaseColor.Get<float>();
+					pbrModelMaterial.roughness = propBaseColor.Get<float>();
 				}
 
 			}

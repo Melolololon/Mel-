@@ -219,15 +219,7 @@ struct Material
 	float alpha;
 
 
-	//テスト用にここに宣言
-	//アルベド
-	DirectX::XMFLOAT3 baseColor = { 1,1,1 };
-	//金属度(0または1)
-	float metalness = 0.0f;
-	//鏡面反射光(float 0から1)
-	float fSpecular = 0.5f;
-	//粗さ
-	float roughness = 0.0f;
+	
 
 
 	std::string materialName;
@@ -242,6 +234,7 @@ struct Material
 	}
 };
 
+
 //データMap用
 struct MaterialConstBufferData
 {
@@ -251,7 +244,32 @@ struct MaterialConstBufferData
 	float pad2;
 	DirectX::XMFLOAT3 specular;
 	float alpha;
+
+	
 };
+
+
+struct PbrMaterial
+{
+	//アルベド
+	DirectX::XMFLOAT3 baseColor = { 1,1,1 };
+	//金属度(0または1)
+	float metalness = 0.0f;
+	//鏡面反射光(float 0から1)
+	float fSpecular = 0.5f;
+	//粗さ
+	float roughness = 0.0f;
+};
+
+struct PbrMaterialConstBufferData
+{
+	DirectX::XMFLOAT3 baseColor;
+	float metalness;
+	float fSpecular;
+	float roughness;
+	float pad[2];
+};
+
 #pragma endregion
 
 
