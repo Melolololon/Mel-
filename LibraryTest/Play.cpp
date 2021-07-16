@@ -25,7 +25,8 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
-	ModelData::Load("Resources/boneTest/boneTest.fbx","model");
+	ModelData::Load("Resources/PBRModels/SpherePBR/spherePBR.fbx","model");
+	//ModelData::Load("Resources/boneTest/boneTest.fbx","model");
 	ModelObject::Create(ModelData::Get("model"), nullptr, "model");
 	ModelObject::Get("model")->SetAnimationFlag(true);
 

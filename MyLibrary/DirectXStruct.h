@@ -210,12 +210,26 @@ struct PointConstBufferData
 #pragma region OBJ
 
 
+//データ格納用
 struct Material
 {
 	DirectX::XMFLOAT3 ambient;
 	DirectX::XMFLOAT3 diffuse;
 	DirectX::XMFLOAT3 specular;
 	float alpha;
+
+
+	//テスト用にここに宣言
+	//アルベド
+	DirectX::XMFLOAT3 baseColor = { 1,1,1 };
+	//金属度(0または1)
+	float metalness = 0.0f;
+	//鏡面反射光(float 0から1)
+	float fSpecular = 0.5f;
+	//粗さ
+	float roughness = 0.0f;
+
+
 	std::string materialName;
 	std::string textureName;
 
@@ -228,6 +242,7 @@ struct Material
 	}
 };
 
+//データMap用
 struct MaterialConstBufferData
 {
 	DirectX::XMFLOAT3 ambient;

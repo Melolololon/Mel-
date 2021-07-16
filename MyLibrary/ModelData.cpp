@@ -154,7 +154,16 @@ void ModelData::Initialize(ID3D12Device* pDevice)
 
 bool ModelData::LoadModel(const std::string& path, const std::string& name)
 {
+	bool result = false;
 	
+	//読み込み結果がfalseだったときの終了処理
+	auto LoadFalseEndProcess = [&path]()
+	{
+		OutputDebugStringA(path.data());
+		OutputDebugStringW(L"を読み込めませんでした。対応していないモデル形式、または、pathの入力ミスの可能性が考えられます。\n");
+
+		return false;
+	};
 
 	if (path.find(".obj") != std::string::npos)
 	{
@@ -167,7 +176,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		
 		//[obj内のオブジェクト分]スムーズシェーディングの計算用データ
 		std::vector< std::unordered_map < USHORT, std::vector<USHORT> >>smoothData;
-		bool result = ModelLoader::GetInstance()->LoadObjModel
+		result = ModelLoader::GetInstance()->LoadObjModel
 		(
 			path,
 			true,
@@ -184,7 +193,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		boneNum = objBonePositions.size();
 		modelFileObjectNum = vertices.size();
 
-		if (!result)return false;
+		if (!result)return LoadFalseEndProcess();
 
 
 		if (boneNum == 0)
@@ -329,6 +338,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 			materials,
 			&materialNum
 		);
+		if (!result)LoadFalseEndProcess();
 
 		//テクスチャ読み込み
 		pTextures.resize(materialNum);
@@ -354,11 +364,9 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 	else 
 	if (path.find(".fbx") != std::string::npos)
 	{	
-		FbxLoader::GetInstance()->LoadFbxModel(path, this);
+		result = FbxLoader::GetInstance()->LoadFbxModel(path, this);
+		if (!result)return LoadFalseEndProcess();
 
-		//一時的に書いてる
-		materials[0].ambient = { 0.1f,0.1f,0.1f };
-		materials[0].diffuse = { 1.0f,1.0f,1.0f };
 
 		boneNum = fbxData.bones.size();
 		modelFormat = ModelFormat::MODEL_FORMAT_FBX;
@@ -387,10 +395,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 	}
 	else
 	{
-		OutputDebugStringA(path.data());
-		OutputDebugStringW(L"を読み込めませんでした。対応していないモデル形式、または、pathの入力ミスの可能性が考えられます。\n");
-
-		return false;
+		LoadFalseEndProcess();
 	}
 
 	//頂点、インデックス、テクスチャバッファ作成

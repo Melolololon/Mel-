@@ -104,7 +104,7 @@ public:
 	/// </summary>
 	/// <param name="modelPath">モデルのパス</param>
 	/// <param name="fbxModel">モデルのポインタ</param>
-	void LoadFbxModel(const std::string& modelPath, ModelData* fbxModel);
+	bool LoadFbxModel(const std::string& modelPath, ModelData* fbxModel);
 
 	/// <summary>
 	/// Fbxの行列からXMMATRIXに変換するクラス
