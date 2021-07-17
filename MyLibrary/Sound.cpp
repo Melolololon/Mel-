@@ -124,6 +124,18 @@ bool Sound::PlayLoadSound(SoundData* soundData, const UINT32 loopNum, const Play
 	}
 	else 
 	{
+		for(const auto& p : pSounds)
+		{
+			if(p.first == name)
+			{
+#ifdef _DEBUG
+				OutputDebugStringA(name.c_str());
+				OutputDebugStringW(L"‚ÍŠù‚ÉÄ¶‚µ‚Ä‚¢‚Ü‚·B\n");
+#endif // _DEBUG
+				return false;
+			}
+		}
+
 		pSounds.emplace(name, std::make_unique<Sound>());
 		pSound = pSounds[name].get();
 	}
@@ -137,6 +149,16 @@ bool Sound::PlayLoadSound(SoundData* soundData, const UINT32 loopNum, const Play
 
 	
 	return true;
+}
+
+void Sound::StopSound(std::string& name)
+{
+	if (pSounds[name]->pSourceVoice) 
+	{
+		pSounds[name]->pSourceVoice->Stop();
+		pSounds[name]->pSourceVoice->DestroyVoice();
+	}
+	pSounds.erase(name);
 }
 
 void Sound::SetSoundVolume(const float volume)

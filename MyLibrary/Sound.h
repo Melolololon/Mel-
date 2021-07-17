@@ -22,6 +22,10 @@ struct PlaySoundData
 //「方法：ソースボイスコールバックを使用する」にコールバックが呼ばれたときにソースボイス解放したりする処理書いてある?
 //https://docs.microsoft.com/en-us/windows/win32/xaudio2/how-to--use-source-voice-callbacks
 
+//ほぼすべてのSEを調整したいときとかはどうするか。
+//PlayLoadSoundでどのサブミックスボイスに追加するかを選べるようにする?
+//サブミックスボイスも作れるようにする?サブミックスボイスだと分かりにくいかもしれないからサウンドグループとかにする?
+
 //SoundDataの音声を再生するクラス
 class Sound
 {
@@ -65,9 +69,22 @@ public:
 	static void Update();
 	
 	
-	
+	/// <summary>
+	/// SoundDataを再生します。引数nameに名前を渡すとGet関数でアクセスできるようになり、音声のデータを後から設定したり取得したりすることができます。
+	/// </summary>
+	/// <param name="soundData"></param>
+	/// <param name="loopNum"></param>
+	/// <param name="playSoundData"></param>
+	/// <param name="name"></param>
+	/// <returns></returns>
 	static bool PlayLoadSound(SoundData* soundData,const UINT32 loopNum,const PlaySoundData& playSoundData, const std::string& name = "");
+	
 	static Sound* Get(const std::string& name) { return pSounds[name].get(); }
+	
+	/// <summary>
+	/// 再生を終了します。
+	/// </summary>
+	/// <param name="name"></param>
 	static void StopSound(std::string& name);
 
 #pragma region セット
