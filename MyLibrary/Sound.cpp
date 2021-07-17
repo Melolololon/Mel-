@@ -2,20 +2,29 @@
 IXAudio2* Sound::iXAudio2;
 
 std::unordered_map<std::string, std::unique_ptr<Sound>> Sound::pSounds;
-
-class XAudio2VoiceCallback :public IXAudio2VoiceCallback
-{
-public:
-	STDMETHOD_(void, OnVoiceProcessingPassStart)(THIS_ UINT32 BytesRequired) {};
-	STDMETHOD_(void, OnVoiceProcessingPassEnd)(THIS) {};
-	STDMETHOD_(void, OnStreamEnd)(THIS) {};
-	STDMETHOD_(void, OnBufferStart)(THIS_ void* pBufferContext) {};
-	STDMETHOD_(void, OnBufferEnd)(THIS_ void* pBufferContext) {};
-	STDMETHOD_(void, OnLoopEnd)(THIS_ void* pBufferContrxt) {};
-	STDMETHOD_(void, OnVoiceError)(THIS_ void* pBufferContrxt, HRESULT) {};
-
-};
-XAudio2VoiceCallback voiceCallback;
+std::vector<std::unique_ptr<Sound>>Sound::pNoneNameSounds;
+//
+//class XAudio2VoiceCallback :public IXAudio2VoiceCallback
+//{
+//public:
+//	HANDLE streamEndEvent;
+//	XAudio2VoiceCallback() :streamEndEvent(CreateEvent(NULL, FALSE, FALSE, NULL)){}
+//	~XAudio2VoiceCallback() { CloseHandle(streamEndEvent); }
+//
+//	STDMETHOD_(void, OnVoiceProcessingPassStart)(THIS_ UINT32 BytesRequired) {};
+//	STDMETHOD_(void, OnVoiceProcessingPassEnd)(THIS) {};
+//	
+//	//指定したループ数分再生したら呼ばれる
+//	STDMETHOD_(void, OnStreamEnd)(THIS) 
+//	{
+//		SetEvent(streamEndEvent); };
+//	STDMETHOD_(void, OnBufferStart)(THIS_ void* pBufferContext) {};
+//	STDMETHOD_(void, OnBufferEnd)(THIS_ void* pBufferContext) {};
+//	STDMETHOD_(void, OnLoopEnd)(THIS_ void* pBufferContrxt) {};
+//	STDMETHOD_(void, OnVoiceError)(THIS_ void* pBufferContrxt, HRESULT errow) {};
+//
+//};
+//XAudio2VoiceCallback voiceCallback;
 
 bool Sound::Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData, const std::string& name)
 {
@@ -48,7 +57,6 @@ bool Sound::Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
 	result = pSourceVoice->Start();
 
-
 	return true;
 }
 
@@ -57,16 +65,76 @@ void Sound::Initialize(IXAudio2* pIXAudio2)
 	iXAudio2 = pIXAudio2;
 }
 
+void Sound::Update()
+{
+
+#pragma region 再生終了時の処理
+
+
+	//std::vector<std::string>eraseSoundName;
+	for(auto& s: pSounds)
+	{
+		s.second->playEndMoment = false;
+		s.second->CheckPlayEnd();
+		if(s.second->playEndMoment)
+		{
+			s.second->pSourceVoice->Stop();
+			s.second->pSourceVoice->DestroyVoice();
+			//eraseSoundName.push_back(s.first);
+		}
+	}
+	//for(const auto& s : eraseSoundName)
+	//{
+	//	pSounds.erase(s);
+	//}
+
+
+	for (int i = 0, size = pNoneNameSounds.size(); i < size; i++)
+	{
+		pNoneNameSounds[i]->playEndMoment = false;
+		pNoneNameSounds[i]->CheckPlayEnd();
+		if(pNoneNameSounds[i]->playEndMoment)
+		{
+			pNoneNameSounds[i]->pSourceVoice->Stop();
+			pNoneNameSounds[i]->pSourceVoice->DestroyVoice();
+			pNoneNameSounds.erase(pNoneNameSounds.begin() + i);
+		}
+	}
+#pragma endregion
+
+}
+
+void Sound::CheckPlayEnd()
+{
+	//WaitForSingleObjectEx(イベント,引数1のイベントがSetEventに渡されるまでに待機する時間,)
+	DWORD res = WaitForSingleObjectEx(voiceCallback.streamEndEvent, 0, TRUE);
+	if (res == WAIT_OBJECT_0)playEndMoment = true;
+	else playEndMoment = false;
+
+	
+}
+
 bool Sound::PlayLoadSound(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData, const std::string& name)
 {
-	pSounds.emplace(name, std::make_unique<Sound>());
-	if (!pSounds[name]->Play(soundData, loopNum, playSoundData, name))return false;
+	Sound* pSound = nullptr;
+	if (name == "")
+	{
+		pNoneNameSounds.push_back(std::make_unique<Sound>());
+		pSound = pNoneNameSounds[pNoneNameSounds.size() - 1].get();
+	}
+	else 
+	{
+		pSounds.emplace(name, std::make_unique<Sound>());
+		pSound = pSounds[name].get();
+	}
+
+	
+	if (!pSound->Play(soundData, loopNum, playSoundData, name))return false;
 
 	//PlaySoundDataの設定
-	pSounds[name]->SetSoundVolume(playSoundData.volume);
+	pSound->SetSoundVolume(playSoundData.volume);
 
-	//""だったら登録しないから消す
-	if (name == "")pSounds.erase(name);
+
 	
 	return true;
 }
@@ -81,3 +149,22 @@ void Sound::SetSoundVolume(const float volume)
 	
 }
 
+void Sound::SetSoundPauseFlag(const bool flag)
+{
+	if (flag)pSourceVoice->Stop();
+	else pSourceVoice->Start();
+}
+
+Sound::XAudio2VoiceCallback::XAudio2VoiceCallback() :streamEndEvent(CreateEvent(NULL, FALSE, FALSE, NULL))
+{
+}
+
+Sound::XAudio2VoiceCallback::~XAudio2VoiceCallback()
+{
+	CloseHandle(streamEndEvent);
+}
+
+STDMETHODIMP_(void __stdcall) Sound::XAudio2VoiceCallback::OnStreamEnd(void)
+{
+	SetEvent(streamEndEvent);
+}

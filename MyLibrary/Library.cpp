@@ -9,6 +9,7 @@
 #include"SceneManager.h"
 
 #include"Audio.h"
+#include"Sound.h"
 
 #include"Random.h"
 #include"LibWinAPI.h"
@@ -179,7 +180,7 @@ void Library::LoopStartProcess()
 	dx12->LoopStartProcess();
 
 	Input::Update();
-
+	Sound::Update();
 }
 
 void Library::LoopEndProcess()
@@ -261,7 +262,7 @@ void Library::Finalize()
 
 	UnregisterClass(w.lpszClassName, w.hInstance);
 
-
+	CoUninitialize();
 }
 
 

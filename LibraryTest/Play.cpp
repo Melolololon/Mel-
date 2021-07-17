@@ -33,11 +33,11 @@ void Play::Initialize()
 	ModelObject::Create(ModelData::Get("model"), nullptr, "model");
 	ModelObject::Get("model")->SetAnimationFlag(true);
 
-	SoundData::Load("Resources/Sound/StageSelect.wav", "test");
+	SoundData::Load("Resources/Sound/EnemyLostSE.wav", "test");
 
 	PlaySoundData data;
 	data.volume = 100;
-	Sound::PlayLoadSound(SoundData::Get("test"), 100, data, "ergijgreg");
+	Sound::PlayLoadSound(SoundData::Get("test"), 10, data,"test");
 }
 int testT = 0;
 
@@ -48,13 +48,15 @@ void Play::Update()
 	Vector3 pos3 = Vector3(0, 0, 0);
 	Vector3 test = LibMath::CalcNormal(pos1, pos2, pos3);
 
-	testT++;
-	if(testT == 8)
-	{
-		PlaySoundData data;
 
-		data.volume = 100;
-		Sound::PlayLoadSound(SoundData::Get("test"), 100, data,"ergij");
+	PlaySoundData data;
+
+	data.volume = 100;
+	//Sound::PlayLoadSound(SoundData::Get("test"), 1, data);
+	bool res = Sound::Get("test")->GetPlayEndMomentFlag();
+	if(res)
+	{
+		int z = 0;
 	}
 }
 
