@@ -279,6 +279,8 @@ public:
 
 	static void Delete(const std::string& name);
 
+
+
 #pragma region äJî≠é“ópä÷êî
 	static void Initialize(ID3D12Device* pDevice);
 

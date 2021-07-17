@@ -5,7 +5,6 @@
 #include"Vector.h"
 #include"Color.h"
 #include"DirectX12.h"
-#include"Audio.h"
 #include"DirectXStruct.h"
 #include"CreatePolygon.h"
 
@@ -48,7 +47,6 @@ private:
 	static UINT count;
 	static int createPointCount;
 
-	static std::unique_ptr<Audio> audio;
 
 	static WNDCLASSEX w;
 	static MSG msg;
@@ -146,39 +144,6 @@ public:
 
 
 
-#pragma endregion
-
-#pragma region 計算
-
-
-#pragma endregion
-
-#pragma region サウンド
-	/// <summary>
-	/// サウンドを再生します(毎回読み込みが発生)
-	/// </summary>
-	/// <param name="path"></param>
-	static void PlaySoundEveryLoad(const char* path);
-
-	/// <summary>
-	/// サウンドを読み込みます
-	/// </summary>
-	/// <param name="path">ファイルのパス</param>
-	/// <param name="name">サウンド名(任意の名前)</param>
-	static void LoadSound(const char* path, std::string name,bool loop);
-
-	/// <summary>
-	/// 読み込んだサウンド再生します
-	/// </summary>
-	/// <param name="name">サウンド名</param>
-	static void PlayLoadSound(std::string name);
-
-	/// <summary>
-	/// 現在再生してる読み込んだサウンドを一時停止します
-	/// </summary>
-	/// <param name="name"></param>
-	/// <param name="resetFlag">曲をリセットするかどうか</param>
-	static void StopLoadSound(std::string name, bool resetFlag);
 #pragma endregion
 
 

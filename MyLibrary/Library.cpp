@@ -12,7 +12,6 @@
 #include"LibWinAPI.h"
 
 
-std::unique_ptr<Audio> Library::audio;
 DirectX12* Library::dx12;
 CreatePolygon* Library::createPolygon;
 
@@ -139,7 +138,6 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 #pragma endregion
 
 
-	audio = std::unique_ptr<Audio>(new Audio());
 
 	dx12->SetScreenColor(screenColor);
 	dx12->Initialize(hwnd, windowWidth, windowHeight);
@@ -286,24 +284,4 @@ void Library::SetFramesPerSecond60(bool flag)
 
 #pragma endregion
 
-#pragma region ƒTƒEƒ“ƒh
-void Library::PlaySoundEveryLoad(const char* path)
-{
-	audio.get()->PlayWave(path);
-}
-
-void Library::LoadSound(const char* path, std::string name, bool loop)
-{
-	audio.get()->LoadSound(path, name,loop);
-}
-void Library::PlayLoadSound(std::string name)
-{
-	audio.get()->PlayLoadSound(name);
-}
-void Library::StopLoadSound(std::string name, bool resetFlag)
-{
-	audio.get()->StopLoadSound(name, resetFlag);
-}
-
-#pragma endregion
 

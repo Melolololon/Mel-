@@ -67,6 +67,12 @@
     <Filter Include="ソース ファイル\Support">
       <UniqueIdentifier>{eb4fc17b-c1c6-4b1b-8786-d35c34ff5696}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Sound">
+      <UniqueIdentifier>{3f511c17-be51-4cfd-8671-350ca146d3e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Sound">
+      <UniqueIdentifier>{a763e635-3cf5-4163-bdb6-ce7f218199a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CreateBuffer.cpp">
@@ -91,9 +97,6 @@
       <Filter>ソース ファイル\Loader</Filter>
     </ClCompile>
     <ClCompile Include="Library.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Audio.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="CreateCamera.cpp">
@@ -237,6 +240,18 @@
     <ClCompile Include="RenderTarget.cpp">
       <Filter>ソース ファイル\Sprite</Filter>
     </ClCompile>
+    <ClCompile Include="Audio.cpp">
+      <Filter>ソース ファイル\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundData.cpp">
+      <Filter>ソース ファイル\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>ソース ファイル\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound_Unused.cpp">
+      <Filter>ソース ファイル\Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
@@ -313,9 +328,6 @@
     </ClInclude>
     <ClInclude Include="ObjectManager.h">
       <Filter>ヘッダー ファイル\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Audio.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="PipelineManager.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -445,6 +457,18 @@
     </ClInclude>
     <ClInclude Include="RenderTarget.h">
       <Filter>ヘッダー ファイル\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.h">
+      <Filter>ヘッダー ファイル\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundData.h">
+      <Filter>ヘッダー ファイル\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>ヘッダー ファイル\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound_Unused.h">
+      <Filter>ヘッダー ファイル\Sound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
