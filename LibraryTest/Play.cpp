@@ -17,6 +17,9 @@
 #include"ModelData.h"
 #include"ModelObject.h"
 
+#include"Sound.h"
+#include"SoundData.h"
+
 Play::Play(){}
 
 
@@ -30,8 +33,13 @@ void Play::Initialize()
 	ModelObject::Create(ModelData::Get("model"), nullptr, "model");
 	ModelObject::Get("model")->SetAnimationFlag(true);
 
+	SoundData::Load("Resources/Sound/StageSelect.wav", "test");
 
+	PlaySoundData data;
+	data.volume = 100;
+	Sound::PlayLoadSound(SoundData::Get("test"), 100, data, "ergijgreg");
 }
+int testT = 0;
 
 void Play::Update()
 {
@@ -40,7 +48,14 @@ void Play::Update()
 	Vector3 pos3 = Vector3(0, 0, 0);
 	Vector3 test = LibMath::CalcNormal(pos1, pos2, pos3);
 
-	
+	testT++;
+	if(testT == 8)
+	{
+		PlaySoundData data;
+
+		data.volume = 100;
+		Sound::PlayLoadSound(SoundData::Get("test"), 100, data,"ergij");
+	}
 }
 
 void Play::Draw()

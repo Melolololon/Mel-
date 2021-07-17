@@ -4,6 +4,7 @@
 #include<memory>
 #include<fstream>
 #include<xaudio2.h>
+#pragma comment(lib,"xaudio2.lib")
 
 //サウンドのデータ
 class SoundData
@@ -38,12 +39,12 @@ private:
 	
 	UINT32 bytes = 0;
 
+	bool LoadSound(const std::string& path, const std::string& name);
 public:
 	static bool Load(const std::string& path,const std::string& name);
 	static SoundData* Get(const std::string& name) { return pSoundDatas[name].get(); }
 	static void Delete(const std::string& name);
 
-	bool LoadSound(const std::string& path, const std::string& name);
 
 	WAVEFORMATEX GetWaveFormatEX()const { return wfex; }
 	char* GetPBuffer() { return pBuffer; }

@@ -8,6 +8,8 @@
 #include"TimerManager.h"
 #include"SceneManager.h"
 
+#include"Audio.h"
+
 #include"Random.h"
 #include"LibWinAPI.h"
 
@@ -137,7 +139,8 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	Input::Initialize(hwnd, windowWidth, windowHeight);
 #pragma endregion
 
-
+	Audio::GetInstance()->Initialize();
+	
 
 	dx12->SetScreenColor(screenColor);
 	dx12->Initialize(hwnd, windowWidth, windowHeight);

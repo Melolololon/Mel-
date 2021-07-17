@@ -20,7 +20,7 @@ private:
 public:
 	Audio(const Audio& a) = delete;
 	Audio& operator=(const Audio& a) = delete;
-	Audio* GetInstance();
+	static Audio* GetInstance();
 
 	void Initialize();
 	

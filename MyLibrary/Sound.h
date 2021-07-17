@@ -8,7 +8,9 @@
 #include"SoundData.h"
 using namespace Microsoft::WRL;
 
-static const BYTE PLAY_SOUND_LOOP_INFINITY = XAUDIO2_LOOP_INFINITE;
+
+
+//サウンドの
 struct PlaySoundData
 {
 	//ボリューム(パーセント)
@@ -21,11 +23,23 @@ class Sound
 private:
 
 	static IXAudio2* iXAudio2;
-	static std::unordered_map<std::string, ComPtr<IXAudio2SourceVoice>> pSourceVoice;
+	static std::unordered_map<std::string,std::unique_ptr<Sound>> pSounds;
+	//ComPtr<IXAudio2SourceVoice> pSourceVoice;
+	IXAudio2SourceVoice* pSourceVoice;
+
+	bool Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData, const std::string& name);
 public:
+	static const UINT32 LOOP_INFINITY = XAUDIO2_LOOP_INFINITE;
+	static const UINT32 LOOP_MAX = XAUDIO2_MAX_LOOP_COUNT;
 
 	static void Initialize(IXAudio2* pIXAudio2);
-	static void PlayLoadSound(SoundData* soundData,const UINT32 loopNum,const PlaySoundData& playSoundData, const std::string& name = "");
+	static bool PlayLoadSound(SoundData* soundData,const UINT32 loopNum,const PlaySoundData& playSoundData, const std::string& name = "");
 	static void StopPlaySound(std::string& name);
+
+	/// <summary>
+	/// 音量を設定します。
+	/// </summary>
+	/// <param name="volume">音量(0から100のパーセント)</param>
+	void SetSoundVolume(const float volume);
 };
 
