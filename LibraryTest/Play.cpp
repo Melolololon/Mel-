@@ -37,7 +37,7 @@ void Play::Initialize()
 
 	PlaySoundData data;
 	data.volume = 100;
-	Sound::PlayLoadSound(SoundData::Get("test"), 10, data,"test");
+	Sound::PlayLoadSound(SoundData::Get("test"), 1, data,"test");
 }
 int testT = 0;
 
@@ -52,12 +52,9 @@ void Play::Update()
 	PlaySoundData data;
 
 	data.volume = 100;
-	//Sound::PlayLoadSound(SoundData::Get("test"), 1, data);
-	bool res = Sound::Get("test")->GetPlayEndMomentFlag();
-	if(res)
-	{
-		int z = 0;
-	}
+
+	Sound::PlayLoadSound(SoundData::Get("test"),1, data );
+	
 }
 
 void Play::Draw()

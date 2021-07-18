@@ -61,7 +61,7 @@ private:
 
 	bool Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData, const std::string& name);
 	void CheckPlayEnd();
-public:
+public: 
 	static const UINT32 LOOP_INFINITY = XAUDIO2_LOOP_INFINITE;
 	static const UINT32 LOOP_MAX = XAUDIO2_MAX_LOOP_COUNT;
 
@@ -89,6 +89,11 @@ public:
 
 #pragma region セット
 
+	/// <summary>
+	/// playSoundDataのデータを全てセットします。
+	/// </summary>
+	/// <param name="playSoundData"></param>
+	void SetPlaySoundData(const PlaySoundData& playSoundData);
 
 	/// <summary>
 	/// 音量を設定します。

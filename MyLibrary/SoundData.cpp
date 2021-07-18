@@ -36,7 +36,7 @@ bool SoundData::LoadSound(const std::string& path, const std::string& name)
 	if (strncmp(riff.chunk.id, "RIFF", 4) != 0)
 	{
 		OutputDebugStringA(path.c_str());
-		OutputDebugStringW(L"の読み込みに失敗しました。ファイルにRIFFの文字列がありませんでした。\n");
+		OutputDebugStringW(L"の読み込みに失敗しました。ファイルからRIFFの文字列を読み込めませんでした。\n");
 		return false;
 	}
 
@@ -56,5 +56,4 @@ bool SoundData::LoadSound(const std::string& path, const std::string& name)
 	memcpy(&wfex, &format.fmt, sizeof(format.fmt));
 	wfex.wBitsPerSample = format.fmt.nBlockAlign * 8 / format.fmt.nChannels;
 #pragma endregion
-
 }

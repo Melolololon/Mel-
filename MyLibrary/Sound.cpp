@@ -57,6 +57,9 @@ bool Sound::Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
 	result = pSourceVoice->Start();
 
+
+	SetPlaySoundData(playSoundData);
+
 	return true;
 }
 
@@ -98,6 +101,9 @@ void Sound::Update()
 			pNoneNameSounds[i]->pSourceVoice->Stop();
 			pNoneNameSounds[i]->pSourceVoice->DestroyVoice();
 			pNoneNameSounds.erase(pNoneNameSounds.begin() + i);
+			
+			i--;
+			size--;
 		}
 	}
 #pragma endregion
@@ -143,11 +149,6 @@ bool Sound::PlayLoadSound(SoundData* soundData, const UINT32 loopNum, const Play
 	
 	if (!pSound->Play(soundData, loopNum, playSoundData, name))return false;
 
-	//PlaySoundData‚Ìİ’è
-	pSound->SetSoundVolume(playSoundData.volume);
-
-
-	
 	return true;
 }
 
@@ -159,6 +160,12 @@ void Sound::StopSound(std::string& name)
 		pSounds[name]->pSourceVoice->DestroyVoice();
 	}
 	pSounds.erase(name);
+}
+
+void Sound::SetPlaySoundData(const PlaySoundData& playSoundData)
+{
+	//PlaySoundData‚Ìİ’è
+	SetSoundVolume(playSoundData.volume);
 }
 
 void Sound::SetSoundVolume(const float volume)
