@@ -393,7 +393,7 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 			
 			fbxModel->pTextures.resize(1);
 			fbxModel->pTextures[0] = std::make_unique<Texture>();
-			fbxModel->pTextures[0]->LoadModelTexture(modelDirectryPath + "WhiteTex.png");
+			fbxModel->pTextures[0]->LoadModelTexture("Resources/Texture/WhiteTex.png");
 		}
 	}
 }
