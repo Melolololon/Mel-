@@ -60,6 +60,9 @@ bool Sound::Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData
 
 	SetPlaySoundData(playSoundData);
 
+	pSoundData = soundData;
+	this->loopNum = loopNum;
+
 	return true;
 }
 
@@ -152,7 +155,7 @@ bool Sound::PlayLoadSound(SoundData* soundData, const UINT32 loopNum, const Play
 	return true;
 }
 
-void Sound::StopSound(std::string& name)
+void Sound::StopSound(const std::string& name)
 {
 	if (pSounds[name]->pSourceVoice) 
 	{
@@ -162,8 +165,20 @@ void Sound::StopSound(std::string& name)
 	pSounds.erase(name);
 }
 
+void Sound::ResetSound(const std::string& name)
+{
+	//ソースボイスを破棄して作り直す。
+	if (pSounds[name]->pSourceVoice)
+	{
+		pSounds[name]->pSourceVoice->Stop();
+		pSounds[name]->pSourceVoice->DestroyVoice();
+		Play(pSoundData, loopNum, playSoundData, name);
+	}
+}
+
 void Sound::SetPlaySoundData(const PlaySoundData& playSoundData)
 {
+
 	//PlaySoundDataの設定
 	SetSoundVolume(playSoundData.volume);
 }
@@ -175,6 +190,7 @@ void Sound::SetSoundVolume(const float volume)
 	else if (volumePar < 0.0f)volumePar = 0.0f;
 
 	pSourceVoice->SetVolume(volumePar / 100.0f);
+	playSoundData.volume = volume;
 	
 }
 

@@ -54,10 +54,14 @@ private:
 	static std::vector<std::unique_ptr<Sound>>pNoneNameSounds;
 
 	static IXAudio2* iXAudio2;
-	//ComPtr<IXAudio2SourceVoice> pSourceVoice;
 	IXAudio2SourceVoice* pSourceVoice;
 
+	SoundData* pSoundData;
+	PlaySoundData playSoundData;
+
+	UINT32 loopNum = 0;
 	bool playEndMoment = false;
+
 
 	bool Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData, const std::string& name);
 	void CheckPlayEnd();
@@ -70,23 +74,29 @@ public:
 	
 	
 	/// <summary>
-	/// SoundDataを再生します。引数nameに名前を渡すとGet関数でアクセスできるようになり、音声のデータを後から設定したり取得したりすることができます。
+	/// SoundDataを再生します。引数nameに名前を渡すとGet関数で参照できるようになり、音声のデータを後から設定したり取得したりすることができます。
+	/// nameに引数を渡した場合は再生終了後にメモリが解放されないため、StopSound関数を呼び出し、手動で解放してください。
 	/// </summary>
-	/// <param name="soundData"></param>
-	/// <param name="loopNum"></param>
-	/// <param name="playSoundData"></param>
-	/// <param name="name"></param>
+	/// <param name="soundData">音声データ</param>
+	/// <param name="loopNum">ループ数(0から254(LOOP_MAX)またはLOOP_INFINITY)</param>
+	/// <param name="playSoundData">サウンドの設定をまとめたもの</param>
+	/// <param name="name">登録名</param>
 	/// <returns></returns>
 	static bool PlayLoadSound(SoundData* soundData,const UINT32 loopNum,const PlaySoundData& playSoundData, const std::string& name = "");
 	
 	static Sound* Get(const std::string& name) { return pSounds[name].get(); }
 	
 	/// <summary>
-	/// 再生を終了します。
+	/// 再生を終了します。Get関数での参照が不可能になるので注意してください。
 	/// </summary>
 	/// <param name="name"></param>
-	static void StopSound(std::string& name);
+	static void StopSound(const std::string& name);
 
+	/// <summary>
+	/// 最初から再生しなおします。
+	/// </summary>
+	/// <param name="name"></param>
+	void ResetSound(const std::string& name);
 #pragma region セット
 
 	/// <summary>
