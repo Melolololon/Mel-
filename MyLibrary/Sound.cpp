@@ -117,9 +117,17 @@ void Sound::CheckPlayEnd()
 {
 	//WaitForSingleObjectEx(イベント,引数1のイベントがSetEventに渡されるまでに待機する時間,)
 	DWORD res = WaitForSingleObjectEx(voiceCallback.streamEndEvent, 0, TRUE);
-	if (res == WAIT_OBJECT_0)playEndMoment = true;
-	else playEndMoment = false;
 
+	if (res == WAIT_OBJECT_0)
+	{
+		playEndMoment = true;
+		playEnd = true;
+	}
+	else
+	{
+		playEndMoment = false;
+		playEnd = false;
+	}
 	
 }
 

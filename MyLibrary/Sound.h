@@ -59,8 +59,12 @@ private:
 	SoundData* pSoundData;
 	PlaySoundData playSoundData;
 
+	//ループ数
 	UINT32 loopNum = 0;
+	//再生が終了した瞬間かどうか
 	bool playEndMoment = false;
+	//再生が終了したかどうか
+	bool playEnd = false;
 
 
 	bool Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData, const std::string& name);
@@ -126,6 +130,8 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool GetPlayEndMomentFlag() { return playEndMoment; }
+
+	bool GetPlayEnd() { return playEnd; }
 #pragma endregion
 
 };
