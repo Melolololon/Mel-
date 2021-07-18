@@ -41,10 +41,10 @@ void Play::Initialize()
 	//data.volume = 100;
 	//Sound::PlayLoadSound(SoundData::Get("test"), 1, data,"test");
 
-	Value2<DWORD> v1(1,2);
-	Value2<DWORD> v2(3,1);
-	Value2<DWORD>res = v1 + v2;
-	res.v1 = 294;
+	Value2<DWORD> v1(4,4);
+	Value2<DWORD> v2(3,2);
+	Value2<DWORD>res = v1 % v2;
+	
 	int z = 0;
 
 }
