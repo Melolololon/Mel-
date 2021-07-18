@@ -234,6 +234,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="TimerManager.cpp" />
+    <ClCompile Include="Values.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="XInputManager.cpp" />
@@ -597,6 +598,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="TimerManager.h" />
+    <ClInclude Include="Values.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="XInputManager.h" />
   </ItemGroup>

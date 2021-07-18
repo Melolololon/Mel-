@@ -16,12 +16,13 @@ private:
 
 	Vector3 direction = Vector3(0, 0, 1);
 	Color color = Color(255, 255, 255, 255);
+	
 public:
 
 	DirectionalLight() {}
 	~DirectionalLight() {}
 
-
+ 
 	static void Create(const std::string& name = "");
 	static void Delete(const std::string& name);
 	static DirectionalLight& Get(const std::string& name = mainCameraName) { return *pLights[name]; }

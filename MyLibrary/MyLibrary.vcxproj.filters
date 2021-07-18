@@ -252,6 +252,9 @@
     <ClCompile Include="Sound_Unused.cpp">
       <Filter>ソース ファイル\Sound</Filter>
     </ClCompile>
+    <ClCompile Include="Values.cpp">
+      <Filter>ソース ファイル\Struct</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
@@ -469,6 +472,9 @@
     </ClInclude>
     <ClInclude Include="Sound_Unused.h">
       <Filter>ヘッダー ファイル\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Values.h">
+      <Filter>ヘッダー ファイル\Struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
