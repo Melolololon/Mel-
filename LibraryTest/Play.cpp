@@ -70,7 +70,7 @@ void Play::Update()
 	Camera::Get()->SetRotateCriteriaPosition(0);
 	Camera::Get()->SetAngle(Vector3(0, angle, 0));
 	Camera::Get()->SetRotatePoint(Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
-	Camera::Get()->SetCameraToTargetDistance(10.0f);
+	Camera::Get()->SetCameraToTargetDistance(5.0f);
 
 }
 

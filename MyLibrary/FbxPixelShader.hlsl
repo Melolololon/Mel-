@@ -7,6 +7,14 @@ SamplerState smp:register(s0);
 static const float PI = 3.141592654f;
 static float3 N;
 
+float SchlickFresnel(float f0, float f90, float cosine)
+{
+	float m = saturate(1 - cosine);
+	float m2 = m * m;
+	float m5 = m2 * m2 * m;
+	return lerp(f0, f90, m5);
+}
+
 float3 BRDF(float3 L,float3 V)
 {
 	//–@ü‚Æƒ‰ƒCƒg‚Ì“àÏ
@@ -15,13 +23,32 @@ float3 BRDF(float3 L,float3 V)
 	float NdotV = dot(N, V);
 
 	//‚Ç‚¿‚ç‚©‚ª90“xˆÈã‚¾‚Á‚½‚ç^‚Á•
-	if (NdotL < 0 || NdotV < 0) { return float3(0, 0, 0); }
-	/*else{ return float3(0, 0, 1); }*/
+	if (NdotL < 0 || NdotV < 0) 
+	{
+		return float3(0, 0, 0); 
+	}
 
+	//ƒn[ƒtƒxƒNƒgƒ‹
+	float3 H = normalize(L + V);
+	float NdotH = dot(N, H);
+	float LdotH = dot(L, H);
+	
 	//ŠgU”½Ë—¦
 	float diffuseReflectance = 1.0f / PI;
+
+	float energyBias = 0.5f * roughness;
+	//“üËŠp‚ª90“x‚Ìê‡‚ÌŠgU”½Ë—¦
+	float Fd90 = energyBias + 2.0f * LdotH * LdotH * roughness;
+	//“ü‚Á‚Ä‚¢‚­‚ÌŠgU”½Ë—¦
+	float FL = SchlickFresnel(1.0f, Fd90, NdotL);
+	//o‚Ä‚¢‚­‚Æ‚«‚ÌŠgU”½Ë—¦
+	float FV = SchlickFresnel(1.0f, Fd90, NdotV);
+	float energyFactor = lerp(1.0f, 1.0f / 1.51f, roughness);
+	//“ü‚Á‚Äo‚Ä‚¢‚­‚Ü‚Å‚ÌŠgU”½Ë—¦
+	float Fd = FL * FV * energyFactor;
+
 	//ŠgU”½Ë€
-	float3 diffuseColor = diffuseReflectance * NdotL * baseColor * (1 - metalness);
+	float3 diffuseColor = diffuseReflectance * Fd * baseColor * (1 - metalness);
 
 
 	//‚±‚±‚É‹¾–Ê”½Ë‚Ì®
@@ -29,6 +56,7 @@ float3 BRDF(float3 L,float3 V)
 
 	return diffuseColor;
 }
+
 
 float4 main(GSOutput input) : SV_TARGET
 {
