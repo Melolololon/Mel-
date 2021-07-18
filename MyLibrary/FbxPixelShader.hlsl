@@ -15,6 +15,39 @@ float SchlickFresnel(float f0, float f90, float cosine)
 	return lerp(f0, f90, m5);
 }
 
+//UE4のGGX分布
+float DistributionGGX(float alpha, float NdotH)
+{
+	float alpha2 = alpha * alpha;
+	float t = NdotH * NdotH * (alpha2 - 1.0f) + 1.0f;
+
+	return alpha2 / (PI * t * t);
+
+}
+
+//鏡面反射の計算
+float3 CookTorranceSpecular(float NdotL,float NdotV,float NdotH,float LdotH)
+{
+	//全体の計算式
+	//return = D(h)F(v,h)G(l,v,h) / 4(n・l)(n・v)
+
+	//D項(Distribution)
+	float Ds = DistributionGGX(roughness * roughness, NdotH);
+
+	//F項(フレネル)
+	float3 Fs = float3(1, 1, 1);
+
+	//G項(幾何減衰)
+	float Gs = 0.1f;
+
+	//m項(分母)
+	float m = 4.0f * NdotL * NdotV;
+
+	return Ds * Fs * Gs / m;
+}
+
+
+
 float3 BRDF(float3 L,float3 V)
 {
 	//法線とライトの内積
@@ -51,10 +84,11 @@ float3 BRDF(float3 L,float3 V)
 	float3 diffuseColor = diffuseReflectance * Fd * baseColor * (1 - metalness);
 
 
-	//ここに鏡面反射の式
+	//鏡面反射項
+	float3 specularColor = CookTorranceSpecular(NdotL, NdotV, NdotH, LdotH);
 
-
-	return diffuseColor;
+	return diffuseColor + specularColor;
+	
 }
 
 

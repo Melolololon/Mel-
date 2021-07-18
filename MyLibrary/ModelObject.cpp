@@ -243,6 +243,12 @@ void ModelObject::MapConstData(const Camera* camera)
 		pbrMaterialConstData->fSpecular = pbrMaterials[i].fSpecular;
 		pbrMaterialConstData->roughness = pbrMaterials[i].roughness;
 
+		//テスト用
+		pbrMaterialConstData->baseColor = pbrMaterials[i].baseColor;
+		pbrMaterialConstData->metalness = 0;
+		pbrMaterialConstData->fSpecular = 0.5;
+		pbrMaterialConstData->roughness = 0.4;
+
 		pbrMaterialConstBuffer[i]->Unmap(0, nullptr);
 #pragma endregion
 

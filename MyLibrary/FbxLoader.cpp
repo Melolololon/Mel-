@@ -339,15 +339,15 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 				}
 
 
-				const FbxProperty propSuecular =
-					FbxSurfaceMaterialUtils::GetProperty("supecular", materials);
-				if (propSuecular.IsValid())
+				const FbxProperty propSpecular =
+					FbxSurfaceMaterialUtils::GetProperty("specular", materials);
+				if (propSpecular.IsValid())
 				{
-					pbrModelMaterial.fSpecular = propSuecular.Get<float>();
+					pbrModelMaterial.fSpecular = propSpecular.Get<float>();
 				}
 
 				const FbxProperty propSuecularRoughness =
-					FbxSurfaceMaterialUtils::GetProperty("supecularRoughnes", materials);
+					FbxSurfaceMaterialUtils::GetProperty("specularRoughness", materials);
 				if (propSuecularRoughness.IsValid())
 				{
 					pbrModelMaterial.roughness = propSuecularRoughness.Get<float>();

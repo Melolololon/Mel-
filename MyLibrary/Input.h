@@ -13,7 +13,6 @@
 #include<DirectXMath.h>
 #include<unordered_map>
 #include"Vector.h"
-#include"Integers.h"
 
 //‚±‚êPadButton‚É•Ï‚¦‚é
 enum class GamePadButton

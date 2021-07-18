@@ -41,16 +41,17 @@ void Play::Initialize()
 	//data.volume = 100;
 	//Sound::PlayLoadSound(SoundData::Get("test"), 1, data,"test");
 
-	Value2<DWORD> v1(4,4);
-	Value2<DWORD> v2(3,2);
-	Value2<DWORD>res = v1 % v2;
+	Value2<float> v1(4,4);
+	Value2<float> v2(3,2);
+	Value2<float>res = v1 * v2;
 	
+
 	int z = 0;
 
 }
 int testT = 0;
 
-float angle = 0;
+Vector3 angle = 0;
 void Play::Update()
 {
 	Vector3 pos1 = Vector3(0, 5, 0);
@@ -68,18 +69,27 @@ void Play::Update()
 
 	if(Input::KeyState(DIK_A))
 	{
-		angle += 3.0f;
+		angle.y += 3.0f;
 		
 	}
 	if (Input::KeyState(DIK_D))
 	{
-		angle -= 3.0f;
+		angle.y -= 3.0f;
+	}
+	if (Input::KeyState(DIK_W))
+	{
+		angle.x += 3.0f;
+
+	}
+	if (Input::KeyState(DIK_S))
+	{
+		angle.x -= 3.0f;
 	}
 	Camera::Get()->SetRotateCriteriaPosition(0);
-	Camera::Get()->SetAngle(Vector3(0, angle, 0));
+	Camera::Get()->SetAngle(angle);
 	Camera::Get()->SetRotatePoint(Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
 	Camera::Get()->SetCameraToTargetDistance(5.0f);
-
+	DirectionalLight::Get().SetDirection(Vector3(0, -1, 0));
 }
 
 void Play::Draw()
