@@ -19,6 +19,7 @@
 
 #include"Sound.h"
 #include"SoundData.h"
+#include"DirectionalLight.h"
 
 Play::Play(){}
 
@@ -33,14 +34,15 @@ void Play::Initialize()
 	ModelObject::Create(ModelData::Get("model"), nullptr, "model");
 	ModelObject::Get("model")->SetAnimationFlag(true);
 
-	SoundData::Load("Resources/Sound/EnemyLostSE.wav", "test");
+	//SoundData::Load("Resources/Sound/EnemyLostSE.wav", "test");
 
-	PlaySoundData data;
-	data.volume = 100;
-	Sound::PlayLoadSound(SoundData::Get("test"), 1, data,"test");
+	//PlaySoundData data;
+	//data.volume = 100;
+	//Sound::PlayLoadSound(SoundData::Get("test"), 1, data,"test");
 }
 int testT = 0;
 
+float angle = 0;
 void Play::Update()
 {
 	Vector3 pos1 = Vector3(0, 5, 0);
@@ -53,8 +55,23 @@ void Play::Update()
 
 	data.volume = 100;
 
-	Sound::PlayLoadSound(SoundData::Get("test"),1, data );
-	
+	//Sound::PlayLoadSound(SoundData::Get("test"),1, data );
+
+
+	if(Input::KeyState(DIK_A))
+	{
+		angle += 3.0f;
+		
+	}
+	if (Input::KeyState(DIK_D))
+	{
+		angle -= 3.0f;
+	}
+	Camera::Get()->SetRotateCriteriaPosition(0);
+	Camera::Get()->SetAngle(Vector3(0, angle, 0));
+	Camera::Get()->SetRotatePoint(Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
+	Camera::Get()->SetCameraToTargetDistance(10.0f);
+
 }
 
 void Play::Draw()
