@@ -232,6 +232,7 @@
     <ClCompile Include="SpriteFont2D.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="TextWrite.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="Values.cpp" />
     <ClCompile Include="Vector.cpp" />
@@ -595,6 +596,7 @@
     <ClInclude Include="SpriteFont2D.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="TextWrite.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="Values.h" />
     <ClInclude Include="Vector.h" />
