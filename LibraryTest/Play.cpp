@@ -22,6 +22,7 @@
 #include"DirectionalLight.h"
 
 #include"Values.h"
+#include"TextWrite.h"
 Play::Play(){}
 
 
@@ -48,6 +49,8 @@ void Play::Initialize()
 
 	int z = 0;
 
+	
+	TextWrite::CreateFontData("test");
 }
 int testT = 0;
 
@@ -90,6 +93,7 @@ void Play::Update()
 	Camera::Get()->SetRotatePoint(Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
 	Camera::Get()->SetCameraToTargetDistance(5.0f);
 	DirectionalLight::Get().SetDirection(Vector3(0, -1, 0));
+
 }
 
 void Play::Draw()

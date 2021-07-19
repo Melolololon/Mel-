@@ -80,7 +80,7 @@ private:
 	static int winHeight;
 	static Color clearColor;
 #pragma endregion
-
+	static std::wstring winName;
 public:
 
 
@@ -91,7 +91,7 @@ public:
 	/// </summary>
 	/// <param name="windowWidth">ウィンドウ横幅</param>
 	/// <param name="windowHeight">ウィンドウ縦幅</param>
-	static void Initialize(int windowWidth, int windowHeight,const Color& screenColor,const wchar_t* windowName);
+	static void Initialize(int windowWidth, int windowHeight,const Color& screenColor,const wchar_t* winName);
 
 	/// <summary>
 	/// 描画準備をします。更新処理部分の一番上で呼び出してください
@@ -126,9 +126,9 @@ public:
 	static Color GetScreenColor() { return clearColor; }
 #pragma endregion
 
-#pragma region WinAPI関係
+#pragma region ウィンドウ関係
 	static HWND GetHWND();
-
+	static std::wstring GetWindowName() { return winName; }
 #pragma endregion
 
 

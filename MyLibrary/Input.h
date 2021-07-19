@@ -171,8 +171,8 @@ public:
 	static void CreateStringInputWindow
 	(
 		const std::wstring& initStr,
-		const Vector3& position,
-		const Vector3& size,
+		const Vector2& position,
+		const Vector2& size,
 		HWND parentHWND,
 		const std::string& name 
 	);

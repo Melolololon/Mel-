@@ -13,6 +13,7 @@
 
 #include"Random.h"
 #include"LibWinAPI.h"
+#include"TextWrite.h"
 
 
 DirectX12* Library::dx12;
@@ -20,7 +21,7 @@ CreatePolygon* Library::createPolygon;
 
 WNDCLASSEX Library::w;
 MSG  Library::msg;
-HWND  Library::hwnd;
+HWND Library::hwnd;
 bool Library::isEnd;
 
 bool Library::isDestroy;
@@ -48,6 +49,7 @@ std::vector<std::tuple<ModelDataAndKey, int>> Library::modelDatas;
 int Library::winWidth;
 int Library::winHeight;
 Color Library::clearColor;
+std::wstring Library::winName;
 
 LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -66,7 +68,7 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	 winWidth = windowWidth;
 	 winHeight = windowHeight;
 	 clearColor = screenColor;
-
+ 	 winName = windowName;
 
 	auto coResult = CoInitialize(NULL);
 
@@ -89,7 +91,7 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	(
 		windowName,
 		windowName,
-		WS_OVERLAPPEDWINDOW /*| WS_CLIPCHILDREN*/,
+		WS_OVERLAPPEDWINDOW | WS_MAXIMIZE /*| WS_CLIPCHILDREN*/,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		windowWidth,
@@ -98,31 +100,6 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 		WindowProc
 	);
 
-
-	/*w.cbSize = sizeof(WNDCLASSEX);
-	w.lpfnWndProc = (WNDPROC)WindowProc;
-	w.lpszClassName = windowName;
-	w.hInstance = GetModuleHandle(nullptr);
-	w.hCursor = LoadCursor(NULL, IDC_ARROW);
-
-	RegisterClassEx(&w);
-	RECT wrc = { 0,0,windowWidth,windowHeight };
-	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
-
-	hwnd = CreateWindow(
-		w.lpszClassName,
-		windowName,
-		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
-		wrc.right - wrc.left,
-		wrc.bottom - wrc.top,
-		nullptr,
-		nullptr,
-		w.hInstance,
-		nullptr);
-
-	ShowWindow(hwnd, SW_SHOW);*/
 
 
 
@@ -155,6 +132,8 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	loadTextureCounter = 1;
 
 	//modelDatas.reserve(99999);
+
+	TextWrite::Initialize();
 }
 
 void Library::LoopStartProcess()
@@ -181,6 +160,7 @@ void Library::LoopStartProcess()
 
 	Input::Update();
 	Sound::Update();
+
 }
 
 void Library::LoopEndProcess()

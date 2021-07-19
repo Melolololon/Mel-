@@ -1,6 +1,9 @@
 #pragma once
 #include<d2d1.h>
+#pragma comment(lib,"D2d1.lib")
 #include<dwrite.h>
+#pragma comment(lib,"DWrite.lib")
+
 #include<wrl.h>
 #include<string>
 #include<unordered_map>
@@ -11,11 +14,18 @@ using namespace Microsoft::WRL;
 
 //pTextFormatは別クラスにする?
 //フォントクラスとテキスト描画クラスを分ける?
+//とりあえず描画までやってみてから設計考える
+
+//D3D11On12を使わないと無理っぽい
+//使用例のところにやり方書いてる
+//https://docs.microsoft.com/en-us/windows/win32/direct3d12/direct3d-11-on-12#initializing-d3d11on12
 
 //DirectWriteを使用したテキスト描画クラス
 class TextWrite
 {
 private:
+	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
 	//DirectWriteを使用するためのもの
 	static ComPtr<IDWriteFactory> dWriteFactory;
 	static std::unordered_map<std::string, ComPtr<IDWriteTextFormat>>pTextFormat;
@@ -27,13 +37,15 @@ private:
 	//領域を塗りつぶすもの(もしかしてフォントの塗りつぶしに使う?)
 	static ComPtr<ID2D1SolidColorBrush> d2dSolidColorBrush;
 
-
+	static HWND hwnd;
 public:
 	static bool Initialize();
+	static void LoopStartProcess();
+	static void LoopEndProcess();
 
 	static bool CreateFontData(const std::string& name);
 
 
-	void Write(const std::wstring& text);
+	static void Draw(const std::wstring& text, const std::string& fontName);
 };
 

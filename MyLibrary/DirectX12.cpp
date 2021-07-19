@@ -1074,6 +1074,7 @@ void DirectX12::LoopStartProcess()
 	Sprite3D::SetCameraPosTargetUpVector(mainCameraData.nowEye, mainCameraData.nowTarget, mainCameraData.nowUp);
 }
 
+#include"TextWrite.h"
 void DirectX12::LoopEndProcess()
 {
 
@@ -1222,6 +1223,7 @@ void DirectX12::LoopEndProcess()
 
 	cmdAllocator->Reset();
 	cmdList->Reset(cmdAllocator.Get(), nullptr);
+
 
 	swapchain->Present(1, 0);//VSYNC
 #pragma endregion
