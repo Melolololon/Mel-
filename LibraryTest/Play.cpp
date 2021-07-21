@@ -88,12 +88,14 @@ void Play::Update()
 	{
 		angle.x -= 3.0f;
 	}
-	Camera::Get()->SetRotateCriteriaPosition(0);
+	/*Camera::Get()->SetRotateCriteriaPosition(0);
 	Camera::Get()->SetAngle(angle);
 	Camera::Get()->SetRotatePoint(Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
-	Camera::Get()->SetCameraToTargetDistance(5.0f);
+	Camera::Get()->SetCameraToTargetDistance(5.0f);*/
 	DirectionalLight::Get().SetDirection(Vector3(0, -1, 0));
 
+
+	ModelObject::Get("model")->SetAngle(angle);
 }
 
 void Play::Draw()

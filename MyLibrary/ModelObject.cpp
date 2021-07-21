@@ -247,7 +247,7 @@ void ModelObject::MapConstData(const Camera* camera)
 		pbrMaterialConstData->baseColor = pbrMaterials[i].baseColor;
 		pbrMaterialConstData->metalness = 1;
 		pbrMaterialConstData->fSpecular = 0.5;
-		pbrMaterialConstData->roughness = 1;
+		pbrMaterialConstData->roughness = 0.3;
 
 		pbrMaterialConstBuffer[i]->Unmap(0, nullptr);
 #pragma endregion
@@ -256,7 +256,7 @@ void ModelObject::MapConstData(const Camera* camera)
 
 #pragma region ボーンのマップ
 
-		int boneNum = pModelData->GetBoneNum();
+		int boneNum = pModelData->GetBoneNumber();
 
 		if (boneNum == 0
 			|| pModelData->GetModelFormat() != ModelData::ModelFormat::MODEL_FORMAT_OBJ
@@ -844,8 +844,8 @@ bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConst
 #pragma region アニメーション関係
 
 
-	boneDatas.resize(pModelData->GetBoneNum());
-	parentBoneDatas.resize(pModelData->GetBoneNum());
+	boneDatas.resize(pModelData->GetBoneNumber());
+	parentBoneDatas.resize(pModelData->GetBoneNumber());
 	SkinConstBufferData* skinConstData = nullptr;
 	modelConstBuffer[0]->Map(0, nullptr, (void**)&skinConstData);
 	for (int i = 0; i < BONE_MAX; i++)

@@ -154,7 +154,7 @@ private:
 	Color color;
 
 	//モデルファイルに何個モデルがあるか
-	int modelFileObjectNum = 0;
+	UINT modelFileObjectNum = 0;
 	std::vector<std::vector<FbxVertex>>vertices;
 	//スムーズシェーディング用法線
 	std::vector<std::vector<DirectX::XMFLOAT3>> smoothNormal;
@@ -163,7 +163,7 @@ private:
 	std::vector<std::unique_ptr<Texture>>pTextures;
 
 
-	int boneNum = 0;
+	UINT boneNum = 0;
 
 	ObjBone objData;
 
@@ -337,14 +337,15 @@ public:
 
 	ModelFormat GetModelFormat() const { return modelFormat; }
 
-	int GetBoneNum() const { return boneNum; }
+	UINT GetBoneNumber() const { return boneNum; }
 
 	/// <summary>
 	/// モデルファイルに含まれているオブジェクト(モデル)の数を取得します。
 	/// </summary>
 	/// <returns></returns>
-	int GetModelFileObjectNumber()const { return modelFileObjectNum; }
-
+	UINT GetModelFileObjectNumber()const { return modelFileObjectNum; }
+	
+	//これstringで指定するように。objの場合、"1"のように指定
 	/// <summary>
 	/// マテリアルを取得します。
 	/// </summary>

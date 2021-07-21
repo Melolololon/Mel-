@@ -52,6 +52,14 @@ float3 DisneyFresnel(float LdotH)
 	return SchlickFresnel3(specularColor, float3(1, 1, 1), LdotH);
 }
 
+//GçÄ
+float GeometricSmith(float cosine)
+{
+	float k = (roughness + 1.0f);
+	k = k * k / 8.0f;
+	return cosine / (cosine * (1.0f - k) + k);
+}
+
 //ãæñ îΩéÀÇÃåvéZ
 float3 CookTorranceSpecular(float NdotL,float NdotV,float NdotH,float LdotH)
 {
@@ -65,7 +73,7 @@ float3 CookTorranceSpecular(float NdotL,float NdotV,float NdotH,float LdotH)
 	float3 Fs = DisneyFresnel(LdotH);
 
 	//GçÄ(äÙâΩå∏êä)
-	float Gs = 1.0f;
+	float Gs = GeometricSmith(NdotL) * GeometricSmith(NdotV);
 
 	//mçÄ(ï™ïÍ)
 	float m = 4.0f * NdotL * NdotV;
@@ -153,8 +161,10 @@ float4 main(GSOutput input) : SV_TARGET
 	float3 finalRGB = float3(0, 0, 0);
 	float3 eyedir = normalize(cameraPos.xyz - input.worldPos.xyz);
 
-	finalRGB += BRDF(-light.xyz, eyedir) * lightColor;
-
+	for (int i = 0; i < 3; i++) 
+	{
+		finalRGB += BRDF(-light.xyz, eyedir) * lightColor;
+	}
 	return float4(finalRGB, 1);
 	
 	
