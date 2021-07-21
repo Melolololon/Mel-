@@ -82,7 +82,7 @@ float3 CookTorranceSpecular(float NdotL,float NdotV,float NdotH,float LdotH)
 }
 
 
-
+//双方向反射率分布関数
 float3 BRDF(float3 L,float3 V)
 {
 	//法線とライトの内積
