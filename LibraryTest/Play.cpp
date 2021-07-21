@@ -33,6 +33,7 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
+
 	ModelData::Load("Resources/PBRModels/SpiralPBR/SpiralPBR.fbx","model");
 	//ModelData::Load("Resources/boneTest/boneTest.fbx","model");
 	ModelObject::Create(ModelData::Get("model"), nullptr, "model");
@@ -44,14 +45,6 @@ void Play::Initialize()
 	//data.volume = 100;
 	//Sound::PlayLoadSound(SoundData::Get("test"), 1, data,"test");
 
-	Value2<float> v1(4,4);
-	Value2<float> v2(3,2);
-	Value2<float>res = v1 * v2;
-	
-
-	int z = 0;
-
-	
 	TextWrite::CreateFontData("test");
 }
 int testT = 0;

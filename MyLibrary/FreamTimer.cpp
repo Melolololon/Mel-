@@ -7,12 +7,7 @@ FrameTimer::FrameTimer()
 	pTimers.push_back(this);
 }
 
-FrameTimer::FrameTimer(const  int maxTime)
-{
-	time = 0;
-	this->maxTime = maxTime;
-	pTimers.push_back(this);
-}
+
 
 FrameTimer::~FrameTimer()
 {
@@ -38,19 +33,27 @@ void FrameTimer::AllUpdate()
 
 void FrameTimer::Update()
 {
-	timeResetFream = false;
+	timeMaxMoment = false;
+	timeMinMoment = false;
+	if (preTime != time == maxTime)timeMaxMoment = true;
+	if (preTime != time == minTime)timeMinMoment = true;
+	preTime = time;
+
 	if (isStop)return;
 
+	if (isDecrement && time > minTime) time--;
+	else if(!isDecrement && time < maxTime)time++;
 
-	if (isDecrement)
-		time--;
-	else
-		time++;
-
-	if (time == maxTime)
+	if (resetFlag) 
 	{
-		time = resetTime;
-		timeResetFream = true;
+		if (time == maxTime)
+		{
+			time = resetMaxTime;
+		}
+		else if (time == minTime)
+		{
+			time = resetMinTime;
+		}
 	}
 }
 

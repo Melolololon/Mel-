@@ -1,16 +1,31 @@
 #pragma once
 #include"Vector.h"
+#include<minwindef.h>
 class Random
 {
 private:
-	Random();
-	~Random();
+	Random(){}
+	~Random(){}
+
+	
+
 public:
 
 	static void Initialize();
 	
 	/// <summary>
-	///	乱数を取得します。取得できる値はc++のrand関数と同じです。
+	/// シード値をセットします。
+	/// </summary>
+	/// <param name="seed"></param>
+	static void SetSeed(UINT seed);
+
+	/// <summary>
+	/// シード値に時間を使用するようにします。
+	/// </summary>
+	static void SetSeedTime();
+
+	/// <summary>
+	///	乱数を取得します。取得できる値はrand関数と同じです。
 	/// </summary>
 	/// <param name="num"></param>
 	/// <returns></returns>

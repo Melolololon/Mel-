@@ -3,8 +3,19 @@
 #include<ctime>
 void Random::Initialize()
 {
+	SetSeedTime();
+}
+
+void Random::SetSeed(UINT seed)
+{
+	srand(seed);
+}
+
+void Random::SetSeedTime()
+{
 	srand(static_cast<unsigned int>(time(NULL)));
 }
+
 int Random::GetRandomNumber(int number)
 {
 	return rand() % number;
