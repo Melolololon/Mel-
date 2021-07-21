@@ -20,7 +20,6 @@ private:
 
 	Vector3 direction = Vector3(0, 0, 1);
 	Color color = Color(255, 255, 255, 255);
-	Value3<float> lightPower = Value3<float>(1.0f, 1.0f, 1.0f);
 
 public:
 

@@ -4,14 +4,15 @@
 #include"Input.h"
 
 #pragma comment(lib,"winmm.lib")//timeGetTime‚Æ
-#include"ObjectManager.h"
-#include"TimerManager.h"
+#include"GameObjectManager.h"
 #include"SceneManager.h"
 
 #include"Audio.h"
 #include"Sound.h"
 
 #include"Random.h"
+#include"FrameTimer.h"
+
 #include"LibWinAPI.h"
 #include"TextWrite.h"
 
@@ -78,7 +79,7 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 
 	srand((unsigned int)time(NULL));
 	Random::Initialize();
-	ObjectManager::GetInstance()->Initialize();
+	GameObjectManager::GetInstance()->Initialize();
 
 	count = 0;
 	fps = 60;
@@ -210,7 +211,7 @@ void Library::LoopEndProcess()
 		timeEndPeriod(1);
 	}
 
-	TimerManager::GetInstance()->Update();
+	FrameTimer::AllUpdate();
 
 
 }
@@ -229,7 +230,7 @@ bool Library::GetIsEnd()
 void Library::Finalize()
 {
 	SceneManager::GetInstace()->Finitialize();
-	ObjectManager::GetInstance()->Finitialize();
+	GameObjectManager::GetInstance()->Finitialize();
 
 	Input::Finitialize();
 

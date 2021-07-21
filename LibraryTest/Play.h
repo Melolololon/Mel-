@@ -3,13 +3,13 @@
 #include"Library.h"
 #include"LibMath.h"
 #include"Vector.h"
-#include"FreamTimer.h"
+#include"FrameTimer.h"
 #include"Curve.h"
 #include"MouseCursor.h"
 class Play:public Scene
 {
 private:
-	FreamTimer ti;
+	FrameTimer ti;
 public:
 	Play();
 	~Play();

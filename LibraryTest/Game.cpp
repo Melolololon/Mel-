@@ -1,7 +1,7 @@
 #include "Game.h"
 #include<Library.h>
 #include"SceneManager.h"
-#include"ObjectManager.h"
+#include"GameObjectManager.h"
 #include"Play.h"
 #include"Camera.h"
 
@@ -50,9 +50,9 @@ void Game::Initialize()
 	initFlag.plane = false;
 	initFlag.ray = false;
 	initFlag.sphere = true;
-	ObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);
-	ObjectManager::GetInstance()->SetMouseCollisionFlag(false);
-	ObjectManager::GetInstance()->ReserveObjectArray(100);
+	GameObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);
+	GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
+	GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
 	SceneManager::GetInstace()->SetStartScene(new Play());
 #pragma endregion

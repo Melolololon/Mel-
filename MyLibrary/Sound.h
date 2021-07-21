@@ -10,7 +10,7 @@ using namespace Microsoft::WRL;
 
 
 
-//サウンドの
+//サウンドのパラメータ
 struct PlaySoundData
 {
 	//ボリューム(パーセント)
@@ -26,10 +26,11 @@ struct PlaySoundData
 //PlayLoadSoundでどのサブミックスボイスに追加するかを選べるようにする?
 //サブミックスボイスも作れるようにする?サブミックスボイスだと分かりにくいかもしれないからサウンドグループとかにする?
 
-//SoundDataの音声を再生するクラス
+//SoundDataの音声を再生したり加工するクラス
 class Sound
 {
 private:
+	//コールバック
 	class XAudio2VoiceCallback :public IXAudio2VoiceCallback
 	{
 	public:
@@ -61,6 +62,9 @@ private:
 
 	//ループ数
 	UINT32 loopNum = 0;
+	//ループ回数
+	UINT loopCount = 0;
+
 	//再生が終了した瞬間かどうか
 	bool playEndMoment = false;
 	//再生が終了したかどうか
@@ -131,7 +135,15 @@ public:
 	/// <returns></returns>
 	bool GetPlayEndMomentFlag() { return playEndMoment; }
 
+	/// <summary>
+	/// 再生が終了していたらtrueを返します。
+	/// </summary>
+	/// <returns></returns>
 	bool GetPlayEnd() { return playEnd; }
+
+	UINT GetLoopNumber() { return loopNum; }
+
+	UINT GetLoopCount() { return loopCount; }
 #pragma endregion
 
 };

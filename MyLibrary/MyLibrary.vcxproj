@@ -179,6 +179,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="Counter.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sound_Unused.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -233,7 +234,6 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="TextWrite.cpp" />
-    <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="Values.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="Vertex.cpp" />
@@ -539,6 +539,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="Counter.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sound_Unused.h" />
     <ClInclude Include="BufferData.h" />
@@ -558,7 +559,7 @@
     <ClInclude Include="Easing.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FbxModel.h" />
-    <ClInclude Include="FreamTimer.h" />
+    <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="HeapIndexManager.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LibMath.h" />
@@ -573,8 +574,8 @@
     <ClInclude Include="ModelManager.h" />
     <ClInclude Include="ModelObject.h" />
     <ClInclude Include="MouseCursor.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="ObjModelData.h" />
     <ClInclude Include="ObjModelObject.h" />
@@ -597,7 +598,6 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="TextWrite.h" />
-    <ClInclude Include="TimerManager.h" />
     <ClInclude Include="Values.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="XInputManager.h" />

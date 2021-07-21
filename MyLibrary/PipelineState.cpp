@@ -7,15 +7,6 @@ ID3D12RootSignature* PipelineState::modelRootSignature;
 ID3D12RootSignature* PipelineState::spriteRootSignature;
 ID3D12RootSignature* PipelineState::renderTargetRootSignature;
 
-PipelineState::PipelineState()
-{
-	
-}
-
-PipelineState::~PipelineState()
-{
-}
-
 
 
 void PipelineState::SetPipelineDesc

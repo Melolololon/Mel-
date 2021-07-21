@@ -7,7 +7,7 @@
 
 //オブジェクトマネージャー追加時に判定を選ぶようにする?(判定ごとに追加関数と配列作る)
 
-class Object
+class GameObject
 {
 public:
 
@@ -35,11 +35,11 @@ protected:
 	//ソート用数値。ソート順を自分で調整するための変数
 	short sortNumber = 0;
 public:
-
+	
 	//コンストラクタ
-	Object();
+	GameObject();
 	//デストラクタ
-	virtual ~Object();
+	virtual ~GameObject();
 
 	//初期化
 	virtual void Initialize();
@@ -56,7 +56,7 @@ public:
 	/// <param name="arrayNum">何個目の判定に当たったか</param>
 	virtual void Hit
 	(
-		const Object *const  object,
+		const GameObject *const  object,
 		const CollisionType& collisionType,
 		const int& arrayNum
 	);

@@ -66,7 +66,7 @@ float3 CookTorranceSpecular(float NdotL,float NdotV,float NdotH,float LdotH)
 	//全体の計算式
 	//return = D(h)F(v,h)G(l,v,h) / 4(n・l)(n・v)
 
-	//D項(Distribution)
+	//D項(分布)(Distribution)
 	float Ds = DistributionGGX(roughness * roughness, NdotH);
 
 	//F項(フレネル)

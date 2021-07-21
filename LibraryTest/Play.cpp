@@ -2,7 +2,7 @@
 
 #include"Matrix.h"
 #include"Quaternion.h"
-#include"ObjectManager.h"
+#include"GameObjectManager.h"
 
 
 #include"XInputManager.h"
@@ -10,7 +10,7 @@
 #include"ObjModel.h"
 #include"PrimitiveModel.h"
 
-#include"FreamTimer.h"
+#include"FrameTimer.h"
 
 #include"Random.h"
 
@@ -23,6 +23,8 @@
 
 #include"Values.h"
 #include"TextWrite.h"
+
+#include"Counter.h"
 Play::Play(){}
 
 

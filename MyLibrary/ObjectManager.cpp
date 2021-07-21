@@ -1,24 +1,24 @@
-#include "ObjectManager.h"
+#include "GameObjectManager.h"
 #include"CollisionType.h"
 #include"LibMath.h"
 
 
-ObjectManager::ObjectManager()
+GameObjectManager::GameObjectManager()
 {
 }
 
 
-ObjectManager::~ObjectManager()
+GameObjectManager::~GameObjectManager()
 {
 }
 
-ObjectManager* ObjectManager::GetInstance()
+GameObjectManager* GameObjectManager::GetInstance()
 {
-	static ObjectManager inst;
+	static GameObjectManager inst;
 	return &inst;
 }
 
-void ObjectManager::Initialize() 
+void GameObjectManager::Initialize() 
 {
 	checkCollision.board = false;
 	checkCollision.box = false;
@@ -38,7 +38,7 @@ void ObjectManager::Initialize()
 	addObjects.reserve(100);
 }
 
-void ObjectManager::Update() 
+void GameObjectManager::Update() 
 {
 #pragma region Update
 	//カーソルアップデート
@@ -330,7 +330,7 @@ void ObjectManager::Update()
 
 }
 
-void ObjectManager::Draw() 
+void GameObjectManager::Draw() 
 {
 	for (auto& o : objects)
 	{
@@ -338,7 +338,7 @@ void ObjectManager::Draw()
 	}
 }
 
-void ObjectManager::EraseObjectCheck()
+void GameObjectManager::EraseObjectCheck()
 {
 
 	size_t size = objects.size();
@@ -357,18 +357,18 @@ void ObjectManager::EraseObjectCheck()
 
 }
 
-void ObjectManager::Finitialize() 
+void GameObjectManager::Finitialize() 
 {
 	AllEraseObject();
 }
 
 #pragma region オブジェクト関数
-void ObjectManager::ReserveObjectArray(const int& reserveNum)
+void GameObjectManager::ReserveObjectArray(const int& reserveNum)
 {
 	objects.reserve(reserveNum);
 }
 
-void ObjectManager::AddObject(const std::shared_ptr<Object>& object)
+void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 {
 
 	if (object)
@@ -380,18 +380,18 @@ void ObjectManager::AddObject(const std::shared_ptr<Object>& object)
 	
 }
 
-void ObjectManager::SetAddObjectSortState(const ObjectSortType& sort, const bool& orderType)
+void GameObjectManager::SetAddObjectSortState(const ObjectSortType& sort, const bool& orderType)
 {
 	addObjectSort = sort;
 	addObjectSortOrderType = orderType;
 }
 
-void ObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType)
+void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType)
 {
 	switch (sort)
 	{
 	case OBJECT_SORT_XYZ_SUM:
-		std::sort(objects.begin(), objects.end(), [&orderType](const std::shared_ptr<Object>& obj1, const std::shared_ptr<Object>& obj2)
+		std::sort(objects.begin(), objects.end(), [&orderType](const std::shared_ptr<GameObject>& obj1, const std::shared_ptr<GameObject>& obj2)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
@@ -410,8 +410,8 @@ void ObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType
 			objects.end(), 
 			[&orderType]
 		(
-			const std::shared_ptr<Object>& obj1, 
-			const std::shared_ptr<Object>& obj2
+			const std::shared_ptr<GameObject>& obj1, 
+			const std::shared_ptr<GameObject>& obj2
 		)
 		{
 			Vector3 pos1 = obj1->GetPosition();
@@ -429,8 +429,8 @@ void ObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType
 			objects.end(),
 			[&orderType]
 		(
-			const std::shared_ptr<Object>& obj1,
-			const std::shared_ptr<Object>& obj2
+			const std::shared_ptr<GameObject>& obj1,
+			const std::shared_ptr<GameObject>& obj2
 		)
 		{
 			Vector3 pos1 = obj1->GetPosition();
@@ -448,8 +448,8 @@ void ObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType
 			objects.end(),
 			[&orderType]
 		(
-			const std::shared_ptr<Object>& obj1,
-			const std::shared_ptr<Object>& obj2
+			const std::shared_ptr<GameObject>& obj1,
+			const std::shared_ptr<GameObject>& obj2
 		)
 		{
 			Vector3 pos1 = obj1->GetPosition();
@@ -468,8 +468,8 @@ void ObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType
 			objects.end(),
 			[&]
 		(
-			const std::shared_ptr<Object>& obj1,
-			const std::shared_ptr<Object>& obj2
+			const std::shared_ptr<GameObject>& obj1,
+			const std::shared_ptr<GameObject>& obj2
 		)
 		{
 			Vector3 pos1 = obj1->GetPosition();
@@ -491,8 +491,8 @@ void ObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType
 			objects.end(),
 			[&]
 		(
-			const std::shared_ptr<Object>& obj1,
-			const std::shared_ptr<Object>& obj2
+			const std::shared_ptr<GameObject>& obj1,
+			const std::shared_ptr<GameObject>& obj2
 		)
 		{
 			Vector3 pos1 = obj1->GetPosition();
@@ -513,8 +513,8 @@ void ObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType
 			objects.end(),
 			[&]
 		(
-			const std::shared_ptr<Object>& obj1,
-			const std::shared_ptr<Object>& obj2
+			const std::shared_ptr<GameObject>& obj1,
+			const std::shared_ptr<GameObject>& obj2
 			)
 		{
 			short obj1Num = obj1->GetSortNumber();
@@ -528,19 +528,19 @@ void ObjectManager::ObjectSort(const ObjectSortType& sort, const bool& orderType
 
 #pragma endregion
 
-void ObjectManager::SetCollisionFlag3D(const CollisionFlag& type)
+void GameObjectManager::SetCollisionFlag3D(const CollisionFlag& type)
 {
 	checkCollision = type;
 }
 
-void ObjectManager::SetMouseCollisionFlag(const bool& flag)
+void GameObjectManager::SetMouseCollisionFlag(const bool& flag)
 {
 	checkMouseCollision = flag;
 }
 
 
 
-void ObjectManager::AllEraseObject()
+void GameObjectManager::AllEraseObject()
 {
 	objects.clear();
 }

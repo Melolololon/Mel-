@@ -1,24 +1,42 @@
-#include "FreamTimer.h"
+#include "FrameTimer.h"
 
-FreamTimer::FreamTimer()
+std::vector<FrameTimer*>FrameTimer::pTimers;
+
+FrameTimer::FrameTimer()
 {
-	TimerManager::GetInstance()->AddFreamTimer(this);
+	pTimers.push_back(this);
 }
 
-FreamTimer::FreamTimer(const  int maxTime)
+FrameTimer::FrameTimer(const  int maxTime)
 {
 	time = 0;
 	this->maxTime = maxTime;
-
-	TimerManager::GetInstance()->AddFreamTimer(this);
+	pTimers.push_back(this);
 }
 
-FreamTimer::~FreamTimer()
+FrameTimer::~FrameTimer()
 {
-	TimerManager::GetInstance()->EraseFreamTimer(this);
+	int count = 0;
+	for(auto& p : pTimers)
+	{
+		if(p == this)
+		{
+			break;
+		}
+		count++;
+	}
+	pTimers.erase(pTimers.begin() + count);
 }
 
-void FreamTimer::Update()
+void FrameTimer::AllUpdate()
+{
+	for (auto& p : pTimers)
+	{
+		p->Update();
+	}
+}
+
+void FrameTimer::Update()
 {
 	timeResetFream = false;
 	if (isStop)return;

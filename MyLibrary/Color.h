@@ -2,6 +2,8 @@
 
 #include<DirectXMath.h>
 
+//ColorŒ^‚ÆColorAlpha‚ğ•ª‚¯‚é?
+
 struct Color
 {
 	//rgba‚ÍŒ^‚ğ“ˆê‚µ‚È‚¢‚Æ‚¢‚¯‚È‚¢‚Á‚Û‚¢

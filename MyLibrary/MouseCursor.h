@@ -1,9 +1,9 @@
 #pragma once
-#include "Object.h"
+#include "GameObject.h"
 #include"Library.h"
 
 class MouseCursor :
-	public Object
+	public GameObject
 {
 private:
 	Vector2 position2D;

@@ -1,6 +1,6 @@
 #pragma once
-#include"Object.h"
-class ModelBone:public Object
+#include"GameObject.h"
+class ModelBone:public GameObject
 {
 private:
 

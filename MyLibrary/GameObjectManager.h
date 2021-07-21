@@ -1,11 +1,13 @@
 #pragma once
-#include"Object.h"
+#include"GameObject.h"
 #include"CollisionType.h"
 #include<vector>
 #include"MouseCursor.h"
 #include<memory>
 
-class ObjectManager
+//カーソル判定用のソート作って、全体ソートなくす
+//カーソル判定用配列に移してソート
+class GameObjectManager
 {
 public:
 	enum ObjectSortType
@@ -26,12 +28,12 @@ public:
 
 
 private:
-	ObjectManager();
-	~ObjectManager();
+	GameObjectManager();
+	~GameObjectManager();
 
-	std::vector<std::shared_ptr<Object>>objects;
+	std::vector<std::shared_ptr<GameObject>>objects;
 	//追加されたものを一時的に入れておく配列
-	std::vector<std::shared_ptr<Object>>addObjects;
+	std::vector<std::shared_ptr<GameObject>>addObjects;
 
 	CollisionFlag checkCollision;
 
@@ -54,10 +56,10 @@ private:
 	/// </summary>
 	void EraseObjectCheck();
 public:
-	ObjectManager(const ObjectManager& obj) = delete;
-	ObjectManager& operator=(const ObjectManager& obj) = delete;
+	GameObjectManager(const GameObjectManager& obj) = delete;
+	GameObjectManager& operator=(const GameObjectManager& obj) = delete;
 
-	static ObjectManager* GetInstance();
+	static GameObjectManager* GetInstance();
 
 	/// <summary>
 	/// 初期化します
@@ -96,7 +98,7 @@ public:
 #pragma region オブジェクト管理
 
 	/// <summary>
-	/// 配列のメモリを確保します。これにより、追加時の処理が速くなりますが、メモリ効率が悪くなります
+	/// オブジェクトの配列のメモリを確保します。
 	/// </summary>
 	/// <param name="reserveNum"></param>
 	void ReserveObjectArray(const int& reserveNum);
@@ -105,10 +107,10 @@ public:
 	/// オブジェクトを追加します。
 	/// </summary>
 	/// <param name="object"></param>
-	void AddObject(const std::shared_ptr<Object>& object);
+	void AddObject(const std::shared_ptr<GameObject>& object);
 
 	/// <summary>
-	/// 追加したフレームごとにソートするかを設定します。追加しない場合、orderTypeは無視されます
+	/// 追加したフレームごとにソートするかを設定します。追加しない場合、orderTypeは無視されます。
 	/// </summary>
 	/// <param name="sort">ソートの仕方</param>
 	/// <param name="orderType">true 昇順  false 降順</param>

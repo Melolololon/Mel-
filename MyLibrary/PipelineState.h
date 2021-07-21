@@ -4,6 +4,11 @@
 #include<string>
 #include<unordered_map>
 #include<memory>
+
+//パイプラインは別にモデルみたいにstaticのアクセス関数とかいらない?
+//それとも、シーンをまたいで使う可能性あるからいる?
+
+
 enum class PipelineType
 {
 	MODEL,
@@ -35,14 +40,29 @@ private:
 
 
 public:
-	PipelineState();
-	~PipelineState();
+	PipelineState(){}
+	~PipelineState(){}
 
 	static bool Initialize
 	(
 		ID3D12Device* dev
 	);
 
+	/// <summary>
+    /// パイプラインを生成します
+    /// </summary>
+    /// <param name="pipelineData">パイプライン情報</param>
+    /// <param name="vShaderData">頂点シェーダー情報</param>
+    /// <param name="gSyaderData">ジオメトリシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
+    /// <param name="hShaderData">ハルシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
+    /// <param name="dShaderData">ドメインシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
+    /// <param name="pShaderData">ピクセルシェーダー情報</param>
+    /// <param name="pipelineType">何のパイプラインを生成するか</param>
+    /// <param name="inputLayoutData">インプットレイアウト情報(指定しない場合は、nullptrを渡す)</param>
+    /// <param name="modelClassName">typeidにModelObjectなどを渡し、name関数で取得した文字列(誤セット防止に使用)</param>
+    /// <param name="renderTargetNum">同時にどのくらい出力するか</param>
+    /// <param name="name">登録名</param>
+    /// <returns></returns>
 	static void Create
 	(
 		const PipelineData& pipelineData,
@@ -57,6 +77,7 @@ public:
 		const int renderTargetNum,
 		const std::string& name
 	);
+
 	static PipelineState* Get(const std::string& name) { return pPipelineState[name].get(); }
 	static void Delete(const std::string& name);
 
@@ -71,7 +92,7 @@ public:
 	/// <param name="pShaderData">ピクセルシェーダー情報</param>
 	/// <param name="pipelineType">何のパイプラインを生成するか</param>
 	/// <param name="inputLayoutData">インプットレイアウト情報(指定しない場合は、nullptrを渡す)</param>
-	/// <param name="modelClassName">typeidのname関数で取得した文字列</param>
+	/// <param name="modelClassName">typeidにModelObjectなどを渡し、name関数で取得した文字列(誤セット防止に使用)</param>
 	/// <param name="renderTargetNum">同時にどのくらい出力するか</param>
 	/// <returns></returns>
 	bool CreatePipeline
@@ -87,6 +108,7 @@ public:
 		const std::string& modelClassName,
 		const int renderTargetNum
 	);
+	
 
 
 

@@ -1,6 +1,4 @@
 #pragma once
-#include"TimerManager.h"
-class TimerManager;
 
 #include<vector>
 
@@ -8,12 +6,14 @@ class TimerManager;
 //マネージャーでのUpdateとストップフラグ関数やめて、
 //関数呼び出してる間ストップしない(Updateする)って仕様にする?
 
+//FrameTimerに名前変える
+
 //フレームタイマー(プログラム依存)
-class FreamTimer
+class FrameTimer
 {
 private:
 	//タイマーのポインタの配列(Update用)
-	std::vector<FreamTimer*>pTimers;
+	static std::vector<FrameTimer*>pTimers;
 
 	//現在の時間
 	int time = 0;
@@ -30,16 +30,16 @@ private:
 
 	void Update();
 public:
-	friend TimerManager;
 
-	FreamTimer();
+	FrameTimer();
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="maxTime">最大計測時間</param>
-	FreamTimer(const int maxTime);
-	~FreamTimer();
+	FrameTimer(const int maxTime);
+	~FrameTimer();
 
+	static void AllUpdate();
 
 	/// <summary>
 	/// 時間をリセットタイムでリセットします。
@@ -61,10 +61,10 @@ public:
 	bool GetStopFlag() { return isStop; }
 
 	/// <summary>
-	/// 最大計測時間に達したときにリセットするための時間を返します。
+	///	現在の時間を返します。
 	/// </summary>
 	/// <returns></returns>
-	int GetTime() { return time; }
+	int GetCurrent() { return time; }
 
 	/// <summary>
 	/// 最小計測時間を取得します。
@@ -83,6 +83,8 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool GetSameAsMaximumFlag() { return timeResetFream; }
+
+
 
 	/// <summary>
 	/// 時間がセットした数値の倍数だった場合、trueを返します。
@@ -129,7 +131,7 @@ public:
 	/// タイマーの現在の時間を設定します。
 	/// </summary>
 	/// <param name="num"></param>
-	void SetNowTime(const int num) { time = num; }
+	void SetCurrentTime(const int num) { time = num; }
 #pragma endregion
 
 };

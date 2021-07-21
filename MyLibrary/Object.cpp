@@ -1,87 +1,87 @@
-#include "Object.h"
+#include "GameObject.h"
 
 
 
-Object::Object()
+GameObject::GameObject()
 {
 	
 }
 
 
-Object::~Object()
+GameObject::~GameObject()
 {
 }
 
-void Object::Initialize()
+void GameObject::Initialize()
 {
 }
 
-void Object::Update() 
+void GameObject::Update() 
 {
 }
 
-void Object::Draw() 
+void GameObject::Draw() 
 {
 
 }
 
-void Object::Hit
+void GameObject::Hit
 (
-	const Object* const  object,
+	const GameObject* const  object,
 	const CollisionType& collisionType,
 	const int& arrayNum
 )
 {
 }
 
-bool Object::GetEraseManager() { return eraseManager; }
-void Object::ObjectInitialize() 
+bool GameObject::GetEraseManager() { return eraseManager; }
+void GameObject::ObjectInitialize() 
 {
 	eraseManager = false;
 }
 
-CollisionFlag Object::GetCollisionFlag() 
+CollisionFlag GameObject::GetCollisionFlag() 
 {
 	return collisionFlag;
 }
 
 
-const void* Object::GetPtr()const
+const void* GameObject::GetPtr()const
 {
 	return this;
 }
 
-std::vector<SphereData> Object::GetSphereData()
+std::vector<SphereData> GameObject::GetSphereData()
 {
 	return sphereData;
 }
 
-std::vector<BoxData> Object::GetBoxData()
+std::vector<BoxData> GameObject::GetBoxData()
 {
 	return boxData;
 }
 
-std::vector<LineSegmentData> Object::GetLineSegmentData()
+std::vector<LineSegmentData> GameObject::GetLineSegmentData()
 {
 	return lineSegmentData;
 }
 
-std::vector<PlaneData> Object::GetPlaneData()
+std::vector<PlaneData> GameObject::GetPlaneData()
 {
 	return planeData;
 }
 
-std::vector<BoardData> Object::GetBoardData()
+std::vector<BoardData> GameObject::GetBoardData()
 {
 	return boardData;
 }
 
-Vector3& Object::GetLineSegmentHitPosition(const int  num)
+Vector3& GameObject::GetLineSegmentHitPosition(const int  num)
 {
 	return lineSegmentData[num].hitPos;
 }
 
-Vector3& Object::GetBoardHitPosition(const int  num)
+Vector3& GameObject::GetBoardHitPosition(const int  num)
 {
 	return boardData[num].hitPos;
 }
