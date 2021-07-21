@@ -100,7 +100,7 @@ public:
 	/// 最小計測時間に達したときに現在の時間を上書きする時間を取得します。
 	/// </summary>
 	/// <returns></returns>
-	int GetResetMaxTime() { return resetMinTime; }
+	int GetResetMinTime() { return resetMinTime; }
 
 	/// <summary>
 	/// 最大計測時間と現在の時間が同じになった瞬間にtrueを返します。
