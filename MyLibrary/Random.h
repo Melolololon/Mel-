@@ -1,6 +1,5 @@
 #pragma once
 #include"Vector.h"
-#include<minwindef.h>
 class Random
 {
 private:
@@ -10,6 +9,7 @@ private:
 	
 
 public:
+	using UINT = unsigned int;
 
 	static void Initialize();
 	
@@ -17,7 +17,7 @@ public:
 	/// シード値をセットします。
 	/// </summary>
 	/// <param name="seed"></param>
-	static void SetSeed(UINT seed);
+	static void SetSeed(const UINT seed);
 
 	/// <summary>
 	/// シード値に時間を使用するようにします。

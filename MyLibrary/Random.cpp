@@ -6,7 +6,7 @@ void Random::Initialize()
 	SetSeedTime();
 }
 
-void Random::SetSeed(UINT seed)
+void Random::SetSeed(const UINT seed)
 {
 	srand(seed);
 }

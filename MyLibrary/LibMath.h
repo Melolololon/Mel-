@@ -269,7 +269,7 @@ public:
 	static Vector3 FloatDistanceMoveVector3(const Vector3& pos,const Vector3& vector, const float distance);
 #pragma endregion
 
-
+	
 #pragma endregion
 
 #pragma region “–‚½‚è”»’è
