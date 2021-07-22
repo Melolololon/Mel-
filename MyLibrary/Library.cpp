@@ -234,6 +234,9 @@ void Library::Finalize()
 
 	Input::Finitialize();
 
+	Sound::Finitialize();
+	SoundData::Finitialize();
+
 	dx12->Finalize();
 
 	if (!isDestroy)

@@ -74,11 +74,14 @@ private:
 	bool Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData, const std::string& name);
 	void CheckPlayEnd();
 public: 
+	~Sound();
+
 	static const UINT32 LOOP_INFINITY = XAUDIO2_LOOP_INFINITE;
 	static const UINT32 LOOP_MAX = XAUDIO2_MAX_LOOP_COUNT;
 
 	static void Initialize(IXAudio2* pIXAudio2);
 	static void Update();
+	static void Finitialize();
 	
 	
 	/// <summary>

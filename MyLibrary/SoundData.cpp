@@ -12,6 +12,11 @@ void SoundData::Delete(const std::string& name)
 {
 }
 
+void SoundData::Finitialize()
+{
+	pSoundDatas.clear();
+}
+
 
 bool SoundData::LoadSound(const std::string& path, const std::string& name)
 {
@@ -56,4 +61,9 @@ bool SoundData::LoadSound(const std::string& path, const std::string& name)
 	memcpy(&wfex, &format.fmt, sizeof(format.fmt));
 	wfex.wBitsPerSample = format.fmt.nBlockAlign * 8 / format.fmt.nChannels;
 #pragma endregion
+}
+
+SoundData::~SoundData()
+{
+	delete[] pBuffer;
 }

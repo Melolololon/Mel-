@@ -113,6 +113,12 @@ void Sound::Update()
 
 }
 
+void Sound::Finitialize()
+{
+	pSounds.clear();
+	pNoneNameSounds.clear();
+}
+
 void Sound::CheckPlayEnd()
 {
 	//WaitForSingleObjectEx(イベント,引数1のイベントがSetEventに渡されるまでに待機する時間,)
@@ -129,6 +135,15 @@ void Sound::CheckPlayEnd()
 		playEnd = false;
 	}
 	
+}
+
+Sound::~Sound()
+{
+	if (pSourceVoice) 
+	{
+		pSourceVoice->Stop();
+		pSourceVoice->DestroyVoice();
+	}
 }
 
 bool Sound::PlayLoadSound(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData, const std::string& name)
@@ -165,11 +180,6 @@ bool Sound::PlayLoadSound(SoundData* soundData, const UINT32 loopNum, const Play
 
 void Sound::StopSound(const std::string& name)
 {
-	if (pSounds[name]->pSourceVoice) 
-	{
-		pSounds[name]->pSourceVoice->Stop();
-		pSounds[name]->pSourceVoice->DestroyVoice();
-	}
 	pSounds.erase(name);
 }
 

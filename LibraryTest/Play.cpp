@@ -39,11 +39,11 @@ void Play::Initialize()
 	ModelObject::Create(ModelData::Get("model"), nullptr, "model");
 	ModelObject::Get("model")->SetAnimationFlag(true);
 
-	//SoundData::Load("Resources/Sound/EnemyLostSE.wav", "test");
+	SoundData::Load("Resources/Sound/EnemyLostSE.wav", "test");
 
-	//PlaySoundData data;
-	//data.volume = 100;
-	//Sound::PlayLoadSound(SoundData::Get("test"), 1, data,"test");
+	PlaySoundData data;
+	data.volume = 100;
+	Sound::PlayLoadSound(SoundData::Get("test"), 100, data);
 
 	TextWrite::CreateFontData("test");
 }
