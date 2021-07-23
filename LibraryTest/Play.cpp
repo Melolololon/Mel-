@@ -91,6 +91,11 @@ void Play::Update()
 
 
 	ModelObject::Get("model")->SetAngle(angle);
+
+	Vector2 v1 = Vector2(3, -4).Cross(Vector2(3,3));
+	Vector2 v2 = Vector2::Cross(Vector2(3, -4), Vector2(3, 3));
+	int z = 0;
+
 }
 
 void Play::Draw()

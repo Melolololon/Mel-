@@ -73,6 +73,12 @@
     <Filter Include="ソース ファイル\Sound">
       <UniqueIdentifier>{a763e635-3cf5-4163-bdb6-ce7f218199a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Texture">
+      <UniqueIdentifier>{c713ab9e-ea6a-4cde-9ca9-c024db212fb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Texture">
+      <UniqueIdentifier>{75729df2-a7e2-42d8-9110-f9aa0cf2d5af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CreateBuffer.cpp">
@@ -168,9 +174,6 @@
     <ClCompile Include="PipelineState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite2D.cpp">
       <Filter>ソース ファイル\Sprite</Filter>
     </ClCompile>
@@ -254,6 +257,18 @@
     </ClCompile>
     <ClCompile Include="Counter.cpp">
       <Filter>ソース ファイル\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureFont.cpp">
+      <Filter>ソース ファイル\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>ソース ファイル\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>ソース ファイル\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsObject.cpp">
+      <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -383,9 +398,6 @@
     <ClInclude Include="PipelineState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="FbxModel.h">
       <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
@@ -475,6 +487,18 @@
     </ClInclude>
     <ClInclude Include="Counter.h">
       <Filter>ヘッダー ファイル\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureFont.h">
+      <Filter>ヘッダー ファイル\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>ヘッダー ファイル\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>ヘッダー ファイル\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsObject.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

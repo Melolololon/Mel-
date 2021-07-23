@@ -4,7 +4,6 @@
 
 
 
-
 class Sprite2D :public Sprite
 {
 public:

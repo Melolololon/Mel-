@@ -180,6 +180,8 @@
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Counter.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sound_Unused.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -232,6 +234,7 @@
     <ClCompile Include="Sprite3D.cpp" />
     <ClCompile Include="SpriteFont2D.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureFont.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="TextWrite.cpp" />
     <ClCompile Include="Values.cpp" />
@@ -540,6 +543,8 @@
   <ItemGroup>
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Counter.h" />
+    <ClInclude Include="Physics.h" />
+    <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sound_Unused.h" />
     <ClInclude Include="BufferData.h" />
@@ -596,6 +601,7 @@
     <ClInclude Include="Sprite3D.h" />
     <ClInclude Include="SpriteFont2D.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureFont.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="TextWrite.h" />
     <ClInclude Include="Values.h" />

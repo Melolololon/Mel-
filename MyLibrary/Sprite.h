@@ -25,11 +25,12 @@
 //Drawは仮想関数。それぞれにmap処理を書く
 //
 
+//途中でテクスチャ変えたり、べた塗りにしたりできるようにする
+//そうしないとスプライトフォントのスプライトを先に用意できない
 
 class Sprite
 {
 private:
-
 
 #pragma region 変数
 	static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 10;

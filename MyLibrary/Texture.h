@@ -6,7 +6,10 @@
 #include"Vector.h"
 #include"Color.h"
 
-//spriteにヒープ持たせる?
+
+//Textureにテクスチャバッファ持たせる?
+//スプライトとかで同じテクスチャなのにバッファ毎回作るのもったいない
+//
 
 using namespace Microsoft::WRL;
 class Texture
@@ -34,7 +37,7 @@ public:
 
 	static bool Load(const std::string& path, const std::string& name);
 	static void Delete(const std::string& name);
-	static Texture* Get(const std::string& name) { pTextures[name].get(); }
+	static Texture* Get(const std::string& name) { return pTextures[name].get(); }
 
 	/// <summary>
 	/// モデルのテクスチャを読み込みます。

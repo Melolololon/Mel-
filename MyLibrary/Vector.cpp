@@ -122,12 +122,6 @@ void Vector2::operator/= (const Vector2& vector)
 
 
 
-void Vector2::operator=(const float num)
-{
-	x = num;
-	y = num;
-}
-
 bool Vector2::operator==(const Vector2& vector)
 {
 	if (x == vector.x &&
@@ -155,32 +149,69 @@ void Vector2::operator--()
 	y--;
 }
 
+Vector2 Vector2::operator-()
+{
+	Vector2 v = Vector2(x, y);
+	return v * -1;
+}
+
+
 #pragma endregion
 
 #pragma region ä÷êî
+float Vector2::Length()const
+{
+	return static_cast<float>(sqrt(x * x + y * y));
+}
 
 float Vector2::Length(const Vector2& vector)
 {
-	return static_cast<float>(sqrt(vector.x * vector.x + vector.y * vector.y ));
+	return vector.Length();
+}
+
+Vector2 Vector2::Normalize()const
+{
+	if (x == 0 && y == 0)return 0;
+	float length = Length(Vector2(x, y));
+	return Vector2(x / length, y / length);
 }
 
 Vector2 Vector2::Normalize(const Vector2& vector)
 {
-	if (vector.x == 0 && vector.y == 0)return { 0,0 };
-	float length = Length(vector);
-	return{ vector.x / length ,vector.y / length };
+	return vector.Normalize();
 }
 
+float Vector2::Dot(const Vector2& vector)const
+{
+	return x * vector.x + y * vector.y;
+}
 float Vector2::Dot(const Vector2& vector1, const Vector2& vector2)
 {
-	return vector1.x * vector2.x + vector1.y * vector2.y;
+	return vector1.Dot(vector2);
 }
 
+
+float Vector2::Cross(const Vector2& vector)const
+{
+	return x * vector.y - y * vector.x;
+}
 float Vector2::Cross(const Vector2& vector1, const Vector2& vector2)
 {
-	return vector1.x * vector2.y - vector1.y * vector2.x;
+	return vector1.Cross(vector2);
 }
 
+
+Vector2 Vector2::Abs()const
+{
+	Vector2 returnVector = Vector2(x, y);
+	if (returnVector.x < 0)returnVector.x *= -1;
+	if (returnVector.y < 0)returnVector.y *= -1;
+	return returnVector;
+}
+Vector2 Vector2::Abs(const Vector2& vector)
+{
+	return vector.Abs();
+}
 
 Vector2 Vector2Normalize(const Vector2& vector)
 {
@@ -343,12 +374,6 @@ void Vector3::operator/= (const Vector3& vector)
 	z = z / vector.z;
 }
 
-void Vector3::operator=(const float num)
-{
-	x = num;
-	y = num;
-	z = num;
-}
 
 bool Vector3::operator==(const Vector3& vector)
 {
@@ -381,34 +406,73 @@ void Vector3::operator--()
 	y--;
 	z--;
 }
+
+Vector3 Vector3::operator-()
+{
+	Vector3 vector = Vector3(x, y, z);
+	return vector * -1;
+}
+
 #pragma endregion
 
 #pragma region ä÷êî
+float Vector3::Length()const
+{
+	return static_cast<float>(sqrt(x * x + y * y + z * z));
+}
 float Vector3::Length(const Vector3& vector) 
 {
-	return static_cast<float>(sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z));
+	return vector.Length();
+}
+
+Vector3 Vector3::Normalize() const
+{
+	if (x == 0 && y == 0 && z == 0)return 0;
+	float length = Vector3(x, y, z).Length();
+	return Vector3(x / length ,y / length ,z / length );
 }
 
 Vector3 Vector3::Normalize(const Vector3& vector) 
 {
-	if (vector.x == 0 && vector.y == 0 && vector.z == 0)return {0,0,0};
-	float length = Length(vector);
-	return{ vector.x / length ,vector.y / length ,vector.z / length };
+	return vector.Normalize();
 }
 
+float Vector3::Dot(const Vector3& vector)const
+{
+	return x * vector.x + y * vector.y + z * vector.z;
+}
 float Vector3::Dot(const Vector3& vector1, const Vector3& vector2)
 {
-	return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
+	return vector1.Dot(vector2);
 }
+
+Vector3 Vector3::Cross(const Vector3& vector)const
+{
+	Vector3 cross;
+	cross.x = y * vector.z - z * vector.y;
+	cross.y = z * vector.x - x * vector.z;
+	cross.z = x * vector.y - y * vector.x;
+
+	return cross;
+}
+
 
 Vector3 Vector3::Cross(const Vector3& vector1, const Vector3& vector2)
 {
-	Vector3 cross;
-	cross.x = vector1.y * vector2.z - vector1.z * vector2.y;
-	cross.y = vector1.z * vector2.x - vector1.x * vector2.z;
-	cross.z = vector1.x * vector2.y - vector1.y * vector2.x;
+	return vector1.Cross(vector2);
+}
 
-	return cross;
+Vector3 Vector3::Abs()const
+{
+	Vector3 returnVector = Vector3(x, y, z);
+	if (returnVector.x < 0)returnVector.x *= -1;
+	if (returnVector.y < 0)returnVector.y *= -1;
+	if (returnVector.z < 0)returnVector.z *= -1;
+	return returnVector;
+}
+Vector3 Vector3::Abs(const Vector3& vector)
+{
+	return vector.Abs();
 }
 
 
