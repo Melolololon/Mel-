@@ -4,7 +4,7 @@
 #include"GameObjectManager.h"
 #include"Play.h"
 #include"Camera.h"
-
+#include"ModelData.h"
 
 Game::Game() {}
 
@@ -40,6 +40,12 @@ void Game::Initialize()
 	Library::SetFramesPerSecond60(true);
 	
 	Camera::Get()->SetRotateCriteriaPosition(Vector3(0, 0, -5));
+
+
+
+#pragma region モデル読み込み
+	ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
+#pragma endregion
 
 #pragma region マネージャー初期化
 

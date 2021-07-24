@@ -13,9 +13,9 @@ GameObject::~GameObject()
 {
 }
 
-void GameObject::Initialize()
-{
-}
+//void GameObject::Initialize()
+//{
+//}
 
 void GameObject::Update() 
 {

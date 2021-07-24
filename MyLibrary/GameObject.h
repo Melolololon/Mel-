@@ -59,11 +59,11 @@ public:
 	//デストラクタ
 	virtual ~GameObject();
 
-	//初期化
-	virtual void Initialize();
-	//処理
+	////初期化
+	//virtual void Initialize();
+	//更新
 	virtual void Update();
-	//描画処理
+	//描画
 	virtual void Draw();
 
 	/// <summary>
@@ -116,5 +116,6 @@ public:
 	BoxHitDirection& GetBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
 
 
-	Vector3 SetVelocity(const Vector3& velocity) { this->velocity = velocity; }
+	void SetPosition(const Vector3& position) { this->position = position; }
+	void SetVelocity(const Vector3& velocity) { this->velocity = velocity; }
 };

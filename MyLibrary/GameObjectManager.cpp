@@ -24,7 +24,7 @@ void GameObjectManager::Initialize()
 	
 
 	cursor = std::make_unique<MouseCursor>();
-	cursor->Initialize();
+	//cursor->Initialize();
 
 	addObjectSort = OBJECT_SORT_NONE;
 	addObjectSortOrderType = false;
@@ -115,6 +115,9 @@ void GameObjectManager::Update()
 							//hitを呼び出す
 							o1->Hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0]);
 
+							//判定は2回、物理演算は1回なので、回数のズレにより、バグる。
+							//1回に統一する。
+							//物理演算2回にすると、衝突前ベクトル取得できなくて無理
 
 							//反発
 							if (!o1->GetCalcPhysicsFlag() || !o2->GetCalcPhysicsFlag())continue;
@@ -127,6 +130,8 @@ void GameObjectManager::Update()
 								Value2<Vector3>(1.0f, 1.0f)
 							);
 
+							o1->SetPosition(o1->GetPosition() + velocity.v1);
+							o2->SetPosition(o2->GetPosition() + velocity.v2);
 							o1->SetVelocity(velocity.v1);
 							o2->SetVelocity(velocity.v2);
 						}

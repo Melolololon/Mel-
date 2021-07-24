@@ -159,10 +159,12 @@
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PhysicsTestObject.cpp" />
     <ClCompile Include="Play.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="PhysicsTestObject.h" />
     <ClInclude Include="Play.h" />
   </ItemGroup>
   <ItemGroup>

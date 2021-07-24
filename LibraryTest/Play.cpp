@@ -27,6 +27,7 @@
 #include"Counter.h"
 
 #include"Physics.h"
+#include"PhysicsTestObject.h"
 Play::Play(){}
 
 
@@ -53,6 +54,13 @@ void Play::Initialize()
 	Sound::PlayLoadSound(SoundData::Get("test"), 100, data);
 
 	TextWrite::CreateFontData("test");
+
+
+
+	Camera::Get()->SetRotateCriteriaPosition(Vector3(0, 0, -50));
+
+	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(-40,0,0),Vector3(0.3,0,0)));
+	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(40,0,0),Vector3(-0.3,0,0)));
 }
 int testT = 0;
 
@@ -105,12 +113,14 @@ void Play::Update()
 	int z = 0;
 
 
-
+	GameObjectManager::GetInstance()->Update();
 }
 
 void Play::Draw()
 {
-	ModelObject::Get("model")->Draw();
+	//ModelObject::Get("model")->Draw();
+
+	GameObjectManager::GetInstance()->Draw();
 }
 
 void Play::Finitialize()

@@ -20,14 +20,19 @@ Value2<Vector3> Physics::CalcRepulsionVelocity
     const Value2<Vector3>& e
 )
 {
+    if (mass.v1 < 0.0f || mass.v2 < 0.0f)return velocity;
+
     //åvéZëOÇÃvelocityÇäiî[
-    const Value2<Vector3> calcPreviousVelocity(velocity);
+    const Value2<Vector3> calcPreVel(velocity);
 
     Value2<Vector3> calcVel(0.0f, 0.0f);
     //LenghtÇÃïîï™à·Ç§Ç©Ç‡?Ç≈Ç‡åvéZÇ±ÇÃëOçáÇ¡ÇƒÇΩÇÊÇ§Ç»
     Vector3 n = LibMath::OtherVector(position.v1, position.v2);
-    calcVel.v1 = -(((((1 + e.v2) * mass.v1 * mass.v2) / (mass.v1 + mass.v2)) * (calcPreviousVelocity.v1 - calcPreviousVelocity.v2) * n) * n) / mass.v1 + calcPreviousVelocity.v1;
-    calcVel.v2 = -(((((1 + e.v1) * mass.v1 * mass.v2) / (mass.v1 + mass.v2)) * (calcPreviousVelocity.v2 - calcPreviousVelocity.v1) * n) * n) / mass.v2 + calcPreviousVelocity.v2;
+    calcVel.v1 = -(((((1 + e.v2) * mass.v1 * mass.v2) / (mass.v1 + mass.v2)) * (calcPreVel.v1 - calcPreVel.v2) * n) * n) / mass.v1 + calcPreVel.v1;
+    calcVel.v2 = -(((((1 + e.v1) * mass.v1 * mass.v2) / (mass.v1 + mass.v2)) * (calcPreVel.v2 - calcPreVel.v1) * n) * n) / mass.v2 + calcPreVel.v2;
+   
+    //calcVel.v1 = -((calcPreVel.v1 - calcPreVel.v2) * n) * n + calcPreVel.v1;
+    //calcVel.v2 = -((calcPreVel.v2 - calcPreVel.v1) * n) * n + calcPreVel.v2;
 
     return calcVel;
 }
