@@ -7,12 +7,28 @@
 
 //オブジェクトマネージャー追加時に判定を選ぶようにする?(判定ごとに追加関数と配列作る)
 
+//GameObjectを継承させてPhysicsObject作ると、Hit関数で重さとか受け取れなくなるからまとめた
+
+//velocityとかを勝手に書き換えられるとバグる。
+//GameObjectのpositionとかをprivateにして関数でセットするようにする?(velocityは書き換えられないようにする)
+//そうすれば、Unityみたいになる
+//positionもvelocityもセットできるようにする。(変数用意するのめんどいから)
+
+
 class GameObject
 {
-public:
-
+private:
 
 protected:
+
+	//加速度
+	Vector3 acceleration = 0;
+	//物体が動く力
+	Vector3 force = 0;
+	//重さ
+	float mass = 0;
+
+
 	Vector3 position = { 0,0,0 };
 	Vector3 velocity = { 0,0,0 };
 	Vector3 speed = { 0,0,0 };
@@ -20,6 +36,8 @@ protected:
 	//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
 	bool eraseManager = false;
 
+	//物理的な挙動を行うための計算を行うかどうか。
+	bool calcPhysics = false;
 
 #pragma region 判定データ
 	std::vector<SphereData> sphereData;
@@ -61,6 +79,8 @@ public:
 		const int& arrayNum
 	);
 
+	//void CalcHitPhysics(GameObject* hitObject,const Vector3& hutPreVelocity,const CollisionType& collisionType);
+
 	virtual const void* GetPtr()const;
 
 	//オブジェクトマネージャーから削除するかどうかのフラグを返す
@@ -72,9 +92,16 @@ public:
 	//再追加したときに初期化したいからこのままでいい
 	void ObjectInitialize();
 	
-	Vector3 GetPosition()const { return position; };
 
 	short GetSortNumber() const{ return sortNumber; }
+
+
+	Vector3 GetPosition()const { return position; }
+	Vector3 GetVelocity()const { return velocity; }
+	Vector3 GetAcceleration()const { return acceleration; }
+	Vector3 GetForce()const { return force; }
+	float GetMass()const { return mass; }
+	bool GetCalcPhysicsFlag()const { return calcPhysics; }
 
 	//判定用関数
 	CollisionFlag GetCollisionFlag();
@@ -89,5 +116,5 @@ public:
 	BoxHitDirection& GetBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
 
 
-	
+	Vector3 SetVelocity(const Vector3& velocity) { this->velocity = velocity; }
 };

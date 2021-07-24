@@ -45,7 +45,7 @@ private:
 	bool addObjectSortOrderType;
 
 	//カーソル判定
-	bool checkMouseCollision;
+	bool checkMouseCollision = false;
 	Vector3 cameraPosition;
 	std::unique_ptr<MouseCursor>cursor;
 
@@ -58,6 +58,8 @@ private:
 	/// eraseManagerがtrueかどうかを確認します。trueの場合は、削除されます
 	/// </summary>
 	void EraseObjectCheck();
+
+
 public:
 	GameObjectManager(const GameObjectManager& obj) = delete;
 	GameObjectManager& operator=(const GameObjectManager& obj) = delete;
@@ -96,7 +98,6 @@ public:
 	/// </summary>
 	/// <param name="flag"></param>
 	void SetMouseCollisionFlag(const bool& flag);
-
 
 #pragma region オブジェクト管理
 

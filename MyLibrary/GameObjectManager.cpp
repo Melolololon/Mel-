@@ -1,7 +1,8 @@
 #include "GameObjectManager.h"
 #include"CollisionType.h"
 #include"LibMath.h"
-
+#include"Physics.h"
+#include"Values.h"
 
 GameObjectManager::GameObjectManager()
 {
@@ -20,15 +21,8 @@ GameObjectManager* GameObjectManager::GetInstance()
 
 void GameObjectManager::Initialize() 
 {
-	checkCollision.board = false;
-	checkCollision.box = false;
-	checkCollision.lineSegment = false;
-	checkCollision.plane = false;
-	checkCollision.ray = false;
-	checkCollision.sphere = false;
+	
 
-	checkMouseCollision = false;
-	cameraPosition = 0.0f;
 	cursor = std::make_unique<MouseCursor>();
 	cursor->Initialize();
 
@@ -40,7 +34,7 @@ void GameObjectManager::Initialize()
 
 void GameObjectManager::Update() 
 {
-#pragma region Update
+#pragma region オブジェクトのUpdate
 	//カーソルアップデート
 	if (cursor) 
 	{
@@ -70,7 +64,9 @@ void GameObjectManager::Update()
 #pragma endregion
 
 	EraseObjectCheck();
-#pragma region collision
+
+
+#pragma region 判定処理
 
 	CollisionFlag f1;
 	CollisionFlag f2;
@@ -116,7 +112,23 @@ void GameObjectManager::Update()
 							c2.r
 						))
 						{
+							//hitを呼び出す
 							o1->Hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0]);
+
+
+							//反発
+							if (!o1->GetCalcPhysicsFlag() || !o2->GetCalcPhysicsFlag())continue;
+
+							Value2<Vector3> velocity = Physics::CalcRepulsionVelocity
+							(
+								Value2<Vector3>(o1->GetPosition(), o2->GetPosition()),
+								Value2<Vector3>(o1->GetVelocity(), o2->GetVelocity()),
+								Value2<float>(o1->GetMass(), o2->GetMass()),
+								Value2<Vector3>(1.0f, 1.0f)
+							);
+
+							o1->SetVelocity(velocity.v1);
+							o2->SetVelocity(velocity.v2);
 						}
 						collisionCount[1]++;
 					}
@@ -326,7 +338,6 @@ void GameObjectManager::Update()
 
 
 #pragma endregion
-
 
 }
 

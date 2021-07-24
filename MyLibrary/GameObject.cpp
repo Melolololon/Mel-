@@ -1,5 +1,6 @@
 #include "GameObject.h"
 
+#include"Physics.h"
 
 
 GameObject::GameObject()
@@ -33,6 +34,20 @@ void GameObject::Hit
 )
 {
 }
+
+//void GameObject::CalcHitPhysics(GameObject* hitObject, const Vector3& hutPreVelocity, const CollisionType& collisionType)
+//{
+//
+//	//switch (collisionType)
+//	//{
+//	//case CollisionType::COLLISION_SPHERE:
+//	//	
+//	//	velocity = Physics::CalcRepulsionVelocity
+//	//	(
+//	//	);
+//	//	break;
+//	//}
+//}
 
 bool GameObject::GetEraseManager() { return eraseManager; }
 void GameObject::ObjectInitialize() 

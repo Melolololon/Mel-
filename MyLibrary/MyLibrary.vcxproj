@@ -181,7 +181,6 @@
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Counter.cpp" />
     <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sound_Unused.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -213,8 +212,8 @@
     <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="ModelObject.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="ObjModelData.cpp" />
     <ClCompile Include="ObjModelObject.cpp" />
@@ -544,7 +543,6 @@
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Counter.h" />
     <ClInclude Include="Physics.h" />
-    <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sound_Unused.h" />
     <ClInclude Include="BufferData.h" />

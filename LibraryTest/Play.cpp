@@ -25,6 +25,8 @@
 #include"TextWrite.h"
 
 #include"Counter.h"
+
+#include"Physics.h"
 Play::Play(){}
 
 
@@ -33,6 +35,11 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
+	/*Vector3 v = Physics::CalcCoefficientOfRestitution
+	(
+		Value2<Vector3>()
+	);*/
+
 
 	ModelData::Load("Resources/PBRModels/SpiralPBR/SpiralPBR.fbx","model");
 	//ModelData::Load("Resources/boneTest/boneTest.fbx","model");
@@ -92,9 +99,12 @@ void Play::Update()
 
 	ModelObject::Get("model")->SetAngle(angle);
 
-	Vector2 v1 = Vector2(3, -4).Cross(Vector2(3,3));
-	Vector2 v2 = Vector2::Cross(Vector2(3, -4), Vector2(3, 3));
+	Vector3 v1 = -7;
+	Vector3 v2 = 1;
+	Vector3 v3 = (v1 + v2).Abs();
 	int z = 0;
+
+
 
 }
 

@@ -108,13 +108,13 @@
     <ClCompile Include="CreateCamera.cpp">
       <Filter>ソース ファイル\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
+    <ClCompile Include="GameObject.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectManager.cpp">
+    <ClCompile Include="GameObjectManager.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
     <ClCompile Include="PipelineManager.cpp">
@@ -266,9 +266,6 @@
     </ClCompile>
     <ClCompile Include="Physics.cpp">
       <Filter>ソース ファイル\Support</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsObject.cpp">
-      <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -496,9 +493,6 @@
     </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>ヘッダー ファイル\Support</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsObject.h">
-      <Filter>ヘッダー ファイル\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
