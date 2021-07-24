@@ -29,8 +29,10 @@ void GameObject::Draw()
 void GameObject::Hit
 (
 	const GameObject* const  object,
-	const CollisionType& collisionType,
-	const int& arrayNum
+	const CollisionType collisionType,
+	const int arrayNum,
+	const CollisionType hitObjColType,
+	const int hitObjArrayNum
 )
 {
 }

@@ -75,8 +75,10 @@ public:
 	virtual void Hit
 	(
 		const GameObject *const  object,
-		const CollisionType& collisionType,
-		const int& arrayNum
+		const CollisionType collisionType,
+		const int arrayNum,
+		const CollisionType hitObjColType,
+		const int hitObjArrayNum
 	);
 
 	//void CalcHitPhysics(GameObject* hitObject,const Vector3& hutPreVelocity,const CollisionType& collisionType);

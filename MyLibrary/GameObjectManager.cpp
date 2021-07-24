@@ -113,11 +113,19 @@ void GameObjectManager::Update()
 						))
 						{
 							//hitを呼び出す
-							o1->Hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0]);
+							o1->Hit
+							(
+								o2.get(),
+								CollisionType::COLLISION_SPHERE, 
+								collisionCount[0],
+								CollisionType::COLLISION_SPHERE,
+								collisionCount[1]
+							);
 
 							//判定は2回、物理演算は1回なので、回数のズレにより、バグる。
 							//1回に統一する。
 							//物理演算2回にすると、衝突前ベクトル取得できなくて無理
+							//一度確認(o1に割る当てられて確認)したら、検索対象外にする?A*のcloseみたいに
 
 							//反発
 							if (!o1->GetCalcPhysicsFlag() || !o2->GetCalcPhysicsFlag())continue;
@@ -180,8 +188,8 @@ void GameObjectManager::Update()
 							o1->GetSphereBoxHitDistance(collisionCount[0]) = dis;
 							o2->GetBoxBoxHitDistance(collisionCount[1]) = dis;
 
-							o1->Hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0]);
-							o2->Hit(o1.get(), CollisionType::COLLISION_BOX, collisionCount[1]);
+							o1->Hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0], CollisionType::COLLISION_BOX, collisionCount[1]);
+							o2->Hit(o1.get(), CollisionType::COLLISION_BOX, collisionCount[1], CollisionType::COLLISION_SPHERE, collisionCount[0]);
 						}
 						
 
@@ -229,7 +237,7 @@ void GameObjectManager::Update()
 						))
 						{
 							o1->GetBoxBoxHitDistance(collisionCount[0]) = dis;
-							o1->Hit(o2.get(), CollisionType::COLLISION_BOX, collisionCount[0]);
+							o1->Hit(o2.get(), CollisionType::COLLISION_BOX, collisionCount[0], CollisionType::COLLISION_BOX, collisionCount[1]);
 						}
 
 
@@ -287,8 +295,8 @@ void GameObjectManager::Update()
 							o1->GetLineSegmentHitPosition(collisionCount[0]) = hitPos;
 							o2->GetBoardHitPosition(collisionCount[1]) = hitPos;
 
-							o1->Hit(o2.get(), CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
-							o2->Hit(o1.get(), CollisionType::COLLISION_BOARD, collisionCount[1]);
+							o1->Hit(o2.get(), CollisionType::COLLISION_LINESEGMENT, collisionCount[0], CollisionType::COLLISION_BOARD, collisionCount[1]);
+							o2->Hit(o1.get(), CollisionType::COLLISION_BOARD, collisionCount[1], CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
 						}
 
 						collisionCount[1]++;
@@ -305,7 +313,7 @@ void GameObjectManager::Update()
 #pragma endregion
 
 #pragma region マウスカーソルと板ポリ
-	if (checkMouseCollision && checkCollision.board)
+	/*if (checkMouseCollision && checkCollision.board)
 	{
 		for (auto& o1 : objects)
 		{
@@ -338,7 +346,7 @@ void GameObjectManager::Update()
 				}
 			}
 		}
-	}
+	}*/
 #pragma endregion
 
 
