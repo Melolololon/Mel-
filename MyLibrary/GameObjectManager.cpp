@@ -70,6 +70,7 @@ void GameObjectManager::Update()
 
 	CollisionFlag f1;
 	CollisionFlag f2;
+	int objectCount[2] = { 0,0 };
 	int collisionCount[2] = { 0,0 };
 
 	std::vector<SphereData>sphere1;
@@ -89,6 +90,7 @@ void GameObjectManager::Update()
 	{
 		for (auto& o1 : objects)
 		{
+			int skipCount = 0;
 			for (auto& o2 : objects)
 			{
 				f1 = o1->GetCollisionFlag();
@@ -97,6 +99,13 @@ void GameObjectManager::Update()
 				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
 				if (o1 == o2 || !f1.sphere || !f2.sphere)continue;
 
+				//自分比較はカウントしない
+				skipCount++;
+				if (objectCount[0] > skipCount - 1)continue;
+
+
+				
+
 				sphere1 = o1->GetSphereData();
 				sphere2 = o2->GetSphereData();
 
@@ -104,6 +113,7 @@ void GameObjectManager::Update()
 				{
 					for (const auto& c2 : sphere2)
 					{
+
 						if (LibMath::SphereAndSphereCollision
 						(
 							c1.position,
@@ -112,6 +122,7 @@ void GameObjectManager::Update()
 							c2.r
 						))
 						{
+
 							//hitを呼び出す
 							o1->Hit
 							(
@@ -120,6 +131,14 @@ void GameObjectManager::Update()
 								collisionCount[0],
 								CollisionType::COLLISION_SPHERE,
 								collisionCount[1]
+							);	
+							o2->Hit
+							(
+								o1.get(),
+								CollisionType::COLLISION_SPHERE,
+								collisionCount[1],
+								CollisionType::COLLISION_SPHERE, 
+								collisionCount[0]
 							);
 
 							//判定は2回、物理演算は1回なので、回数のズレにより、バグる。
@@ -150,8 +169,12 @@ void GameObjectManager::Update()
 				}
 				collisionCount[0] = 0;
 
+				objectCount[1]++;
 			}
+			objectCount[0]++;
+			objectCount[1] = 0;
 		}
+		objectCount[0] = 0;
 	}
 #pragma endregion
 
