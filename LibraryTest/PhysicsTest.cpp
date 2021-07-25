@@ -47,7 +47,7 @@ void PhysicsTest::Initialize()
 	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(0, 41, 0), Vector3(0, -0.3, 0)));
 	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(0, -38, 0), Vector3(0, 0.3, 0)));
 
-	tPattern.Initialize();
+	//tPattern.Initialize();
 
 
 
@@ -57,14 +57,14 @@ void PhysicsTest::Update()
 {
 	if (Input::KeyState(DIK_Z) || Input::KeyTrigger(DIK_Z)) 
 	{
-		tPattern.Update();
+		//tPattern.Update();
 	}
 	GameObjectManager::GetInstance()->Update();
 }
 
 void PhysicsTest::Draw()
 {
-	tPattern.Draw();
+	//tPattern.Draw();
 	GameObjectManager::GetInstance()->Draw();
 }
 

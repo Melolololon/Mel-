@@ -1,6 +1,17 @@
 #include "Physics.h"
 #include"LibMath.h"
 
+
+const float Physics::GRAVITATIONAL_ACCELERATION_MERCURY = 3.7f;
+const float Physics::GRAVITATIONAL_ACCELERATION_VENUS = 8.87f;
+const float Physics::GRAVITATIONAL_ACCELERATION_EARTH = 9.807f;
+const float Physics::GRAVITATIONAL_ACCELERATION_MARS = 3.721f;
+const float Physics::GRAVITATIONAL_ACCELERATION_JUPITER = 24.79f;
+const float Physics::GRAVITATIONAL_ACCELERATION_SATURN = 10.44f;
+const float Physics::GRAVITATIONAL_ACCELERATION_URANUS = 8.87f;
+const float Physics::GRAVITATIONAL_ACCELERATION_NEPTUNE = 11.15f;
+const float Physics::GRAVITATIONAL_ACCELERATION_PLUTO = 0.62f;
+const float Physics::GRAVITATIONAL_ACCELERATION_MOON = 1.62f;
 Vector3 Physics::CalcCoefficientOfRestitution
 (
     const Value2<Vector3>& position,

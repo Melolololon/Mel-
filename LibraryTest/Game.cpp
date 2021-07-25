@@ -37,7 +37,7 @@ void Game::Initialize()
 {
 	
 
-	Library::Initialize(1280, 720, {200,200,200,255},L"MyLib");
+	Library::Initialize(1920, 1080, {200,200,200,255},L"MyLib");
 	Library::SetFramesPerSecond60(true);
 	
 	Camera::Get()->SetRotateCriteriaPosition(Vector3(0, 0, -5));
