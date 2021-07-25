@@ -17,7 +17,6 @@ Sprite2D::Sprite2D(Texture* pTexture)
 }
 
 
-Sprite2D::~Sprite2D(){}
 
 
 

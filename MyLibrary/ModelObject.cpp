@@ -12,23 +12,7 @@ PipelineState ModelObject::defaultPipeline;
 
 ModelObject::ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
-	if (userConstBufferData)this->userConstBufferData = *userConstBufferData;
-
-	//objのボーンのMoveVectorの割る処理のために、オブジェクトごとにバッファ作成
-	if (pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_OBJ) 
-	{
-		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT;
-	}
-	else
-	{
-		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL;
-	}
-	modelConstBufferData.bufferDataSize = sizeof(SkinConstBufferData);
-
-	modelFileObjectNum = pModelData->GetModelFileObjectNumber();
-	this->pModelData = pModelData;
-
-
+	Create(pModelData, userConstBufferData);
 }
 
 void ModelObject::CreateConstBuffer()
@@ -764,17 +748,7 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	}
 
 	pModelObjects.emplace(name, std::make_unique<ModelObject>(pModelData, userConstBufferData));
-	bool result = pModelObjects[name]->CreateObject(pModelData, userConstBufferData);
-
-	if(!result)
-	{
-		/*OutputDebugStringA(name.data());
-		OutputDebugStringW(L"の生成に失敗しました。\n");*/
-		pModelObjects.erase(name);
-		return false;
-	}
-
-
+	pModelObjects[name]->Create(pModelData, userConstBufferData);
 
 	return true;
 }
@@ -813,8 +787,29 @@ void ModelObject::FbxAnimation()
 		fbxAnimationData.currentTime  = fbxAnimationData.animationTimes.endTime;
 }
 
-bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
+void ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
+#pragma region データセット
+	if (userConstBufferData)this->userConstBufferData = *userConstBufferData;
+
+	//objのボーンのMoveVectorの割る処理のために、オブジェクトごとにバッファ作成
+	if (pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_OBJ)
+	{
+		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT;
+	}
+	else
+	{
+		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL;
+	}
+	modelConstBufferData.bufferDataSize = sizeof(SkinConstBufferData);
+
+	modelFileObjectNum = pModelData->GetModelFileObjectNumber();
+	this->pModelData = pModelData;
+
+#pragma endregion
+
+
+
 	CreateConstBuffer();
 	
 	modelConstDatas.resize(modelFileObjectNum);
@@ -859,5 +854,4 @@ bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConst
 
 	pPipeline.resize(modelFileObjectNum, &defaultPipeline);
 
-	return true;
 }

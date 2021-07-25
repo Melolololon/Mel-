@@ -23,8 +23,7 @@ private:
 	//2Dのカメラは固定だから、行列生成関数このクラスに持たせてもいいかも
 	static DirectX::XMMATRIX cameraMatrix;
 
-	void Create(const Color& color)override;
-	void Create(Texture* pTexture)override;
+	
 protected:
 	static PipelineState defaultPipeline;
 
@@ -35,11 +34,13 @@ public:
 	Sprite2D(){}
 	Sprite2D(const Color& color);
 	Sprite2D(Texture* pTexture);
-	virtual ~Sprite2D();
+	virtual ~Sprite2D(){}
 
 
  	static bool Initialize(const int winWidth,const int winHeight);
-	
+	void Create(const Color& color)override;
+	void Create(Texture* pTexture)override;
+
 	static void Create(const Color& color, const std::string& name);
 	static void Create(Texture* pTexture, const std::string& name);
 	static void Delete(const std::string& name);

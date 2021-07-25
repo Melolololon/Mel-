@@ -44,14 +44,14 @@ void Play::Initialize()
 
 	ModelData::Load("Resources/PBRModels/SpiralPBR/SpiralPBR.fbx","model");
 	//ModelData::Load("Resources/boneTest/boneTest.fbx","model");
-	ModelObject::Create(ModelData::Get("model"), nullptr, "model");
-	ModelObject::Get("model")->SetAnimationFlag(true);
+
+	pbrModel = std::make_unique<ModelObject>(ModelData::Get("model"), nullptr);
 
 	SoundData::Load("Resources/Sound/EnemyLostSE.wav", "test");
 
 	PlaySoundData data;
 	data.volume = 100;
-	Sound::PlayLoadSound(SoundData::Get("test"), 100, data);
+	//Sound::PlayLoadSound(SoundData::Get("test"), 100, data);
 
 	TextWrite::CreateFontData("test");
 
@@ -105,7 +105,7 @@ void Play::Update()
 	DirectionalLight::Get().SetDirection(Vector3(0, -1, 0));
 
 
-	ModelObject::Get("model")->SetAngle(angle);
+	pbrModel->SetAngle(angle);
 
 	Vector3 v1 = -7;
 	Vector3 v2 = 1;
@@ -118,7 +118,7 @@ void Play::Update()
 
 void Play::Draw()
 {
-	//ModelObject::Get("model")->Draw();
+	//pbrModel->Draw();
 
 	GameObjectManager::GetInstance()->Draw();
 }

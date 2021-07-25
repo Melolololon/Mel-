@@ -92,7 +92,6 @@ private:
 	ModelData* pModelData = nullptr;
 	UINT modelFileObjectNum = 0;
 
-	bool CreateObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
 
 	void CreateConstBuffer();
 
@@ -104,18 +103,17 @@ private:
 public:
 	
 	//nullptr渡される可能性を考えると、boolをreturnできるようにしたほうがいい?
+	ModelObject(){}
 	ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
 	~ModelObject() {}
 
 	static bool Initialize(ID3D12Device* dev, const std::vector<ID3D12GraphicsCommandList*>& cmdList);
 
 	static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name);
-
 	static ModelObject* Get(const std::string& name) { return pModelObjects[name].get(); }
-
 	static void Delete(const std::string& name);
 
-
+	void Create(ModelData* pModelData, ConstBufferData* userConstBufferData);
 	void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
 #pragma region 操作見た目変更

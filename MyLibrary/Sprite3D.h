@@ -19,20 +19,22 @@ private:
 
 	void MatrixMap(const Camera* camera);
 
-	void Create(const Color& color)override;
-	void Create(Texture* pTexture)override;
-
 protected:
 
 public:
+	Sprite3D(){}
 	Sprite3D(const Color& color);
 	Sprite3D(Texture* pTexture);
-	~Sprite3D();
+	~Sprite3D(){}
 
 	static void Create(const Color& color, const std::string& name);
 	static void Create(Texture* pTexture, const std::string& name);
 	static void Delete(const std::string& name);
 	static Sprite3D* Get(const std::string& name) { return pSprite3D[name].get(); }
+
+	void Create(const Color& color)override;
+	void Create(Texture* pTexture)override;
+
 
 	//レンダーターゲットでDrawを使うため、仮想関数にしてる
 	virtual void Draw(const std::string& rtName = "")override;

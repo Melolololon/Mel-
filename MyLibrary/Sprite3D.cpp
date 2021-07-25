@@ -8,20 +8,6 @@ DirectX::XMFLOAT3 Sprite3D::cameraPosition;
 DirectX::XMFLOAT3 Sprite3D::cameraTargetPosition;
 DirectX::XMFLOAT3 Sprite3D::cameraUpVector;
 
-Sprite3D::Sprite3D(const Color& color)
-{
-	Create(color);
-}
-
-Sprite3D::Sprite3D(Texture* pTexture)
-{
-	Create(pTexture);
-}
-
-Sprite3D::~Sprite3D()
-{
-}
-
 
 void Sprite3D::Create(const Color& color, const std::string& name)
 {
@@ -38,6 +24,17 @@ void Sprite3D::Create(Texture* pTexture, const std::string& name)
 void Sprite3D::Delete(const std::string& name)
 {
 	pSprite3D.erase(name);
+}
+
+Sprite3D::Sprite3D(const Color& color)
+{
+	Create(color);
+}
+
+
+Sprite3D::Sprite3D(Texture* pTexture)
+{
+	Create(pTexture);
 }
 
 bool Sprite3D::Initialize()
