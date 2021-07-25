@@ -57,6 +57,14 @@ void GameObject::ObjectInitialize()
 	eraseManager = false;
 }
 
+void GameObject::CalcMovePhysics()
+{
+	if (mass <= 0.0f)return;
+	acceleration += force / mass;
+	velocity += acceleration;
+	position += velocity;
+}
+
 CollisionFlag GameObject::GetCollisionFlag() 
 {
 	return collisionFlag;

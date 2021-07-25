@@ -26,6 +26,8 @@ struct PlaySoundData
 //PlayLoadSoundでどのサブミックスボイスに追加するかを選べるようにする?
 //サブミックスボイスも作れるようにする?サブミックスボイスだと分かりにくいかもしれないからサウンドグループとかにする?
 
+//サウンドもModelObjectとかSprite2Dみたいに自分で管理できるようにする?
+
 //SoundDataの音声を再生したり加工するクラス
 class Sound
 {

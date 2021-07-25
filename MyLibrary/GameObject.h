@@ -26,7 +26,7 @@ protected:
 	//物体が動く力
 	Vector3 force = 0;
 	//重さ
-	float mass = 0;
+	float mass = 100.0f;
 
 
 	Vector3 position = { 0,0,0 };
@@ -85,8 +85,6 @@ public:
 
 	virtual const void* GetPtr()const;
 
-	//オブジェクトマネージャーから削除するかどうかのフラグを返す
-	bool GetEraseManager();
 
 
 	//確実に初期値が決まっている変数(eraseManagerなど)を初期化する変数(初期化忘れ防止用)
@@ -94,9 +92,8 @@ public:
 	//再追加したときに初期化したいからこのままでいい
 	void ObjectInitialize();
 	
-
-	short GetSortNumber() const{ return sortNumber; }
-
+	//物理に基づいた移動関係の計算を行う関数
+	void CalcMovePhysics();
 
 	Vector3 GetPosition()const { return position; }
 	Vector3 GetVelocity()const { return velocity; }
@@ -104,6 +101,10 @@ public:
 	Vector3 GetForce()const { return force; }
 	float GetMass()const { return mass; }
 	bool GetCalcPhysicsFlag()const { return calcPhysics; }
+	short GetSortNumber() const { return sortNumber; }
+
+	//オブジェクトマネージャーから削除するかどうかのフラグを返す
+	bool GetEraseManager();
 
 	//判定用関数
 	CollisionFlag GetCollisionFlag();

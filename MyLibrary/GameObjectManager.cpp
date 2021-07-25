@@ -43,8 +43,12 @@ void GameObjectManager::Update()
 		farPos = cursor->GetFarPos();
 	}
 	
-	for (auto& obj : objects)
+	for (auto& obj : objects) 
+	{
+		if (obj->GetCalcPhysicsFlag())obj->CalcMovePhysics();
 		obj->Update();
+		
+	}
 	
 
 	if(addObjects.size() != 0)

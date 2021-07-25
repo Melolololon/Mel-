@@ -5,6 +5,7 @@
 #include"Play.h"
 #include"Camera.h"
 #include"ModelData.h"
+#include"PhysicsTest.h"
 
 Game::Game() {}
 
@@ -43,9 +44,6 @@ void Game::Initialize()
 
 
 
-#pragma region モデル読み込み
-	ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
-#pragma endregion
 
 #pragma region マネージャー初期化
 
@@ -60,7 +58,7 @@ void Game::Initialize()
 	GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	SceneManager::GetInstace()->SetStartScene(new Play());
+	SceneManager::GetInstace()->SetStartScene(new PhysicsTest());
 #pragma endregion
 
 

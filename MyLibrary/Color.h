@@ -31,7 +31,7 @@ struct Color
 	/// </summary>
 	/// <param name="par"></param>
 	/// <returns></returns>
-	static unsigned char ToPar(const float par){ return (unsigned char)(par / 100 * 255); }
+	static unsigned char ParToUChar(const float par){ return (unsigned char)(par / 100 * 255); }
 
 private:
 	

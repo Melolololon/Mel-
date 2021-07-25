@@ -57,10 +57,6 @@ void Play::Initialize()
 
 
 
-	Camera::Get()->SetRotateCriteriaPosition(Vector3(0, 0, -50));
-
-	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(-40,0,0),Vector3(0.3,0,0)));
-	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(40,0,0),Vector3(-0.3,0,0)));
 }
 int testT = 0;
 
@@ -118,7 +114,7 @@ void Play::Update()
 
 void Play::Draw()
 {
-	//pbrModel->Draw();
+	pbrModel->Draw();
 
 	GameObjectManager::GetInstance()->Draw();
 }
