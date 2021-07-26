@@ -1,11 +1,11 @@
 #include "SpringTestObject.h"
 #include"Physics.h"
-SpringTestObject::SpringTestObject(const Vector3& pos)
+SpringTestObject::SpringTestObject(const Vector3& pos,const Vector3& rootPos)
 {
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
 	rootModel = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
 	position = pos;
-	rootPos = position + Vector3(0, 30, 0);
+	this->rootPos = rootPos;
 	velocity = 0;
 	/*calcPhysics = true;
 
@@ -20,27 +20,6 @@ SpringTestObject::SpringTestObject(const Vector3& pos)
 
 void SpringTestObject::Update()
 {
-	if(Input::KeyState(DIK_W))
-	{
-		rootPos.y += 0.2f;
-	}
-	
-	if(Input::KeyState(DIK_S))
-	{
-		rootPos.y -= 0.2f;
-	}
-	
-	if(Input::KeyState(DIK_A))
-	{
-		rootPos.x -= 0.2f;
-	}
-	
-	if(Input::KeyState(DIK_D))
-	{
-		rootPos.x += 0.2f;
-	}
-	rootModel->SetPosition(rootPos);
-
 	velocity = Physics::CalcSpringVelocity
 	(
 		position,
@@ -61,4 +40,10 @@ void SpringTestObject::Draw()
 {
 	model->Draw();
 	rootModel->Draw();
+}
+
+void SpringTestObject::SetRootPosition(const Vector3& pos)
+{
+	rootPos = pos;
+	rootModel->SetPosition(pos);
 }

@@ -1,10 +1,16 @@
 #pragma once
 #include"Scene.h"
 #include"TuringPattern.h"
+#include"SpringTestObject.h"
+#include<memory>
 class PhysicsTest :public Scene
 {
 private:
 	TuringPattern tPattern;
+
+	Vector3 topRootPos = Vector3(0, 0, 30);
+	static const int SPRING_OBJECT_NUM = 4;
+	std::array<std::shared_ptr<SpringTestObject>, SPRING_OBJECT_NUM>springObjects;
 public:
 	PhysicsTest();
 	~PhysicsTest();
