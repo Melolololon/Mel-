@@ -20,10 +20,26 @@ SpringTestObject::SpringTestObject(const Vector3& pos)
 
 void SpringTestObject::Update()
 {
-	if(Input::KeyTrigger(DIK_A))
+	if(Input::KeyState(DIK_W))
 	{
-		velocity.y -= 3.0f;
+		rootPos.y += 0.2f;
 	}
+	
+	if(Input::KeyState(DIK_S))
+	{
+		rootPos.y -= 0.2f;
+	}
+	
+	if(Input::KeyState(DIK_A))
+	{
+		rootPos.x -= 0.2f;
+	}
+	
+	if(Input::KeyState(DIK_D))
+	{
+		rootPos.x += 0.2f;
+	}
+	rootModel->SetPosition(rootPos);
 
 	velocity = Physics::CalcSpringVelocity
 	(

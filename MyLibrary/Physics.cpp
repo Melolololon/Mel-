@@ -54,7 +54,7 @@ Vector3 Physics::CalcSpringVelocity
     Vector3 acc;
     acc.y = -gravitationalAcceleration;
 
-    Vector3 currentDisV3 = (currentPos - rootPos).Abs();
+    Vector3 currentDisV3 = rootPos - currentPos;
     float currentDisF = currentDisV3.Length();
     Vector3 calcDis = 0.0f;
     if(currentDisF > naturalDis)
