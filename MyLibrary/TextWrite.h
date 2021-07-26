@@ -1,8 +1,18 @@
 #pragma once
 #include<d2d1.h>
 #pragma comment(lib,"D2d1.lib")
+#include<d2d1_3.h>
 #include<dwrite.h>
 #pragma comment(lib,"DWrite.lib")
+
+#pragma once
+#include<d3d12.h>
+#include<d3dx12.h>
+#include<d3d11.h>
+#include<d3d11on12.h>
+#pragma comment(lib,"d3d11.lib")
+#include<dxgi.h>
+#pragma comment(lib,"dxgi.lib")
 
 #include<wrl.h>
 #include<string>
@@ -20,6 +30,11 @@ using namespace Microsoft::WRL;
 //使用例のところにやり方書いてる
 //https://docs.microsoft.com/en-us/windows/win32/direct3d12/direct3d-11-on-12#initializing-d3d11on12
 
+
+//11on12を使用したD2D
+//https://docs.microsoft.com/ja-jp/windows/win32/direct3d12/d2d-using-d3d11on12
+
+
 //DirectWriteを使用したテキスト描画クラス
 class TextWrite
 {
@@ -30,8 +45,21 @@ private:
 	static ComPtr<IDWriteFactory> dWriteFactory;
 	static std::unordered_map<std::string, ComPtr<IDWriteTextFormat>>pTextFormat;
 
-	//
-	static ComPtr<ID2D1Factory> d2dFactory;
+	//11のデバイス
+	static ComPtr<ID3D11Device>d3d11Device;
+	static ComPtr<ID3D11DeviceContext>d3d11context;
+	static ComPtr<ID3D11On12Device>d3d11On12device;
+	static ComPtr<ID3D11Resource>wrappedBackBuffer[2];
+
+	//D2D
+	static ComPtr<ID2D1Factory3> d2dFactory;
+	static ComPtr<ID2D1Device2>d2dDevice;
+	static ComPtr<IDXGIDevice>dxgiDevice;
+	static ComPtr<ID2D1DeviceContext> d2dContext;
+	
+	//バインドされているビットマップを表す
+	static ComPtr<ID2D1Bitmap1>bitmap;
+
 	//レンダリングするためのもの
 	static ComPtr<ID2D1HwndRenderTarget> d2dRenderTarget;
 	//領域を塗りつぶすもの(もしかしてフォントの塗りつぶしに使う?)
@@ -39,7 +67,14 @@ private:
 
 	static HWND hwnd;
 public:
-	static bool Initialize();
+	static bool Initialize
+	(
+		ID3D12Device* pD3D12Device, 
+		ID3D12CommandQueue** pPD3D12Queue,
+		ID3D12Resource* pBuckBuffer[2],
+		CD3DX12_CPU_DESCRIPTOR_HANDLE backBufferHandle[2]
+	);  
+	
 	static void LoopStartProcess();
 	static void LoopEndProcess();
 
@@ -48,4 +83,6 @@ public:
 
 	static void Draw(const std::wstring& text, const std::string& fontName);
 };
+
+
 

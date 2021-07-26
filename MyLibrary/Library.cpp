@@ -134,7 +134,6 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 
 	//modelDatas.reserve(99999);
 
-	TextWrite::Initialize();
 }
 
 void Library::LoopStartProcess()

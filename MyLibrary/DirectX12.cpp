@@ -8,6 +8,7 @@
 
 #include"ModelData.h"
 #include"ModelObject.h"
+#include"TextWrite.h"
 
 DirectX12::DirectX12()
 {
@@ -286,7 +287,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 #pragma endregion
 
-#pragma region レンダーターゲットビュー
+#pragma region バックバッファ関係
 
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	heapDesc.NumDescriptors = 2;
@@ -978,6 +979,20 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	//renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));
 
 
+
+	ID3D12Resource* pBackBuffer[] = { backBuffer[0].Get(),backBuffer[1].Get() };
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvCpuDescHandle[2]; 
+	rtvCpuDescHandle[0] = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+	rtvCpuDescHandle[1] =
+		CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			rtvHeaps->GetCPUDescriptorHandleForHeapStart(),
+			1, 
+			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+		);
+
+	TextWrite::Initialize(dev.Get(), cmdQueue.GetAddressOf(), pBackBuffer, rtvCpuDescHandle);
+
 #pragma region テスト用
 	//PipelineState postEffectTestPipeline;
 
@@ -1074,7 +1089,6 @@ void DirectX12::LoopStartProcess()
 	Sprite3D::SetCameraPosTargetUpVector(mainCameraData.nowEye, mainCameraData.nowTarget, mainCameraData.nowUp);
 }
 
-#include"TextWrite.h"
 void DirectX12::LoopEndProcess()
 {
 

@@ -9,8 +9,8 @@ private:
 	TuringPattern tPattern;
 
 	Vector3 topPos = Vector3(0, 0, 0);
-	Vector3 topRootPos = topPos + Vector3(0, 15, 0);
-	static const int SPRING_OBJECT_NUM = 10;
+	Vector3 topRootPos = topPos + Vector3(0, 20, 0);
+	static const int SPRING_OBJECT_NUM = 5;
 	std::array<std::shared_ptr<SpringTestObject>, SPRING_OBJECT_NUM>springObjects;
 public:
 	PhysicsTest();

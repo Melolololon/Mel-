@@ -2,6 +2,9 @@
 #include<Windows.h>
 #include<string>
 #include"Vector.h"
+
+//L"EDIT"とかじゃない子ウィンドウは、親の名前渡さないといけない?
+
 class LibWinAPI
 {
 private:

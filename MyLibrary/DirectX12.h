@@ -36,8 +36,6 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
-
-
 #include"Model.h"
 #include"PrimitiveModel.h"
 #include"ObjModel.h"
@@ -45,6 +43,9 @@
 #include"Sprite.h"
 #include"Sprite2D.h"
 #include"Sprite3D.h"
+
+//d3d12‚ÌƒTƒ“ƒvƒ‹ˆê——
+//https://docs.microsoft.com/ja-jp/windows/win32/direct3d12/working-samples
 
 enum LibraryPipeline
 {

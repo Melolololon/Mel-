@@ -180,6 +180,7 @@
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Counter.cpp" />
+    <ClCompile Include="DirectX11On12.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sound_Unused.cpp" />
@@ -542,6 +543,7 @@
   <ItemGroup>
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Counter.h" />
+    <ClInclude Include="DirectX11On12.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sound_Unused.h" />
