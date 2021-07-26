@@ -1,5 +1,7 @@
 #include "SpringTestObject.h"
 #include"Physics.h"
+#include"LibMath.h"
+
 SpringTestObject::SpringTestObject(const Vector3& pos,const Vector3& rootPos)
 {
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
@@ -7,6 +9,8 @@ SpringTestObject::SpringTestObject(const Vector3& pos,const Vector3& rootPos)
 	position = pos;
 	this->rootPos = rootPos;
 	velocity = 0;
+	distance = LibMath::CalcDistance3D(pos, rootPos);
+
 	/*calcPhysics = true;
 
 	sphereData.resize(1);
@@ -25,7 +29,7 @@ void SpringTestObject::Update()
 		position,
 		velocity,
 		rootPos,
-		30.0f,
+		distance,
 		1.0f,
 		0.2,//èdóÕâ¡ë¨ìx
 		0.01,//ÇŒÇÀíËêî

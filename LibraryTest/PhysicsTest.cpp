@@ -26,6 +26,7 @@
 
 #include"Counter.h"
 
+#include"LibMath.h"
 #include"Physics.h"
 #include"PhysicsTestObject.h"
 
@@ -55,11 +56,12 @@ void PhysicsTest::Initialize()
 	//tPattern.Initialize();
 
 	//‚Î‚Ë
-	springObjects[0] = std::make_shared<SpringTestObject>(Vector3(0, 0, 0), topRootPos);
+	springObjects[0] = std::make_shared<SpringTestObject>(topPos, topRootPos);
 	GameObjectManager::GetInstance()->AddObject(springObjects[0]);
+
+	float dis = LibMath::CalcDistance3D(topPos, topRootPos);
 	for (int i = 1; i < SPRING_OBJECT_NUM; i++) 
 	{
-		float dis = 30.0f;
 		Vector3 rootPos = springObjects[i - 1]->GetPosition();
 		springObjects[i] = std::make_shared<SpringTestObject>(rootPos - Vector3(0, dis, 0), rootPos);
 		GameObjectManager::GetInstance()->AddObject(springObjects[i]);

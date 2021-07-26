@@ -8,8 +8,9 @@ class PhysicsTest :public Scene
 private:
 	TuringPattern tPattern;
 
-	Vector3 topRootPos = Vector3(0, 0, 30);
-	static const int SPRING_OBJECT_NUM = 4;
+	Vector3 topPos = Vector3(0, 0, 0);
+	Vector3 topRootPos = topPos + Vector3(0, 15, 0);
+	static const int SPRING_OBJECT_NUM = 10;
 	std::array<std::shared_ptr<SpringTestObject>, SPRING_OBJECT_NUM>springObjects;
 public:
 	PhysicsTest();
