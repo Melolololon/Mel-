@@ -12,16 +12,6 @@ const float Physics::GRAVITATIONAL_ACCELERATION_URANUS = 8.87f;
 const float Physics::GRAVITATIONAL_ACCELERATION_NEPTUNE = 11.15f;
 const float Physics::GRAVITATIONAL_ACCELERATION_PLUTO = 0.62f;
 const float Physics::GRAVITATIONAL_ACCELERATION_MOON = 1.62f;
-Vector3 Physics::CalcCoefficientOfRestitution
-(
-    const Value2<Vector3>& position,
-    const Value2<Vector3>& hitPreviousVelocity,
-    const Value2<Vector3>& hitAfterVelocity
-)
-{
-    Vector3 n = (position.v2 - position.v1) / (Vector3::Length(position.v2) - Vector3::Length(position.v1));
-    return ((hitAfterVelocity.v2 - hitAfterVelocity.v1) * n).Abs() / ((hitPreviousVelocity.v2 - hitPreviousVelocity.v1) * n).Abs();
-}
 
 Value2<Vector3> Physics::CalcRepulsionVelocity
 (
@@ -46,4 +36,38 @@ Value2<Vector3> Physics::CalcRepulsionVelocity
     //calcVel.v2 = -((calcPreVel.v2 - calcPreVel.v1) * n) * n + calcPreVel.v2;
 
     return calcVel;
+}
+
+Vector3 Physics::CalcSpringVelocity
+(
+    const Vector3& currentPos,
+    const Vector3& currentVel,
+    const Vector3& rootPos,
+    const float naturalDis,
+    /*const float maxDis,*/
+    const float mass,
+    const float gravitationalAcceleration,
+    const float springConstant,
+    const float viscousDragCoefficient
+)
+{
+    Vector3 acc;
+    acc.y = -gravitationalAcceleration;
+
+    Vector3 currentDisV3 = (currentPos - rootPos).Abs();
+    float currentDisF = currentDisV3.Length();
+    Vector3 calcDis = 0.0f;
+    if(currentDisF > naturalDis)
+    {
+        calcDis = currentDisV3 * (currentDisF - naturalDis) / naturalDis;
+        acc += calcDis * springConstant / mass;
+    }
+    //else if(currentDisF < naturalDis)
+    //{
+
+    //}
+    Vector3 vel = currentVel;
+    vel += acc;
+    vel -= vel * viscousDragCoefficient;
+    return vel;
 }

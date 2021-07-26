@@ -162,6 +162,7 @@
     <ClCompile Include="PhysicsTest.cpp" />
     <ClCompile Include="PhysicsTestObject.cpp" />
     <ClCompile Include="Play.cpp" />
+    <ClCompile Include="SpringTestObject.cpp" />
     <ClCompile Include="TuringPattern.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +170,7 @@
     <ClInclude Include="PhysicsTest.h" />
     <ClInclude Include="PhysicsTestObject.h" />
     <ClInclude Include="Play.h" />
+    <ClInclude Include="SpringTestObject.h" />
     <ClInclude Include="TuringPattern.h" />
   </ItemGroup>
   <ItemGroup>

@@ -28,6 +28,7 @@
 
 #include"Physics.h"
 #include"PhysicsTestObject.h"
+#include"SpringTestObject.h"
 PhysicsTest::PhysicsTest() {}
 
 
@@ -42,14 +43,17 @@ void PhysicsTest::Initialize()
 	
 	Camera::Get()->SetRotateCriteriaPosition(Vector3(0, 0, -100));
 
-	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(-40, 40, 0), Vector3(0.3, -0.3, 0)));
-	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(40, 0, 0), Vector3(-0.3, 0, 0)));
-	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(0, 41, 0), Vector3(0, -0.3, 0)));
-	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(0, -38, 0), Vector3(0, 0.3, 0)));
+	//反発
+	//GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(-40, 40, 0), Vector3(0.3, -0.3, 0)));
+	//GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(40, 0, 0), Vector3(-0.3, 0, 0)));
+	//GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(0, 41, 0), Vector3(0, -0.3, 0)));
+	//GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(0, -38, 0), Vector3(0, 0.3, 0)));
 
+	//チューリングパターン
 	//tPattern.Initialize();
 
-
+	//ばね
+	GameObjectManager::GetInstance()->AddObject(std::make_shared<SpringTestObject>(Vector3(0, 0, 0)));
 
 }
 

@@ -32,20 +32,6 @@ public:
 		
 
 	/// <summary>
-	/// 反発係数を求めます。
-	/// </summary>
-	/// <param name="position">座標</param>
-	/// <param name="hitPreviousVelocity">衝突前</param>
-	/// <param name="hitAfterVelocity">衝突後</param>
-	/// <returns></returns>
-	static Vector3 CalcCoefficientOfRestitution
-	(
-		const Value2<Vector3>& position,
-		const Value2<Vector3>& hitPreviousVelocity,
-		const Value2<Vector3>& hitAfterVelocity
-	);
-
-	/// <summary>
 	/// 物体が衝突したときのvelocityを返します。
 	/// </summary>
 	/// <param name="position">座標</param>
@@ -60,13 +46,55 @@ public:
 		const Value2<float>& mass,
 		const Value2<Vector3>& e
 	);
+	
+
+	/// <summary>
+	/// ばね定数を計算します。
+	/// </summary>
+	/// <param name="modulesOfRigidity">横弾性係数(N/mm2またはMPa)</param>
+	/// <param name="linear">線径(mm)</param>
+	/// <param name="turnsNum">有効巻き数</param>
+	/// <param name="averageCoilDiameter">平均コイル径(mm)</param>
+	/// <returns>ばね定数</returns>
+	static float CalcSpringConstant
+	(
+		const float modulesOfRigidity,
+		const float linear,
+		const float turnsNum,
+		const float	averageCoilDiameter
+	) 
+	{
+		return 
+			(modulesOfRigidity * (linear * linear * linear * linear)) 
+			/ (8 * turnsNum * (averageCoilDiameter * averageCoilDiameter * averageCoilDiameter));
+	}
+
+	/// <summary>
+	/// rootPosに物体をばねでつなげた時の速度を計算します。
+	/// </summary>
+	/// <param name="currentPos">現在の座標</param>
+	/// <param name="currentVel">現在の速度</param>
+	/// <param name="rootPos">物体がつながっている場所の座標</param>
+	/// <param name="naturalDis">自然長</param>
+	/*/// <param name="maxDis">最大距離</param>*/
+	/// <param name="mass">物体の重さ</param>
+	/// <param name="gravitationalAcceleration">重力加速度(このクラスで定義されている定数または自分で考えた値)</param>
+	/// <param name="springConstant">ばね定数</param>
+	/// <param name="viscousDragCoefficient">粘性抵抗係数</param>
+	/// <returns></returns>
+	static Vector3 CalcSpringVelocity
+	(
+		const Vector3& currentPos,
+		const Vector3& currentVel,
+		const Vector3& rootPos,
+		const float naturalDis,
+		/*const float maxDis,*/
+		const float mass,
+		const float gravitationalAcceleration,
+		const float springConstant,
+	    const float viscousDragCoefficient
+	);
 
 	
-	//static Vector2 CalcSpringVelocity
-	//(
-	//	std::vector<Vector3>positions,
-	//	const float gravitationalAcceleration,
-
-	//)
 };
 
