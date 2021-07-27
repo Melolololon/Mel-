@@ -121,6 +121,9 @@ bool TextWrite::Initialize
         //「このメソッドは、D3D11on12で使用するD3D11リソースを作成します。」ドキュメントより
         //リソースバリアみたいにBefourとAfter書かなくていいってこと?Afterだけでいいってこと?
         //「レンダー ターゲット状態を "IN" 状態とし、表示状態を "OUT" 状態として指定」チュートリアルより
+        //ここに書かれているD3D12_RESOURCE_STATEを自動で反映させてくれる?(戻す命令あるとエラー出る。サンプルに戻す命令ない)
+        //GPUデバッガにて戻してる命令を確認。自動で戻してるっぽい。
+        //GPUデバッガでは、D3D12_RESOURCE_STATE_PRESENTではなくD3D12_RESOURCE_STATE_COMMONと書かれる
         result = d3d11On12device->CreateWrappedResource
         (
             pBuckBuffers[i],
@@ -147,7 +150,7 @@ bool TextWrite::Initialize
 
     result = d2dContext->CreateSolidColorBrush
     (
-        D2D1::ColorF(D2D1::ColorF::Black),
+        D2D1::ColorF(D2D1::ColorF(1,0.1,1,1)),
         &d2dSolidColorBrush
     );
 
@@ -159,11 +162,11 @@ bool TextWrite::Initialize
     //    &d2dRenderTarget
     //);
 
-    result = d2dContext->CreateSolidColorBrush
-    (
-        D2D1::ColorF(D2D1::ColorF::Black),
-        &d2dSolidColorBrush
-    );
+    //result = d2dContext->CreateSolidColorBrush
+    //(
+    //    D2D1::ColorF(D2D1::ColorF::Black),
+    //    &d2dSolidColorBrush
+    //);
 
 
 
@@ -177,7 +180,6 @@ void TextWrite::LoopStartProcess()
     drawTextDatas.clear();
 }
 
-//もしかしてAfter２つじゃなくて、現在、変更後を入れる?
 
 void TextWrite::LoopEndProcess(const UINT rtIndex)
 {
@@ -192,7 +194,7 @@ void TextWrite::LoopEndProcess(const UINT rtIndex)
     //描画
     for (const auto& d : drawTextDatas)
     {
-        D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, Library::GetWindowWidth(), Library::GetWindowHeight());
+        D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, Library::GetWindowWidth(), Library::GetWindowHeight() * 1.5);
 
         const std::wstring& text = std::get<0>(d);
         d2dContext->DrawTextW

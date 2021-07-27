@@ -121,7 +121,7 @@ void Play::Draw()
 
 	GameObjectManager::GetInstance()->Draw();
 
-	TextWrite::Draw(L"UNKO", "test");
+	TextWrite::Draw(L"バーバリアン", "test");
 }
 
 void Play::Finitialize()
