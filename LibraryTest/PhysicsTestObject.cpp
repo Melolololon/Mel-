@@ -5,20 +5,22 @@
 //‹… ‚Ìƒ‚ƒfƒ‹—pˆÓ
 
 
-PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& force)
+PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& vel)
 {
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
 	model->SetScale(5);
 
 	position = pos;
-	velocity = 0;
+	velocity = vel;
 	calcPhysics = true;
 
 	sphereData.resize(1);
 	collisionFlag.sphere = true;
 
-	this->force = force;
-	mass = 100.0f;
+	force = 0.02f * velocity;
+	mass = 1.0f;
+
+	deadTimer.SetStopFlag(false);
 }
 
 void PhysicsTestObject::Update()
@@ -36,6 +38,11 @@ void PhysicsTestObject::Update()
 	model->SetPosition(position);
 	sphereData[0].position = position;
 	sphereData[0].r = 5.0f;
+
+	if(deadTimer.GetNowTime() >= 60 * 5)
+	{
+		eraseManager = true;
+	}
 }
 
 void PhysicsTestObject::Draw()

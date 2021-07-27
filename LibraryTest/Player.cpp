@@ -1,5 +1,8 @@
 #include "Player.h"
 #include"LibMath.h"
+#include"PhysicsTestObject.h"
+#include"GameObjectManager.h"
+
 Player::Player()
 {
 	position = Vector3(0, 0, -120);
@@ -29,6 +32,15 @@ void Player::Update()
 
 	Camera::Get()->SetAngle(angle);
 	Camera::Get()->SetRotateCriteriaPosition( position);
+
+	if(Input::KeyTrigger(DIK_SPACE))
+	{
+		Vector3 bulletVel = Vector3::Normalize(Camera::Get()->GetTargetPosition() - position);
+		float BULLET_SPEED = 3.0f;
+		GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(position, bulletVel * BULLET_SPEED));
+	}
+
+	
 }
 
 void Player::Draw()

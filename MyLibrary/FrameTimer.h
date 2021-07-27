@@ -76,7 +76,7 @@ public:
 	///	Œ»İ‚ÌŠÔ‚ğ•Ô‚µ‚Ü‚·B
 	/// </summary>
 	/// <returns></returns>
-	int GetCurrentTime() { return time; }
+	int GetNowTime() { return time; }
 
 	/// <summary>
 	/// Å‘åŒv‘ªŠÔ‚ğæ“¾‚µ‚Ü‚·B

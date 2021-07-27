@@ -43,8 +43,8 @@ void PhysicsTest::Initialize()
 	//プレイヤー
 	GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
 
-	//チューリングパターン
-	tPattern.Initialize();
+	///チューリングパターン
+	//tPattern.Initialize();
 
 	//ばね
 	springObjects[0] = std::make_shared<SpringTestObject>(topPos, topRootPos);
@@ -76,7 +76,7 @@ void PhysicsTest::Update()
 	//}
 
 
-	tPattern.Update();
+	//tPattern.Update();
 
 
 	GameObjectManager::GetInstance()->Update();	
@@ -102,7 +102,7 @@ void PhysicsTest::Update()
 int num = 0;
 void PhysicsTest::Draw()
 {
-	tPattern.Draw();
+	//tPattern.Draw();
 	GameObjectManager::GetInstance()->Draw();
 
 	TextWrite::Draw(std::to_wstring(num), "test");
