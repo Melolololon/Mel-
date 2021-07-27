@@ -981,17 +981,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 
 	ID3D12Resource* pBackBuffer[] = { backBuffer[0].Get(),backBuffer[1].Get() };
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvCpuDescHandle[2]; 
-	rtvCpuDescHandle[0] = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
-	rtvCpuDescHandle[1] =
-		CD3DX12_CPU_DESCRIPTOR_HANDLE
-		(
-			rtvHeaps->GetCPUDescriptorHandleForHeapStart(),
-			1, 
-			dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
-		);
-
-	TextWrite::Initialize(dev.Get(), cmdQueue.GetAddressOf(), pBackBuffer, rtvCpuDescHandle);
+	TextWrite::Initialize(dev.Get(), cmdQueue.GetAddressOf(), pBackBuffer);
 
 #pragma region テスト用
 	//PipelineState postEffectTestPipeline;
@@ -1024,8 +1014,6 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 void DirectX12::LoopStartProcess()
 {
-#pragma region DInput
-#pragma endregion
 
 #pragma region バリア生成_PSResourceからRTVへ
 
@@ -1159,7 +1147,6 @@ void DirectX12::LoopEndProcess()
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 	rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvH = postEffectResourcesRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
 	cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
 
@@ -1246,14 +1233,15 @@ void DirectX12::LoopEndProcess()
 	cmdAllocator->Reset();
 	cmdList->Reset(cmdAllocator.Get(), nullptr);
 
-
-	swapchain->Present(1, 0);//VSYNC
+	//(VSYNC,定数)
+	swapchain->Present(1, 0);
 #pragma endregion
 
 
 
 	//スプライトフォントの表示回数をリセット
 	spriteFontDrawCounter = 0;
+
 
 }
 

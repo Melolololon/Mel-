@@ -66,6 +66,8 @@ void PhysicsTest::Initialize()
 		springObjects[i] = std::make_shared<SpringTestObject>(rootPos - Vector3(0, dis, 0), rootPos);
 		GameObjectManager::GetInstance()->AddObject(springObjects[i]);
 	}
+
+	TextWrite::CreateFontData(L"HGPºÞ¼¯¸E","test");
 }
 
 void PhysicsTest::Update()
@@ -92,10 +94,14 @@ void PhysicsTest::Update()
 	}
 }
 
+int num = 0;
 void PhysicsTest::Draw()
 {
 	//tPattern.Draw();
 	GameObjectManager::GetInstance()->Draw();
+
+	TextWrite::Draw(std::to_wstring(num), "test");
+	num++;
 }
 
 void PhysicsTest::Finitialize()

@@ -56,7 +56,7 @@ void Play::Initialize()
 	data.volume = 100;
 	//Sound::PlayLoadSound(SoundData::Get("test"), 100, data);
 
-	TextWrite::CreateFontData("test");
+	TextWrite::CreateFontData(L"HGPｺﾞｼｯｸE","test");
 
 
 
@@ -115,13 +115,15 @@ void Play::Update()
 	GameObjectManager::GetInstance()->Update();
 }
 
+int count = 0;
 void Play::Draw()
 {
 	pbrModel->Draw();
 
 	GameObjectManager::GetInstance()->Draw();
 
-	TextWrite::Draw(L"バーバリアン", "test");
+	TextWrite::Draw(L"1234567890_0987654321_3142536475869708", "test");
+	count++;
 }
 
 void Play::Finitialize()

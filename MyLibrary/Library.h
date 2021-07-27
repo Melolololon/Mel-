@@ -51,7 +51,6 @@ private:
 	static WNDCLASSEX w;
 	static MSG msg;
 	static HWND hwnd;
-	static bool isDestroy;
 	static bool isEnd;
 
 

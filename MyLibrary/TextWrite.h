@@ -79,15 +79,14 @@ public:
 	(
 		ID3D12Device* pD3D12Device, 
 		ID3D12CommandQueue** pPD3D12Queue,
-		ID3D12Resource* pBuckBuffer[2],
-		CD3DX12_CPU_DESCRIPTOR_HANDLE backBufferHandle[2]
+		ID3D12Resource* pBuckBuffer[2]
 	);  
 	
 	static void LoopStartProcess();
 	static void LoopEndProcess(const UINT rtIndex);
 
-
-	static bool CreateFontData(const std::string& name);
+	//フォントのデータをセットする関数作る?
+	static bool CreateFontData(const std::wstring& fontName,const std::string& name);
 
 
 	static void Draw(const std::wstring& text, const std::string& fontName);

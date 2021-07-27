@@ -20,14 +20,20 @@ Game* Game::GetInstance()
 void Game::Run()
 {
 	Initialize();
+
+	int x = 0;
 	while (1)
 	{
 		Library::LoopStartProcess();
 		Update();
 		Draw();
 		Library::LoopEndProcess();
+
+	
 		if (Library::GetIsEnd())
 			break;
+
+
 	}
 
 	Finalize();
@@ -58,7 +64,7 @@ void Game::Initialize()
 	GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	SceneManager::GetInstace()->SetStartScene(new Play());
+	SceneManager::GetInstace()->SetStartScene(new PhysicsTest());
 #pragma endregion
 
 

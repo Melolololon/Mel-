@@ -25,7 +25,6 @@ MSG  Library::msg;
 HWND Library::hwnd;
 bool Library::isEnd;
 
-bool Library::isDestroy;
 UINT Library::count;
 
 int Library::createPointCount;
@@ -88,6 +87,8 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 
 #pragma region ウィンドウ処理
 
+
+
 	hwnd = LibWinAPI::CreateNormalWindow
 	(
 		windowName,
@@ -102,7 +103,7 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	);
 
 
-
+	
 
 #pragma endregion
 
@@ -149,7 +150,6 @@ void Library::LoopStartProcess()
 	if (msg.message == WM_QUIT)
 	{
 		isEnd = true;
-		isDestroy = true;
 	}
 
 #pragma endregion
@@ -182,12 +182,12 @@ void Library::LoopEndProcess()
 	//modelDatas.clear();
 
 	dx12->LoopEndProcess();
-
+	
 	if (isSetFPS60)
 	{
 
 		//60fpsの時の1フレームの処理時間を計測(この数値は、環境に依存しない)
-		//これ毎回計測する必要ない
+		//これ毎回計測する必要ない。fps変えた時に変更すればいい
 		float pureTime = 1000.0f / (float)fps * ((float)count - 1.0f);
 		float currTime = 1000.0f / (float)fps * (float)count;
 		int taikiTime = (int)currTime - (int)pureTime;//待機しないといけない時間
@@ -217,7 +217,6 @@ void Library::LoopEndProcess()
 
 void Library::EndFlagTrue()
 {
-	isDestroy = false;
 	isEnd = true;
 }
 
@@ -238,10 +237,7 @@ void Library::Finalize()
 
 	dx12->Finalize();
 
-	if (!isDestroy)
-	{
-		DestroyWindow(hwnd);
-	}
+	if(hwnd) DestroyWindow(hwnd);
 
 	UnregisterClass(w.lpszClassName, w.hInstance);
 

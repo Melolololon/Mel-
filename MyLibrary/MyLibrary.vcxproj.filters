@@ -267,9 +267,6 @@
     <ClCompile Include="Physics.cpp">
       <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
-    <ClCompile Include="DirectX11On12.cpp">
-      <Filter>ソース ファイル\DirectX</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
@@ -493,9 +490,6 @@
     </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>ヘッダー ファイル\Support</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectX11On12.h">
-      <Filter>ヘッダー ファイル\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="Curve.h">
       <Filter>ヘッダー ファイル\Support</Filter>

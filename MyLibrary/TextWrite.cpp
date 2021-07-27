@@ -42,8 +42,7 @@ bool TextWrite::Initialize
 (
     ID3D12Device* pD3D12Device,
     ID3D12CommandQueue** pPD3D12Queue,
-    ID3D12Resource* pBuckBuffers[2],
-    CD3DX12_CPU_DESCRIPTOR_HANDLE backBufferHandle[2]
+    ID3D12Resource* pBuckBuffers[2]
 )
 {
 
@@ -119,11 +118,12 @@ bool TextWrite::Initialize
 
         //12のバックバッファをもとに11のバックバッファを生成?
         //「このメソッドは、D3D11on12で使用するD3D11リソースを作成します。」ドキュメントより
-        //リソースバリアみたいにBefourとAfter書かなくていいってこと?Afterだけでいいってこと?
         //「レンダー ターゲット状態を "IN" 状態とし、表示状態を "OUT" 状態として指定」チュートリアルより
-        //ここに書かれているD3D12_RESOURCE_STATEを自動で反映させてくれる?(戻す命令あるとエラー出る。サンプルに戻す命令ない)
-        //GPUデバッガにて戻してる命令を確認。自動で戻してるっぽい。
+        //ここに書かれているD3D12_RESOURCE_STATEを自動で反映させてくれる?(戻す命令あるとエラー出る)
+        //GPUデバッガにて文字描画命令の後に戻してる命令があった。自動で戻してるっぽい。
         //GPUデバッガでは、D3D12_RESOURCE_STATE_PRESENTではなくD3D12_RESOURCE_STATE_COMMONと書かれる
+        //DirectX11ではリソースバリアが明示的ではない?内部で動く?
+        //https://hexadrive.jp/hexablog/program/13072/　
         result = d3d11On12device->CreateWrappedResource
         (
             pBuckBuffers[i],
@@ -144,10 +144,15 @@ bool TextWrite::Initialize
             &d2dRenderTerget[i]
         );
 
-        backBufferHandle[i].Offset(1, pD3D12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
-        //アロケーターとレンダーターゲットはDirectX12クラスの使うかわからんから、一旦保留して先に進める
+        //Offsetは、ポインタをずらすものっぽい(ヘッダファイルみたらそんな感じだった)
+        //(ずらす回数,ずらすサイズ)
+        //ptr += 引数1 * 引数2
+        //チュートリアルでは、ハンドルを配列に格納してないので、ずらさないと2つ目のRTVビューを作れないため、Offset関数を書いてた
+        //そもそも自分の場合ここでビュー作らないからハンドル受け取る必要ない
+        //backBufferHandle[i].Offset(1, pD3D12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
     }
 
+    //途中で色変えられるっぽい
     result = d2dContext->CreateSolidColorBrush
     (
         D2D1::ColorF(D2D1::ColorF(1,0.1,1,1)),
@@ -180,9 +185,10 @@ void TextWrite::LoopStartProcess()
     drawTextDatas.clear();
 }
 
-
 void TextWrite::LoopEndProcess(const UINT rtIndex)
 {
+    if (drawTextDatas.size() == 0)return;
+
     //D3D11on12で使用するD3D11リソース(バックバッファ)をセット(d3d11On12deviceにセット)
     d3d11On12device->AcquireWrappedResources(wrappedBackBuffer[rtIndex].GetAddressOf(), 1);
 
@@ -215,6 +221,8 @@ void TextWrite::LoopEndProcess(const UINT rtIndex)
     //作成時に指定した "OUT" 状態に指定のリソースを移行させるリソース バリアを背後で発生させます。」チュートリアルより
     //「Flushを呼び出す前にこのメソッドを呼び出して、
     //リソースバリアを適切な「アウト」状態に挿入し、リソースバリアが「イン」状態であると予想されることをマークします。」
+    //0含め16フレーム目にめちゃくちゃメモリ持ってかれる。なぜか調べる
+    //制限事項にかなりのメモリのオーバーヘッドがあると書いてあったからそれ?
     d3d11On12device->ReleaseWrappedResources(wrappedBackBuffer[rtIndex].GetAddressOf(), 1);
 
     //D3D12のコマンドキューに送信
@@ -224,20 +232,21 @@ void TextWrite::LoopEndProcess(const UINT rtIndex)
 }
 
 
-bool TextWrite::CreateFontData(const std::string& name)
+bool TextWrite::CreateFontData(const std::wstring& fontName,const std::string& name)
 {
     ComPtr<IDWriteTextFormat>pWriteTextFormat;
 
     //https://docs.microsoft.com/ja-jp/windows/win32/api/dwrite/nf-dwrite-idwritefactory-createtextformat
+  
     auto result = dWriteFactory->CreateTextFormat
     (
-        L"Gabriola",//フォントファミリーの名前を含む文字列
+        fontName.c_str(),//フォントファミリーの名前を含む文字列
         NULL,//フォントコレクションオブジェクトへのポインタ
         DWRITE_FONT_WEIGHT_REGULAR,//太さ(enumで指定)
         DWRITE_FONT_STYLE_NORMAL,//スタイル(enumで指定)。ここで文字を斜めにしたりできる
         DWRITE_FONT_STRETCH_NORMAL,//ストレッチ(enumで指定)。文字の引き伸ばし具合
         72.0f,//ピクセルが単位のフォントサイズ?
-        L"en_us",//ロケール名を含む文字列
+        L"en_us",//ロケール名を含む文字列 ロケールとは、言語の書式ルール
         &pWriteTextFormat
     );
 
