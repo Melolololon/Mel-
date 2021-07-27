@@ -42,7 +42,8 @@ Vector3 Physics::CalcSpringVelocity
 (
     const Vector3& currentPos,
     const Vector3& currentVel,
-    const Vector3& rootPos,
+    const Vector3* prePos,
+    const Vector3* nextPos,
     const float naturalDis,
     /*const float maxDis,*/
     const float mass,
@@ -51,21 +52,38 @@ Vector3 Physics::CalcSpringVelocity
     const float viscousDragCoefficient
 )
 {
+    if (!prePos && !nextPos)return currentVel;
+
     Vector3 acc;
     acc.y = -gravitationalAcceleration;
 
-    Vector3 currentDisV3 = rootPos - currentPos;
-    float currentDisF = currentDisV3.Length();
-    Vector3 calcDis = 0.0f;
-    if(currentDisF > naturalDis)
+    if(prePos)
     {
-        calcDis = currentDisV3 * (currentDisF - naturalDis) / naturalDis;
-        acc += calcDis * springConstant / mass;
-    }
-    //else if(currentDisF < naturalDis)
-    //{
+        Vector3 currentDisV3 = *prePos - currentPos;
+        float currentDisF = currentDisV3.Length();
+        Vector3 calcDis = 0.0f;
+        if (currentDisF > naturalDis)
+        {
+            calcDis = currentDisV3 * (currentDisF - naturalDis) / naturalDis;
+            acc += calcDis * springConstant / mass;
+        }
+        //else if(currentDisF < naturalDis)
+        //{
 
-    //}
+        //}
+    }
+    if(nextPos)
+    {
+        Vector3 currentDisV3 = *nextPos - currentPos;
+        float currentDisF = currentDisV3.Length();
+        Vector3 calcDis = 0.0f;
+        if (currentDisF > naturalDis)
+        {
+            calcDis = currentDisV3 * (currentDisF - naturalDis) / naturalDis;
+            acc += calcDis * springConstant / mass;
+        }
+    }
+
     Vector3 vel = currentVel;
     vel += acc;
     vel -= vel * viscousDragCoefficient;

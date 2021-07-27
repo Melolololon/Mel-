@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="HurikoGame.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PhysicsTest.cpp" />
     <ClCompile Include="PhysicsTestObject.cpp" />
@@ -168,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="HurikoGame.h" />
     <ClInclude Include="PhysicsTest.h" />
     <ClInclude Include="PhysicsTestObject.h" />
     <ClInclude Include="Play.h" />

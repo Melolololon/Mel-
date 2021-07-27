@@ -12,5 +12,13 @@ public:
 	PhysicsTestObject(const Vector3& pos ,const Vector3& vel);
 	void Update()override;
 	void Draw()override;
+	void Hit
+	(
+		const GameObject* const  object,
+		const CollisionType collisionType,
+		const int arrayNum,
+		const CollisionType hitObjColType,
+		const int hitObjArrayNum
+	)override;
 };
 

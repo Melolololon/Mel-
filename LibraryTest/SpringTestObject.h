@@ -8,18 +8,17 @@ class SpringTestObject :
 {
 private:
 	std::unique_ptr<ModelObject>model;
-	Vector3 rootPos;
-	float distance = 0.0f;
 
-	Vector3 modelScale = 5;
+	SpringTestObject* nextObject = nullptr;
+	SpringTestObject* preObject = nullptr;
+	const float DISTANCE = 5.0f;
+	Vector3 modelScale = 1;
 public:
-	SpringTestObject(const Vector3& pos, const Vector3& rootPos);
+	SpringTestObject(SpringTestObject* preObject);
 	void Update()override;
 	void Draw()override;
 	void CalcSpring();
 
-	void SetRootPosition(const Vector3& pos);
-
-	
+	void SetNextObject(SpringTestObject* nextObject) { this->nextObject = nextObject; }
 };
 

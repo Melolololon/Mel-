@@ -74,7 +74,7 @@ public:
 	/// </summary>
 	/// <param name="currentPos">現在の座標</param>
 	/// <param name="currentVel">現在の速度</param>
-	/// <param name="rootPos">物体がつながっている場所の座標</param>
+	/// <param name="prePos">物体がつながっている場所の座標</param>
 	/// <param name="naturalDis">自然長</param>
 	/*/// <param name="maxDis">最大距離</param>*/
 	/// <param name="mass">物体の重さ</param>
@@ -86,7 +86,8 @@ public:
 	(
 		const Vector3& currentPos,
 		const Vector3& currentVel,
-		const Vector3& rootPos,
+		const Vector3* prePos,
+		const Vector3* nextPos,
 		const float naturalDis,
 		/*const float maxDis,*/
 		const float mass,

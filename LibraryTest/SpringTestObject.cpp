@@ -3,15 +3,23 @@
 #include"LibMath.h"
 #include"PhysicsTestObject.h"
 
-SpringTestObject::SpringTestObject(const Vector3& pos,const Vector3& rootPos)
+SpringTestObject::SpringTestObject(SpringTestObject* preObject) 
+	: preObject(preObject)
 {
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
-	position = pos;
-	this->rootPos = rootPos;
+	
+	if(preObject)
+	{
+		position = preObject->GetPosition() + Vector3(0, -DISTANCE, 0);
+	}
+	else
+	{
+		position = Vector3(0, 50, 0);
+	}
+	
 	velocity = 0;
-	distance = LibMath::CalcDistance3D(pos, rootPos);
 
-	calcPhysics = true;
+	calcPhysics = false;
 	force = 0;
 	mass = 1.0f;
 
@@ -23,6 +31,17 @@ SpringTestObject::SpringTestObject(const Vector3& pos,const Vector3& rootPos)
 
 void SpringTestObject::Update()
 {
+	if (!preObject)
+	{
+		float speed = 1.2f;
+		if (Input::KeyState(DIK_W))position.y += speed;
+		if (Input::KeyState(DIK_S))position.y -= speed;
+		if (Input::KeyState(DIK_A))position.x -= speed;
+		if (Input::KeyState(DIK_D))position.x += speed;
+		model->SetPosition(position);
+		sphereData[0].position = position;
+	}
+
 	sphereData[0].position = position;
 	sphereData[0].r = modelScale.x;
 }
@@ -34,12 +53,28 @@ void SpringTestObject::Draw()
 
 void SpringTestObject::CalcSpring()
 {
+	if (!preObject)return;
+
+	std::unique_ptr<Vector3> nextPos;
+	if (nextObject)
+	{
+		nextPos = std::make_unique<Vector3>();
+		*nextPos = nextObject->GetPosition();
+	}
+	std::unique_ptr<Vector3> prePos;
+	if (preObject)
+	{
+		prePos = std::make_unique<Vector3>();
+		*prePos = preObject->GetPosition();
+	}
+
 	velocity = Physics::CalcSpringVelocity
 	(
 		position,
 		velocity,
-		rootPos,
-		distance,
+		nextPos.get(),
+		prePos.get(),
+		DISTANCE,
 		mass,
 		0.2,//èdóÕâ¡ë¨ìx
 		0.01,//ÇŒÇÀíËêî
@@ -51,10 +86,6 @@ void SpringTestObject::CalcSpring()
 	sphereData[0].position = position;
 }
 
-void SpringTestObject::SetRootPosition(const Vector3& pos)
-{
-	rootPos = pos;
-}
 
 
 

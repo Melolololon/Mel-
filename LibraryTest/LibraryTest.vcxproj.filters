@@ -51,6 +51,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
+    <ClCompile Include="HurikoGame.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -73,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="HurikoGame.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

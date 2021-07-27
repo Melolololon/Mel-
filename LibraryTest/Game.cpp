@@ -8,6 +8,8 @@
 #include"PhysicsTest.h"
 #include"TextWrite.h"
 
+#include"HurikoGame.h"
+
 Game::Game() {}
 
 Game::~Game() {}
@@ -67,7 +69,7 @@ void Game::Initialize()
 	GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	SceneManager::GetInstace()->SetStartScene(new PhysicsTest());
+	SceneManager::GetInstace()->SetStartScene(new HurikoGame());
 #pragma endregion
 
 

@@ -1,9 +1,7 @@
 #include "PhysicsTestObject.h"
 #include"ModelObject.h"
 #include"ModelData.h"
-//‚²”ÑH‚×‚½‚ç‚â‚é‚±‚Æ
-//‹… ‚Ìƒ‚ƒfƒ‹—pˆÓ
-
+#include"SpringTestObject.h"
 
 PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& vel)
 {
@@ -48,4 +46,19 @@ void PhysicsTestObject::Update()
 void PhysicsTestObject::Draw()
 {
 	model->Draw();
+}
+
+void PhysicsTestObject::Hit
+(
+	const GameObject* const  object,
+	const CollisionType collisionType,
+	const int arrayNum,
+	const CollisionType hitObjColType,
+	const int hitObjArrayNum
+)
+{
+	if(typeid(SpringTestObject) == typeid(*object))
+	{
+		eraseManager = true;
+	}
 }
