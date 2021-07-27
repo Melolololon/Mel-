@@ -5,19 +5,19 @@
 //‹… ‚Ìƒ‚ƒfƒ‹—pˆÓ
 
 
-PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& vel)
+PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& force)
 {
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
 	model->SetScale(5);
 
 	position = pos;
-	velocity = vel;
+	velocity = 0;
 	calcPhysics = true;
 
 	sphereData.resize(1);
 	collisionFlag.sphere = true;
 
-	//force = Vector3(0.02f, 0.02f, 0);
+	this->force = force;
 	mass = 100.0f;
 }
 

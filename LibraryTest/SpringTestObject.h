@@ -8,9 +8,10 @@ class SpringTestObject :
 {
 private:
 	std::unique_ptr<ModelObject>model;
-	std::unique_ptr<ModelObject>rootModel;
 	Vector3 rootPos;
 	float distance = 0.0f;
+
+	Vector3 modelScale = 5;
 public:
 	SpringTestObject(const Vector3& pos, const Vector3& rootPos);
 	void Update()override;

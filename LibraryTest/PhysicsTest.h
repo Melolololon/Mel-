@@ -9,12 +9,15 @@ class PhysicsTest :public Scene
 private:
 	TuringPattern tPattern;
 
-	Vector3 topPos = Vector3(0, 0, 0);
+	Vector3 topPos = Vector3(0, 50, 0);
 	Vector3 topRootPos = topPos + Vector3(0, 15, 0);
 	static const int SPRING_OBJECT_NUM = 3;
 	std::array<std::shared_ptr<SpringTestObject>, SPRING_OBJECT_NUM>springObjects;
 
 	FrameTimer addTimer;
+
+
+	Vector3 angle = 0;
 public:
 	PhysicsTest();
 	~PhysicsTest();

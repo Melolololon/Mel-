@@ -30,7 +30,7 @@
 #include"Physics.h"
 #include"PhysicsTestObject.h"
 
-
+#include"Player.h"
 
 PhysicsTest::PhysicsTest() {}
 
@@ -40,13 +40,8 @@ PhysicsTest::~PhysicsTest() {}
 
 void PhysicsTest::Initialize()
 {
-#pragma region モデル読み込み
-	ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
-#pragma endregion
-	
-	Camera::Get()->SetRotateCriteriaPosition(Vector3(0, 0, -100));
-
-	
+	//プレイヤー
+	GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
 
 	//チューリングパターン
 	tPattern.Initialize();
@@ -63,8 +58,6 @@ void PhysicsTest::Initialize()
 		GameObjectManager::GetInstance()->AddObject(springObjects[i]);
 	}
 
-	TextWrite::CreateFontData(L"HGPｺﾞｼｯｸE","test");
-
 	addTimer.SetStopFlag(false);
 	addTimer.SetMaxTime(60 * 0.8);
 	addTimer.SetResetFlag(true);
@@ -73,12 +66,14 @@ void PhysicsTest::Initialize()
 void PhysicsTest::Update()
 {
 
-	if(addTimer.GetSameAsMaxFlag())
-	{
+	
 
-		//反発
-		GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(40, 0, 0), Vector3(-0.9, 0, 0)));
-	}
+	//if(addTimer.GetSameAsMaxFlag())
+	//{
+
+	//	//反発
+	//	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(40, 0, 0), Vector3(-0.02, 0, 0)));
+	//}
 
 
 	tPattern.Update();
@@ -87,10 +82,10 @@ void PhysicsTest::Update()
 	GameObjectManager::GetInstance()->Update();	
 	
 
-	if (Input::KeyState(DIK_W))topRootPos.y += 1.0f;
+	/*if (Input::KeyState(DIK_W))topRootPos.y += 1.0f;
 	if (Input::KeyState(DIK_S))topRootPos.y -= 1.0f;
 	if (Input::KeyState(DIK_A))topRootPos.x -= 1.0f;
-	if (Input::KeyState(DIK_D))topRootPos.x += 1.0f;
+	if (Input::KeyState(DIK_D))topRootPos.x += 1.0f;*/
 
 	springObjects[0]->CalcSpring();
 	springObjects[0]->SetRootPosition(topRootPos);
@@ -101,16 +96,18 @@ void PhysicsTest::Update()
 		springObjects[i]->SetRootPosition(rootPos);
 	}
 
+
 }
 
 int num = 0;
 void PhysicsTest::Draw()
 {
-	//tPattern.Draw();
+	tPattern.Draw();
 	GameObjectManager::GetInstance()->Draw();
 
 	TextWrite::Draw(std::to_wstring(num), "test");
 	num++;
+
 }
 
 void PhysicsTest::Finitialize()

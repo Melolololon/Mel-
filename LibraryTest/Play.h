@@ -12,6 +12,8 @@ class Play:public Scene
 private:
 	FrameTimer ti;
 	std::unique_ptr<ModelObject>pbrModel;
+
+	Vector3 modelAngle = 0;
 public:
 	Play();
 	~Play();

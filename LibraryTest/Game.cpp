@@ -6,6 +6,7 @@
 #include"Camera.h"
 #include"ModelData.h"
 #include"PhysicsTest.h"
+#include"TextWrite.h"
 
 Game::Game() {}
 
@@ -46,10 +47,12 @@ void Game::Initialize()
 	Library::Initialize(1920, 1080, {200,200,200,255},L"MyLib");
 	Library::SetFramesPerSecond60(true);
 	
-	Camera::Get()->SetRotateCriteriaPosition(Vector3(0, 0, -5));
+	//カメラは各シーンに移動しました
 
 
-
+#pragma region モデル読み込み
+	ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
+#pragma endregion
 
 #pragma region マネージャー初期化
 
@@ -68,6 +71,8 @@ void Game::Initialize()
 #pragma endregion
 
 
+
+	TextWrite::CreateFontData(L"HGPｺﾞｼｯｸE", "test");
 
 }
 

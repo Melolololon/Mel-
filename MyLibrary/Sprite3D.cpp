@@ -70,6 +70,7 @@ bool Sprite3D::Initialize()
 void Sprite3D::Create(const Color& color)
 {
 	CreateBuffer();
+	InitializeVertices();
 	SetOneColorSpriteColor(color);
 	pipeline = defaultPipeline.GetPipelineState();
 }
@@ -80,6 +81,7 @@ void Sprite3D::Create(Texture* pTexture)
 	//テクスチャがあったら描画範囲変更
 	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
 	CreateBuffer();
+	InitializeVertices();
 	pipeline = defaultPipeline.GetPipelineState();
 }
 

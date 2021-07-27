@@ -39,6 +39,7 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
+	Camera::Get()->SetRotateCriteriaPosition(Vector3(0, 0, -5));
 	/*Vector3 v = Physics::CalcCoefficientOfRestitution
 	(
 		Value2<Vector3>()
@@ -61,9 +62,7 @@ void Play::Initialize()
 
 
 }
-int testT = 0;
 
-Vector3 angle = 0;
 void Play::Update()
 {
 	Vector3 pos1 = Vector3(0, 5, 0);
@@ -81,21 +80,21 @@ void Play::Update()
 
 	if(Input::KeyState(DIK_A))
 	{
-		angle.y += 3.0f;
+		modelAngle.y += 3.0f;
 		
 	}
 	if (Input::KeyState(DIK_D))
 	{
-		angle.y -= 3.0f;
+		modelAngle.y -= 3.0f;
 	}
 	if (Input::KeyState(DIK_W))
 	{
-		angle.x += 3.0f;
+		modelAngle.x += 3.0f;
 
 	}
 	if (Input::KeyState(DIK_S))
 	{
-		angle.x -= 3.0f;
+		modelAngle.x -= 3.0f;
 	}
 	/*Camera::Get()->SetRotateCriteriaPosition(0);
 	Camera::Get()->SetAngle(angle);
@@ -104,7 +103,7 @@ void Play::Update()
 	DirectionalLight::Get().SetDirection(Vector3(0, -1, 0));
 
 
-	pbrModel->SetAngle(angle);
+	pbrModel->SetAngle(modelAngle);
 
 	Vector3 v1 = -7;
 	Vector3 v2 = 1;

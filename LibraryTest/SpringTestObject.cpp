@@ -6,7 +6,6 @@
 SpringTestObject::SpringTestObject(const Vector3& pos,const Vector3& rootPos)
 {
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
-	rootModel = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
 	position = pos;
 	this->rootPos = rootPos;
 	velocity = 0;
@@ -19,20 +18,18 @@ SpringTestObject::SpringTestObject(const Vector3& pos,const Vector3& rootPos)
 	sphereData.resize(1);
 	collisionFlag.sphere = true;
 
-
-	rootModel->SetPosition(rootPos);
+	model->SetScale(modelScale);
 }
 
 void SpringTestObject::Update()
 {
 	sphereData[0].position = position;
-	sphereData[0].r = 1.0f;
+	sphereData[0].r = modelScale.x;
 }
 
 void SpringTestObject::Draw()
 {
 	model->Draw();
-	rootModel->Draw();
 }
 
 void SpringTestObject::CalcSpring()
@@ -57,7 +54,6 @@ void SpringTestObject::CalcSpring()
 void SpringTestObject::SetRootPosition(const Vector3& pos)
 {
 	rootPos = pos;
-	rootModel->SetPosition(pos);
 }
 
 

@@ -1,7 +1,7 @@
 #pragma once
 #include"Vector.h"
 #include"Values.h"
-#include"Sprite2D.h"
+#include"Sprite3D.h"
 #include<memory>
 class TuringPattern
 {
@@ -16,7 +16,7 @@ private:
 	std::array<std::array<Vector2, CELL_NUM_X>, CELL_NUM_Y>preCalcField;
 
 
-	std::unique_ptr<Sprite2D>turingPatternSpr[CELL_NUM_Y][CELL_NUM_X];
+	std::unique_ptr<Sprite3D>turingPatternSpr[CELL_NUM_Y][CELL_NUM_X];
 
 	//field‚ÌŒvŽZ
 	void CalcTuringPattern();

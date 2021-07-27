@@ -1,12 +1,13 @@
 #pragma once
 #include"GameObject.h"
 #include"ModelObject.h"
+#include"Sprite3D.h"
 class PhysicsTestObject :public GameObject
 {
 	std::unique_ptr<ModelObject>model;
 
 public:
-	PhysicsTestObject(const Vector3& pos ,const Vector3& vel);
+	PhysicsTestObject(const Vector3& pos ,const Vector3& force);
 	void Update()override;
 	void Draw()override;
 };
