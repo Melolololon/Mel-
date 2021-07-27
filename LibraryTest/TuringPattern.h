@@ -8,8 +8,8 @@ class TuringPattern
 private:
 
 	//マス数
-	static const int CELL_NUM_X = 100;
-	static const int CELL_NUM_Y = 100;
+	static const int CELL_NUM_X = 40;
+	static const int CELL_NUM_Y = 40;
 	//フィールドの1マス1マスにuとv(今回の場合はxとy)の要素を持たせる
 	
 	std::array<std::array<Vector2, CELL_NUM_X>, CELL_NUM_Y>field;

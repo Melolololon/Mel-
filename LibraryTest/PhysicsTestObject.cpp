@@ -8,6 +8,8 @@
 PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& vel)
 {
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
+	model->SetScale(5);
+
 	position = pos;
 	velocity = vel;
 	calcPhysics = true;
@@ -15,25 +17,25 @@ PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& vel)
 	sphereData.resize(1);
 	collisionFlag.sphere = true;
 
-	force = Vector3(0.02f, 0.02f, 0);
+	//force = Vector3(0.02f, 0.02f, 0);
 	mass = 100.0f;
 }
 
 void PhysicsTestObject::Update()
 {
-	if(force.x > 0)
-	{
-		force -= Vector3(0.001f, 0.001f, 0);
-	}
-	else
-	{
-		force = 0;
-	}
+	//if(force.x > 0)
+	//{
+	//	force -= Vector3(0.001f, 0.001f, 0);
+	//}
+	//else
+	//{
+	//	force = 0;
+	//}
 	
 	//position += velocity;
 	model->SetPosition(position);
 	sphereData[0].position = position;
-	sphereData[0].r = 1.0f;
+	sphereData[0].r = 5.0f;
 }
 
 void PhysicsTestObject::Draw()

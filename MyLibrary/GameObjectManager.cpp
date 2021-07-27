@@ -127,6 +127,23 @@ void GameObjectManager::Update()
 						))
 						{
 
+
+							//反発
+							if (!o1->GetCalcPhysicsFlag() || !o2->GetCalcPhysicsFlag())continue;
+
+							Value2<Vector3> velocity = Physics::CalcRepulsionVelocity
+							(
+								Value2<Vector3>(o1->GetPosition(), o2->GetPosition()),
+								Value2<Vector3>(o1->GetVelocity(), o2->GetVelocity()),
+								Value2<float>(o1->GetMass(), o2->GetMass()),
+								Value2<Vector3>(1.0f, 1.0f)
+							);
+
+							o1->SetPosition(o1->GetPosition() + velocity.v1);
+							o2->SetPosition(o2->GetPosition() + velocity.v2);
+							o1->SetVelocity(velocity.v1);
+							o2->SetVelocity(velocity.v2);
+
 							//hitを呼び出す
 							o1->Hit
 							(
@@ -150,21 +167,6 @@ void GameObjectManager::Update()
 							//物理演算2回にすると、衝突前ベクトル取得できなくて無理
 							//一度確認(o1に割る当てられて確認)したら、検索対象外にする?A*のcloseみたいに
 
-							//反発
-							if (!o1->GetCalcPhysicsFlag() || !o2->GetCalcPhysicsFlag())continue;
-
-							Value2<Vector3> velocity = Physics::CalcRepulsionVelocity
-							(
-								Value2<Vector3>(o1->GetPosition(), o2->GetPosition()),
-								Value2<Vector3>(o1->GetVelocity(), o2->GetVelocity()),
-								Value2<float>(o1->GetMass(), o2->GetMass()),
-								Value2<Vector3>(1.0f, 1.0f)
-							);
-
-							o1->SetPosition(o1->GetPosition() + velocity.v1);
-							o2->SetPosition(o2->GetPosition() + velocity.v2);
-							o1->SetVelocity(velocity.v1);
-							o2->SetVelocity(velocity.v2);
 						}
 						collisionCount[1]++;
 					}

@@ -15,7 +15,10 @@ public:
 	SpringTestObject(const Vector3& pos, const Vector3& rootPos);
 	void Update()override;
 	void Draw()override;
+	void CalcSpring();
 
 	void SetRootPosition(const Vector3& pos);
+
+	
 };
 

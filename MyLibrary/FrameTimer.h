@@ -20,9 +20,9 @@ private:
 	//前フレームの時間
 	int preTime = 0;
 	//最大計測時間に達したときに現在の時間を上書きする時間
-	int resetMaxTime = INT_MAX;
+	int resetMaxTime = 0;
 	//最小計測時間に達したときに現在の時間を上書きする時間
-	int resetMinTime = INT_MIN;
+	int resetMinTime = 0;
 	//最大計測時間
 	int maxTime = INT_MAX;
 	//最小計測時間

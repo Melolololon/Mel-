@@ -33,16 +33,20 @@ void FrameTimer::AllUpdate()
 
 void FrameTimer::Update()
 {
+
+	if (!isStop) 
+	{
+		if (isDecrement && time > minTime) time--;
+		else if (!isDecrement && time < maxTime)time++;
+	}
+
 	timeMaxMoment = false;
 	timeMinMoment = false;
-	if (preTime != time == maxTime)timeMaxMoment = true;
-	if (preTime != time == minTime)timeMinMoment = true;
+	if (preTime != time && time == maxTime)timeMaxMoment = true;
+	if (preTime != time && time == minTime)timeMinMoment = true;
 	preTime = time;
 
 	if (isStop)return;
-
-	if (isDecrement && time > minTime) time--;
-	else if(!isDecrement && time < maxTime)time++;
 
 	if (resetFlag) 
 	{

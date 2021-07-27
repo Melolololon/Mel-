@@ -4,6 +4,7 @@
 class PhysicsTestObject :public GameObject
 {
 	std::unique_ptr<ModelObject>model;
+
 public:
 	PhysicsTestObject(const Vector3& pos ,const Vector3& vel);
 	void Update()override;
