@@ -1087,6 +1087,8 @@ void DirectX12::LoopStartProcess()
 	//Model::SetViewAndProjectionMatrix(cameraMat);
 	Sprite3D::SetViewAndProjectionMatrix(cameraMat);
 	Sprite3D::SetCameraPosTargetUpVector(mainCameraData.nowEye, mainCameraData.nowTarget, mainCameraData.nowUp);
+
+	TextWrite::LoopStartProcess();
 }
 
 void DirectX12::LoopEndProcess()
@@ -1212,9 +1214,11 @@ void DirectX12::LoopEndProcess()
 	RenderTarget::AllDraw();
 
 #pragma region RTVからPRESENTへ
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//TextWriteクラスで自動的に変更するからいらない
+
+	/*barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	cmdList->ResourceBarrier(1, &barrierDesc);
+	cmdList->ResourceBarrier(1, &barrierDesc);*/
 
 	//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
@@ -1222,9 +1226,12 @@ void DirectX12::LoopEndProcess()
 #pragma endregion
 
 #pragma region 実行
+
+
 	cmdList->Close();
 	ID3D12CommandList* cmdLists[] = { cmdList.Get() };
-	cmdQueue->ExecuteCommandLists(1, cmdLists);
+	cmdQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
+	TextWrite::LoopEndProcess(bbIndex);
 
 	cmdQueue->Signal(fence.Get(), ++fenceVal);
 	if (fence->GetCompletedValue() != fenceVal)
@@ -1235,12 +1242,15 @@ void DirectX12::LoopEndProcess()
 		CloseHandle(event);
 	}
 
+
 	cmdAllocator->Reset();
 	cmdList->Reset(cmdAllocator.Get(), nullptr);
 
 
 	swapchain->Present(1, 0);//VSYNC
 #pragma endregion
+
+
 
 	//スプライトフォントの表示回数をリセット
 	spriteFontDrawCounter = 0;

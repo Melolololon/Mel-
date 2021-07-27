@@ -39,7 +39,12 @@ using namespace Microsoft::WRL;
 class TextWrite
 {
 private:
+	static std::vector<std::wstring>tests;
+	static std::vector<std::string>fontNames;
+	static std::vector<std::tuple<std::wstring, std::string>>drawTextDatas;
+	
 	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
 
 	//DirectWriteを使用するためのもの
 	static ComPtr<IDWriteFactory> dWriteFactory;
@@ -49,6 +54,7 @@ private:
 	static ComPtr<ID3D11Device>d3d11Device;
 	static ComPtr<ID3D11DeviceContext>d3d11context;
 	static ComPtr<ID3D11On12Device>d3d11On12device;
+	//レンダリングするバッファ
 	static ComPtr<ID3D11Resource>wrappedBackBuffer[2];
 
 	//D2D
@@ -58,7 +64,7 @@ private:
 	static ComPtr<ID2D1DeviceContext> d2dContext;
 	
 	//バインドされているビットマップを表す
-	static ComPtr<ID2D1Bitmap1>bitmap;
+	static ComPtr<ID2D1Bitmap1>d2dRenderTerget[2];
 
 	//レンダリングするためのもの
 	static ComPtr<ID2D1HwndRenderTarget> d2dRenderTarget;
@@ -66,6 +72,8 @@ private:
 	static ComPtr<ID2D1SolidColorBrush> d2dSolidColorBrush;
 
 	static HWND hwnd;
+
+
 public:
 	static bool Initialize
 	(
@@ -76,7 +84,8 @@ public:
 	);  
 	
 	static void LoopStartProcess();
-	static void LoopEndProcess();
+	static void LoopEndProcess(const UINT rtIndex);
+
 
 	static bool CreateFontData(const std::string& name);
 

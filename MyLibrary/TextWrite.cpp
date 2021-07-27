@@ -2,6 +2,7 @@
 #include"Library.h"
 #include"LibWinAPI.h"
 
+
 ComPtr<IDWriteFactory> TextWrite::dWriteFactory;
 std::unordered_map<std::string, ComPtr<IDWriteTextFormat>>TextWrite::pTextFormat;
 
@@ -14,20 +15,24 @@ ComPtr<ID2D1Factory3> TextWrite::d2dFactory;
 ComPtr<ID2D1Device2>TextWrite::d2dDevice;
 ComPtr<IDXGIDevice>TextWrite::dxgiDevice;
 ComPtr<ID2D1DeviceContext> TextWrite::d2dContext;
-ComPtr<ID2D1Bitmap1>TextWrite::bitmap;
+ComPtr<ID2D1Bitmap1>TextWrite::d2dRenderTerget[2];
 
 ComPtr<ID2D1HwndRenderTarget> TextWrite::d2dRenderTarget;
 ComPtr<ID2D1SolidColorBrush> TextWrite::d2dSolidColorBrush;
 HWND TextWrite::hwnd;
 
+std::vector<std::wstring> TextWrite::tests;
+std::vector<std::string> TextWrite::fontNames;
+std::vector<std::tuple<std::wstring, std::string>> TextWrite::drawTextDatas;
+
 LRESULT TextWrite::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-   /* switch (msg)
-    {
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-    }*/
+    /* switch (msg)
+     {
+     case WM_DESTROY:
+         PostQuitMessage(0);
+         return 0;
+     }*/
     return DefWindowProc(hwnd, msg, wparam, lparam);
 
 }
@@ -36,7 +41,7 @@ LRESULT TextWrite::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 bool TextWrite::Initialize
 (
     ID3D12Device* pD3D12Device,
-    ID3D12CommandQueue** pPD3D12Queue, 
+    ID3D12CommandQueue** pPD3D12Queue,
     ID3D12Resource* pBuckBuffers[2],
     CD3DX12_CPU_DESCRIPTOR_HANDLE backBufferHandle[2]
 )
@@ -44,7 +49,7 @@ bool TextWrite::Initialize
 
 
     UINT flag =
-      D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+        D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
     auto result = D3D11On12CreateDevice
     (
@@ -66,22 +71,22 @@ bool TextWrite::Initialize
     //チュートリアルには「ID3D11Device の作成後、そこから ID3D11On12Device インターフェイスを照会できます。
     //これは、D2D を設定するために使用されるプライマリ デバイス オブジェクトです。」
     //と書かれている
+    //引数に渡したやつがnullptrじゃなくなるから、
+    //Asを呼んだID3Dオブジェクトと同じ設定でCreateするってこと?
     result = d3d11Device.As(&d3d11On12device);
 
     result = D2D1CreateFactory
     (
         D2D1_FACTORY_TYPE_SINGLE_THREADED,
-        __uuidof(ID2D1Factory3),
-        &d2dFactory
-        //IID_PPV_ARGS(&d2dFactory)
+        IID_PPV_ARGS(&d2dFactory)
     );
 
     result = d3d11On12device.As(&dxgiDevice);
 
     //D3D11_CREATE_DEVICE_DEBUGのせいで生成できてなかった
     result = d2dFactory->CreateDevice(dxgiDevice.Get(), &d2dDevice);
-    
-    result = d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE,&d2dContext);
+
+    result = d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &d2dContext);
 
     IDWriteFactory** pPWriteFactory = &dWriteFactory;
     result = DWriteCreateFactory
@@ -100,13 +105,13 @@ bool TextWrite::Initialize
     D2D1_BITMAP_PROPERTIES1 bitmapProperties = D2D1::BitmapProperties1
     (
         D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,//ビットマップを生成するためのDXGI形式とアルファモード
-        D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN,D2D1_ALPHA_MODE_PREMULTIPLIED),
+        D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
         dpiX,
         dpiY
     );
 
     //バックバッファ分ループ
-    for(int i = 0; i < 2;i++)
+    for (int i = 0; i < 2; i++)
     {
         D3D11_RESOURCE_FLAGS d3d11Flags = {};
         //D3D12のリソースを、D3D11が理解できるようにするためのもの(今回の場合はバックバッファだからD3D11_BIND_RENDER_TARGETを指定?)
@@ -114,6 +119,8 @@ bool TextWrite::Initialize
 
         //12のバックバッファをもとに11のバックバッファを生成?
         //「このメソッドは、D3D11on12で使用するD3D11リソースを作成します。」ドキュメントより
+        //リソースバリアみたいにBefourとAfter書かなくていいってこと?Afterだけでいいってこと?
+        //「レンダー ターゲット状態を "IN" 状態とし、表示状態を "OUT" 状態として指定」チュートリアルより
         result = d3d11On12device->CreateWrappedResource
         (
             pBuckBuffers[i],
@@ -126,27 +133,33 @@ bool TextWrite::Initialize
         //「このバックバッファに直接描画するD2Dのレンダーターゲットを作成します。」チュートリアルの文
         //IDXGISurfaceインターフェイスは、画像データオブジェクトのメソッドを実装します。(ドキュメントの説明を翻訳した文)
         ComPtr<IDXGISurface>dxgiSurface;
-        wrappedBackBuffer[i].As(&dxgiSurface);
-        d2dContext->CreateBitmapFromDxgiSurface
+        result = wrappedBackBuffer[i].As(&dxgiSurface);
+        result = d2dContext->CreateBitmapFromDxgiSurface
         (
             dxgiSurface.Get(),
             &bitmapProperties,
-            &bitmap
+            &d2dRenderTerget[i]
         );
 
         backBufferHandle[i].Offset(1, pD3D12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
         //アロケーターとレンダーターゲットはDirectX12クラスの使うかわからんから、一旦保留して先に進める
     }
-   
 
-    result = d2dFactory->CreateHwndRenderTarget
+    result = d2dContext->CreateSolidColorBrush
     (
-        D2D1::RenderTargetProperties(),
-        D2D1::HwndRenderTargetProperties(Library::GetHWND(), D2D1::SizeU(Library::GetWindowWidth(), Library::GetWindowHeight())),
-        &d2dRenderTarget
+        D2D1::ColorF(D2D1::ColorF::Black),
+        &d2dSolidColorBrush
     );
 
-    result = d2dRenderTarget->CreateSolidColorBrush
+
+    //result = d2dFactory->CreateHwndRenderTarget
+    //(
+    //    D2D1::RenderTargetProperties(),
+    //    D2D1::HwndRenderTargetProperties(Library::GetHWND(), D2D1::SizeU(Library::GetWindowWidth(), Library::GetWindowHeight())),
+    //    &d2dRenderTarget
+    //);
+
+    result = d2dContext->CreateSolidColorBrush
     (
         D2D1::ColorF(D2D1::ColorF::Black),
         &d2dSolidColorBrush
@@ -161,17 +174,53 @@ bool TextWrite::Initialize
 
 void TextWrite::LoopStartProcess()
 {
-    d2dRenderTarget->BeginDraw();
-    d2dRenderTarget->SetTransform(D2D1::IdentityMatrix());
-    d2dRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White, 0.0f));
+    drawTextDatas.clear();
 }
 
-void TextWrite::LoopEndProcess()
+//もしかしてAfter２つじゃなくて、現在、変更後を入れる?
+
+void TextWrite::LoopEndProcess(const UINT rtIndex)
 {
-    d2dRenderTarget->EndDraw(); 
- 
+    //D3D11on12で使用するD3D11リソース(バックバッファ)をセット(d3d11On12deviceにセット)
+    d3d11On12device->AcquireWrappedResources(wrappedBackBuffer[rtIndex].GetAddressOf(), 1);
 
+    //レンダーターゲットセット
+    d2dContext->SetTarget(d2dRenderTerget[rtIndex].Get());
+    d2dContext->BeginDraw();
+    d2dContext->SetTransform(D2D1::Matrix3x2F::Identity());
+
+    //描画
+    for (const auto& d : drawTextDatas)
+    {
+        D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, Library::GetWindowWidth(), Library::GetWindowHeight());
+
+        const std::wstring& text = std::get<0>(d);
+        d2dContext->DrawTextW
+        (
+            text.c_str(),
+            text.size(),
+            pTextFormat[std::get<1>(d)].Get(),
+            layoutRect,
+            d2dSolidColorBrush.Get()
+        );
+
+    }
+
+    auto result = d2dContext->EndDraw();
+
+    //D3D11on12用にラップされたD3D11リソースの解放
+    //「ReleaseWrappedResources を呼び出すことで、
+    //作成時に指定した "OUT" 状態に指定のリソースを移行させるリソース バリアを背後で発生させます。」チュートリアルより
+    //「Flushを呼び出す前にこのメソッドを呼び出して、
+    //リソースバリアを適切な「アウト」状態に挿入し、リソースバリアが「イン」状態であると予想されることをマークします。」
+    d3d11On12device->ReleaseWrappedResources(wrappedBackBuffer[rtIndex].GetAddressOf(), 1);
+
+    //D3D12のコマンドキューに送信
+    //「 最後に、11On12 デバイスで実行されるすべてのコマンドを共有 ID3D12CommandQueue に送信するために、
+    //ID3D11DeviceContext で Flush を呼び出す必要があります。」チュートリアルより
+    d3d11context->Flush();
 }
+
 
 bool TextWrite::CreateFontData(const std::string& name)
 {
@@ -203,21 +252,38 @@ bool TextWrite::CreateFontData(const std::string& name)
 
 void TextWrite::Draw(const std::wstring& text, const std::string& fontName)
 {
-    D2D1_RECT_F layoutRect = D2D1::RectF
-    (
-        0,
-        0,
-        300,
-        300
-    );
+    drawTextDatas.push_back(std::make_tuple(text, fontName));
 
-    //テキスト描画
-    d2dRenderTarget->DrawTextW
-    (
-        text.c_str(),
-        text.size(),
-        pTextFormat[fontName].Get(),
-        layoutRect,
-        d2dSolidColorBrush.Get()
-    );
+    //D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, Library::GetWindowWidth(), Library::GetWindowHeight());
+    //d2dContext->DrawTextW
+    //(
+    //    text.c_str(),
+    //    text.size() - 1,
+    //    pTextFormat[fontName].Get(),
+    //    layoutRect,
+    //    d2dSolidColorBrush.Get()
+    //);
+
+    //tests.push_back(text);
+    //fontNames.push_back(fontName);
+
+
+
+    //D2D1_RECT_F layoutRect = D2D1::RectF
+    //(
+    //    0,
+    //    0,
+    //    300,
+    //    300
+    //);
+
+    ////テキスト描画
+    //d2dRenderTarget->DrawTextW
+    //(
+    //    text.c_str(),
+    //    text.size(),
+    //    pTextFormat[fontName].Get(),
+    //    layoutRect,
+    //    d2dSolidColorBrush.Get()
+    //);
 }

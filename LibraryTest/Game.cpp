@@ -58,7 +58,7 @@ void Game::Initialize()
 	GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	SceneManager::GetInstace()->SetStartScene(new PhysicsTest());
+	SceneManager::GetInstace()->SetStartScene(new Play());
 #pragma endregion
 
 

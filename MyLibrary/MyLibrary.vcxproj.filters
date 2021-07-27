@@ -428,9 +428,6 @@
     <ClInclude Include="LibMath.h">
       <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
-    <ClInclude Include="Curve.h">
-      <Filter>ヘッダー ファイル\Support</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -499,6 +496,9 @@
     </ClInclude>
     <ClInclude Include="DirectX11On12.h">
       <Filter>ヘッダー ファイル\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Curve.h">
+      <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

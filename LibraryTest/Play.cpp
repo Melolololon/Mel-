@@ -28,6 +28,9 @@
 
 #include"Physics.h"
 #include"PhysicsTestObject.h"
+
+#include"TextWrite.h"
+
 Play::Play(){}
 
 
@@ -117,6 +120,8 @@ void Play::Draw()
 	pbrModel->Draw();
 
 	GameObjectManager::GetInstance()->Draw();
+
+	TextWrite::Draw(L"UNKO", "test");
 }
 
 void Play::Finitialize()
