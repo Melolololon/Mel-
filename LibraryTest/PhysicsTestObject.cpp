@@ -15,7 +15,7 @@ PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& vel)
 	sphereData.resize(1);
 	collisionFlag.sphere = true;
 
-	force = 0.005f * velocity;
+	force = 0.007f * velocity;
 	mass = 1.0f;
 
 	deadTimer.SetStopFlag(false);
@@ -35,7 +35,7 @@ void PhysicsTestObject::Update()
 	//position += velocity;
 	model->SetPosition(position);
 	sphereData[0].position = position;
-	sphereData[0].r = 5.0f;
+	sphereData[0].r = scale.x;
 
 	if(deadTimer.GetNowTime() >= 60 * 5)
 	{

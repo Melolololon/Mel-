@@ -52,6 +52,8 @@ protected:
 
 	//ソート用数値。ソート順を自分で調整するための変数
 	short sortNumber = 0;
+
+
 public:
 	
 	//コンストラクタ

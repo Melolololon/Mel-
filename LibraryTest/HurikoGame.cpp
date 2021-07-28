@@ -61,25 +61,17 @@ void HurikoGame::Initialize()
 		springObjects[i]->SetNextObject(springObjects[i + 1].get());
 	}
 
-	addTimer.SetStopFlag(false);
-	addTimer.SetMaxTime(60 * 0.8);
-	addTimer.SetResetFlag(true);
+	gameTimer.SetStopFlag(false);
+	gameTimer.SetCurrentTime(GAME_TIME + START_PRE_TIME);
+	gameTimer.SetResetFlag(false);
+	gameTimer.SetDecrementFlag(true);
+
 
 	SpringTestObject::ResetScore();
 }
 
 void HurikoGame::Update()
 {
-
-
-
-	//if(addTimer.GetSameAsMaxFlag())
-	//{
-
-	//	//”½”­
-	//	GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(Vector3(40, 0, 0), Vector3(-0.02, 0, 0)));
-	//}
-
 
 	//tPattern.Update();
 
@@ -104,8 +96,20 @@ void HurikoGame::Draw()
 	//tPattern.Draw();
 	GameObjectManager::GetInstance()->Draw();
 
-	TextWrite::Draw(Vector2(0, 0),Color(255,255,255,255),L"SCORE  " + std::to_wstring(SpringTestObject::GetScore()), "test");
+	static const Vector2 CENTER_TEXT_POS = Vector2(Library::GetWindowWidth() / 2, Library::GetWindowHeight() / 2);
+
 	
+	TextWrite::Draw(Vector2(0, 0),Color(255,255,255,255), L"SCORE  " + std::to_wstring(SpringTestObject::GetScore()), "test");
+	if (gameTimer.GetNowTime() > GAME_TIME)
+	{
+		TextWrite::Draw(CENTER_TEXT_POS - Vector2(100,35), Color(255, 255, 255, 255),  L"READY", "test");
+	}
+	if (gameTimer.GetNowTime() < GAME_TIME && gameTimer.GetNowTime() > GAME_TIME - START_PRE_TIME)
+	{
+		TextWrite::Draw(CENTER_TEXT_POS - Vector2(50, 35), Color(255, 255, 255, 255),  L"GO!", "test");
+	}
+
+
 	player->DrawCross();
 }
 

@@ -23,7 +23,7 @@ HWND TextWrite::hwnd;
 
 std::vector<std::wstring> TextWrite::tests;
 std::vector<std::string> TextWrite::fontNames;
-std::vector<std::tuple<Vector2, Color,std::wstring, std::string>> TextWrite::drawTextDatas;
+std::vector<std::tuple<Vector2, Color,/* TextWrite::TextAlignment,*/std::wstring, std::string>> TextWrite::drawTextDatas;
 
 LRESULT TextWrite::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -200,11 +200,31 @@ void TextWrite::LoopEndProcess(const UINT rtIndex)
     //描画
     for (const auto& d : drawTextDatas)
     {
-        Vector2 pos = std::get<0>(d);
-        D2D1_RECT_F layoutRect = D2D1::RectF(pos.x, pos.y, Library::GetWindowWidth(), Library::GetWindowHeight());
-
+        
         Color color = std::get<1>(d);
         d2dSolidColorBrush->SetColor(D2D1::ColorF(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.f));
+
+
+        Vector2 pos = std::get<0>(d);
+        IDWriteTextFormat* pFormat = pTextFormat[std::get<3>(d)].Get();
+       /* DWRITE_TEXT_ALIGNMENT alignment = DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER;
+        switch (std::get<2>(d))
+        {
+        case TextAlignment::LEFT_JUSTIFIED:
+            alignment = DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_LEADING;
+            break;
+        case  TextAlignment::RIGHT_JUSTIFIED:
+            alignment = DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_TRAILING;
+            break;
+        case TextAlignment::POINT:
+
+
+            alignment = DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER;
+            break;
+        }
+        pFormat->SetTextAlignment(alignment);*/
+
+        D2D1_RECT_F layoutRect = D2D1::RectF(pos.x, pos.y, Library::GetWindowWidth(), Library::GetWindowHeight());
 
         const std::wstring& text = std::get<2>(d);
         
@@ -212,7 +232,7 @@ void TextWrite::LoopEndProcess(const UINT rtIndex)
         (
             text.c_str(),
             text.size(),
-            pTextFormat[std::get<3>(d)].Get(),
+            pFormat,
             layoutRect,
             d2dSolidColorBrush.Get()
         );
@@ -258,7 +278,7 @@ bool TextWrite::CreateFontData(const std::wstring& fontName,const std::string& n
 
     //文字の揃え方設定。この場合、中央揃え
     //左右位置
-    result = pWriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
+    result = pWriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
     //上下位置
     result = pWriteTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
@@ -268,7 +288,14 @@ bool TextWrite::CreateFontData(const std::wstring& fontName,const std::string& n
 
 }
 
-void TextWrite::Draw(const Vector2& position, const Color& color, const std::wstring& text, const std::string& fontName)
+void TextWrite::Draw
+(
+    const Vector2& position, 
+    const Color& color,
+    /*const TextAlignment allgnment,*/
+    const std::wstring& text, 
+    const std::string& fontName
+)
 {
-    drawTextDatas.push_back(std::make_tuple(position,color, text, fontName));
+    drawTextDatas.push_back(std::make_tuple(position,color,/* allgnment,*/ text, fontName));
 }

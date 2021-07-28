@@ -41,10 +41,19 @@ using namespace Microsoft::WRL;
 //DirectWriteを使用したテキスト描画クラス
 class TextWrite
 {
+public:
+	
+	//enum class TextAlignment
+	//{
+	//	LEFT_JUSTIFIED,//左揃え
+	//	RIGHT_JUSTIFIED,//右揃え
+	//	POINT//中心揃え
+	//};
+
 private:
 	static std::vector<std::wstring>tests;
 	static std::vector<std::string>fontNames;
-	static std::vector<std::tuple<Vector2,Color,std::wstring, std::string>>drawTextDatas;
+	static std::vector<std::tuple<Vector2,Color,/* TextAlignment,*/std::wstring, std::string>>drawTextDatas;
 	
 	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
@@ -99,6 +108,7 @@ public:
 	(
 		const Vector2& position, 
 		const Color& color,
+	/*	const TextAlignment allgnment,*/
 		const std::wstring& text, 
 		const std::string& fontName
 	);

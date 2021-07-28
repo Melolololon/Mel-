@@ -17,7 +17,10 @@ private:
 	static const int SPRING_OBJECT_NUM = 4;
 	std::array<std::shared_ptr<SpringTestObject>, SPRING_OBJECT_NUM>springObjects;
 
-	FrameTimer addTimer;
+
+	static const int GAME_TIME = 60 * 30;
+	static const int START_PRE_TIME = 60 * 1;
+	FrameTimer gameTimer;
 
 
 	Vector3 angle = 0;

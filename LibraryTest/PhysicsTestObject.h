@@ -9,6 +9,7 @@ class PhysicsTestObject :public GameObject
 
 	FrameTimer deadTimer;
 
+	Vector3 scale = 3.0f;
 public:
 	PhysicsTestObject(const Vector3& pos ,const Vector3& vel);
 	void Update()override;

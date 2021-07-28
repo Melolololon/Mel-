@@ -34,6 +34,15 @@ void Player::Update()
 	const float MOVE_SPEED = 2.0f;
 	velocity = moveDir * MOVE_SPEED;
 	position += velocity;
+	
+	const Vector3 MAX_POS = 250;
+	if(position.x >= MAX_POS.x
+		|| position.x <= -MAX_POS.x
+		||position.z >= MAX_POS.z
+		|| position.z<= -MAX_POS.z)
+	{
+		position -= velocity;
+	}
 
 	Camera::Get()->SetAngle(angle);
 	Camera::Get()->SetRotateCriteriaPosition( position);
@@ -42,7 +51,9 @@ void Player::Update()
 	{
 		Vector3 bulletVel = Vector3::Normalize(Camera::Get()->GetTargetPosition() - position);
 		float BULLET_SPEED = 3.0f;
-		GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(position, bulletVel * BULLET_SPEED));
+
+		Vector3 bulletPos = LibMath::FloatDistanceMoveVector3(position, bulletVel, 15.0f);
+		GameObjectManager::GetInstance()->AddObject(std::make_shared<PhysicsTestObject>(bulletPos, bulletVel * BULLET_SPEED));
 	}
 
 	
