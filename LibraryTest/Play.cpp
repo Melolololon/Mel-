@@ -121,7 +121,7 @@ void Play::Draw()
 
 	GameObjectManager::GetInstance()->Draw();
 
-	TextWrite::Draw(L"1234567890_0987654321_3142536475869708", "test");
+	//TextWrite::Draw(L"1234567890_0987654321_3142536475869708", "test");
 	count++;
 }
 

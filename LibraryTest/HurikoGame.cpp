@@ -99,14 +99,13 @@ void HurikoGame::Update()
 
 }
 
-int num = 0;
 void HurikoGame::Draw()
 {
 	//tPattern.Draw();
 	GameObjectManager::GetInstance()->Draw();
 
-	TextWrite::Draw(std::to_wstring(num), "test");
-	num++;
+	TextWrite::Draw(Vector2(0, 0),Color(255,255,255,255),L"SCORE  " + std::to_wstring(SpringTestObject::GetScore()), "test");
+	
 	player->DrawCross();
 }
 

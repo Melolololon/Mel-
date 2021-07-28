@@ -17,6 +17,9 @@
 #include<wrl.h>
 #include<string>
 #include<unordered_map>
+
+#include"Vector.h"
+#include"Color.h"
 using namespace Microsoft::WRL;
 
 //DirectWriteチュートリアルURL
@@ -41,7 +44,7 @@ class TextWrite
 private:
 	static std::vector<std::wstring>tests;
 	static std::vector<std::string>fontNames;
-	static std::vector<std::tuple<std::wstring, std::string>>drawTextDatas;
+	static std::vector<std::tuple<Vector2,Color,std::wstring, std::string>>drawTextDatas;
 	
 	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
@@ -89,7 +92,16 @@ public:
 	static bool CreateFontData(const std::wstring& fontName,const std::string& name);
 
 
-	static void Draw(const std::wstring& text, const std::string& fontName);
+
+	//文字サイズは行列設定できるからそれで変えるようにする?
+
+	static void Draw
+	(
+		const Vector2& position, 
+		const Color& color,
+		const std::wstring& text, 
+		const std::string& fontName
+	);
 };
 
 

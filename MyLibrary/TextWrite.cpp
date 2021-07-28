@@ -23,7 +23,7 @@ HWND TextWrite::hwnd;
 
 std::vector<std::wstring> TextWrite::tests;
 std::vector<std::string> TextWrite::fontNames;
-std::vector<std::tuple<std::wstring, std::string>> TextWrite::drawTextDatas;
+std::vector<std::tuple<Vector2, Color,std::wstring, std::string>> TextWrite::drawTextDatas;
 
 LRESULT TextWrite::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -147,7 +147,7 @@ bool TextWrite::Initialize
         //Offsetは、ポインタをずらすものっぽい(ヘッダファイルみたらそんな感じだった)
         //(ずらす回数,ずらすサイズ)
         //ptr += 引数1 * 引数2
-        //チュートリアルでは、ハンドルを配列に格納してないので、ずらさないと2つ目のRTVビューを作れないため、Offset関数を書いてた
+        //チュートリアルでは、ハンドルを配列に格納してないので、ずらさないと2つ目のRTVビューを作れないからOffset関数を使っていた
         //そもそも自分の場合ここでビュー作らないからハンドル受け取る必要ない
         //backBufferHandle[i].Offset(1, pD3D12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
     }
@@ -155,7 +155,7 @@ bool TextWrite::Initialize
     //途中で色変えられるっぽい
     result = d2dContext->CreateSolidColorBrush
     (
-        D2D1::ColorF(D2D1::ColorF(1,0.1,1,1)),
+        D2D1::ColorF(0, 0, 0, 1), 
         &d2dSolidColorBrush
     );
 
@@ -200,18 +200,24 @@ void TextWrite::LoopEndProcess(const UINT rtIndex)
     //描画
     for (const auto& d : drawTextDatas)
     {
-        D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, Library::GetWindowWidth(), Library::GetWindowHeight() * 1.5);
+        Vector2 pos = std::get<0>(d);
+        D2D1_RECT_F layoutRect = D2D1::RectF(pos.x, pos.y, Library::GetWindowWidth(), Library::GetWindowHeight());
 
-        const std::wstring& text = std::get<0>(d);
+        Color color = std::get<1>(d);
+        d2dSolidColorBrush->SetColor(D2D1::ColorF(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.f));
+
+        const std::wstring& text = std::get<2>(d);
+        
         d2dContext->DrawTextW
         (
             text.c_str(),
             text.size(),
-            pTextFormat[std::get<1>(d)].Get(),
+            pTextFormat[std::get<3>(d)].Get(),
             layoutRect,
             d2dSolidColorBrush.Get()
         );
 
+        
     }
 
     auto result = d2dContext->EndDraw();
@@ -252,49 +258,17 @@ bool TextWrite::CreateFontData(const std::wstring& fontName,const std::string& n
 
     //文字の揃え方設定。この場合、中央揃え
     //左右位置
-    result = pWriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+    result = pWriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
     //上下位置
-    result = pWriteTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+    result = pWriteTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
 
     pTextFormat.emplace(name, pWriteTextFormat);
     return true;
+
 }
 
-void TextWrite::Draw(const std::wstring& text, const std::string& fontName)
+void TextWrite::Draw(const Vector2& position, const Color& color, const std::wstring& text, const std::string& fontName)
 {
-    drawTextDatas.push_back(std::make_tuple(text, fontName));
-
-    //D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, Library::GetWindowWidth(), Library::GetWindowHeight());
-    //d2dContext->DrawTextW
-    //(
-    //    text.c_str(),
-    //    text.size() - 1,
-    //    pTextFormat[fontName].Get(),
-    //    layoutRect,
-    //    d2dSolidColorBrush.Get()
-    //);
-
-    //tests.push_back(text);
-    //fontNames.push_back(fontName);
-
-
-
-    //D2D1_RECT_F layoutRect = D2D1::RectF
-    //(
-    //    0,
-    //    0,
-    //    300,
-    //    300
-    //);
-
-    ////テキスト描画
-    //d2dRenderTarget->DrawTextW
-    //(
-    //    text.c_str(),
-    //    text.size(),
-    //    pTextFormat[fontName].Get(),
-    //    layoutRect,
-    //    d2dSolidColorBrush.Get()
-    //);
+    drawTextDatas.push_back(std::make_tuple(position,color, text, fontName));
 }

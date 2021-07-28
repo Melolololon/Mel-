@@ -102,7 +102,7 @@ void SpringTestObject::Hit
 	const int hitObjArrayNum
 )
 {
-	if (typeid(SpringTestObject) == typeid(*object))
+	if (typeid(PhysicsTestObject ) == typeid(*object))
 	{
 		score++;
 	}
