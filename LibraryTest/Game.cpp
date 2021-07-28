@@ -7,6 +7,7 @@
 #include"ModelData.h"
 #include"PhysicsTest.h"
 #include"TextWrite.h"
+#include"Texture.h"
 
 #include"HurikoGame.h"
 
@@ -52,7 +53,9 @@ void Game::Initialize()
 	//カメラは各シーンに移動しました
 
 
-#pragma region モデル読み込み
+#pragma region リソース読み込み
+	Texture::Load("Resources/Texture/cross.png", "cross");
+
 	ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
 #pragma endregion
 

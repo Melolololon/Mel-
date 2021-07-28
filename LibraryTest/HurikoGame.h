@@ -4,6 +4,8 @@
 #include"SpringTestObject.h"
 #include<memory>
 #include"FrameTimer.h"
+
+#include"Player.h"
 class HurikoGame :public Scene
 {
 private:
@@ -12,7 +14,7 @@ private:
 	Vector3 topPos = Vector3(0, 50, 0);
 	Vector3 topRootPos = topPos + Vector3(0, 10, 0);
 	Vector3 movePos = 0;
-	static const int SPRING_OBJECT_NUM = 6;
+	static const int SPRING_OBJECT_NUM = 4;
 	std::array<std::shared_ptr<SpringTestObject>, SPRING_OBJECT_NUM>springObjects;
 
 	FrameTimer addTimer;
@@ -21,6 +23,7 @@ private:
 	Vector3 angle = 0;
 
 	std::unique_ptr<ModelObject>topModel;
+	std::shared_ptr<Player>player;
 
 public:
 	HurikoGame();

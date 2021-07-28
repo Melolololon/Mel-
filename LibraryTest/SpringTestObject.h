@@ -12,7 +12,7 @@ private:
 	SpringTestObject* nextObject = nullptr;
 	SpringTestObject* preObject = nullptr;
 	const float DISTANCE = 5.0f;
-	Vector3 modelScale = 1;
+	Vector3 modelScale = 4;
 public:
 	SpringTestObject(SpringTestObject* preObject);
 	void Update()override;

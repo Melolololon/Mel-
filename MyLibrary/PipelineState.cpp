@@ -110,11 +110,11 @@ void PipelineState::SetPipelineDesc
 	//ƒAƒ‹ƒtƒ@‘‚«‚İ
 	if (pipelineData.alphaWrite)
 	{
-		desc.BlendState.AlphaToCoverageEnable = false;
+		desc.BlendState.AlphaToCoverageEnable = true;
 	}
 	else
 	{
-		desc.BlendState.AlphaToCoverageEnable = true;
+		desc.BlendState.AlphaToCoverageEnable = false;
 	}
 
 #pragma endregion

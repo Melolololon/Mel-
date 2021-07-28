@@ -6,7 +6,7 @@
 PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& vel)
 {
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
-	model->SetScale(5);
+	model->SetScale(3);
 
 	position = pos;
 	velocity = vel;
@@ -35,7 +35,7 @@ void PhysicsTestObject::Update()
 	//position += velocity;
 	model->SetPosition(position);
 	sphereData[0].position = position;
-	sphereData[0].r = 5.0f;
+	sphereData[0].r = 3.0f;
 
 	if(deadTimer.GetNowTime() >= 60 * 5)
 	{

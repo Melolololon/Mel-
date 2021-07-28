@@ -41,10 +41,11 @@ HurikoGame::~HurikoGame() {}
 void HurikoGame::Initialize()
 {
 	//プレイヤー
-	//GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
+	player = std::make_shared<Player>();
+	GameObjectManager::GetInstance()->AddObject(player);
 
 	///チューリングパターン
-	//tPattern.Initialize();
+	tPattern.Initialize();
 
 	//ばね
 	springObjects[0] = std::make_shared<SpringTestObject>(nullptr);
@@ -80,7 +81,7 @@ void HurikoGame::Update()
 	//}
 
 
-	//tPattern.Update();
+	tPattern.Update();
 
 
 	GameObjectManager::GetInstance()->Update();
@@ -92,24 +93,26 @@ void HurikoGame::Update()
 		springObjects[i]->CalcSpring();
 	}
 
-	Camera::Get()->SetRotateCriteriaPosition( Vector3(0, 0, -100));
+	//Camera::Get()->SetRotateCriteriaPosition( Vector3(0, 0, -100));
 	//Camera::Get()->SetRotatePoint(Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
 	//Camera::Get()->SetCameraToTargetDistance(100.0f);
+
 }
 
 int num = 0;
 void HurikoGame::Draw()
 {
-	//tPattern.Draw();
+	tPattern.Draw();
 	GameObjectManager::GetInstance()->Draw();
 
 	TextWrite::Draw(std::to_wstring(num), "test");
 	num++;
-
+	player->DrawCross();
 }
 
 void HurikoGame::Finitialize()
 {
+	GameObjectManager::GetInstance()->AllEraseObject();
 }
 
 Scene* HurikoGame::GetNextScene()

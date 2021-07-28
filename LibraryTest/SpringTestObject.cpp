@@ -19,7 +19,7 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 	
 	velocity = 0;
 
-	calcPhysics = false;
+	calcPhysics = true;
 	force = 0;
 	mass = 1.0f;
 
@@ -27,17 +27,19 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 	collisionFlag.sphere = true;
 
 	model->SetScale(modelScale);
+
+	if (!preObject)calcPhysics = false;
 }
 
 void SpringTestObject::Update()
 {
 	if (!preObject)
 	{
-		float speed = 1.2f;
+	/*	float speed = 1.2f;
 		if (Input::KeyState(DIK_W))position.y += speed;
 		if (Input::KeyState(DIK_S))position.y -= speed;
 		if (Input::KeyState(DIK_A))position.x -= speed;
-		if (Input::KeyState(DIK_D))position.x += speed;
+		if (Input::KeyState(DIK_D))position.x += speed;*/
 		model->SetPosition(position);
 		sphereData[0].position = position;
 	}
