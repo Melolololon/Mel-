@@ -8,6 +8,7 @@ class PhysicsTestObject :public GameObject
 	std::unique_ptr<ModelObject>model;
 
 	FrameTimer deadTimer;
+
 public:
 	PhysicsTestObject(const Vector3& pos ,const Vector3& vel);
 	void Update()override;
@@ -20,5 +21,7 @@ public:
 		const CollisionType hitObjColType,
 		const int hitObjArrayNum
 	)override;
+
+
 };
 

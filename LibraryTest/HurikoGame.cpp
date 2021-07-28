@@ -45,7 +45,7 @@ void HurikoGame::Initialize()
 	GameObjectManager::GetInstance()->AddObject(player);
 
 	///チューリングパターン
-	tPattern.Initialize();
+	//tPattern.Initialize();
 
 	//ばね
 	springObjects[0] = std::make_shared<SpringTestObject>(nullptr);
@@ -65,7 +65,7 @@ void HurikoGame::Initialize()
 	addTimer.SetMaxTime(60 * 0.8);
 	addTimer.SetResetFlag(true);
 
-
+	SpringTestObject::ResetScore();
 }
 
 void HurikoGame::Update()
@@ -81,17 +81,17 @@ void HurikoGame::Update()
 	//}
 
 
-	tPattern.Update();
+	//tPattern.Update();
 
 
 	GameObjectManager::GetInstance()->Update();
 
 
 	
-	for (int i = 0; i < SPRING_OBJECT_NUM; i++)
+	/*for (int i = 0; i < SPRING_OBJECT_NUM; i++)
 	{
 		springObjects[i]->CalcSpring();
-	}
+	}*/
 
 	//Camera::Get()->SetRotateCriteriaPosition( Vector3(0, 0, -100));
 	//Camera::Get()->SetRotatePoint(Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
@@ -102,7 +102,7 @@ void HurikoGame::Update()
 int num = 0;
 void HurikoGame::Draw()
 {
-	tPattern.Draw();
+	//tPattern.Draw();
 	GameObjectManager::GetInstance()->Draw();
 
 	TextWrite::Draw(std::to_wstring(num), "test");

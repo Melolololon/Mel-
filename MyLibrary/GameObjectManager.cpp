@@ -100,18 +100,18 @@ void GameObjectManager::Update()
 				f1 = o1->GetCollisionFlag();
 				f2 = o2->GetCollisionFlag();
 
-				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
-				if (o1 == o2 || !f1.sphere || !f2.sphere)continue;
-
+				
 				//自分比較はカウントしない
 				skipCount++;
 				if (objectCount[0] > skipCount - 1)continue;
 
+				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
+				if (o1 == o2 || !f1.sphere || !f2.sphere)continue;
 
 				
 
 				sphere1 = o1->GetSphereData();
-				sphere2 = o2->GetSphereData();
+ 				sphere2 = o2->GetSphereData();
 
 				for (const auto& c1 : sphere1)
 				{
@@ -129,20 +129,27 @@ void GameObjectManager::Update()
 
 
 							//反発
-							if (!o1->GetCalcPhysicsFlag() || !o2->GetCalcPhysicsFlag())continue;
+  							if (o1->GetCalcPhysicsFlag() && o2->GetCalcPhysicsFlag()) 
+							{
+								Value2<Vector3> velocity = Physics::CalcRepulsionVelocity
+								(
+									Value2<Vector3>(o1->GetPosition(), o2->GetPosition()),
+									Value2<Vector3>(o1->GetVelocity(), o2->GetVelocity()),
+									Value2<float>(o1->GetMass(), o2->GetMass()),
+									Value2<Vector3>(1.0f, 1.0f)
+								);
 
-							Value2<Vector3> velocity = Physics::CalcRepulsionVelocity
-							(
-								Value2<Vector3>(o1->GetPosition(), o2->GetPosition()),
-								Value2<Vector3>(o1->GetVelocity(), o2->GetVelocity()),
-								Value2<float>(o1->GetMass(), o2->GetMass()),
-								Value2<Vector3>(1.0f, 1.0f)
-							);
-
-							o1->SetPosition(o1->GetPosition() + velocity.v1);
-							o2->SetPosition(o2->GetPosition() + velocity.v2);
-							o1->SetVelocity(velocity.v1);
-							o2->SetVelocity(velocity.v2);
+								if (o1->GetCalcPhysicsFlag()) 
+								{
+									o1->SetPosition(o1->GetPosition() + velocity.v1);
+									o1->SetVelocity(velocity.v1);
+								}
+								if (o2->GetCalcPhysicsFlag())
+								{
+									o2->SetPosition(o2->GetPosition() + velocity.v2);
+									o2->SetVelocity(velocity.v2);
+								}
+							}
 
 							//hitを呼び出す
 							o1->Hit

@@ -12,13 +12,13 @@ Player::Player()
 	Texture* crossTex = Texture::Get("cross");
 	crossSpr = std::make_unique<Sprite2D>(crossTex);
 	Vector2 crossSize = crossTex->GetTextureSize();
-	//crossSpr->SetPosition(Vector2(Library::GetWindowWidth() / 2 /*- crossSize.x / 2*/, Library::GetWindowHeight()/* - crossSize.y /2*/));
-	crossSpr->SetPosition(Vector2(0,0));
+	crossSpr->SetPosition(Vector2(Library::GetWindowWidth() / 2 - crossSize.x / 2, Library::GetWindowHeight() / 2 - crossSize.y /2));
+	//crossSpr->SetPosition(Vector2(0,0));
 }
 
 void Player::Update()
 {
-	const float CAMERA_SPEED = 3.0f;
+	const float CAMERA_SPEED = 2.0f;
 	if (Input::KeyState(DIK_UP))angle.x += CAMERA_SPEED;
 	if (Input::KeyState(DIK_DOWN))angle.x -= CAMERA_SPEED;
 	if (Input::KeyState(DIK_LEFT))angle.y += CAMERA_SPEED;

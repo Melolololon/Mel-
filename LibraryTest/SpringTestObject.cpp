@@ -3,6 +3,8 @@
 #include"LibMath.h"
 #include"PhysicsTestObject.h"
 
+UINT SpringTestObject::score = 0;
+
 SpringTestObject::SpringTestObject(SpringTestObject* preObject) 
 	: preObject(preObject)
 {
@@ -10,11 +12,11 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 	
 	if(preObject)
 	{
-		position = preObject->GetPosition() + Vector3(0, -DISTANCE, 0);
+		position = preObject->GetPosition() + Vector3(0, -15, 0);
 	}
 	else
 	{
-		position = Vector3(0, 50, 0);
+		position = Vector3(0, 80, 0);
 	}
 	
 	velocity = 0;
@@ -27,6 +29,8 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 	collisionFlag.sphere = true;
 
 	model->SetScale(modelScale);
+	sphereData[0].position = position;
+	sphereData[0].r = modelScale.x;
 
 	if (!preObject)calcPhysics = false;
 }
@@ -44,8 +48,7 @@ void SpringTestObject::Update()
 		sphereData[0].position = position;
 	}
 
-	sphereData[0].position = position;
-	sphereData[0].r = modelScale.x;
+	CalcSpring();
 }
 
 void SpringTestObject::Draw()
@@ -90,5 +93,18 @@ void SpringTestObject::CalcSpring()
 
 
 
-
+void SpringTestObject::Hit
+(
+	const GameObject* const  object,
+	const CollisionType collisionType,
+	const int arrayNum,
+	const CollisionType hitObjColType,
+	const int hitObjArrayNum
+)
+{
+	if (typeid(SpringTestObject) == typeid(*object))
+	{
+		score++;
+	}
+}
 
