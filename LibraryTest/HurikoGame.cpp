@@ -95,18 +95,46 @@ void HurikoGame::Draw()
 {
 	//tPattern.Draw();
 	GameObjectManager::GetInstance()->Draw();
+	const int SCORE = SpringTestObject::GetScore();
+	Vector2 scoeNumPos = Vector2(311, 90);
+	if(SCORE >= 10)
+	{
+		scoeNumPos -= Vector2(38, 0);
+	}
+
+	TextWrite::Draw(Vector2(0, 90),Color(255,255,255,255), L"SCORE", "test");
+	TextWrite::Draw(scoeNumPos,Color(255,255,255,255), std::to_wstring(SCORE), "test");
+	
+	
+	 int drawTime = gameTimer.GetNowTime();
+	if (gameTimer.GetNowTime() > GAME_TIME)
+	{
+		drawTime = 60 * 30;
+	}
+	else if(gameTimer.GetNowTime() <= 0)
+	{
+		drawTime = 0;
+	}
+
+	Vector2 timeNumPos = Vector2(270, 0);
+	if (gameTimer.GetNowTime() < 60 * 10)
+	{
+		timeNumPos += Vector2(40, 0);
+	}
+	TextWrite::Draw(0, Color(255, 255, 255, 255), L"TIME", "test");
+	TextWrite::Draw(timeNumPos, Color(255, 255, 255, 255),  std::to_wstring(drawTime / 60), "test");
+
+
 
 	static const Vector2 CENTER_TEXT_POS = Vector2(Library::GetWindowWidth() / 2, Library::GetWindowHeight() / 2);
 
-	
-	TextWrite::Draw(Vector2(0, 0),Color(255,255,255,255), L"SCORE  " + std::to_wstring(SpringTestObject::GetScore()), "test");
 	if (gameTimer.GetNowTime() > GAME_TIME)
 	{
-		TextWrite::Draw(CENTER_TEXT_POS - Vector2(100,35), Color(255, 255, 255, 255),  L"READY", "test");
+		TextWrite::Draw(CENTER_TEXT_POS - Vector2(100, 35), Color(255, 255, 255, 255), L"READY", "test");
 	}
 	if (gameTimer.GetNowTime() < GAME_TIME && gameTimer.GetNowTime() > GAME_TIME - START_PRE_TIME)
 	{
-		TextWrite::Draw(CENTER_TEXT_POS - Vector2(50, 35), Color(255, 255, 255, 255),  L"GO!", "test");
+		TextWrite::Draw(CENTER_TEXT_POS - Vector2(50, 35), Color(255, 255, 255, 255), L"GO!", "test");
 	}
 
 
