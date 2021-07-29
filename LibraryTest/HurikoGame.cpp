@@ -49,7 +49,7 @@ void HurikoGame::Initialize()
 	GameObjectManager::GetInstance()->AddObject(player);
 
 	///チューリングパターン
-	//tPattern.Initialize();
+	tPattern.Initialize();
 
 	//ばね
 	springObjects[0] = std::make_shared<SpringTestObject>(nullptr);
@@ -90,7 +90,7 @@ void HurikoGame::Initialize()
 void HurikoGame::Update()
 {
 
-	//tPattern.Update();
+	tPattern.Update();
 
 
 	GameObjectManager::GetInstance()->Update();
@@ -139,7 +139,7 @@ void HurikoGame::Update()
 
 void HurikoGame::Draw()
 {
-	//tPattern.Draw();
+	tPattern.Draw();
 	GameObjectManager::GetInstance()->Draw();
 	const int SCORE = SpringTestObject::GetScore();
 	Vector2 scoeNumPos = Vector2(311, 90);
