@@ -970,8 +970,16 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	Sprite3D::Initialize();
 	RenderTarget::Initialize();
 
-
-	RenderTarget::Create(Color(0, 200, 0, 255),"main");
+	Color rtColor =
+		Color
+		(
+			Color::ParToUChar(clearColor[0] * 100.0f),
+			Color::ParToUChar(clearColor[1] * 100.0f),
+			Color::ParToUChar(clearColor[2] * 100.0f),
+			Color::ParToUChar(clearColor[3] * 100.0f)
+		);
+	
+	RenderTarget::Create(rtColor,"main");
 	Camera::Create("main");
 	RenderTarget::Get("main")->SetCamera();
 	DirectionalLight::Create("main");

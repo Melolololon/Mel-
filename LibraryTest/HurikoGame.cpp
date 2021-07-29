@@ -31,6 +31,7 @@
 #include"PhysicsTestObject.h"
 
 #include"Player.h"
+#include"Easing.h"
 
 HurikoGame::GameState HurikoGame::gameState = HurikoGame::GameState::TITLE;
 const Vector3 HurikoGame::FIELD_SIZE = Vector3(250 * 2, 0, 250 * 2);
@@ -137,6 +138,14 @@ void HurikoGame::Update()
 		
 		break;
 	}
+
+	if (titleT <= 1.0f)
+	{
+		titleT += 0.0005f;
+	}else
+	{
+		titleT = 1.0f;
+	}
 }
 
 void HurikoGame::Draw()
@@ -187,6 +196,9 @@ void HurikoGame::Draw()
 
 	if (gameState == GameState::TITLE)
 	{
+		titlePos = Easing::EaseOut(titlePos, Vector2(titlePos.x, 450), titleT);
+		TextWrite::Draw(titlePos, Color(255, 255, 255, 255), L"•¨—”Šw‰Û‘è", "test");
+
 		TextWrite::Draw(CENTER_TEXT_POS - Vector2(190, -150), Color(255, 255, 255, 255), L"SPACE‚ÅŠJŽn", "test");
 
 	}

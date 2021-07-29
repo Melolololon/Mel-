@@ -140,8 +140,8 @@ void TuringPattern::Draw()
 			if (u > 1.0f)u = 1.0f;
 			u *= 100.0f;
 
-			UCHAR r = Color::ParToUChar(u);
-			turingPatternSpr[y][x]->SetAddColor(Color(r, 0, 255 - r, 0));
+			UCHAR g = Color::ParToUChar(u);
+			turingPatternSpr[y][x]->SetAddColor(Color(0, g, 255 - g, 0));
 
 			turingPatternSpr[y][x]->Draw();
 		}

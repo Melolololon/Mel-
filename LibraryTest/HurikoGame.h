@@ -43,6 +43,8 @@ private:
 
 	static GameState gameState;
 
+	Vector2 titlePos = Vector2(765, -100);
+	float titleT = 0.0f;
 public:
 	HurikoGame();
 	~HurikoGame();

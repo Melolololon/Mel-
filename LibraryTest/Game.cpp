@@ -47,7 +47,7 @@ void Game::Initialize()
 {
 	
 
-	Library::Initialize(1920, 1080, {200,200,200,255},L"MyLib");
+	Library::Initialize(1920, 1080, Color(30,30,160,255),L"MyLib");
 	Library::SetFramesPerSecond60(true);
 	
 	//カメラは各シーンに移動しました

@@ -3,22 +3,31 @@
 class Easing
 {
 private:
-	Easing();
-	~Easing();
+	Easing(){}
+	~Easing(){}
+
+	static Vector3 CalcEasing(const Vector3& startPos,const Vector3& endPos ,const float t);
 
 public:
 	static Vector3 EaseIn
 	(
-		const float time,
 		const Vector3& startPos,
-		const Vector3& endPos
+		const Vector3& endPos,
+		const float time
 	);
 	
 	static Vector3 EaseOut
 	(
-		const float time,
 		const Vector3& startPos,
-		const Vector3& endPos
+		const Vector3& endPos,
+		const float time
+	);
+
+	static Vector3 EaseInOut
+	(
+		const Vector3& startPos,
+		const Vector3& endPos,
+		const float time
 	);
 
 };

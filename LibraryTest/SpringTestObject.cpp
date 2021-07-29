@@ -56,23 +56,23 @@ void SpringTestObject::Update()
 		speedUpTimer.SetStopFlag(true);
 	}
 
-	if(speedUpTimer.GetNowTime() == 60 * 20)
+
+	float speed = 1.0f;
+	if (speedUpTimer.GetNowTime() == 60 * 20)
 	{
-		velocity *= 2.5f;
+		speed *= 2.5f;
 	}
 
 	
 	const UINT MOVE_CHANGE_SCORE = 5;
 	if (!preObject && preScore != score && moveChangeCount == MOVE_CHANGE_SCORE)
 	{
-		const float SPEED = 1.0f;
-		
 		velocity = Vector3::Normalize(Vector3
 		(
 			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 3),
 			0,
 			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 3)
-		)) * SPEED;
+		)) * speed;
 		moveChangeCount = 0;
 	}
 
