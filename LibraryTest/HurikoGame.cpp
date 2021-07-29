@@ -146,6 +146,11 @@ void HurikoGame::Update()
 	{
 		titleT = 1.0f;
 	}
+
+	if(Input::KeyTrigger(DIK_RETURN) && gameState != GameState::TITLE)
+	{
+		isEnd = true;
+	}
 }
 
 void HurikoGame::Draw()
@@ -209,6 +214,10 @@ void HurikoGame::Draw()
 
 	}
 
+	if (gameState != GameState::TITLE) 
+	{
+		TextWrite::Draw(Vector2(1200, 980), Color(255, 255, 255, 255), L"ENTER‚Åƒ^ƒCƒgƒ‹‚É–ß‚é", "test");
+	}
 
 
 

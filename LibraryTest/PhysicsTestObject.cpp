@@ -37,7 +37,7 @@ void PhysicsTestObject::Update()
 	sphereData[0].position = position;
 	sphereData[0].r = scale.x;
 
-	if(deadTimer.GetNowTime() >= 60 * 5)
+	if(deadTimer.GetNowTime() >= 60 * 3)
 	{
 		eraseManager = true;
 	}
