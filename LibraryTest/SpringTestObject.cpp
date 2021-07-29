@@ -11,7 +11,10 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 	: preObject(preObject)
 {
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
-	
+
+	sphereData.resize(1);
+	collisionFlag.sphere = true;
+
 	if(preObject)
 	{
 		position = preObject->GetPosition() + Vector3(0, -15, 0);
@@ -19,6 +22,8 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 	else
 	{
 		position = Vector3(0, 80, 0);
+		model->SetPosition(position);
+		sphereData[0].position = position;
 	}
 	
 	velocity = 0;
@@ -26,9 +31,6 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 	calcPhysics = true;
 	force = 0;
 	mass = 1.0f;
-
-	sphereData.resize(1);
-	collisionFlag.sphere = true;
 
 	model->SetScale(modelScale);
 	sphereData[0].position = position;
@@ -42,9 +44,9 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 		const float SPEED = 1.0f;
 		velocity = Vector3::Normalize(Vector3
 		(
-			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 1),
+			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 3),
 			0,
-			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 1)
+			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 3)
 		)) * SPEED;
 	}
 
