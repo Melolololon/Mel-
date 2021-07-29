@@ -29,6 +29,9 @@ void Player::Update()
 	if (Input::KeyState(DIK_DOWN))angle.x -= CAMERA_SPEED;
 	if (Input::KeyState(DIK_LEFT))angle.y += CAMERA_SPEED;
 	if (Input::KeyState(DIK_RIGHT))angle.y -= CAMERA_SPEED;
+	
+	if (angle.x >= 80.0f) angle.x = 80.0f;
+	else if (angle.x <= -80.0f)angle.x = -80.0f;
 
 	Vector3 moveDir = 0;
 	if (Input::KeyState(DIK_W))moveDir.z++;

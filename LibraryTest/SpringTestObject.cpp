@@ -46,21 +46,24 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 	
 	}
 
-	speedUpTimer.SetStopFlag(false);
 }
 
 void SpringTestObject::Update()
 {
-	if(speedUpTimer.GetSameAsMaxFlag())
+	if(HurikoGame::GetGameState() == HurikoGame::GameState::PLAY)
+	{
+		speedUpTimer.SetStopFlag(false);
+	}
+	else
 	{
 		speedUpTimer.SetStopFlag(true);
 	}
-
 
 	float speed = 1.0f;
 	if (speedUpTimer.GetNowTime() == 60 * 20)
 	{
 		speed *= 2.5f;
+		velocity *= speed;
 	}
 
 	
