@@ -3,7 +3,7 @@
 #include"ModelData.h"
 #include"SpringTestObject.h"
 
-PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& vel)
+PhysicsTestObject::PhysicsTestObject(const Vector3& pos, const Vector3& vel, const bool accFlag)
 {
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
 	model->SetScale(3);

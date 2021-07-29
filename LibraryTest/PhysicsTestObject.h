@@ -11,7 +11,7 @@ class PhysicsTestObject :public GameObject
 
 	Vector3 scale = 3.0f;
 public:
-	PhysicsTestObject(const Vector3& pos ,const Vector3& vel);
+	PhysicsTestObject(const Vector3& pos ,const Vector3& vel,const bool accFlag);
 	void Update()override;
 	void Draw()override;
 	void Hit

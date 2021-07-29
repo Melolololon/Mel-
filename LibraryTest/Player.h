@@ -9,6 +9,7 @@ private:
 	Vector3 angle = 0;
 	
 	std::unique_ptr<Sprite2D>crossSpr;
+	bool forceFlag = false;
 public:
 	Player();
 	void Update()override;
