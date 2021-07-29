@@ -1218,6 +1218,8 @@ void DirectX12::LoopEndProcess()
 	cmdList->Close();
 	ID3D12CommandList* cmdLists[] = { cmdList.Get() };
 	cmdQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
+	
+	//テキスト描画
 	TextWrite::LoopEndProcess(bbIndex);
 
 	cmdQueue->Signal(fence.Get(), ++fenceVal);

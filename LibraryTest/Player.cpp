@@ -2,7 +2,7 @@
 #include"LibMath.h"
 #include"PhysicsTestObject.h"
 #include"GameObjectManager.h"
-
+#include"HurikoGame.h"
 Player::Player()
 {
 	position = Vector3(0, 0, -120);
@@ -31,11 +31,11 @@ void Player::Update()
 	if (Input::KeyState(DIK_D))moveDir.x++;
 	moveDir = LibMath::RotateVector3(moveDir, Vector3(0, 1, 0), angle.y);
 	
-	const float MOVE_SPEED = 2.0f;
+	const float MOVE_SPEED = 1.5f;
 	velocity = moveDir * MOVE_SPEED;
 	position += velocity;
 	
-	const Vector3 MAX_POS = 250;
+	const Vector3 MAX_POS = HurikoGame::GetFieldSize() / 2;
 	if(position.x >= MAX_POS.x
 		|| position.x <= -MAX_POS.x
 		||position.z >= MAX_POS.z

@@ -25,9 +25,11 @@ private:
 
 	Vector3 angle = 0;
 
-	std::unique_ptr<ModelObject>topModel;
 	std::shared_ptr<Player>player;
 
+	std::array<std::unique_ptr<Sprite3D>, 4 >wallSpr;
+
+	static const Vector3 FIELD_SIZE;
 public:
 	HurikoGame();
 	~HurikoGame();
@@ -39,5 +41,7 @@ public:
 	Scene* GetNextScene()override;
 
 	static void LoadResources();
+
+	static Vector3 GetFieldSize() { return FIELD_SIZE; }
 };
 

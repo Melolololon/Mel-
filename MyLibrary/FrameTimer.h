@@ -177,7 +177,7 @@ public:
 	/// タイマーの現在の時間を設定します。
 	/// </summary>
 	/// <param name="num"></param>
-	void SetCurrentTime(const int num) { time = num; }
+	void SetNowTime(const int num) { time = num; }
 #pragma endregion
 
 };

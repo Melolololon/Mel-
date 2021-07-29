@@ -13,9 +13,31 @@ void PipelineState::SetPipelineDesc
 (
 	const PipelineData& pipelineData,
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc,
+	const PipelineType type,
 	const int renderTargetNum
 )
 {
+
+	//非共通設定
+	switch (type)
+	{
+	case PipelineType::MODEL:
+		desc.pRootSignature = modelRootSignature;
+
+		break;
+	case PipelineType::SPRITE:
+		desc.pRootSignature = spriteRootSignature;
+		break;
+
+	case PipelineType::RENDER_TARGET:
+		desc.pRootSignature = renderTargetRootSignature;
+		break;
+
+	}
+
+
+
+
 #pragma region カリング設定
 
 
@@ -41,10 +63,10 @@ void PipelineState::SetPipelineDesc
 	switch (pipelineData.drawMode)
 	{
 	case DrawMode::SOLID:
-		desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;//カリング設定
+		desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 		break;
 	case DrawMode::WIREFRAME:
-		desc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;//カリング設定
+		desc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		break;
 	}
 
@@ -79,7 +101,15 @@ void PipelineState::SetPipelineDesc
 	//ブレンド
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
 
-	blenddesc.BlendEnable = true;//ブレンドを有効にするかのフラグ
+	if (type == PipelineType::RENDER_TARGET) 
+	{
+		blenddesc.BlendEnable = false;//ブレンドを有効にするかのフラグ
+	}
+	else
+	{
+		blenddesc.BlendEnable = true;//ブレンドを有効にするかのフラグ
+	}
+
 	switch (pipelineData.blendMode)
 	{
 	case BlendMode::ADD:
@@ -108,15 +138,9 @@ void PipelineState::SetPipelineDesc
 
 
 	//アルファ書き込み
-	if (pipelineData.alphaWrite)
-	{
-		desc.BlendState.AlphaToCoverageEnable = true;
-	}
-	else
-	{
-		desc.BlendState.AlphaToCoverageEnable = false;
-	}
-
+	desc.BlendState.AlphaToCoverageEnable = 
+		!pipelineData.alphaWrite;
+	
 #pragma endregion
 
 	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -180,27 +204,9 @@ bool PipelineState::CreatePipeline
 )
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc = {};
-	SetPipelineDesc(pipelineData, pDesc, renderTargetNum);
+	SetPipelineDesc(pipelineData, pDesc, pipelineType,renderTargetNum);
 
 	
-
-	//非共通設定
-	switch (pipelineType)
-	{
-	case PipelineType::MODEL:
-		pDesc.pRootSignature = modelRootSignature;
-
-		break;
-	case PipelineType::SPRITE:
-		pDesc.pRootSignature = spriteRootSignature;
-		break;
-	
-	case PipelineType::RENDER_TARGET:
-		pDesc.pRootSignature = renderTargetRootSignature;
-		break;
-
-	}
-
 
 
 	HRESULT result;

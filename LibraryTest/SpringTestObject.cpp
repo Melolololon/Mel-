@@ -2,6 +2,8 @@
 #include"Physics.h"
 #include"LibMath.h"
 #include"PhysicsTestObject.h"
+#include"HurikoGame.h"
+#include"Random.h"
 
 UINT SpringTestObject::score = 0;
 
@@ -32,18 +34,37 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 	sphereData[0].position = position;
 	sphereData[0].r = modelScale.x;
 
-	if (!preObject)calcPhysics = false;
+
+
+	if (!preObject) 
+	{
+		calcPhysics = false;
+		const float SPEED = 1.0f;
+		velocity = Vector3::Normalize(Vector3
+		(
+			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 1),
+			0,
+			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 1)
+		)) * SPEED;
+	}
 }
 
 void SpringTestObject::Update()
 {
 	if (!preObject)
 	{
-	/*	float speed = 1.2f;
-		if (Input::KeyState(DIK_W))position.y += speed;
-		if (Input::KeyState(DIK_S))position.y -= speed;
-		if (Input::KeyState(DIK_A))position.x -= speed;
-		if (Input::KeyState(DIK_D))position.x += speed;*/
+#pragma region ˆÚ“®
+		const Vector3 MAX_POS = HurikoGame::GetFieldSize() / 2;
+		if (position.x >= MAX_POS.x
+			|| position.x <= -MAX_POS.x
+			|| position.z >= MAX_POS.z
+			|| position.z <= -MAX_POS.z)
+		{
+			velocity *= -1;
+		}
+#pragma endregion
+		position += velocity;
+
 		model->SetPosition(position);
 		sphereData[0].position = position;
 	}
@@ -58,6 +79,7 @@ void SpringTestObject::Draw()
 
 void SpringTestObject::CalcSpring()
 {
+
 	if (!preObject)return;
 
 	std::unique_ptr<Vector3> nextPos;

@@ -266,7 +266,7 @@ bool RenderTarget::Initialize()
 		{ L"NULL","","" },
 		{ L"NULL","","" },
 		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
-		PipelineType::SPRITE,
+		PipelineType::RENDER_TARGET,
 		nullptr,
 		typeid(RenderTarget).name(),
 		1

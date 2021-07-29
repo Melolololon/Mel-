@@ -32,6 +32,8 @@
 
 #include"Player.h"
 
+const Vector3 HurikoGame::FIELD_SIZE = Vector3(250 * 2, 0, 250 * 2);
+
 HurikoGame::HurikoGame() {}
 
 
@@ -62,12 +64,18 @@ void HurikoGame::Initialize()
 	}
 
 	gameTimer.SetStopFlag(false);
-	gameTimer.SetCurrentTime(GAME_TIME + START_PRE_TIME);
+	gameTimer.SetNowTime(GAME_TIME + START_PRE_TIME);
 	gameTimer.SetResetFlag(false);
 	gameTimer.SetDecrementFlag(true);
 
 
 	SpringTestObject::ResetScore();
+
+	for(auto& s : wallSpr)
+	{
+		s = std::make_unique<Sprite3D>(Color(255, 0, 0, Color::ParToUChar(50)));
+ 		s->SetScale(Vector2(30, 30));
+	}
 }
 
 void HurikoGame::Update()
@@ -130,11 +138,21 @@ void HurikoGame::Draw()
 
 	if (gameTimer.GetNowTime() > GAME_TIME)
 	{
-		TextWrite::Draw(CENTER_TEXT_POS - Vector2(100, 35), Color(255, 255, 255, 255), L"READY", "test");
+		TextWrite::Draw(CENTER_TEXT_POS - Vector2(110, 35), Color(255, 255, 255, 255), L"READY", "test");
 	}
-	if (gameTimer.GetNowTime() < GAME_TIME && gameTimer.GetNowTime() > GAME_TIME - START_PRE_TIME)
+	else if (gameTimer.GetNowTime() < GAME_TIME && gameTimer.GetNowTime() > GAME_TIME - START_PRE_TIME)
 	{
-		TextWrite::Draw(CENTER_TEXT_POS - Vector2(50, 35), Color(255, 255, 255, 255), L"GO!", "test");
+		TextWrite::Draw(CENTER_TEXT_POS - Vector2(65, 35), Color(255, 255, 255, 255), L"GO !", "test");
+	}
+	else if(gameTimer.GetNowTime() < 0)
+	{
+		TextWrite::Draw(CENTER_TEXT_POS - Vector2(100, 35), Color(255, 255, 255, 255), L"FINISH !", "test");
+	}
+	//gameTimer.SetNowTime(0);
+	
+	for (auto& s : wallSpr)
+	{
+		s->Draw();
 	}
 
 
