@@ -206,6 +206,12 @@ void HurikoGame::Draw()
 
 		TextWrite::Draw(CENTER_TEXT_POS - Vector2(190, -150), Color(255, 255, 255, 255), L"SPACEで開始", "test");
 
+
+		TextWrite::Draw(Vector2(0,600), Color(255, 255, 255, 255), L"WSAD 移動", "test");
+		TextWrite::Draw(Vector2(0,700), Color(255, 255, 255, 255), L"↑↓←→ カメラ操作", "test");
+		TextWrite::Draw(Vector2(0,800), Color(255, 255, 255, 255), L"SPACE 物体発射", "test");
+		TextWrite::Draw(Vector2(0,900), Color(255, 255, 255, 255), L"F 視点切替", "test");
+		TextWrite::Draw(Vector2(0,1000), Color(255, 255, 255, 255), L"物体を発射して浮いている物体に当てると得点", "test");
 	}
 	if(gameState == GameState::RESULT)
 	{
