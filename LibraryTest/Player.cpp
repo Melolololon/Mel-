@@ -24,6 +24,9 @@ Player::Player()
 
 void Player::Update()
 {
+
+	Camera::Get()->SetAngle(angle);
+	Camera::Get()->SetRotateCriteriaPosition(position);
 	if (HurikoGame::GetGameState() != HurikoGame::GameState::PLAY)return;
 
 	const float CAMERA_SPEED = 1.5f;
@@ -69,7 +72,8 @@ void Player::Update()
 	}
 
 	//俯瞰
-	if (Input::KeyState(DIK_F))
+	if (Input::KeyState(DIK_F)
+		&& HurikoGame::GetGameState() == HurikoGame::GameState::PLAY)
 	{
 		Camera::Get()->SetRotateCriteriaPosition(Vector3(0,400,0));
 		Camera::Get()->SetAngle(Vector3(-90, 0, 0));
@@ -86,12 +90,17 @@ void Player::Update()
 
 void Player::Draw()
 {
-	TextWrite::Draw(Vector2(1400,0), Color(255, 255, 255, 255), L"Fキー 視点切替", "test");
+	//TextWrite::Draw(Vector2(1400,0), Color(255, 255, 255, 255), L"Fキー 視点切替", "test");
 }
 
 void Player::DrawCross()
 {
-	if (!Input::KeyState(DIK_F)) 
+	bool push = Input::KeyState(DIK_F);
+	if(HurikoGame::GetGameState() != HurikoGame::GameState::PLAY)
+	{
+		push = false;
+	}
+	if (!push)
 	{
 		crossSpr->Draw();
 	}
