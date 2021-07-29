@@ -1,5 +1,6 @@
 #pragma once
 #include"Vector.h"
+#include<vector>
 class Random
 {
 private:
@@ -40,6 +41,13 @@ public:
 	static int GetRandomNumberRangeSelect(const int start, const int end);
 
 	/// <summary>
+	/// numsの中からどれか1つをランダムで返します。
+	/// </summary>
+	/// <param name="nums"></param>
+	/// <returns></returns>
+	static int GetRandomNumberSetNumber(const std::vector<int>& nums);
+
+	/// <summary>
 	/// 小数の乱数を取得します。
 	/// </summary>
 	/// <param name="num"></param>
@@ -55,5 +63,11 @@ public:
 	/// <returns></returns>
 	static float GetRandomFloatNumberRangeSelect(const float start, const float end, const int digits);
 
+	/// <summary>
+/// numsの中からどれか1つをランダムで返します。
+/// </summary>
+/// <param name="nums"></param>
+/// <returns></returns>
+	static float GetRandomNumberSetFloatNumber(const std::vector<float>& nums);
 };
 

@@ -29,6 +29,11 @@ int Random::GetRandomNumberRangeSelect(const int start, const int end)
 	return GetRandomNumber(abs(end - start) + 1) + start;
 }
 
+int Random::GetRandomNumberSetNumber(const std::vector<int>& nums)
+{
+	return nums[GetRandomNumber(nums.size())];
+}
+
 
 float Random::GetRandomFloatNumber(const float num, const int digits)
 {
@@ -59,7 +64,10 @@ float Random::GetRandomFloatNumberRangeSelect(const float start, const float end
 
 	return GetRandomFloatNumber(abs(end - start) + addNum, digits) + start;
 
+}
 
-	
 
+float Random::GetRandomNumberSetFloatNumber(const std::vector<float>& nums)
+{
+	return nums[GetRandomNumber(nums.size())];
 }
