@@ -1,7 +1,7 @@
 #pragma once
 #include <GameObject.h>
 #include"ModelObject.h"
-
+#include"FrameTimer.h"
 //ï°êîÇ¬Ç»Ç∞ÇÊÇ§
 class SpringTestObject :
     public GameObject
@@ -16,6 +16,8 @@ private:
 
 
 	static UINT score;
+
+	FrameTimer speedUpTimer;
 public:
 	SpringTestObject(SpringTestObject* preObject);
 	void Update()override;

@@ -107,8 +107,8 @@ void TuringPattern::Initialize()
 			turingPatternSpr[y][x] = std::make_unique<Sprite3D>(Color(0, 0, 0, 255));
 			turingPatternSpr[y][x]->SetAngle(Vector3(90, 0, 0));
 
-			const Vector2 SPR_SIZE = 10;
-			turingPatternSpr[y][x]->SetPosition(Vector3(SPR_SIZE.x * (x - CELL_NUM_X / 2), -40, SPR_SIZE.y * (y - CELL_NUM_Y / 2)));
+			const Vector2 SPR_SIZE = 13;
+			turingPatternSpr[y][x]->SetPosition(Vector3(SPR_SIZE.x * (x - CELL_NUM_X / 2), -20, SPR_SIZE.y * (y - CELL_NUM_Y / 2)));
 			turingPatternSpr[y][x]->SetScale(SPR_SIZE);
 
 

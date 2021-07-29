@@ -14,10 +14,16 @@ Player::Player()
 	Vector2 crossSize = crossTex->GetTextureSize();
 	crossSpr->SetPosition(Vector2(Library::GetWindowWidth() / 2 - crossSize.x / 2, Library::GetWindowHeight() / 2 - crossSize.y /2));
 	//crossSpr->SetPosition(Vector2(0,0));
+
+
+	Camera::Get()->SetRotateCriteriaPosition(position);
+	Camera::Get()->SetAngle(0);
 }
 
 void Player::Update()
 {
+	if (HurikoGame::GetGameState() != HurikoGame::GameState::PLAY)return;
+
 	const float CAMERA_SPEED = 2.0f;
 	if (Input::KeyState(DIK_UP))angle.x += CAMERA_SPEED;
 	if (Input::KeyState(DIK_DOWN))angle.x -= CAMERA_SPEED;

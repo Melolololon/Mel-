@@ -32,9 +32,6 @@ Value2<Vector3> Physics::CalcRepulsionVelocity
     calcVel.v1 = -(((((1 + e.v2) * mass.v1 * mass.v2) / (mass.v1 + mass.v2)) * (calcPreVel.v1 - calcPreVel.v2) * n) * n) / mass.v1 + calcPreVel.v1;
     calcVel.v2 = -(((((1 + e.v1) * mass.v1 * mass.v2) / (mass.v1 + mass.v2)) * (calcPreVel.v2 - calcPreVel.v1) * n) * n) / mass.v2 + calcPreVel.v2;
    
-    //calcVel.v1 = -((calcPreVel.v1 - calcPreVel.v2) * n) * n + calcPreVel.v1;
-    //calcVel.v2 = -((calcPreVel.v2 - calcPreVel.v1) * n) * n + calcPreVel.v2;
-
     return calcVel;
 }
 

@@ -32,7 +32,9 @@
 
 #include"Player.h"
 
+HurikoGame::GameState HurikoGame::gameState = HurikoGame::GameState::TITLE;
 const Vector3 HurikoGame::FIELD_SIZE = Vector3(250 * 2, 0, 250 * 2);
+
 
 HurikoGame::HurikoGame() {}
 
@@ -63,10 +65,7 @@ void HurikoGame::Initialize()
 		springObjects[i]->SetNextObject(springObjects[i + 1].get());
 	}
 
-	gameTimer.SetStopFlag(false);
-	gameTimer.SetNowTime(GAME_TIME + START_PRE_TIME);
-	gameTimer.SetResetFlag(false);
-	gameTimer.SetDecrementFlag(true);
+
 
 
 	SpringTestObject::ResetScore();
@@ -74,8 +73,18 @@ void HurikoGame::Initialize()
 	for(auto& s : wallSpr)
 	{
 		s = std::make_unique<Sprite3D>(Color(255, 0, 0, Color::ParToUChar(50)));
- 		s->SetScale(Vector2(30, 30));
+		s->SetScale(Vector2(FIELD_SIZE.x, 30));
 	}
+	wallSpr[0]->SetPosition(Vector3(0,0, FIELD_SIZE.z / 2));
+	wallSpr[1]->SetPosition(Vector3(0, 0, -FIELD_SIZE.z / 2));
+	wallSpr[2]->SetPosition(Vector3(FIELD_SIZE.x / 2, 0, 0));
+	wallSpr[3]->SetPosition(Vector3(-FIELD_SIZE.x / 2, 0, 0));
+
+	wallSpr[2]->SetAngle(Vector3(0,90, 0));
+	wallSpr[3]->SetAngle(Vector3(0,90, 0));
+
+	gameState = GameState::TITLE;
+
 }
 
 void HurikoGame::Update()
@@ -86,17 +95,46 @@ void HurikoGame::Update()
 
 	GameObjectManager::GetInstance()->Update();
 
-
-	
-	/*for (int i = 0; i < SPRING_OBJECT_NUM; i++)
+	switch (gameState)
 	{
-		springObjects[i]->CalcSpring();
-	}*/
+	case GameState::TITLE:
+		if (Input::KeyTrigger(DIK_SPACE))
+		{
+			gameState = GameState::PLAY_PRE;
+			gameTimer.SetStopFlag(false);
+			gameTimer.SetNowTime(GAME_TIME + START_PRE_TIME);
+			gameTimer.SetResetFlag(false);
+			gameTimer.SetDecrementFlag(true);
+		}
 
-	//Camera::Get()->SetRotateCriteriaPosition( Vector3(0, 0, -100));
-	//Camera::Get()->SetRotatePoint(Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
-	//Camera::Get()->SetCameraToTargetDistance(100.0f);
+		break;
 
+	case GameState::PLAY_PRE:
+		if (gameTimer.GetNowTime() <= GAME_TIME)
+		{
+			gameState = GameState::PLAY;
+
+		}
+		break;
+
+	case GameState::PLAY:
+		if (gameTimer.GetNowTime() <= 0)gameState = GameState::RESULT;
+		break;
+
+	case GameState::RESULT:
+		resultPushTimer.SetStopFlag(false);
+		if (Input::KeyTrigger(DIK_SPACE)
+			&& resultPushTimer.GetNowTime() >= 60 * 0.8)
+		{
+			isEnd = true;
+		}
+
+		gameTimer.SetStopFlag(true);
+		
+		if (resultPushTimer.GetNowTime() >= 60 * 0.8)resultPushTimer.SetStopFlag(true);
+		
+		break;
+	}
 }
 
 void HurikoGame::Draw()
@@ -144,12 +182,22 @@ void HurikoGame::Draw()
 	{
 		TextWrite::Draw(CENTER_TEXT_POS - Vector2(65, 35), Color(255, 255, 255, 255), L"GO !", "test");
 	}
-	else if(gameTimer.GetNowTime() < 0)
+
+	if (gameState == GameState::TITLE)
+	{
+		TextWrite::Draw(CENTER_TEXT_POS - Vector2(190, -150), Color(255, 255, 255, 255), L"SPACEで開始", "test");
+
+	}
+	if(gameState == GameState::RESULT)
 	{
 		TextWrite::Draw(CENTER_TEXT_POS - Vector2(100, 35), Color(255, 255, 255, 255), L"FINISH !", "test");
+		TextWrite::Draw(CENTER_TEXT_POS - Vector2(350, -150), Color(255, 255, 255, 255), L"SPACEでタイトルに戻る", "test");
+
 	}
-	//gameTimer.SetNowTime(0);
-	
+
+
+
+
 	for (auto& s : wallSpr)
 	{
 		s->Draw();

@@ -47,26 +47,41 @@ SpringTestObject::SpringTestObject(SpringTestObject* preObject)
 			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 1)
 		)) * SPEED;
 	}
+
+	speedUpTimer.SetStopFlag(false);
 }
 
 void SpringTestObject::Update()
 {
-	if (!preObject)
+	if(speedUpTimer.GetSameAsMaxFlag())
 	{
-#pragma region ˆÚ“®
-		const Vector3 MAX_POS = HurikoGame::GetFieldSize() / 2;
-		if (position.x >= MAX_POS.x
-			|| position.x <= -MAX_POS.x
-			|| position.z >= MAX_POS.z
-			|| position.z <= -MAX_POS.z)
-		{
-			velocity *= -1;
-		}
-#pragma endregion
-		position += velocity;
+		speedUpTimer.SetStopFlag(true);
+	}
 
-		model->SetPosition(position);
-		sphereData[0].position = position;
+	if(speedUpTimer.GetNowTime() == 60 * 20)
+	{
+		velocity *= 2.5f;
+	}
+
+	if (HurikoGame::GetGameState() == HurikoGame::GameState::PLAY) 
+	{
+		if (!preObject)
+		{
+#pragma region ˆÚ“®
+			const Vector3 MAX_POS = HurikoGame::GetFieldSize() / 2;
+			if (position.x >= MAX_POS.x
+				|| position.x <= -MAX_POS.x
+				|| position.z >= MAX_POS.z
+				|| position.z <= -MAX_POS.z)
+			{
+				velocity *= -1;
+			}
+#pragma endregion
+			position += velocity;
+
+			model->SetPosition(position);
+			sphereData[0].position = position;
+		}
 	}
 
 	CalcSpring();

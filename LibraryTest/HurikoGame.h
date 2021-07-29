@@ -8,6 +8,15 @@
 #include"Player.h"
 class HurikoGame :public Scene
 {
+public:
+	enum class GameState
+	{
+		TITLE,
+		PLAY_PRE,
+		PLAY,
+		RESULT
+	};
+
 private:
 	TuringPattern tPattern;
 
@@ -20,7 +29,8 @@ private:
 
 	static const int GAME_TIME = 60 * 30;
 	static const int START_PRE_TIME = 60 * 1;
-	FrameTimer gameTimer;
+	 FrameTimer gameTimer;
+	 FrameTimer resultPushTimer;
 
 
 	Vector3 angle = 0;
@@ -30,6 +40,9 @@ private:
 	std::array<std::unique_ptr<Sprite3D>, 4 >wallSpr;
 
 	static const Vector3 FIELD_SIZE;
+
+	static GameState gameState;
+
 public:
 	HurikoGame();
 	~HurikoGame();
@@ -43,5 +56,6 @@ public:
 	static void LoadResources();
 
 	static Vector3 GetFieldSize() { return FIELD_SIZE; }
+	static GameState GetGameState() { return gameState; }
 };
 
