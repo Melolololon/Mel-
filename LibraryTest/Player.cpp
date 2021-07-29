@@ -24,7 +24,7 @@ void Player::Update()
 {
 	if (HurikoGame::GetGameState() != HurikoGame::GameState::PLAY)return;
 
-	const float CAMERA_SPEED = 2.0f;
+	const float CAMERA_SPEED = 1.5f;
 	if (Input::KeyState(DIK_UP))angle.x += CAMERA_SPEED;
 	if (Input::KeyState(DIK_DOWN))angle.x -= CAMERA_SPEED;
 	if (Input::KeyState(DIK_LEFT))angle.y += CAMERA_SPEED;

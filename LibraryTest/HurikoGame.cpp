@@ -75,10 +75,12 @@ void HurikoGame::Initialize()
 		s = std::make_unique<Sprite3D>(Color(255, 0, 0, Color::ParToUChar(50)));
 		s->SetScale(Vector2(FIELD_SIZE.x, 30));
 	}
-	wallSpr[0]->SetPosition(Vector3(0,0, FIELD_SIZE.z / 2));
-	wallSpr[1]->SetPosition(Vector3(0, 0, -FIELD_SIZE.z / 2));
-	wallSpr[2]->SetPosition(Vector3(FIELD_SIZE.x / 2, 0, 0));
-	wallSpr[3]->SetPosition(Vector3(-FIELD_SIZE.x / 2, 0, 0));
+
+	const float WALL_Y = -3.0f;
+	wallSpr[0]->SetPosition(Vector3(0, WALL_Y, FIELD_SIZE.z / 2));
+	wallSpr[1]->SetPosition(Vector3(0, WALL_Y, -FIELD_SIZE.z / 2));
+	wallSpr[2]->SetPosition(Vector3(FIELD_SIZE.x / 2, WALL_Y, 0));
+	wallSpr[3]->SetPosition(Vector3(-FIELD_SIZE.x / 2, WALL_Y, 0));
 
 	wallSpr[2]->SetAngle(Vector3(0,90, 0));
 	wallSpr[3]->SetAngle(Vector3(0,90, 0));

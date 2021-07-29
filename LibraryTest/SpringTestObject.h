@@ -17,7 +17,7 @@ private:
 
 	static UINT score;
 	static UINT preScore;
-
+	static UINT moveChangeCount;
 
 	FrameTimer speedUpTimer;
 public:

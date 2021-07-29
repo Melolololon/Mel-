@@ -7,6 +7,7 @@
 
 UINT SpringTestObject::score = 0;
 UINT SpringTestObject::preScore = 0;
+UINT SpringTestObject::moveChangeCount = 0;
 
 SpringTestObject::SpringTestObject(SpringTestObject* preObject) 
 	: preObject(preObject)
@@ -61,22 +62,18 @@ void SpringTestObject::Update()
 	}
 
 	
-	const UINT MOVE_START_SCORE = 5;
-	if (!preObject && preScore != score && score == MOVE_START_SCORE)
+	const UINT MOVE_CHANGE_SCORE = 5;
+	if (!preObject && preScore != score && moveChangeCount == MOVE_CHANGE_SCORE)
 	{
 		const float SPEED = 1.0f;
-		std::vector<float>vec = 
-		{
-			0.25f,0.5f,0.75f,-0.25f,-0.5f,-0.75f
-		};
-
+		
 		velocity = Vector3::Normalize(Vector3
 		(
-			Random::GetRandomNumberSetFloatNumber(vec),
-			0, 
-			Random::GetRandomNumberSetFloatNumber(vec)
+			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 3),
+			0,
+			Random::GetRandomFloatNumberRangeSelect(-1.0f, 1.0f, 3)
 		)) * SPEED;
-
+		moveChangeCount = 0;
 	}
 
 	
@@ -157,6 +154,7 @@ void SpringTestObject::Hit
 	if (typeid(PhysicsTestObject ) == typeid(*object))
 	{
 		score++;
+		moveChangeCount++;
 	}
 }
 
