@@ -18,6 +18,7 @@ private:
 	static UINT score;
 	static UINT preScore;
 	static UINT moveChangeCount;
+	float speed = 1.0f;
 
 	FrameTimer speedUpTimer;
 public:

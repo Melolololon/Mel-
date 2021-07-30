@@ -77,7 +77,7 @@ void Game::Initialize()
 
 
 
-	TextWrite::CreateFontData(L"HGPºÞ¼¯¸E", "test");
+	TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial", "test");
 
 }
 

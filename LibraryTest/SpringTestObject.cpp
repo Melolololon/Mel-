@@ -59,10 +59,10 @@ void SpringTestObject::Update()
 		speedUpTimer.SetStopFlag(true);
 	}
 
-	float speed = 1.0f;
+	
 	if (speedUpTimer.GetNowTime() == 60 * 20)
 	{
-		speed *= 2.5f;
+		speed = 2.5f;
 		velocity *= speed;
 	}
 
