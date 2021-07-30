@@ -103,6 +103,7 @@ void Game::Initialize()
 	/*MelLib::SceneEditer::GetInstance()->SetEditerFlag(false);
 	MelLib::SceneEditer::GetInstance()->Initialize();*/
 
+	TextWrite::CreateFontData(/*L"HGPｺﾞｼｯｸE"*/L"Arial", "test");
 	// エディターに追加(Unityでいうプレハブ作成)
 	/*MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
 	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor");*/
