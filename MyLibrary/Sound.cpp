@@ -26,7 +26,7 @@ std::vector<std::unique_ptr<Sound>>Sound::pNoneNameSounds;
 //};
 //XAudio2VoiceCallback voiceCallback;
 
-bool Sound::Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData, const std::string& name)
+bool Sound::Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData)
 {
 	WAVEFORMATEX wfex = soundData->GetWaveFormatEX();
 
@@ -34,15 +34,7 @@ bool Sound::Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData
 	if FAILED(result)
 	{
 #ifdef _DEBUG
-		if (name == "")
-		{
-			OutputDebugStringW(L"再生に失敗しました。\n");
-		}
-		else
-		{
-			OutputDebugStringA(name.c_str());
-			OutputDebugStringW(L"の再生に失敗しました。\n");
-		}
+		OutputDebugStringW(L"ソースボイスの生成に失敗しました。\n");
 #endif // _DEBUG
 		return false;
 	}
@@ -173,7 +165,14 @@ bool Sound::PlayLoadSound(SoundData* soundData, const UINT32 loopNum, const Play
 	}
 
 	
-	if (!pSound->Play(soundData, loopNum, playSoundData, name))return false;
+	if (!pSound->Play(soundData, loopNum, playSoundData))
+	{
+#ifdef _DEBUG
+		OutputDebugStringA(name.c_str());
+		OutputDebugStringW(L"の再生に失敗しました。\n");
+#endif // _DEBUG
+		return false;
+	}
 
 	return true;
 }
@@ -181,17 +180,25 @@ bool Sound::PlayLoadSound(SoundData* soundData, const UINT32 loopNum, const Play
 void Sound::StopSound(const std::string& name)
 {
 	pSounds.erase(name);
+	//pSounds[name]->pSourceVoice->Stop(XAUDIO2_PLAY_TAILS);
+	//pSounds[name]->pSourceVoice->Stop(0);
 }
 
-void Sound::ResetSound(const std::string& name)
+void Sound::ResetSound()
 {
 	//ソースボイスを破棄して作り直す。
-	if (pSounds[name]->pSourceVoice)
+	if (pSourceVoice)
 	{
-		pSounds[name]->pSourceVoice->Stop();
-		pSounds[name]->pSourceVoice->DestroyVoice();
-		Play(pSoundData, loopNum, playSoundData, name);
+		pSourceVoice->Stop();
+		pSourceVoice->DestroyVoice();
+		Play(pSoundData, loopNum, playSoundData);
 	}
+
+
+
+	//pSounds[name]->pSourceVoice->Stop(XAUDIO2_PLAY_TAILS);
+	//pSounds[name]->pSourceVoice->Stop(0);
+	//pSounds[name]->pSourceVoice->Start();
 }
 
 void Sound::SetPlaySoundData(const PlaySoundData& playSoundData)

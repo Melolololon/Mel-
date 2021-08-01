@@ -202,7 +202,7 @@ void TextWrite::LoopEndProcess(const UINT rtIndex)
     {
         
         Color color = std::get<1>(d);
-        d2dSolidColorBrush->SetColor(D2D1::ColorF(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.f));
+        //d2dSolidColorBrush->SetColor(D2D1::ColorF(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.f));
 
 
         Vector2 pos = std::get<0>(d);

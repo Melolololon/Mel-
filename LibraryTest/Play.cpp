@@ -51,20 +51,26 @@ void Play::Initialize()
 
 	pbrModel = std::make_unique<ModelObject>(ModelData::Get("model"), nullptr);
 
-	SoundData::Load("Resources/Sound/EnemyLostSE.wav", "test");
 
-	PlaySoundData data;
-	data.volume = 100;
-	//Sound::PlayLoadSound(SoundData::Get("test"), 100, data);
 
 	TextWrite::CreateFontData(L"HGPºÞ¼¯¸E","test");
 
 
 
+	SoundData::Load("Resources/Sound/StageSelect.wav", "test");
+	PlaySoundData data;
+	data.volume = 30;
+	Sound::PlayLoadSound(SoundData::Get("test"), Sound::LOOP_INFINITY, data,"test");
 }
 
 void Play::Update()
 {
+	if (Input::KeyTrigger(DIK_SPACE)) 
+	{
+		Sound::Get("test")->ResetSound();
+	}
+
+
 	Vector3 pos1 = Vector3(0, 5, 0);
 	Vector3 pos2 = Vector3(5, 0, 0);
 	Vector3 pos3 = Vector3(0, 0, 0);

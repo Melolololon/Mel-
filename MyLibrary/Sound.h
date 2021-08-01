@@ -75,7 +75,7 @@ private:
 	bool playEnd = false;
 
 
-	bool Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData, const std::string& name);
+	bool Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData);
 	void CheckPlayEnd();
 public: 
 	~Sound();
@@ -111,7 +111,7 @@ public:
 	/// ç≈èâÇ©ÇÁçƒê∂ÇµÇ»Ç®ÇµÇ‹Ç∑ÅB
 	/// </summary>
 	/// <param name="name"></param>
-	void ResetSound(const std::string& name);
+	void ResetSound();
 
 
 
