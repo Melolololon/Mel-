@@ -196,9 +196,9 @@ void Sound::ResetSound()
 
 
 
-	//pSounds[name]->pSourceVoice->Stop(XAUDIO2_PLAY_TAILS);
-	//pSounds[name]->pSourceVoice->Stop(0);
-	//pSounds[name]->pSourceVoice->Start();
+	//pSourceVoice->Stop(XAUDIO2_PLAY_TAILS);
+	//pSourceVoice->Stop(0);
+	//pSourceVoice->Start();
 }
 
 void Sound::SetPlaySoundData(const PlaySoundData& playSoundData)

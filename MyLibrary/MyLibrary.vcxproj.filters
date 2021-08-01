@@ -79,6 +79,12 @@
     <Filter Include="ソース ファイル\Texture">
       <UniqueIdentifier>{75729df2-a7e2-42d8-9110-f9aa0cf2d5af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Calculation">
+      <UniqueIdentifier>{9540a9b8-32d3-426c-8d27-60e868d28a6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Calculation">
+      <UniqueIdentifier>{dbfe4be8-119f-4d96-8899-ec828ac88400}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CreateBuffer.cpp">
@@ -198,9 +204,6 @@
     <ClCompile Include="MicroTimer.cpp">
       <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
-    <ClCompile Include="LibMath.cpp">
-      <Filter>ソース ファイル\Support</Filter>
-    </ClCompile>
     <ClCompile Include="Curve.cpp">
       <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
@@ -261,14 +264,17 @@
     <ClCompile Include="Texture.cpp">
       <Filter>ソース ファイル\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="Physics.cpp">
-      <Filter>ソース ファイル\Support</Filter>
-    </ClCompile>
     <ClCompile Include="Easing.cpp">
       <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
     <ClCompile Include="Collision.cpp">
-      <Filter>ソース ファイル\Support</Filter>
+      <Filter>ソース ファイル\Calculation</Filter>
+    </ClCompile>
+    <ClCompile Include="LibMath.cpp">
+      <Filter>ソース ファイル\Calculation</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>ソース ファイル\Calculation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -422,9 +428,6 @@
     <ClInclude Include="MicroTimer.h">
       <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
-    <ClInclude Include="LibMath.h">
-      <Filter>ヘッダー ファイル\Support</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -485,20 +488,23 @@
     <ClInclude Include="Texture.h">
       <Filter>ヘッダー ファイル\Texture</Filter>
     </ClInclude>
-    <ClInclude Include="Physics.h">
-      <Filter>ヘッダー ファイル\Support</Filter>
-    </ClInclude>
     <ClInclude Include="Curve.h">
       <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
     <ClInclude Include="Easing.h">
       <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>ヘッダー ファイル\Support</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionType.h">
       <Filter>ヘッダー ファイル\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>ヘッダー ファイル\Calculation</Filter>
+    </ClInclude>
+    <ClInclude Include="LibMath.h">
+      <Filter>ヘッダー ファイル\Calculation</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>ヘッダー ファイル\Calculation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

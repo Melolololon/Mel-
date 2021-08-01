@@ -129,7 +129,7 @@ void Play::Draw()
 
 	//TextWrite::Draw(L"1234567890_0987654321_3142536475869708", "test");
 	count++;		
-	TextWrite::Draw(Vector2(0, 600 - 20), Color(255, 255, 255, 255), L"WSAD ˆÚ“®", "test");
+	//TextWrite::Draw(Vector2(0, 600 - 20), Color(255, 255, 255, 255), L"WSAD ˆÚ“®", "test");
 }
 
 void Play::Finitialize()

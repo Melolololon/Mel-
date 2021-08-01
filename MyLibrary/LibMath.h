@@ -327,7 +327,7 @@ public:
 		const Vector2& linePos1,
 		const Vector2& linePos2,
 		Vector2* nearPos,
-		LineSegmentHitPlace* lsHit
+		LineSegmentHitPlace* isHit
 	);
 
 #pragma endregion
