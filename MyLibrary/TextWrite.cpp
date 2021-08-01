@@ -187,7 +187,10 @@ void TextWrite::LoopStartProcess()
 
 void TextWrite::LoopEndProcess(const UINT rtIndex)
 {
-    if (drawTextDatas.size() == 0)return;
+    //これ書くとリソースバリア切り替えられなくてエラー出る
+    //コマンドリストをCloseにした後に呼び出さないといけないのでテキスト描画しない場合に自分で治すことも不可
+    //テキスト描画しなくても下にある一連の処理をしないといけない
+    //if (drawTextDatas.size() == 0)return;
 
     //D3D11on12で使用するD3D11リソース(バックバッファ)をセット(d3d11On12deviceにセット)
     d3d11On12device->AcquireWrappedResources(wrappedBackBuffer[rtIndex].GetAddressOf(), 1);
