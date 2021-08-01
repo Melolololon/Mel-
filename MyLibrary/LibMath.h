@@ -309,12 +309,7 @@ public:
 	);
 
 
-	enum LineSegmentHitPosition
-	{
-		LS_HIT_POSITION_NOT_HIT,//衝突してない
-		LS_HIT_POSITION_LE_START_END,//線の端(始点終点)
-		LS_HIT_POSITION_LE_LINE,//線
-	};
+	
 	/// <summary>
 	/// 円と線分の判定
 	/// </summary>
@@ -332,7 +327,7 @@ public:
 		const Vector2& linePos1,
 		const Vector2& linePos2,
 		Vector2* nearPos,
-		LineSegmentHitPosition* lsHit
+		LineSegmentHitPlace* lsHit
 	);
 
 #pragma endregion

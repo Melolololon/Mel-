@@ -42,7 +42,7 @@ protected:
 #pragma region îªíËÉfÅ[É^
 	std::vector<SphereData> sphereData;
 	std::vector<BoxData> boxData;
-	std::vector<LineSegmentData> lineSegmentData;
+	std::vector<LineSegment3DData> lineSegmentData;
 	std::vector<RayData> layData;
 	std::vector<PlaneData>planeData;
 	std::vector<BoardData>boardData;
@@ -115,7 +115,7 @@ public:
 	CollisionFlag GetCollisionFlag();
 	std::vector<SphereData> GetSphereData();
 	std::vector<BoxData> GetBoxData();
-	std::vector<LineSegmentData> GetLineSegmentData();
+	std::vector<LineSegment3DData> GetLineSegmentData();
 	std::vector<PlaneData> GetPlaneData();
 	std::vector<BoardData> GetBoardData();
 	Vector3& GetLineSegmentHitPosition(const int num);

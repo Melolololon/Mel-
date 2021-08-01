@@ -25,6 +25,13 @@ enum CollisionType
 
 };
 
+enum LineSegmentHitPlace
+{
+	LS_HIT_POSITION_NOT_HIT,//衝突してない
+	LS_HIT_POSITION_LE_START_END,//線の端(始点終点)
+	LS_HIT_POSITION_LE_LINE,//線
+};
+
 enum BoxHitDirection
 {
 	BOX_HIT_DIRECTION_NO_HIT,
@@ -37,7 +44,7 @@ enum BoxHitDirection
 };
 
 #pragma region 2D
-
+//四角形
 struct RectData
 {
 	//四角形の左上
@@ -46,16 +53,27 @@ struct RectData
 	Vector2 size;
 };
 
+//円
 struct CircleData
 {
 	Vector2 position;
 	float r;
+
+	Vector2 lineSegmentNearPosition;
 };
 
+struct LineSegment2DData
+{
+	Vector2 position[2];
+	Vector2 hitPos;
+
+	LineSegmentHitPlace hitPlace;
+};
 #pragma endregion
 
 #pragma region 3D
 
+//球
 struct SphereData
 {
 	Vector3 position;
@@ -67,6 +85,7 @@ struct SphereData
 	BoxHitDirection boxHitDistance;
 };
 
+//箱
 struct BoxData
 {
 	Vector3 size;
@@ -76,12 +95,15 @@ struct BoxData
 	BoxHitDirection boxHitDistance;
 };
 
+
+//平面
 struct PlaneData
 {
 	Vector3 normal;
 	float distance;
 };
 
+//板
 struct BoardData
 {
 	Vector3 normal;
@@ -94,20 +116,26 @@ struct BoardData
 	Vector3 hitPos;
 };
 
-struct LineSegmentData
+//線分
+struct LineSegment3DData
 {
 	Vector3 position[2];
 
 	Vector3 hitPos;
 };
 
+//線
 struct RayData 
 {
 	Vector3 pos;
 	Vector3 direction;
 };
 
-
+//カプセル
+struct CapsuleData
+{
+	SphereData sphereData[2];
+};
 
 #pragma endregion
 

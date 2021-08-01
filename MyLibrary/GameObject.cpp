@@ -86,7 +86,7 @@ std::vector<BoxData> GameObject::GetBoxData()
 	return boxData;
 }
 
-std::vector<LineSegmentData> GameObject::GetLineSegmentData()
+std::vector<LineSegment3DData> GameObject::GetLineSegmentData()
 {
 	return lineSegmentData;
 }

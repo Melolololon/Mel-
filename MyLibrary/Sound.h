@@ -28,6 +28,8 @@ struct PlaySoundData
 
 //サウンドもModelObjectとかSprite2Dみたいに自分で管理できるようにする?
 
+//ソースボイス消さなくても初めから再生し直せるっぽい
+
 //SoundDataの音声を再生したり加工するクラス
 class Sound
 {
@@ -110,6 +112,9 @@ public:
 	/// </summary>
 	/// <param name="name"></param>
 	void ResetSound(const std::string& name);
+
+
+
 #pragma region セット
 
 	/// <summary>

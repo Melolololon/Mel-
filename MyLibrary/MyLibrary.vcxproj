@@ -179,6 +179,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Counter.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -541,6 +542,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="Counter.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Sound.h" />

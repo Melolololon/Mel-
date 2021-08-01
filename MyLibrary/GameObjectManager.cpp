@@ -85,7 +85,7 @@ void GameObjectManager::Update()
 	
 	std::vector<BoardData>boardData1;
 
-	std::vector<LineSegmentData>segmentData1;
+	std::vector<LineSegment3DData>segmentData1;
 
 	//if•¶–ˆ‚ÉŠÖ”ŒÄ‚Î‚¸‚É‚ ‚ç‚©‚¶‚ßæ“¾‚µ‚½‚Ù‚¤‚ª‚¢‚¢
 #pragma region ‹…‚Æ‹…
