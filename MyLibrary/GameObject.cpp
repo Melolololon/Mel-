@@ -36,11 +36,11 @@ void GameObject::Hit
 )
 {
 }
-
-const void* GameObject::GetPtr() const
-{
-	return nullptr;
-}
+//
+//const void* GameObject::GetPtr() const
+//{
+//	return nullptr;
+//}
 
 //void GameObject::CalcHitPhysics(GameObject* hitObject, const Vector3& hutPreVelocity, const CollisionType& collisionType)
 //{

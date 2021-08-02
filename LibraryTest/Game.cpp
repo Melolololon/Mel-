@@ -5,11 +5,9 @@
 #include"Play.h"
 #include"Camera.h"
 #include"ModelData.h"
-#include"PhysicsTest.h"
 #include"TextWrite.h"
 #include"Texture.h"
 
-#include"HurikoGame.h"
 
 Game::Game() {}
 
@@ -54,7 +52,6 @@ void Game::Initialize()
 
 
 #pragma region リソース読み込み
-	Texture::Load("Resources/Texture/cross.png", "cross");
 
 	ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
 #pragma endregion
@@ -62,11 +59,11 @@ void Game::Initialize()
 #pragma region マネージャー初期化
 
 	CollisionFlag initFlag;
-	initFlag.board = false;
-	initFlag.box = false;
-	initFlag.lineSegment = false;
-	initFlag.plane = false;
-	initFlag.ray = false;
+	initFlag.board = true;
+	initFlag.box = true;
+	initFlag.lineSegment = true;
+	initFlag.plane = true;
+	initFlag.ray = true;
 	initFlag.sphere = true;
 	GameObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);
 	GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);

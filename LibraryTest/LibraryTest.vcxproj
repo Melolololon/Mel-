@@ -157,25 +157,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionTestObject.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="HurikoGame.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PhysicsTest.cpp" />
-    <ClCompile Include="PhysicsTestObject.cpp" />
     <ClCompile Include="Play.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="SpringTestObject.cpp" />
-    <ClCompile Include="TuringPattern.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionTestObject.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="HurikoGame.h" />
-    <ClInclude Include="PhysicsTest.h" />
-    <ClInclude Include="PhysicsTestObject.h" />
     <ClInclude Include="Play.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="SpringTestObject.h" />
-    <ClInclude Include="TuringPattern.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">

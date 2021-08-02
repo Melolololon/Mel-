@@ -113,7 +113,7 @@ public:
 	static ModelObject* Get(const std::string& name) { return pModelObjects[name].get(); }
 	static void Delete(const std::string& name);
 
-	void Create(ModelData* pModelData, ConstBufferData* userConstBufferData);
+	bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData);
 	void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
 #pragma region ‘€ìŒ©‚½–Ú•ÏX

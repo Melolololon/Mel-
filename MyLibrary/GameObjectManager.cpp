@@ -109,24 +109,24 @@ void GameObjectManager::Update()
 				{
 					for (int colJ = 0; colJ < sphereData2Size; colJ++)
 					{
-						if (Collision::SphereAndSphere(sphereData1[colI], sphereData2[objJ]))
+						if (Collision::SphereAndSphere(sphereData1[colI], sphereData2[colJ]))
 						{
 							//hit‚ðŒÄ‚Ño‚·
 							obj1->Hit
 							(
 								obj2,
 								CollisionType::COLLISION_SPHERE,
-								objI,
+								colI,
 								CollisionType::COLLISION_SPHERE,
-								objJ
+								colJ
 							);
 							obj2->Hit
 							(
 								obj1,
 								CollisionType::COLLISION_SPHERE,
-								objJ,
+								colJ,
 								CollisionType::COLLISION_SPHERE,
-								objI
+								colI
 							);
 						}
 					}

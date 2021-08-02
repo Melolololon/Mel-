@@ -14,6 +14,7 @@
 //そうすれば、Unityみたいになる
 //positionもvelocityもセットできるようにする。(変数用意するのめんどいから)
 
+//SetPositionを仮想関数にして、モデルに座標セットする処理とか書けるようにする
 
 class GameObject
 {
@@ -21,23 +22,24 @@ private:
 
 protected:
 
+	Vector3 position = 0;
+	Vector3 velocity = 0;
+	Vector3 speed = 0;
+
+	
+
+#pragma region 物理関係
+
+	//物理的な挙動を行うための計算を行うかどうか。
+	bool calcPhysics = false;
+
 	//加速度
 	Vector3 acceleration = 0;
 	//物体が動く力
 	Vector3 force = 0;
 	//重さ
 	float mass = 100.0f;
-
-
-	Vector3 position = { 0,0,0 };
-	Vector3 velocity = { 0,0,0 };
-	Vector3 speed = { 0,0,0 };
-
-	//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
-	bool eraseManager = false;
-
-	//物理的な挙動を行うための計算を行うかどうか。
-	bool calcPhysics = false;
+#pragma endregion
 
 #pragma region 判定データ
 	CollisionFlag collisionFlag;
@@ -62,6 +64,8 @@ protected:
 	//ソート用数値。ソート順を自分で調整するための変数
 	short sortNumber = 0;
 
+	//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
+	bool eraseManager = false;
 
 public:
 	
@@ -78,11 +82,13 @@ public:
 	virtual void Draw();
 
 	/// <summary>
-	/// 判定処理
+	/// 当たった時の処理
 	/// </summary>
 	/// <param name="object">相手オブジェトのポインタ</param>
 	/// <param name="collisionType">自分のどの判定に当たったか</param>
-	/// <param name="arrayNum">何個目の判定に当たったか</param>
+	/// <param name="arrayNum">自分の何個目の判定に当たったか</param>
+	/// <param name="hitObjColType">相手のどの判定に当たったか</param>
+	/// <param name="hitObjArrayNum">相手の何個目の判定に当たったか</param>
 	virtual void Hit
 	(
 		const GameObject *const  object,
@@ -97,7 +103,7 @@ public:
 
 	//void CalcHitPhysics(GameObject* hitObject,const Vector3& hutPreVelocity,const CollisionType& collisionType);
 
-	virtual const void* GetPtr()const;
+	//virtual const void* GetPtr()const;
 
 
 

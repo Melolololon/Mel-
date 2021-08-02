@@ -742,13 +742,16 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 {
 	if(!pModelData)
 	{
+#ifdef _DEBUG
+		
 		OutputDebugStringA(name.data());
-		OutputDebugStringW(L"の生成に失敗しました。pModelDataがnullptrです。\n");
+		OutputDebugStringW(L"の生成に失敗しました。\n");
+#endif // _DEBUG
 		return false;
 	}
 
 	pModelObjects.emplace(name, std::make_unique<ModelObject>(pModelData, userConstBufferData));
-	pModelObjects[name]->Create(pModelData, userConstBufferData);
+	
 
 	return true;
 }
@@ -787,8 +790,16 @@ void ModelObject::FbxAnimation()
 		fbxAnimationData.currentTime  = fbxAnimationData.animationTimes.endTime;
 }
 
-void ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData)
+bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
+	if (!pModelData)
+	{
+#ifdef _DEBUG
+		OutputDebugStringW(L"pModelDataがnullptrです。生成に失敗しました\n");
+#endif // _DEBUG
+		return false;
+	}
+
 #pragma region データセット
 	if (userConstBufferData)this->userConstBufferData = *userConstBufferData;
 
@@ -854,4 +865,5 @@ void ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 
 	pPipeline.resize(modelFileObjectNum, &defaultPipeline);
 
+	return true;
 }
