@@ -20,10 +20,13 @@ CollisionTestObject::CollisionTestObject(const Vector3& pos, const bool inputMov
 	
 	boxCalcResult.resize(1);*/
 
-	collisionFlag.capsule = true;
+	/*collisionFlag.capsule = true;
 	capsuleData.resize(1);
-	capsuleData[0].r = 1.0f;
+	capsuleData[0].r = 1.0f;*/
 	
+	collisionFlag.lineSegment = true;
+	lineSegmentData.resize(1);
+	lineSegmentCalcResult.resize(1);
 }
 
 void CollisionTestObject::Update()
@@ -47,17 +50,17 @@ void CollisionTestObject::Update()
 	
 	if (Input::KeyState(DIK_SPACE) && inputFlag)
 	{
-		capsuleData[0].lineSegmentData.position[0] = position + Vector3(3, 0, 0);
-		capsuleData[0].lineSegmentData.position[1] = position + Vector3(-3, 0, 0);
+		lineSegmentData[0].position[0] = position + Vector3(3, 0, 0);
+		lineSegmentData[0].position[1] = position + Vector3(-3, 0, 0);
 	}
 	else
 	{
-		capsuleData[0].lineSegmentData.position[0] = position + Vector3(0, 3, 0);
-		capsuleData[0].lineSegmentData.position[1] = position + Vector3(0, -3, 0);
+		lineSegmentData[0].position[0] = position + Vector3(0, 3, 0);
+		lineSegmentData[0].position[1] = position + Vector3(0, -3, 0);
 	}
 
-	model[0]->SetPosition(capsuleData[0].lineSegmentData.position[0]);
-	model[1]->SetPosition(capsuleData[0].lineSegmentData.position[1]);
+	model[0]->SetPosition(lineSegmentData[0].position[0]);
+	model[1]->SetPosition(lineSegmentData[0].position[1]);
 }
 
 void CollisionTestObject::Draw()

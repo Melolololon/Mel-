@@ -260,25 +260,67 @@ bool Collision::BoxAndBox
 	return isHit;
 }
 
-bool Collision::LineSegment3DAndLineSegment3D(const LineSegment3DData& lineSegment1, const LineSegment3DData& lineSegment2)
+bool Collision::LineSegment3DAndLineSegment3D
+(
+	const LineSegment3DData& lineSegment1,
+	LineSegment3DCalcResult* lineSegment1CalcResult,
+	const LineSegment3DData& lineSegment2,
+	LineSegment3DCalcResult* lineSegment2CalcResult
+)
 {
-	Vector3 lineSegment1Vector = lineSegment1.position[1] - lineSegment1.position[0];
-	Vector3 lineSegment2Vector = lineSegment2.position[1] - lineSegment2.position[0];
-	Vector3 lineSegment1ToLineSegment2Pos0 = lineSegment2.position[0] - lineSegment1.position[0];
+	Vector3 d1 = lineSegment1.position[1] - lineSegment1.position[0];
+	Vector3 d2 = lineSegment2.position[1] - lineSegment2.position[0];
+	//カプセルの処理の一部を使えば求められる?
+	Vector3 r = lineSegment1.position[0] - lineSegment2.position[0];
+	float a = Vector3::Dot(d1, d1);
+	float b = Vector3::Dot(d1, d2);
+	float c = Vector3::Dot(d1, r);
+	float e = Vector3::Dot(d2, d2);
+	float f = Vector3::Dot(d2, r);
+	float d = a * e - b * b;
 
-	Vector3 lineSegmentVectorsCross = Vector3::Cross(lineSegment1Vector, lineSegment2Vector);
-	Vector3 lineSegmentPos0VectorsCross = Vector3::Cross(lineSegment1Vector, lineSegment1ToLineSegment2Pos0);
+	float s = 0.0f;
+	if (d != 0.0f)
+	{
+		s = (b * f - c * e) / d;
+
+		if (s < 0.0f)s = 0.0f;
+		if (s > 1.0f)s = 1.0f;
+	}
+
+	Vector3 p1 = lineSegment1.position[0];
+	Vector3 p2 = lineSegment2.position[0];
+	float t = Vector3::Dot(((p1 + d1 * s) - p2), d2) / Vector3::Dot(d2, d2);
+
+	s = (t * b - c) / a;
+	if (t < 0.0f)
+	{
+		t = 0.0f;
+		s = -c / a;
+	}
+	else if (t > 1.0f)
+	{
+		t = 1.0f;
+		s = (b - c) / a;
+	}
+	if (s < 0.0f)s = 0.0f;
+	if (s > 1.0f)s = 1.0f;
+
+	//相手に一番近い場所
+	Vector3 c1 = lineSegment1.position[0] + s * d1;
+	Vector3 c2 = lineSegment2.position[0] + t * d2;
+
+	//近い場所の距離が0だったら当たっている(重なっている、交差している)
+	bool isHit = LibMath::CalcDistance3D(c1, c2) == 0.0f;
 	
-	if (lineSegmentPos0VectorsCross.Length() == 0.0f)return true;
-	else if (lineSegmentVectorsCross.Length() > 0
-		&& Vector3::Cross(lineSegmentVectorsCross, lineSegmentPos0VectorsCross).Length() == 0)return true;
+	if (lineSegment1CalcResult)lineSegment1CalcResult->hitPos = c1;
+	if (lineSegment2CalcResult)lineSegment2CalcResult->hitPos = c2;
+	return isHit;
 
-	return false;
 }
 
 bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2)
 {
-	float capculeDis = 0.0f;
 
 	//線上の座標
 	Vector3 capculeLinePos[2] = { 0.0f,0.0f };

@@ -179,6 +179,56 @@ void GameObjectManager::Update()
 			}
 #pragma endregion
 
+#pragma region 線分&線分
+			if (collisionFlags[objI].lineSegment
+				&& collisionFlags[objJ].lineSegment)
+			{
+
+				std::vector<LineSegment3DData>lineSegmentData1 = obj1->GetLineSegmentData();
+				size_t lineSegmentData1Size = lineSegmentData1.size();
+				std::vector<LineSegment3DData>lineSegmentData2 = obj2->GetLineSegmentData();
+				size_t lineSegmentData2Size = lineSegmentData2.size();
+
+				std::vector<LineSegment3DCalcResult>& lineSegmentCalcResult1 = obj1->GetLineSegmentCalcResult();
+				std::vector<LineSegment3DCalcResult>& lineSegmentCalcResult2 = obj2->GetLineSegmentCalcResult();
+
+
+				for (int colI = 0; colI < lineSegmentData1Size; colI++)
+				{
+					for (int colJ = 0; colJ < lineSegmentData2Size; colJ++)
+					{
+						if (Collision::LineSegment3DAndLineSegment3D
+						(
+							lineSegmentData1[colI],
+							&lineSegmentCalcResult1[colI], 
+							lineSegmentData2[colJ],
+							&lineSegmentCalcResult2[colJ]
+						))
+						{
+							//hitを呼び出す
+							obj1->Hit
+							(
+								obj2,
+								CollisionType::LINE_SEGMENT_3D,
+								colI,
+								CollisionType::LINE_SEGMENT_3D,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								CollisionType::LINE_SEGMENT_3D,
+								colJ,
+								CollisionType::LINE_SEGMENT_3D,
+								colI
+							);
+						}
+					}
+				}
+
+			}
+#pragma endregion
+
 #pragma region カプセル&カプセル
 			if (collisionFlags[objI].capsule
 				&& collisionFlags[objJ].capsule)
@@ -219,7 +269,6 @@ void GameObjectManager::Update()
 
 			}
 #pragma endregion
-
 
 		}
 	}

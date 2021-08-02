@@ -71,7 +71,13 @@ public:
 	/// <returns>当たっていたらtrue</returns>
 	static bool BoxAndBox(const BoxData& box1,BoxCalcResult* boxCalcResult1, const BoxData& box2, BoxCalcResult* boxCalcResult2);
 
-	static bool LineSegment3DAndLineSegment3D(const LineSegment3DData& lineSegment1 , const LineSegment3DData& lineSegment2);
+	static bool LineSegment3DAndLineSegment3D
+	(
+		const LineSegment3DData& lineSegment1 ,
+		LineSegment3DCalcResult* lineSegment1CalcResult,
+		const LineSegment3DData& lineSegment2,
+		LineSegment3DCalcResult* lineSegment2CalcResult
+	);
 	
 	/// <summary>
 	/// カプセル同士が当たっているかを確認します。
