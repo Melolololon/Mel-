@@ -3,21 +3,26 @@
 
 #include"ModelData.h"
 
-CollisionTestObject::CollisionTestObject(const Vector3& pos, const bool inputMove) : inputMove(inputMove)
+CollisionTestObject::CollisionTestObject(const Vector3& pos, const bool inputMove) : inputFlag(inputMove)
 {
 	position = pos;
 	speed = 0.25f;
-	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
+	model[0] = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
+	model[1] = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
 
 	/*collisionFlag.sphere = true;
 	sphereData.resize(1);
 	sphereData[0].r = 1.0f;*/
 
-	collisionFlag.box = true;
+	/*collisionFlag.box = true;
 	boxData.resize(1);
 	boxData[0].size = 1;
 	
-	boxCalcResult.resize(1);
+	boxCalcResult.resize(1);*/
+
+	collisionFlag.capsule = true;
+	capsuleData.resize(1);
+	capsuleData[0].r = 1.0f;
 	
 }
 
@@ -27,7 +32,7 @@ void CollisionTestObject::Update()
 
 	velocity = 0;
 
-	if (inputMove) 
+	if (inputFlag) 
 	{
 		if (Input::KeyState(DIK_W))velocity.y = 1.0f;
 		if (Input::KeyState(DIK_S))velocity.y = -1.0f;
@@ -35,17 +40,30 @@ void CollisionTestObject::Update()
 		if (Input::KeyState(DIK_A))velocity.x = -1.0f;
 		position += velocity * speed;
 	}
-	model->SetPosition(position);
+	model[0]->SetPosition(position);
 	
 	//sphereData[0].position = position;
-	boxData[0].position = position;
+	//boxData[0].position = position;
 	
-	
+	if (Input::KeyState(DIK_SPACE) && inputFlag)
+	{
+		capsuleData[0].lineSegmentData.position[0] = position + Vector3(3, 0, 0);
+		capsuleData[0].lineSegmentData.position[1] = position + Vector3(-3, 0, 0);
+	}
+	else
+	{
+		capsuleData[0].lineSegmentData.position[0] = position + Vector3(0, 3, 0);
+		capsuleData[0].lineSegmentData.position[1] = position + Vector3(0, -3, 0);
+	}
+
+	model[0]->SetPosition(capsuleData[0].lineSegmentData.position[0]);
+	model[1]->SetPosition(capsuleData[0].lineSegmentData.position[1]);
 }
 
 void CollisionTestObject::Draw()
 {
-	model->Draw();
+	model[0]->Draw();
+	model[1]->Draw();
 
 	TextWrite::Draw(0, Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");
 }

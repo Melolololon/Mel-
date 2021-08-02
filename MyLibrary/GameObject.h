@@ -58,6 +58,8 @@ protected:
 
 	std::vector<BoardData>boardData;
 	std::vector<BoardCalcResult>boardCalcResult;
+
+	std::vector<CapsuleData>capsuleData;
 #pragma endregion
 
 
@@ -136,7 +138,8 @@ public:
 	std::vector<LineSegment3DData> GetLineSegmentData() { return lineSegmentData; }
 	std::vector<PlaneData> GetPlaneData() { return planeData; }
 	std::vector<BoardData> GetBoardData() { return boardData; }
-	
+	std::vector<CapsuleData>GetCapsuleData() { return capsuleData; }
+
 	std::vector<SphereCalcResult>& GetSphereCalcResult() { return sphereCalcResult; }
 	std::vector<BoxCalcResult>& GetBoxCalcResult() { return boxCalcResult; }
 	std::vector<LineSegment3DCalcResult>& GetLineSegmentCalcResult() { return lineSegmentCalcResult; }

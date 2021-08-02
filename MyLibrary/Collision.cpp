@@ -298,22 +298,32 @@ bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData
 	if (d != 0.0f)
 	{
 		s = (b * f - c * e) / d;
+
+		if (s < 0.0f)s = 0.0f;
+		if (s > 1.0f)s = 1.0f;
 	}
 
-	float t = (a * f - b * c) / d;
+	Vector3 p1 = capsule1.lineSegmentData.position[0];
+	Vector3 p2 = capsule2.lineSegmentData.position[0];
+	float t = Vector3::Dot(((p1 + d1 * s) - p2), d2) / Vector3::Dot(d2, d2);
+
+	s = (t * b - c) / a;
+	if(t < 0.0f)
+	{
+		t = 0.0f;
+		s = -c / a;
+	}
+	else if(t > 1.0f)
+	{
+		t = 1.0f;
+		s = (b - c) / a;
+	}
+	if (s < 0.0f)s = 0.0f;
+	if (s > 1.0f)s = 1.0f;
 
 	//ëäéËÉJÉvÉZÉãÇ…àÍî‘ãﬂÇ¢èÍèä
-	Vector3 c1, c2;
-	if(s < 0.0f || s > 1.0f || t < 0.0f || t> 1.0f)
-	{
-		c1 = capsule1.lineSegmentData.position[0];
-		c2 = capsule2.lineSegmentData.position[0];
-	}
-	else
-	{
-		c1 = capsule1.lineSegmentData.position[0] + s * d1;
-		c2 = capsule2.lineSegmentData.position[0] + t * d2;
-	}
+	Vector3 c1 = capsule1.lineSegmentData.position[0] + s * d1;
+	Vector3 c2 = capsule2.lineSegmentData.position[0] + t * d2;
 
 	return LibMath::CalcDistance3D(c1,c2) < capsule1.r + capsule2.r;
 }

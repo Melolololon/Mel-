@@ -11,6 +11,7 @@ struct CollisionFlag
 	bool lineSegment = false;
 	bool plane = false;
 	bool board = false;
+	bool capsule = false;
 };
 
 enum class CollisionType 
@@ -24,7 +25,7 @@ enum class CollisionType
 	LINE_SEGMENT_2D,
 	LINE_SEGMENT_3D,
 	RAY,
-
+	CAPSULE,
 };
 
 

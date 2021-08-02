@@ -8,9 +8,9 @@
 class CollisionTestObject:public GameObject
 {
 private:
-	std::unique_ptr<ModelObject> model;
+	std::unique_ptr<ModelObject> model[2];
 	bool hitFlag = false;
-	bool inputMove = false;
+	bool inputFlag = false;
 public:
 	CollisionTestObject(const Vector3& pos,const bool inputMove);
 

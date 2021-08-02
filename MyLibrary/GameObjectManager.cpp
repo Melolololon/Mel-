@@ -179,6 +179,47 @@ void GameObjectManager::Update()
 			}
 #pragma endregion
 
+#pragma region カプセル&カプセル
+			if (collisionFlags[objI].capsule
+				&& collisionFlags[objJ].capsule)
+			{
+
+				std::vector<CapsuleData>capsuleData1 = obj1->GetCapsuleData();
+				size_t capsuleData1Size = capsuleData1.size();
+				std::vector<CapsuleData>capsuleData2 = obj2->GetCapsuleData();
+				size_t capsuleData2Size = capsuleData2.size();
+
+
+				for (int colI = 0; colI < capsuleData1Size; colI++)
+				{
+					for (int colJ = 0; colJ < capsuleData2Size; colJ++)
+					{
+						if (Collision::CapsuleAndCapsule(capsuleData1[colI], capsuleData2[colJ]))
+						{
+							//hitを呼び出す
+							obj1->Hit
+							(
+								obj2,
+								CollisionType::CAPSULE,
+								colI,
+								CollisionType::CAPSULE,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								CollisionType::CAPSULE,
+								colJ,
+								CollisionType::CAPSULE,
+								colI
+							);
+						}
+					}
+				}
+
+			}
+#pragma endregion
+
 
 		}
 	}
