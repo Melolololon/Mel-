@@ -260,6 +260,22 @@ bool Collision::BoxAndBox
 	return isHit;
 }
 
+bool Collision::LineSegment3DAndLineSegment3D(const LineSegment3DData& lineSegment1, const LineSegment3DData& lineSegment2)
+{
+	Vector3 lineSegment1Vector = lineSegment1.position[1] - lineSegment1.position[0];
+	Vector3 lineSegment2Vector = lineSegment2.position[1] - lineSegment2.position[0];
+	Vector3 lineSegment1ToLineSegment2Pos0 = lineSegment2.position[0] - lineSegment1.position[0];
+
+	Vector3 lineSegmentVectorsCross = Vector3::Cross(lineSegment1Vector, lineSegment2Vector);
+	Vector3 lineSegmentPos0VectorsCross = Vector3::Cross(lineSegment1Vector, lineSegment1ToLineSegment2Pos0);
+	
+	if (lineSegmentPos0VectorsCross.Length() == 0.0f)return true;
+	else if (lineSegmentVectorsCross.Length() > 0
+		&& Vector3::Cross(lineSegmentVectorsCross, lineSegmentPos0VectorsCross).Length() == 0)return true;
+
+	return false;
+}
+
 bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2)
 {
 	float capculeDis = 0.0f;
