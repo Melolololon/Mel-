@@ -89,15 +89,16 @@ void GameObjectManager::Update()
 		for (int objJ = 0; objJ < objectSize; objJ++)
 		{
 			GameObject* obj2 = objects[objJ].get();
+			
+			////自分と比較、比較済の組み合わせはcontinue
+			if (objI >= objJ)continue;
 
 #pragma region 球&球
 
-			if (checkCollision.sphere)
+
+			if (collisionFlags[objI].sphere
+				&& collisionFlags[objJ].sphere) 
 			{
-				//自分と比較、比較済の組み合わせ、またはどちらかが判定確認しなくていい場合、continue
-				if (!collisionFlags[objI].sphere
-					|| !collisionFlags[objJ].sphere
-					|| objI >= objJ)continue;
 
 				std::vector<SphereData>sphereData1 = obj1->GetSphereData();
 				size_t sphereData1Size = sphereData1.size();
@@ -115,25 +116,69 @@ void GameObjectManager::Update()
 							obj1->Hit
 							(
 								obj2,
-								CollisionType::COLLISION_SPHERE,
+								CollisionType::SPHERE,
 								colI,
-								CollisionType::COLLISION_SPHERE,
+								CollisionType::SPHERE,
 								colJ
 							);
 							obj2->Hit
 							(
 								obj1,
-								CollisionType::COLLISION_SPHERE,
+								CollisionType::SPHERE,
 								colJ,
-								CollisionType::COLLISION_SPHERE,
+								CollisionType::SPHERE,
 								colI
 							);
 						}
 					}
 				}
-			}
 
+			}
 #pragma endregion
+
+#pragma region 箱&箱
+			if (collisionFlags[objI].box
+				&& collisionFlags[objJ].box)
+			{
+
+				std::vector<BoxData>boxData1 = obj1->GetBoxData();
+				size_t boxData1Size = boxData1.size();
+				std::vector<BoxData>boxData2 = obj2->GetBoxData();
+				size_t boxData2Size = boxData2.size();
+
+				std::vector<BoxCalcResult>& boxCalcResult1 = obj1->GetBoxCalcResult();
+				std::vector<BoxCalcResult>& boxCalcResult2 = obj2->GetBoxCalcResult();
+
+				for (int colI = 0; colI < boxData1Size; colI++)
+				{
+					for (int colJ = 0; colJ < boxData2Size; colJ++)
+					{
+						if (Collision::BoxAndBox(boxData1[colI], &boxCalcResult1[colI], boxData2[colJ], &boxCalcResult2[colJ]))
+						{
+							//hitを呼び出す
+							obj1->Hit
+							(
+								obj2,
+								CollisionType::BOX,
+								colI,
+								CollisionType::BOX,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								CollisionType::BOX,
+								colJ,
+								CollisionType::BOX,
+								colI
+							);
+						}
+					}
+				}
+
+			}
+#pragma endregion
+
 
 		}
 	}
@@ -664,10 +709,10 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 
 #pragma endregion
 
-void GameObjectManager::SetCollisionFlag3D(const CollisionFlag& type)
-{
-	checkCollision = type;
-}
+//void GameObjectManager::SetCollisionFlag3D(const CollisionFlag& type)
+//{
+//	checkCollision = type;
+//}
 
 void GameObjectManager::SetMouseCollisionFlag(const bool& flag)
 {

@@ -38,7 +38,7 @@ private:
 	//追加されたものを一時的に入れておく配列
 	std::vector<std::shared_ptr<GameObject>>addObjects;
 
-	CollisionFlag checkCollision;
+	//CollisionFlag checkCollision;
 
 	//追加したフレームごとにソートするか
 	ObjectSortType addObjectSort;
@@ -87,11 +87,11 @@ public:
 	/// </summary>
 	void Finitialize();
 
-	/// <summary>
-	/// どの判定を行うかを設定します
-	/// </summary>
-	/// <param name="type"></param>
-	void SetCollisionFlag3D(const CollisionFlag& type);
+	///// <summary>
+	///// どの判定を行うかを設定します
+	///// </summary>
+	///// <param name="type"></param>
+	//void SetCollisionFlag3D(const CollisionFlag& type);
 	
 	/// <summary>
 	/// マウスカーソルとの判定をとるか設定します

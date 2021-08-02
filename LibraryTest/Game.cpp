@@ -45,7 +45,7 @@ void Game::Initialize()
 {
 	
 
-	Library::Initialize(1920, 1080, Color(30,30,160,255),L"MyLib");
+	Library::Initialize(1280, 720, Color(30,30,160,255),L"MyLib");
 	Library::SetFramesPerSecond60(true);
 	
 	//カメラは各シーンに移動しました
@@ -58,14 +58,14 @@ void Game::Initialize()
 
 #pragma region マネージャー初期化
 
-	CollisionFlag initFlag;
+	/*CollisionFlag initFlag;
 	initFlag.board = true;
 	initFlag.box = true;
 	initFlag.lineSegment = true;
 	initFlag.plane = true;
 	initFlag.ray = true;
 	initFlag.sphere = true;
-	GameObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);
+	GameObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);*/
 	GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	GameObjectManager::GetInstance()->ReserveObjectArray(100);
 

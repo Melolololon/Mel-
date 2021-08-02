@@ -6,15 +6,19 @@
 CollisionTestObject::CollisionTestObject(const Vector3& pos, const bool inputMove) : inputMove(inputMove)
 {
 	position = pos;
-
-	collisionFlag.sphere = true;
-	sphereData.resize(1);
-	sphereData[0].r = 1.0f;
-
 	speed = 0.25f;
-
-
 	model = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
+
+	/*collisionFlag.sphere = true;
+	sphereData.resize(1);
+	sphereData[0].r = 1.0f;*/
+
+	collisionFlag.box = true;
+	boxData.resize(1);
+	boxData[0].size = 1;
+	
+	boxCalcResult.resize(1);
+	
 }
 
 void CollisionTestObject::Update()
@@ -31,8 +35,12 @@ void CollisionTestObject::Update()
 		if (Input::KeyState(DIK_A))velocity.x = -1.0f;
 		position += velocity * speed;
 	}
-	sphereData[0].position = position;
 	model->SetPosition(position);
+	
+	//sphereData[0].position = position;
+	boxData[0].position = position;
+	
+	
 }
 
 void CollisionTestObject::Draw()

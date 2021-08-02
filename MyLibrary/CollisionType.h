@@ -13,16 +13,17 @@ struct CollisionFlag
 	bool board = false;
 };
 
-enum CollisionType 
+enum class CollisionType 
 {
-	COLLISION_RECT,
-	COLLISION_CIRCLE,
-	COLLISION_SPHERE,
-	COLLISION_BOX,
-	COLLISION_PLANE,
-	COLLISION_BOARD,
-	COLLISION_LINESEGMENT,
-	COLLISION_RAY,
+	RECT,
+	CIRCLE,
+	SPHERE,
+	BOX,
+	PLANE,
+	BOARD,
+	LINE_SEGMENT_2D,
+	LINE_SEGMENT_3D,
+	RAY,
 
 };
 
@@ -37,6 +38,8 @@ enum BoxHitDirection
 	BOX_HIT_DIRECTION_FRONT,
 	BOX_HIT_DIRECTION_BACK,
 };
+
+//データとリザルトまとめた構造体用意する?両方リサイズするの面倒だし
 
 #pragma region 2D
 
