@@ -70,6 +70,13 @@ class Collision
 	static bool BoxAndBox(const BoxData& box1,BoxCalcResult* boxCalcResult1, const BoxData& box2, BoxCalcResult* boxCalcResult2);
 
 	static bool LineSegment3DAndLineSegment3D(const LineSegment3DData& lineSegment1 , const LineSegment3DData& lineSegment2);
+	
+	/// <summary>
+	/// カプセル同士が当たっているかを確認します。
+	/// </summary>
+	/// <param name="capsule1">カプセル</param>
+	/// <param name="capsule2">カプセル</param>
+	/// <returns>当たっていたらtrue</returns>
 	static bool CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2);
 	
 	/// <summary>
@@ -83,14 +90,23 @@ class Collision
 	static bool SphereAndBox(const SphereData& sphere,SphereCalcResult* sphereCalcResult ,const BoxData& box,BoxCalcResult* boxCalcResult);
 	
 	static bool SphereAndLineSegmrnt3D(const SphereData& sphere, const LineSegment3DData& lineSegment);
+	
 	static bool SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule);
 
+	/// <summary>
+	/// 板と3Dの線分が当たっているかを確認します。
+	/// </summary>
+	/// <param name="board">板</param>
+	/// <param name="boardCalcResult">計算結果を入れる変数のポインタ</param>
+	/// <param name="lineSegment">3Dの線分</param>
+	/// <param name="lineSegmentCalcResult">計算結果を入れる変数のポインタ</param>
+	/// <returns>当たっていたらtrue</returns>
 	static bool BoardAndLineSegment3D
 	(
 		const BoardData& board, 
-		BoardCalcResult& boardCalcResult, 
+		BoardCalcResult* boardCalcResult, 
 		const LineSegment3DData& lineSegment,
-		LineSegment3DCalcResult lineSegmentCalcResult
+		LineSegment3DCalcResult* lineSegmentCalcResult
 	);
 #pragma endregion
 };

@@ -572,12 +572,12 @@ Vector2 LibMath::RotateVector2(const Vector2& v, const float& angle)
 
 #pragma region Vector3
 
-Vector3 LibMath::CalcNormal(const Vector3 pos1, const Vector3 pos2, const Vector3 pos3)
+Vector3 LibMath::CalcNormal(const Vector3& pos1, const Vector3& pos2, const Vector3& pos3)
 {
 	return Vector3::Normalize(Vector3::Cross(pos2 - pos1, pos3 - pos1));
 }
 
-float LibMath::CalcDistance3D(Vector3 pos1, Vector3 pos2)
+float LibMath::CalcDistance3D(const Vector3& pos1, const Vector3& pos2)
 {
 	return sqrt
 	(

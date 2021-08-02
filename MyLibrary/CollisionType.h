@@ -213,7 +213,8 @@ struct RayData
 //ƒJƒvƒZƒ‹
 struct CapsuleData
 {
-	SphereData sphereData[2];
+	LineSegment3DData lineSegmentData;
+	float r = 0.0f;
 };
 
 #pragma endregion

@@ -231,7 +231,7 @@ public:
 	/// <param name="pos2"></param>
 	/// <param name="pos3"></param>
 	/// <returns></returns>
-	static Vector3 CalcNormal(const Vector3 pos1, const Vector3 pos2, const Vector3 pos3);
+	static Vector3 CalcNormal(const Vector3& pos1, const Vector3& pos2, const Vector3& pos3);
 
 	/// <summary>
 	/// 2つの座標の距離を取得します
@@ -239,7 +239,7 @@ public:
 	/// <param name="pos1">座標1</param>
 	/// <param name="pos2">座標2</param>
 	/// <returns></returns>
-	static float CalcDistance3D(Vector3 pos1, Vector3 pos2);
+	static float CalcDistance3D(const Vector3& pos1, const Vector3& pos2);
 
 	/// <summary>
 	/// vex1からvec2のベクトルを取得します(正規化は行う)

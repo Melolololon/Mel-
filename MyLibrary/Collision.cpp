@@ -1,4 +1,5 @@
 #include "Collision.h"
+#include"LibMath.h"
 
 #pragma region 2D
 
@@ -259,6 +260,48 @@ bool Collision::BoxAndBox
 	return isHit;
 }
 
+bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2)
+{
+	float capculeDis = 0.0f;
+
+	//線上の座標
+	Vector3 capculeLinePos[2] = { 0.0f,0.0f };
+
+	Vector3 d1 = capsule1.lineSegmentData.position[1] - capsule1.lineSegmentData.position[0];
+	Vector3 d2 = capsule2.lineSegmentData.position[1] - capsule2.lineSegmentData.position[0];
+
+	Vector3 r = capsule1.lineSegmentData.position[0] - capsule2.lineSegmentData.position[0];
+	float a = Vector3::Dot(d1, d1);
+	float b = Vector3::Dot(d1, d2);
+	float c = Vector3::Dot(d1, r);
+	float e = Vector3::Dot(d2, d2);
+	float f = Vector3::Dot(d2, r);
+	float d = a * e - b * b;
+
+	float s = 0.0f;
+	if (d != 0.0f)
+	{
+		s = (b * f - c * e) / d;
+	}
+
+	float t = (a * f - b * c) / d;
+
+	//相手カプセルに一番近い場所
+	Vector3 c1, c2;
+	if(s < 0.0f || s > 1.0f || t < 0.0f || t> 1.0f)
+	{
+		c1 = capsule1.lineSegmentData.position[0];
+		c2 = capsule2.lineSegmentData.position[0];
+	}
+	else
+	{
+		c1 = capsule1.lineSegmentData.position[0] + s * d1;
+		c2 = capsule2.lineSegmentData.position[0] + t * d2;
+	}
+
+	return LibMath::CalcDistance3D(c1,c2) < capsule1.r + capsule2.r;
+}
+
 bool Collision::SphereAndBox
 (
 	const SphereData& sphere, 
@@ -368,18 +411,46 @@ bool Collision::SphereAndBox
 	return isHit;
 }
 
+bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule)
+{
+	Vector3 capsulePos0ToSphere = 
+		LibMath::OtherVector(capsule.lineSegmentData.position[0], sphere.position);
+	
+	//資料のn
+	Vector3 capsuleLineSegmentVector =
+		LibMath::OtherVector(capsule.lineSegmentData.position[0], capsule.lineSegmentData.position[1]);
+
+	float t = Vector3::Dot(capsulePos0ToSphere, capsuleLineSegmentVector);
+
+	//球から線分に垂直に下した線上の座標 資料のPs→Pn
+	Vector3 onTheLinePos = capsuleLineSegmentVector * t;
+
+	float lenghtRate = t * onTheLinePos.Length();
+	float sphereAndCupsuleDis = 0.0f;
+	if(lenghtRate < 0.0f)
+	{
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, capsule.lineSegmentData.position[0]);
+	}
+	else if(lenghtRate > 1.0f)
+	{
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, capsule.lineSegmentData.position[1]);
+	}
+	else
+	{
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, onTheLinePos);
+	}
+
+	return sphereAndCupsuleDis < sphere.r;
+}
+
 bool Collision::BoardAndLineSegment3D
 (
 	const BoardData& board,
-	BoardCalcResult& boardCalcResult,
+	BoardCalcResult* boardCalcResult,
 	const LineSegment3DData& lineSegment,
-	LineSegment3DCalcResult lineSegmentCalcResult
+	LineSegment3DCalcResult* lineSegmentCalcResult
 )
 {
-	/*p[0] = c2.leftDownPos;
-	p[1] = c2.leftUpPos;
-	p[3] = c2.rightUpPos;
-	p[2] = c2.rightDownPos;*/
 
 
 	Vector3 v1;
@@ -396,8 +467,8 @@ bool Collision::BoardAndLineSegment3D
 	//ここにポリゴンの範囲内かどうかの処理を書く
 
 	//線の端 - ポリゴンの角
-	v1 = lineSegment.position[0] - vertexPoint[0];
-	v2 = lineSegment.position[1] - vertexPoint[0];
+	v1 = lineSegment.position[0] - board.leftDownPos;
+	v2 = lineSegment.position[1] - board.leftDownPos;
 	/*v1 = normalize(v1);
 	v2 = normalize(v2);*/
 
@@ -416,20 +487,22 @@ bool Collision::BoardAndLineSegment3D
 	//	abs(normal.x * linePos2.x + normal.y * linePos2.y + normal.z * linePos2.z + d) /
 	//	sqrt(normal.x* normal.x + normal.y* normal.y + normal.z* normal.z);
 
-	Vector3 vec1 = linePos1 - pointPos;
-	Vector3 vec2 = linePos2 - pointPos;
+	Vector3 vec1 = lineSegment.position[0] - board.position;
+	Vector3 vec2 = lineSegment.position[1] - board.position;
 
 	float kyori1 = 0;
-	if (normal.x != 0)kyori1 += abs(Vector3Dot(normal, vec1)) / abs(normal.x);
-	if (normal.y != 0)kyori1 += abs(Vector3Dot(normal, vec1)) / abs(normal.y);
-	if (normal.z != 0)kyori1 += abs(Vector3Dot(normal, vec1)) / abs(normal.z);
+	if (board.normal.x != 0)kyori1 += abs(Vector3Dot(board.normal, vec1)) / abs(board.normal.x);
+	if (board.normal.y != 0)kyori1 += abs(Vector3Dot(board.normal, vec1)) / abs(board.normal.y);
+	if (board.normal.z != 0)kyori1 += abs(Vector3Dot(board.normal, vec1)) / abs(board.normal.z);
 	float kyori2 = 0;
-	if (normal.x != 0)kyori2 += abs(Vector3Dot(normal, vec2)) / abs(normal.x);
-	if (normal.y != 0)	kyori2 += abs(Vector3Dot(normal, vec2)) / abs(normal.y);
-	if (normal.z != 0)	kyori2 += abs(Vector3Dot(normal, vec2)) / abs(normal.z);
+	if (board.normal.x != 0)kyori2 += abs(Vector3Dot(board.normal, vec2)) / abs(board.normal.x);
+	if (board.normal.y != 0)	kyori2 += abs(Vector3Dot(board.normal, vec2)) / abs(board.normal.y);
+	if (board.normal.z != 0)	kyori2 += abs(Vector3Dot(board.normal, vec2)) / abs(board.normal.z);
 
 	/*float kyori1 = abs(dot(normal, linePos1)) / abs(normal.x);
 	float kyori2 = abs(dot(normal, linePos2)) / abs(normal.x);*/
+
+
 
 	//内分比
 	float a;
@@ -443,55 +516,59 @@ bool Collision::BoardAndLineSegment3D
 	crossVector.x = (1 - a) * v1.x + a * v2.x;
 	crossVector.y = (1 - a) * v1.y + a * v2.y;
 	crossVector.z = (1 - a) * v1.z + a * v2.z;
-	Vector3 crossPos = vertexPoint[0] + crossVector;
+	Vector3 crossPos = board.leftDownPos + crossVector;
 	//crossPos.y *= - 1;
 
 
 
 	//三角形1個目の判定
 	Vector3 normal1;
-	normal1 = CalcNormal(vertexPoint[0], vertexPoint[1], crossPos);
+	normal1 = LibMath::CalcNormal(board.leftDownPos, board.leftUpPos, crossPos);
 	Vector3 normal2;
-	normal2 = CalcNormal(vertexPoint[1], vertexPoint[2], crossPos);
+	normal2 = LibMath::CalcNormal(board.leftUpPos, board.rightDownPos, crossPos);
 	Vector3 normal3;
-	normal3 = CalcNormal(vertexPoint[2], vertexPoint[0], crossPos);
+	normal3 = LibMath::CalcNormal(board.rightDownPos, board.leftDownPos, crossPos);
 
 	//板ポリと法線が同じか調べる
 	bool equal1 = false;//板ポリと法線が同じかどうか
 
 	//ほぼ同じだったらtrue
-	if (Difference(normal.x, normal1.x, 0.0001f) &&
-		Difference(normal.y, normal1.y, 0.0001f) &&
-		Difference(normal.z, normal1.z, 0.0001f) &&
-		Difference(normal.x, normal2.x, 0.0001f) &&
-		Difference(normal.y, normal2.y, 0.0001f) &&
-		Difference(normal.z, normal2.z, 0.0001f) &&
-		Difference(normal.x, normal3.x, 0.0001f) &&
-		Difference(normal.y, normal3.y, 0.0001f) &&
-		Difference(normal.z, normal3.z, 0.0001f))
+	if (LibMath::Difference(board.normal.x, normal1.x, 0.0001f) &&
+		LibMath::Difference(board.normal.y, normal1.y, 0.0001f) &&
+		LibMath::Difference(board.normal.z, normal1.z, 0.0001f) &&
+		LibMath::Difference(board.normal.x, normal2.x, 0.0001f) &&
+		LibMath::Difference(board.normal.y, normal2.y, 0.0001f) &&
+		LibMath::Difference(board.normal.z, normal2.z, 0.0001f) &&
+		LibMath::Difference(board.normal.x, normal3.x, 0.0001f) &&
+		LibMath::Difference(board.normal.y, normal3.y, 0.0001f) &&
+		LibMath::Difference(board.normal.z, normal3.z, 0.0001f))
 	{
 		equal1 = true;
 	}
 
+	/*p[0] = c2.leftDownPos;
+p[1] = c2.leftUpPos;
+p[2] = c2.rightDownPos;
+p[3] = c2.rightUpPos;*/
 
 	//三角形2個目の判定
-	normal1 = CalcNormal(vertexPoint[2], vertexPoint[1], crossPos);
-	normal2 = CalcNormal(vertexPoint[1], vertexPoint[3], crossPos);
-	normal3 = CalcNormal(vertexPoint[3], vertexPoint[2], crossPos);
+	normal1 = LibMath::CalcNormal(board.rightDownPos, board.leftUpPos, crossPos);
+	normal2 = LibMath::CalcNormal(board.leftUpPos, board.rightUpPos, crossPos);
+	normal3 = LibMath::CalcNormal(board.rightUpPos, board.rightDownPos, crossPos);
 
 	//板ポリと法線が同じか調べる
 	bool equal2 = false;//板ポリと法線が同じかどうか
 
 	//ほぼ同じ(誤差0.0001以内)だったらtrue
-	if (Difference(normal.x, normal1.x, 0.0001f) &&
-		Difference(normal.y, normal1.y, 0.0001f) &&
-		Difference(normal.z, normal1.z, 0.0001f) &&
-		Difference(normal.x, normal2.x, 0.0001f) &&
-		Difference(normal.y, normal2.y, 0.0001f) &&
-		Difference(normal.z, normal2.z, 0.0001f) &&
-		Difference(normal.x, normal3.x, 0.0001f) &&
-		Difference(normal.y, normal3.y, 0.0001f) &&
-		Difference(normal.z, normal3.z, 0.0001f))
+	if (LibMath::Difference(board.normal.x, normal1.x, 0.0001f) &&
+		LibMath::Difference(board.normal.y, normal1.y, 0.0001f) &&
+		LibMath::Difference(board.normal.z, normal1.z, 0.0001f) &&
+		LibMath::Difference(board.normal.x, normal2.x, 0.0001f) &&
+		LibMath::Difference(board.normal.y, normal2.y, 0.0001f) &&
+		LibMath::Difference(board.normal.z, normal2.z, 0.0001f) &&
+		LibMath::Difference(board.normal.x, normal3.x, 0.0001f) &&
+		LibMath::Difference(board.normal.y, normal3.y, 0.0001f) &&
+		LibMath::Difference(board.normal.z, normal3.z, 0.0001f))
 	{
 		equal2 = true;
 	}
@@ -499,22 +576,22 @@ bool Collision::BoardAndLineSegment3D
 	//どちらかが同じ(板ポリの中)だったらifの中に
 	if (equal1 || equal2)
 	{
-		if (crossPosition) *crossPosition = crossPos;
+		if (lineSegmentCalcResult) lineSegmentCalcResult->hitPos = crossPos;
+		if (boardCalcResult)boardCalcResult->hitPos = crossPos;
 		return true;
 	}
 
 	//衝突位置と中心がほぼ同じだったらヒット
-	if (Difference(crossPos.x, pointPos.x, 0.01f)
-		&& Difference(crossPos.y, pointPos.y, 0.01f)
-		&& Difference(crossPos.z, pointPos.z, 0.01f)
+	if (LibMath::Difference(crossPos.x, board.position.x, 0.001f)
+		&& LibMath::Difference(crossPos.y, board.position.y, 0.001f)
+		&& LibMath::Difference(crossPos.z, board.position.z, 0.001f)
 		|| equal1
 		|| equal2)
 	{
-		if (crossPosition) *crossPosition = crossPos;
+		if (lineSegmentCalcResult) lineSegmentCalcResult->hitPos = crossPos;
+		if (boardCalcResult)boardCalcResult->hitPos = crossPos;
 		return true;
 	}
-
-
 	return false;
 
 }
