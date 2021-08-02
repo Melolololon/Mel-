@@ -154,9 +154,10 @@ float4 main(GSOutput input) : SV_TARGET
 
 	//return shaderColor * texColor;
 
-	//return shaderColor * float4(baseColor, 1);
 
 
+
+	//ˆÈ‰ºPBR‚Ìˆ—
 	N = input.normal;
 	float3 finalRGB = float3(0, 0, 0);
 	float3 eyedir = normalize(cameraPos.xyz - input.worldPos.xyz);

@@ -40,15 +40,24 @@ protected:
 	bool calcPhysics = false;
 
 #pragma region 判定データ
+	CollisionFlag collisionFlag;
+
 	std::vector<SphereData> sphereData;
+	std::vector<SphereCalcResult> sphereCalcResult;
+
 	std::vector<BoxData> boxData;
+	std::vector<BoxCalcResult> boxCalcResult;
+	
 	std::vector<LineSegment3DData> lineSegmentData;
+	std::vector<LineSegment3DCalcResult> lineSegmentCalcResult;
+
 	std::vector<RayData> layData;
 	std::vector<PlaneData>planeData;
+
 	std::vector<BoardData>boardData;
+	std::vector<BoardCalcResult>boardCalcResult;
 #pragma endregion
 
-	CollisionFlag collisionFlag;
 
 	//ソート用数値。ソート順を自分で調整するための変数
 	short sortNumber = 0;
@@ -111,18 +120,28 @@ public:
 	//オブジェクトマネージャーから削除するかどうかのフラグを返す
 	bool GetEraseManager();
 
-	//判定用関数
-	CollisionFlag GetCollisionFlag();
-	std::vector<SphereData> GetSphereData();
-	std::vector<BoxData> GetBoxData();
-	std::vector<LineSegment3DData> GetLineSegmentData();
-	std::vector<PlaneData> GetPlaneData();
-	std::vector<BoardData> GetBoardData();
-	Vector3& GetLineSegmentHitPosition(const int num);
-	Vector3& GetBoardHitPosition(const int num);
-	BoxHitDirection& GetSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }
-	BoxHitDirection& GetBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
+#pragma region 判定用関数
 
+
+	//判定用関数
+	CollisionFlag GetCollisionFlag() { return collisionFlag; }
+	std::vector<SphereData> GetSphereData() { return sphereData; }
+	std::vector<BoxData> GetBoxData() { return boxData; }
+	std::vector<LineSegment3DData> GetLineSegmentData() { return lineSegmentData; }
+	std::vector<PlaneData> GetPlaneData() { return planeData; }
+	std::vector<BoardData> GetBoardData() { return boardData; }
+	
+	std::vector<SphereCalcResult>& GetSphereCalcResult() { return sphereCalcResult; }
+	std::vector<BoxCalcResult>& GetBoxCalcResult() { return boxCalcResult; }
+	std::vector<LineSegment3DCalcResult>& GetLineSegmentCalcResult() { return lineSegmentCalcResult; }
+	std::vector<BoardCalcResult>& GetBoardCalcResult() { return boardCalcResult; }
+	
+	//Vector3& GetLineSegmentHitPosition(const int num);
+	//Vector3& GetBoardHitPosition(const int num);
+	//BoxHitDirection& GetSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }
+	//BoxHitDirection& GetBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
+
+#pragma endregion
 
 	void SetPosition(const Vector3& position) { this->position = position; }
 	void SetVelocity(const Vector3& velocity) { this->velocity = velocity; }

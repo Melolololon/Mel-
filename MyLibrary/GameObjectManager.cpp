@@ -1,6 +1,7 @@
 #include "GameObjectManager.h"
 #include"CollisionType.h"
 #include"LibMath.h"
+#include"Collision.h"
 #include"Physics.h"
 #include"Values.h"
 
@@ -70,320 +71,395 @@ void GameObjectManager::Update()
 	EraseObjectCheck();
 
 
-#pragma region 判定処理
+#pragma region 新判定処理
 
-	CollisionFlag f1;
-	CollisionFlag f2;
-	int objectCount[2] = { 0,0 };
-	int collisionCount[2] = { 0,0 };
+	size_t objectSize = objects.size();
 
-	std::vector<SphereData>sphere1;
-	std::vector<SphereData>sphere2;
-
-	std::vector<BoxData>box1;
-	std::vector<BoxData>box2;
-	
-	std::vector<BoardData>boardData1;
-
-	std::vector<LineSegment3DData>segmentData1;
-
-	//if文毎に関数呼ばずにあらかじめ取得したほうがいい
-#pragma region 球と球
-
-	if (checkCollision.sphere) 
+	std::vector<CollisionFlag>collisionFlags(objectSize);
+	for (int i = 0; i < objectSize; i++)
 	{
-		for (auto& o1 : objects)
+		collisionFlags[i] = objects[i]->GetCollisionFlag();
+	}
+
+
+
+	for (int objI = 0; objI < objectSize; objI++)
+	{
+		GameObject* obj1 = objects[objI].get();
+		for (int objJ = 0; objJ < objectSize; objJ++)
 		{
-			int skipCount = 0;
-			for (auto& o2 : objects)
+			GameObject* obj2 = objects[objJ].get();
+
+#pragma region 球&球
+
+			if (checkCollision.sphere)
 			{
-				f1 = o1->GetCollisionFlag();
-				f2 = o2->GetCollisionFlag();
+				//自分と比較、比較済の組み合わせ、またはどちらかが判定確認しなくていい場合、continue
+				if (!collisionFlags[objI].sphere
+					|| !collisionFlags[objJ].sphere
+					|| objI >= objJ)continue;
 
-				
-				//自分比較はカウントしない
-				skipCount++;
-				if (objectCount[0] > skipCount - 1)continue;
+				std::vector<SphereData>sphereData1 = obj1->GetSphereData();
+				size_t sphereData1Size = sphereData1.size();
+				std::vector<SphereData>sphereData2 = obj2->GetSphereData();
+				size_t sphereData2Size = sphereData2.size();
 
-				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
-				if (o1 == o2 || !f1.sphere || !f2.sphere)continue;
 
-				
-
-				sphere1 = o1->GetSphereData();
- 				sphere2 = o2->GetSphereData();
-
-				for (const auto& c1 : sphere1)
+				for (int colI = 0; colI < sphereData1Size; colI++)
 				{
-					for (const auto& c2 : sphere2)
+					for (int colJ = 0; colJ < sphereData2Size; colJ++)
 					{
-
-						if (LibMath::SphereAndSphereCollision
-						(
-							c1.position,
-							c1.r,
-							c2.position,
-							c2.r
-						))
+						if (Collision::SphereAndSphere(sphereData1[colI], sphereData2[objJ]))
 						{
-
-
-							//反発
-  							if (o1->GetCalcPhysicsFlag() && o2->GetCalcPhysicsFlag()) 
-							{
-								Value2<Vector3> velocity = Physics::CalcRepulsionVelocity
-								(
-									Value2<Vector3>(o1->GetPosition(), o2->GetPosition()),
-									Value2<Vector3>(o1->GetVelocity(), o2->GetVelocity()),
-									Value2<float>(o1->GetMass(), o2->GetMass()),
-									Value2<Vector3>(1.0f, 1.0f)
-								);
-
-								if (o1->GetCalcPhysicsFlag()) 
-								{
-									o1->SetPosition(o1->GetPosition() + velocity.v1);
-									o1->SetVelocity(velocity.v1);
-								}
-								if (o2->GetCalcPhysicsFlag())
-								{
-									o2->SetPosition(o2->GetPosition() + velocity.v2);
-									o2->SetVelocity(velocity.v2);
-								}
-							}
-
 							//hitを呼び出す
-							o1->Hit
+							obj1->Hit
 							(
-								o2.get(),
-								CollisionType::COLLISION_SPHERE, 
-								collisionCount[0],
+								obj2,
 								CollisionType::COLLISION_SPHERE,
-								collisionCount[1]
-							);	
-							o2->Hit
-							(
-								o1.get(),
+								objI,
 								CollisionType::COLLISION_SPHERE,
-								collisionCount[1],
-								CollisionType::COLLISION_SPHERE, 
-								collisionCount[0]
+								objJ
 							);
-
-							//判定は2回、物理演算は1回なので、回数のズレにより、バグる。
-							//1回に統一する。
-							//物理演算2回にすると、衝突前ベクトル取得できなくて無理
-							//一度確認(o1に割る当てられて確認)したら、検索対象外にする?A*のcloseみたいに
-
+							obj2->Hit
+							(
+								obj1,
+								CollisionType::COLLISION_SPHERE,
+								objJ,
+								CollisionType::COLLISION_SPHERE,
+								objI
+							);
 						}
-						collisionCount[1]++;
 					}
-					collisionCount[0]++;
-					collisionCount[1] = 0;
 				}
-				collisionCount[0] = 0;
-
-				objectCount[1]++;
 			}
-			objectCount[0]++;
-			objectCount[1] = 0;
-		}
-		objectCount[0] = 0;
-	}
+
 #pragma endregion
 
-#pragma region 球とAABB
-	if (checkCollision.sphere && checkCollision.box)
-	{
-		for (auto& o1 : objects)
-		{
-			for (auto& o2 : objects)
-			{
-				f1 = o1->GetCollisionFlag();
-				f2 = o2->GetCollisionFlag();
-
-				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
-				if (o1 == o2 || !f1.sphere || !f2.box)continue;
-
-				sphere1 = o1->GetSphereData();
-				box1 = o2->GetBoxData();
-
-				for (const auto& c1 : sphere1)
-				{
-					for (const auto& c2 : box1)
-					{
-						BoxHitDirection dis;
-						if (LibMath::SphereAndBoxCollision
-						(
-							c1.position,
-							c1.r,
-							c2.position,
-							c2.size,
-							&dis
-						))
-						{
-							o1->GetSphereBoxHitDistance(collisionCount[0]) = dis;
-							o2->GetBoxBoxHitDistance(collisionCount[1]) = dis;
-
-							o1->Hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0], CollisionType::COLLISION_BOX, collisionCount[1]);
-							o2->Hit(o1.get(), CollisionType::COLLISION_BOX, collisionCount[1], CollisionType::COLLISION_SPHERE, collisionCount[0]);
-						}
-						
-
-						collisionCount[1]++;
-					}
-					collisionCount[0]++;
-					collisionCount[1] = 0;
-				}
-				collisionCount[0] = 0;
-
-			}
-		}
-	}
-#pragma endregion
-
-#pragma region AABBとAABB
-	if(checkCollision.box)
-	{
-		for (auto& o1 : objects)
-		{
-			for (auto& o2 : objects)
-			{
-				f1 = o1->GetCollisionFlag();
-				f2 = o2->GetCollisionFlag();
-
-				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
-				if (o1 == o2 || !f1.box || !f2.box)continue;
-
-				box1 = o1->GetBoxData();
-				box2 = o2->GetBoxData();
-
-				for (const auto& c1 : box1)
-				{
-					for (const auto& c2 : box2)
-					{
-						BoxHitDirection dis;
-						if(LibMath::BoxAndBoxCollision
-						(
-							c1.position,
-							c1.size,
-							c2.position,
-							c2.size,
-							&dis,
-							nullptr
-						))
-						{
-							o1->GetBoxBoxHitDistance(collisionCount[0]) = dis;
-							o1->Hit(o2.get(), CollisionType::COLLISION_BOX, collisionCount[0], CollisionType::COLLISION_BOX, collisionCount[1]);
-						}
-
-
-						collisionCount[1]++;
-					}
-					collisionCount[0]++;
-					collisionCount[1] = 0;
-				}
-				collisionCount[0] = 0;
-
-			}
 		}
 	}
 
+
+
+
+
 #pragma endregion
 
 
-#pragma region 線分と板
-	if (checkCollision.lineSegment && checkCollision.board)
-	{
-		for (auto& o1 : objects)
-		{
-			for (auto& o2 : objects)
-			{
-				f1 = o1->GetCollisionFlag();
-				f2 = o2->GetCollisionFlag();
+#pragma region 旧判定処理
 
-				if (o1 == o2 || !f1.lineSegment || !f2.board)continue;
-
-				segmentData1 = o1->GetLineSegmentData();
-				boardData1 = o2->GetBoardData();
-				for (const auto& c1 : segmentData1)
-				{
-					for (const auto& c2 : boardData1)
-					{
-						std::vector<Vector3>p(4);
-						p[0] = c2.leftDownPos;
-						p[1] = c2.leftUpPos;
-						p[3] = c2.rightUpPos;
-						p[2] = c2.rightDownPos;
-
-						Vector3 hitPos = { 0,0,0 };
-						if (LibMath::LineSegmentAndBoardCollision
-						(
-							c1.position[0],
-							c1.position[1],
-							c2.normal,
-							c2.position,
-							p,
-							&hitPos
-
-						))
-						{
-
-							o1->GetLineSegmentHitPosition(collisionCount[0]) = hitPos;
-							o2->GetBoardHitPosition(collisionCount[1]) = hitPos;
-
-							o1->Hit(o2.get(), CollisionType::COLLISION_LINESEGMENT, collisionCount[0], CollisionType::COLLISION_BOARD, collisionCount[1]);
-							o2->Hit(o1.get(), CollisionType::COLLISION_BOARD, collisionCount[1], CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
-						}
-
-						collisionCount[1]++;
-					}
-
-					collisionCount[0]++;
-					collisionCount[1] = 0;
-				}
-
-				collisionCount[0] = 0;
-			}
-		}
-	}
-#pragma endregion
-
-#pragma region マウスカーソルと板ポリ
-	/*if (checkMouseCollision && checkCollision.board)
-	{
-		for (auto& o1 : objects)
-		{
-			if(o1->GetCollisionFlag().board)
-			{
-				boardData1 = o1->GetBoardData();
-				for (const auto& c1 : boardData1)
-				{
-					std::vector<Vector3>p(4);
-					p[0] = c1.leftDownPos;
-					p[1] = c1.leftUpPos;
-					p[3] = c1.rightUpPos;
-					p[2] = c1.rightDownPos;
-					Vector3 hitPos = { 0,0,0 };
-					if (LibMath::LineSegmentAndBoardCollision
-					(
-						nearPos,
-						farPos,
-						c1.normal,
-						c1.position,
-						p,
-						&hitPos
-						))
-					{
-						o1->GetBoardHitPosition(collisionCount[0]) = hitPos;
-					
-						o1->Hit(cursor.get(), CollisionType::COLLISION_BOARD, collisionCount[0]);
-					}
-					collisionCount[0]++;
-				}
-			}
-		}
-	}*/
-#pragma endregion
+//	CollisionFlag f1;
+//	CollisionFlag f2;
+//
+//	//オブジェクトのループ数(内,外)
+//	int objectCount[2] = { 0,0 };
+//	//藩邸のループ数
+//	int collisionCount[2] = { 0,0 };
+//	int skipCount = 0;
+//
+//	std::vector<SphereData>sphere1;
+//	std::vector<SphereData>sphere2;
+//
+//	std::vector<BoxData>box1;
+//	std::vector<BoxData>box2;
+//	
+//	std::vector<BoardData>boardData1;
+//
+//	std::vector<LineSegment3DData>segmentData1;
+//
+//	//if文毎に関数呼ばずにあらかじめ取得したほうがいい(判定フラグのこと?)
+//#pragma region 球と球
+//	if (checkCollision.sphere) 
+//	{
+//		for (auto& o1 : objects)
+//		{
+//			skipCount = 0;
+//			for (auto& o2 : objects)
+//			{
+//				f1 = o1->GetCollisionFlag();
+//				f2 = o2->GetCollisionFlag();
+//
+//				
+//				//自分比較はカウントしない
+//				skipCount++;
+//				if (objectCount[0] > skipCount - 1)continue;
+//
+//				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
+//				if (o1 == o2 || !f1.sphere || !f2.sphere)continue;
+//
+//				sphere1 = o1->GetSphereData();
+// 				sphere2 = o2->GetSphereData();
+//
+//				for (const auto& c1 : sphere1)
+//				{
+//					for (const auto& c2 : sphere2)
+//					{
+//
+//						if (Collision::SphereAndSphere(c1, c2))
+//						{
+//							//反発
+//  							if (o1->GetCalcPhysicsFlag() && o2->GetCalcPhysicsFlag()) 
+//							{
+//								Value2<Vector3> velocity = Physics::CalcRepulsionVelocity
+//								(
+//									Value2<Vector3>(o1->GetPosition(), o2->GetPosition()),
+//									Value2<Vector3>(o1->GetVelocity(), o2->GetVelocity()),
+//									Value2<float>(o1->GetMass(), o2->GetMass()),
+//									Value2<Vector3>(1.0f, 1.0f)
+//								);
+//
+//								if (o1->GetCalcPhysicsFlag()) 
+//								{
+//									o1->SetPosition(o1->GetPosition() + velocity.v1);
+//									o1->SetVelocity(velocity.v1);
+//								}
+//								if (o2->GetCalcPhysicsFlag())
+//								{
+//									o2->SetPosition(o2->GetPosition() + velocity.v2);
+//									o2->SetVelocity(velocity.v2);
+//								}
+//							}
+//
+//							//hitを呼び出す
+//							o1->Hit
+//							(
+//								o2.get(),
+//								CollisionType::COLLISION_SPHERE, 
+//								collisionCount[0],
+//								CollisionType::COLLISION_SPHERE,
+//								collisionCount[1]
+//							);	
+//							o2->Hit
+//							(
+//								o1.get(),
+//								CollisionType::COLLISION_SPHERE,
+//								collisionCount[1],
+//								CollisionType::COLLISION_SPHERE, 
+//								collisionCount[0]
+//							);
+//
+//							//判定は2回、物理演算は1回なので、回数のズレにより、バグる。
+//							//1回に統一する。
+//							//物理演算2回にすると、衝突前ベクトル取得できなくて無理
+//							//一度確認(o1に割る当てられて確認)したら、検索対象外にする?A*のcloseみたいに
+//
+//						}
+//						collisionCount[1]++;
+//					}
+//					collisionCount[0]++;
+//					collisionCount[1] = 0;
+//				}
+//				collisionCount[0] = 0;
+//
+//				objectCount[1]++;
+//			}
+//			objectCount[0]++;
+//			objectCount[1] = 0;
+//		}
+//		objectCount[0] = 0;
+//	}
+//#pragma endregion
+//
+//#pragma region 球とAABB
+//	if (checkCollision.sphere && checkCollision.box)
+//	{
+//		for (auto& o1 : objects)
+//		{
+//			for (auto& o2 : objects)
+//			{
+//				f1 = o1->GetCollisionFlag();
+//				f2 = o2->GetCollisionFlag();
+//
+//				//自分比較はカウントしない
+//				//同じ判定の種類じゃなければこれいらない
+//				/*skipCount++;
+//				if (objectCount[0] > skipCount - 1)continue;*/
+//
+//				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
+//				if (o1 == o2 || !f1.sphere || !f2.box)continue;
+//
+//				sphere1 = o1->GetSphereData();
+//				box1 = o2->GetBoxData();
+//
+//				for (const auto& c1 : sphere1)
+//				{
+//					for (const auto& c2 : box1)
+//					{
+//						BoxHitDirection dis;
+//						if (LibMath::SphereAndBoxCollision
+//						(
+//							c1.position,
+//							c1.r,
+//							c2.position,
+//							c2.size,
+//							&dis
+//						))
+//						{
+//							o1->GetSphereBoxHitDistance(collisionCount[0]) = dis;
+//							o2->GetBoxBoxHitDistance(collisionCount[1]) = dis;
+//
+//							o1->Hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0], CollisionType::COLLISION_BOX, collisionCount[1]);
+//							o2->Hit(o1.get(), CollisionType::COLLISION_BOX, collisionCount[1], CollisionType::COLLISION_SPHERE, collisionCount[0]);
+//						}
+//						
+//
+//						collisionCount[1]++;
+//					}
+//					collisionCount[0]++;
+//					collisionCount[1] = 0;
+//				}
+//				collisionCount[0] = 0;
+//				objectCount[1]++;
+//			}
+//			objectCount[0]++;
+//			objectCount[1] = 0;
+//		}
+//		objectCount[0] = 0;
+//	}
+//#pragma endregion
+//
+//#pragma region AABBとAABB
+//	if(checkCollision.box)
+//	{
+//		for (auto& o1 : objects)
+//		{
+//			for (auto& o2 : objects)
+//			{
+//				f1 = o1->GetCollisionFlag();
+//				f2 = o2->GetCollisionFlag();
+//
+//				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
+//				if (o1 == o2 || !f1.box || !f2.box)continue;
+//
+//				box1 = o1->GetBoxData();
+//				box2 = o2->GetBoxData();
+//
+//				for (const auto& c1 : box1)
+//				{
+//					for (const auto& c2 : box2)
+//					{
+//						BoxHitDirection dis;
+//						if(LibMath::BoxAndBoxCollision
+//						(
+//							c1.position,
+//							c1.size,
+//							c2.position,
+//							c2.size,
+//							&dis,
+//							nullptr
+//						))
+//						{
+//							o1->GetBoxBoxHitDistance(collisionCount[0]) = dis;
+//							o1->Hit(o2.get(), CollisionType::COLLISION_BOX, collisionCount[0], CollisionType::COLLISION_BOX, collisionCount[1]);
+//						}
+//
+//
+//						collisionCount[1]++;
+//					}
+//					collisionCount[0]++;
+//					collisionCount[1] = 0;
+//				}
+//				collisionCount[0] = 0;
+//
+//			}
+//		}
+//	}
+//
+//#pragma endregion
+//
+//
+//#pragma region 線分と板
+//	if (checkCollision.lineSegment && checkCollision.board)
+//	{
+//		for (auto& o1 : objects)
+//		{
+//			for (auto& o2 : objects)
+//			{
+//				f1 = o1->GetCollisionFlag();
+//				f2 = o2->GetCollisionFlag();
+//
+//				if (o1 == o2 || !f1.lineSegment || !f2.board)continue;
+//
+//				segmentData1 = o1->GetLineSegmentData();
+//				boardData1 = o2->GetBoardData();
+//				for (const auto& c1 : segmentData1)
+//				{
+//					for (const auto& c2 : boardData1)
+//					{
+//						std::vector<Vector3>p(4);
+//						p[0] = c2.leftDownPos;
+//						p[1] = c2.leftUpPos;
+//						p[3] = c2.rightUpPos;
+//						p[2] = c2.rightDownPos;
+//
+//						Vector3 hitPos = { 0,0,0 };
+//						if (LibMath::LineSegmentAndBoardCollision
+//						(
+//							c1.position[0],
+//							c1.position[1],
+//							c2.normal,
+//							c2.position,
+//							p,
+//							&hitPos
+//
+//						))
+//						{
+//
+//							o1->GetLineSegmentHitPosition(collisionCount[0]) = hitPos;
+//							o2->GetBoardHitPosition(collisionCount[1]) = hitPos;
+//
+//							o1->Hit(o2.get(), CollisionType::COLLISION_LINESEGMENT, collisionCount[0], CollisionType::COLLISION_BOARD, collisionCount[1]);
+//							o2->Hit(o1.get(), CollisionType::COLLISION_BOARD, collisionCount[1], CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
+//						}
+//
+//						collisionCount[1]++;
+//					}
+//
+//					collisionCount[0]++;
+//					collisionCount[1] = 0;
+//				}
+//
+//				collisionCount[0] = 0;
+//			}
+//		}
+//	}
+//#pragma endregion
+//
+//#pragma region マウスカーソルと板ポリ
+//	/*if (checkMouseCollision && checkCollision.board)
+//	{
+//		for (auto& o1 : objects)
+//		{
+//			if(o1->GetCollisionFlag().board)
+//			{
+//				boardData1 = o1->GetBoardData();
+//				for (const auto& c1 : boardData1)
+//				{
+//					std::vector<Vector3>p(4);
+//					p[0] = c1.leftDownPos;
+//					p[1] = c1.leftUpPos;
+//					p[3] = c1.rightUpPos;
+//					p[2] = c1.rightDownPos;
+//					Vector3 hitPos = { 0,0,0 };
+//					if (LibMath::LineSegmentAndBoardCollision
+//					(
+//						nearPos,
+//						farPos,
+//						c1.normal,
+//						c1.position,
+//						p,
+//						&hitPos
+//						))
+//					{
+//						o1->GetBoardHitPosition(collisionCount[0]) = hitPos;
+//					
+//						o1->Hit(cursor.get(), CollisionType::COLLISION_BOARD, collisionCount[0]);
+//					}
+//					collisionCount[0]++;
+//				}
+//			}
+//		}
+//	}*/
+//#pragma endregion
 
 
 #pragma endregion

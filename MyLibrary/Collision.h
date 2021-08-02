@@ -7,6 +7,8 @@
 //“–‚½‚è”»’è(‚ÌŒvZ)ƒNƒ‰ƒX
 class Collision
 {
+public:
+
 #pragma region 2D
 
 	/// <summary>

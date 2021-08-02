@@ -37,6 +37,11 @@ void GameObject::Hit
 {
 }
 
+const void* GameObject::GetPtr() const
+{
+	return nullptr;
+}
+
 //void GameObject::CalcHitPhysics(GameObject* hitObject, const Vector3& hutPreVelocity, const CollisionType& collisionType)
 //{
 //
@@ -64,52 +69,52 @@ void GameObject::CalcMovePhysics()
 	velocity += acceleration;
 	position += velocity;
 }
-
-CollisionFlag GameObject::GetCollisionFlag() 
-{
-	return collisionFlag;
-}
-
-
-const void* GameObject::GetPtr()const
-{
-	return this;
-}
-
-std::vector<SphereData> GameObject::GetSphereData()
-{
-	return sphereData;
-}
-
-std::vector<BoxData> GameObject::GetBoxData()
-{
-	return boxData;
-}
-
-std::vector<LineSegment3DData> GameObject::GetLineSegmentData()
-{
-	return lineSegmentData;
-}
-
-std::vector<PlaneData> GameObject::GetPlaneData()
-{
-	return planeData;
-}
-
-std::vector<BoardData> GameObject::GetBoardData()
-{
-	return boardData;
-}
-
-Vector3& GameObject::GetLineSegmentHitPosition(const int  num)
-{
-	return lineSegmentData[num].hitPos;
-}
-
-Vector3& GameObject::GetBoardHitPosition(const int  num)
-{
-	return boardData[num].hitPos;
-}
+//
+//CollisionFlag GameObject::GetCollisionFlag() 
+//{
+//	return collisionFlag;
+//}
+//
+//
+//const void* GameObject::GetPtr()const
+//{
+//	return this;
+//}
+//
+//std::vector<SphereData> GameObject::GetSphereData()
+//{
+//	return sphereData;
+//}
+//
+//std::vector<BoxData> GameObject::GetBoxData()
+//{
+//	return boxData;
+//}
+//
+//std::vector<LineSegment3DData> GameObject::GetLineSegmentData()
+//{
+//	return lineSegmentData;
+//}
+//
+//std::vector<PlaneData> GameObject::GetPlaneData()
+//{
+//	return planeData;
+//}
+//
+//std::vector<BoardData> GameObject::GetBoardData()
+//{
+//	return boardData;
+//}
+//
+//Vector3& GameObject::GetLineSegmentHitPosition(const int  num)
+//{
+//	return lineSegmentData[num].hitPos;
+//}
+//
+//Vector3& GameObject::GetBoardHitPosition(const int  num)
+//{
+//	return boardData[num].hitPos;
+//}
 
 
 //void Object::setLineSegmentDataHitPos(const Vector3& pos, const int& arrayNum)
