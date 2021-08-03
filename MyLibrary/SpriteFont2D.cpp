@@ -67,8 +67,7 @@ bool SpriteFont2D::Draw(const Vector2& position, const Vector2& scale, const Cha
 
 		Vector2 drawAreaLeftUp = Vector2(fontSize.x * drawArea.v1, fontSize.y * drawArea.v2);
 		spr->SetDrawArea(drawAreaLeftUp, drawAreaLeftUp + fontSize);
-		spr->SetScale(scale);
-
+		
 		Vector2 movePos = 0;
 		switch (sequence)
 		{
@@ -80,6 +79,11 @@ bool SpriteFont2D::Draw(const Vector2& position, const Vector2& scale, const Cha
 			break;
 		}
 		spr->SetPosition(position + movePos);
+
+
+		//1文字分の大きさに縮小し、引数のスケールを対応させる
+		Vector2 sprScale = 1.0f / Vector2(fontNum.v1, fontNum.v2) * scale;
+		spr->SetScale(sprScale);
 
 
 

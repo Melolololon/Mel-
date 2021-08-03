@@ -43,11 +43,10 @@ void Play::Draw()
 {
 	GameObjectManager::GetInstance()->Draw();
 	
-	if(Input::KeyState(DIK_SPACE))sprite2DTest->SetDrawArea(0, Vector2(64, 64));
-	else sprite2DTest->SetDrawArea(0, Vector2(128, 128));
-
+	
+	sprite2DTest->SetDrawArea(0, Vector2(64, 64));
 	sprite2DTest->Draw();
-	//SpriteFont2D::GetInstance()->Draw(Vector2(1280 / 2, 720 / 2), testScale,SpriteFont2D::CharSequence::BESIDE, "A", TextureFont::Get("testFont"));
+	SpriteFont2D::GetInstance()->Draw(0, testScale,SpriteFont2D::CharSequence::BESIDE, "A", TextureFont::Get("testFont"));
 
 
 
