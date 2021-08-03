@@ -25,7 +25,19 @@ public:
 	bool CreateSetColor(const Color& color);
 	bool CreateSetTexture(Texture* pTexture);
 
+	/// <summary>
+	/// 生成します。
+	/// </summary>
+	/// <param name="color"></param>
+	/// <param name="name"></param>
+	/// <returns></returns>
 	static bool Create(const Color& color, const std::string& name);
+	/// <summary>
+	/// 生成します。pTextureがnullptrの場合は何も表示されません。Textureをセットするか、DrawTypeをColorにしてColorをセットすると表示されます。
+	/// </summary>
+	/// <param name="pTexture"></param>
+	/// <param name="name"></param>
+	/// <returns></returns>
 	static bool Create(Texture* pTexture, const std::string& name);
 	static void Delete(const std::string& name);
 	static Sprite2D* Get(const std::string& name) { return pSprite2D[name].get(); }
@@ -34,6 +46,6 @@ public:
 
 	void SetColor(const Color& color);
 	void SetTexture(Texture* pTexture) { this->pTexture = pTexture; }
-	//void SetDrawType(const DrawMode mode) { drawMode = mode; }
+	void SetDrawType(const DrawMode mode) { drawMode = mode; }
 };
 

@@ -4,6 +4,8 @@
 
 #include"GameObjectManager.h"
 #include"Camera.h"
+#include"SpriteFont2D.h"
+#include"TextureFont.h"
 
 Play::Play(){}
 
@@ -32,11 +34,18 @@ void Play::Update()
 	else sprite2DTest->SetColor(Color(255, 255, 255, 255));
 }
 
+Vector2 testScale = 1;
 void Play::Draw()
 {
 	GameObjectManager::GetInstance()->Draw();
 
-	sprite2DTest->Draw();
+	SpriteFont2D::GetInstance()->Draw(Vector2(0, 100), testScale,SpriteFont2D::CharSequence::BESIDE, "test", TextureFont::Get("test"));
+
+	//sprite2DTest->Draw();
+
+	if (Input::KeyState(DIK_Z))testScale.x -= 0.025f;
+	if (Input::KeyState(DIK_X))testScale.x += 0.025f;
+
 }
 
 void Play::Finitialize()

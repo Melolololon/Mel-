@@ -276,9 +276,6 @@
     <ClCompile Include="Physics.cpp">
       <Filter>ソース ファイル\Calculation</Filter>
     </ClCompile>
-    <ClCompile Include="FontSprite2D.cpp">
-      <Filter>ソース ファイル\Sprite</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite2D.cpp">
       <Filter>ソース ファイル\Sprite</Filter>
     </ClCompile>
@@ -511,9 +508,6 @@
     </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>ヘッダー ファイル\Calculation</Filter>
-    </ClInclude>
-    <ClInclude Include="FontSprite2D.h">
-      <Filter>ヘッダー ファイル\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="Sprite2D.h">
       <Filter>ヘッダー ファイル\Sprite</Filter>

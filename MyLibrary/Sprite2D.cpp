@@ -32,22 +32,17 @@ bool Sprite2D::CreateSetColor(const Color& color)
 
 bool Sprite2D::CreateSetTexture(Texture* pTexture)
 {
-	if (!pTexture)
+	if (pTexture)
 	{
-#ifdef _DEBUG
-		OutputDebugStringW(L"テクスチャがnullptrです。\n");
-#endif // _DEBUG
-
-		return false;
+		//テクスチャに合わせてサイズ変更
+		drawRightDownPosition = pTexture->GetTextureSize();
+		SetColor(Color(0, 0, 0, 0));
 	}
-
 	this->pTexture = pTexture;
-	//テクスチャに合わせてサイズ変更
-	drawRightDownPosition = pTexture->GetTextureSize();
+	
 
 	SpriteInitialize();
 	drawMode = DrawMode::DRAW_TEXTURE;
-
 
 	pipeline = defaultPipeline.GetPipelineState();
 	return true;

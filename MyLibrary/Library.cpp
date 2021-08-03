@@ -17,6 +17,9 @@
 #include"TextWrite.h"
 
 
+#include"SpriteFont2D.h"
+
+
 DirectX12* Library::dx12;
 CreatePolygon* Library::createPolygon;
 
@@ -115,11 +118,6 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	refReat = GetDeviceCaps(hdc, VREFRESH);
 #pragma endregion
 
-#pragma region Input
-	Input::Initialize(hwnd, windowWidth, windowHeight);
-#pragma endregion
-
-	Audio::GetInstance()->Initialize();
 	
 
 	dx12->SetScreenColor(screenColor);
@@ -135,6 +133,11 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 
 	//modelDatas.reserve(99999);
 
+
+
+	Input::Initialize(hwnd, windowWidth, windowHeight);
+	Audio::GetInstance()->Initialize();
+	SpriteFont2D::GetInstance()->Initialize();
 }
 
 void Library::LoopStartProcess()
@@ -160,7 +163,7 @@ void Library::LoopStartProcess()
 
 	Input::Update();
 	Sound::Update();
-
+	SpriteFont2D::GetInstance()->Update();
 }
 
 void Library::LoopEndProcess()

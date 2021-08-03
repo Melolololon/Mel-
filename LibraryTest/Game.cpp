@@ -7,6 +7,7 @@
 #include"ModelData.h"
 #include"TextWrite.h"
 #include"Texture.h"
+#include"TextureFont.h"
 
 
 Game::Game() {}
@@ -72,9 +73,9 @@ void Game::Initialize()
 	SceneManager::GetInstace()->SetStartScene(new Play());
 #pragma endregion
 
-
-
 	TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial", "test");
+
+	TextureFont::Load("Resources/Font/font.png", Value2<UINT>(14, 7), "test");
 
 }
 

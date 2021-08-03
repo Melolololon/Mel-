@@ -181,7 +181,6 @@
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Counter.cpp" />
-    <ClCompile Include="FontSprite2D.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sound_Unused.cpp" />
@@ -546,7 +545,6 @@
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Counter.h" />
-    <ClInclude Include="FontSprite2D.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sound_Unused.h" />
