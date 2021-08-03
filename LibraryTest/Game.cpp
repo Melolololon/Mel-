@@ -75,7 +75,7 @@ void Game::Initialize()
 
 	TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial", "test");
 
-	TextureFont::Load("Resources/Font/font.png", Value2<UINT>(14, 7), "test");
+	TextureFont::Load("Resources/Font/font.png", Value2<UINT>(14, 7), "testFont");
 
 }
 

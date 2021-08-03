@@ -20,28 +20,36 @@ void Play::Initialize()
 	GameObjectManager::GetInstance()->AddObject(std::make_shared<CollisionTestObject>(0,true));
 	GameObjectManager::GetInstance()->AddObject(std::make_shared<CollisionTestObject>(Vector3(-10, 0, 0), false));
 
-	sprite2DTest = std::make_unique<Sprite2D>(Color(255, 255, 255, 255));
+	Texture::Load("Resources/Texture/testTexture.png", "test");
+	sprite2DTest = std::make_unique<Sprite2D>(Texture::Get("test"));
 	//sprite2DTest->CreateSetColor(Color(255, 255, 255, 255));
-	sprite2DTest->SetScale(Vector2(300, 500));
-
+	
+	sprite2DTest->SetPosition(Vector2(1280 / 2, 720 / 2));
 }
 
 void Play::Update()
 {
+	if (Input::KeyState(DIK_Q))scale -= 0.05;
+	if (Input::KeyState(DIK_E))scale += 0.05;
+	sprite2DTest->SetScale(scale);
+
 	GameObjectManager::GetInstance()->Update();
 
-	if (Input::KeyState(DIK_SPACE))sprite2DTest->SetColor(Color(255, 0, 0, 255));
-	else sprite2DTest->SetColor(Color(255, 255, 255, 255));
+
 }
 
 Vector2 testScale = 1;
 void Play::Draw()
 {
 	GameObjectManager::GetInstance()->Draw();
+	
+	if(Input::KeyState(DIK_SPACE))sprite2DTest->SetDrawArea(0, Vector2(64, 64));
+	else sprite2DTest->SetDrawArea(0, Vector2(128, 128));
 
-	SpriteFont2D::GetInstance()->Draw(Vector2(0, 100), testScale,SpriteFont2D::CharSequence::BESIDE, "test", TextureFont::Get("test"));
+	sprite2DTest->Draw();
+	//SpriteFont2D::GetInstance()->Draw(Vector2(1280 / 2, 720 / 2), testScale,SpriteFont2D::CharSequence::BESIDE, "A", TextureFont::Get("testFont"));
 
-	//sprite2DTest->Draw();
+
 
 	if (Input::KeyState(DIK_Z))testScale.x -= 0.025f;
 	if (Input::KeyState(DIK_X))testScale.x += 0.025f;

@@ -149,7 +149,7 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 	float width = textureSize.x;
 	float height = textureSize.y;
 	width /= 2;
-	height /= 2;
+	height /= 2; 
 
 
 

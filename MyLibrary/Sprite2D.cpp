@@ -36,14 +36,14 @@ bool Sprite2D::CreateSetTexture(Texture* pTexture)
 	{
 		//テクスチャに合わせてサイズ変更
 		drawRightDownPosition = pTexture->GetTextureSize();
-		SetColor(Color(0, 0, 0, 0));
 	}
 	this->pTexture = pTexture;
 	
 
 	SpriteInitialize();
-	drawMode = DrawMode::DRAW_TEXTURE;
+	SetColor(Color(0, 0, 0, 0));
 
+	drawMode = DrawMode::DRAW_TEXTURE;
 	pipeline = defaultPipeline.GetPipelineState();
 	return true;
 }
@@ -91,20 +91,21 @@ void Sprite2D::Draw(const std::string& rtName)
 	SpriteVertex* vertex;
 	MapVertexBuffer((void**)&vertex);
 
-#pragma region 頂点座標
-	Vector2 spriteSize = drawRightDownPosition - drawLeftUpPosition;
+	Vector2 textureSize = 1;
+	if (pTexture)  textureSize = pTexture->GetTextureSize();
 
-	vertices[0].pos = { -spriteSize.x / 2 , spriteSize.y / 2, 0 };
-	vertices[1].pos = { -spriteSize.x / 2 ,-spriteSize.y / 2,0 };
-	vertices[2].pos = { spriteSize.x / 2  ,   spriteSize.y / 2 ,0 };
-	vertices[3].pos = { spriteSize.x / 2  , -spriteSize.y / 2,0 };
+#pragma region 頂点座標
+
+	vertices[0].pos = { -textureSize.x / 2 , textureSize.y / 2, 0 };
+	vertices[1].pos = { -textureSize.x / 2 ,-textureSize.y / 2,0 };
+	vertices[2].pos = { textureSize.x / 2  ,   textureSize.y / 2 ,0 };
+	vertices[3].pos = { textureSize.x / 2  , -textureSize.y / 2,0 };
 
 #pragma endregion
 
 #pragma region UV座標
 
-	Vector2 textureSize = 1;
-	if (pTexture)  textureSize = pTexture->GetTextureSize();
+
 	Vector2 uvLeftUp = { 1.0f / textureSize.x * drawLeftUpPosition.x ,1.0f / textureSize.y * drawLeftUpPosition.y };
 	Vector2 uvRightDown = { 1.0f / textureSize.x * drawRightDownPosition.x ,1.0f / textureSize.y * drawRightDownPosition.y };
 

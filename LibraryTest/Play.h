@@ -5,6 +5,8 @@ class Play:public Scene
 {
 private:
 	std::unique_ptr<Sprite2D>sprite2DTest;
+	Vector2 scale = 1;
+
 public:
 	Play();
 	~Play();
