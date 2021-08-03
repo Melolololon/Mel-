@@ -270,6 +270,8 @@ void GameObjectManager::Update()
 			}
 #pragma endregion
 
+
+
 		}
 	}
 

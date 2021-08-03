@@ -276,6 +276,9 @@
     <ClCompile Include="Physics.cpp">
       <Filter>ソース ファイル\Calculation</Filter>
     </ClCompile>
+    <ClCompile Include="FontSprite2D.cpp">
+      <Filter>ソース ファイル\Sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVertexShader.hlsl" />
@@ -505,6 +508,9 @@
     </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>ヘッダー ファイル\Calculation</Filter>
+    </ClInclude>
+    <ClInclude Include="FontSprite2D.h">
+      <Filter>ヘッダー ファイル\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
