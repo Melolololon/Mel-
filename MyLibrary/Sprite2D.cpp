@@ -1,98 +1,94 @@
 #include "Sprite2D.h"
 
 std::unordered_map<std::string, std::unique_ptr<Sprite2D>> Sprite2D::pSprite2D;
-DirectX::XMMATRIX Sprite2D::cameraMatrix;
-PipelineState Sprite2D::defaultPipeline;
 
-
+Sprite2D::Sprite2D()
+{
+}
 
 Sprite2D::Sprite2D(const Color& color)
 {
-	Create(color);
+	CreateSetColor(color);
 }
 
 Sprite2D::Sprite2D(Texture* pTexture)
 {
-	Create(pTexture);
+	CreateSetTexture(pTexture);
 }
 
-
-
-
-
-bool Sprite2D::Initialize(const int winWidth, const int winHeight)
+Sprite2D::~Sprite2D()
 {
-	cameraMatrix = DirectX::XMMatrixOrthographicOffCenterLH
-	(
-		0.0f,
-		winWidth,
-		winHeight,
-		0.0f,
-		0.0f,
-		1.0f
-	);
+}
 
-	PipelineData data;
-	data.alphaWrite = true;
-	data.blendMode = BlendMode::ADD;
-	data.cullMode = CullMode::NONE;
-	data.depthTest = false;
-	data.drawMode = DrawMode::SOLID;
-	auto result = defaultPipeline.CreatePipeline
-	(
-		data,
-		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },
-		{ L"NULL","","" },
-		{ L"NULL","","" },
-		{ L"NULL","","" },
-		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
-		PipelineType::SPRITE,
-		nullptr,
-		typeid(Sprite2D).name(),
-		1
-	);
-	if (!result)
-	{
-		OutputDebugString(L"Sprite2Dの初期化に失敗しました。デフォルトパイプラインを生成できませんでした\n");
-		return false;
-	}
+bool Sprite2D::CreateSetColor(const Color& color)
+{
+	SpriteInitialize();
+	SetOneColorSpriteColor(color);
+	drawMode = DrawMode::DRAW_COLOR;
+
+	pipeline = defaultPipeline.GetPipelineState();
 	return true;
 }
 
-void Sprite2D::Create(const Color& color, const std::string& name)
+bool Sprite2D::CreateSetTexture(Texture* pTexture)
 {
-	pSprite2D.emplace(name, std::make_unique<Sprite2D>(color));
-	pSprite2D[name]->Create(color);
+	if (!pTexture)
+	{
+#ifdef _DEBUG
+		OutputDebugStringW(L"テクスチャがnullptrです。\n");
+#endif // _DEBUG
+
+		return false;
+	}
+
+	this->pTexture = pTexture;
+	//テクスチャに合わせてサイズ変更
+	drawRightDownPosition = pTexture->GetTextureSize();
+
+	SpriteInitialize();
+	drawMode = DrawMode::DRAW_TEXTURE;
+
+
+	pipeline = defaultPipeline.GetPipelineState();
+	return true;
 }
 
-void Sprite2D::Create(Texture* pTexture, const std::string& name)
+bool Sprite2D::Create(const Color& color, const std::string& name)
 {
-	pSprite2D.emplace(name, std::make_unique<Sprite2D>(pTexture));
-	pSprite2D[name]->Create(pTexture);
+	pSprite2D.emplace(name, std::make_unique<Sprite2D>());
+	bool result = pSprite2D[name]->CreateSetColor(color);
+
+#ifdef _DEBUG
+	if (!result)
+	{
+		OutputDebugStringA(name.c_str());
+		OutputDebugStringW(L"の生成に失敗しました。\n");
+	}
+#endif // _DEBUG
+
+	return result;
+
+}
+
+bool Sprite2D::Create(Texture* pTexture, const std::string& name)
+{
+	pSprite2D.emplace(name, std::make_unique<Sprite2D>());
+	bool result = pSprite2D[name]->CreateSetTexture(pTexture);
+
+#ifdef _DEBUG
+	if(!result)
+	{
+		OutputDebugStringA(name.c_str());
+		OutputDebugStringW(L"の生成に失敗しました。\n");
+	}
+#endif // _DEBUG
+
+	return result;
 }
 
 void Sprite2D::Delete(const std::string& name)
 {
 	pSprite2D.erase(name);
-}
-
-void Sprite2D::Create(const Color& color)
-{
-
-	CreateBuffer();
-	InitializeVertices();
-	SetOneColorSpriteColor(color);
-	pipeline = defaultPipeline.GetPipelineState();
-}
-
-void Sprite2D::Create(Texture* pTexture)
-{
-	this->pTexture = pTexture;
-	//テクスチャがあったら描画範囲変更
-	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
-	CreateBuffer();
-	InitializeVertices();
-	pipeline = defaultPipeline.GetPipelineState();
 }
 
 void Sprite2D::Draw(const std::string& rtName)
@@ -131,59 +127,15 @@ void Sprite2D::Draw(const std::string& rtName)
 	UnmapVertexBuffer();
 
 	ConstDataMat();
-	MatrixMap(pTexture);
-	SetCmdList(pTexture);
-}
-
-
-void Sprite2D::MatrixMap(Texture* texture)
-{
-
-	SpriteConstBufferData* constBufferData;
-	constBuffer->Map(0, nullptr, (void**)&constBufferData);
-
-	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-	matWorld *= DirectX::XMMatrixScaling
-	(
-		constData.scale.x,
-		constData.scale.y,
-		1
-	);
-
 	
-	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(constData.angle.z));
-	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
-	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));
-
-	Vector2 textureSize = 1.0f;
-	if(texture)textureSize = texture->GetTextureSize();
-	float width = textureSize.x;
-	float height = textureSize.y;
-	width /= 2;
-	height /= 2;
-
-
-
-	//左上基準拡縮
-	matWorld *= DirectX::XMMatrixTranslation
-	(
-		constData.position.x + (width * constData.scale.x) + (vertices[2].pos.x - width),
-		constData.position.y + (height * constData.scale.y) + (vertices[0].pos.y - height),
-		0.0f
-	);
-
-	//中心基準拡縮
-	/*matWorld *= DirectX::XMMatrixTranslation
-	(
-		constData.position.x + (vertices[2].pos.x - width) + width,
-		constData.position.y + (vertices[0].pos.y - height) + height,
-		0.0f
-	);*/
-
-
-	constBufferData->mat = matWorld * cameraMatrix;
-
-
-	constBuffer->Unmap(0, nullptr);
+	Texture* pTex = pTexture;
+	if (drawMode == DrawMode::DRAW_COLOR)pTex = nullptr;
+	MatrixMap(pTex);
+	SetCmdList(pTex);
 }
 
+void Sprite2D::SetColor(const Color& color)
+{
+	this->color = color;
+	SetOneColorSpriteColor(color);
+}

@@ -76,6 +76,8 @@ protected:
 	//単色スプライト生成時に色をセットする関数
 	void SetOneColorSpriteColor(const Color& color);
 
+	//ColorをAddColorとか分けずにまとめるためにMap関数でMapするので、変数用意した
+	Color color;
 	Texture* pTexture = nullptr;
 
 #pragma region 関数
@@ -99,13 +101,13 @@ protected:
 	/// 生成します。
 	/// </summary>
 	/// <param name="color">色</param>
-	virtual void Create(const Color& color) = 0;
+	virtual void Create(const Color& color){}
 
 	/// <summary>
 	/// 生成します。レンダーターゲットの生成は行えません。
 	/// </summary>
 	/// <param name="pTexture">テクスチャのポインタ</param>
-	virtual void Create(Texture* pTexture) = 0;
+	virtual void Create(Texture* pTexture){}
 
 public:
 	Sprite();
@@ -113,8 +115,9 @@ public:
 	
 
 
-
-	virtual void Draw(const std::string& rtName = "") = 0;
+	//こいつここに定義しなくていい
+	//レンダーターゲットで使わない
+	virtual void Draw(const std::string& rtName = "");
 	
 	
 	void SetDrawArea(const Vector2& leftUpPos, const Vector2& rightDownPos)

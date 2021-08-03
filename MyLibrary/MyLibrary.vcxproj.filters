@@ -180,7 +180,7 @@
     <ClCompile Include="PipelineState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite2D.cpp">
+    <ClCompile Include="Sprite2DBase.cpp">
       <Filter>ソース ファイル\Sprite</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
@@ -277,6 +277,9 @@
       <Filter>ソース ファイル\Calculation</Filter>
     </ClCompile>
     <ClCompile Include="FontSprite2D.cpp">
+      <Filter>ソース ファイル\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite2D.cpp">
       <Filter>ソース ファイル\Sprite</Filter>
     </ClCompile>
   </ItemGroup>
@@ -407,7 +410,7 @@
     <ClInclude Include="FbxModel.h">
       <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite2D.h">
+    <ClInclude Include="Sprite2DBase.h">
       <Filter>ヘッダー ファイル\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
@@ -510,6 +513,9 @@
       <Filter>ヘッダー ファイル\Calculation</Filter>
     </ClInclude>
     <ClInclude Include="FontSprite2D.h">
+      <Filter>ヘッダー ファイル\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite2D.h">
       <Filter>ヘッダー ファイル\Sprite</Filter>
     </ClInclude>
   </ItemGroup>

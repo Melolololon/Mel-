@@ -41,7 +41,7 @@
 #include"ObjModel.h"
 #include"FbxModel.h"
 #include"Sprite.h"
-#include"Sprite2D.h"
+#include"Sprite2DBase.h"
 #include"Sprite3D.h"
 
 //d3d12‚ÌƒTƒ“ƒvƒ‹ˆê——

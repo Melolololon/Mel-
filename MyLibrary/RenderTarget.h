@@ -2,14 +2,14 @@
 #include<vector>
 #include<array>
 
-#include"Sprite2D.h"
+#include"Sprite2DBase.h"
 #include"DirectXStruct.h"
 #include"Vector.h"
 #include"PipelineState.h"
 #include"Camera.h"
 
 
-class RenderTarget :public Sprite2D
+class RenderTarget :public Sprite2DBase
 {
 private:
 

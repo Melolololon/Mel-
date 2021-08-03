@@ -966,7 +966,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	ModelObject::Initialize(dev.Get(), cmdLists);
 
 	Sprite::Initialize(dev.Get(), cmdList.Get());
-	Sprite2D::Initialize(windouWidth, windowHeight);
+	Sprite2DBase::Initialize(windouWidth, windowHeight);
 	Sprite3D::Initialize();
 	RenderTarget::Initialize();
 

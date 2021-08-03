@@ -1,9 +1,10 @@
 #pragma once
 #include"Scene.h"
+#include"Sprite2D.h"
 class Play:public Scene
 {
 private:
-	
+	std::unique_ptr<Sprite2D>sprite2DTest;
 public:
 	Play();
 	~Play();

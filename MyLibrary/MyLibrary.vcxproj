@@ -232,6 +232,7 @@
     <ClCompile Include="SoundData.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Sprite2D.cpp" />
+    <ClCompile Include="Sprite2DBase.cpp" />
     <ClCompile Include="Sprite3D.cpp" />
     <ClCompile Include="SpriteFont2D.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -600,6 +601,7 @@
     <ClInclude Include="SoundData.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Sprite2D.h" />
+    <ClInclude Include="Sprite2DBase.h" />
     <ClInclude Include="Sprite3D.h" />
     <ClInclude Include="SpriteFont2D.h" />
     <ClInclude Include="Texture.h" />
