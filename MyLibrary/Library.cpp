@@ -154,26 +154,11 @@ void Library::LoopStartProcess()
 	Input::Update();
 	Sound::Update();
 	SpriteFont2D::GetInstance()->Update();
+	FrameTimer::AllUpdate();
 }
 
 void Library::LoopEndProcess()
 {
-	//ソート
-	//dx12->sortModelData(modelDatas);
-
-	//コマンドセット
-	/*ModelData mData;
-	int number;
-	for(const auto& m : modelDatas)
-	{
-		mData = std::get<0>(m);
-		number = std::get<1>(m);
-		dx12->map(mData, number);
-		dx12->setCmdList(mData.key, number);
-	}*/
-
-	//modelDatas.clear();
-
 	dx12->LoopEndProcess();
 	
 	if (isSetFPS60)
@@ -203,7 +188,6 @@ void Library::LoopEndProcess()
 		timeEndPeriod(1);
 	}
 
-	FrameTimer::AllUpdate();
 
 
 }

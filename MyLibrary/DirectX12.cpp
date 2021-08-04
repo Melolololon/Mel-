@@ -37,7 +37,6 @@ DirectX12* DirectX12::GetInstance()
 	return &dx12;
 }
 
-
 void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 {
 

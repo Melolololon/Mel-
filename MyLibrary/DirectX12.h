@@ -76,7 +76,7 @@ class DirectX12 final
 	};
 
 private:
-	float clearColor[4];
+	float clearColor[4] = { 0,0,0,1 };
 
 #pragma region 現在の描画コマンド状態
 	enum RSState
@@ -90,39 +90,39 @@ private:
 
 #pragma region Windows
 	HWND hwnd;
-	int winWidth;
-	int winHeight;
+	int winWidth = 0;
+	int winHeight = 0;
 #pragma endregion
 
 #pragma region 基本的なオブジェクト
 
 	//DirectX変数
-	HRESULT result;
-	ComPtr<ID3D12CommandQueue> cmdQueue;
-	ComPtr<ID3D12Device> dev;
-	ComPtr<IDXGIFactory6> dxgiFactory;
-	ComPtr<IDXGISwapChain4> swapchain;
-	ComPtr<ID3D12CommandAllocator> cmdAllocator;
-	ComPtr<ID3D12GraphicsCommandList> cmdList;
+	HRESULT result = S_OK;
+	ComPtr<ID3D12CommandQueue> cmdQueue = nullptr;
+	ComPtr<ID3D12Device> dev = nullptr;
+	ComPtr<IDXGIFactory6> dxgiFactory = nullptr;
+	ComPtr<IDXGISwapChain4> swapchain = nullptr;
+	ComPtr<ID3D12CommandAllocator> cmdAllocator = nullptr;
+	ComPtr<ID3D12GraphicsCommandList> cmdList = nullptr;
 
 
 #pragma region RTV
 
 	//メイン
-	ComPtr<ID3D12DescriptorHeap> rtvHeaps;
-	ComPtr<ID3D12Resource> backBuffer[2];
-	D3D12_DESCRIPTOR_HEAP_DESC heapDesc;
+	ComPtr<ID3D12DescriptorHeap> rtvHeaps = nullptr;
+	ComPtr<ID3D12Resource> backBuffer[2] = { nullptr ,nullptr};
+	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
 
 #pragma endregion
 
 
-	ComPtr<ID3D12DescriptorHeap> depthHeap;
+	ComPtr<ID3D12DescriptorHeap> depthHeap = nullptr;
 	DepthBufferSet depthBufferSet;
 
-	ComPtr<ID3D12Fence> fence;
-	UINT64 fenceVal;
+	ComPtr<ID3D12Fence> fence = nullptr;
+	UINT64 fenceVal = 0;
 
-	D3D12_RESOURCE_BARRIER barrierDesc;
+	D3D12_RESOURCE_BARRIER barrierDesc = {};
 
 
 #pragma endregion
@@ -159,8 +159,6 @@ public:
 	//画面の色受け取り
 	void SetScreenColor(Color screenColor);
 
-	//スプライトのサイズ取得
-	DirectX::XMFLOAT2 GetTextureSize(int textureHandle);
 
 
 

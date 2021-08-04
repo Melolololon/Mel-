@@ -1,13 +1,17 @@
 #pragma once
 #include "Sprite2DBase.h"
+
+//拡縮だけ頂点いじる?ピクセル単位の拡縮やりやすそうだし
+
+//スプライトクラス
 class Sprite2D :
     public Sprite2DBase
 {
 public:
 	enum class DrawMode
 	{
-		DRAW_TEXTURE,
-		DRAW_COLOR,
+		DRAW_TEXTURE,//テクスチャ描画
+		DRAW_COLOR,//色描画
 	};
 
 private:
