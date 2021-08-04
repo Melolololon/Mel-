@@ -124,16 +124,6 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	dx12->Initialize(hwnd, windowWidth, windowHeight);
 	
 
-	createPipelineCounter = dx12->getStartPipelineCreateNum();
-	//スプライトフォント300を作るのでカウントを増やしておく
-	createSpriteConter = 300;
-
-	//べた塗用テクスチャを0にするために1にする(DrawBoxなどに使う)
-	loadTextureCounter = 1;
-
-	//modelDatas.reserve(99999);
-
-
 
 	Input::Initialize(hwnd, windowWidth, windowHeight);
 	Audio::GetInstance()->Initialize();
