@@ -1,9 +1,9 @@
 #pragma once
-#include "Object.h"
+#include "GameObject.h"
 #include"Library.h"
 
 class MouseCursor :
-	public Object
+	public GameObject
 {
 private:
 	Vector2 position2D;
@@ -15,7 +15,7 @@ public:
 	MouseCursor();
 	~MouseCursor();
 
-	void Initialize()override;
+	//void Initialize()override;
 	void Update()override;
 	
 	Vector2 GetPosition2D() { return position2D; }

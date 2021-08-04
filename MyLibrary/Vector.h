@@ -20,44 +20,55 @@ struct Vector2
 	}
 #pragma region 演算子
 
-
 	void operator+= (const Vector2& vector);
 	void operator-= (const Vector2& vector);
 	void operator*= (const Vector2& vector);
 	void operator/= (const Vector2& vector);
 
-
-	void operator=(const float num);
 	bool operator==(const Vector2& vector);
 	bool operator!=(const Vector2& vector);
+
 
 	void operator++();
 	void operator--();
 
+	Vector2 operator-();
 #pragma endregion
 
 #pragma region 関数
+	//staticの方は普通のメンバ関数呼び出してreturnすればいいかも
+	//計算結果試してバグなかったら7
+	//staticの方そもそもいらない?Vector2().Abs()て書けるし
+
+
+	float Length()const;
 	static float Length(const Vector2& vector);
 
+	Vector2 Normalize()const;
 	static Vector2 Normalize(const Vector2& vector);
 
+	float Dot(const Vector2& vector)const;
 	static float Dot(const Vector2& vector1, const Vector2& vector2);
 
+	float Cross(const Vector2& vector)const;
 	static float Cross(const Vector2& vector1, const Vector2& vector2);
+
+	Vector2 Abs()const;
+	static Vector2 Abs(const Vector2& vector);
 #pragma endregion
 
 
 };
 #pragma region 演算子
 
-Vector2 operator+(const Vector2& vector1,const Vector2& vector2);
-Vector2 operator-(const Vector2& vector1,const Vector2& vector2);
-Vector2 operator*(const Vector2& vector1,const Vector2& vector2);
-Vector2 operator/(const Vector2& vector1,const Vector2& vector2);
-Vector2 operator*(const Vector2& vector,const float f);
-Vector2 operator+(const Vector2& vector,const float f);
-Vector2 operator-(const Vector2& vector,const float f);
-Vector2 operator/(const Vector2& vector,const float f);
+Vector2 operator+(const Vector2& vector1, const Vector2& vector2);
+Vector2 operator-(const Vector2& vector1, const Vector2& vector2);
+Vector2 operator*(const Vector2& vector1, const Vector2& vector2);
+Vector2 operator/(const Vector2& vector1, const Vector2& vector2);
+Vector2 operator*(const Vector2& vector, const float f);
+Vector2 operator+(const Vector2& vector, const float f);
+Vector2 operator-(const Vector2& vector, const float f);
+Vector2 operator/(const Vector2& vector, const float f);
 Vector2 operator+(const float f, const Vector2& vector);
 Vector2 operator-(const float f, const Vector2& vector);
 Vector2 operator*(const float f, const Vector2& vector);
@@ -99,27 +110,30 @@ struct Vector3
 	void operator/= (const Vector3& vector);
 
 
-
-
-
-
-	void operator=(const float num);
 	bool operator==(const Vector3& vector);
 	bool operator!=(const Vector3& vector);
 
-
 	void operator++();
 	void operator--();
+
+	Vector3 operator-();
 #pragma endregion
 
 #pragma region 関数
+	float Length()const;
 	static float Length(const Vector3& vector);
 
+	Vector3 Normalize()const;
 	static Vector3 Normalize(const Vector3& vector);
 
+	float Dot(const Vector3& vector)const;
 	static float Dot(const Vector3& vector1, const Vector3& vector2);
 
+	Vector3 Cross(const Vector3& vector)const;
 	static Vector3 Cross(const Vector3& vector1, const Vector3& vector2);
+
+	Vector3 Abs()const;
+	static Vector3 Abs(const Vector3& vector);
 #pragma endregion
 };
 #pragma region 演算子
@@ -131,10 +145,10 @@ Vector3 operator+(const Vector3& vector, const float f);
 Vector3 operator-(const Vector3& vector, const float f);
 Vector3 operator*(const Vector3& vector, const float f);
 Vector3 operator/(const Vector3& vector, const float f);
-Vector3 operator+(const float f,const Vector3& vector);
-Vector3 operator-(const float f,const Vector3& vector);
-Vector3 operator*(const float f,const Vector3& vector);
-Vector3 operator/(const float f,const Vector3& vector);
+Vector3 operator+(const float f, const Vector3& vector);
+Vector3 operator-(const float f, const Vector3& vector);
+Vector3 operator*(const float f, const Vector3& vector);
+Vector3 operator/(const float f, const Vector3& vector);
 #pragma endregion
 
 

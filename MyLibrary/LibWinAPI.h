@@ -2,6 +2,9 @@
 #include<Windows.h>
 #include<string>
 #include"Vector.h"
+
+//L"EDIT"とかじゃない子ウィンドウは、親の名前渡さないといけない?
+
 class LibWinAPI
 {
 private:
@@ -26,7 +29,21 @@ public:
 	static HWND CreateNormalWindow
 	(
 		const std::wstring& className,
-		const std::wstring& windowName,
+		const std::wstring& winName,
+		const DWORD& windowStyle,
+		const DWORD& posX,
+		const DWORD& posY,
+		const int& width,
+		const int& height,
+		const HWND parentHWND,
+		const WNDPROC& winProc
+	);
+
+	static HWND CreateExpansionWindow
+	(
+		const std::wstring& className,
+		const std::wstring& winName,
+		const DWORD& expansionWindowStyle,
 		const DWORD& windowStyle,
 		const DWORD& posX,
 		const DWORD& posY,

@@ -1,6 +1,6 @@
 #pragma once
-#include"Object.h"
-class ModelBone:public Object
+#include"GameObject.h"
+class ModelBone:public GameObject
 {
 private:
 
@@ -8,7 +8,7 @@ public:
 	ModelBone(const Color& color, const ModelDataAndKey& modelData);
 	~ModelBone();
 
-	void Initialize()override;
+	//void Initialize()override;
 	void Update()override;
 	void Draw()override;
 

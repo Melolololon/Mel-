@@ -20,8 +20,7 @@ SceneManager* SceneManager::GetInstace()
 void SceneManager::SetStartScene(Scene* startScene)
 {
 
-	if (!startScene)
-		assert(0);
+	if (!startScene) assert(0);
 
 	currentScene = startScene;
 	currentScene->Initialize();
@@ -30,7 +29,7 @@ void SceneManager::SetStartScene(Scene* startScene)
 void SceneManager::Update()
 {
 
-
+	if (!currentScene)return;
 	
 	if (currentScene->GetIsEnd())
 	{
@@ -59,17 +58,16 @@ void SceneManager::Update()
 
 void SceneManager::Draw()
 {
+	if (!currentScene)return;
 	currentScene->Draw();
 }
 
 void SceneManager::Finitialize()
 {
-	if (currentScene)
-		delete currentScene;
+	currentScene->Finitialize();
+	if (currentScene) delete currentScene;
 	
 }
-
-
 
 Scene* SceneManager::GetCurrentScene()
 {

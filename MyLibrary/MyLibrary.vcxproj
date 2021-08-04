@@ -179,6 +179,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Counter.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Sound_Unused.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="CreateCamera.cpp" />
@@ -195,7 +200,6 @@
     <ClCompile Include="FbxModel.cpp" />
     <ClCompile Include="FreamTimer.cpp" />
     <ClCompile Include="HeapIndexManager.cpp" />
-    <ClCompile Include="Integers.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="LibMath.cpp" />
     <ClCompile Include="LibWinAPI.cpp" />
@@ -209,8 +213,8 @@
     <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="ModelObject.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="ObjModelData.cpp" />
     <ClCompile Include="ObjModelObject.cpp" />
@@ -224,13 +228,17 @@
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SoundData.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Sprite2D.cpp" />
+    <ClCompile Include="Sprite2DBase.cpp" />
     <ClCompile Include="Sprite3D.cpp" />
     <ClCompile Include="SpriteFont2D.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureFont.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
-    <ClCompile Include="TimerManager.cpp" />
+    <ClCompile Include="TextWrite.cpp" />
+    <ClCompile Include="Values.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="XInputManager.cpp" />
@@ -535,6 +543,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Counter.h" />
+    <ClInclude Include="Physics.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="Sound_Unused.h" />
     <ClInclude Include="BufferData.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollisionType.h" />
@@ -552,9 +565,8 @@
     <ClInclude Include="Easing.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FbxModel.h" />
-    <ClInclude Include="FreamTimer.h" />
+    <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="HeapIndexManager.h" />
-    <ClInclude Include="Integers.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LibMath.h" />
     <ClInclude Include="LibWinAPI.h" />
@@ -568,8 +580,8 @@
     <ClInclude Include="ModelManager.h" />
     <ClInclude Include="ModelObject.h" />
     <ClInclude Include="MouseCursor.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="ObjModelData.h" />
     <ClInclude Include="ObjModelObject.h" />
@@ -584,13 +596,17 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderData.h" />
+    <ClInclude Include="SoundData.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Sprite2D.h" />
+    <ClInclude Include="Sprite2DBase.h" />
     <ClInclude Include="Sprite3D.h" />
     <ClInclude Include="SpriteFont2D.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureFont.h" />
     <ClInclude Include="TextureLoader.h" />
-    <ClInclude Include="TimerManager.h" />
+    <ClInclude Include="TextWrite.h" />
+    <ClInclude Include="Values.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="XInputManager.h" />
   </ItemGroup>

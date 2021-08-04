@@ -335,22 +335,22 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 					FbxSurfaceMaterialUtils::GetProperty("metalness", materials);
 				if (propMetalness.IsValid())
 				{
-					pbrModelMaterial.metalness = propBaseColor.Get<float>();
+					pbrModelMaterial.metalness = propMetalness.Get<float>();
 				}
 
 
-				const FbxProperty propSuecular =
-					FbxSurfaceMaterialUtils::GetProperty("supecular", materials);
-				if (propSuecular.IsValid())
+				const FbxProperty propSpecular =
+					FbxSurfaceMaterialUtils::GetProperty("specular", materials);
+				if (propSpecular.IsValid())
 				{
-					pbrModelMaterial.fSpecular = propBaseColor.Get<float>();
+					pbrModelMaterial.fSpecular = propSpecular.Get<float>();
 				}
 
 				const FbxProperty propSuecularRoughness =
-					FbxSurfaceMaterialUtils::GetProperty("supecularRoughnes", materials);
+					FbxSurfaceMaterialUtils::GetProperty("specularRoughness", materials);
 				if (propSuecularRoughness.IsValid())
 				{
-					pbrModelMaterial.roughness = propBaseColor.Get<float>();
+					pbrModelMaterial.roughness = propSuecularRoughness.Get<float>();
 				}
 
 			}
@@ -393,7 +393,7 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 			
 			fbxModel->pTextures.resize(1);
 			fbxModel->pTextures[0] = std::make_unique<Texture>();
-			fbxModel->pTextures[0]->LoadModelTexture(modelDirectryPath + "WhiteTex.png");
+			fbxModel->pTextures[0]->LoadModelTexture("Resources/Texture/WhiteTex.png");
 		}
 	}
 }

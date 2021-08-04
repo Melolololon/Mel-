@@ -1,16 +1,32 @@
 #pragma once
 #include"Vector.h"
+#include<vector>
 class Random
 {
 private:
-	Random();
-	~Random();
+	Random(){}
+	~Random(){}
+
+	
+
 public:
+	using UINT = unsigned int;
 
 	static void Initialize();
 	
 	/// <summary>
-	///	乱数を取得します。取得できる値はc++のrand関数と同じです。
+	/// シード値をセットします。
+	/// </summary>
+	/// <param name="seed"></param>
+	static void SetSeed(const UINT seed);
+
+	/// <summary>
+	/// シード値に時間を使用するようにします。
+	/// </summary>
+	static void SetSeedTime();
+
+	/// <summary>
+	///	乱数を取得します。取得できる値はrand関数と同じです。
 	/// </summary>
 	/// <param name="num"></param>
 	/// <returns></returns>
@@ -23,6 +39,13 @@ public:
 	/// <param name="end"></param>
 	/// <returns></returns>
 	static int GetRandomNumberRangeSelect(const int start, const int end);
+
+	/// <summary>
+	/// numsの中からどれか1つをランダムで返します。
+	/// </summary>
+	/// <param name="nums"></param>
+	/// <returns></returns>
+	static int GetRandomNumberSetNumber(const std::vector<int>& nums);
 
 	/// <summary>
 	/// 小数の乱数を取得します。
@@ -40,5 +63,11 @@ public:
 	/// <returns></returns>
 	static float GetRandomFloatNumberRangeSelect(const float start, const float end, const int digits);
 
+	/// <summary>
+/// numsの中からどれか1つをランダムで返します。
+/// </summary>
+/// <param name="nums"></param>
+/// <returns></returns>
+	static float GetRandomNumberSetFloatNumber(const std::vector<float>& nums);
 };
 

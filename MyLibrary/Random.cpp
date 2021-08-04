@@ -3,8 +3,19 @@
 #include<ctime>
 void Random::Initialize()
 {
+	SetSeedTime();
+}
+
+void Random::SetSeed(const UINT seed)
+{
+	srand(seed);
+}
+
+void Random::SetSeedTime()
+{
 	srand(static_cast<unsigned int>(time(NULL)));
 }
+
 int Random::GetRandomNumber(int number)
 {
 	return rand() % number;
@@ -16,6 +27,11 @@ int Random::GetRandomNumberRangeSelect(const int start, const int end)
 	if (start >= end)return 0;
 
 	return GetRandomNumber(abs(end - start) + 1) + start;
+}
+
+int Random::GetRandomNumberSetNumber(const std::vector<int>& nums)
+{
+	return nums[GetRandomNumber(nums.size())];
 }
 
 
@@ -48,7 +64,10 @@ float Random::GetRandomFloatNumberRangeSelect(const float start, const float end
 
 	return GetRandomFloatNumber(abs(end - start) + addNum, digits) + start;
 
+}
 
-	
 
+float Random::GetRandomNumberSetFloatNumber(const std::vector<float>& nums)
+{
+	return nums[GetRandomNumber(nums.size())];
 }

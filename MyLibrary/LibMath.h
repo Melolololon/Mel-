@@ -225,12 +225,21 @@ public:
 #pragma region Vector3
 
 	/// <summary>
+	/// 引数の座標3つから法線ベクトルを求めます。pos1からpos3を順番に辿ったときに、右手座標系の場合は右回り、左手座標系の場合は左回りになるようにしてください。
+	/// </summary>
+	/// <param name="pos1"></param>
+	/// <param name="pos2"></param>
+	/// <param name="pos3"></param>
+	/// <returns></returns>
+	static Vector3 CalcNormal(const Vector3& pos1, const Vector3& pos2, const Vector3& pos3);
+
+	/// <summary>
 	/// 2つの座標の距離を取得します
 	/// </summary>
 	/// <param name="pos1">座標1</param>
 	/// <param name="pos2">座標2</param>
 	/// <returns></returns>
-	static float CalcDistance3D(Vector3 pos1, Vector3 pos2);
+	static float CalcDistance3D(const Vector3& pos1, const Vector3& pos2);
 
 	/// <summary>
 	/// vex1からvec2のベクトルを取得します(正規化は行う)
@@ -260,7 +269,7 @@ public:
 	static Vector3 FloatDistanceMoveVector3(const Vector3& pos,const Vector3& vector, const float distance);
 #pragma endregion
 
-
+	
 #pragma endregion
 
 #pragma region 当たり判定
@@ -300,12 +309,7 @@ public:
 	);
 
 
-	enum LineSegmentHitPosition
-	{
-		LS_HIT_POSITION_NOT_HIT,//衝突してない
-		LS_HIT_POSITION_LE_START_END,//線の端(始点終点)
-		LS_HIT_POSITION_LE_LINE,//線
-	};
+	
 	/// <summary>
 	/// 円と線分の判定
 	/// </summary>
@@ -323,7 +327,7 @@ public:
 		const Vector2& linePos1,
 		const Vector2& linePos2,
 		Vector2* nearPos,
-		LineSegmentHitPosition* lsHit
+		LineSegmentHitPlace* isHit
 	);
 
 #pragma endregion

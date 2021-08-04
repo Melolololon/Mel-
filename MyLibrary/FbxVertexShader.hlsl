@@ -64,9 +64,6 @@ VSOutput main(VSInput input)
 	float4 wnormal = normalize(mul(normalMat, float4(skinned.normal, 0)));
 
 	VSOutput output;
-
-	//ここでmat掛けたせいで、ワールド行列が再度かけられている
-	//ボーンが先なので、問題ないはず
 	output.svpos = mul(mat, skinned.pos);
 	output.normal = wnormal.xyz;
 

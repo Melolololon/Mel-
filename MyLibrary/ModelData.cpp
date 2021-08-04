@@ -298,7 +298,6 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 #pragma endregion
 
 
-
 #pragma region ディレクトリパスとモデル名取得
 		std::string directoryPath;
 		std::string fullPath = path;
@@ -330,6 +329,9 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		std::reverse(modelName.begin(), modelName.end());
 #pragma endregion
 
+#pragma region マテリアル
+
+
 		int materialNum = 0;
 		result = ModelLoader::GetInstance()->LoadObjMaterial
 		(
@@ -354,6 +356,9 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 				return false;
 			}
 		}
+
+		pbrMaterials.resize(modelFileObjectNum);
+#pragma endregion
 
 		modelName = path;
 

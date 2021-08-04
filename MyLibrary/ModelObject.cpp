@@ -12,23 +12,7 @@ PipelineState ModelObject::defaultPipeline;
 
 ModelObject::ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
-	if (userConstBufferData)this->userConstBufferData = *userConstBufferData;
-
-	//objのボーンのMoveVectorの割る処理のために、オブジェクトごとにバッファ作成
-	if (pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_OBJ) 
-	{
-		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT;
-	}
-	else
-	{
-		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL;
-	}
-	modelConstBufferData.bufferDataSize = sizeof(SkinConstBufferData);
-
-	modelFileObjectNum = pModelData->GetModelFileObjectNumber();
-	this->pModelData = pModelData;
-
-
+	Create(pModelData, userConstBufferData);
 }
 
 void ModelObject::CreateConstBuffer()
@@ -243,6 +227,12 @@ void ModelObject::MapConstData(const Camera* camera)
 		pbrMaterialConstData->fSpecular = pbrMaterials[i].fSpecular;
 		pbrMaterialConstData->roughness = pbrMaterials[i].roughness;
 
+		//テスト用
+		pbrMaterialConstData->baseColor = pbrMaterials[i].baseColor;
+		pbrMaterialConstData->metalness = 1;
+		pbrMaterialConstData->fSpecular = 0.5;
+		pbrMaterialConstData->roughness = 0.3;
+
 		pbrMaterialConstBuffer[i]->Unmap(0, nullptr);
 #pragma endregion
 
@@ -250,7 +240,7 @@ void ModelObject::MapConstData(const Camera* camera)
 
 #pragma region ボーンのマップ
 
-		int boneNum = pModelData->GetBoneNum();
+		int boneNum = pModelData->GetBoneNumber();
 
 		if (boneNum == 0
 			|| pModelData->GetModelFormat() != ModelData::ModelFormat::MODEL_FORMAT_OBJ
@@ -752,23 +742,16 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 {
 	if(!pModelData)
 	{
+#ifdef _DEBUG
+		
 		OutputDebugStringA(name.data());
-		OutputDebugStringW(L"の生成に失敗しました。pModelDataがnullptrです。\n");
+		OutputDebugStringW(L"の生成に失敗しました。\n");
+#endif // _DEBUG
 		return false;
 	}
 
 	pModelObjects.emplace(name, std::make_unique<ModelObject>(pModelData, userConstBufferData));
-	bool result = pModelObjects[name]->CreateObject(pModelData, userConstBufferData);
-
-	if(!result)
-	{
-		/*OutputDebugStringA(name.data());
-		OutputDebugStringW(L"の生成に失敗しました。\n");*/
-		pModelObjects.erase(name);
-		return false;
-	}
-
-
+	
 
 	return true;
 }
@@ -807,8 +790,37 @@ void ModelObject::FbxAnimation()
 		fbxAnimationData.currentTime  = fbxAnimationData.animationTimes.endTime;
 }
 
-bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
+bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
+	if (!pModelData)
+	{
+#ifdef _DEBUG
+		OutputDebugStringW(L"pModelDataがnullptrです。生成に失敗しました\n");
+#endif // _DEBUG
+		return false;
+	}
+
+#pragma region データセット
+	if (userConstBufferData)this->userConstBufferData = *userConstBufferData;
+
+	//objのボーンのMoveVectorの割る処理のために、オブジェクトごとにバッファ作成
+	if (pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_OBJ)
+	{
+		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT;
+	}
+	else
+	{
+		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL;
+	}
+	modelConstBufferData.bufferDataSize = sizeof(SkinConstBufferData);
+
+	modelFileObjectNum = pModelData->GetModelFileObjectNumber();
+	this->pModelData = pModelData;
+
+#pragma endregion
+
+
+
 	CreateConstBuffer();
 	
 	modelConstDatas.resize(modelFileObjectNum);
@@ -838,8 +850,8 @@ bool ModelObject::CreateObject(ModelData* pModelData, ConstBufferData* userConst
 #pragma region アニメーション関係
 
 
-	boneDatas.resize(pModelData->GetBoneNum());
-	parentBoneDatas.resize(pModelData->GetBoneNum());
+	boneDatas.resize(pModelData->GetBoneNumber());
+	parentBoneDatas.resize(pModelData->GetBoneNumber());
 	SkinConstBufferData* skinConstData = nullptr;
 	modelConstBuffer[0]->Map(0, nullptr, (void**)&skinConstData);
 	for (int i = 0; i < BONE_MAX; i++)

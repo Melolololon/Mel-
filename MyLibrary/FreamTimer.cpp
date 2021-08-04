@@ -1,38 +1,63 @@
-#include "FreamTimer.h"
+#include "FrameTimer.h"
 
-FreamTimer::FreamTimer()
+std::vector<FrameTimer*>FrameTimer::pTimers;
+
+FrameTimer::FrameTimer()
 {
-	TimerManager::GetInstance()->AddFreamTimer(this);
+	pTimers.push_back(this);
 }
 
-FreamTimer::FreamTimer(const  int maxTime)
-{
-	time = 0;
-	this->maxTime = maxTime;
 
-	TimerManager::GetInstance()->AddFreamTimer(this);
+
+FrameTimer::~FrameTimer()
+{
+	int count = 0;
+	for(auto& p : pTimers)
+	{
+		if(p == this)
+		{
+			break;
+		}
+		count++;
+	}
+	pTimers.erase(pTimers.begin() + count);
 }
 
-FreamTimer::~FreamTimer()
+void FrameTimer::AllUpdate()
 {
-	TimerManager::GetInstance()->EraseFreamTimer(this);
+	for (auto& p : pTimers)
+	{
+		p->Update();
+	}
 }
 
-void FreamTimer::Update()
+void FrameTimer::Update()
 {
-	timeResetFream = false;
+
+	if (!isStop) 
+	{
+		if (isDecrement && time > minTime) time--;
+		else if (!isDecrement && time < maxTime)time++;
+	}
+
+	timeMaxMoment = false;
+	timeMinMoment = false;
+	if (preTime != time && time == maxTime)timeMaxMoment = true;
+	if (preTime != time && time == minTime)timeMinMoment = true;
+	preTime = time;
+
 	if (isStop)return;
 
-
-	if (isDecrement)
-		time--;
-	else
-		time++;
-
-	if (time == maxTime)
+	if (resetFlag) 
 	{
-		time = resetTime;
-		timeResetFream = true;
+		if (time == maxTime)
+		{
+			time = resetMaxTime;
+		}
+		else if (time == minTime)
+		{
+			time = resetMinTime;
+		}
 	}
 }
 

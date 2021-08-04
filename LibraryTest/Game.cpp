@@ -1,9 +1,13 @@
 #include "Game.h"
 #include<Library.h>
 #include"SceneManager.h"
-#include"ObjectManager.h"
+#include"GameObjectManager.h"
 #include"Play.h"
 #include"Camera.h"
+#include"ModelData.h"
+#include"TextWrite.h"
+#include"Texture.h"
+#include"TextureFont.h"
 
 
 Game::Game() {}
@@ -19,14 +23,20 @@ Game* Game::GetInstance()
 void Game::Run()
 {
 	Initialize();
+
+	int x = 0;
 	while (1)
 	{
 		Library::LoopStartProcess();
 		Update();
 		Draw();
 		Library::LoopEndProcess();
+
+	
 		if (Library::GetIsEnd())
 			break;
+
+
 	}
 
 	Finalize();
@@ -36,31 +46,36 @@ void Game::Initialize()
 {
 	
 
-	Library::Initialize(1280, 720, {200,200,200,255},L"MyLib");
+	Library::Initialize(1280, 720, Color(30,30,160,255),L"MyLib");
 	Library::SetFramesPerSecond60(true);
-	Library::SetCamera(Vector3( 0,0,-40 ), Vector3( 0,0,0 ), Vector3(0,1,0 ));
-	Camera::Get()->SetRotateCriteriaPosition(Vector3(0, 0, -5));
+	
+	//カメラは各シーンに移動しました
 
-	Library::SetCameraNearAndFar(0.1, 1000.0f);
-	Library::SetLightVector({ 0,0,1 });
+
+#pragma region リソース読み込み
+
+	ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
+#pragma endregion
 
 #pragma region マネージャー初期化
 
-	CollisionFlag initFlag;
-	initFlag.board = false;
-	initFlag.box = false;
-	initFlag.lineSegment = false;
-	initFlag.plane = false;
-	initFlag.ray = false;
+	/*CollisionFlag initFlag;
+	initFlag.board = true;
+	initFlag.box = true;
+	initFlag.lineSegment = true;
+	initFlag.plane = true;
+	initFlag.ray = true;
 	initFlag.sphere = true;
-	ObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);
-	ObjectManager::GetInstance()->SetMouseCollisionFlag(false);
-	ObjectManager::GetInstance()->ReserveObjectArray(100);
+	GameObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);*/
+	GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
+	GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
 	SceneManager::GetInstace()->SetStartScene(new Play());
 #pragma endregion
 
+	TextWrite::CreateFontData(/*L"HGPｺﾞｼｯｸE"*/L"Arial", "test");
 
+	TextureFont::Load("Resources/Font/font.png", Value2<UINT>(14, 7), "testFont");
 
 }
 

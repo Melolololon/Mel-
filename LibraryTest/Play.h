@@ -1,15 +1,12 @@
 #pragma once
 #include"Scene.h"
-#include"Library.h"
-#include"LibMath.h"
-#include"Vector.h"
-#include"FreamTimer.h"
-#include"Curve.h"
-#include"MouseCursor.h"
+#include"Sprite2D.h"
 class Play:public Scene
 {
 private:
-	FreamTimer ti;
+	std::unique_ptr<Sprite2D>sprite2DTest;
+	Vector2 scale = 1;
+
 public:
 	Play();
 	~Play();

@@ -2,13 +2,15 @@
 
 //子ウィンドウは、WNDCLASSEXを登録しちゃいけない。登録するとボタンとか作れない
 
+//子ウィンドウ作るときはproc渡さないようにする
+
 //これメンバ変数にしないとHWNDがNULLになる
 //WNDCLASSEX LibWinAPI::w;
 
 HWND LibWinAPI::CreateNormalWindow
 (
 	const std::wstring& className,
-	const std::wstring& windowName,
+	const std::wstring& winName,
 	const DWORD& windowStyle,
 	const DWORD& posX,
 	const DWORD& posY,
@@ -38,7 +40,46 @@ HWND LibWinAPI::CreateNormalWindow
 	hwnd = CreateWindow
 	(
 		className.c_str(),
-		windowName.c_str(),
+		winName.c_str(),
+		windowStyle,
+		posX,
+		posY,
+		wrc.right - wrc.left,
+		wrc.bottom - wrc.top,
+		parentHWND,
+		nullptr,
+		GetModuleHandle(nullptr),
+		nullptr);
+
+	ShowWindow(hwnd, SW_SHOW);
+
+	return hwnd;
+}
+
+HWND LibWinAPI::CreateExpansionWindow(const std::wstring& className, const std::wstring& winName, const DWORD& expansionWindowStyle, const DWORD& windowStyle, const DWORD& posX, const DWORD& posY, const int& width, const int& height, const HWND parentHWND, const WNDPROC& winProc)
+{
+	WNDCLASSEX w;
+	if (!parentHWND)
+	{
+		w = {};
+		w.cbSize = sizeof(WNDCLASSEX);
+		w.lpfnWndProc = (WNDPROC)winProc;
+		w.lpszClassName = className.c_str();
+		w.hInstance = GetModuleHandle(nullptr);
+		w.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+		RegisterClassEx(&w);
+	}
+	RECT wrc = { 0,0,width,height };
+	AdjustWindowRectEx(&wrc, windowStyle, false, expansionWindowStyle);
+
+
+	HWND hwnd;
+	hwnd = CreateWindowEx
+	(
+		expansionWindowStyle,
+		className.c_str(),
+		winName.c_str(),
 		windowStyle,
 		posX,
 		posY,

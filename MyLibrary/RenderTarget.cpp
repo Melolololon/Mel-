@@ -11,12 +11,11 @@ PipelineState RenderTarget::defaultPipeline;
 float RenderTarget::clearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
 ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
 
-RenderTarget::RenderTarget(const Color& color):
-	Sprite2D(Color(0,0,0,0))
+RenderTarget::RenderTarget(const Color& color)/*:
+	Sprite2DBase(Color(0,0,0,0))*/
 {
-	//頂点、定数バッファ作成
-	//CreateBuffer();
-	//InitializeVertices();
+	//頂点、定数バッファ作成など
+	SpriteInitialize();
 
 	HRESULT result;
 
@@ -184,8 +183,6 @@ void RenderTarget::Delete(const std::string& name)
 bool RenderTarget::Initialize()
 {
 
-	
-
 
 	CD3DX12_ROOT_PARAMETER rootparam[1 + RT_NUM] = {};
 	rootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
@@ -266,7 +263,7 @@ bool RenderTarget::Initialize()
 		{ L"NULL","","" },
 		{ L"NULL","","" },
 		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
-		PipelineType::SPRITE,
+		PipelineType::RENDER_TARGET,
 		nullptr,
 		typeid(RenderTarget).name(),
 		1

@@ -1,51 +1,28 @@
 #pragma once
 #include<xaudio2.h>
 #pragma comment(lib,"xaudio2.lib")
+
 #include<wrl.h>
 #include<inttypes.h>
-#include<unordered_map>
 using namespace Microsoft::WRL;
 
-struct WAVChunk
-{
-	char id[4];
-	int32_t size;
-};
-
-struct WAVRiffHeader
-{
-	WAVChunk chunk;
-	char type[4];
-};
-
-struct WAVFormatChunk
-{
-	WAVChunk chunk;
-	WAVEFORMAT fmt;
-};
-
+//オーディオクラス(XAudio2管理クラス)
 class Audio
 {
 private:
+	Audio(){}
+	~Audio(){}
 
-
+	//XAudio2
 	ComPtr<IXAudio2>xAudio2;
-	IXAudio2MasteringVoice* masterVoice;
-
-	//サウンドのu_map
-	std::unordered_map<std::string, IXAudio2SourceVoice*> pLoadSourceVoices;
-
-
+	//マスターボイス(IXAudio2と同時に自動的に解放される)
+	IXAudio2MasteringVoice* masterVoice = nullptr;
 public:
-	Audio();
-	~Audio();
+	Audio(const Audio& a) = delete;
+	Audio& operator=(const Audio& a) = delete;
+	static Audio* GetInstance();
 
-	void PlayWave(const char* path);
-
-
-	void LoadSound(const char* path, std::string name, bool loop);
-	void PlayLoadSound(std::string name);
-	void StopLoadSound(std::string name,bool resetFlag);
-	void EraseLoadSound(const std::string& name);
+	void Initialize();
+	
 };
 
