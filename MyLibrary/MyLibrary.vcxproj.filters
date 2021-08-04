@@ -281,24 +281,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BasicVertexShader.hlsl" />
-    <FxCompile Include="BasicPixelShader.hlsl" />
     <FxCompile Include="SpritePixelShader.hlsl" />
     <FxCompile Include="SpriteVertexShader.hlsl" />
-    <FxCompile Include="GrayPixelShader.hlsl" />
-    <FxCompile Include="PointVertexShader.hlsl" />
-    <FxCompile Include="PointPixelShader.hlsl" />
-    <FxCompile Include="PointGeometryShader.hlsl" />
     <FxCompile Include="ObjVertexShader.hlsl" />
     <FxCompile Include="ObjPixelShader.hlsl" />
-    <FxCompile Include="NotShadowVertexShader.hlsl" />
-    <FxCompile Include="NotShadowPixelShader.hlsl" />
-    <FxCompile Include="NotShadowGeometryShader.hlsl" />
     <FxCompile Include="ObjGeometryShader.hlsl" />
     <FxCompile Include="PostEffectVertexShader.hlsl" />
     <FxCompile Include="PostEffectPixelShader.hlsl" />
-    <FxCompile Include="ToonPixelShader.hlsl" />
-    <FxCompile Include="ToonVertexShader.hlsl" />
     <FxCompile Include="ObjAnimationVertexShader.hlsl" />
     <FxCompile Include="FbxGeometryShader.hlsl" />
     <FxCompile Include="FbxPixelShader.hlsl" />
@@ -307,7 +296,6 @@
     <FxCompile Include="PostEffectTestVertexShader.hlsl" />
     <FxCompile Include="FbxMultiPixelShader.hlsl" />
     <FxCompile Include="FbxMultiVertexShader.hlsl" />
-    <FxCompile Include="BasicGeometryShader.hlsl" />
     <FxCompile Include="FbxMultiGeometryShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
@@ -514,13 +502,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="BasicShaderHeader.hlsli" />
     <None Include="SpriteShaderHeader.hlsli" />
-    <None Include="PointShaderHeader.hlsli" />
     <None Include="OBJShaderHeader.hlsli" />
-    <None Include="NotShadowShaderHeader.hlsli" />
     <None Include="PostEffectShaderHeader.hlsli" />
-    <None Include="ToonShaderHeader.hlsli" />
     <None Include="FbxShaderHeader.hlsli" />
     <None Include="PostEffectTestShaderHeader.hlsli" />
     <None Include="FbxMultiShaderHeader.hlsli" />
