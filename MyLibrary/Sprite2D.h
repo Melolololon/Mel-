@@ -1,64 +1,55 @@
 #pragma once
-#include"Sprite.h"
-#include"PipelineState.h"
+#include "Sprite2DBase.h"
 
+//拡縮だけ頂点いじる?ピクセル単位の拡縮やりやすそうだし
 
-
-
-class Sprite2D :public Sprite
+//スプライトクラス
+class Sprite2D :
+    public Sprite2DBase
 {
 public:
-	//関数で選べるようにする
-	enum SpriteAnchorPoint
+	enum class DrawMode
 	{
-		SPRITE_ANCHOR_POINT_LEFT_UP,
-		SPRITE_ANCHOR_POINT_LEFT_DOWN,
-		SPRITE_ANCHOR_POINT_RIGHT_UP,
-		SPRITE_ANCHOR_POINT_RIGHT_DOWN,
-		SPRITE_ANCHOR_POINT_CENTER,
+		DRAW_TEXTURE,//テクスチャ描画
+		DRAW_COLOR,//色描画
 	};
 
 private:
+
 	static std::unordered_map<std::string, std::unique_ptr<Sprite2D>> pSprite2D;
 
-	//2Dのカメラは固定だから、行列生成関数このクラスに持たせてもいいかも
-	static DirectX::XMMATRIX cameraMatrix;
-
-	void Create(const Color& color)override;
-	void Create(Texture* pTexture)override;
-protected:
-	static PipelineState defaultPipeline;
-
-
-	void MatrixMap(Texture* texture);
+	DrawMode drawMode = DrawMode::DRAW_TEXTURE;
 
 public:
-	Sprite2D(){}
+	Sprite2D();
 	Sprite2D(const Color& color);
 	Sprite2D(Texture* pTexture);
-	virtual ~Sprite2D();
+	~Sprite2D();
 
+	bool CreateSetColor(const Color& color);
+	bool CreateSetTexture(Texture* pTexture);
 
- 	static bool Initialize(const int winWidth,const int winHeight);
-	
-	static void Create(const Color& color, const std::string& name);
-	static void Create(Texture* pTexture, const std::string& name);
+	/// <summary>
+	/// 生成します。
+	/// </summary>
+	/// <param name="color"></param>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	static bool Create(const Color& color, const std::string& name);
+	/// <summary>
+	/// 生成します。pTextureがnullptrの場合は何も表示されません。Textureをセットするか、DrawTypeをColorにしてColorをセットすると表示されます。
+	/// </summary>
+	/// <param name="pTexture"></param>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	static bool Create(Texture* pTexture, const std::string& name);
 	static void Delete(const std::string& name);
-	static Sprite2D* Get(const std::string& name ) { return pSprite2D[name].get(); }
-	
-	
-	//レンダーターゲットでDrawを使うため、仮想関数にしてる
-	 void Draw(const std::string& rtName = "")override;
-	
-	
+	static Sprite2D* Get(const std::string& name) { return pSprite2D[name].get(); }
 
-#pragma region 操作
-	void SetPosition(const Vector2& pos) { constData.position = { pos.x,pos.y,0 }; }
-	void SetAngle(const float& angle) { constData.angle = { 0,0,angle }; }
-	void SetScale(const Vector2& scale) { constData.scale = scale.ToXMFLOAT2(); }
-#pragma endregion
+	void Draw(const std::string& rtName = "");
 
-
-	static PipelineState GetDefaultPipeline() { return defaultPipeline; }
+	void SetColor(const Color& color);
+	void SetTexture(Texture* pTexture) { this->pTexture = pTexture; }
+	void SetDrawType(const DrawMode mode) { drawMode = mode; }
 };
 

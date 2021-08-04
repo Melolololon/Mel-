@@ -25,11 +25,14 @@
 //Drawは仮想関数。それぞれにmap処理を書く
 //
 
+//途中でテクスチャ変えたり、べた塗りにしたりできるようにする
+//そうしないとスプライトフォントのスプライトを先に用意できない
+
+//ピクセル単位で拡縮できるように(今からどのくらいピクセル加算するか決めたり、直接ピクセル数決められるようにしてもいいかも)
 
 class Sprite
 {
 private:
-
 
 #pragma region 変数
 	static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 10;
@@ -53,7 +56,7 @@ protected:
 
 	//描画するときの左上の座標
 	Vector2 drawLeftUpPosition = 0;
-	//描画するときの左上の座標
+	//描画するときの右下の座標
 	Vector2 drawRightDownPosition = 1;
 
 	//座標などの情報をまとめた構造体
@@ -75,6 +78,8 @@ protected:
 	//単色スプライト生成時に色をセットする関数
 	void SetOneColorSpriteColor(const Color& color);
 
+	//ColorをAddColorとか分けずにまとめるためにMap関数でMapするので、変数用意した
+	Color color;
 	Texture* pTexture = nullptr;
 
 #pragma region 関数
@@ -98,13 +103,13 @@ protected:
 	/// 生成します。
 	/// </summary>
 	/// <param name="color">色</param>
-	virtual void Create(const Color& color) = 0;
+	virtual void Create(const Color& color){}
 
 	/// <summary>
 	/// 生成します。レンダーターゲットの生成は行えません。
 	/// </summary>
 	/// <param name="pTexture">テクスチャのポインタ</param>
-	virtual void Create(Texture* pTexture) = 0;
+	virtual void Create(Texture* pTexture){}
 
 public:
 	Sprite();
@@ -112,8 +117,10 @@ public:
 	
 
 
-
-	virtual void Draw(const std::string& rtName = "") = 0;
+	//こいつここに定義しなくていい
+	//レンダーターゲットで使わない
+	//Drawからレンダーターゲットセットなくして、Sprite2Dと3Dにセット関数作る?
+	virtual void Draw(const std::string& rtName = "");
 	
 	
 	void SetDrawArea(const Vector2& leftUpPos, const Vector2& rightDownPos)
