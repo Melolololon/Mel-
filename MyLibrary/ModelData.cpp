@@ -4,6 +4,9 @@
 #include"ModelLoader.h"
 #include"FbxLoader.h"
 
+
+using namespace melLib;
+
 std::unordered_map<std::string, std::unique_ptr<ModelData>>ModelData::pModelDatas;
 
 ID3D12Device* ModelData::device = nullptr;

@@ -3,12 +3,12 @@
 
 #include"ModelData.h"
 
-CollisionTestObject::CollisionTestObject(const Vector3& pos, const bool inputMove) : inputFlag(inputMove)
+CollisionTestObject::CollisionTestObject(const melLib::Vector3& pos, const bool inputMove) : inputFlag(inputMove)
 {
 	position = pos;
 	speed = 0.25f;
-	model[0] = std::make_unique<ModelObject>(ModelData::Get("box"), nullptr);
-	model[1] = std::make_unique<ModelObject>(ModelData::Get("box"), nullptr);
+	model[0] = std::make_unique<melLib::ModelObject>(melLib::ModelData::Get("box"), nullptr);
+	model[1] = std::make_unique<melLib::ModelObject>(melLib::ModelData::Get("box"), nullptr);
 
 	/*collisionFlag.sphere = true;
 	sphereData.resize(1);
@@ -37,10 +37,10 @@ void CollisionTestObject::Update()
 
 	if (inputFlag) 
 	{
-		if (Input::KeyState(DIK_W))velocity.y = 1.0f;
-		if (Input::KeyState(DIK_S))velocity.y = -1.0f;
-		if (Input::KeyState(DIK_D))velocity.x = 1.0f;
-		if (Input::KeyState(DIK_A))velocity.x = -1.0f;
+		if (melLib::Input::KeyState(DIK_W))velocity.y = 1.0f;
+		if (melLib::Input::KeyState(DIK_S))velocity.y = -1.0f;
+		if (melLib::Input::KeyState(DIK_D))velocity.x = 1.0f;
+		if (melLib::Input::KeyState(DIK_A))velocity.x = -1.0f;
 		position += velocity * speed;
 	}
 	model[0]->SetPosition(position);
@@ -48,15 +48,15 @@ void CollisionTestObject::Update()
 	//sphereData[0].position = position;
 	//boxData[0].position = position;
 	
-	if (Input::KeyState(DIK_SPACE) && inputFlag)
+	if (melLib::Input::KeyState(DIK_SPACE) && inputFlag)
 	{
-		lineSegmentData[0].position[0] = position + Vector3(3, 0, 0);
-		lineSegmentData[0].position[1] = position + Vector3(-3, 0, 0);
+		lineSegmentData[0].position[0] = position + melLib::Vector3(3, 0, 0);
+		lineSegmentData[0].position[1] = position + melLib::Vector3(-3, 0, 0);
 	}
 	else
 	{
-		lineSegmentData[0].position[0] = position + Vector3(0, 3, 0);
-		lineSegmentData[0].position[1] = position + Vector3(0, -3, 0);
+		lineSegmentData[0].position[0] = position + melLib::Vector3(0, 3, 0);
+		lineSegmentData[0].position[1] = position + melLib::Vector3(0, -3, 0);
 	}
 
 	model[0]->SetPosition(lineSegmentData[0].position[0]);
@@ -68,10 +68,10 @@ void CollisionTestObject::Draw()
 	model[0]->Draw();
 	model[1]->Draw();
 
-	TextWrite::Draw(0, Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");
+	melLib::TextWrite::Draw(0, melLib::Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");
 }
 
-void CollisionTestObject::Hit(const GameObject* const object, const CollisionType collisionType, const int arrayNum, const CollisionType hitObjColType, const int hitObjArrayNum)
+void CollisionTestObject::Hit(const GameObject* const object, const melLib::CollisionType collisionType, const int arrayNum, const melLib::CollisionType hitObjColType, const int hitObjArrayNum)
 {
 	hitFlag = true;
 }

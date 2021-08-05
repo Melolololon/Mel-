@@ -1,6 +1,7 @@
 #include "Easing.h"
 
 
+using namespace melLib;
 
 Vector3 Easing::CalcEasing(const Vector3& startPos, const Vector3& endPos,const float t)
 {

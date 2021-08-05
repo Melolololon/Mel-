@@ -1,6 +1,8 @@
 #include "Scene.h"
 
 
+using namespace melLib;
+
 Scene::Scene()
 {
 	isEnd = false;

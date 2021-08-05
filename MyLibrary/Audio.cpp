@@ -1,6 +1,9 @@
 #include "Audio.h"
 #include"Sound.h"
 
+
+using namespace melLib;
+
 Audio* Audio::GetInstance()
 {
 	static Audio a;

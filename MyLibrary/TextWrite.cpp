@@ -2,6 +2,7 @@
 #include"Library.h"
 #include"LibWinAPI.h"
 
+using namespace melLib;
 
 ComPtr<IDWriteFactory> TextWrite::dWriteFactory;
 std::unordered_map<std::string, ComPtr<IDWriteTextFormat>>TextWrite::pTextFormat;

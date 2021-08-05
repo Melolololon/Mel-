@@ -2,11 +2,13 @@
 #include<vector>
 #include"DirectXStruct.h"
 
-class TextureLoader
+namespace melLib 
 {
+	class TextureLoader
+	{
 
-public:
-	static BMPData LoadBMP(const char* texturepath);
+	public:
+		static BMPData LoadBMP(const char* texturepath);
 
-};
-
+	};
+}

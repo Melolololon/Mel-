@@ -37,82 +37,83 @@ using namespace Microsoft::WRL;
 //11on12を使用したD2D
 //https://docs.microsoft.com/ja-jp/windows/win32/direct3d12/d2d-using-d3d11on12
 
-
-//DirectWriteを使用したテキスト描画クラス
-class TextWrite
+namespace melLib
 {
-public:
-	
-	//enum class TextAlignment
-	//{
-	//	LEFT_JUSTIFIED,//左揃え
-	//	RIGHT_JUSTIFIED,//右揃え
-	//	POINT//中心揃え
-	//};
+	//DirectWriteを使用したテキスト描画クラス
+	class TextWrite
+	{
+	public:
 
-private:
-	static std::vector<std::wstring>tests;
-	static std::vector<std::string>fontNames;
-	static std::vector<std::tuple<Vector2,Color,/* TextAlignment,*/std::wstring, std::string>>drawTextDatas;
-	
-	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+		//enum class TextAlignment
+		//{
+		//	LEFT_JUSTIFIED,//左揃え
+		//	RIGHT_JUSTIFIED,//右揃え
+		//	POINT//中心揃え
+		//};
 
+	private:
+		static std::vector<std::wstring>tests;
+		static std::vector<std::string>fontNames;
+		static std::vector<std::tuple<Vector2, Color,/* TextAlignment,*/std::wstring, std::string>>drawTextDatas;
 
-	//DirectWriteを使用するためのもの
-	static ComPtr<IDWriteFactory> dWriteFactory;
-	static std::unordered_map<std::string, ComPtr<IDWriteTextFormat>>pTextFormat;
-
-	//11のデバイス
-	static ComPtr<ID3D11Device>d3d11Device;
-	static ComPtr<ID3D11DeviceContext>d3d11context;
-	static ComPtr<ID3D11On12Device>d3d11On12device;
-	//レンダリングするバッファ
-	static ComPtr<ID3D11Resource>wrappedBackBuffer[2];
-
-	//D2D
-	static ComPtr<ID2D1Factory3> d2dFactory;
-	static ComPtr<ID2D1Device2>d2dDevice;
-	static ComPtr<IDXGIDevice>dxgiDevice;
-	static ComPtr<ID2D1DeviceContext> d2dContext;
-	
-	//バインドされているビットマップを表す
-	static ComPtr<ID2D1Bitmap1>d2dRenderTerget[2];
-
-	//レンダリングするためのもの
-	static ComPtr<ID2D1HwndRenderTarget> d2dRenderTarget;
-	//領域を塗りつぶすもの(もしかしてフォントの塗りつぶしに使う?)
-	static ComPtr<ID2D1SolidColorBrush> d2dSolidColorBrush;
-
-	static HWND hwnd;
+		static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 
-public:
-	static bool Initialize
-	(
-		ID3D12Device* pD3D12Device, 
-		ID3D12CommandQueue** pPD3D12Queue,
-		ID3D12Resource* pBuckBuffer[2]
-	);  
-	
-	static void LoopStartProcess();
-	static void LoopEndProcess(const UINT rtIndex);
+		//DirectWriteを使用するためのもの
+		static ComPtr<IDWriteFactory> dWriteFactory;
+		static std::unordered_map<std::string, ComPtr<IDWriteTextFormat>>pTextFormat;
 
-	//フォントのデータをセットする関数作る?
-	static bool CreateFontData(const std::wstring& fontName,const std::string& name);
+		//11のデバイス
+		static ComPtr<ID3D11Device>d3d11Device;
+		static ComPtr<ID3D11DeviceContext>d3d11context;
+		static ComPtr<ID3D11On12Device>d3d11On12device;
+		//レンダリングするバッファ
+		static ComPtr<ID3D11Resource>wrappedBackBuffer[2];
+
+		//D2D
+		static ComPtr<ID2D1Factory3> d2dFactory;
+		static ComPtr<ID2D1Device2>d2dDevice;
+		static ComPtr<IDXGIDevice>dxgiDevice;
+		static ComPtr<ID2D1DeviceContext> d2dContext;
+
+		//バインドされているビットマップを表す
+		static ComPtr<ID2D1Bitmap1>d2dRenderTerget[2];
+
+		//レンダリングするためのもの
+		static ComPtr<ID2D1HwndRenderTarget> d2dRenderTarget;
+		//領域を塗りつぶすもの(もしかしてフォントの塗りつぶしに使う?)
+		static ComPtr<ID2D1SolidColorBrush> d2dSolidColorBrush;
+
+		static HWND hwnd;
+
+
+	public:
+		static bool Initialize
+		(
+			ID3D12Device* pD3D12Device,
+			ID3D12CommandQueue** pPD3D12Queue,
+			ID3D12Resource* pBuckBuffer[2]
+		);
+
+		static void LoopStartProcess();
+		static void LoopEndProcess(const UINT rtIndex);
+
+		//フォントのデータをセットする関数作る?
+		static bool CreateFontData(const std::wstring& fontName, const std::string& name);
 
 
 
-	//文字サイズは行列設定できるからそれで変えるようにする?
+		//文字サイズは行列設定できるからそれで変えるようにする?
 
-	static void Draw
-	(
-		const Vector2& position, 
-		const Color& color,
-	/*	const TextAlignment allgnment,*/
-		const std::wstring& text, 
-		const std::string& fontName
-	);
-};
-
+		static void Draw
+		(
+			const Vector2& position,
+			const Color& color,
+			/*	const TextAlignment allgnment,*/
+			const std::wstring& text,
+			const std::string& fontName
+		);
+	};
+}
 
 

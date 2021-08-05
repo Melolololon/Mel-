@@ -2,54 +2,56 @@
 #include "Sprite2DBase.h"
 
 //拡縮だけ頂点いじる?ピクセル単位の拡縮やりやすそうだし
-
-//スプライトクラス
-class Sprite2D :
-    public Sprite2DBase
+namespace melLib
 {
-public:
-	enum class DrawMode
+	//スプライトクラス
+	class Sprite2D :
+		public Sprite2DBase
 	{
-		DRAW_TEXTURE,//テクスチャ描画
-		DRAW_COLOR,//色描画
+	public:
+		enum class DrawMode
+		{
+			DRAW_TEXTURE,//テクスチャ描画
+			DRAW_COLOR,//色描画
+		};
+
+	private:
+
+		static std::unordered_map<std::string, std::unique_ptr<Sprite2D>> pSprite2D;
+
+		DrawMode drawMode = DrawMode::DRAW_TEXTURE;
+
+	public:
+		Sprite2D();
+		Sprite2D(const Color& color);
+		Sprite2D(Texture* pTexture);
+		~Sprite2D();
+
+		bool CreateSetColor(const Color& color);
+		bool CreateSetTexture(Texture* pTexture);
+
+		/// <summary>
+		/// 生成します。
+		/// </summary>
+		/// <param name="color"></param>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		static bool Create(const Color& color, const std::string& name);
+		/// <summary>
+		/// 生成します。pTextureがnullptrの場合は何も表示されません。Textureをセットするか、DrawTypeをColorにしてColorをセットすると表示されます。
+		/// </summary>
+		/// <param name="pTexture"></param>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		static bool Create(Texture* pTexture, const std::string& name);
+		static void Delete(const std::string& name);
+		static Sprite2D* Get(const std::string& name) { return pSprite2D[name].get(); }
+
+		void Draw(const std::string& rtName = "");
+
+		void SetColor(const Color& color);
+		void SetTexture(Texture* pTexture) { this->pTexture = pTexture; }
+		void SetDrawType(const DrawMode mode) { drawMode = mode; }
 	};
 
-private:
-
-	static std::unordered_map<std::string, std::unique_ptr<Sprite2D>> pSprite2D;
-
-	DrawMode drawMode = DrawMode::DRAW_TEXTURE;
-
-public:
-	Sprite2D();
-	Sprite2D(const Color& color);
-	Sprite2D(Texture* pTexture);
-	~Sprite2D();
-
-	bool CreateSetColor(const Color& color);
-	bool CreateSetTexture(Texture* pTexture);
-
-	/// <summary>
-	/// 生成します。
-	/// </summary>
-	/// <param name="color"></param>
-	/// <param name="name"></param>
-	/// <returns></returns>
-	static bool Create(const Color& color, const std::string& name);
-	/// <summary>
-	/// 生成します。pTextureがnullptrの場合は何も表示されません。Textureをセットするか、DrawTypeをColorにしてColorをセットすると表示されます。
-	/// </summary>
-	/// <param name="pTexture"></param>
-	/// <param name="name"></param>
-	/// <returns></returns>
-	static bool Create(Texture* pTexture, const std::string& name);
-	static void Delete(const std::string& name);
-	static Sprite2D* Get(const std::string& name) { return pSprite2D[name].get(); }
-
-	void Draw(const std::string& rtName = "");
-
-	void SetColor(const Color& color);
-	void SetTexture(Texture* pTexture) { this->pTexture = pTexture; }
-	void SetDrawType(const DrawMode mode) { drawMode = mode; }
-};
-
+}

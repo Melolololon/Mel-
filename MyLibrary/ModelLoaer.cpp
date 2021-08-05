@@ -4,6 +4,9 @@
 #include<sstream>
 #include<DirectXMath.h>
 
+
+using namespace melLib;
+
 ModelLoader::ModelLoader()
 {
 }

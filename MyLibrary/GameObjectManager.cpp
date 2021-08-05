@@ -5,6 +5,9 @@
 #include"Physics.h"
 #include"Values.h"
 
+
+using namespace melLib;
+
 GameObjectManager::GameObjectManager()
 {
 }

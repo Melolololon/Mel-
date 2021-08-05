@@ -3,6 +3,9 @@
 #include<d3dx12.h>
 #include"Library.h"
 
+
+using namespace melLib;
+
 std::unordered_map<std::string, std::unique_ptr<RenderTarget>> RenderTarget::pRenderTargets;
 UINT RenderTarget::createCount = 0;
 std::string RenderTarget::mainRenderTargetNama = "";

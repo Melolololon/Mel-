@@ -1,5 +1,6 @@
 #include "TextureFont.h"
 
+using namespace melLib;
 std::unordered_map < std::string, std::unique_ptr<TextureFont >> TextureFont::pTextureFonts;
 
 bool TextureFont::Load(const std::string& path, const Value2<UINT> lineNum, const std::string& name)

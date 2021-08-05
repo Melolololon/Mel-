@@ -19,9 +19,10 @@
 
 #include"SpriteFont2D.h"
 
+using namespace melLib;
 
 DirectX12* Library::dx12;
-CreatePolygon* Library::createPolygon;
+//CreatePolygon* Library::createPolygon;
 
 WNDCLASSEX Library::w;
 MSG  Library::msg;
@@ -76,8 +77,8 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	auto coResult = CoInitialize(NULL);
 
 	dx12 = DirectX12::GetInstance();
-	createPolygon = CreatePolygon::GetInstance();
-	createPolygon->Initialize(windowWidth, windowHeight);
+	/*createPolygon = CreatePolygon::GetInstance();
+	createPolygon->Initialize(windowWidth, windowHeight);*/
 
 	srand((unsigned int)time(NULL));
 	Random::Initialize();

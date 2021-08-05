@@ -1,6 +1,7 @@
 #include "Random.h"
 #include<random>
 #include<ctime>
+using namespace melLib;
 void Random::Initialize()
 {
 	SetSeedTime();

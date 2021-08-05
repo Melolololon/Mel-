@@ -1,6 +1,9 @@
 #include "SceneManager.h"
 #include<assert.h>
 
+
+using namespace melLib;
+
 SceneManager::SceneManager()
 {
 }

@@ -16,47 +16,47 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
-	Camera::Get()->SetRotateCriteriaPosition(Vector3(0, 0, -30));
+	melLib::Camera::Get()->SetRotateCriteriaPosition(melLib::Vector3(0, 0, -30));
 
-	GameObjectManager::GetInstance()->AddObject(std::make_shared<CollisionTestObject>(0,true));
-	GameObjectManager::GetInstance()->AddObject(std::make_shared<CollisionTestObject>(Vector3(-10, 0, 0), false));
+	melLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<CollisionTestObject>(0,true));
+	melLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<CollisionTestObject>(melLib::Vector3(-10, 0, 0), false));
 
-	Texture::Load("Resources/Texture/testTexture.png", "test");
-	sprite2DTest = std::make_unique<Sprite2D>(Texture::Get("test"));
+	melLib::Texture::Load("Resources/Texture/testTexture.png", "test");
+	sprite2DTest = std::make_unique<melLib::Sprite2D>(melLib::Texture::Get("test"));
 	//sprite2DTest->CreateSetColor(Color(255, 255, 255, 255));
 	
-	sprite2DTest->SetPosition(Vector2(1280 / 2, 720 / 2));
+	sprite2DTest->SetPosition(melLib::Vector2(1280 / 2, 720 / 2));
 
 
-	DirectionalLight::Create("test");
-	DirectionalLight::Get("test").SetDirection(Vector3(-1, 0, 0));
+	melLib::DirectionalLight::Create("test");
+	melLib::DirectionalLight::Get("test").SetDirection(melLib::Vector3(-1, 0, 0));
 }
 
 void Play::Update()
 {
-	if (Input::KeyState(DIK_Q))scale -= 0.05;
-	if (Input::KeyState(DIK_E))scale += 0.05;
+	if (melLib::Input::KeyState(DIK_Q))scale -= 0.05;
+	if (melLib::Input::KeyState(DIK_E))scale += 0.05;
 	sprite2DTest->SetScale(scale);
 
-	GameObjectManager::GetInstance()->Update();
+	melLib::GameObjectManager::GetInstance()->Update();
 
 
 }
 
-Vector2 testScale = 1;
+melLib::Vector2 testScale = 1;
 void Play::Draw()
 {
-	GameObjectManager::GetInstance()->Draw();
+	melLib::GameObjectManager::GetInstance()->Draw();
 	
 	
-	sprite2DTest->SetDrawArea(0, Vector2(64, 64));
+	sprite2DTest->SetDrawArea(0, melLib::Vector2(64, 64));
 	sprite2DTest->Draw();
-	SpriteFont2D::GetInstance()->Draw(0, testScale,SpriteFont2D::CharSequence::BESIDE, "A", TextureFont::Get("testFont"));
+	melLib::SpriteFont2D::GetInstance()->Draw(0, testScale, melLib::SpriteFont2D::CharSequence::BESIDE, "A", melLib::TextureFont::Get("testFont"));
 
 
 
-	if (Input::KeyState(DIK_Z))testScale.x -= 0.025f;
-	if (Input::KeyState(DIK_X))testScale.x += 0.025f;
+	if (melLib::Input::KeyState(DIK_Z))testScale.x -= 0.025f;
+	if (melLib::Input::KeyState(DIK_X))testScale.x += 0.025f;
 
 }
 
@@ -64,7 +64,7 @@ void Play::Finitialize()
 {
 }
 
-Scene* Play::GetNextScene()
+melLib::Scene* Play::GetNextScene()
 {
 	return new Play();
 }

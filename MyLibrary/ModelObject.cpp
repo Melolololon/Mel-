@@ -3,6 +3,9 @@
 #include"FbxLoader.h"
 #include"DirectionalLight.h"
 
+
+using namespace melLib;
+
 std::unordered_map<std::string, std::unique_ptr<ModelObject>>ModelObject::pModelObjects;
 
 ID3D12Device* ModelObject::device;

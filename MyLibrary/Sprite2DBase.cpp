@@ -1,5 +1,6 @@
 #include "Sprite2DBase.h"
 
+using namespace melLib;
 DirectX::XMMATRIX Sprite2DBase::cameraMatrix;
 PipelineState Sprite2DBase::defaultPipeline;
 

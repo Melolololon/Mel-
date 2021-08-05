@@ -2,6 +2,8 @@
 #include"DirectInput.h"
 
 
+using namespace melLib;
+
 #pragma region ç≈íZåoòH
 
 void LibMath::SetAStarNodePosition

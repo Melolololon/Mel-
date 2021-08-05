@@ -3,6 +3,7 @@
 
 #include"ModelObject.h"
 
+using namespace melLib;
 std::unordered_map<std::string, std::unique_ptr<PipelineState>>PipelineState::pPipelineState;
 ID3D12Device* PipelineState::device;
 ID3D12RootSignature* PipelineState::modelRootSignature;

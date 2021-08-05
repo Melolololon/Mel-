@@ -1,6 +1,7 @@
 #include "Matrix.h"
 #include<cmath>
 
+using namespace melLib;
 Matrix::Matrix()
 {
 }

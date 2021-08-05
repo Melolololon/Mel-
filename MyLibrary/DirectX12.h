@@ -47,122 +47,127 @@
 //d3d12のサンプル一覧
 //https://docs.microsoft.com/ja-jp/windows/win32/direct3d12/working-samples
 
-enum LibraryPipeline
-{
-	PIPELINE_NOT_DEPTH_TEST,//深度テスト無し(zにかかわらず、関数の呼び出した順番で描画されます)
-	PIPELINE_CULL_NONE,//カリングなし(モデルの裏側も描画します)
-	PIPELINE_NO_WRITE_ALPHA,//透明部分を書き込まない
-	PIPELINE_NORMAL,
-	PIPELINE_OBJ_ANIMATION,
-};
 
-
-using namespace Microsoft::WRL;
-
-class DirectX12 final
+namespace melLib
 {
 
-	enum DrawType
+	enum LibraryPipeline
 	{
-		none,
-		box,
-		circle,
+		PIPELINE_NOT_DEPTH_TEST,//深度テスト無し(zにかかわらず、関数の呼び出した順番で描画されます)
+		PIPELINE_CULL_NONE,//カリングなし(モデルの裏側も描画します)
+		PIPELINE_NO_WRITE_ALPHA,//透明部分を書き込まない
+		PIPELINE_NORMAL,
+		PIPELINE_OBJ_ANIMATION,
 	};
 
-	enum Dimension
-	{
-		dimention2D,
-		dimention3D
-	};
 
-private:
-	float clearColor[4] = { 0,0,0,1 };
+	using namespace Microsoft::WRL;
+
+	class DirectX12 final
+	{
+
+		enum DrawType
+		{
+			none,
+			box,
+			circle,
+		};
+
+		enum Dimension
+		{
+			dimention2D,
+			dimention3D
+		};
+
+	private:
+		float clearColor[4] = { 0,0,0,1 };
 
 #pragma region 現在の描画コマンド状態
-	enum RSState
-	{
-		RS_MODEL,
-		RS_SPRITE,
-		RS_POINT,
-	};
+		enum RSState
+		{
+			RS_MODEL,
+			RS_SPRITE,
+			RS_POINT,
+		};
 #pragma endregion
 
 
 #pragma region Windows
-	HWND hwnd;
-	int winWidth = 0;
-	int winHeight = 0;
+		HWND hwnd;
+		int winWidth = 0;
+		int winHeight = 0;
 #pragma endregion
 
 #pragma region 基本的なオブジェクト
 
-	//DirectX変数
-	HRESULT result = S_OK;
-	ComPtr<ID3D12CommandQueue> cmdQueue = nullptr;
-	ComPtr<ID3D12Device> dev = nullptr;
-	ComPtr<IDXGIFactory6> dxgiFactory = nullptr;
-	ComPtr<IDXGISwapChain4> swapchain = nullptr;
-	ComPtr<ID3D12CommandAllocator> cmdAllocator = nullptr;
-	ComPtr<ID3D12GraphicsCommandList> cmdList = nullptr;
+		//DirectX変数
+		HRESULT result = S_OK;
+		ComPtr<ID3D12CommandQueue> cmdQueue = nullptr;
+		ComPtr<ID3D12Device> dev = nullptr;
+		ComPtr<IDXGIFactory6> dxgiFactory = nullptr;
+		ComPtr<IDXGISwapChain4> swapchain = nullptr;
+		ComPtr<ID3D12CommandAllocator> cmdAllocator = nullptr;
+		ComPtr<ID3D12GraphicsCommandList> cmdList = nullptr;
 
 
 #pragma region RTV
 
-	//メイン
-	ComPtr<ID3D12DescriptorHeap> rtvHeaps = nullptr;
-	ComPtr<ID3D12Resource> backBuffer[2] = { nullptr ,nullptr};
-	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
+		//メイン
+		ComPtr<ID3D12DescriptorHeap> rtvHeaps = nullptr;
+		ComPtr<ID3D12Resource> backBuffer[2] = { nullptr ,nullptr };
+		D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
 
 #pragma endregion
 
 
-	ComPtr<ID3D12DescriptorHeap> depthHeap = nullptr;
-	DepthBufferSet depthBufferSet;
+		ComPtr<ID3D12DescriptorHeap> depthHeap = nullptr;
+		DepthBufferSet depthBufferSet;
 
-	ComPtr<ID3D12Fence> fence = nullptr;
-	UINT64 fenceVal = 0;
+		ComPtr<ID3D12Fence> fence = nullptr;
+		UINT64 fenceVal = 0;
 
-	D3D12_RESOURCE_BARRIER barrierDesc = {};
+		D3D12_RESOURCE_BARRIER barrierDesc = {};
 
 
 #pragma endregion
 
 
-	DirectX12();
-	~DirectX12();
+		DirectX12();
+		~DirectX12();
 
-public:
+	public:
 
-	DirectX12(DirectX12& d) = delete;
-	DirectX12 operator=(DirectX12& d) = delete;
-	static DirectX12* GetInstance();
+		DirectX12(DirectX12& d) = delete;
+		DirectX12 operator=(DirectX12& d) = delete;
+		static DirectX12* GetInstance();
 
 #pragma region 初期化などの必須処理
 
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	void Initialize(HWND hwnd, int windouWidth, int windowHeight);
+		/// <summary>
+		/// 初期化
+		/// </summary>
+		void Initialize(HWND hwnd, int windouWidth, int windowHeight);
 
-	/// <summary>
-	/// 描画コマンドなどを呼び出す前に呼ぶ処理
-	/// </summary>
-	void LoopStartProcess();
+		/// <summary>
+		/// 描画コマンドなどを呼び出す前に呼ぶ処理
+		/// </summary>
+		void LoopStartProcess();
 
-	//描画処理。コマンドリストの命令を実行したりする
-	void LoopEndProcess();
+		//描画処理。コマンドリストの命令を実行したりする
+		void LoopEndProcess();
 
-	void Finalize();
+		void Finalize();
 #pragma endregion
 
 
-	//画面の色受け取り
-	void SetScreenColor(Color screenColor);
+		//画面の色受け取り
+		void SetScreenColor(Color screenColor);
 
 
 
 
 
 
-};
+	};
 
+}

@@ -6,23 +6,26 @@
 #include<inttypes.h>
 using namespace Microsoft::WRL;
 
-//オーディオクラス(XAudio2管理クラス)
-class Audio
+namespace melLib 
 {
-private:
-	Audio(){}
-	~Audio(){}
+	//オーディオクラス(XAudio2管理クラス)
+	class Audio
+	{
+	private:
+		Audio() {}
+		~Audio() {}
 
-	//XAudio2
-	ComPtr<IXAudio2>xAudio2;
-	//マスターボイス(IXAudio2と同時に自動的に解放される)
-	IXAudio2MasteringVoice* masterVoice = nullptr;
-public:
-	Audio(const Audio& a) = delete;
-	Audio& operator=(const Audio& a) = delete;
-	static Audio* GetInstance();
+		//XAudio2
+		ComPtr<IXAudio2>xAudio2;
+		//マスターボイス(IXAudio2と同時に自動的に解放される)
+		IXAudio2MasteringVoice* masterVoice = nullptr;
+	public:
+		Audio(const Audio& a) = delete;
+		Audio& operator=(const Audio& a) = delete;
+		static Audio* GetInstance();
 
-	void Initialize();
-	
-};
+		void Initialize();
 
+	};
+
+}

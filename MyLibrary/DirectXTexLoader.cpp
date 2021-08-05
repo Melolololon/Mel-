@@ -1,6 +1,7 @@
 #include "DirectXTexLoader.h"
 
 
+using namespace melLib;
 
 const DirectX::Image* DirectXTexLoader::LoadTexture(const wchar_t* path, DirectX::TexMetadata* meta, DirectX::ScratchImage* scratchImage)
 {

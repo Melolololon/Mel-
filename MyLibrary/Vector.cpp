@@ -1,5 +1,6 @@
 #include"Vector.h"
 
+using namespace melLib;
 
 #pragma region Vector2
 
@@ -40,57 +41,57 @@ Vector2::Vector2(const DirectX::XMVECTOR& v)
 
 
 
-Vector2 operator+(const Vector2& vector1, const Vector2& vector2)
+Vector2 melLib::operator+(const Vector2& vector1, const Vector2& vector2)
 {
 	return { vector1.x + vector2.x, vector1.y + vector2.y };
 }
-Vector2 operator-(const Vector2& vector1, const Vector2& vector2)
+Vector2 melLib::operator-(const Vector2& vector1, const Vector2& vector2)
 {
 	return { vector1.x - vector2.x,vector1.y - vector2.y };
 }
-Vector2 operator*(const Vector2& vector1, const Vector2& vector2)
+Vector2 melLib::operator*(const Vector2& vector1, const Vector2& vector2)
 {
 	return { vector1.x * vector2.x, vector1.y * vector2.y };
 }
-Vector2 operator/(const Vector2& vector1, const Vector2& vector2)
+Vector2 melLib::operator/(const Vector2& vector1, const Vector2& vector2)
 {
 	return { vector1.x / vector2.x,vector1.y / vector2.y };
 }
 
 
-Vector2 operator+(const Vector2& vector, const float f)
+Vector2 melLib::operator+(const Vector2& vector, const float f)
 {
 	return { vector.x + f,vector.y + f };
 }
-Vector2 operator-(const Vector2& vector, const float f)
+Vector2 melLib::operator-(const Vector2& vector, const float f)
 {
 	return { vector.x - f, vector.y - f };
 }
-Vector2 operator*(const Vector2& vector, const float f)
+Vector2 melLib::operator*(const Vector2& vector, const float f)
 {
 	return { vector.x * f, vector.y * f };
 }
-Vector2 operator/(const Vector2& vector, const float f)
+Vector2 melLib::operator/(const Vector2& vector, const float f)
 {
 	return { vector.x / f,vector.y / f };
 }
 
-Vector2 operator+(const float f, const Vector2& vector)
+Vector2 melLib::operator+(const float f, const Vector2& vector)
 {
 	return { f + vector.x ,f + vector.y };
 }
 
-Vector2 operator-(const float f, const Vector2& vector)
+Vector2 melLib::operator-(const float f, const Vector2& vector)
 {
 	return { f - vector.x ,f - vector.y };
 }
 
-Vector2 operator*(const float f, const Vector2& vector)
+Vector2 melLib::operator*(const float f, const Vector2& vector)
 {
 	return { f * vector.x ,f * vector.y };
 }
 
-Vector2 operator/(const float f, const Vector2& vector)
+Vector2 melLib::operator/(const float f, const Vector2& vector)
 {
 	return { f / vector.x,f / vector.y };
 }
@@ -213,7 +214,7 @@ Vector2 Vector2::Abs(const Vector2& vector)
 	return vector.Abs();
 }
 
-Vector2 Vector2Normalize(const Vector2& vector)
+Vector2 melLib::Vector2Normalize(const Vector2& vector)
 {
 	if (vector.x == 0 && vector.y == 0)return { 0,0 };
 	float length = static_cast<float>(sqrt(vector.x * vector.x + vector.y * vector.y));
@@ -227,12 +228,12 @@ Vector2 Vector2Normalize(const Vector2& vector)
 /// <param name="vector1"></param>
 /// <param name="vector2"></param>
 /// <returns></returns>
-float Vector2Dot(const Vector2& vector1, const Vector2& vector2)
+float melLib::Vector2Dot(const Vector2& vector1, const Vector2& vector2)
 {
 	return vector1.x * vector2.x + vector1.y * vector2.y;
 }
 
-float Vector2Cross(const Vector2& vector1, const Vector2& vector2)
+float melLib::Vector2Cross(const Vector2& vector1, const Vector2& vector2)
 {
 	return vector1.x * vector2.y - vector1.y * vector2.x;
 }
@@ -293,54 +294,54 @@ Vector3::Vector3(const DirectX::XMVECTOR& v)
 #pragma region ‰‰ŽZŽq
 
 
-Vector3 operator+(const Vector3& vector1, const Vector3& vector2)
+Vector3 melLib::operator+(const Vector3& vector1, const Vector3& vector2)
 {
 	return { vector1.x + vector2.x, vector1.y + vector2.y, vector1.z + vector2.z };
 }
-Vector3 operator-(const Vector3& vector1, const Vector3& vector2)
+Vector3 melLib::operator-(const Vector3& vector1, const Vector3& vector2)
 {
 	return { vector1.x - vector2.x,vector1.y - vector2.y, vector1.z - vector2.z };
 }
-Vector3 operator*(const Vector3& vector1, const Vector3& vector2)
+Vector3 melLib::operator*(const Vector3& vector1, const Vector3& vector2)
 {
 	return { vector1.x * vector2.x, vector1.y * vector2.y, vector1.z * vector2.z };
 }
-Vector3 operator/(const Vector3& vector1, const Vector3& vector2)
+Vector3 melLib::operator/(const Vector3& vector1, const Vector3& vector2)
 {
 	return { vector1.x / vector2.x, vector1.y / vector2.y, vector1.z / vector2.z };
 }
 
-Vector3 operator+(const Vector3& vector, const float f)
+Vector3 melLib::operator+(const Vector3& vector, const float f)
 {
 	return { vector.x + f, vector.y + f,vector.z + f };
 }
-Vector3 operator-(const Vector3& vector, const float f)
+Vector3 melLib::operator-(const Vector3& vector, const float f)
 {
 	return { vector.x - f, vector.y - f, vector.z - f };
 }
-Vector3 operator*(const Vector3& vector, const float f)
+Vector3 melLib::operator*(const Vector3& vector, const float f)
 {
 	return { vector.x * f,vector.y * f, vector.z * f };
 }
-Vector3 operator/(const Vector3& vector, const float f)
+Vector3 melLib::operator/(const Vector3& vector, const float f)
 {
 	return { vector.x / f, vector.y / f, vector.z / f };
 }
 
 
-Vector3 operator+(const float f, const Vector3& vector)
+Vector3 melLib::operator+(const float f, const Vector3& vector)
 {
 	return { f + vector.x,f + vector.y,f + vector.z };
 }
-Vector3 operator-(const float f, const Vector3& vector)
+Vector3 melLib::operator-(const float f, const Vector3& vector)
 {
 	return { f - vector.x,f - vector.y,f - vector.z };
 }
-Vector3 operator*(const float f, const Vector3& vector)
+Vector3 melLib::operator*(const float f, const Vector3& vector)
 {
 	return { f * vector.x,f * vector.y,f * vector.z };
 }
-Vector3 operator/(const float f, const Vector3& vector)
+Vector3 melLib::operator/(const float f, const Vector3& vector)
 {
 	return { f / vector.x,f / vector.y,f / vector.z };
 }
@@ -481,7 +482,7 @@ Vector3 Vector3::Abs(const Vector3& vector)
 /// </summary>
 /// <param name="vector"></param>
 /// <returns></returns>
-Vector3 Vector3Normalize(const Vector3& vector)
+Vector3 melLib::Vector3Normalize(const Vector3& vector)
 {
 	if (vector.x == 0 && vector.y == 0 && vector.z == 0)return { 0,0,0 };
 	float length = (float)(sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z));
@@ -494,7 +495,7 @@ Vector3 Vector3Normalize(const Vector3& vector)
 /// <param name="vector1"></param>
 /// <param name="vector2"></param>
 /// <returns></returns>
-Vector3 Vector3Cross(const Vector3& vector1, const Vector3& vector2)
+Vector3 melLib::Vector3Cross(const Vector3& vector1, const Vector3& vector2)
 {
 	Vector3 cross;
 	cross.x = vector1.y * vector2.z - vector1.z * vector2.y;
@@ -509,7 +510,7 @@ Vector3 Vector3Cross(const Vector3& vector1, const Vector3& vector2)
 /// <param name="vector1"></param>
 /// <param name="vector2"></param>
 /// <returns></returns>
-float Vector3Dot(const Vector3& vector1, const Vector3& vector2)
+float melLib::Vector3Dot(const Vector3& vector1, const Vector3& vector2)
 {
 	return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
 }

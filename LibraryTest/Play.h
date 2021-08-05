@@ -1,11 +1,11 @@
 #pragma once
 #include"Scene.h"
 #include"Sprite2D.h"
-class Play:public Scene
+class Play:public melLib::Scene
 {
 private:
-	std::unique_ptr<Sprite2D>sprite2DTest;
-	Vector2 scale = 1;
+	std::unique_ptr<melLib::Sprite2D>sprite2DTest;
+	melLib::Vector2 scale = 1;
 
 public:
 	Play();

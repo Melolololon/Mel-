@@ -10,6 +10,9 @@
 #include"ModelObject.h"
 #include"TextWrite.h"
 
+
+using namespace melLib;
+
 DirectX12::DirectX12()
 {
 }

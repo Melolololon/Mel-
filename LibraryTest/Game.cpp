@@ -13,27 +13,27 @@
 Game::Game() {}
 
 Game::~Game() {}
-
 Game* Game::GetInstance()
 {
 	static Game game;
 	return &game;
 }
 
+
 void Game::Run()
 {
 	Initialize();
 
-	int x = 0;
 	while (1)
 	{
-		Library::LoopStartProcess();
+
+		melLib::Library::LoopStartProcess();
 		Update();
 		Draw();
-		Library::LoopEndProcess();
+		melLib::Library::LoopEndProcess();
 
 	
-		if (Library::GetIsEnd())
+		if (melLib::Library::GetIsEnd())
 			break;
 
 
@@ -46,16 +46,16 @@ void Game::Initialize()
 {
 	
 
-	Library::Initialize(1280, 720, Color(30,30,160,255),L"MyLib");
-	Library::SetFramesPerSecond60(true);
+	melLib::Library::Initialize(1280, 720, melLib::Color(30,30,160,255),L"MyLib");
+	melLib::Library::SetFramesPerSecond60(true);
 	
 	//カメラは各シーンに移動しました
 
 
 #pragma region リソース読み込み
 
-	ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
-	ModelData::Load("Resources/Obj/Box/box.obj", "box");
+	melLib::ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
+	melLib::ModelData::Load("Resources/Obj/Box/box.obj", "box");
 #pragma endregion
 
 #pragma region マネージャー初期化
@@ -68,29 +68,29 @@ void Game::Initialize()
 	initFlag.ray = true;
 	initFlag.sphere = true;
 	GameObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);*/
-	GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
-	GameObjectManager::GetInstance()->ReserveObjectArray(100);
+	melLib::GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
+	melLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	SceneManager::GetInstace()->SetStartScene(new Play());
+	melLib::SceneManager::GetInstace()->SetStartScene(new Play());
 #pragma endregion
 
-	TextWrite::CreateFontData(/*L"HGPｺﾞｼｯｸE"*/L"Arial", "test");
+	melLib::TextWrite::CreateFontData(/*L"HGPｺﾞｼｯｸE"*/L"Arial", "test");
 
-	TextureFont::Load("Resources/Font/font.png", Value2<UINT>(14, 7), "testFont");
+	melLib::TextureFont::Load("Resources/Font/font.png", melLib::Value2<UINT>(14, 7), "testFont");
 
 }
 
 
 void Game::Finalize()
 {
-	Library::Finalize();//絶対に最後に書く
+	melLib::Library::Finalize();//絶対に最後に書く
 }
 void Game::Update()
 {
-	SceneManager::GetInstace()->Update();
+	melLib::SceneManager::GetInstace()->Update();
 }
 
 void Game::Draw()
 {
-	SceneManager::GetInstace()->Draw();
+	melLib::SceneManager::GetInstace()->Draw();
 }

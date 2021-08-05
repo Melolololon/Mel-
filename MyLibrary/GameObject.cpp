@@ -3,6 +3,8 @@
 #include"Physics.h"
 
 
+using namespace melLib;
+
 GameObject::GameObject()
 {
 	

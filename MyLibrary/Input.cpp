@@ -5,6 +5,7 @@
 #include<string>
 
 
+using namespace melLib;
 
 HINSTANCE Input::hInstance;//ƒnƒ“ƒhƒ‹
 HRESULT Input::dIResult;//Œ‹‰ÊŽæ“¾

@@ -5,14 +5,14 @@
 #include"ModelObject.h"
 
 //当たり判定テスト用オブジェクト
-class CollisionTestObject:public GameObject
+class CollisionTestObject:public melLib::GameObject
 {
 private:
-	std::unique_ptr<ModelObject> model[2];
+	std::unique_ptr<melLib::ModelObject> model[2];
 	bool hitFlag = false;
 	bool inputFlag = false;
 public:
-	CollisionTestObject(const Vector3& pos,const bool inputMove);
+	CollisionTestObject(const melLib::Vector3& pos,const bool inputMove);
 
 	/// <summary>
 	/// 更新処理
@@ -35,9 +35,9 @@ public:
 	void Hit
 	(
 		const GameObject* const  object,
-		const CollisionType collisionType,
+		const melLib::CollisionType collisionType,
 		const int arrayNum,
-		const CollisionType hitObjColType,
+		const melLib::CollisionType hitObjColType,
 		const int hitObjArrayNum
 	)override;
 };

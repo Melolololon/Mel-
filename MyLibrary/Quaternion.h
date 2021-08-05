@@ -1,24 +1,27 @@
 #pragma once
 #include"Vector.h"
 #include"Matrix.h"
-struct Quaternion
+
+namespace melLib
 {
-	float w, x, y, z;
+	struct Quaternion
+	{
+		float w, x, y, z;
 
-	Quaternion();
-	Quaternion(const float w,const float x, const float y, const float z);
-	Quaternion(const float w,const Vector3& v);
-	Quaternion(const float w,const Vector2& v);
-	Quaternion(const Vector3& v);
-	Quaternion(const Vector2& v);
-	Quaternion operator* (const Quaternion& q)const;
-	
-	void operator*= (const Quaternion& q);
+		Quaternion();
+		Quaternion(const float w, const float x, const float y, const float z);
+		Quaternion(const float w, const Vector3& v);
+		Quaternion(const float w, const Vector2& v);
+		Quaternion(const Vector3& v);
+		Quaternion(const Vector2& v);
+		Quaternion operator* (const Quaternion& q)const;
+
+		void operator*= (const Quaternion& q);
 
 
-	static Quaternion GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle);
+		static Quaternion GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle);
 
-	Matrix GetQuaternionToMatrix();
-};
-
+		Matrix GetQuaternionToMatrix();
+	};
+}
 

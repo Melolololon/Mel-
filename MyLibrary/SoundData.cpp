@@ -1,5 +1,8 @@
 #include "SoundData.h"
 
+
+using namespace melLib;
+
 std::unordered_map < std::string, std::unique_ptr<SoundData> > SoundData::pSoundDatas;
 
 bool SoundData::Load(const std::string& path,const std::string& name)
