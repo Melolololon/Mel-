@@ -6,11 +6,10 @@ void main
 (
 	//triangleはプリミティブのこと
 	//[3]は、トライアングルリスト、ストリップということ
-	triangle VSOutput input[3],
+	triangle DS_OUTPUT/*VSOutput*/ input[3],
 	inout TriangleStream< GSOutput > output
 )
 {
-
 	GSOutput element;
 
 	for (uint i = 0; i < 3; i++)

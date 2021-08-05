@@ -55,6 +55,7 @@ void Game::Initialize()
 #pragma region リソース読み込み
 
 	ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
+	ModelData::Load("Resources/Obj/Box/box.obj", "box");
 #pragma endregion
 
 #pragma region マネージャー初期化

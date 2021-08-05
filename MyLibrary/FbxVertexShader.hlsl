@@ -64,11 +64,13 @@ VSOutput main(VSInput input)
 	float4 wnormal = normalize(mul(normalMat, float4(skinned.normal, 0)));
 
 	VSOutput output;
-	output.svpos = mul(mat, skinned.pos);
+	//output.svpos = mul(mat, skinned.pos);
 	output.normal = wnormal.xyz;
 
-	output.worldPos = mul(worldMat, skinned.pos);
+	//output.worldPos = mul(worldMat, skinned.pos);
 	output.uv = input.uv;
+
+	output.pos = skinned.pos;
 
 	return output;
 }
