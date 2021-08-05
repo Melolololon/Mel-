@@ -43,17 +43,6 @@ namespace melLib
 		SUB,
 	};
 
-	enum DepthMode
-	{
-		DEPTH_FALSE,
-		DEPTH_TRUE,
-	};
-
-	enum AlphaWriteMode
-	{
-		ALPHA_WRITE_FALSE,
-		ALPHA_WRITE_TRUE,
-	};
 
 	//パイプラインの設定をまとめた構造体
 	struct PipelineData

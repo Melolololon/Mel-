@@ -10,11 +10,11 @@
 //Textureにテクスチャバッファ持たせる?
 //スプライトとかで同じテクスチャなのにバッファ毎回作るのもったいない
 //
+using namespace Microsoft::WRL;
 
 namespace melLib
 {
 
-	using namespace Microsoft::WRL;
 	class Texture
 	{
 	private:

@@ -48,6 +48,7 @@
 //https://docs.microsoft.com/ja-jp/windows/win32/direct3d12/working-samples
 
 
+using namespace Microsoft::WRL;
 namespace melLib
 {
 
@@ -61,7 +62,6 @@ namespace melLib
 	};
 
 
-	using namespace Microsoft::WRL;
 
 	class DirectX12 final
 	{

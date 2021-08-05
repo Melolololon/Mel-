@@ -20,7 +20,8 @@
 
 #include"Vector.h"
 #include"Color.h"
-using namespace Microsoft::WRL;
+
+
 
 //DirectWriteチュートリアルURL
 //https://docs.microsoft.com/ja-jp/windows/win32/directwrite/getting-started-with-directwrite#part-1-declare-directwrite-and-direct2d-resources
