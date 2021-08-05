@@ -38,6 +38,8 @@
 //11on12を使用したD2D
 //https://docs.microsoft.com/ja-jp/windows/win32/direct3d12/d2d-using-d3d11on12
 
+using namespace Microsoft::WRL;
+
 namespace melLib
 {
 	//DirectWriteを使用したテキスト描画クラス
