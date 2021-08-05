@@ -27,3 +27,15 @@ void DirectionalLight::SetDirection(const Vector3& vector)
 {
 	direction = Vector3::Normalize(vector);
 }
+
+std::vector<DirectionalLight*> DirectionalLight::GetAll()
+{
+	std::vector<DirectionalLight*>lights(pLights.size());
+	int count = 0;
+	for(auto& p : pLights)
+	{
+		lights[count] = p.second.get();
+		count++;
+	}
+	return lights;
+}

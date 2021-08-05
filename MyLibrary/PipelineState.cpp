@@ -26,6 +26,7 @@ void PipelineState::SetPipelineDesc
 	case PipelineType::MODEL:
 		desc.pRootSignature = modelRootSignature;
 
+		//テッセレーションがある場合、これにする
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
 		break;
 	case PipelineType::SPRITE:

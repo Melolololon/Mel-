@@ -6,6 +6,7 @@
 #include"Camera.h"
 #include"SpriteFont2D.h"
 #include"TextureFont.h"
+#include"DirectionalLight.h"
 
 Play::Play(){}
 
@@ -25,6 +26,10 @@ void Play::Initialize()
 	//sprite2DTest->CreateSetColor(Color(255, 255, 255, 255));
 	
 	sprite2DTest->SetPosition(Vector2(1280 / 2, 720 / 2));
+
+
+	DirectionalLight::Create("test");
+	DirectionalLight::Get("test").SetDirection(Vector3(-1, 0, 0));
 }
 
 void Play::Update()

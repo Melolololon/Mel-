@@ -163,10 +163,9 @@ struct ParentBoneData
 
 struct ModelConstBufferData
 {
-	DirectX::XMFLOAT4 lightColor;
-	DirectX::XMFLOAT4 light;
+	DirectX::XMFLOAT4 lightColor[20];
+	DirectX::XMFLOAT4 light[20];
 	DirectX::XMFLOAT4 cameraPos;
-	DirectX::XMMATRIX lightMat;//ライト用行列
 	DirectX::XMMATRIX mat;
 	DirectX::XMMATRIX normalMat;
 	DirectX::XMMATRIX worldMat;

@@ -12,6 +12,8 @@
 //
 class DirectionalLight
 {
+public:
+
 private:
 	using UINT = unsigned int;
 	static std::unordered_map<std::string, std::unique_ptr<DirectionalLight>>pLights;
@@ -37,5 +39,7 @@ public:
 
 	Vector3 GetDirection()const { return direction; }
 	Color GetColor()const { return color; }
+
+	static std::vector<DirectionalLight*> GetAll();
 };
 

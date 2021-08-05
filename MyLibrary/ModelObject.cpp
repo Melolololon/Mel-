@@ -84,27 +84,29 @@ void ModelObject::CreateConstBuffer()
 	}
 
 	//モデル内のオブジェクト分ループ
-	for (int j = 0; j < modelFileObjectNum; j++)
+	for (int i = 0; i < modelFileObjectNum; i++)
 	{
+#pragma region 生成
+
 
 		//メイン
 		CreateBuffer
 		(
-			&constBuffer[j],
+			&constBuffer[i],
 			sizeof(ModelConstBufferData)
 		);
 
 		//マテリアル
 		CreateBuffer
 		(
-			&materialConstBuffer[j],
+			&materialConstBuffer[i],
 			sizeof(MaterialConstBufferData)
 		);
 
 		//PBRマテリアル
 		CreateBuffer
 		(
-			&pbrMaterialConstBuffer[j],
+			&pbrMaterialConstBuffer[i],
 			sizeof(PbrMaterialConstBufferData)
 		);
 
@@ -113,7 +115,7 @@ void ModelObject::CreateConstBuffer()
 		{
 			CreateBuffer
 			(
-				&modelConstBuffer[j],
+				&modelConstBuffer[i],
 				modelConstBufferData.bufferDataSize
 			);
 		}
@@ -123,10 +125,27 @@ void ModelObject::CreateConstBuffer()
 		{
 			CreateBuffer
 			(
-				&userConstBuffer[j],
+				&userConstBuffer[i],
 				userConstBufferData.bufferDataSize
 			);
 		}
+#pragma endregion
+
+#pragma region 初期化
+
+		
+		ModelConstBufferData* constBufferData;
+		constBuffer[i]->Map(0, nullptr, (void**)&constBufferData);
+		
+		//ライト
+		for (int j = 0, size = 20; j < size; j++)
+		{
+			constBufferData->light[j] = DirectX::XMFLOAT4(0, 0, 0, 0);
+			constBufferData->lightColor[j] = DirectX::XMFLOAT4(0, 0, 0, 0);
+		}
+		
+		constBuffer[i]->Unmap(0, nullptr);
+#pragma endregion
 	}
 
 
@@ -153,17 +172,22 @@ void ModelObject::MapConstData(const Camera* camera)
 		constBufferData->mulColor = modelConstDatas[i].mulColor;
 		constBufferData->ex = modelConstDatas[i].pushPolygonNum;
 
-		Vector3 lightDir = DirectionalLight::Get().GetDirection();
-		constBufferData->light = DirectX::XMFLOAT4(lightDir.x, lightDir.y, lightDir.z, 0);
-		Color lightCor = DirectionalLight::Get().GetColor();
-		constBufferData->lightColor = DirectX::XMFLOAT4
-		(
-			(float)lightCor.r / 255.0f, 
-			(float)lightCor.g / 255.0f, 
-			(float)lightCor.b / 255.0f, 
-			(float)lightCor.a / 255.0f
-		);
-		constBufferData->lightMat = DirectX::XMMatrixIdentity();
+		std::vector<DirectionalLight*> pLights = DirectionalLight::GetAll();
+		for (int i = 0, size = pLights.size(); i < size; i++) 
+		{
+			Vector3 lightDir = pLights[i]->GetDirection();
+			constBufferData->light[i] = DirectX::XMFLOAT4(lightDir.x, lightDir.y, lightDir.z, 0);
+			Color lightCor = pLights[i]->GetColor();
+			constBufferData->lightColor[i] = DirectX::XMFLOAT4
+			(
+				(float)lightCor.r / 255.0f,
+				(float)lightCor.g / 255.0f,
+				(float)lightCor.b / 255.0f,
+				(float)lightCor.a / 255.0f
+			);
+
+
+		}
 
 		Vector3 cameraPos = camera->GetCameraPosition();
 		constBufferData->cameraPos = DirectX::XMFLOAT4(cameraPos.x, cameraPos.y, cameraPos.z, 0);

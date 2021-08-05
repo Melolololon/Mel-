@@ -92,10 +92,9 @@ struct GSOutput
 //Šî–{“I‚Èî•ñ
 cbuffer cbuff0 : register(b0)
 {
-	float4 lightColor;
-	float4 light;
+	float4 lightColor[20];
+	float4 light[20];
 	float4 cameraPos;
-	matrix lightMat;
 	matrix mat;
 	matrix normalMat;
 	matrix worldMat;
