@@ -685,7 +685,7 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	data.blendMode = BlendMode::ADD;
 	data.cullMode = CullMode::BACK;
 	data.depthTest = true;
-	data.drawMode = DrawMode::WIREFRAME;
+	data.drawMode = DrawMode::SOLID;
 
 	//インプットレイアウト
 	std::vector<InputLayoutData> ilData(5);
