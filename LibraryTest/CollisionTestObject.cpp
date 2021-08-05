@@ -7,8 +7,8 @@ CollisionTestObject::CollisionTestObject(const Vector3& pos, const bool inputMov
 {
 	position = pos;
 	speed = 0.25f;
-	model[0] = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
-	model[1] = std::make_unique<ModelObject>(ModelData::Get("ball"), nullptr);
+	model[0] = std::make_unique<ModelObject>(ModelData::Get("box"), nullptr);
+	model[1] = std::make_unique<ModelObject>(ModelData::Get("box"), nullptr);
 
 	/*collisionFlag.sphere = true;
 	sphereData.resize(1);

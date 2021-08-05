@@ -462,7 +462,7 @@ void ModelObject::SetCmdList()
 {
 
 	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
-	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 	ID3D12DescriptorHeap* textureDescHeap = pModelData->GetTextureDesctiptorHeap();
 	std::vector<ID3D12DescriptorHeap*> ppHeaps;
@@ -685,7 +685,7 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	data.blendMode = BlendMode::ADD;
 	data.cullMode = CullMode::BACK;
 	data.depthTest = true;
-	data.drawMode = DrawMode::SOLID;
+	data.drawMode = DrawMode::WIREFRAME;
 
 	//インプットレイアウト
 	std::vector<InputLayoutData> ilData(5);
@@ -711,8 +711,8 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 		data,
 		{ L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" },
 		{ L"../MyLibrary/FbxGeometryShader.hlsl","main","gs_5_0" },
-		{ L"NULL","","" },
-		{ L"NULL","","" },
+		{ L"LIB","","" },
+		{ L"LIB","","" },
 		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" },
 		PipelineType::MODEL,
 		&ilData,
