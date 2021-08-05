@@ -218,9 +218,7 @@
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="ObjModelData.cpp" />
     <ClCompile Include="ObjModelObject.cpp" />
-    <ClCompile Include="PipelineManager.cpp" />
     <ClCompile Include="PipelineState.cpp" />
-    <ClCompile Include="PolygonManager.cpp" />
     <ClCompile Include="PrimitiveModel.cpp" />
     <ClCompile Include="PrimitiveModelData.cpp" />
     <ClCompile Include="Quaternion.cpp" />
@@ -465,9 +463,7 @@
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="ObjModelData.h" />
     <ClInclude Include="ObjModelObject.h" />
-    <ClInclude Include="PipelineManager.h" />
     <ClInclude Include="PipelineState.h" />
-    <ClInclude Include="PolygonManager.h" />
     <ClInclude Include="PrimitiveModel.h" />
     <ClInclude Include="PrimitiveModelData.h" />
     <ClInclude Include="Quaternion.h" />

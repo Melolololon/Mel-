@@ -8,30 +8,7 @@
 #include"DirectXStruct.h"
 #include"CreatePolygon.h"
 
-
-
-#pragma region 定数
-#pragma region 次元
-
-const int dimention2D = 0;
-const int dimention3D = 1;
-
-#pragma endregion
-
-#pragma region キーボード
-
-#pragma endregion
-#pragma endregion
-
-#pragma region typedef
-using point = int*;
-using sprite = int*;
-using texture = int;
-using pipeline = int;
-using font = int;
-#pragma endregion
-
-
+namespace melLibrary{}
 
 class Library
 {
