@@ -90,10 +90,11 @@ struct GSOutput
 
 
 //Šî–{“I‚Èî•ñ
+static const int DIR_LIGTH_MAX = 20;
 cbuffer cbuff0 : register(b0)
 {
-	float4 lightColor[20];
-	float4 light[20];
+	float4 lightColor[DIR_LIGTH_MAX];
+	float4 light[DIR_LIGTH_MAX];
 	float4 cameraPos;
 	matrix mat;
 	matrix normalMat;

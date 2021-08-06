@@ -137,7 +137,7 @@ float4 main(GSOutput input) : SV_TARGET
 
 
 	const float3 eyeDir = normalize(cameraPos - input.worldPos.xyz);
-	for (int i = 0; i < 20; i++) 
+	for (int i = 0; i < DIR_LIGTH_MAX; i++)
 	{
 
 		float3 lightDir = light[i];
