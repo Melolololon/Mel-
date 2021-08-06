@@ -151,7 +151,7 @@ namespace melLib
 		std::string modelName;
 
 		//読み取ったマテリアル
-		std::vector<Material> materials;
+		std::vector<MaterialData> materials;
 
 		//PBR用マテリアルデータ
 		std::vector<PbrMaterial>pbrMaterials;
@@ -359,7 +359,7 @@ namespace melLib
 		/// </summary>
 		/// <param name="objectNum">モデルファイル内のモデルを指定する値</param>
 		/// <returns></returns>
-		Material GetMaterial(const int objectNum)const { return materials[objectNum]; }
+		MaterialData GetMaterial(const int objectNum)const { return materials[objectNum]; }
 
 		PbrMaterial GetPbrMaterial(const int objectNum)const { return pbrMaterials[objectNum]; }
 #pragma endregion

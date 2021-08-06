@@ -211,7 +211,7 @@ namespace melLib
 
 
 	//ÉfÅ[É^äiî[óp
-	struct Material
+	struct MaterialData
 	{
 		DirectX::XMFLOAT3 ambient;
 		DirectX::XMFLOAT3 diffuse;
@@ -225,7 +225,7 @@ namespace melLib
 		std::string materialName;
 		std::string textureName;
 
-		Material()
+		MaterialData()
 		{
 			ambient = { 0.3f,0.3f,0.3f };
 			diffuse = { 0.7f,0.7f,0.7f };

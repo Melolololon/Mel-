@@ -395,7 +395,7 @@ bool  ModelLoader::LoadObjModel
 
 }
 
-bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<Material>& materials, int* loadCount)
+bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<MaterialData>& materials, int* loadCount)
 {
 	//“Ç‚İ‚ñ‚¾‰ñ”
 	int loadNum = 0;

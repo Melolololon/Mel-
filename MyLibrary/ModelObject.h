@@ -39,7 +39,7 @@ namespace melLib
 		std::vector<PipelineState*> pPipeline;
 
 		//[モデル内のオブジェクトごと]
-		std::vector < Material> materials;
+		std::vector < MaterialData> materials;
 
 		//テスト用PBR用マテリアルデータ
 		std::vector<PbrMaterial>pbrMaterials;

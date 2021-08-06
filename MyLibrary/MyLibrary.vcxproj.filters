@@ -156,18 +156,6 @@
     <ClCompile Include="FbxLoader.cpp">
       <Filter>ソース ファイル\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>ソース ファイル\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="PrimitiveModel.cpp">
-      <Filter>ソース ファイル\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjModel.cpp">
-      <Filter>ソース ファイル\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="FbxModel.cpp">
-      <Filter>ソース ファイル\Model</Filter>
-    </ClCompile>
     <ClCompile Include="Vertex.cpp">
       <Filter>ソース ファイル\Struct</Filter>
     </ClCompile>
@@ -185,9 +173,6 @@
     </ClCompile>
     <ClCompile Include="SpriteFont2D.cpp">
       <Filter>ソース ファイル\Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="HeapIndexManager.cpp">
-      <Filter>ソース ファイル\Model</Filter>
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>ソース ファイル\Support</Filter>
@@ -211,18 +196,6 @@
       <Filter>ソース ファイル\Model</Filter>
     </ClCompile>
     <ClCompile Include="ModelData.cpp">
-      <Filter>ソース ファイル\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="PrimitiveModelData.cpp">
-      <Filter>ソース ファイル\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjModelData.cpp">
-      <Filter>ソース ファイル\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelManager.cpp">
-      <Filter>ソース ファイル\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjModelObject.cpp">
       <Filter>ソース ファイル\Model</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
@@ -370,20 +343,8 @@
     <ClInclude Include="FbxLoader.h">
       <Filter>ヘッダー ファイル\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="PrimitiveModel.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjModel.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
-    </ClInclude>
     <ClInclude Include="PipelineState.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="FbxModel.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
     <ClInclude Include="Sprite2DBase.h">
       <Filter>ヘッダー ファイル\Sprite</Filter>
@@ -396,9 +357,6 @@
     </ClInclude>
     <ClInclude Include="SpriteFont2D.h">
       <Filter>ヘッダー ファイル\Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="HeapIndexManager.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>ヘッダー ファイル\Support</Filter>
@@ -422,18 +380,6 @@
       <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
     <ClInclude Include="ModelData.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="PrimitiveModelData.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjModelData.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelManager.h">
-      <Filter>ヘッダー ファイル\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjModelObject.h">
       <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">

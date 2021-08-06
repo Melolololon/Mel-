@@ -262,7 +262,7 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 {
 	auto& materialVector = fbxModel->materials;
 	materialVector.resize(1);
-	Material& modelMaterial = materialVector[0];
+	MaterialData& modelMaterial = materialVector[0];
 
 	//テスト用
 	auto& pbrMaterialVector = fbxModel->pbrMaterials;

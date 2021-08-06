@@ -50,7 +50,7 @@ namespace melLib
 		(
 			std::string materialDirectoryPath,
 			std::string materialFileName,
-			std::vector<Material>& materials,
+			std::vector<MaterialData>& materials,
 			int* loadCount
 		);
 	};

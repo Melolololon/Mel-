@@ -233,8 +233,8 @@ void melLib::ModelData::CreatePrimitiveModel()
 
 	pModelData->CreateModel();
 
-	int p = 0;
 #pragma endregion
+
 }
 
 void melLib::ModelData::CalcPrimitiveModelNormal(std::vector<FbxVertex>& vertices, const std::vector<USHORT>& indices)
