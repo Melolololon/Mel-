@@ -15,12 +15,13 @@
 #include"Camera.h"
 #include"RenderTarget.h"
 #include"BufferData.h"
+#include"CollisionType.h"
 
 //AddColorとかまとめよう!
 
-namespace melLib 
+namespace melLib
 {
-
+	
 	//モデルの座標などをまとめたもの
 	class ModelObject
 	{
@@ -107,17 +108,38 @@ namespace melLib
 
 		//nullptr渡される可能性を考えると、boolをreturnできるようにしたほうがいい?
 		ModelObject() {}
-		ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
+
 		~ModelObject() {}
 
 		static bool Initialize(ID3D12Device* dev, const std::vector<ID3D12GraphicsCommandList*>& cmdList);
 
-		static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name);
+
 		static ModelObject* Get(const std::string& name) { return pModelObjects[name].get(); }
 		static void Delete(const std::string& name);
 
-		bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData);
 		void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
+
+#pragma region 生成
+
+#pragma region モデルで生成
+		ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
+		static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name);
+		bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData);
+#pragma endregion モデルで生成
+
+
+#pragma region プリミティブモデル生成
+		//プリミティブモデルの列挙型を渡して生成
+		//モデルオブジェクトに、モデルから判定生成する機能作る(ModelDataだと、拡縮を考慮できない)
+		void Create(const CollisionType3D type);
+
+#pragma endregion プリミティブモデル生成
+
+
+#pragma endregion 生成
+
+
+
 
 #pragma region 操作見た目変更
 

@@ -119,17 +119,17 @@ void GameObjectManager::Update()
 							obj1->Hit
 							(
 								obj2,
-								CollisionType::SPHERE,
+								CollisionType3D::SPHERE,
 								colI,
-								CollisionType::SPHERE,
+								CollisionType3D::SPHERE,
 								colJ
 							);
 							obj2->Hit
 							(
 								obj1,
-								CollisionType::SPHERE,
+								CollisionType3D::SPHERE,
 								colJ,
-								CollisionType::SPHERE,
+								CollisionType3D::SPHERE,
 								colI
 							);
 						}
@@ -162,17 +162,17 @@ void GameObjectManager::Update()
 							obj1->Hit
 							(
 								obj2,
-								CollisionType::BOX,
+								CollisionType3D::BOX,
 								colI,
-								CollisionType::BOX,
+								CollisionType3D::BOX,
 								colJ
 							);
 							obj2->Hit
 							(
 								obj1,
-								CollisionType::BOX,
+								CollisionType3D::BOX,
 								colJ,
-								CollisionType::BOX,
+								CollisionType3D::BOX,
 								colI
 							);
 						}
@@ -212,17 +212,17 @@ void GameObjectManager::Update()
 							obj1->Hit
 							(
 								obj2,
-								CollisionType::LINE_SEGMENT_3D,
+								CollisionType3D::LINE_SEGMENT,
 								colI,
-								CollisionType::LINE_SEGMENT_3D,
+								CollisionType3D::LINE_SEGMENT,
 								colJ
 							);
 							obj2->Hit
 							(
 								obj1,
-								CollisionType::LINE_SEGMENT_3D,
+								CollisionType3D::LINE_SEGMENT,
 								colJ,
-								CollisionType::LINE_SEGMENT_3D,
+								CollisionType3D::LINE_SEGMENT,
 								colI
 							);
 						}
@@ -253,17 +253,17 @@ void GameObjectManager::Update()
 							obj1->Hit
 							(
 								obj2,
-								CollisionType::CAPSULE,
+								CollisionType3D::CAPSULE,
 								colI,
-								CollisionType::CAPSULE,
+								CollisionType3D::CAPSULE,
 								colJ
 							);
 							obj2->Hit
 							(
 								obj1,
-								CollisionType::CAPSULE,
+								CollisionType3D::CAPSULE,
 								colJ,
-								CollisionType::CAPSULE,
+								CollisionType3D::CAPSULE,
 								colI
 							);
 						}

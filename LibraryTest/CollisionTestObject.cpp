@@ -31,6 +31,7 @@ CollisionTestObject::CollisionTestObject(const melLib::Vector3& pos, const bool 
 
 void CollisionTestObject::Update()
 {
+	
 	hitFlag = false;
 
 	velocity = 0;
@@ -71,7 +72,14 @@ void CollisionTestObject::Draw()
 	melLib::TextWrite::Draw(0, melLib::Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");
 }
 
-void CollisionTestObject::Hit(const GameObject* const object, const melLib::CollisionType collisionType, const int arrayNum, const melLib::CollisionType hitObjColType, const int hitObjArrayNum)
+void CollisionTestObject::Hit
+(
+	const GameObject* const object, 
+	const melLib::CollisionType3D collisionType, 
+	const int arrayNum, 
+	const melLib::CollisionType3D hitObjColType, 
+	const int hitObjArrayNum
+)
 {
 	hitFlag = true;
 }

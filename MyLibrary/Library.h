@@ -86,7 +86,7 @@ namespace melLib
 		static void EndFlagTrue();
 
 		/// <summary>
-		/// 終了フラグを取得します
+		/// 終了フラグを取得します。終了フラグは、ウィンドウが破棄される(×が押される)か、EndFlagTrueよ呼び出すとtrueになります。
 		/// </summary>
 		/// <returns>終了フラグ</returns>
 		static bool GetIsEnd();

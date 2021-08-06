@@ -282,6 +282,7 @@ namespace melLib
 
 
 
+
 #pragma region äJî≠é“ópä÷êî
 		static void Initialize(ID3D12Device* pDevice);
 

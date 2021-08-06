@@ -145,6 +145,7 @@ void Library::LoopStartProcess()
 	{
 		isEnd = true;
 	}
+	
 
 #pragma endregion
 
@@ -195,6 +196,7 @@ void Library::LoopEndProcess()
 
 void Library::EndFlagTrue()
 {
+	if (hwnd) DestroyWindow(hwnd);
 	isEnd = true;
 }
 
@@ -205,6 +207,7 @@ bool Library::GetIsEnd()
 
 void Library::Finalize()
 {
+
 	SceneManager::GetInstace()->Finitialize();
 	GameObjectManager::GetInstance()->Finitialize();
 
@@ -215,7 +218,6 @@ void Library::Finalize()
 
 	dx12->Finalize();
 
-	if(hwnd) DestroyWindow(hwnd);
 
 	UnregisterClass(w.lpszClassName, w.hInstance);
 

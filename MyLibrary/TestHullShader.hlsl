@@ -20,9 +20,9 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 	HS_CONSTANT_DATA_OUTPUT Output;
 
 	//出力を計算するコード(1から32?1で通常通り)
-	Output.EdgeTessFactor[0] = 5;
-	Output.EdgeTessFactor[1] = 5;
-	Output.EdgeTessFactor[2] = 5;
+	Output.EdgeTessFactor[0] = 1;
+	Output.EdgeTessFactor[1] = 1;
+	Output.EdgeTessFactor[2] = 1;
 	Output.InsideTessFactor = 1;
 
 

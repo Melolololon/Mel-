@@ -26,17 +26,18 @@ void Game::Run()
 
 	while (1)
 	{
-
 		melLib::Library::LoopStartProcess();
+
+		if (melLib::Input::KeyTrigger(DIK_SPACE))melLib::Library::EndFlagTrue();
+		
+
 		Update();
 		Draw();
 		melLib::Library::LoopEndProcess();
 
-	
-		if (melLib::Library::GetIsEnd())
-			break;
 
-
+		if (melLib::Library::GetIsEnd())break;
+		
 	}
 
 	Finalize();

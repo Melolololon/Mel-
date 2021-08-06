@@ -15,16 +15,20 @@ namespace melLib
 		bool capsule = false;
 	};
 
-	enum class CollisionType
+	enum class CollisionType2D
 	{
 		RECT,
 		CIRCLE,
+		LINE_SEGMENT,
+	};
+
+	enum class CollisionType3D
+	{
 		SPHERE,
 		BOX,
 		PLANE,
 		BOARD,
-		LINE_SEGMENT_2D,
-		LINE_SEGMENT_3D,
+		LINE_SEGMENT,
 		RAY,
 		CAPSULE,
 	};

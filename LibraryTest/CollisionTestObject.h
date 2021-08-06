@@ -35,9 +35,9 @@ public:
 	void Hit
 	(
 		const GameObject* const  object,
-		const melLib::CollisionType collisionType,
+		const melLib::CollisionType3D collisionType,
 		const int arrayNum,
-		const melLib::CollisionType hitObjColType,
+		const melLib::CollisionType3D hitObjColType,
 		const int hitObjArrayNum
 	)override;
 };
