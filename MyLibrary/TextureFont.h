@@ -2,7 +2,7 @@
 #include"Texture.h"
 #include"Values.h"
 
-namespace melLib
+namespace MelLib
 {
 	//SpriteFontで使用するテクスチャクラス
 	class TextureFont

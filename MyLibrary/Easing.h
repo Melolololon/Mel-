@@ -1,7 +1,7 @@
 #pragma once
 #include"Vector.h"
 
-namespace melLib
+namespace MelLib
 {
 	class Easing
 	{

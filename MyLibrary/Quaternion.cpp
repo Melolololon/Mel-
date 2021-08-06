@@ -2,7 +2,7 @@
 #include<cmath>
 #include"LibMath.h"
 
-using namespace melLib;
+using namespace MelLib;
 Quaternion::Quaternion(){}
 
 Quaternion::Quaternion(const float w, const float x, const float y, const float z)

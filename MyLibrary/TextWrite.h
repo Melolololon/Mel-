@@ -40,7 +40,7 @@
 
 using namespace Microsoft::WRL;
 
-namespace melLib
+namespace MelLib
 {
 	//DirectWriteを使用したテキスト描画クラス
 	class TextWrite

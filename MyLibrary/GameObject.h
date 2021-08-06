@@ -15,7 +15,7 @@
 //positionもvelocityもセットできるようにする。(変数用意するのめんどいから)
 
 //SetPositionを仮想関数にして、モデルに座標セットする処理とか書けるようにする
-namespace melLib 
+namespace MelLib 
 {
 	class GameObject
 	{

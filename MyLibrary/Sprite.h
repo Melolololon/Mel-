@@ -30,7 +30,7 @@
 
 //ピクセル単位で拡縮できるように(今からどのくらいピクセル加算するか決めたり、直接ピクセル数決められるようにしてもいいかも)
 
-namespace melLib
+namespace MelLib
 {
 	class Sprite
 	{

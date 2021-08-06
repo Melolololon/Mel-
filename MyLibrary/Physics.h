@@ -4,7 +4,7 @@
 
 //”½”­ŒW”float‚Å‚à‚æ‚³‚»‚¤‚¾‚Á‚½‚çfloat‚É•Ï‚¦‚é
 
-namespace melLib
+namespace MelLib
 {
 	//•¨—‰‰ZƒNƒ‰ƒX
 	class Physics

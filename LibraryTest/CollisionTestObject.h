@@ -5,16 +5,16 @@
 #include"ModelObject.h"
 
 //当たり判定テスト用オブジェクト
-class CollisionTestObject:public melLib::GameObject
+class CollisionTestObject:public MelLib::GameObject
 {
 private:
-	std::unique_ptr<melLib::ModelObject> model[2];
+	std::unique_ptr<MelLib::ModelObject> model[2];
 	bool hitFlag = false;
 	bool inputFlag = false;
 
-	melLib::Vector3 angle = 0;
+	MelLib::Vector3 angle = 0;
 public:
-	CollisionTestObject(const melLib::Vector3& pos,const bool inputMove);
+	CollisionTestObject(const MelLib::Vector3& pos,const bool inputMove);
 
 	/// <summary>
 	/// 更新処理
@@ -37,9 +37,9 @@ public:
 	void Hit
 	(
 		const GameObject* const  object,
-		const melLib::ShapeType3D collisionType,
+		const MelLib::ShapeType3D collisionType,
 		const int arrayNum,
-		const melLib::ShapeType3D hitObjColType,
+		const MelLib::ShapeType3D hitObjColType,
 		const int hitObjArrayNum
 	)override;
 };

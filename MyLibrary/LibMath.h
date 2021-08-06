@@ -12,7 +12,7 @@
 //includeすると確実にエラーが出る。includeしないと出ない
 //lib(スタティックライブラリのプロジェクト)に作らなければエラー出ない?
 
-namespace melLib
+namespace MelLib
 {
 
 	//Aスターのノード

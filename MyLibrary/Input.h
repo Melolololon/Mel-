@@ -14,7 +14,7 @@
 #include<unordered_map>
 #include"Vector.h"
 
-namespace melLib 
+namespace MelLib 
 {
 	enum class GamePadButton
 	{

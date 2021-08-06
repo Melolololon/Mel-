@@ -6,7 +6,7 @@
 #include<string>
 using namespace Microsoft::WRL;
 
-namespace melLib
+namespace MelLib
 {
 
 	//各データにアクセスするためのもの

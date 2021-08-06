@@ -45,7 +45,7 @@
 
 
 using namespace Microsoft::WRL;
-namespace melLib
+namespace MelLib
 {
 
 	enum LibraryPipeline

@@ -26,18 +26,18 @@ void Game::Run()
 
 	while (1)
 	{
-		melLib::Library::LoopStartProcess();
+		MelLib::Library::LoopStartProcess();
 
-		if (melLib::Input::KeyTrigger(DIK_ESCAPE))melLib::Library::EndFlagTrue();
+		if (MelLib::Input::KeyTrigger(DIK_ESCAPE))MelLib::Library::EndFlagTrue();
 		
 		
 
 		Update();
 		Draw();
-		melLib::Library::LoopEndProcess();
+		MelLib::Library::LoopEndProcess();
 
 
-		if (melLib::Library::GetIsEnd())break;
+		if (MelLib::Library::GetIsEnd())break;
 		
 	}
 
@@ -48,16 +48,16 @@ void Game::Initialize()
 {
 	
 
-	melLib::Library::Initialize(1280, 720, melLib::Color(30,30,160,255),L"MELLib");
-	melLib::Library::SetFramesPerSecond60(true);
+	MelLib::Library::Initialize(1280, 720, MelLib::Color(30,30,160,255),L"MELLib");
+	MelLib::Library::SetFramesPerSecond60(true);
 	
 	//カメラは各シーンに移動しました
 
 
 #pragma region リソース読み込み
 
-	melLib::ModelData::Load("Resources/Obj/Ball/ball.obj", false,"ball");
-	melLib::ModelData::Load("Resources/Obj/Box/box.obj", false,"box");
+	MelLib::ModelData::Load("Resources/Obj/Ball/ball.obj", false,"ball");
+	MelLib::ModelData::Load("Resources/Obj/Box/box.obj", false,"box");
 #pragma endregion
 
 #pragma region マネージャー初期化
@@ -70,29 +70,29 @@ void Game::Initialize()
 	initFlag.ray = true;
 	initFlag.sphere = true;
 	GameObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);*/
-	melLib::GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
-	melLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
+	MelLib::GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
+	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	melLib::SceneManager::GetInstace()->SetStartScene(new Play());
+	MelLib::SceneManager::GetInstace()->SetStartScene(new Play());
 #pragma endregion
 
-	melLib::TextWrite::CreateFontData(/*L"HGPｺﾞｼｯｸE"*/L"Arial", "test");
+	MelLib::TextWrite::CreateFontData(/*L"HGPｺﾞｼｯｸE"*/L"Arial", "test");
 
-	melLib::TextureFont::Load("Resources/Font/font.png", melLib::Value2<UINT>(14, 7), "testFont");
+	MelLib::TextureFont::Load("Resources/Font/font.png", MelLib::Value2<UINT>(14, 7), "testFont");
 
 }
 
 
 void Game::Finalize()
 {
-	melLib::Library::Finalize();//絶対に最後に書く
+	MelLib::Library::Finalize();//絶対に最後に書く
 }
 void Game::Update()
 {
-	melLib::SceneManager::GetInstace()->Update();
+	MelLib::SceneManager::GetInstace()->Update();
 }
 
 void Game::Draw()
 {
-	melLib::SceneManager::GetInstace()->Draw();
+	MelLib::SceneManager::GetInstace()->Draw();
 }

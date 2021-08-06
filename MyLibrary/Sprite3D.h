@@ -2,7 +2,7 @@
 #include"Sprite.h"
 #include"PipelineState.h"
 
-namespace melLib
+namespace MelLib
 {
 	class Sprite3D :public Sprite
 	{

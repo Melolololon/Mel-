@@ -9,7 +9,7 @@
 #include"TextWrite.h"
 
 
-using namespace melLib;
+using namespace MelLib;
 
 DirectX12::DirectX12()
 {

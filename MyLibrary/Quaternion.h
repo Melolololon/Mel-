@@ -2,7 +2,7 @@
 #include"Vector.h"
 #include"Matrix.h"
 
-namespace melLib
+namespace MelLib
 {
 	struct Quaternion
 	{

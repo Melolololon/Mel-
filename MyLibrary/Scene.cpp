@@ -1,7 +1,7 @@
 #include "Scene.h"
 #include"ModelData.h"
 
-using namespace melLib;
+using namespace MelLib;
 
 Scene::Scene()
 {
@@ -39,7 +39,7 @@ void* Scene::GetPtr()
 	return this;
 }
 
-void melLib::Scene::ResourceBatchDeletion()
+void MelLib::Scene::ResourceBatchDeletion()
 {
 	ModelData::BatchDeletion();
 }

@@ -9,7 +9,7 @@
 
 //LightƒNƒ‰ƒXì‚Á‚Ä‚Ü‚Æ‚ß‚é?
 
-namespace melLib
+namespace MelLib
 {
 	class DirectionalLight
 	{

@@ -19,7 +19,7 @@
 
 #include"SpriteFont2D.h"
 
-using namespace melLib;
+using namespace MelLib;
 
 DirectX12* Library::dx12;
 //CreatePolygon* Library::createPolygon;

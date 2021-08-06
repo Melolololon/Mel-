@@ -8,7 +8,7 @@
 #include"PipelineState.h"
 #include"Camera.h"
 
-namespace melLib
+namespace MelLib
 {
 	class RenderTarget :public Sprite2DBase
 	{

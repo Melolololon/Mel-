@@ -4,7 +4,7 @@
 #include"Library.h"
 
 
-using namespace melLib;
+using namespace MelLib;
 
 std::unordered_map<std::string, std::unique_ptr<RenderTarget>> RenderTarget::pRenderTargets;
 UINT RenderTarget::createCount = 0;

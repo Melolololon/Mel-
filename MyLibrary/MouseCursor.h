@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include"Library.h"
 
-namespace melLib
+namespace MelLib
 {
 	class MouseCursor :
 		public GameObject

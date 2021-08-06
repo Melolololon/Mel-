@@ -2,7 +2,7 @@
 #include"Sound.h"
 
 
-using namespace melLib;
+using namespace MelLib;
 
 Audio* Audio::GetInstance()
 {

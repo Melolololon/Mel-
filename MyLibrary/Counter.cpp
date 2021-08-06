@@ -1,6 +1,6 @@
 #include "Counter.h"
 
-using namespace melLib;
+using namespace MelLib;
 std::vector<Counter*>Counter::pCounter;
 
 void Counter::Update()

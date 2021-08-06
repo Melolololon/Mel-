@@ -8,7 +8,7 @@
 #include"DirectXStruct.h"
 #include"Color.h"
 
-namespace melLib
+namespace MelLib
 {
 	//バッファーを作成するためのクラス
 	class CreateBuffer final

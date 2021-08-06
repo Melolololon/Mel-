@@ -1,7 +1,7 @@
 #include "Physics.h"
 #include"LibMath.h"
 
-using namespace melLib;
+using namespace MelLib;
 
 const float Physics::GRAVITATIONAL_ACCELERATION_MERCURY = 3.7f;
 const float Physics::GRAVITATIONAL_ACCELERATION_VENUS = 8.87f;

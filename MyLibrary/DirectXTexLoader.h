@@ -1,7 +1,7 @@
 #pragma once
 #include<DirectXTex.h>
 #include"DirectXStruct.h"
-namespace melLib
+namespace MelLib
 {
 	class DirectXTexLoader
 	{

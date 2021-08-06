@@ -4,7 +4,7 @@
 //計算に使う式と、計算によって得られた情報の構造体分ける?
 //まとめるとconstで渡せないし、利用者がどれ入力すればいいのかぱっと見わかりにくい
 
-namespace melLib
+namespace MelLib
 {
 	//当たり判定(の計算)クラス
 	class Collision

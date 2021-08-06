@@ -5,7 +5,7 @@
 #include"FbxLoader.h"
 
 
-using namespace melLib;
+using namespace MelLib;
 
 std::unordered_map<std::string, std::unique_ptr<ModelData>>ModelData::pModelDatas;
 std::unordered_map<ShapeType3D, std::unique_ptr<ModelData>>ModelData::pPrimitiveModelDatas;
@@ -136,7 +136,7 @@ void ModelData::CteateTextureBufferSetColor()
 	}
 }
 
-void melLib::ModelData::CreatePrimitiveModel()
+void MelLib::ModelData::CreatePrimitiveModel()
 {
 	ModelData* pModelData = nullptr;
 #pragma region BOX
@@ -238,7 +238,7 @@ void melLib::ModelData::CreatePrimitiveModel()
 
 }
 
-void melLib::ModelData::CalcPrimitiveModelNormal(std::vector<FbxVertex>& vertices, const std::vector<USHORT>& indices)
+void MelLib::ModelData::CalcPrimitiveModelNormal(std::vector<FbxVertex>& vertices, const std::vector<USHORT>& indices)
 {
 	for (int i = 0, size = indices.size() / 3; i < size; i++)
 	{
@@ -263,7 +263,7 @@ void melLib::ModelData::CalcPrimitiveModelNormal(std::vector<FbxVertex>& vertice
 
 }
 
-void melLib::ModelData::CreateModel()
+void MelLib::ModelData::CreateModel()
 {
 	//頂点、インデックス、テクスチャバッファ作成
 	modelFileObjectNum = vertices.size();
@@ -321,7 +321,7 @@ void ModelData::Delete(const std::string& name)
 	pModelDatas.erase(name);
 }
 
-void melLib::ModelData::BatchDeletion()
+void MelLib::ModelData::BatchDeletion()
 {
 	std::vector<std::string>deleteName;
 	deleteName.reserve(pModelDatas.size());

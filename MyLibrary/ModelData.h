@@ -27,7 +27,7 @@
 #pragma comment(lib,"zlib-mt.lib")
 #endif // _DEBUG
 
-namespace melLib
+namespace MelLib
 {
 	struct Node
 	{

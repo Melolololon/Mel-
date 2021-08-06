@@ -12,7 +12,7 @@
 //
 using namespace Microsoft::WRL;
 
-namespace melLib
+namespace MelLib
 {
 
 	class Texture

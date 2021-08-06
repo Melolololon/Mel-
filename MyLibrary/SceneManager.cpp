@@ -2,7 +2,7 @@
 #include<assert.h>
 
 
-using namespace melLib;
+using namespace MelLib;
 
 SceneManager::SceneManager()
 {

@@ -1,6 +1,6 @@
 #include"Color.h"
 
-using namespace melLib;
+using namespace MelLib;
 Color::Color()
 {
 }

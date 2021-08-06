@@ -8,7 +8,7 @@
 //パイプラインは別にモデルみたいにstaticのアクセス関数とかいらない?
 //それとも、シーンをまたいで使う可能性あるからいる?
 
-namespace melLib
+namespace MelLib
 {
 	enum class PipelineType
 	{

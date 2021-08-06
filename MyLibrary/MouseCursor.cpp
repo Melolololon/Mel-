@@ -2,7 +2,7 @@
 #include"Input.h"
 
 
-using namespace melLib;
+using namespace MelLib;
 MouseCursor::MouseCursor()
 {
 	

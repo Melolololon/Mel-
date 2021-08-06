@@ -6,7 +6,7 @@
 #include<unordered_map>
 #include"Input.h"
 
-namespace melLib
+namespace MelLib
 {
 	class Camera
 	{

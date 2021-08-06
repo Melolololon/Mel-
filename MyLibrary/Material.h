@@ -6,7 +6,7 @@
 #include"Values.h"
 #include"Texture.h"
 
-namespace melLib
+namespace MelLib
 {
 	//Materialを継承してパラメータを増やせるようにする
 	//継承してもどうやってシェーダーに渡す?利用者にMapしてもらうしかない?

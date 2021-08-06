@@ -2,7 +2,7 @@
 #include"Library.h"
 #include"LibMath.h"
 
-using namespace melLib;
+using namespace MelLib;
 std::unordered_map<std::string, std::unique_ptr<Camera>>Camera::pCameras;
 UINT Camera::createCount = 0;
 std::string Camera::mainCameraName = "";

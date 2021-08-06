@@ -19,7 +19,7 @@
 
 //AddColor‚Æ‚©‚Ü‚Æ‚ß‚æ‚¤!
 
-namespace melLib
+namespace MelLib
 {
 	
 	//ƒ‚ƒfƒ‹‚ÌÀ•W‚È‚Ç‚ğ‚Ü‚Æ‚ß‚½‚à‚Ì

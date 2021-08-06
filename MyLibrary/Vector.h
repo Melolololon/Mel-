@@ -1,7 +1,7 @@
 #pragma once
 #include<DirectXMath.h>
 
-namespace melLib
+namespace MelLib
 {
 	struct Vector2;
 	struct Vector3;

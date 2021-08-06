@@ -1,7 +1,7 @@
 #include "Sound.h"
 
 
-using namespace melLib;
+using namespace MelLib;
 
 IXAudio2* Sound::iXAudio2;
 

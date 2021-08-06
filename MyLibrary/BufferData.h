@@ -1,5 +1,5 @@
 #pragma once
-namespace melLib 
+namespace MelLib 
 {
 
 	struct ConstBufferData

@@ -1,6 +1,6 @@
 #pragma once
 #include<Windows.h>
-namespace melLib
+namespace MelLib
 {
 	//マイクロ秒タイマー
 	class MicroTimer

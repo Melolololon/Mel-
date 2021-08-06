@@ -2,7 +2,7 @@
 #include"CreateBuffer.h"
 #include"PipelineState.h"
 
-using namespace melLib;
+using namespace MelLib;
 
 ID3D12Device* Sprite::device;
 ID3D12GraphicsCommandList* Sprite::cmdList;

@@ -5,7 +5,7 @@
 #include<DirectXMath.h>
 
 
-using namespace melLib;
+using namespace MelLib;
 
 ModelLoader::ModelLoader()
 {

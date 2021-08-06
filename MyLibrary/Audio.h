@@ -6,7 +6,7 @@
 #include<inttypes.h>
 using namespace Microsoft::WRL;
 
-namespace melLib 
+namespace MelLib 
 {
 	//オーディオクラス(XAudio2管理クラス)
 	class Audio

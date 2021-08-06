@@ -2,7 +2,7 @@
 #include"CreateBuffer.h"
 #include"Sprite.h"
 
-using namespace melLib;
+using namespace MelLib;
 std::unordered_map<std::string, std::unique_ptr<Texture>>Texture::pTextures;
 std::vector<UINT>Texture::eraseTextureNumber;
 UINT Texture::loadTextureNumber = 1;

@@ -1,6 +1,6 @@
 #include "FrameTimer.h"
 
-using namespace melLib;
+using namespace MelLib;
 std::vector<FrameTimer*>FrameTimer::pTimers;
 
 FrameTimer::FrameTimer()

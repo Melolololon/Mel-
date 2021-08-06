@@ -1,6 +1,6 @@
 #include "Curve.h"
 
-using namespace melLib;
+using namespace MelLib;
 void Curve::SetPoints(const std::vector<Vector2>& points)
 {
 	auto pointsSize = points.size();

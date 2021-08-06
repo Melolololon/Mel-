@@ -2,7 +2,7 @@
 #include<vector>
 #include"Vector.h"
 
-namespace melLib
+namespace MelLib
 {
 	//ベジェ、スプラインなどの曲線クラス
 	class Curve

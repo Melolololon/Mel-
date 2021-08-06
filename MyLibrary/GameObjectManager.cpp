@@ -6,7 +6,7 @@
 #include"Values.h"
 
 
-using namespace melLib;
+using namespace MelLib;
 
 GameObjectManager::GameObjectManager()
 {

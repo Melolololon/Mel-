@@ -2,7 +2,7 @@
 #include"DirectInput.h"
 
 
-using namespace melLib;
+using namespace MelLib;
 
 #pragma region Å’ZŒo˜H
 

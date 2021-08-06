@@ -9,7 +9,7 @@
 using namespace Microsoft::WRL;
 
 
-namespace melLib
+namespace MelLib
 {
 	//サウンドのパラメータ
 	struct PlaySoundData

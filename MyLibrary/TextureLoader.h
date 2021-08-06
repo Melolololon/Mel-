@@ -2,7 +2,7 @@
 #include<vector>
 #include"DirectXStruct.h"
 
-namespace melLib 
+namespace MelLib 
 {
 	class TextureLoader
 	{

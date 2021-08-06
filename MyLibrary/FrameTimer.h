@@ -7,7 +7,7 @@
 //関数呼び出してる間ストップしない(Updateする)って仕様にする?
 
 
-namespace melLib
+namespace MelLib
 {
 	//フレームタイマー(プログラム依存)
 	class FrameTimer

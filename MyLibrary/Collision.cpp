@@ -1,7 +1,7 @@
 #include "Collision.h"
 #include"LibMath.h"
 
-using namespace melLib;
+using namespace MelLib;
 
 #pragma region 2D
 

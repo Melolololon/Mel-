@@ -3,7 +3,7 @@
 #include<unordered_map>
 #include"Scene.h"
 
-namespace melLib 
+namespace MelLib 
 {
 	class SceneManager final
 	{

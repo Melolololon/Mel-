@@ -4,7 +4,7 @@
 #include<filesystem>
 
 
-using namespace melLib;
+using namespace MelLib;
 
 FbxLoader::FbxLoader()
 {

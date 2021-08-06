@@ -2,7 +2,7 @@
 #include"Sprite2D.h"
 #include"TextureFont.h"
 
-namespace melLib
+namespace MelLib
 {
 	class SpriteFont2D
 	{

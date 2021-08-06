@@ -1,6 +1,6 @@
 #pragma once
 
-namespace melLib
+namespace MelLib
 {
 	enum class FORMAT_TYPE
 	{

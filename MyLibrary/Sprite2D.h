@@ -2,7 +2,7 @@
 #include "Sprite2DBase.h"
 
 //拡縮だけ頂点いじる?ピクセル単位の拡縮やりやすそうだし
-namespace melLib
+namespace MelLib
 {
 	//スプライトクラス
 	class Sprite2D :

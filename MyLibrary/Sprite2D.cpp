@@ -1,6 +1,6 @@
 #include "Sprite2D.h"
 
-using namespace melLib;
+using namespace MelLib;
 
 std::unordered_map<std::string, std::unique_ptr<Sprite2D>> Sprite2D::pSprite2D;
 

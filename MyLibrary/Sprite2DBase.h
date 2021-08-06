@@ -2,7 +2,7 @@
 #include"Sprite.h"
 #include"PipelineState.h"
 
-namespace melLib
+namespace MelLib
 {
 	//スプライト2D基底クラス
 	class Sprite2DBase :public Sprite

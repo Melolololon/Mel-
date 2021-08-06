@@ -3,7 +3,7 @@
 #include"Vector.h"
 #include<DirectXMath.h>
 
-namespace melLib
+namespace MelLib
 {
 	struct Matrix
 	{

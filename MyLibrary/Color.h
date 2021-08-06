@@ -4,7 +4,7 @@
 
 //ColorŒ^‚ÆColorAlpha‚ð•ª‚¯‚é?
 
-namespace melLib
+namespace MelLib
 {
 	struct Color
 	{

@@ -3,7 +3,7 @@
 //Spriteを途中でテクスチャ変えたり、べた塗りにしたりできるようにする
 //そうしないとスプライトフォントのスプライトを先に用意できない
 
-using namespace melLib;
+using namespace MelLib;
 SpriteFont2D* SpriteFont2D::GetInstance()
 {
 	static SpriteFont2D inst;

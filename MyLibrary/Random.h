@@ -2,7 +2,7 @@
 #include"Vector.h"
 #include<vector>
 
-namespace melLib
+namespace MelLib
 {
 	class Random
 	{

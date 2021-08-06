@@ -1,7 +1,7 @@
 #include "Sprite3D.h"
 #include"RenderTarget.h"
 
-using namespace melLib;
+using namespace MelLib;
 std::unordered_map<std::string, std::unique_ptr<Sprite3D>> Sprite3D::pSprite3D;
 PipelineState Sprite3D::defaultPipeline;
 DirectX::XMMATRIX Sprite3D::viewAndProjectionMatrix;

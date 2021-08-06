@@ -6,7 +6,7 @@
 #include<xaudio2.h>
 #pragma comment(lib,"xaudio2.lib")
 
-namespace melLib
+namespace MelLib
 {
 	//サウンドのデータ
 	class SoundData

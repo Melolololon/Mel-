@@ -4,7 +4,7 @@
 #include"DirectionalLight.h"
 
 
-using namespace melLib;
+using namespace MelLib;
 
 std::unordered_map<std::string, std::unique_ptr<ModelObject>>ModelObject::pModelObjects;
 

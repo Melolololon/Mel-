@@ -1,6 +1,6 @@
 #include "DirectionalLight.h"
 
-using namespace melLib;
+using namespace MelLib;
 std::unordered_map<std::string, std::unique_ptr<DirectionalLight>>DirectionalLight::pLights;
 DirectionalLight::UINT DirectionalLight::createCount = 0;
 std::string DirectionalLight::mainCameraName = "";

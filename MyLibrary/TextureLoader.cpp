@@ -1,7 +1,7 @@
 #include "TextureLoader.h"
 
 
-using namespace melLib;
+using namespace MelLib;
 
 BMPData TextureLoader::LoadBMP(const char* texturepath)
 {

@@ -1,7 +1,7 @@
 #pragma once
 //’l‚ğ•¡”‚Ü‚Æ‚ß‚½‚à‚Ì
 
-namespace melLib
+namespace MelLib
 {
 	template<class V>
 	struct Value2

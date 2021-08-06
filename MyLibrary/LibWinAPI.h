@@ -5,7 +5,7 @@
 
 //L"EDIT"とかじゃない子ウィンドウは、親の名前渡さないといけない?
 
-namespace melLib
+namespace MelLib
 {
 	class LibWinAPI
 	{

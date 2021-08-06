@@ -4,7 +4,7 @@
 #include<unordered_map>
 #include"Vector.h"
 
-namespace melLib
+namespace MelLib
 {
 
 	class ModelLoader

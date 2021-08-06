@@ -10,7 +10,7 @@
 
 //判定を2回確認するの処理多い(objAとobjBの判定求めるとき、objAだけ、objBだけHitを呼び出すのがもったいない)からどうにかする。
 
-namespace melLib
+namespace MelLib
 {
 	class GameObjectManager
 	{

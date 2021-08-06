@@ -6,7 +6,7 @@
 
 //‚±‚êƒƒ“ƒo•Ï”‚É‚µ‚È‚¢‚ÆHWND‚ªNULL‚É‚È‚é
 //WNDCLASSEX LibWinAPI::w;
-using namespace melLib;
+using namespace MelLib;
 
 HWND LibWinAPI::CreateNormalWindow
 (
