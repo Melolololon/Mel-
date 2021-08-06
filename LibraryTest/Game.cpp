@@ -30,6 +30,7 @@ void Game::Run()
 
 		if (melLib::Input::KeyTrigger(DIK_ESCAPE))melLib::Library::EndFlagTrue();
 		
+		
 
 		Update();
 		Draw();
@@ -47,7 +48,7 @@ void Game::Initialize()
 {
 	
 
-	melLib::Library::Initialize(1280, 720, melLib::Color(30,30,160,255),L"MyLib");
+	melLib::Library::Initialize(1280, 720, melLib::Color(30,30,160,255),L"MELLib");
 	melLib::Library::SetFramesPerSecond60(true);
 	
 	//カメラは各シーンに移動しました
