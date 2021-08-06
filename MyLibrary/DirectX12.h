@@ -36,10 +36,6 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
-#include"Model.h"
-#include"PrimitiveModel.h"
-#include"ObjModel.h"
-#include"FbxModel.h"
 #include"Sprite.h"
 #include"Sprite2DBase.h"
 #include"Sprite3D.h"

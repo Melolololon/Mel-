@@ -219,9 +219,6 @@ namespace melLib
 		float alpha;
 
 
-
-
-
 		std::string materialName;
 		std::string textureName;
 

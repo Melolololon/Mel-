@@ -1,8 +1,6 @@
 #include "DirectX12.h"
 #include"LibMath.h"
 #include"FbxLoader.h"
-#include"ObjModel.h"
-#include"PrimitiveModel.h"
 #include"DirectionalLight.h"
 #include"RenderTarget.h"
 
