@@ -28,7 +28,7 @@ void Game::Run()
 	{
 		melLib::Library::LoopStartProcess();
 
-		if (melLib::Input::KeyTrigger(DIK_SPACE))melLib::Library::EndFlagTrue();
+		if (melLib::Input::KeyTrigger(DIK_ESCAPE))melLib::Library::EndFlagTrue();
 		
 
 		Update();

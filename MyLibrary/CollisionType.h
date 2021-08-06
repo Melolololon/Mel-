@@ -15,14 +15,16 @@ namespace melLib
 		bool capsule = false;
 	};
 
-	enum class CollisionType2D
+	//2D‚ÌŒ`ó‚Ì—ñ‹“
+	enum class ShapeType2D
 	{
 		RECT,
 		CIRCLE,
 		LINE_SEGMENT,
 	};
 
-	enum class CollisionType3D
+	//3D‚ÌŒ`ó‚Ì—ñ‹“
+	enum class ShapeType3D
 	{
 		SPHERE,
 		BOX,

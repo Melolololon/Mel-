@@ -7,8 +7,8 @@ CollisionTestObject::CollisionTestObject(const melLib::Vector3& pos, const bool 
 {
 	position = pos;
 	speed = 0.25f;
-	model[0] = std::make_unique<melLib::ModelObject>(melLib::ModelData::Get("box"), nullptr);
-	model[1] = std::make_unique<melLib::ModelObject>(melLib::ModelData::Get("box"), nullptr);
+	model[0] = std::make_unique<melLib::ModelObject>(melLib::ModelData::Get(melLib::ShapeType3D::BOX), nullptr);
+	model[1] = std::make_unique<melLib::ModelObject>(melLib::ModelData::Get(melLib::ShapeType3D::BOX), nullptr);
 
 	/*collisionFlag.sphere = true;
 	sphereData.resize(1);
@@ -62,6 +62,10 @@ void CollisionTestObject::Update()
 
 	model[0]->SetPosition(lineSegmentData[0].position[0]);
 	model[1]->SetPosition(lineSegmentData[0].position[1]);
+
+	angle.y += 3.0f;
+	model[0]->SetAngle(angle);
+	model[1]->SetAngle(angle);
 }
 
 void CollisionTestObject::Draw()
@@ -75,9 +79,9 @@ void CollisionTestObject::Draw()
 void CollisionTestObject::Hit
 (
 	const GameObject* const object, 
-	const melLib::CollisionType3D collisionType, 
+	const melLib::ShapeType3D collisionType, 
 	const int arrayNum, 
-	const melLib::CollisionType3D hitObjColType, 
+	const melLib::ShapeType3D hitObjColType, 
 	const int hitObjArrayNum
 )
 {

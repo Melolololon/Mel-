@@ -11,6 +11,8 @@ private:
 	std::unique_ptr<melLib::ModelObject> model[2];
 	bool hitFlag = false;
 	bool inputFlag = false;
+
+	melLib::Vector3 angle = 0;
 public:
 	CollisionTestObject(const melLib::Vector3& pos,const bool inputMove);
 
@@ -35,9 +37,9 @@ public:
 	void Hit
 	(
 		const GameObject* const  object,
-		const melLib::CollisionType3D collisionType,
+		const melLib::ShapeType3D collisionType,
 		const int arrayNum,
-		const melLib::CollisionType3D hitObjColType,
+		const melLib::ShapeType3D hitObjColType,
 		const int hitObjArrayNum
 	)override;
 };

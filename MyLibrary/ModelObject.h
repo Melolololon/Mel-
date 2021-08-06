@@ -129,9 +129,7 @@ namespace melLib
 
 
 #pragma region プリミティブモデル生成
-		//プリミティブモデルの列挙型を渡して生成
-		//モデルオブジェクトに、モデルから判定生成する機能作る(ModelDataだと、拡縮を考慮できない)
-		void Create(const CollisionType3D type);
+	
 
 #pragma endregion プリミティブモデル生成
 

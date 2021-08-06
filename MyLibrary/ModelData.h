@@ -12,6 +12,7 @@
 #include"Texture.h"
 #include"Color.h"
 #include"BufferData.h"
+#include"CollisionType.h"
 
 
 #include<fbxsdk.h>
@@ -53,6 +54,7 @@ namespace melLib
 		enum class ModelFormat
 		{
 			MODEL_FORMAT_NONE,
+			MODEL_FORMAT_PRIMITIVE,
 			MODEL_FORMAT_OBJ,
 			MODEL_FORMAT_FBX,
 		};
@@ -122,8 +124,11 @@ namespace melLib
 
 #pragma endregion
 
-
+		//モデルを格納する配列
 		static std::unordered_map<std::string, std::unique_ptr<ModelData>>pModelDatas;
+		//プリミティブモデルを格納する配列
+		static std::unordered_map<ShapeType3D, std::unique_ptr<ModelData>>pPrimitiveModelDatas;
+
 
 		static ID3D12Device* device;
 
@@ -155,7 +160,7 @@ namespace melLib
 		Color color;
 
 		//モデルファイルに何個モデルがあるか
-		UINT modelFileObjectNum = 0;
+		UINT modelFileObjectNum = 1;
 		std::vector<std::vector<FbxVertex>>vertices;
 		//スムーズシェーディング用法線
 		std::vector<std::vector<DirectX::XMFLOAT3>> smoothNormal;
@@ -171,10 +176,6 @@ namespace melLib
 		FbxData fbxData;
 
 #pragma endregion
-
-
-
-
 
 
 
@@ -227,10 +228,14 @@ namespace melLib
 		/// テクスチャバッファ、ビューの生成を行います。
 		/// </summary>
 		/// <param name="color"></param>
-		void CteateTextureBufferAndViewSetColor();
+		void CteateTextureBufferSetColor();
 
 #pragma endregion
 
+
+		static void CreatePrimitiveModel();
+		static void CalcPrimitiveModelNormal(std::vector<FbxVertex>& vertices,const std::vector<USHORT>& indices);
+		void CreateModel();
 
 		/// <summary>
 		/// モデルの頂点データ、マテリアルを読み込みます。
@@ -258,7 +263,6 @@ namespace melLib
 		(
 			const size_t vertexSize,
 			const  std::vector<size_t>& vertexNum,
-			const std::vector<std::vector<FbxVertex>>& vertices,
 			const std::vector<std::vector<USHORT>>& indices
 		);
 
@@ -267,6 +271,7 @@ namespace melLib
 
 		ModelData() {}
 		~ModelData() {}
+
 
 		/// <summary>
 		/// モデルを読み込みます。
@@ -277,6 +282,7 @@ namespace melLib
 		static bool Load(const std::string& path, const std::string& name);
 
 		static ModelData* Get(const std::string& name) { return pModelDatas[name].get(); }
+		static ModelData* Get(const ShapeType3D type) { return pPrimitiveModelDatas[type].get(); }
 
 		static void Delete(const std::string& name);
 
