@@ -1,5 +1,5 @@
 #include "Scene.h"
-
+#include"ModelData.h"
 
 using namespace melLib;
 
@@ -37,4 +37,9 @@ Scene* Scene::GetNextScene()
 void* Scene::GetPtr() 
 {
 	return this;
+}
+
+void melLib::Scene::ResourceBatchDeletion()
+{
+	ModelData::BatchDeletion();
 }

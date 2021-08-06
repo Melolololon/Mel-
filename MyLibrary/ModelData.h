@@ -128,7 +128,7 @@ namespace melLib
 		static std::unordered_map<std::string, std::unique_ptr<ModelData>>pModelDatas;
 		//プリミティブモデルを格納する配列
 		static std::unordered_map<ShapeType3D, std::unique_ptr<ModelData>>pPrimitiveModelDatas;
-
+	
 
 		static ID3D12Device* device;
 
@@ -143,6 +143,8 @@ namespace melLib
 		std::vector<ComPtr<ID3D12Resource>> textureBuffers;
 
 #pragma endregion
+
+		bool batchDeletionFlag = false;
 
 #pragma region モデル情報
 		ModelFormat modelFormat = ModelFormat::MODEL_FORMAT_NONE;
@@ -276,16 +278,21 @@ namespace melLib
 		/// <summary>
 		/// モデルを読み込みます。
 		/// </summary>
-		/// <param name="path"></param>
-		/// <param name="name"></param>
+		/// <param name="path">パス</param>
+		/// <param name="batchDeletionFlag">一括削除対象かどうか</param>
+		/// <param name="name">登録名</param>
 		/// <returns></returns>
-		static bool Load(const std::string& path, const std::string& name);
+		static bool Load(const std::string& path,const bool batchDeletionFlag, const std::string& name);
 
 		static ModelData* Get(const std::string& name) { return pModelDatas[name].get(); }
 		static ModelData* Get(const ShapeType3D type) { return pPrimitiveModelDatas[type].get(); }
 
 		static void Delete(const std::string& name);
-
+		
+		/// <summary>
+		/// 一括削除の対象になっているモデルデータを削除します。
+		/// </summary>
+		static void BatchDeletion();
 
 
 

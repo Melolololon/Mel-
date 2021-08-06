@@ -56,8 +56,8 @@ void Game::Initialize()
 
 #pragma region リソース読み込み
 
-	melLib::ModelData::Load("Resources/Obj/Ball/ball.obj", "ball");
-	melLib::ModelData::Load("Resources/Obj/Box/box.obj", "box");
+	melLib::ModelData::Load("Resources/Obj/Ball/ball.obj", false,"ball");
+	melLib::ModelData::Load("Resources/Obj/Box/box.obj", false,"box");
 #pragma endregion
 
 #pragma region マネージャー初期化

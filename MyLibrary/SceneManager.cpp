@@ -38,6 +38,8 @@ void SceneManager::Update()
 	{
 		//終了処理
 		currentScene->Finitialize();
+		//一括削除対象リソースを削除
+		currentScene->ResourceBatchDeletion();
 
 		//シーン切り替え
 

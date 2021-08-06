@@ -40,7 +40,10 @@ void Play::Update()
 
 	melLib::GameObjectManager::GetInstance()->Update();
 
-
+	if (melLib::Input::KeyTrigger(DIK_1))
+	{
+		isEnd = true;
+	}
 }
 
 melLib::Vector2 testScale = 1;

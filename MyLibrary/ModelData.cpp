@@ -10,6 +10,7 @@ using namespace melLib;
 std::unordered_map<std::string, std::unique_ptr<ModelData>>ModelData::pModelDatas;
 std::unordered_map<ShapeType3D, std::unique_ptr<ModelData>>ModelData::pPrimitiveModelDatas;
 
+
 ID3D12Device* ModelData::device = nullptr;
 
 
@@ -298,7 +299,7 @@ void melLib::ModelData::CreateModel()
 	modelFormat = ModelFormat::MODEL_FORMAT_PRIMITIVE;
 }
 
-bool ModelData::Load(const std::string& path, const std::string& name)
+bool ModelData::Load(const std::string& path, const bool batchDeletionFlag, const std::string& name)
 {
 	pModelDatas.emplace(name, std::make_unique<ModelData>());
 	bool result = pModelDatas[name]->LoadModel(path, name);
@@ -309,12 +310,33 @@ bool ModelData::Load(const std::string& path, const std::string& name)
 		return false;
 	}
 	
+	pModelDatas[name]->batchDeletionFlag = batchDeletionFlag;
+	
+
 	return true;
 }
 
 void ModelData::Delete(const std::string& name)
 {
 	pModelDatas.erase(name);
+}
+
+void melLib::ModelData::BatchDeletion()
+{
+	std::vector<std::string>deleteName;
+	deleteName.reserve(pModelDatas.size());
+	for(const auto& p : pModelDatas)
+	{
+		if(p.second->batchDeletionFlag)
+		{
+			deleteName.push_back(p.first);
+		}
+	}
+
+	for(const auto& name : deleteName)
+	{
+		pModelDatas.erase(name);
+	}
 }
 
 void ModelData::Initialize(ID3D12Device* pDevice)

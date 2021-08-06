@@ -19,7 +19,7 @@ namespace melLib
 		virtual void Finitialize() = 0;//終了処理
 		virtual Scene* GetNextScene() = 0;//次のシーンの指定
 		bool GetIsEnd();//シーンが終わったかどうか
-
 		void* GetPtr();
+		void ResourceBatchDeletion();
 	};
 }
