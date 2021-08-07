@@ -85,6 +85,7 @@ void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
 {
 	PipelineStateData pData = PipelineState::GetDefaultPipelineData(PipelineStateType::MODEL);
 	pData.drawMode = DrawMode::WIREFRAME;
+	pData.cullMode = CullMode::NONE;
 
 	collisionCheckModelPipelineState.CreatePipeline
 	(
@@ -129,6 +130,8 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 	//Box
 	createOrDeleteModel(boxData.size(), boxModelObject, ShapeType3D::BOX);
 	
+	//Sphere
+	createOrDeleteModel(sphereData.size(), sphereModelObject, ShapeType3D::BOX);
 }
 
 void MelLib::GameObject::SetCollisionCheckModelData()
@@ -140,6 +143,14 @@ void MelLib::GameObject::SetCollisionCheckModelData()
 		boxModelObject[i].SetScale(boxData[i].size);
 		boxModelObject[i].SetPosition(boxData[i].position);
 	}
+
+	//Sphere
+	dataNum = sphereData.size();
+	for (size_t i = 0; i < dataNum; i++)
+	{
+		sphereModelObject[i].SetScale(sphereData[i].r);
+		sphereModelObject[i].SetPosition(sphereData[i].position);
+	}
 }
 
 void MelLib::GameObject::DrawCollisionCheckModel()
@@ -147,6 +158,11 @@ void MelLib::GameObject::DrawCollisionCheckModel()
 	for(auto& box : boxModelObject)
 	{
 		box.Draw();
+	}
+
+	for (auto& sphere : sphereModelObject)
+	{
+		sphere.Draw();
 	}
 }
 
