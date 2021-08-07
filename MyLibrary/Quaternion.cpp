@@ -39,6 +39,16 @@ Vector3 MelLib::Quaternion::ToVector3()const
 	return Vector3(x, y, z);
 }
 
+Quaternion MelLib::Quaternion::ToQuaternion(const Vector2& v)
+{
+	return Quaternion(1, v.x, v.y, 0);
+}
+
+Quaternion MelLib::Quaternion::ToQuaternion(const Vector3& v)
+{
+	return Quaternion(1, v.x, v.y, v.z);
+}
+
 
 
 

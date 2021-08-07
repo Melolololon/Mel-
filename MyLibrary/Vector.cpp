@@ -43,6 +43,21 @@ Quaternion MelLib::Vector2::ToQuaternion()const
 	return Quaternion(1, x, y, 0);
 }
 
+Vector2 MelLib::Vector2::ToVector2(const Vector3& v)
+{
+	return Vector2(v.x, v.y);
+}
+
+Vector2 MelLib::Vector2::ToVector2(const Quaternion& q)
+{
+	return Vector2(q.x, q.y);
+}
+
+Vector2 MelLib::Vector2::ToVector2(const DirectX::XMFLOAT2& f)
+{
+	return Vector2(f.x, f.y);
+}
+
 #pragma region ‰‰ŽZŽq
 
 
@@ -293,6 +308,21 @@ Vector3::Vector3(const DirectX::XMVECTOR& v)
 
 Vector2 Vector3::ToVector2()const { return Vector2(x, y); }
 Quaternion Vector3::ToQuaternion()const { return Quaternion(1, x, y, z); }
+
+Vector3 MelLib::Vector3::ToVector3(const Vector2& v)
+{
+	return Vector3(v.x, v.y, 0);
+}
+
+Vector3 MelLib::Vector3::ToVector3(const Quaternion& q)
+{
+	return Vector3(q.x, q.y, q.z);
+}
+
+Vector3 MelLib::Vector3::ToVector3(const DirectX::XMFLOAT3& f)
+{
+	return Vector3(f.x, f.y, f.z);
+}
 
 #pragma region ‰‰ŽZŽq
 

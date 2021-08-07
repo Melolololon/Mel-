@@ -19,6 +19,10 @@ namespace MelLib
 		Vector2 ToVector2()const;
 		Vector3 ToVector3()const;
 
+
+		static Quaternion ToQuaternion(const Vector2& v);
+		static Quaternion ToQuaternion(const Vector3& v);
+
 		Quaternion operator* (const Quaternion& q)const;
 		void operator*= (const Quaternion& q);
 

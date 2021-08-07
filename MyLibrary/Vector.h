@@ -22,8 +22,12 @@ namespace MelLib
 
 		Vector3 ToVector3()const;
 		Quaternion ToQuaternion()const;
-
 		DirectX::XMFLOAT2 ToXMFLOAT2()const	{return { x,y };}
+
+		static Vector2 ToVector2(const Vector3& v);
+		static Vector2 ToVector2(const Quaternion& q);
+		static Vector2 ToVector2(const DirectX::XMFLOAT2& f);
+
 #pragma region ‰‰ŽZŽq
 
 		void operator+= (const Vector2& vector);
@@ -106,6 +110,10 @@ namespace MelLib
 
 		Vector2 ToVector2() const;
 		Quaternion ToQuaternion()const;
+
+		static Vector3 ToVector3(const Vector2& v);
+		static Vector3 ToVector3(const Quaternion& q);
+		static Vector3 ToVector3(const DirectX::XMFLOAT3& f);
 
 		DirectX::XMFLOAT3 ToXMFLOAT3() const { return { x,y ,z }; }
 
