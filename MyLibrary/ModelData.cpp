@@ -346,6 +346,7 @@ void ModelData::Initialize(ID3D12Device* pDevice)
 }
 
 
+
 bool ModelData::LoadModel(const std::string& path, const std::string& name)
 {
 	bool result = false;
@@ -675,3 +676,24 @@ void ModelData::BufferPreparationSetColor
 
 
 }
+
+
+std::vector<std::vector<Vector3>> MelLib::ModelData::GetVerticesPosition()
+{
+	int verticesSize = vertices.size();
+	std::vector<std::vector<Vector3>>verticesPos(verticesSize);
+	for (int i = 0; i < verticesSize; i++)
+	{
+		verticesPos[i].resize(vertices[i].size());
+
+
+		for (int j = 0,size = verticesPos[i].size(); j < verticesSize; j++)
+		{
+			verticesPos[i][j] = vertices[i][j].pos;
+		}
+	}
+
+	return verticesPos;
+	
+}
+

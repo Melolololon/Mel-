@@ -16,7 +16,7 @@ void PipelineState::SetPipelineDesc
 (
 	const PipelineData& pipelineData,
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc,
-	const PipelineType type,
+	const PipelineStateType type,
 	const int renderTargetNum
 )
 {
@@ -24,19 +24,19 @@ void PipelineState::SetPipelineDesc
 	//非共通設定
 	switch (type)
 	{
-	case PipelineType::MODEL:
+	case PipelineStateType::MODEL:
 		desc.pRootSignature = modelRootSignature;
 
 		//テッセレーションがある場合、これにする
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
 		break;
-	case PipelineType::SPRITE:
+	case PipelineStateType::SPRITE:
 		desc.pRootSignature = spriteRootSignature;
 
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		break;
 
-	case PipelineType::RENDER_TARGET:
+	case PipelineStateType::RENDER_TARGET:
 		desc.pRootSignature = renderTargetRootSignature;
 
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -110,7 +110,7 @@ void PipelineState::SetPipelineDesc
 	//ブレンド
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
 
-	if (type == PipelineType::RENDER_TARGET) 
+	if (type == PipelineStateType::RENDER_TARGET) 
 	{
 		blenddesc.BlendEnable = false;//ブレンドを有効にするかのフラグ
 	}
@@ -169,11 +169,11 @@ void PipelineState::Create
 (
 	const PipelineData& pipelineData,
 	const ShaderData& vShaderData,
-	const ShaderData& gShaderData,
 	const ShaderData& hShaderData,
 	const ShaderData& dShaderData,
+	const ShaderData& gShaderData,
 	const ShaderData& pShaderData,
-	const PipelineType pipelineType,
+	const PipelineStateType pipelineType,
 	const std::vector<InputLayoutData>* inputLayoutData,
 	const std::string& modelClassName,
 	const int renderTargetNum,
@@ -201,11 +201,11 @@ bool PipelineState::CreatePipeline
 (
 	const PipelineData& pipelineData,
 	const ShaderData& vShaderData,
-	const ShaderData& gShaderData,
 	const ShaderData& hShaderData,
 	const ShaderData& dShaderData,
+	const ShaderData& gShaderData,
 	const ShaderData& pShaderData,
-	const PipelineType pipelineType,
+	const PipelineStateType pipelineType,
 	const std::vector<InputLayoutData>* inputLayoutData,
 	const std::string& modelClassName,
 	const int renderTargetNum
@@ -324,7 +324,7 @@ bool PipelineState::CreatePipeline
 
 		switch (pipelineType)
 		{
-		case PipelineType::MODEL:
+		case PipelineStateType::MODEL:
 			inputLayoutVector.resize(3);
 			inputLayoutVector[0] =
 			{
@@ -357,8 +357,8 @@ bool PipelineState::CreatePipeline
 					0
 			};
 			break;
-		case PipelineType::SPRITE:
-		case PipelineType::RENDER_TARGET:
+		case PipelineStateType::SPRITE:
+		case PipelineStateType::RENDER_TARGET:
 			inputLayoutVector.resize(2);
 			inputLayoutVector[0] =
 			{
@@ -405,7 +405,7 @@ bool PipelineState::CreatePipeline
 			errstr += "\n";
 
 			OutputDebugStringA(errstr.c_str());
-			exit(1);
+			//exit(1);
 		}
 	};
 
@@ -640,11 +640,12 @@ void PipelineState::Delete(const std::string& name)
 	pPipelineState.erase(name);
 }
 
-void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineType type)
+PipelineData PipelineState::GetDefaultPipelineData(const PipelineStateType type)
 {
+	PipelineData data;
 	switch (type)
 	{
-	case PipelineType::MODEL:
+	case PipelineStateType::MODEL:
 		data.drawMode = DrawMode::SOLID;
 		data.cullMode = CullMode::BACK;
 		data.blendMode = BlendMode::ADD;
@@ -653,8 +654,8 @@ void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineTyp
 		break;
 
 
-	case PipelineType::SPRITE:
-	case PipelineType::RENDER_TARGET:
+	case PipelineStateType::SPRITE:
+	case PipelineStateType::RENDER_TARGET:
 		data.drawMode = DrawMode::SOLID;
 		data.cullMode = CullMode::NONE;
 		data.blendMode = BlendMode::ADD;
@@ -662,6 +663,7 @@ void PipelineState::GetDefaultPipelineData(PipelineData& data, const PipelineTyp
 		data.alphaWrite = true;
 		break;
 	}
+	return data;
 }
 
 bool PipelineState::Initialize

@@ -10,7 +10,7 @@
 
 namespace MelLib
 {
-	enum class PipelineType
+	enum class PipelineStateType
 	{
 		MODEL,
 		SPRITE,
@@ -29,7 +29,7 @@ namespace MelLib
 		(
 			const PipelineData& pipelineData,
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc,
-			const PipelineType type,
+			const PipelineStateType type,
 			const int renderTargetNum
 		);
 
@@ -55,9 +55,9 @@ namespace MelLib
 		/// </summary>
 		/// <param name="pipelineData">パイプライン情報</param>
 		/// <param name="vShaderData">頂点シェーダー情報</param>
-		/// <param name="gSyaderData">ジオメトリシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
 		/// <param name="hShaderData">ハルシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
 		/// <param name="dShaderData">ドメインシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
+		/// <param name="gShaderData">ジオメトリシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
 		/// <param name="pShaderData">ピクセルシェーダー情報</param>
 		/// <param name="pipelineType">何のパイプラインを生成するか</param>
 		/// <param name="inputLayoutData">インプットレイアウト情報(指定しない場合は、nullptrを渡す)</param>
@@ -69,11 +69,11 @@ namespace MelLib
 		(
 			const PipelineData& pipelineData,
 			const ShaderData& vShaderData,
-			const ShaderData& gShaderData,
 			const ShaderData& hShaderData,
 			const ShaderData& dShaderData,
+			const ShaderData& gShaderData,
 			const ShaderData& pShaderData,
-			const PipelineType pipelineType,
+			const PipelineStateType pipelineType,
 			const std::vector<InputLayoutData>* inputLayoutData,
 			const std::string& modelClassName,
 			const int renderTargetNum,
@@ -88,9 +88,9 @@ namespace MelLib
 		/// </summary>
 		/// <param name="pipelineData">パイプライン情報</param>
 		/// <param name="vShaderData">頂点シェーダー情報</param>
-		/// <param name="gSyaderData">ジオメトリシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
 		/// <param name="hShaderData">ハルシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
 		/// <param name="dShaderData">ドメインシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
+		/// <param name="gShaderData">ジオメトリシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
 		/// <param name="pShaderData">ピクセルシェーダー情報</param>
 		/// <param name="pipelineType">何のパイプラインを生成するか</param>
 		/// <param name="inputLayoutData">インプットレイアウト情報(指定しない場合は、nullptrを渡す)</param>
@@ -101,11 +101,11 @@ namespace MelLib
 		(
 			const PipelineData& pipelineData,
 			const ShaderData& vShaderData,
-			const ShaderData& gShaderData,
 			const ShaderData& hShaderData,
 			const ShaderData& dShaderData,
+			const ShaderData& gShaderData,
 			const ShaderData& pShaderData,
-			const PipelineType pipelineType,
+			const PipelineStateType pipelineType,
 			const std::vector<InputLayoutData>* inputLayoutData,
 			const std::string& modelClassName,
 			const int renderTargetNum
@@ -129,7 +129,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="type"></param>
-		static void GetDefaultPipelineData(PipelineData& data, const PipelineType type);
+		static PipelineData GetDefaultPipelineData( const PipelineStateType type);
 
 		static void SetModelRootSignature(ID3D12RootSignature* sig) { modelRootSignature = sig; }
 		static void SetSpriteRootSignature(ID3D12RootSignature* sig) { spriteRootSignature = sig; }

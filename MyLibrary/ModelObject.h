@@ -136,12 +136,11 @@ namespace MelLib
 
 #pragma endregion 生成
 
-
-
+#pragma region セット
 
 #pragma region 操作見た目変更
 
-#pragma region 共通
+#pragma region 操作
 
 
 		void SetPosition(const Vector3& position);
@@ -169,6 +168,29 @@ namespace MelLib
 #pragma endregion
 
 		void SetPipeline(PipelineState* pipelineState);
+
+#pragma endregion
+
+#pragma region ゲット
+
+		//コンピュートシェーダーで計算したほうがいい。
+		//できそうなら描画時に頂点シェーダーで計算した結果を持ってきたほうがいい。
+		/// <summary>
+		/// 頂点座標を取得します。
+		/// </summary>
+		/// <param name="scaleImpact"></param>
+		/// <param name="angleImpact"></param>
+		/// <param name="transformImpact"></param>
+		/// <param name=""></param>
+		/// <returns></returns>
+		std::vector<std::vector<Vector3>>GetVerticesData
+		(
+			const bool scaleImpact,
+			const bool angleImpact,
+			const bool transformImpact
+		);
+
+#pragma endregion
 
 
 	};

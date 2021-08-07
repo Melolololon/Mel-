@@ -58,7 +58,7 @@ void GameObject::Hit
 //	//}
 //}
 
-bool GameObject::GetEraseManager() { return eraseManager; }
+
 void GameObject::ObjectInitialize() 
 {
 	eraseManager = false;
@@ -71,60 +71,67 @@ void GameObject::CalcMovePhysics()
 	velocity += acceleration;
 	position += velocity;
 }
-//
-//CollisionFlag GameObject::GetCollisionFlag() 
-//{
-//	return collisionFlag;
-//}
-//
-//
-//const void* GameObject::GetPtr()const
-//{
-//	return this;
-//}
-//
-//std::vector<SphereData> GameObject::GetSphereData()
-//{
-//	return sphereData;
-//}
-//
-//std::vector<BoxData> GameObject::GetBoxData()
-//{
-//	return boxData;
-//}
-//
-//std::vector<LineSegment3DData> GameObject::GetLineSegmentData()
-//{
-//	return lineSegmentData;
-//}
-//
-//std::vector<PlaneData> GameObject::GetPlaneData()
-//{
-//	return planeData;
-//}
-//
-//std::vector<BoardData> GameObject::GetBoardData()
-//{
-//	return boardData;
-//}
-//
-//Vector3& GameObject::GetLineSegmentHitPosition(const int  num)
-//{
-//	return lineSegmentData[num].hitPos;
-//}
-//
-//Vector3& GameObject::GetBoardHitPosition(const int  num)
-//{
-//	return boardData[num].hitPos;
-//}
+
+#ifdef _DEBUG
+
+void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
+{
+	PipelineData pData = PipelineState::GetDefaultPipelineData(PipelineStateType::MODEL);
 
 
-//void Object::setLineSegmentDataHitPos(const Vector3& pos, const int& arrayNum)
-//{
-//	lineSegmentData[arrayNum].hitPos = pos;
-//}
-//
-//void Object::setBoardDataHitPos(const Vector3& pos, const int& arrayNum)
-//{
-//	boardData[arrayNum].hitPos = pos;
-//}
+	/*collisionCheckModelPipelineState.CreatePipeline
+	(
+		pData,
+
+		);*/
+}
+
+void MelLib::GameObject::CreateCollisionCheckModel()
+{
+	//îªíËêîÇ…âûÇ∂ÇƒÉÇÉfÉãÇê∂ê¨ÇµÇΩÇËçÌèúÇµÇΩÇËÇµÇ‹Ç∑
+	auto createOrDeleteModel = [](const size_t& dataNum,std::vector<ModelObject>& modelObjcts,const ShapeType3D type)
+	{
+		size_t objNum = modelObjcts.size();
+		if(dataNum > objNum)
+		{
+			size_t addSize = dataNum - objNum;
+			modelObjcts.resize(dataNum);
+
+			//ïsë´ï™ê∂ê¨
+			for(int i = objNum - 1; i < dataNum;i++)
+			{
+				modelObjcts[i].Create(ModelData::Get(type), nullptr);
+			}
+		}
+		else if (dataNum < objNum)
+		{
+			modelObjcts.resize(objNum);
+		}
+
+	};
+
+	//Box
+	createOrDeleteModel(boxData.size(), boxModelObject, ShapeType3D::BOX);
+	
+}
+
+void MelLib::GameObject::SetCollisionCheckModelData()
+{
+	//Box
+	size_t dataNum = boxData.size();
+	for(size_t i = 0; i < dataNum;i++)
+	{
+		boxModelObject[i].SetScale(boxData[i].size);
+		boxModelObject[i].SetPosition(boxData[i].position);
+	}
+}
+
+void MelLib::GameObject::DrawCollisionCheckModel()
+{
+	for(auto& box : boxModelObject)
+	{
+		box.Draw();
+	}
+}
+
+#endif // _DEBUG

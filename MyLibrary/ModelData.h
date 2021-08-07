@@ -369,6 +369,13 @@ namespace MelLib
 		MaterialData GetMaterial(const int objectNum)const { return materials[objectNum]; }
 
 		PbrMaterial GetPbrMaterial(const int objectNum)const { return pbrMaterials[objectNum]; }
+
+		/// <summary>
+		/// モデルの頂点座標を取得します。
+		/// </summary>
+		/// <returns>頂点座標</returns>
+		std::vector<std::vector<Vector3>>GetVerticesPosition();
+
 #pragma endregion
 
 		//フレンドクラスは、privateの変数、関数にアクセスできる

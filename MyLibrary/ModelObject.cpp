@@ -2,7 +2,7 @@
 #include"CreateBuffer.h"
 #include"FbxLoader.h"
 #include"DirectionalLight.h"
-
+#include"Matrix.h"
 
 using namespace MelLib;
 
@@ -737,11 +737,11 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	(
 		data,
 		{ L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" },
+		{ L"LIB","","" },
+		{ L"LIB","","" },
 		{ L"../MyLibrary/FbxGeometryShader.hlsl","main","gs_5_0" },
-		{ L"LIB","","" },
-		{ L"LIB","","" },
 		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" },
-		PipelineType::MODEL,
+		PipelineStateType::MODEL,
 		&ilData,
 		typeid(ModelObject).name(),
 		1
@@ -764,6 +764,8 @@ void ModelObject::SetPipeline(PipelineState* pipelineState)
 		pPipeline[i] = pipelineState;
 	}
 }
+
+
 
 bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name)
 {
@@ -893,4 +895,25 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	pPipeline.resize(modelFileObjectNum, &defaultPipeline);
 
 	return true;
+}
+
+
+
+std::vector<std::vector<Vector3>> MelLib::ModelObject::GetVerticesData(const bool scaleImpact, const bool angleImpact, const bool transformImpact)
+{
+	std::vector<std::vector<Vector3>>verticesPos = pModelData->GetVerticesPosition();
+
+	for (int i = 0, size = verticesPos.size(); i < size; i++)
+	{
+		for (auto& pos : verticesPos[i])
+		{
+			Matrix mat = Matrix::GetTranslationMatrix(pos);
+			if (scaleImpact) mat *= Matrix::GetScalingMatrix(modelConstDatas[i].scale);
+			if (angleImpact)mat *= Matrix::GetRotateZXYMatrix(modelConstDatas[i].angle);
+			if (transformImpact)mat *= Matrix::GetTranslationMatrix(modelConstDatas[i].position);
+			pos = Vector3(mat[3][0], mat[3][1], mat[3][2]);
+		}
+	}
+	return verticesPos;
+
 }

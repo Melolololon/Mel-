@@ -50,7 +50,7 @@ std::array<float, 4> Matrix::operator[](const unsigned int num)const
 
 #pragma endregion
 
-DirectX::XMMATRIX Matrix::ToXMMatrix()
+DirectX::XMMATRIX Matrix::ToXMMATRIX()
 {
 	return DirectX::XMMatrixSet
 	(
@@ -115,6 +115,11 @@ Matrix Matrix::GetRotateZMatrix(const float angle)
 	m[1][1] = std::cos(angle);
 	
 	return m;
+}
+
+Matrix MelLib::Matrix::GetRotateZXYMatrix(const Vector3& angle)
+{
+	return Matrix::GetRotateZMatrix(angle.z) * Matrix::GetRotateXMatrix(angle.x) * Matrix::GetRotateYMatrix(angle.y);
 }
 
 Matrix Matrix::GetScalingMatrix(const Vector3& vector)

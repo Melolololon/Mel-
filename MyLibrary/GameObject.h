@@ -5,6 +5,12 @@
 #include"Vector.h"
 #include"CollisionType.h"
 
+#ifdef _DEBUG
+#include"PipelineState.h"
+#include"ModelObject.h"
+#endif // _DEBUG
+
+
 //オブジェクトマネージャー追加時に判定を選ぶようにする?(判定ごとに追加関数と配列作る)
 
 //GameObjectを継承させてPhysicsObject作ると、Hit関数で重さとか受け取れなくなるからまとめた
@@ -20,6 +26,19 @@ namespace MelLib
 	class GameObject
 	{
 	private:
+
+
+#ifdef _DEBUG
+		//判定確認用モデルのパイプライン
+		static PipelineState collisionCheckModelPipelineState;
+
+		//判定確認用モデル
+
+		std::vector<ModelObject>sphereModelObject;
+		std::vector<ModelObject>boxModelObject;
+		std::vector<ModelObject>capusuleModelObject;
+
+#endif // _DEBUG
 
 	protected:
 
@@ -51,6 +70,7 @@ namespace MelLib
 		std::vector<BoxData> boxData;
 		std::vector<BoxCalcResult> boxCalcResult;
 
+
 		std::vector<LineSegment3DData> lineSegmentData;
 		std::vector<LineSegment3DCalcResult> lineSegmentCalcResult;
 
@@ -61,6 +81,8 @@ namespace MelLib
 		std::vector<BoardCalcResult>boardCalcResult;
 
 		std::vector<CapsuleData>capsuleData;
+
+
 #pragma endregion
 
 
@@ -69,6 +91,7 @@ namespace MelLib
 
 		//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
 		bool eraseManager = false;
+		
 
 	public:
 
@@ -127,7 +150,7 @@ namespace MelLib
 		short GetSortNumber() const { return sortNumber; }
 
 		//オブジェクトマネージャーから削除するかどうかのフラグを返す
-		bool GetEraseManager();
+		bool GetEraseManager() { return eraseManager; }
 
 #pragma region 判定用関数
 
@@ -150,6 +173,17 @@ namespace MelLib
 		//Vector3& GetBoardHitPosition(const int num);
 		//BoxHitDirection& GetSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }
 		//BoxHitDirection& GetBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
+
+#ifdef _DEBUG
+		static void CreateCollisionCheckModelPipelineState();
+
+		//衝突確認用モデル生成、削除
+		void CreateCollisionCheckModel();
+		//衝突確認用モデルのデータセット
+		void SetCollisionCheckModelData();
+		//衝突確認用モデルの描画
+		void DrawCollisionCheckModel();
+#endif // _DEBUG
 
 #pragma endregion
 

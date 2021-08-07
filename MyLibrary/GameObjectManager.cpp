@@ -82,6 +82,12 @@ void GameObjectManager::Update()
 	for (int i = 0; i < objectSize; i++)
 	{
 		collisionFlags[i] = objects[i]->GetCollisionFlag();
+
+
+#ifdef _DEBUG
+		objects[i]->CreateCollisionCheckModel();
+		objects[i]->SetCollisionCheckModelData();
+#endif // _DEBUG
 	}
 
 
@@ -610,7 +616,12 @@ void GameObjectManager::Draw()
 {
 	for (auto& o : objects)
 	{
-		o.get()->Draw();
+		o->Draw();
+		
+#ifdef _DEBUG
+
+		o->DrawCollisionCheckModel();
+#endif // _DEBUG
 	}
 }
 

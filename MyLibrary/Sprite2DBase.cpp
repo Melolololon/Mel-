@@ -42,7 +42,7 @@ bool Sprite2DBase::Initialize(const int winWidth, const int winHeight)
 		{ L"NULL","","" },
 		{ L"NULL","","" },
 		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
-		PipelineType::SPRITE,
+		PipelineStateType::SPRITE,
 		nullptr,
 		typeid(Sprite2DBase).name(),
 		1

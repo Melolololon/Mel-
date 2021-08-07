@@ -10,7 +10,17 @@ namespace MelLib
 		Matrix();
 		Matrix(const DirectX::XMMATRIX& m);
 
-		std::array<std::array<float, 4>, 4> matrix;
+		std::array<std::array<float, 4>, 4> matrix =
+		{
+			{
+				{0,0,0,0},
+				{0,0,0,0},
+				{0,0,0,0},
+				{0,0,0,0}
+			}
+		};
+		
+		
 
 		Matrix operator*(const Matrix& mat)const;
 		void operator*=(const Matrix& mat);
@@ -22,7 +32,7 @@ namespace MelLib
 		/// XMMATRIXに変換します。
 		/// </summary>
 		/// <returns></returns>
-		DirectX::XMMATRIX ToXMMatrix();
+		DirectX::XMMATRIX ToXMMATRIX();
 
 		/// <summary>
 		/// 零行列を取得します。
@@ -56,6 +66,13 @@ namespace MelLib
 		/// <param name="angle">角度</param>
 		/// <returns></returns>
 		static Matrix GetRotateZMatrix(const float angle);
+
+		/// <summary>
+		/// 回転行列をZXYの順番で掛けて取得します。
+		/// </summary>
+		/// <param name="angle">角度</param>
+		/// <returns>計算結果</returns>
+		static Matrix GetRotateZXYMatrix(const Vector3& angle);
 
 		/// <summary>
 		/// 拡縮する行列を取得します。

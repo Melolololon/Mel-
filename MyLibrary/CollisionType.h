@@ -3,7 +3,7 @@
 namespace MelLib
 {
 
-	//判定
+	//衝突確認フラグ
 	struct CollisionFlag
 	{
 		bool sphere = false;
