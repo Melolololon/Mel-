@@ -27,7 +27,7 @@ namespace MelLib
 
 		static void SetPipelineDesc
 		(
-			const PipelineData& pipelineData,
+			const PipelineStateData& pipelineData,
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc,
 			const PipelineStateType type,
 			const int renderTargetNum
@@ -67,7 +67,7 @@ namespace MelLib
 		/// <returns></returns>
 		static void Create
 		(
-			const PipelineData& pipelineData,
+			const PipelineStateData& pipelineData,
 			const ShaderData& vShaderData,
 			const ShaderData& hShaderData,
 			const ShaderData& dShaderData,
@@ -99,7 +99,7 @@ namespace MelLib
 		/// <returns></returns>
 		bool CreatePipeline
 		(
-			const PipelineData& pipelineData,
+			const PipelineStateData& pipelineData,
 			const ShaderData& vShaderData,
 			const ShaderData& hShaderData,
 			const ShaderData& dShaderData,
@@ -129,7 +129,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="type"></param>
-		static PipelineData GetDefaultPipelineData( const PipelineStateType type);
+		static PipelineStateData GetDefaultPipelineData( const PipelineStateType type);
 
 		static void SetModelRootSignature(ID3D12RootSignature* sig) { modelRootSignature = sig; }
 		static void SetSpriteRootSignature(ID3D12RootSignature* sig) { spriteRootSignature = sig; }

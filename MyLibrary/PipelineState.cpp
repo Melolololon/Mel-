@@ -14,7 +14,7 @@ ID3D12RootSignature* PipelineState::renderTargetRootSignature;
 
 void PipelineState::SetPipelineDesc
 (
-	const PipelineData& pipelineData,
+	const PipelineStateData& pipelineData,
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc,
 	const PipelineStateType type,
 	const int renderTargetNum
@@ -167,7 +167,7 @@ void PipelineState::SetPipelineDesc
 
 void PipelineState::Create
 (
-	const PipelineData& pipelineData,
+	const PipelineStateData& pipelineData,
 	const ShaderData& vShaderData,
 	const ShaderData& hShaderData,
 	const ShaderData& dShaderData,
@@ -199,7 +199,7 @@ void PipelineState::Create
 
 bool PipelineState::CreatePipeline
 (
-	const PipelineData& pipelineData,
+	const PipelineStateData& pipelineData,
 	const ShaderData& vShaderData,
 	const ShaderData& hShaderData,
 	const ShaderData& dShaderData,
@@ -325,7 +325,7 @@ bool PipelineState::CreatePipeline
 		switch (pipelineType)
 		{
 		case PipelineStateType::MODEL:
-			inputLayoutVector.resize(3);
+			inputLayoutVector.resize(5);
 			inputLayoutVector[0] =
 			{
 					"POSITION",
@@ -356,6 +356,29 @@ bool PipelineState::CreatePipeline
 					D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
 					0
 			};
+
+			inputLayoutVector[3] = 
+			{
+					"BONEINDICES",
+					0,
+					DXGI_FORMAT_R32G32B32A32_UINT,
+					0,
+					D3D12_APPEND_ALIGNED_ELEMENT,
+					D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+					0
+			};
+			inputLayoutVector[4] =
+			{
+					"BONEWEIGHTS",
+					0,
+					DXGI_FORMAT_R32G32B32A32_FLOAT,
+					0,
+					D3D12_APPEND_ALIGNED_ELEMENT,
+					D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+					0
+			};
+
+
 			break;
 		case PipelineStateType::SPRITE:
 		case PipelineStateType::RENDER_TARGET:
@@ -419,7 +442,7 @@ bool PipelineState::CreatePipeline
 				L"../MyLibrary/FbxVertexShader.hlsl",
 				nullptr,
 				D3D_COMPILE_STANDARD_FILE_INCLUDE,
-				"VSmain", "vs_5_0",
+				"main", "vs_5_0",
 				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 				0,
 				&vsBlob, &errorBlob);
@@ -459,7 +482,7 @@ bool PipelineState::CreatePipeline
 				L"../MyLibrary/FbxPixelShader.hlsl",
 				nullptr,
 				D3D_COMPILE_STANDARD_FILE_INCLUDE,
-				"PSmain", "ps_5_0",
+				"main", "ps_5_0",
 				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 				0,
 				&psBlob, &errorBlob);
@@ -580,7 +603,7 @@ bool PipelineState::CreatePipeline
 				L"../MyLibrary/FbxGeometryShader.hlsl",
 				nullptr,
 				D3D_COMPILE_STANDARD_FILE_INCLUDE,
-				"GSmain", "gs_5_0",
+				"main", "gs_5_0",
 				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 				0,
 				&gsBlob, &errorBlob);
@@ -640,9 +663,9 @@ void PipelineState::Delete(const std::string& name)
 	pPipelineState.erase(name);
 }
 
-PipelineData PipelineState::GetDefaultPipelineData(const PipelineStateType type)
+PipelineStateData PipelineState::GetDefaultPipelineData(const PipelineStateType type)
 {
-	PipelineData data;
+	PipelineStateData data;
 	switch (type)
 	{
 	case PipelineStateType::MODEL:

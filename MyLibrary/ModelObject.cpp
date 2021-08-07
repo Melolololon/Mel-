@@ -707,7 +707,7 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	PipelineState::SetModelRootSignature(rootSignature.Get());
 
 #pragma region パイプライン
-	PipelineData data;
+	PipelineStateData data;
 	data.alphaWrite = true;
 	data.blendMode = BlendMode::ADD;
 	data.cullMode = CullMode::BACK;

@@ -45,7 +45,7 @@ namespace MelLib
 
 
 	//パイプラインの設定をまとめた構造体
-	struct PipelineData
+	struct PipelineStateData
 	{
 		DrawMode drawMode = DrawMode::SOLID;
 		CullMode cullMode = CullMode::BACK;

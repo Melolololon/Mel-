@@ -129,6 +129,7 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	Input::Initialize(hwnd, windowWidth, windowHeight);
 	Audio::GetInstance()->Initialize();
 	SpriteFont2D::GetInstance()->Initialize();
+	GameObject::CreateCollisionCheckModelPipelineState();
 }
 
 void Library::LoopStartProcess()

@@ -255,7 +255,7 @@ bool RenderTarget::Initialize()
 
 
 
-	PipelineData data = PipelineState::GetDefaultPipelineData( PipelineStateType::SPRITE);
+	PipelineStateData data = PipelineState::GetDefaultPipelineData( PipelineStateType::SPRITE);
 
 	bool bResult  = defaultPipeline.CreatePipeline
 	(

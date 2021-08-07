@@ -40,7 +40,7 @@ Sprite3D::Sprite3D(Texture* pTexture)
 
 bool Sprite3D::Initialize()
 {
-	PipelineData data;
+	PipelineStateData data;
 	data.alphaWrite = true;
 	data.blendMode = BlendMode::ADD;
 	data.cullMode = CullMode::NONE;

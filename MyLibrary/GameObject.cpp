@@ -2,8 +2,15 @@
 
 #include"Physics.h"
 
-
 using namespace MelLib;
+
+
+#ifdef _DEBUG
+
+
+//判定確認用モデルのパイプライン
+PipelineState GameObject::collisionCheckModelPipelineState;
+#endif // _DEBUG
 
 GameObject::GameObject()
 {
@@ -76,14 +83,22 @@ void GameObject::CalcMovePhysics()
 
 void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
 {
-	PipelineData pData = PipelineState::GetDefaultPipelineData(PipelineStateType::MODEL);
+	PipelineStateData pData = PipelineState::GetDefaultPipelineData(PipelineStateType::MODEL);
+	pData.drawMode = DrawMode::WIREFRAME;
 
-
-	/*collisionCheckModelPipelineState.CreatePipeline
+	collisionCheckModelPipelineState.CreatePipeline
 	(
 		pData,
-
-		);*/
+		{L"LIB","",""},
+		{L"LIB","",""},
+		{L"LIB","",""},
+		{L"LIB","",""},
+		{L"LIB","",""},
+		PipelineStateType::MODEL,
+		nullptr,
+		typeid(ModelObject).name(),
+		1
+	);
 }
 
 void MelLib::GameObject::CreateCollisionCheckModel()
@@ -98,9 +113,10 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 			modelObjcts.resize(dataNum);
 
 			//不足分生成
-			for(int i = objNum - 1; i < dataNum;i++)
+			for(int i = objNum; i < dataNum;i++)
 			{
 				modelObjcts[i].Create(ModelData::Get(type), nullptr);
+				modelObjcts[i].SetPipeline(&collisionCheckModelPipelineState);
 			}
 		}
 		else if (dataNum < objNum)
