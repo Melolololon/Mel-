@@ -29,21 +29,18 @@ Quaternion::Quaternion(const float w, const Vector2& v)
 	z = 0;
 }
 
-Quaternion::Quaternion(const Vector3& v)
+Vector2 MelLib::Quaternion::ToVector2()const
 {
-	w = 1;
-	x = v.x;
-	y = v.y;
-	z = v.z;
+	return Vector2(x, y);
 }
 
-Quaternion::Quaternion(const Vector2& v)
+Vector3 MelLib::Quaternion::ToVector3()const
 {
-	w = 1;
-	x = v.x;
-	y = v.y;
-	z = 0;
+	return Vector3(x, y, z);
 }
+
+
+
 
 Quaternion Quaternion::operator* (const Quaternion& q)const
 {
@@ -68,10 +65,6 @@ void Quaternion::operator*= (const Quaternion& q)
 	w = p.w;
 }
 
-Matrix Quaternion::GetQuaternionToMatrix()
-{
-	return Matrix();
-}
 
 
 Quaternion Quaternion::GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle)
@@ -79,7 +72,7 @@ Quaternion Quaternion::GetRotateQuaternion(const Vector3& pos, const Vector3& ve
 
 	float rad = LibMath::AngleConversion(0, angle);
 	Vector3 nVector = Vector3Normalize(vector);//ê≥ãKâª
-	Quaternion p(pos);
+	Quaternion p(pos.ToQuaternion());
 	Quaternion q
 	(
 		std::cos(rad / 2),
@@ -97,4 +90,29 @@ Quaternion Quaternion::GetRotateQuaternion(const Vector3& pos, const Vector3& ve
 	);
 	return r * p * q;
 
+}
+
+Quaternion MelLib::Quaternion::GetZXYRotateQuaternion(const Vector3& pos, const Vector3& angle)
+{
+	Quaternion q = GetRotateQuaternion(pos, Vector3(0, 0, 1), angle.z);
+	q = GetRotateQuaternion(q.ToVector3(), Vector3(1, 0, 0), angle.z);
+	q = GetRotateQuaternion(q.ToVector3(), Vector3(0, 1, 0), angle.z);
+	return q;
+}
+
+Quaternion MelLib::Quaternion::GetConjugatedQuaternion(const Vector3& pos, const Vector3& vector, const float angle)
+{
+	Quaternion q = GetRotateQuaternion(pos, vector, angle);
+	q.x *= -1;
+	q.y *= -1;
+	q.z *= -1;
+	return q;
+}
+
+Quaternion MelLib::Quaternion::GetConjugatedQuaternion(Quaternion q)
+{
+	q.x *= -1;
+	q.y *= -1;
+	q.z *= -1;
+	return q;
 }

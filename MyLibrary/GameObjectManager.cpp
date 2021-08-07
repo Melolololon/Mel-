@@ -78,7 +78,7 @@ void GameObjectManager::Update()
 
 	size_t objectSize = objects.size();
 
-	std::vector<CollisionFlag>collisionFlags(objectSize);
+	std::vector<CollisionDetectionFlag>collisionFlags(objectSize);
 	for (int i = 0; i < objectSize; i++)
 	{
 		collisionFlags[i] = objects[i]->GetCollisionFlag();

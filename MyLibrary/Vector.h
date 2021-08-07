@@ -1,26 +1,29 @@
 #pragma once
 #include<DirectXMath.h>
+#include"Quaternion.h"
 
 namespace MelLib
 {
-	struct Vector2;
 	struct Vector3;
+	struct Quaternion;
 
 	struct Vector2
 	{
 		float x, y;
 
 		Vector2();
-		Vector2(const Vector3& v);
 		Vector2(const float num);
 		Vector2(const float x, const float y);
 		Vector2(const DirectX::XMFLOAT2& f);
 		Vector2(const DirectX::XMVECTOR& v);
 
-		DirectX::XMFLOAT2 ToXMFLOAT2()const
-		{
-			return { x,y };
-		}
+		//XMFLOATはキャスト無いからどうにかする
+		//staticのキャスト(static Vector3 ToVector3(XMFLOAT);)作る?ついでにQuaternionとかのstaticのキャストも作る?
+
+		Vector3 ToVector3()const;
+		Quaternion ToQuaternion()const;
+
+		DirectX::XMFLOAT2 ToXMFLOAT2()const	{return { x,y };}
 #pragma region 演算子
 
 		void operator+= (const Vector2& vector);
@@ -96,11 +99,13 @@ namespace MelLib
 		float x, y, z;
 
 		Vector3();
-		Vector3(const Vector2& v);
 		Vector3(const float num);
 		Vector3(const float x, const float y, const float z);
 		Vector3(const DirectX::XMFLOAT3& f);
 		Vector3(const DirectX::XMVECTOR& v);
+
+		Vector2 ToVector2() const;
+		Quaternion ToQuaternion()const;
 
 		DirectX::XMFLOAT3 ToXMFLOAT3() const { return { x,y ,z }; }
 

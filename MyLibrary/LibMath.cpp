@@ -398,7 +398,7 @@ bool LibMath::GetAStarCalcResult
 	routeVector.resize(routeVectorSize);
 	for (int i = 0; i < routeVectorSize; i++)
 	{
-		routeVector[i] = Vector3::Normalize(routeNodeVectors[i + 1] - routeNodeVectors[i]);
+		routeVector[i] = Vector2::Normalize(routeNodeVectors[i + 1] - routeNodeVectors[i]);
 	}
 
 	ReturnHitObjectNode();

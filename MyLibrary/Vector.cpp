@@ -9,11 +9,7 @@ Vector2::Vector2()
 	x = 0;
 	y = 0;
 }
-Vector2::Vector2(const Vector3& v)
-{
-	x = v.x;
-	y = v.y;
-}
+
 Vector2::Vector2(const float num)
 {
 	x = num;
@@ -35,6 +31,16 @@ Vector2::Vector2(const DirectX::XMVECTOR& v)
 {
 	x = v.m128_f32[0];
 	y = v.m128_f32[1];
+}
+
+Vector3 MelLib::Vector2::ToVector3()const
+{
+	return Vector3(x, y, 0);
+}
+
+Quaternion MelLib::Vector2::ToQuaternion()const
+{
+	return Quaternion(1, x, y, 0);
 }
 
 #pragma region ‰‰ŽZŽq
@@ -254,12 +260,6 @@ Vector3::Vector3()
 	z = 0;
 }
 
-Vector3::Vector3(const Vector2& v)
-{
-	x = v.x;
-	y = v.y;
-	z = 0;
-}
 
 Vector3::Vector3(const float num)
 {
@@ -290,6 +290,9 @@ Vector3::Vector3(const DirectX::XMVECTOR& v)
 	z = v.m128_f32[2];
 
 }
+
+Vector2 Vector3::ToVector2()const { return Vector2(x, y); }
+Quaternion Vector3::ToQuaternion()const { return Quaternion(1, x, y, z); }
 
 #pragma region ‰‰ŽZŽq
 

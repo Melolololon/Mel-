@@ -7,7 +7,7 @@ void Curve::SetPoints(const std::vector<Vector2>& points)
 	this->points.resize(pointsSize);
 	for (int i = 0; i < pointsSize; i++) 
 	{
-		this->points[i] = points[i];
+		this->points[i] = points[i].ToVector3();
 	}
 
 }
@@ -51,7 +51,7 @@ Vector3 Curve::CalcPosition()
 
 Vector2 Curve::GetVector2Position()
 {
-	return CalcPosition();
+	return CalcPosition().ToVector2();
 }
 
 Vector3 Curve::GetVector3Position()

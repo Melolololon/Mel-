@@ -1,9 +1,32 @@
 #include "Collision.h"
 #include"LibMath.h"
+#include"Values.h"
 
 using namespace MelLib;
 
+
+
+Value2<Vector3> MelLib::Collision::CalcCapsuleLineSegmentPos(const CapsuleData& capsule)
+{
+	//長さから座標を求める
+	Value2<Vector3>capsuleLineSegmentPos =
+		Value2<Vector3>(Vector3(0, capsule.length / 2, 0), Vector3(0, -capsule.length / 2, 0));
+
+	//回転
+	capsuleLineSegmentPos.v1 = Quaternion::GetZXYRotateQuaternion(capsuleLineSegmentPos.v1, capsule.angle).ToVector3();
+	capsuleLineSegmentPos.v2 = Quaternion::GetZXYRotateQuaternion(capsuleLineSegmentPos.v2, capsule.angle).ToVector3();
+
+
+	//移動
+	capsuleLineSegmentPos.v1 += capsule.position;
+	capsuleLineSegmentPos.v2 += capsule.position;
+
+	return capsuleLineSegmentPos;
+}
+
+
 #pragma region 2D
+
 
 
 bool Collision::RectAndRect(const RectData& rect1, const RectData& rect2)
@@ -323,14 +346,17 @@ bool Collision::LineSegment3DAndLineSegment3D
 
 bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2)
 {
+	//線分部分の座標を求める
+	Value2<Vector3>capsule1LineSegmentPos = CalcCapsuleLineSegmentPos(capsule1);
+	Value2<Vector3>capsule2LineSegmentPos = CalcCapsuleLineSegmentPos(capsule2);
 
 	//線上の座標
 	Vector3 capculeLinePos[2] = { 0.0f,0.0f };
 
-	Vector3 d1 = capsule1.lineSegmentData.position[1] - capsule1.lineSegmentData.position[0];
-	Vector3 d2 = capsule2.lineSegmentData.position[1] - capsule2.lineSegmentData.position[0];
+	Vector3 d1 = capsule1LineSegmentPos.v2 - capsule1LineSegmentPos.v1;
+	Vector3 d2 = capsule2LineSegmentPos.v2 - capsule2LineSegmentPos.v1;
 
-	Vector3 r = capsule1.lineSegmentData.position[0] - capsule2.lineSegmentData.position[0];
+	Vector3 r = capsule1LineSegmentPos.v1 - capsule2LineSegmentPos.v1;
 	float a = Vector3::Dot(d1, d1);
 	float b = Vector3::Dot(d1, d2);
 	float c = Vector3::Dot(d1, r);
@@ -347,8 +373,8 @@ bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData
 		if (s > 1.0f)s = 1.0f;
 	}
 
-	Vector3 p1 = capsule1.lineSegmentData.position[0];
-	Vector3 p2 = capsule2.lineSegmentData.position[0];
+	Vector3 p1 = capsule1LineSegmentPos.v1;
+	Vector3 p2 = capsule2LineSegmentPos.v1;
 	float t = Vector3::Dot(((p1 + d1 * s) - p2), d2) / Vector3::Dot(d2, d2);
 
 	s = (t * b - c) / a;
@@ -366,8 +392,8 @@ bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData
 	if (s > 1.0f)s = 1.0f;
 
 	//相手カプセルに一番近い場所
-	Vector3 c1 = capsule1.lineSegmentData.position[0] + s * d1;
-	Vector3 c2 = capsule2.lineSegmentData.position[0] + t * d2;
+	Vector3 c1 = p1 + s * d1;
+	Vector3 c2 = p2 + t * d2;
 
 	return LibMath::CalcDistance3D(c1,c2) < capsule1.r + capsule2.r;
 }
@@ -483,12 +509,14 @@ bool Collision::SphereAndBox
 
 bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule)
 {
+	Value2<Vector3>capsuleLineSegmentPos = CalcCapsuleLineSegmentPos(capsule);
+
 	Vector3 capsulePos0ToSphere = 
-		LibMath::OtherVector(capsule.lineSegmentData.position[0], sphere.position);
+		LibMath::OtherVector(capsuleLineSegmentPos.v1, sphere.position);
 	
 	//資料のn
 	Vector3 capsuleLineSegmentVector =
-		LibMath::OtherVector(capsule.lineSegmentData.position[0], capsule.lineSegmentData.position[1]);
+		LibMath::OtherVector(capsuleLineSegmentPos.v1, capsuleLineSegmentPos.v2);
 
 	float t = Vector3::Dot(capsulePos0ToSphere, capsuleLineSegmentVector);
 
@@ -499,11 +527,11 @@ bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& ca
 	float sphereAndCupsuleDis = 0.0f;
 	if(lenghtRate < 0.0f)
 	{
-		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, capsule.lineSegmentData.position[0]);
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, capsuleLineSegmentPos.v1);
 	}
 	else if(lenghtRate > 1.0f)
 	{
-		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, capsule.lineSegmentData.position[1]);
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, capsuleLineSegmentPos.v2);
 	}
 	else
 	{

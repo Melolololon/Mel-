@@ -1,9 +1,11 @@
 #pragma once
 #include"Vector.h"
-#include"Matrix.h"
 
 namespace MelLib
 {
+	struct Vector2;
+	struct Vector3;
+
 	struct Quaternion
 	{
 		float w, x, y, z;
@@ -12,16 +14,22 @@ namespace MelLib
 		Quaternion(const float w, const float x, const float y, const float z);
 		Quaternion(const float w, const Vector3& v);
 		Quaternion(const float w, const Vector2& v);
-		Quaternion(const Vector3& v);
-		Quaternion(const Vector2& v);
-		Quaternion operator* (const Quaternion& q)const;
+		
+	
+		Vector2 ToVector2()const;
+		Vector3 ToVector3()const;
 
+		Quaternion operator* (const Quaternion& q)const;
 		void operator*= (const Quaternion& q);
 
 
 		static Quaternion GetRotateQuaternion(const Vector3& pos, const Vector3& vector, const float angle);
+		static Quaternion GetZXYRotateQuaternion(const Vector3& pos, const Vector3& angle);
 
-		Matrix GetQuaternionToMatrix();
+		static Quaternion GetConjugatedQuaternion(const Vector3& pos, const Vector3& vector, const float angle);
+		static Quaternion GetConjugatedQuaternion(Quaternion q);
+
+		
 	};
 }
 

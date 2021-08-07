@@ -132,6 +132,9 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 	
 	//Sphere
 	createOrDeleteModel(sphereData.size(), sphereModelObject, ShapeType3D::BOX);
+
+	//Capsule
+	//createOrDeleteModel(capsuleData.size(), capsuleModelObject, ShapeType3D::BOX);
 }
 
 void MelLib::GameObject::SetCollisionCheckModelData()
@@ -151,6 +154,15 @@ void MelLib::GameObject::SetCollisionCheckModelData()
 		sphereModelObject[i].SetScale(sphereData[i].r);
 		sphereModelObject[i].SetPosition(sphereData[i].position);
 	}
+
+	//Capsule
+	//dataNum = capsuleData.size();
+	//for (size_t i = 0; i < dataNum; i++)
+	//{
+	//	capsuleModelObject[i].SetScale(capsuleData[i].);
+	//	capsuleModelObject[i].SetPosition(sphereData[i].position);
+	//}
+
 }
 
 void MelLib::GameObject::DrawCollisionCheckModel()

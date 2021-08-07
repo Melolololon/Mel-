@@ -1,5 +1,6 @@
 #pragma once
 #include"CollisionType.h"
+#include"Values.h"
 
 //計算に使う式と、計算によって得られた情報の構造体分ける?
 //まとめるとconstで渡せないし、利用者がどれ入力すればいいのかぱっと見わかりにくい
@@ -9,6 +10,9 @@ namespace MelLib
 	//当たり判定(の計算)クラス
 	class Collision
 	{
+
+	private:
+		static Value2<Vector3>CalcCapsuleLineSegmentPos(const CapsuleData& capsule);
 
 	public:
 

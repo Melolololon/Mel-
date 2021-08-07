@@ -36,7 +36,10 @@ namespace MelLib
 
 		std::vector<ModelObject>sphereModelObject;
 		std::vector<ModelObject>boxModelObject;
-		std::vector<ModelObject>capusuleModelObject;
+
+		//カプセル引き伸ばすと形崩れるから、球と円柱組み合わせて表示したほうがいいかも
+		//判定のデータの変数は今のまま(角度けすと円柱を組み合わせるのが大変になる)
+		std::vector<ModelObject>capsuleModelObject;
 
 #endif // _DEBUG
 
@@ -62,7 +65,7 @@ namespace MelLib
 #pragma endregion
 
 #pragma region 判定データ
-		CollisionFlag collisionFlag;
+		CollisionDetectionFlag collisionFlag;
 
 		std::vector<SphereData> sphereData;
 		std::vector<SphereCalcResult> sphereCalcResult;
@@ -156,7 +159,7 @@ namespace MelLib
 
 
 		//判定用関数
-		CollisionFlag GetCollisionFlag() { return collisionFlag; }
+		CollisionDetectionFlag GetCollisionFlag() { return collisionFlag; }
 		std::vector<SphereData> GetSphereData() { return sphereData; }
 		std::vector<BoxData> GetBoxData() { return boxData; }
 		std::vector<LineSegment3DData> GetLineSegmentData() { return lineSegmentData; }

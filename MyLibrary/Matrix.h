@@ -5,6 +5,7 @@
 
 namespace MelLib
 {
+
 	struct Matrix
 	{
 		Matrix();

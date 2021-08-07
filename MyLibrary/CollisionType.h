@@ -4,7 +4,7 @@ namespace MelLib
 {
 
 	//衝突確認フラグ
-	struct CollisionFlag
+	struct CollisionDetectionFlag
 	{
 		bool sphere = false;
 		bool box = false;
@@ -126,7 +126,7 @@ namespace MelLib
 		Vector3 position;
 
 		//半径
-		float r;
+		float r = 0.0f;
 
 	};
 
@@ -224,8 +224,11 @@ namespace MelLib
 	//カプセル
 	struct CapsuleData
 	{
-		LineSegment3DData lineSegmentData;
+		//上の座標から下の座標の距離
+		float length = 0.0f;
 		float r = 0.0f;
+		Vector3 angle = 0;
+		Vector3 position = 0;
 	};
 
 #pragma endregion
