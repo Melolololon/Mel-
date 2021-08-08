@@ -12,7 +12,7 @@ Value2<Vector3> MelLib::Collision::CalcCapsuleLineSegmentPos(const CapsuleData& 
 	//ベクトルを回転
 	Vector3 rotateVector(Quaternion::GetZXYRotateQuaternion(Vector3(0, 1, 0), capsule.angle).ToVector3());
 
-	//回転させたベクトルの方向にlength / 2分移動
+	//回転させたベクトルの方向にlength / 2だけ移動
 	Vector3 rotateMovePos(LibMath::FloatDistanceMoveVector3(0, rotateVector, capsule.length / 2));
 	Value2<Vector3>capsuleLineSegmentPos(rotateMovePos, -rotateMovePos);
 

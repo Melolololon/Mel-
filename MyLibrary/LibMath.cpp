@@ -470,20 +470,24 @@ bool LibMath::Difference(const float num1, const float num2, const float differe
 }
 bool LibMath::AngleDifference(const float angle1, const float angle2, const float difference)
 {
-	if (angle1 < 0
-		|| angle1 >= 360
-		|| angle2 < 0
-		|| angle2 >= 360)return false;
+	
+	float ang1 = angle1;
+	if (angle1 < 0) ang1 = 360 - (abs(angle1)); 
+	if (angle1 > 360)ang1 = angle1 - 360;
 
-	float sum = angle2 - angle1;
+	float ang2 = angle2;
+	if (angle2 < 0) ang2 = 360 - (abs(angle2));
+	if (angle2 > 360)ang2 = angle2 - 360;
+
+	float sum = ang2 - ang1;
 	float diff = abs(sum);//·‚ð‹‚ß‚é
 
 	//’Êí‚Ì”»’è
 	bool flag1 = difference >= diff;
 	
 	//¬‚³‚¢‚Ù‚¤‚ð“ü‚ê‚é
-	int smallNum = min(angle1, angle2);
-	int bigNum = max(angle1, angle2);
+	int smallNum = min(ang1, ang2);
+	int bigNum = max(ang1, ang2);
 	sum = bigNum - (smallNum + 360.0f);
 	diff = abs(sum);
 	bool flag2 = difference >= diff;

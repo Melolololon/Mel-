@@ -12,6 +12,11 @@ namespace MelLib
 	{
 
 	private:
+		/// <summary>
+		/// カプセルの線分の両端を求める関数。
+		/// </summary>
+		/// <param name="capsule"></param>
+		/// <returns></returns>
 		static Value2<Vector3>CalcCapsuleLineSegmentPos(const CapsuleData& capsule);
 
 	public:
