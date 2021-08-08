@@ -21,7 +21,7 @@ Value2<Vector3> MelLib::Collision::CalcCapsuleLineSegmentPos(const CapsuleData& 
 	capsuleLineSegmentPos.v1 += capsule.position;
 	capsuleLineSegmentPos.v2 += capsule.position;
 
-	return capsuleLineSegmentPos;
+ 	return capsuleLineSegmentPos;
 }
 
 

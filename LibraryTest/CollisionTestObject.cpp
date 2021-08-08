@@ -8,11 +8,12 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 	position = pos;
 	speed = 0.25f;
 	model[0] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
+	model[1] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
 	
 
-	collisionFlag.sphere = true;
+	/*collisionFlag.sphere = true;
 	sphereData.resize(1);
-	sphereData[0].r = 7.0f;
+	sphereData[0].r = 7.0f;*/
 
 	/*collisionFlag.box = true;
 	boxData.resize(1);
@@ -20,9 +21,9 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 	
 	boxCalcResult.resize(1);*/
 
-	/*collisionFlag.capsule = true;
+	collisionFlag.capsule = true;
 	capsuleData.resize(1);
-	capsuleData[0].r = 1.0f;*/
+	capsuleData[0].r = 0.5f;
 	
 	/*collisionFlag.lineSegment = true;
 	lineSegmentData.resize(1);
@@ -45,8 +46,21 @@ void CollisionTestObject::Update()
 		position += velocity * speed;
 	}
 	model[0]->SetPosition(position);
-	
-	sphereData[0].position = position;
+
+	model[0]->SetPosition(position + MelLib::Vector3(0, 5, 0));
+	model[1]->SetPosition(position + MelLib::Vector3(0, -5, 0));
+	capsuleData[0].angle = 0;
+	capsuleData[0].length = 10.0f;
+	capsuleData[0].position = position;
+
+	if(MelLib::Input::KeyState(DIK_SPACE) && inputFlag)
+	{
+		model[0]->SetPosition(position + MelLib::Vector3( 5,0, 0));
+		model[1]->SetPosition(position + MelLib::Vector3( -5, 0,0));
+		capsuleData[0].angle.z = 90;
+	}
+
+	//sphereData[0].position = position;
 	//boxData[0].position = position;
 	
 	angle.y += 3.0f;
@@ -56,7 +70,8 @@ void CollisionTestObject::Update()
 
 void CollisionTestObject::Draw()
 {
-	//model[0]->Draw();
+	model[0]->Draw();
+	model[1]->Draw();
 
 	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");
 }

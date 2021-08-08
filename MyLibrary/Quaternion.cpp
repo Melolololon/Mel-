@@ -105,8 +105,8 @@ Quaternion Quaternion::GetRotateQuaternion(const Vector3& pos, const Vector3& ve
 Quaternion MelLib::Quaternion::GetZXYRotateQuaternion(const Vector3& pos, const Vector3& angle)
 {
 	Quaternion q = GetRotateQuaternion(pos, Vector3(0, 0, 1), angle.z);
-	q = GetRotateQuaternion(q.ToVector3(), Vector3(1, 0, 0), angle.z);
-	q = GetRotateQuaternion(q.ToVector3(), Vector3(0, 1, 0), angle.z);
+	q = GetRotateQuaternion(q.ToVector3(), Vector3(1, 0, 0), angle.x);
+	q = GetRotateQuaternion(q.ToVector3(), Vector3(0, 1, 0), angle.y);
 	return q;
 }
 
