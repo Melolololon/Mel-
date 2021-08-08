@@ -4,6 +4,8 @@
 namespace MelLib
 {
 
+	//CalcResultをCollisionResultにする?
+
 	//衝突確認フラグ
 	struct CollisionDetectionFlag
 	{
@@ -186,7 +188,7 @@ namespace MelLib
 
 	struct BoardCalcResult
 	{
-		Vector3 hitPos;
+		Vector3 lineSegment3DHitPos;
 	};
 
 #pragma endregion
@@ -203,7 +205,8 @@ namespace MelLib
 
 	struct LineSegment3DCalcResult
 	{
-		Vector3 hitPos;
+		Vector3 lineSegment3DHitPos;
+		Vector3 boardHitPos;
 	};
 
 #pragma endregion

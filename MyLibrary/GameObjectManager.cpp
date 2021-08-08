@@ -71,9 +71,6 @@ void GameObjectManager::Update()
 
 #pragma endregion
 
-	EraseObjectCheck();
-
-
 #pragma region 新判定処理
 
 	size_t objectSize = objects.size();
@@ -279,7 +276,100 @@ void GameObjectManager::Update()
 			}
 #pragma endregion
 
+#pragma region 球&箱
+			if (collisionFlags[objI].sphere
+				&& collisionFlags[objJ].box)
+			{
 
+				std::vector<SphereData>sphereData = obj1->GetSphereData();
+				size_t sphereDataSize = sphereData.size();
+				std::vector<BoxData>boxData = obj2->GetBoxData();
+				size_t boxDataSize = boxData.size();
+
+				std::vector<SphereCalcResult>& sphereCalcResult = obj1->GetSphereCalcResult();
+				std::vector<BoxCalcResult>& boxCalcResult = obj2->GetBoxCalcResult();
+
+
+				for (int colI = 0; colI < sphereDataSize; colI++)
+				{
+					for (int colJ = 0; colJ < boxDataSize; colJ++)
+					{
+						if (Collision::SphereAndBox
+						(
+							sphereData[colI],
+							&sphereCalcResult[colI],
+							boxData[colJ],
+							&boxCalcResult[colJ]
+						))
+						{
+							//hitを呼び出す
+							obj1->Hit
+							(
+								obj2,
+								ShapeType3D::SPHERE,
+								colI,
+								ShapeType3D::BOX,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								ShapeType3D::BOX,
+								colJ,
+								ShapeType3D::SPHERE,
+								colI
+							);
+						}
+					}
+				}
+
+			}
+
+#pragma endregion
+
+#pragma region 球&カプセル
+			if (collisionFlags[objI].sphere
+				&& collisionFlags[objJ].capsule)
+			{
+				std::vector<SphereData>sphereData = obj1->GetSphereData();
+				size_t sphereDataSize = sphereData.size();
+				std::vector<CapsuleData>capsuleData = obj1->GetCapsuleData();
+				size_t capsuleDataSize = capsuleData.size();
+			
+				for (int colI = 0; colI < sphereDataSize; colI++)
+				{
+					for (int colJ = 0; colJ < capsuleDataSize; colJ++)
+					{
+						if (Collision::SphereAndCapsule(sphereData[colI], capsuleData[colJ]))
+						{
+							//hitを呼び出す
+							obj1->Hit
+							(
+								obj2,
+								ShapeType3D::SPHERE,
+								colI,
+								ShapeType3D::CAPSULE,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								ShapeType3D::CAPSULE,
+								colJ,
+								ShapeType3D::SPHERE,
+								colI
+							);
+
+						}
+					}
+				}
+
+			}
+#pragma endregion
+
+#pragma region 板&線分
+		//板もカプセルと同じように角度セットするようにする
+#pragma endregion
 
 		}
 	}
@@ -289,6 +379,8 @@ void GameObjectManager::Update()
 
 
 #pragma endregion
+
+	EraseObjectCheck();
 
 
 #pragma region 旧判定処理

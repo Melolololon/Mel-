@@ -319,8 +319,8 @@ bool Collision::LineSegment3DAndLineSegment3D
 	//‹ß‚¢êŠ‚Ì‹——£‚ª0‚¾‚Á‚½‚ç“–‚½‚Á‚Ä‚¢‚é(d‚È‚Á‚Ä‚¢‚éAŒð·‚µ‚Ä‚¢‚é)
 	bool isHit = LibMath::CalcDistance3D(c1, c2) == 0.0f;
 	
-	if (lineSegment1CalcResult)lineSegment1CalcResult->hitPos = c1;
-	if (lineSegment2CalcResult)lineSegment2CalcResult->hitPos = c2;
+	if (lineSegment1CalcResult)lineSegment1CalcResult->lineSegment3DHitPos = c1;
+	if (lineSegment2CalcResult)lineSegment2CalcResult->lineSegment3DHitPos = c2;
 	return isHit;
 
 }
@@ -655,8 +655,8 @@ p[3] = c2.rightUpPos;*/
 	//‚Ç‚¿‚ç‚©‚ª“¯‚¶(”Âƒ|ƒŠ‚Ì’†)‚¾‚Á‚½‚çif‚Ì’†‚É
 	if (equal1 || equal2)
 	{
-		if (lineSegmentCalcResult) lineSegmentCalcResult->hitPos = crossPos;
-		if (boardCalcResult)boardCalcResult->hitPos = crossPos;
+		if (lineSegmentCalcResult) lineSegmentCalcResult->lineSegment3DHitPos = crossPos;
+		if (boardCalcResult)boardCalcResult->lineSegment3DHitPos = crossPos;
 		return true;
 	}
 
@@ -667,8 +667,8 @@ p[3] = c2.rightUpPos;*/
 		|| equal1
 		|| equal2)
 	{
-		if (lineSegmentCalcResult) lineSegmentCalcResult->hitPos = crossPos;
-		if (boardCalcResult)boardCalcResult->hitPos = crossPos;
+		if (lineSegmentCalcResult) lineSegmentCalcResult->boardHitPos = crossPos;
+		if (boardCalcResult)boardCalcResult->lineSegment3DHitPos = crossPos;
 		return true;
 	}
 	return false;
