@@ -73,8 +73,8 @@ namespace MelLib
 		std::vector<BoxCalcResult> boxCalcResult;
 
 
-		std::vector<LineSegment3DData> lineSegmentData;
-		std::vector<LineSegment3DCalcResult> lineSegmentCalcResult;
+		std::vector<Segment3DData> lineSegmentData;
+		std::vector<Segment3DCalcResult> lineSegmentCalcResult;
 
 		std::vector<RayData> layData;
 		std::vector<PlaneData>planeData;
@@ -161,14 +161,14 @@ namespace MelLib
 		CollisionDetectionFlag GetCollisionFlag() { return collisionFlag; }
 		std::vector<SphereData> GetSphereData() { return sphereData; }
 		std::vector<BoxData> GetBoxData() { return boxData; }
-		std::vector<LineSegment3DData> GetLineSegmentData() { return lineSegmentData; }
+		std::vector<Segment3DData> GetSegmentData() { return lineSegmentData; }
 		std::vector<PlaneData> GetPlaneData() { return planeData; }
 		std::vector<BoardData> GetBoardData() { return boardData; }
 		std::vector<CapsuleData>GetCapsuleData() { return capsuleData; }
 
 		std::vector<SphereCalcResult>& GetSphereCalcResult() { return sphereCalcResult; }
 		std::vector<BoxCalcResult>& GetBoxCalcResult() { return boxCalcResult; }
-		std::vector<LineSegment3DCalcResult>& GetLineSegmentCalcResult() { return lineSegmentCalcResult; }
+		std::vector<Segment3DCalcResult>& GetSegmentCalcResult() { return lineSegmentCalcResult; }
 		std::vector<BoardCalcResult>& GetBoardCalcResult() { return boardCalcResult; }
 
 		//Vector3& GetLineSegmentHitPosition(const int num);

@@ -329,7 +329,7 @@ namespace MelLib
 			const Vector2& linePos1,
 			const Vector2& linePos2,
 			Vector2* nearPos,
-			LineSegmentHitPlace* isHit
+			SegmentHitPlace* isHit
 		);
 
 #pragma endregion

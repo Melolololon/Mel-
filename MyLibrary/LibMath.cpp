@@ -667,11 +667,11 @@ bool LibMath::CircleAndLineSegmentCollision
 	const Vector2& linePos1,
 	const Vector2& linePos2,
 	Vector2* nearPos,
-	LineSegmentHitPlace* isHit
+	SegmentHitPlace* isHit
 )
 {
 
-	if (isHit)*isHit = LineSegmentHitPlace::LS_HIT_POSITION_NOT_HIT;
+	if (isHit)*isHit = SegmentHitPlace::LS_HIT_POSITION_NOT_HIT;
 
 	//線の端から端へのベクトル
 	Vector2 lineVector = linePos2 - linePos1;
@@ -728,11 +728,11 @@ bool LibMath::CircleAndLineSegmentCollision
 			return false;
 		}
 
-		if (isHit)*isHit = LineSegmentHitPlace::LS_HIT_POSITION_LE_START_END;
+		if (isHit)*isHit = SegmentHitPlace::LS_HIT_POSITION_LE_START_END;
 	}
 	else
 	{
-		if (isHit)*isHit = LineSegmentHitPlace::LS_HIT_POSITION_LE_LINE;
+		if (isHit)*isHit = SegmentHitPlace::LS_HIT_POSITION_LE_LINE;
 	}
 
 	return true;

@@ -32,15 +32,15 @@ bool Collision::RectAndCircle(const RectData& rect, const CircleData& circle)
 	return false;
 }
 
-bool Collision::CircleAndLineSegment2D
+bool Collision::CircleAndSegment2D
 (
 	const CircleData& circle,
 	CircleCalcResult* circleCalcResult,
-	const LineSegment2DData& lineSegment,
-	LineSegment2DCalcResult* lineSegmentCalcResult
+	const Segment2DData& lineSegment,
+	Segment2DCalcResult* lineSegmentCalcResult
 )
 {
-	LineSegmentHitPlace hitPlace = LineSegmentHitPlace::LS_HIT_POSITION_NOT_HIT;
+	SegmentHitPlace hitPlace = SegmentHitPlace::LS_HIT_POSITION_NOT_HIT;
 	if (lineSegmentCalcResult) 
 	{
 		lineSegmentCalcResult->hitPlace = hitPlace;
@@ -101,11 +101,11 @@ bool Collision::CircleAndLineSegment2D
 			return false;
 		}
 
-		hitPlace = LineSegmentHitPlace::LS_HIT_POSITION_LE_START_END;
+		hitPlace = SegmentHitPlace::LS_HIT_POSITION_LE_START_END;
 	}
 	else
 	{
-		hitPlace = LineSegmentHitPlace::LS_HIT_POSITION_LE_LINE;
+		hitPlace = SegmentHitPlace::LS_HIT_POSITION_LE_LINE;
 	}
 
 	if(lineSegmentCalcResult)
@@ -266,12 +266,12 @@ bool Collision::BoxAndBox
 	return isHit;
 }
 
-bool Collision::LineSegment3DAndLineSegment3D
+bool Collision::Segment3DAndSegment3D
 (
-	const LineSegment3DData& lineSegment1,
-	LineSegment3DCalcResult* lineSegment1CalcResult,
-	const LineSegment3DData& lineSegment2,
-	LineSegment3DCalcResult* lineSegment2CalcResult
+	const Segment3DData& lineSegment1,
+	Segment3DCalcResult* lineSegment1CalcResult,
+	const Segment3DData& lineSegment2,
+	Segment3DCalcResult* lineSegment2CalcResult
 )
 {
 	Vector3 d1 = lineSegment1.position[1] - lineSegment1.position[0];
@@ -526,8 +526,8 @@ bool Collision::BoardAndLineSegment3D
 (
 	const BoardData& board,
 	BoardCalcResult* boardCalcResult,
-	const LineSegment3DData& lineSegment,
-	LineSegment3DCalcResult* lineSegmentCalcResult
+	const Segment3DData& lineSegment,
+	Segment3DCalcResult* lineSegmentCalcResult
 )
 {
 

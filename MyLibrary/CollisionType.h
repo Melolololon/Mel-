@@ -12,7 +12,7 @@ namespace MelLib
 		bool sphere = false;
 		bool box = false;
 		bool ray = false;
-		bool lineSegment = false;
+		bool segment = false;
 		bool plane = false;
 		bool board = false;
 		bool capsule = false;
@@ -23,7 +23,7 @@ namespace MelLib
 	{
 		RECT,
 		CIRCLE,
-		LINE_SEGMENT,
+		SEGMENT,
 	};
 
 	//3Dの形状の列挙
@@ -33,7 +33,7 @@ namespace MelLib
 		BOX,
 		PLANE,
 		BOARD,
-		LINE_SEGMENT,
+		SEGMENT,
 		RAY,
 		CAPSULE,
 	};
@@ -85,7 +85,7 @@ namespace MelLib
 #pragma endregion
 
 #pragma region 線分2D
-	enum LineSegmentHitPlace
+	enum SegmentHitPlace
 	{
 		LS_HIT_POSITION_NOT_HIT,//衝突してない
 		LS_HIT_POSITION_LE_START_END,//線の端(始点終点)
@@ -93,7 +93,7 @@ namespace MelLib
 	};
 
 
-	struct LineSegment2DData
+	struct Segment2DData
 	{
 		//座標(始点終点)
 		Vector2 position[2];
@@ -101,12 +101,12 @@ namespace MelLib
 
 	};
 
-	struct LineSegment2DCalcResult
+	struct Segment2DCalcResult
 	{
 		//当たってる座標
 		Vector2 hitPos;
 		//当たった場所
-		LineSegmentHitPlace hitPlace;
+		SegmentHitPlace hitPlace;
 
 		//最近点
 		Vector2 nearPos;
@@ -197,13 +197,13 @@ namespace MelLib
 #pragma region 線分3D
 
 	//線分
-	struct LineSegment3DData
+	struct Segment3DData
 	{
 		Vector3 position[2];
 
 	};
 
-	struct LineSegment3DCalcResult
+	struct Segment3DCalcResult
 	{
 		Vector3 lineSegment3DHitPos;
 		Vector3 boardHitPos;

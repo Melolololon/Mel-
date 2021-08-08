@@ -45,12 +45,12 @@ namespace MelLib
 		/// <param name="circle">â~</param>
 		/// <param name="lineSegment">2DÇÃê¸ï™</param>
 		/// <returns>ìñÇΩÇ¡ÇƒÇ¢ÇΩÇÁtrue</returns>
-		static bool CircleAndLineSegment2D
+		static bool CircleAndSegment2D
 		(
 			const CircleData& circle,
 			CircleCalcResult* circleCalcResult,
-			const LineSegment2DData& lineSegment,
-			LineSegment2DCalcResult* lineSegmentCalcResult
+			const Segment2DData& lineSegment,
+			Segment2DCalcResult* lineSegmentCalcResult
 		);
 
 #pragma endregion
@@ -76,12 +76,12 @@ namespace MelLib
 		/// <returns>ìñÇΩÇ¡ÇƒÇ¢ÇΩÇÁtrue</returns>
 		static bool BoxAndBox(const BoxData& box1, BoxCalcResult* boxCalcResult1, const BoxData& box2, BoxCalcResult* boxCalcResult2);
 
-		static bool LineSegment3DAndLineSegment3D
+		static bool Segment3DAndSegment3D
 		(
-			const LineSegment3DData& lineSegment1,
-			LineSegment3DCalcResult* lineSegment1CalcResult,
-			const LineSegment3DData& lineSegment2,
-			LineSegment3DCalcResult* lineSegment2CalcResult
+			const Segment3DData& lineSegment1,
+			Segment3DCalcResult* lineSegment1CalcResult,
+			const Segment3DData& lineSegment2,
+			Segment3DCalcResult* lineSegment2CalcResult
 		);
 
 		/// <summary>
@@ -102,7 +102,7 @@ namespace MelLib
 		/// <returns>ìñÇΩÇ¡ÇƒÇ¢ÇΩÇÁtrue</returns>
 		static bool SphereAndBox(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const BoxData& box, BoxCalcResult* boxCalcResult);
 
-		static bool SphereAndLineSegmrnt3D(const SphereData& sphere, const LineSegment3DData& lineSegment);
+		static bool SphereAndLineSegmrnt3D(const SphereData& sphere, const Segment3DData& lineSegment);
 
 		static bool SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule);
 
@@ -118,8 +118,8 @@ namespace MelLib
 		(
 			const BoardData& board,
 			BoardCalcResult* boardCalcResult,
-			const LineSegment3DData& lineSegment,
-			LineSegment3DCalcResult* lineSegmentCalcResult
+			const Segment3DData& lineSegment,
+			Segment3DCalcResult* lineSegmentCalcResult
 		);
 #pragma endregion
 	};

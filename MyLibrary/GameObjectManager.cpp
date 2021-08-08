@@ -99,7 +99,7 @@ void GameObjectManager::Update()
 			////自分と比較、比較済の組み合わせはcontinue
 			if (objI >= objJ)continue;
 
-#pragma region 球&球
+#pragma region Sphere & Sphere
 
 
 			if (collisionFlags[objI].sphere
@@ -142,7 +142,7 @@ void GameObjectManager::Update()
 			}
 #pragma endregion
 
-#pragma region 箱&箱
+#pragma region Box & Box
 			if (collisionFlags[objI].box
 				&& collisionFlags[objJ].box)
 			{
@@ -185,47 +185,47 @@ void GameObjectManager::Update()
 			}
 #pragma endregion
 
-#pragma region 線分&線分
-			if (collisionFlags[objI].lineSegment
-				&& collisionFlags[objJ].lineSegment)
+#pragma region Segment & Segment
+			if (collisionFlags[objI].segment
+				&& collisionFlags[objJ].segment)
 			{
 
-				std::vector<LineSegment3DData>lineSegmentData1 = obj1->GetLineSegmentData();
-				size_t lineSegmentData1Size = lineSegmentData1.size();
-				std::vector<LineSegment3DData>lineSegmentData2 = obj2->GetLineSegmentData();
-				size_t lineSegmentData2Size = lineSegmentData2.size();
+				std::vector<Segment3DData>segmentData1 = obj1->GetSegmentData();
+				size_t segmentData1Size = segmentData1.size();
+				std::vector<Segment3DData>segmentData2 = obj2->GetSegmentData();
+				size_t segmentData2Size = segmentData2.size();
 
-				std::vector<LineSegment3DCalcResult>& lineSegmentCalcResult1 = obj1->GetLineSegmentCalcResult();
-				std::vector<LineSegment3DCalcResult>& lineSegmentCalcResult2 = obj2->GetLineSegmentCalcResult();
+				std::vector<Segment3DCalcResult>& segmentCalcResult1 = obj1->GetSegmentCalcResult();
+				std::vector<Segment3DCalcResult>& segmentCalcResult2 = obj2->GetSegmentCalcResult();
 
 
-				for (int colI = 0; colI < lineSegmentData1Size; colI++)
+				for (int colI = 0; colI < segmentData1Size; colI++)
 				{
-					for (int colJ = 0; colJ < lineSegmentData2Size; colJ++)
+					for (int colJ = 0; colJ < segmentData2Size; colJ++)
 					{
-						if (Collision::LineSegment3DAndLineSegment3D
+						if (Collision::Segment3DAndSegment3D
 						(
-							lineSegmentData1[colI],
-							&lineSegmentCalcResult1[colI], 
-							lineSegmentData2[colJ],
-							&lineSegmentCalcResult2[colJ]
+							segmentData1[colI],
+							&segmentCalcResult1[colI], 
+							segmentData2[colJ],
+							&segmentCalcResult2[colJ]
 						))
 						{
 							//hitを呼び出す
 							obj1->Hit
 							(
 								obj2,
-								ShapeType3D::LINE_SEGMENT,
+								ShapeType3D::SEGMENT,
 								colI,
-								ShapeType3D::LINE_SEGMENT,
+								ShapeType3D::SEGMENT,
 								colJ
 							);
 							obj2->Hit
 							(
 								obj1,
-								ShapeType3D::LINE_SEGMENT,
+								ShapeType3D::SEGMENT,
 								colJ,
-								ShapeType3D::LINE_SEGMENT,
+								ShapeType3D::SEGMENT,
 								colI
 							);
 						}
@@ -235,7 +235,7 @@ void GameObjectManager::Update()
 			}
 #pragma endregion
 
-#pragma region カプセル&カプセル
+#pragma region Capsule & Capsule
 			if (collisionFlags[objI].capsule
 				&& collisionFlags[objJ].capsule)
 			{
@@ -276,7 +276,7 @@ void GameObjectManager::Update()
 			}
 #pragma endregion
 
-#pragma region 球&箱
+#pragma region Sphere & Box
 			if (collisionFlags[objI].sphere
 				&& collisionFlags[objJ].box)
 			{
@@ -327,7 +327,7 @@ void GameObjectManager::Update()
 
 #pragma endregion
 
-#pragma region 球&カプセル
+#pragma region Sphere & Capsule
 			if (collisionFlags[objI].sphere
 				&& collisionFlags[objJ].capsule)
 			{
@@ -367,7 +367,7 @@ void GameObjectManager::Update()
 			}
 #pragma endregion
 
-#pragma region 板&線分
+#pragma region Board & Segent
 		//板もカプセルと同じように角度セットするようにする
 #pragma endregion
 
