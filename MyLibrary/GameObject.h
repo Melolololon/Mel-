@@ -34,13 +34,12 @@ namespace MelLib
 
 		//判定確認用モデル
 
-		std::vector<ModelObject>sphereModelObject;
-		std::vector<ModelObject>boxModelObject;
+		std::vector<ModelObject>sphereModelObjects;
+		std::vector<ModelObject>boxModelObjects;
 
 		//カプセル引き伸ばすと形崩れるから、球と円柱組み合わせて表示したほうがいいかも
-		//判定のデータの変数は今のまま(角度けすと円柱を組み合わせるのが大変になる)
-		std::vector<ModelObject>capsuleModelObject;
-
+		//判定のデータの変数は今のまま(角度消すと円柱を組み合わせるのが大変になる)
+		std::array<std::vector<ModelObject>, 3>capsuleModelObjects;
 #endif // _DEBUG
 
 	protected:

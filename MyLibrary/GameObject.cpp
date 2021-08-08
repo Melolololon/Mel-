@@ -128,13 +128,17 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 	};
 
 	//Box
-	createOrDeleteModel(boxData.size(), boxModelObject, ShapeType3D::BOX);
+	createOrDeleteModel(boxData.size(), boxModelObjects, ShapeType3D::BOX);
 	
 	//Sphere
-	createOrDeleteModel(sphereData.size(), sphereModelObject, ShapeType3D::BOX);
+	createOrDeleteModel(sphereData.size(), sphereModelObjects, ShapeType3D::BOX);
 
 	//Capsule
-	//createOrDeleteModel(capsuleData.size(), capsuleModelObject, ShapeType3D::BOX);
+	//ãÖÇçÏê¨
+	createOrDeleteModel(capsuleData.size(), capsuleModelObjects[0], ShapeType3D::BOX);
+	createOrDeleteModel(capsuleData.size(), capsuleModelObjects[1], ShapeType3D::BOX);
+	//â~íçÇçÏê¨
+	createOrDeleteModel(capsuleData.size(), capsuleModelObjects[2], ShapeType3D::BOX);
 }
 
 void MelLib::GameObject::SetCollisionCheckModelData()
@@ -143,38 +147,57 @@ void MelLib::GameObject::SetCollisionCheckModelData()
 	size_t dataNum = boxData.size();
 	for(size_t i = 0; i < dataNum;i++)
 	{
-		boxModelObject[i].SetScale(boxData[i].size);
-		boxModelObject[i].SetPosition(boxData[i].position);
+		boxModelObjects[i].SetScale(boxData[i].size);
+		boxModelObjects[i].SetPosition(boxData[i].position);
 	}
 
 	//Sphere
 	dataNum = sphereData.size();
 	for (size_t i = 0; i < dataNum; i++)
 	{
-		sphereModelObject[i].SetScale(sphereData[i].r);
-		sphereModelObject[i].SetPosition(sphereData[i].position);
+		sphereModelObjects[i].SetScale(sphereData[i].r);
+		sphereModelObjects[i].SetPosition(sphereData[i].position);
 	}
 
 	//Capsule
-	//dataNum = capsuleData.size();
-	//for (size_t i = 0; i < dataNum; i++)
-	//{
-	//	capsuleModelObject[i].SetScale(capsuleData[i].);
-	//	capsuleModelObject[i].SetPosition(sphereData[i].position);
-	//}
+	dataNum = capsuleData.size();
+	for (size_t i = 0; i < dataNum; i++)
+	{
+		Value2<Vector3>lineSegmentPos = capsuleData[i].CalcCapsuleLineSegmentPos();
+		
+		//éläpå`ÇÕÉXÉPÅ[Éã1ÇæÇ∆1ï”Ç™1Ç»ÇÃÇ≈ÅAîºåa1ÇÃÇ∆Ç´ÇÕ1ï”Ç2Ç…ÇµÇ»Ç¢Ç∆Ç¢ÇØÇ»Ç¢ÇΩÇﬂÅA2î{
+		capsuleModelObjects[0][i].SetScale(capsuleData[i].r * 2);
+		capsuleModelObjects[0][i].SetPosition(lineSegmentPos.v1);
+
+		capsuleModelObjects[1][i].SetScale(capsuleData[i].r * 2);
+		capsuleModelObjects[1][i].SetPosition(lineSegmentPos.v2);
+
+		//â~íå
+		capsuleModelObjects[2][i].SetScale(Vector3(capsuleData[i].r * 2, capsuleData[i].length, capsuleData[i].r * 2));
+		capsuleModelObjects[2][i].SetPosition(capsuleData[i].position);
+		capsuleModelObjects[2][i].SetAngle(capsuleData[i].angle);
+	}
 
 }
 
 void MelLib::GameObject::DrawCollisionCheckModel()
 {
-	for(auto& box : boxModelObject)
+	for(auto& box : boxModelObjects)
 	{
 		box.Draw();
 	}
 
-	for (auto& sphere : sphereModelObject)
+	for (auto& sphere : sphereModelObjects)
 	{
 		sphere.Draw();
+	}
+
+	for (int i = 0, size = capsuleModelObjects.size(); i < size; i++)
+	{
+		for (auto& capsule : capsuleModelObjects[i])
+		{
+			capsule.Draw();
+		}
 	}
 }
 
