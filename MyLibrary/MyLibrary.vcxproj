@@ -180,6 +180,7 @@
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="CollisionType.cpp" />
     <ClCompile Include="Counter.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Physics.cpp" />

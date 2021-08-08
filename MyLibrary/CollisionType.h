@@ -1,5 +1,6 @@
 #pragma once
 #include"Vector.h"
+#include"Values.h"
 namespace MelLib
 {
 
@@ -224,6 +225,14 @@ namespace MelLib
 	//カプセル
 	struct CapsuleData
 	{
+		/// <summary>
+		/// カプセルの線分の両端を求める関数。
+		/// </summary>
+		/// <param name="capsule"></param>
+		/// <returns></returns>
+		Value2<Vector3>CalcCapsuleLineSegmentPos()const;
+
+
 		//上の座標から下の座標の距離
 		float length = 0.0f;
 		float r = 0.0f;

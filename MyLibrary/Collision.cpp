@@ -6,24 +6,6 @@ using namespace MelLib;
 
 
 
-Value2<Vector3> MelLib::Collision::CalcCapsuleLineSegmentPos(const CapsuleData& capsule)
-{
-	
-	//ベクトルを回転
-	Vector3 rotateVector(Quaternion::GetZXYRotateQuaternion(Vector3(0, 1, 0), capsule.angle).ToVector3());
-
-	//回転させたベクトルの方向にlength / 2だけ移動
-	Vector3 rotateMovePos(LibMath::FloatDistanceMoveVector3(0, rotateVector, capsule.length / 2));
-	Value2<Vector3>capsuleLineSegmentPos(rotateMovePos, -rotateMovePos);
-
-	//平行移動
-	capsuleLineSegmentPos.v1 += capsule.position;
-	capsuleLineSegmentPos.v2 += capsule.position;
-
- 	return capsuleLineSegmentPos;
-}
-
-
 #pragma region 2D
 
 
@@ -346,8 +328,8 @@ bool Collision::LineSegment3DAndLineSegment3D
 bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2)
 {
 	//線分部分の座標を求める
-	Value2<Vector3>capsule1LineSegmentPos = CalcCapsuleLineSegmentPos(capsule1);
-	Value2<Vector3>capsule2LineSegmentPos = CalcCapsuleLineSegmentPos(capsule2);
+	Value2<Vector3>capsule1LineSegmentPos = capsule1.CalcCapsuleLineSegmentPos();
+	Value2<Vector3>capsule2LineSegmentPos = capsule2.CalcCapsuleLineSegmentPos();
 
 	//線上の座標
 	Vector3 capculeLinePos[2] = { 0.0f,0.0f };
@@ -508,7 +490,7 @@ bool Collision::SphereAndBox
 
 bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule)
 {
-	Value2<Vector3>capsuleLineSegmentPos = CalcCapsuleLineSegmentPos(capsule);
+	Value2<Vector3>capsuleLineSegmentPos = capsule.CalcCapsuleLineSegmentPos();
 
 	Vector3 capsulePos0ToSphere = 
 		LibMath::OtherVector(capsuleLineSegmentPos.v1, sphere.position);
