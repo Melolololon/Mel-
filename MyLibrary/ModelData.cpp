@@ -187,6 +187,8 @@ void MelLib::ModelData::CreatePrimitiveModel()
 	float y = 0.5f;
 	float z = 0.5f;
 
+
+
 	//ê≥ñ 
 	vertices[0][0].pos = { -x,-y,-z };
 	vertices[0][0].uv = { 0.0f,1.0f };

@@ -109,6 +109,14 @@ namespace MelLib
 			ID3D12Resource** textureBuffer
 		);
 
+		void CreateTexture3DBuffer
+		(
+			const DirectX::TexMetadata& metadata,
+			const std::vector < DirectX::Image*>& image,
+			const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+			ID3D12Resource** textureBuffer
+		);
+
 		void CreateDepthBuffer
 		(
 			const D3D12_HEAP_PROPERTIES& depthheapprop,

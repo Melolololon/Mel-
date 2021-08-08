@@ -1,7 +1,6 @@
 #pragma once
 #include<d3d12.h>
 #include<DirectXTex.h>
-#include<wrl.h>
 
 #include"Vector.h"
 #include"Color.h"
@@ -10,7 +9,6 @@
 //Textureにテクスチャバッファ持たせる?
 //スプライトとかで同じテクスチャなのにバッファ毎回作るのもったいない
 //
-using namespace Microsoft::WRL;
 
 namespace MelLib
 {

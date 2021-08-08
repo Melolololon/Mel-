@@ -252,6 +252,9 @@
     <ClCompile Include="CollisionType.cpp">
       <Filter>ソース ファイル\Struct</Filter>
     </ClCompile>
+    <ClCompile Include="Texture3D.cpp">
+      <Filter>ソース ファイル\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SpritePixelShader.hlsl" />
@@ -444,6 +447,9 @@
     </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture3D.h">
+      <Filter>ヘッダー ファイル\Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -37,7 +37,7 @@ namespace MelLib
 	private:
 
 #pragma region ïœêî
-		static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 10;
+		static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 20;
 
 
 #pragma endregion

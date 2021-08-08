@@ -8,7 +8,8 @@
 #include"DirectXStruct.h"
 #include"CreatePolygon.h"
 
-namespace MelLib 
+
+namespace MelLib
 {
 
 	class Library

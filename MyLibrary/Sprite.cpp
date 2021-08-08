@@ -252,7 +252,13 @@ void Sprite::CreateTextureBuffer(Texture* texture)
 	UINT textureNum = texture->GetTextureNumber();
 	if(MAX_TEXTURE_LOAD_NUM <= textureNum)
 	{
-		OutputDebugString(L"テクスチャの最大読み込み数を超えました。これ以上テクスチャを読み込めません。\n");
+#ifdef _DEBUG
+
+		std::wstring text = L"テクスチャの最大読み込み数("
+			+ std::to_wstring(MAX_TEXTURE_LOAD_NUM)
+			+ L")を超えました。これ以上テクスチャを読み込めません。\n";
+		OutputDebugStringW(text.c_str());
+#endif // _DEBUG
 		return;
 	}
 

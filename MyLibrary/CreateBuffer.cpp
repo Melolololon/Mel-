@@ -449,7 +449,7 @@ void CreateBuffer::CreateTextureBuffer
 	texResDesc.Format = metadata.format;
 	texResDesc.Width = static_cast<UINT>(metadata.width);
 	texResDesc.Height = static_cast<UINT>(metadata.height);
-	texResDesc.DepthOrArraySize = static_cast<UINT16>(metadata.arraySize);
+	texResDesc.DepthOrArraySize = static_cast<UINT16>(metadata.arraySize);//深度(w方向の数、3Dテクスチャ用)
 	texResDesc.SampleDesc.Count = 1;
 	texResDesc.SampleDesc.Quality = 1;
 	texResDesc.MipLevels = static_cast<UINT16>(metadata.mipLevels);
@@ -531,8 +531,65 @@ void CreateBuffer::CreateOneColorTextureBuffer
 		0,
 		nullptr,
 		&color,
-		sizeof(Color),
-		sizeof(Color)
+		sizeof(Color),//1列(横)
+		sizeof(Color)//全体サイズ
+	);
+
+	CreateShaderResourceView
+	(
+		texResDesc,
+		heapHandle,
+		*textureBuffer
+	);
+}
+
+void MelLib::CreateBuffer::CreateTexture3DBuffer(const DirectX::TexMetadata& metadata, const std::vector<DirectX::Image*>& image, const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle, ID3D12Resource** textureBuffer)
+{
+	D3D12_HEAP_PROPERTIES texHeapprop{};
+	D3D12_RESOURCE_DESC texResDesc{};
+
+	texHeapprop.Type = D3D12_HEAP_TYPE_CUSTOM;
+	texHeapprop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	texHeapprop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	texHeapprop.CreationNodeMask = 0;
+	texHeapprop.VisibleNodeMask = 0;
+
+	texResDesc.Format = metadata.format;
+	texResDesc.Width = static_cast<UINT>(metadata.width);
+	texResDesc.Height = static_cast<UINT>(metadata.height);
+	texResDesc.DepthOrArraySize = image.size();//深度(w方向の数、3Dテクスチャ用)
+	texResDesc.SampleDesc.Count = 1;
+	texResDesc.SampleDesc.Quality = 1;
+	texResDesc.MipLevels = static_cast<UINT16>(metadata.mipLevels);
+	texResDesc.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_TEXTURE3D);
+	texResDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	texResDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+	device->CreateCommittedResource
+	(
+		&texHeapprop,
+		D3D12_HEAP_FLAG_NONE,
+		&texResDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(textureBuffer)
+	);
+
+	int depth = image.size();
+	std::vector<uint8_t*>pixels3D(depth);
+	for (int i = 0; i < depth; i++)
+	{
+		pixels3D[i] = image[i]->pixels;
+	}
+
+	ID3D12Resource* r = *textureBuffer;
+	auto result = r->WriteToSubresource
+	(
+		0,
+		nullptr,
+		pixels3D.data(),
+		(UINT)image[0]->rowPitch,
+		(UINT)image[0]->slicePitch * (UINT)pixels3D.size()
 	);
 
 	CreateShaderResourceView
