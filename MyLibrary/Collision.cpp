@@ -8,16 +8,15 @@ using namespace MelLib;
 
 Value2<Vector3> MelLib::Collision::CalcCapsuleLineSegmentPos(const CapsuleData& capsule)
 {
-	//長さから座標を求める
-	Value2<Vector3>capsuleLineSegmentPos =
-		Value2<Vector3>(Vector3(0, capsule.length / 2, 0), Vector3(0, -capsule.length / 2, 0));
+	
+	//ベクトルを回転
+	Vector3 rotateVector(Quaternion::GetZXYRotateQuaternion(Vector3(0, 1, 0), capsule.angle).ToVector3());
 
-	//回転
-	capsuleLineSegmentPos.v1 = Quaternion::GetZXYRotateQuaternion(capsuleLineSegmentPos.v1, capsule.angle).ToVector3();
-	capsuleLineSegmentPos.v2 = Quaternion::GetZXYRotateQuaternion(capsuleLineSegmentPos.v2, capsule.angle).ToVector3();
+	//回転させたベクトルの方向にlength / 2分移動
+	Vector3 rotateMovePos(LibMath::FloatDistanceMoveVector3(0, rotateVector, capsule.length / 2));
+	Value2<Vector3>capsuleLineSegmentPos(rotateMovePos, -rotateMovePos);
 
-
-	//移動
+	//平行移動
 	capsuleLineSegmentPos.v1 += capsule.position;
 	capsuleLineSegmentPos.v2 += capsule.position;
 

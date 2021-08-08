@@ -8,7 +8,7 @@ namespace MelLib
 
 	struct Quaternion
 	{
-		float w, x, y, z;
+		float w = 0.0f, x = 0.0f, y = 0.0f, z = 0.0f;
 
 		Quaternion();
 		Quaternion(const float w, const float x, const float y, const float z);

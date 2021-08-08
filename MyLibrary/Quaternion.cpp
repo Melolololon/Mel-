@@ -91,13 +91,13 @@ Quaternion Quaternion::GetRotateQuaternion(const Vector3& pos, const Vector3& ve
 		nVector.z * std::sin(rad / 2)
 	);
 
-	Quaternion r
-	(
-		std::cos(rad / 2),
-		-nVector.x * std::sin(rad / 2),
-		-nVector.y * std::sin(rad / 2),
-		-nVector.z * std::sin(rad / 2)
-	);
+	Quaternion r = GetConjugatedQuaternion(q);
+	//(
+	//	std::cos(rad / 2),
+	//	-nVector.x * std::sin(rad / 2),
+	//	-nVector.y * std::sin(rad / 2),
+	//	-nVector.z * std::sin(rad / 2)
+	//);
 	return r * p * q;
 
 }
