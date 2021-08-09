@@ -14,6 +14,7 @@
 #include"BufferData.h"
 #include"CollisionType.h"
 
+#include"Material.h"
 
 #include<fbxsdk.h>
 
@@ -233,6 +234,8 @@ namespace MelLib
 		void CteateTextureBufferSetColor();
 
 #pragma endregion
+
+		Material material;
 
 
 		static void CreatePrimitiveModel();
