@@ -235,7 +235,7 @@ namespace MelLib
 
 #pragma endregion
 
-		Material material;
+		std::vector<Material> material;
 
 
 		static void CreatePrimitiveModel();

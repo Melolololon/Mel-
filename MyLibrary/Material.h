@@ -64,9 +64,9 @@ namespace MelLib
 		//(マテリアルのカラー + AddColor + SubColor)*MulColor = 追加色
 		Color color;
 		//テクスチャ
-		std::vector<Texture*>pTextures;
-		std::vector<Texture*>pNormalMapTextures;
-		std::vector<Texture3D*>pTexture3Ds;
+		Texture* pTextures;
+		Texture* pNormalMapTextures;
+		Texture3D* pTexture3Ds;
 
 		//テクスチャクラスに持たせるため、コメントアウト
 		//ComPtr<ID3D12Resource>textureBuffer;
@@ -94,9 +94,9 @@ namespace MelLib
 		//MTL GetMaterialData(MTL data) const {  return materialData; }
 
 		void SetColor(const Color& color) { this->color = color; }
-		void SetTexture(std::vector<Texture*> pTex) { pTextures = pTex; }
-		void SetNormalMapTexture(std::vector<Texture*> pNormalMapTex) { pNormalMapTex = pNormalMapTex; }
-		void SetTexture3D(std::vector<Texture3D*> pTex) { pTexture3Ds = pTex; }
+		void SetTexture(Texture* pTex) { pTextures = pTex; }
+		void SetNormalMapTexture(Texture* pNormalMapTex) { pNormalMapTex = pNormalMapTex; }
+		void SetTexture3D(Texture3D* pTex) { pTexture3Ds = pTex; }
 
 		//void SetMaterialData(MTL data) { materialData = data; }
 	};
