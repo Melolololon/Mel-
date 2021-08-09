@@ -1,6 +1,7 @@
 #pragma once
 #include<d3d12.h>
 #include<DirectXTex.h>
+#include<wrl.h>
 
 #include"Vector.h"
 #include"Color.h"
@@ -16,18 +17,34 @@ namespace MelLib
 	class Texture
 	{
 	private:
+		template<class T>
+		using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 		static std::unordered_map<std::string, std::unique_ptr<Texture>>pTextures;
+		//DirectX::TexMetadata metadata;
+		//DirectX::ScratchImage scratchImage;
+		//const DirectX::Image* image;
+
+
 		DirectX::TexMetadata metadata;
-		DirectX::ScratchImage scratchImage;
-		const DirectX::Image* image;
+		std::vector< DirectX::ScratchImage> scratchImage;
+		std::vector<const DirectX::Image*>image;
+		ComPtr<ID3D12Resource>textureBuffer;
 
 
 		UINT textureNumber = 0;
 		static UINT loadTextureNumber;
 
-		bool LoadTexture(const std::string& texturePath);
-
 		bool LoadSpriteTexture(const std::string& texturePath);
+
+	protected:
+		/// <summary>
+		/// DirectXTexの関数でメタデータを読み込むクラス。
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		bool LoadTexture(const std::vector<std::string>& path);
+	
 	public:
 		Texture() {}
 		~Texture() {}
@@ -59,7 +76,7 @@ namespace MelLib
 
 
 		DirectX::TexMetadata GetMetadata()const { return metadata; }
-		const DirectX::Image* GetImage()const { return image; }
+		std::vector <const DirectX::Image*> GetImage()const { return image; }
 		UINT GetTextureNumber() { return textureNumber; }
 #pragma endregion
 	};

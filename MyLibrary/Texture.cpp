@@ -8,31 +8,40 @@ std::vector<UINT>Texture::eraseTextureNumber;
 UINT Texture::loadTextureNumber = 1;
 
 
-bool Texture::LoadTexture(const std::string& texturePath)
+bool Texture::LoadTexture(const std::vector<std::string>& path)
 {
-	std::wstring texturePathW;
-	texturePathW.resize(texturePath.size());
-
-	MultiByteToWideChar
-	(
-		CP_ACP,
-		0,
-		texturePath.c_str(),
-		-1,
-		texturePathW.data(),
-		texturePathW.size()
-	);
-
-	auto result = LoadFromWICFile
-	(
-		texturePathW.c_str(),
-		DirectX::WIC_FLAGS_NONE,
-		&metadata,
-		scratchImage
-	);
+	size_t pathStrNum = path.size();
 
 
-	if (result != S_OK) return false;
+	scratchImage.resize(pathStrNum);
+	image.resize(pathStrNum);
+	
+	for (size_t i = 0; i < pathStrNum; i++)
+	{
+		std::wstring texturePathW;
+		texturePathW.resize(path[i].size());
+		MultiByteToWideChar
+		(
+			CP_ACP,
+			0,
+			path[i].c_str(),
+			-1,
+			texturePathW.data(),
+			texturePathW.size()
+		);
+
+
+		auto result = LoadFromWICFile
+		(
+			texturePathW.c_str(),
+			DirectX::WIC_FLAGS_NONE,
+			&metadata,
+			scratchImage[i]
+		); 
+		
+		if (result != S_OK) return false;
+	}
+
 	return true;
 }
 
@@ -51,7 +60,8 @@ void Texture::Delete(const std::string& name)
 
 bool Texture::LoadModelTexture(const std::string& texturePath)
 {
-	auto result = LoadTexture(texturePath);
+	std::vector<std::string>path(1, texturePath);
+	auto result = LoadTexture(path);
 	//ì«Ç›çûÇ›é∏îs
 	if (!result)
 	{
@@ -61,7 +71,7 @@ bool Texture::LoadModelTexture(const std::string& texturePath)
 #endif // _DEBUG
 	}
 
-	image = scratchImage.GetImage(0, 0, 0);
+	image[0] = scratchImage[0].GetImage(0, 0, 0);
 
 
 	return true;
@@ -69,7 +79,8 @@ bool Texture::LoadModelTexture(const std::string& texturePath)
 
 bool Texture::LoadSpriteTexture(const std::string& texturePath)
 {
-	auto result = LoadTexture(texturePath);
+	std::vector<std::string>path(1, texturePath);
+	auto result = LoadTexture(path);
 	//ì«Ç›çûÇ›é∏îs
 	if (!result)
 	{
@@ -80,7 +91,7 @@ bool Texture::LoadSpriteTexture(const std::string& texturePath)
 		return false;
 	}
 
-	image = scratchImage.GetImage(0, 0, 0);
+	image[0] = scratchImage[0].GetImage(0, 0, 0);
 
 	if (eraseTextureNumber.size() == 0)
 	{

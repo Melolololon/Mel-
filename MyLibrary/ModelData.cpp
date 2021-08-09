@@ -102,7 +102,7 @@ void ModelData::CteateTextureBuffer()
 		CreateBuffer::GetInstance()->CreateTextureBuffer
 		(
 			pTextures[i]->GetMetadata(),
-			pTextures[i]->GetImage(),
+			pTextures[i]->GetImage()[0],
 			CD3DX12_CPU_DESCRIPTOR_HANDLE
 			(
 				textureDescHeap->GetCPUDescriptorHandleForHeapStart(),

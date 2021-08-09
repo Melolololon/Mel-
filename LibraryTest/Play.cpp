@@ -54,11 +54,11 @@ void Play::Draw()
 {
 	MelLib::GameObjectManager::GetInstance()->Draw();
 	
-	
-	sprite2DTest->SetDrawArea(0, MelLib::Vector2(64, 64));
-	sprite2DTest->Draw();
 	MelLib::SpriteFont2D::GetInstance()->Draw(0, testScale, MelLib::SpriteFont2D::CharSequence::BESIDE, "A", MelLib::TextureFont::Get("testFont"));
 
+	sprite2DTest->SetDrawArea(0, MelLib::Vector2(64, 64));
+	sprite2DTest->Draw();
+	
 
 
 	if (MelLib::Input::KeyState(DIK_Z))testScale.x -= 0.025f;

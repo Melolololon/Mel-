@@ -4,7 +4,7 @@
 #include<wrl.h>
 
 #include"Values.h"
-#include"Texture.h"
+#include"Texture3D.h"
 
 namespace MelLib
 {
@@ -30,6 +30,7 @@ namespace MelLib
 	private:
 		//テクスチャ
 		std::vector<Texture*>pTextures;
+		std::vector<Texture3D*>pTexture3Ds;
 		ComPtr<ID3D12DescriptorHeap>textureHeap;
 	};
 }

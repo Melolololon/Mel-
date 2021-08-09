@@ -274,7 +274,7 @@ void Sprite::CreateTextureBuffer(Texture* texture)
 	CreateBuffer::GetInstance()->CreateTextureBuffer
 	(
 		texture->GetMetadata(),
-		texture->GetImage(),
+		texture->GetImage()[0],
 		hHandle,
 		&textureBuffer[textureNum]
 	);
