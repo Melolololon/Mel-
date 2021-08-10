@@ -71,8 +71,8 @@ void CollisionTestObject::Update()
 
 void CollisionTestObject::Draw()
 {
-	//model[0]->Draw();
-	//model[1]->Draw();
+	model[0]->Draw();
+	model[1]->Draw();
 
 	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");
 }

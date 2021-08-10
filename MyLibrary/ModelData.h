@@ -369,6 +369,7 @@ namespace MelLib
 		/// </summary>
 		/// <returns></returns>
 		std::vector<ADSAMaterial> GetMaterial()const { return material; };
+		std::vector<Material> GetBaseClassMaterial()const;
 
 		//これstringで指定するように。objの場合、"1"のように指定
 		/// <summary>

@@ -117,12 +117,18 @@ cbuffer cbuff2 : register(b2)
 };
 
 //PBRマテリアル
+//cbuffer cbuff4 : register(b4)
+//{
+//	float3 baseColor;
+//	float metalness;
+//	float specular;
+//	float roughness;
+//}
+
+//色
 cbuffer cbuff4 : register(b4)
 {
-	float3 baseColor;
-	float metalness;
-	float specular;
-	float roughness;
+	float4 baseColor;
 }
 
 //スキニング

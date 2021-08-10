@@ -48,7 +48,15 @@ namespace MelLib
 	//template<class MTL>
 	class Material
 	{
+	public:
+		enum class MaterialConstBufferType
+		{
+			MATERIAL_DATA,
+			COLOR
+		};
+
 	private:
+
 		template<class T>
 		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
@@ -61,10 +69,11 @@ namespace MelLib
 		//MTL materialData;
 
 		//マテリアルの定数バッファ
+		ComPtr<ID3D12Resource>colorBuffer = nullptr;
 		ComPtr<ID3D12Resource>materialBuffer = nullptr;
 
 		//(マテリアルのカラー + AddColor + SubColor)*MulColor = 追加色
-		Color color;
+		Color color = Color(255, 255, 255, 255);
 		//テクスチャ
 		static const UINT TEXTURE_HANDLE_NUM = 0;
 		Texture* pTexture = nullptr;
@@ -91,9 +100,13 @@ namespace MelLib
 		/// <param name="mtlByte">構造体のバイト数</param>
 		void CreateBufferAndDescriptorHeap(const size_t& mtlByte);
 
-		void MapMaterialData(void** pData);
-		void UnmapMaterialData();
+	
+		void MapMaterialData(void** pData, const MaterialConstBufferType type);
+		void UnmapMaterialData(const MaterialConstBufferType type);
 	public:
+
+		Material() {}
+		virtual ~Material() {}
 
 		static void Initialize(ID3D12Device* dev)
 		{
@@ -105,19 +118,19 @@ namespace MelLib
 		static Material<MTL>* Get(const std::string& name);
 		static void Delete();*/
 
-		virtual void Create() = 0;
+		virtual void Create(){}
 
 		ID3D12DescriptorHeap* GetPTextureHeap() { return textureHeap.Get(); }
-		ID3D12Resource* GetPConstBuffer()const { return materialBuffer.Get(); }
-		Texture* GetTexture() { return pTexture; }
-		Texture* GetNormalTexture() { return pNormalMapTexture; }
-		Texture3D* GetTexture3D() { return pTexture3D; }
+		ID3D12Resource* GetPConstBuffer(const MaterialConstBufferType type)const;
+		Texture* GetPTexture() { return pTexture; }
+		Texture* GetPNormalTexture() { return pNormalMapTexture; }
+		Texture3D* GetPTexture3D() { return pTexture3D; }
 		//MTL GetMaterialData(MTL data) const {  return materialData; }
 
-		void SetColor(const Color& color) { this->color = color; }
+		void SetColor(const Color& color);
 		void SetTexture(Texture* pTex);
-		void SetNormalMapTexture(Texture* pNormalMapTex) { pNormalMapTex = pNormalMapTex; }
-		void SetTexture3D(Texture3D* pTex) { pTexture3D = pTex; }
+		void SetNormalMapTexture(Texture* pNormalMapTex);
+		void SetTexture3D(Texture3D* pTex);
 
 		//void SetMaterialData(MTL data) { materialData = data; }
 
@@ -130,6 +143,8 @@ namespace MelLib
 
 	struct ADSAMaterialData
 	{
+
+
 		//環境光
 		Value4<float>ambient = 0.3f;
 		//拡散反射光
@@ -138,6 +153,7 @@ namespace MelLib
 		Value4<float>specular = 0.0f;
 		//アルファ値
 		float alpha = 1.0f;
+
 	};
 
 
@@ -148,14 +164,13 @@ namespace MelLib
 		//static std::unordered_map<std::string, std::unique_ptr<ADSAMaterial>>pMaterials;
 
 		ADSAMaterialData materialData;
-
+		void Map();
 	public:
 
 		void Create()override;
-		void Map();
 
 #pragma region セット
-		void SetMaterialData(const ADSAMaterialData& data) { materialData = data; }
+		void SetMaterialData(const ADSAMaterialData& data);
 #pragma endregion
 
 #pragma region ゲット
@@ -170,8 +185,7 @@ namespace MelLib
 
 	struct PBRMaterialData
 	{
-		//アルベドとアルファ値
-		Color baseColor;
+		//アルベドはMaterialに定義
 
 		//金属度(0または1)
 		float metalness = 0.0f;
@@ -187,10 +201,12 @@ namespace MelLib
 	private:
 		PBRMaterialData materialData;
 
-	public:
 		void Map();
+	public:
+		void Create()override;
+
 #pragma region セット
-		void SetMaterialData(const PBRMaterialData& data) { materialData = data; }
+		void SetMaterialData(const PBRMaterialData& data);
 #pragma endregion
 
 #pragma region ゲット

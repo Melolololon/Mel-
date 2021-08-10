@@ -513,6 +513,7 @@ void ModelObject::SetCmdList()
 
 	//モデルのオブジェクトごとをセット
 	//頂点バッファ分ループ
+	std::vector<Material>mtls = pModelData->GetBaseClassMaterial();
 	for (int i = 0; i < modelFileObjectNum; i++)
 	{
 		cmdLists[0]->SetPipelineState(pPipeline[i]->GetPipelineState().Get());
@@ -523,39 +524,25 @@ void ModelObject::SetCmdList()
 
 #pragma region テクスチャ
 
-		////紐づけ
-		//for (int j = 0; j < vertexBufferNum; j++)
-		//{
-		//	//マテリアル紐づけ
-		//	//紐づけ失敗(マテリアル名未設定などで)だと、一番最初のテクスチャが選ばれる
-		//	if (vertexBufferSet[i].materialName == materials[j].materialName)
-		//	{
-		//		textureBufferHandleNum = j;
-		//		break;
-		//	}
-		//}
-		//読み取ったモデルとモデルのテクスチャの順番同じだろうから紐づけいらない?
-
-		D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+	/*	D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 		(
 			textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
 			i,
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
-		cmdLists[0]->SetGraphicsRootDescriptorTable(TEXURE_ROOTPARAM_NUM, gpuDescHandle);
+		cmdLists[0]->SetGraphicsRootDescriptorTable(TEXURE_ROOTPARAM_NUM, gpuDescHandle);*/
 
 
-
-		////2枚目(テスト用)
-		//textureBufferHandleNum = 1;
-		//gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		//(
-		//	desHeap->GetGPUDescriptorHandleForHeapStart(),
-		//	textureBufferHandleNum,
-		//	device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		//);
-		//cmdLists[0]->SetGraphicsRootDescriptorTable(5, gpuDescHandle);
-
+		if (mtls[i].GetPTexture()) 
+		{
+			D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+			(
+				mtls[i].GetPTextureHeap()->GetGPUDescriptorHandleForHeapStart(),
+				i,
+				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			);
+			cmdLists[0]->SetGraphicsRootDescriptorTable(TEXURE_ROOTPARAM_NUM, gpuDescHandle);
+		}
 #pragma endregion
 
 #pragma region 定数
@@ -566,10 +553,13 @@ void ModelObject::SetCmdList()
 		cmdLists[0]->SetGraphicsRootConstantBufferView(CONST_BUFFER_REGISTER, constBuffer[i]->GetGPUVirtualAddress());
 
 		//マテリアルバッファ
-		cmdLists[0]->SetGraphicsRootConstantBufferView(MATERIAL_BUFFER_REGISTER, materialConstBuffer[i]->GetGPUVirtualAddress());
+		//cmdLists[0]->SetGraphicsRootConstantBufferView(MATERIAL_BUFFER_REGISTER, materialConstBuffer[i]->GetGPUVirtualAddress());
+		cmdLists[0]->SetGraphicsRootConstantBufferView
+		(MATERIAL_BUFFER_REGISTER, mtls[i].GetPConstBuffer(Material::MaterialConstBufferType::MATERIAL_DATA)->GetGPUVirtualAddress());
 
 		//PBRマテリアル
-		cmdLists[0]->SetGraphicsRootConstantBufferView(PBR_MATERIAL_BUFFER_REGISTER, pbrMaterialConstBuffer[i]->GetGPUVirtualAddress());
+		//cmdLists[0]->SetGraphicsRootConstantBufferView(PBR_MATERIAL_BUFFER_REGISTER, pbrMaterialConstBuffer[i]->GetGPUVirtualAddress());
+		cmdLists[0]->SetGraphicsRootConstantBufferView(PBR_MATERIAL_BUFFER_REGISTER, mtls[i].GetPConstBuffer(Material::MaterialConstBufferType::COLOR)->GetGPUVirtualAddress());
 
 		//モデルバッファ
 		if (modelConstBufferData.bufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)

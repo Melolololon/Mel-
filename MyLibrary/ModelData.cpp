@@ -148,6 +148,7 @@ void MelLib::ModelData::CreatePrimitiveModel()
 		pModelData->indices = indices;
 		pModelData->CreateModel();
 		pModelData->material.resize(1, primitiveModelMaterial);
+		pModelData->material[0].SetColor(Color(255, 255, 255, 255));
 	};
 
 #pragma region BOARD
@@ -742,6 +743,17 @@ void ModelData::BufferPreparationSetColor
 
 }
 
+
+std::vector<Material> MelLib::ModelData::GetBaseClassMaterial() const
+{
+	size_t size = material.size();
+	std::vector<Material>mtls(size);
+	for(int i = 0; i < size;i++)
+	{
+		mtls[i] = material[i];
+	}
+	return mtls;
+}
 
 std::vector<std::vector<Vector3>> MelLib::ModelData::GetVerticesPosition()
 {
