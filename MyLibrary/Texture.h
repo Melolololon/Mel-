@@ -29,13 +29,18 @@ namespace MelLib
 		DirectX::TexMetadata metadata;
 		std::vector< DirectX::ScratchImage> scratchImage;
 		std::vector<const DirectX::Image*>image;
-		ComPtr<ID3D12Resource>textureBuffer;
 
 
 		UINT textureNumber = 0;
 		static UINT loadTextureNumber;
 
+	private:
+
 		bool LoadSpriteTexture(const std::string& texturePath);
+
+	protected:
+
+		ComPtr<ID3D12Resource>textureBuffer;
 
 	protected:
 		/// <summary>
@@ -78,6 +83,7 @@ namespace MelLib
 		DirectX::TexMetadata GetMetadata()const { return metadata; }
 		std::vector <const DirectX::Image*> GetImage()const { return image; }
 		UINT GetTextureNumber() { return textureNumber; }
+		ID3D12Resource* GetTextureBuffer() { return textureBuffer.Get(); }
 #pragma endregion
 	};
 

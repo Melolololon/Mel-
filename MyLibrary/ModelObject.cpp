@@ -233,10 +233,10 @@ void ModelObject::MapConstData(const Camera* camera)
 
 		materialConstBuffer[i]->Map(0, nullptr, (void**)&materialConstData);
 
-		materialConstData->ambient = materials[i].ambient;
-		materialConstData->diffuse = materials[i].diffuse;
-		materialConstData->specular = materials[i].specular;
-		materialConstData->alpha = materials[i].alpha;
+		materialConstData->ambient = materialDatas[i].ambient;
+		materialConstData->diffuse = materialDatas[i].diffuse;
+		materialConstData->specular = materialDatas[i].specular;
+		materialConstData->alpha = materialDatas[i].alpha;
 
 		materialConstBuffer[i]->Unmap(0, nullptr);
 
@@ -854,14 +854,22 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	
 	modelConstDatas.resize(modelFileObjectNum);
 	
+
+	//マテリアル取得
+	std::vector<ADSAMaterial>modelDataMtl = pModelData->GetMaterial();;
+	for (int i = 0 ,size = modelDataMtl.size(); i < size; i++) 
+	{
+		materials[i] = modelDataMtl[i];
+	}
+
 #pragma region マテリアル
 
 
-	materials.resize(modelFileObjectNum);
+	materialDatas.resize(modelFileObjectNum);
 
 	for(int i = 0; i < modelFileObjectNum;i++)
 	{
-		materials[i] = pModelData->GetMaterialData(i);
+		materialDatas[i] = pModelData->GetMaterialData(i);
 	}
 
 #pragma endregion

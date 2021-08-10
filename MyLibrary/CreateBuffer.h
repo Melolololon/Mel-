@@ -98,11 +98,18 @@ namespace MelLib
 		(
 			const DirectX::TexMetadata& metadata,
 			const DirectX::Image* image,
+			ID3D12Resource** textureBuffer
+		);
+
+		void CreateTextureBufferAndView
+		(
+			const DirectX::TexMetadata& metadata,
+			const DirectX::Image* image,
 			const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 			ID3D12Resource** textureBuffer
 		);
 
-		void CreateOneColorTextureBuffer
+		void CreateOneColorTextureBufferAndView
 		(
 			const Color& color,
 			const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
@@ -142,7 +149,6 @@ namespace MelLib
 
 		void CreateShaderResourceView
 		(
-			const D3D12_RESOURCE_DESC& desc,
 			const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 			ID3D12Resource* pTextureBuffer
 		);

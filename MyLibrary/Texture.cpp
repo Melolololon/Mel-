@@ -42,6 +42,7 @@ bool Texture::LoadTexture(const std::vector<std::string>& path)
 		if (result != S_OK) return false;
 	}
 
+
 	return true;
 }
 
@@ -72,10 +73,11 @@ bool Texture::LoadModelTexture(const std::string& texturePath)
 	}
 
 	image[0] = scratchImage[0].GetImage(0, 0, 0);
-
+	CreateBuffer::GetInstance()->CreateTextureBuffer(metadata, image[0], &textureBuffer);
 
 	return true;
 }
+
 
 bool Texture::LoadSpriteTexture(const std::string& texturePath)
 {
@@ -103,6 +105,8 @@ bool Texture::LoadSpriteTexture(const std::string& texturePath)
 		textureNumber = eraseTextureNumber[eraseTextureNumber.size() - 1];
 		eraseTextureNumber.pop_back();
 	}
+
+	CreateBuffer::GetInstance()->CreateTextureBuffer(metadata, image[0], &textureBuffer);
 
 	Sprite::CreateTextureBuffer(this);
 

@@ -7,6 +7,7 @@
 #include"ModelData.h"
 #include"ModelObject.h"
 #include"TextWrite.h"
+#include"Material.h"
 
 
 using namespace MelLib;
@@ -274,6 +275,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	//FbxModel::Initialize();
 	//PrimitiveModel::Initialize();
 
+	Material::Initialize(dev.Get());
 	ModelData::Initialize(dev.Get());
 	std::vector<ID3D12GraphicsCommandList*> cmdLists(1, cmdList.Get());
 	ModelObject::Initialize(dev.Get(), cmdLists);

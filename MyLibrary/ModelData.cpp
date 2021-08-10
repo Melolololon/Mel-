@@ -62,7 +62,6 @@ void ModelData::UnmapVertices(const int bufferNum)
 	vertexBufferSet[bufferNum].vertexBuffer->Unmap(0, nullptr);
 }
 
-
 void ModelData::CreateIndexBufferSet(const std::vector<std::vector<USHORT>>& indices)
 {
 
@@ -99,7 +98,7 @@ void ModelData::CteateTextureBuffer()
 	textureBuffers.resize(textureNum);
 	for (int i = 0; i < textureNum; i++)
 	{
-		CreateBuffer::GetInstance()->CreateTextureBuffer
+		CreateBuffer::GetInstance()->CreateTextureBufferAndView
 		(
 			pTextures[i]->GetMetadata(),
 			pTextures[i]->GetImage()[0],
@@ -122,7 +121,7 @@ void ModelData::CteateTextureBufferSetColor()
 	textureBuffers.resize(modelFileObjectNum);
 	for (int i = 0; i < modelFileObjectNum; i++) 
 	{
-		CreateBuffer::GetInstance()->CreateOneColorTextureBuffer
+		CreateBuffer::GetInstance()->CreateOneColorTextureBufferAndView
 		(
 			Color(255,255,255,255),
 			CD3DX12_CPU_DESCRIPTOR_HANDLE

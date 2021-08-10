@@ -427,16 +427,8 @@ void CreateBuffer::CreateConstBuffer
 
 }
 
-
-void CreateBuffer::CreateTextureBuffer
-(
-	const DirectX::TexMetadata& metadata,
-	const DirectX::Image* image,
-	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
-	ID3D12Resource** textureBuffer
-)
+void MelLib::CreateBuffer::CreateTextureBuffer(const DirectX::TexMetadata& metadata, const DirectX::Image* image, ID3D12Resource** textureBuffer)
 {
-
 	D3D12_HEAP_PROPERTIES texHeapprop{};
 	D3D12_RESOURCE_DESC texResDesc{};
 
@@ -477,15 +469,27 @@ void CreateBuffer::CreateTextureBuffer
 		(UINT)image->slicePitch
 	);
 
+}
+
+
+void CreateBuffer::CreateTextureBufferAndView
+(
+	const DirectX::TexMetadata& metadata,
+	const DirectX::Image* image,
+	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+	ID3D12Resource** textureBuffer
+)
+{
+	CreateTextureBuffer(metadata, image, textureBuffer);
+
 	CreateShaderResourceView
 	(
-		texResDesc,
 		heapHandle,
 		*textureBuffer
 	);
 }
 
-void CreateBuffer::CreateOneColorTextureBuffer
+void CreateBuffer::CreateOneColorTextureBufferAndView
 (
 	const Color& color,
 	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
@@ -537,7 +541,6 @@ void CreateBuffer::CreateOneColorTextureBuffer
 
 	CreateShaderResourceView
 	(
-		texResDesc,
 		heapHandle,
 		*textureBuffer
 	);
@@ -594,7 +597,6 @@ void MelLib::CreateBuffer::CreateTexture3DBuffer(const DirectX::TexMetadata& met
 
 	CreateShaderResourceView
 	(
-		texResDesc,
 		heapHandle,
 		*textureBuffer
 	);
@@ -675,13 +677,12 @@ void CreateBuffer::CreateConstBufferView
 
 void CreateBuffer::CreateShaderResourceView
 (
-	const D3D12_RESOURCE_DESC& desc,
 	const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
 	ID3D12Resource* pTextureBuffer
 )
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = desc.Format;
+	srvDesc.Format = pTextureBuffer->GetDesc().Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;

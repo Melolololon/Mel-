@@ -52,6 +52,8 @@ namespace MelLib
 		template<class T>
 		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+		static ID3D12Device* device;
+
 		//static std::unordered_map<std::string, Material<ADSAMaterialData>*>pAdsaMaterials;
 		//static std::unordered_map<std::string, Material<PBRMaterialData>*>pPbrMaterials;
 		
@@ -64,26 +66,39 @@ namespace MelLib
 		//(マテリアルのカラー + AddColor + SubColor)*MulColor = 追加色
 		Color color;
 		//テクスチャ
+		static const UINT TEXTURE_HANDLE_NUM = 0;
 		Texture* pTexture = nullptr;
+		static const UINT NORMAL_MAP_HANDLE_NUM = 1;
 		Texture* pNormalMapTexture = nullptr;
+		static const UINT TEXTURE_3D_HANDLE_NUM = 2;
 		Texture3D* pTexture3D = nullptr;
 
 		//テクスチャクラスに持たせるため、コメントアウト
 		//ComPtr<ID3D12Resource>textureBuffer;
 		
 		//どこに持たせるのがベストかわからないため、保留
-		//ComPtr<ID3D12DescriptorHeap>textureHeap;
+		//とりあえずマテリアルに持たせる(モデルごとに用意するのはもったいない)
+		//UAVをテクスチャと同じヒープにまとめる必要が出てきたら、
+		//コンピュートシェーダーを使うオブジェクトのみ専用のヒープ作る?
+	    //ここに作ると複数のマテリアルのテクスチャをまとめられない
+		//ファイルに複数モデルあってもレンダリングするタイミングが違うからまとめなくても問題ない
+		ComPtr<ID3D12DescriptorHeap>textureHeap;
 
 	protected:
 		/// <summary>
 		/// マテリアルのバッファとか生成。
 		/// </summary>
 		/// <param name="mtlByte">構造体のバイト数</param>
-		void CreateBuffer(const size_t& mtlByte);
+		void CreateBufferAndDescriptorHeap(const size_t& mtlByte);
 
 		void MapMaterialData(void** pData);
 		void UnmapMaterialData();
 	public:
+
+		static void Initialize(ID3D12Device* dev)
+		{
+			device = dev;
+		}
 
 		//materialDataの型チェックして、umapに格納
 		/*static void Create();
@@ -92,6 +107,7 @@ namespace MelLib
 
 		virtual void Create() = 0;
 
+		ID3D12DescriptorHeap* GetPTextureHeap() { return textureHeap.Get(); }
 		ID3D12Resource* GetPConstBuffer()const { return materialBuffer.Get(); }
 		Texture* GetTexture() { return pTexture; }
 		Texture* GetNormalTexture() { return pNormalMapTexture; }
@@ -99,36 +115,13 @@ namespace MelLib
 		//MTL GetMaterialData(MTL data) const {  return materialData; }
 
 		void SetColor(const Color& color) { this->color = color; }
-		void SetTexture(Texture* pTex) { pTexture = pTex; }
+		void SetTexture(Texture* pTex);
 		void SetNormalMapTexture(Texture* pNormalMapTex) { pNormalMapTex = pNormalMapTex; }
 		void SetTexture3D(Texture3D* pTex) { pTexture3D = pTex; }
 
 		//void SetMaterialData(MTL data) { materialData = data; }
 
 	};
-
-#pragma region Template
-
-	//Create関数呼べない
-
-//	//利用者マテリアルクラス
-//	template<class MTL>
-//	class TmpMaterial :public Material
-//	{
-//	private:
-//		MTL materialData;
-//
-//	public:
-//#pragma region セット
-//		void SetMaterialData(const MTL& data) { materialData = data; }
-//#pragma endregion
-//
-//#pragma region ゲット
-//		MTL GetMaterialData() { return materialData; }
-//#pragma endregion
-//
-//	};
-//#pragma endregion
 
 
 #pragma region ADSA

@@ -169,7 +169,7 @@ void Sprite::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmd)
 #pragma region 単色スプライト用の画像のバッファとビュー生成
 	textureBuffer.resize(1);
 
-	CreateBuffer::GetInstance()->CreateOneColorTextureBuffer
+	CreateBuffer::GetInstance()->CreateOneColorTextureBufferAndView
 	(
 		Color(0, 0, 0, 0),
 		textureHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -271,7 +271,7 @@ void Sprite::CreateTextureBuffer(Texture* texture)
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 	);
 
-	CreateBuffer::GetInstance()->CreateTextureBuffer
+	CreateBuffer::GetInstance()->CreateTextureBufferAndView
 	(
 		texture->GetMetadata(),
 		texture->GetImage()[0],

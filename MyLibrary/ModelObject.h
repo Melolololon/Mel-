@@ -16,7 +16,7 @@
 #include"RenderTarget.h"
 #include"BufferData.h"
 #include"CollisionType.h"
-
+#include"Material.h"
 //AddColorとかまとめよう!
 
 namespace MelLib
@@ -39,7 +39,10 @@ namespace MelLib
 		std::vector<PipelineState*> pPipeline;
 
 		//[モデル内のオブジェクトごと]
-		std::vector < MaterialData> materials;
+		std::vector<Material>materials;
+
+		//[モデル内のオブジェクトごと]
+		std::vector < MaterialData> materialDatas ;
 
 		//テスト用PBR用マテリアルデータ
 		std::vector<PbrMaterial>pbrMaterials;
@@ -96,6 +99,8 @@ namespace MelLib
 		ModelData* pModelData = nullptr;
 		UINT modelFileObjectNum = 0;
 
+
+	private:
 
 		void CreateConstBuffer();
 
