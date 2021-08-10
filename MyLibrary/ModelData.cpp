@@ -148,7 +148,6 @@ void MelLib::ModelData::CreatePrimitiveModel()
 		pModelData->indices = indices;
 		pModelData->CreateModel();
 		pModelData->material.resize(1, primitiveModelMaterial);
-		pModelData->material[0].SetColor(Color(255, 255, 255, 255));
 	};
 
 #pragma region BOARD

@@ -4,6 +4,15 @@
 
 ID3D12Device* MelLib::Material::device;
 
+void MelLib::Material::MapColorBuffer(const Color& color)
+{
+	DirectX::XMFLOAT4* col;
+	colorBuffer->Map(0, nullptr, (void**)&col);
+	*col = DirectX::XMFLOAT4((float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f);
+	colorBuffer->Unmap(0, nullptr);
+
+}
+
 void MelLib::Material::CreateBufferAndDescriptorHeap(const size_t& mtlByte)
 {
 
@@ -14,6 +23,7 @@ void MelLib::Material::CreateBufferAndDescriptorHeap(const size_t& mtlByte)
 		mtlByte,
 		&materialBuffer
 	);
+
 	//定数バッファ作成
 	CreateBuffer::GetInstance()->CreateConstBuffer
 	(
@@ -21,6 +31,8 @@ void MelLib::Material::CreateBufferAndDescriptorHeap(const size_t& mtlByte)
 		sizeof(DirectX::XMFLOAT4),
 		&colorBuffer
 	);
+	MapColorBuffer(color);
+	
 
 	//ディスクリプタヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc{};
@@ -32,30 +44,15 @@ void MelLib::Material::CreateBufferAndDescriptorHeap(const size_t& mtlByte)
 	auto result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&textureHeap));
 }
 
-void MelLib::Material::MapMaterialData(void** pData, const MaterialConstBufferType type)
+void MelLib::Material::MapMaterialData(void** pData)
 {
-	switch (type)
-	{
-	case MaterialConstBufferType::COLOR:
-		colorBuffer->Map(0, nullptr, pData);
-		break;
-	case MaterialConstBufferType::MATERIAL_DATA:
-		materialBuffer->Map(0, nullptr, pData);
-		break;
-	}
+	materialBuffer->Map(0, nullptr, pData);
 }
 
-void MelLib::Material::UnmapMaterialData(const MaterialConstBufferType type)
+void MelLib::Material::UnmapMaterialData()
 {
-	switch (type)
-	{
-	case MaterialConstBufferType::COLOR:
-		colorBuffer->Unmap(0, nullptr);
-		break;
-	case MaterialConstBufferType::MATERIAL_DATA:
-		materialBuffer->Unmap(0, nullptr);
-		break;
-	}
+	materialBuffer->Unmap(0, nullptr);
+	
 }
 
 ID3D12Resource* MelLib::Material::GetPConstBuffer(const MaterialConstBufferType type) const
@@ -74,10 +71,7 @@ ID3D12Resource* MelLib::Material::GetPConstBuffer(const MaterialConstBufferType 
 void MelLib::Material::SetColor(const Color& color)
 { 
 	this->color = color; 
-	DirectX::XMFLOAT4* col;
-	MapMaterialData((void**)&col, MaterialConstBufferType::COLOR);
-	*col = DirectX::XMFLOAT4((float)color.r / 255, (float)color.g / 255, (float)color.b / 255, (float)color.a / 255);
-	UnmapMaterialData(MaterialConstBufferType::COLOR);
+	MapColorBuffer(color);
 }
 
 void MelLib::Material::SetTexture(Texture* pTex)
@@ -99,16 +93,13 @@ void MelLib::Material::SetTexture(Texture* pTex)
 
 
 		DirectX::XMFLOAT4* col;
-		MapMaterialData((void**)&col, MaterialConstBufferType::COLOR);
-		*col = DirectX::XMFLOAT4(0, 0, 0, 0);
-		UnmapMaterialData(MaterialConstBufferType::COLOR);
+
+		MapColorBuffer(Color(0, 0, 0, 0));
 	}
 	else
 	{
-		DirectX::XMFLOAT4* col;
-		MapMaterialData((void**)&col, MaterialConstBufferType::COLOR);
-		*col = DirectX::XMFLOAT4((float)color.r / 255, (float)color.g / 255, (float)color.b / 255, (float)color.a / 255);
-		UnmapMaterialData(MaterialConstBufferType::COLOR);
+
+		MapColorBuffer(color);
 	}
 
 
@@ -152,14 +143,15 @@ void MelLib::Material::SetTexture3D(Texture3D* pTex)
 void MelLib::ADSAMaterial::Create()
 {
 	CreateBufferAndDescriptorHeap(sizeof(ADSAMaterialData));
+	Map();
 }
 
 void MelLib::ADSAMaterial::Map()
 {
 	ADSAMaterialData* mtl = nullptr;
-	MapMaterialData((void**)&mtl,MaterialConstBufferType::MATERIAL_DATA);
+	MapMaterialData((void**)&mtl);
 	*mtl = materialData;
-	UnmapMaterialData(MaterialConstBufferType::MATERIAL_DATA);
+	UnmapMaterialData();
 
 }
 
@@ -172,14 +164,15 @@ void MelLib::ADSAMaterial::SetMaterialData(const ADSAMaterialData& data)
 void MelLib::PBRMaterial::Map()
 {
 	PBRMaterialData* mtl = nullptr;
-	MapMaterialData((void**)&mtl, MaterialConstBufferType::MATERIAL_DATA);
+	MapMaterialData((void**)&mtl);
 	*mtl = materialData;
-	UnmapMaterialData(MaterialConstBufferType::MATERIAL_DATA);
+	UnmapMaterialData();
 }
 
 void MelLib::PBRMaterial::Create()
 {
-	CreateBufferAndDescriptorHeap(sizeof(PBRMaterial));
+	CreateBufferAndDescriptorHeap(sizeof(PBRMaterial)); 
+	Map();
 }
 
 void MelLib::PBRMaterial::SetMaterialData(const PBRMaterialData& data)

@@ -491,10 +491,6 @@ void ModelObject::SetCmdList()
 	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
 	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
-	ID3D12DescriptorHeap* textureDescHeap = pModelData->GetTextureDesctiptorHeap();
-	std::vector<ID3D12DescriptorHeap*> ppHeaps;
-	ppHeaps.push_back(textureDescHeap);
-	cmdLists[0]->SetDescriptorHeaps(1, &ppHeaps[0]);
 
 
 	//モデル特有バッファセット
@@ -532,9 +528,15 @@ void ModelObject::SetCmdList()
 		);
 		cmdLists[0]->SetGraphicsRootDescriptorTable(TEXURE_ROOTPARAM_NUM, gpuDescHandle);*/
 
-
+	
 		if (mtls[i].GetPTexture()) 
 		{
+			ID3D12DescriptorHeap* textureDescHeap = mtls[i].GetPTextureHeap();
+			std::vector<ID3D12DescriptorHeap*> ppHeaps;
+			ppHeaps.push_back(textureDescHeap);
+			cmdLists[0]->SetDescriptorHeaps(1, &ppHeaps[0]);
+
+
 			D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 			(
 				mtls[i].GetPTextureHeap()->GetGPUDescriptorHandleForHeapStart(),
@@ -846,8 +848,10 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	
 
 	//マテリアル取得
-	std::vector<ADSAMaterial>modelDataMtl = pModelData->GetMaterial();;
-	for (int i = 0 ,size = modelDataMtl.size(); i < size; i++) 
+	std::vector<ADSAMaterial>modelDataMtl = pModelData->GetMaterial();
+	size_t size = modelDataMtl.size();
+	materials.resize(size);
+	for (int i = 0 ; i < size; i++) 
 	{
 		materials[i] = modelDataMtl[i];
 	}

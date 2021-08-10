@@ -93,6 +93,8 @@ namespace MelLib
 		//ファイルに複数モデルあってもレンダリングするタイミングが違うからまとめなくても問題ない
 		ComPtr<ID3D12DescriptorHeap>textureHeap;
 
+		void MapColorBuffer(const Color& color);
+
 	protected:
 		/// <summary>
 		/// マテリアルのバッファとか生成。
@@ -101,8 +103,8 @@ namespace MelLib
 		void CreateBufferAndDescriptorHeap(const size_t& mtlByte);
 
 	
-		void MapMaterialData(void** pData, const MaterialConstBufferType type);
-		void UnmapMaterialData(const MaterialConstBufferType type);
+		void MapMaterialData(void** pData);
+		void UnmapMaterialData();
 	public:
 
 		Material() {}

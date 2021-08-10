@@ -129,7 +129,7 @@ static float3 N;
 
 float4 main(GSOutput input) : SV_TARGET
 {
-	float4 texColor = tex.Sample(smp, input.uv) + baseColor;
+	float4 texColor = saturate(tex.Sample(smp, input.uv) + baseColor);
 	float4 shaderColor = float4(0, 0, 0, 0);
 
 
@@ -158,7 +158,10 @@ float4 main(GSOutput input) : SV_TARGET
 	texColor += addColor - subColor;
 	texColor *= mulColor;
 
-	return shaderColor * texColor;
+	//べた塗りテクスチャ使うと単色マテリアル用意するごとにテクスチャバッファ用意しないといけないからこうする。
+	float alphaSum = (shaderColor.a + texColor.a) / 2;
+
+	return float4(shaderColor.rgb * texColor.rgb, alphaSum);
 
 
 
