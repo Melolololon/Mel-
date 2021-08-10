@@ -861,7 +861,7 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 
 	for(int i = 0; i < modelFileObjectNum;i++)
 	{
-		materials[i] = pModelData->GetMaterial(i);
+		materials[i] = pModelData->GetMaterialData(i);
 	}
 
 #pragma endregion

@@ -9,7 +9,7 @@ using namespace MelLib;
 
 std::unordered_map<std::string, std::unique_ptr<ModelData>>ModelData::pModelDatas;
 std::unordered_map<ShapeType3D, std::unique_ptr<ModelData>>ModelData::pPrimitiveModelDatas;
-
+ADSAMaterial ModelData::primitiveModelMaterial;
 
 ID3D12Device* ModelData::device = nullptr;
 
@@ -139,14 +139,28 @@ void ModelData::CteateTextureBufferSetColor()
 void MelLib::ModelData::CreatePrimitiveModel()
 {
 	ModelData* pModelData = nullptr;
+	std::vector<std::vector<FbxVertex>> vertices;
+	std::vector<std::vector<USHORT>> indices;
+
+
+	auto setData = [&pModelData, &vertices, &indices]()
+	{
+		pModelData->vertices = vertices;
+		pModelData->indices = indices;
+		pModelData->CreateModel();
+		pModelData->material.resize(1, primitiveModelMaterial);
+	};
 
 #pragma region BOARD
 	pPrimitiveModelDatas.emplace(ShapeType3D::BOARD, std::make_unique<ModelData>());
 	pModelData = pPrimitiveModelDatas[ShapeType3D::BOARD].get();
 
-	std::vector<std::vector<FbxVertex>> vertices;
+	
 	vertices.resize(1);
 	vertices[0].resize(4);
+
+
+
 
 	vertices[0][0].pos = { -0.5f,-0.5f,-0.5f };
 	vertices[0][0].uv = { 0.0f,1.0f };
@@ -161,16 +175,14 @@ void MelLib::ModelData::CreatePrimitiveModel()
 	vertices[0][3].uv = { 1.0f,0.0f };
 	vertices[0][3].normal = { 0.0f,0.0f,-1.0f };
 
-	std::vector<std::vector<USHORT>> indices;
+	
 	indices.resize(1);
 	indices[0] =
 	{
 		0,1,2,2,1,3,//正面
 	};
 
-	pModelData->vertices = vertices;
-	pModelData->indices = indices;
-	pModelData->CreateModel();
+	setData();
 #pragma endregion
 
 #pragma region BOX
@@ -269,11 +281,11 @@ void MelLib::ModelData::CreatePrimitiveModel()
 	CalcPrimitiveModelNormal(vertices[0], indices[0]);
 
 
-	pModelData->vertices = vertices;
-	pModelData->indices = indices;
-	pModelData->CreateModel();
+	setData();
 
 #pragma endregion
+
+
 
 }
 
@@ -301,6 +313,7 @@ void MelLib::ModelData::CalcPrimitiveModelNormal(std::vector<FbxVertex>& vertice
 	}
 
 }
+
 
 void MelLib::ModelData::CreateModel()
 {
@@ -381,6 +394,7 @@ void MelLib::ModelData::BatchDeletion()
 void ModelData::Initialize(ID3D12Device* pDevice)
 {
 	device = pDevice;
+	primitiveModelMaterial.Create();
 	CreatePrimitiveModel();
 }
 
@@ -592,6 +606,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 			}
 		}
 
+
 #pragma endregion
 
 		modelName = path;
@@ -634,6 +649,9 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		LoadFalseEndProcess();
 	}
 
+
+
+
 	//頂点、インデックス、テクスチャバッファ作成
 	modelFileObjectNum = vertices.size();
 	std::vector<size_t>verticesNum(modelFileObjectNum);
@@ -663,6 +681,15 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		UnmapVertices(i);
 	}
 
+
+
+	//マテリアル作成
+	material.resize(modelFileObjectNum);
+	for(int i = 0; i < modelFileObjectNum;i++)
+	{
+		material[i].Create();
+		material[i].SetTexture(pTextures[i].get());
+	}
 
 	return true;
 }

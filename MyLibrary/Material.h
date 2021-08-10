@@ -59,14 +59,14 @@ namespace MelLib
 		//MTL materialData;
 
 		//マテリアルの定数バッファ
-		ComPtr<ID3D12Resource>materialBuffer;
+		ComPtr<ID3D12Resource>materialBuffer = nullptr;
 
 		//(マテリアルのカラー + AddColor + SubColor)*MulColor = 追加色
 		Color color;
 		//テクスチャ
-		Texture* pTextures;
-		Texture* pNormalMapTextures;
-		Texture3D* pTexture3Ds;
+		Texture* pTexture = nullptr;
+		Texture* pNormalMapTexture = nullptr;
+		Texture3D* pTexture3D = nullptr;
 
 		//テクスチャクラスに持たせるため、コメントアウト
 		//ComPtr<ID3D12Resource>textureBuffer;
@@ -79,7 +79,7 @@ namespace MelLib
 		/// マテリアルのバッファとか生成。
 		/// </summary>
 		/// <param name="mtlByte">構造体のバイト数</param>
-		void Create(const size_t& mtlByte);
+		void CreateBuffer(const size_t& mtlByte);
 
 		void MapMaterialData(void** pData);
 		void UnmapMaterialData();
@@ -90,15 +90,21 @@ namespace MelLib
 		static Material<MTL>* Get(const std::string& name);
 		static void Delete();*/
 
+		virtual void Create() = 0;
+
 		ID3D12Resource* GetPConstBuffer()const { return materialBuffer.Get(); }
+		Texture* GetTexture() { return pTexture; }
+		Texture* GetNormalTexture() { return pNormalMapTexture; }
+		Texture3D* GetTexture3D() { return pTexture3D; }
 		//MTL GetMaterialData(MTL data) const {  return materialData; }
 
 		void SetColor(const Color& color) { this->color = color; }
-		void SetTexture(Texture* pTex) { pTextures = pTex; }
+		void SetTexture(Texture* pTex) { pTexture = pTex; }
 		void SetNormalMapTexture(Texture* pNormalMapTex) { pNormalMapTex = pNormalMapTex; }
-		void SetTexture3D(Texture3D* pTex) { pTexture3Ds = pTex; }
+		void SetTexture3D(Texture3D* pTex) { pTexture3D = pTex; }
 
 		//void SetMaterialData(MTL data) { materialData = data; }
+
 	};
 
 #pragma region Template
@@ -132,11 +138,11 @@ namespace MelLib
 	struct ADSAMaterialData
 	{
 		//環境光
-		Value3<float>ambient = 0.2f;
+		Value4<float>ambient = 0.3f;
 		//拡散反射光
-		Value3<float>diffuse = 0.7f;
+		Value4<float>diffuse = 0.7f;
 		//鏡面反射光
-		Value3<float>specular = 0.0f;
+		Value4<float>specular = 0.0f;
 		//アルファ値
 		float alpha = 1.0f;
 	};
@@ -146,10 +152,13 @@ namespace MelLib
 	class ADSAMaterial :public Material
 	{
 	private:
+		//static std::unordered_map<std::string, std::unique_ptr<ADSAMaterial>>pMaterials;
+
 		ADSAMaterialData materialData;
 
 	public:
 
+		void Create()override;
 		void Map();
 
 #pragma region セット
@@ -168,6 +177,7 @@ namespace MelLib
 
 	struct PBRMaterialData
 	{
+		//アルベドとアルファ値
 		Color baseColor;
 
 		//金属度(0または1)

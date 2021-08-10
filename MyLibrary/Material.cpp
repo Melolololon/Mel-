@@ -2,7 +2,7 @@
 #include"CreateBuffer.h"
 #include<d3dx12.h>
 
-void MelLib::Material::Create(const size_t& mtlByte)
+void MelLib::Material::CreateBuffer(const size_t& mtlByte)
 {
 	//定数バッファ作成
 	CreateBuffer::GetInstance()->CreateConstBuffer
@@ -22,6 +22,13 @@ void MelLib::Material::MapMaterialData(void** pData)
 void MelLib::Material::UnmapMaterialData()
 {
 	materialBuffer->Unmap(0, nullptr);
+}
+
+
+
+void MelLib::ADSAMaterial::Create()
+{
+	CreateBuffer(sizeof(ADSAMaterialData));
 }
 
 void MelLib::ADSAMaterial::Map()

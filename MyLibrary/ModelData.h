@@ -235,11 +235,12 @@ namespace MelLib
 
 #pragma endregion
 
-		std::vector<Material> material;
-
+		static ADSAMaterial primitiveModelMaterial;
+		std::vector<ADSAMaterial> material;
 
 		static void CreatePrimitiveModel();
 		static void CalcPrimitiveModelNormal(std::vector<FbxVertex>& vertices,const std::vector<USHORT>& indices);
+		
 		void CreateModel();
 
 		/// <summary>
@@ -363,13 +364,19 @@ namespace MelLib
 		/// <returns></returns>
 		UINT GetModelFileObjectNumber()const { return modelFileObjectNum; }
 
+		/// <summary>
+		/// 読み込んだモデルのマテリアルを取得します。
+		/// </summary>
+		/// <returns></returns>
+		std::vector<ADSAMaterial> GetMaterial()const { return material; };
+
 		//これstringで指定するように。objの場合、"1"のように指定
 		/// <summary>
 		/// マテリアルを取得します。
 		/// </summary>
 		/// <param name="objectNum">モデルファイル内のモデルを指定する値</param>
 		/// <returns></returns>
-		MaterialData GetMaterial(const int objectNum)const { return materials[objectNum]; }
+		MaterialData GetMaterialData(const int objectNum)const { return materials[objectNum]; }
 
 		PbrMaterial GetPbrMaterial(const int objectNum)const { return pbrMaterials[objectNum]; }
 
