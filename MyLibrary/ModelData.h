@@ -214,26 +214,6 @@ namespace MelLib
 		void MapIndices(const std::vector<std::vector<USHORT>>& indices);
 #pragma endregion
 
-#pragma region テクスチャ
-
-		/// <summary>
-		/// ディスクリプタヒープの生成
-		/// </summary>
-		/// <param name="textureNum"></param>
-		void CreateDescriptorHeap(const UINT textureNum);
-
-		/// <summary>
-		/// テクスチャバッファ、ビューの生成を行います。
-		/// </summary>
-		void CteateTextureBuffer();
-
-		/// <summary>
-		/// テクスチャバッファ、ビューの生成を行います。
-		/// </summary>
-		/// <param name="color"></param>
-		void CteateTextureBufferSetColor();
-
-#pragma endregion
 
 		static ADSAMaterial primitiveModelMaterial;
 		std::vector<ADSAMaterial> material;

@@ -41,12 +41,6 @@ namespace MelLib
 		//[モデル内のオブジェクトごと]
 		std::vector<Material>materials;
 
-		//[モデル内のオブジェクトごと]
-		std::vector < MaterialData> materialDatas ;
-
-		//テスト用PBR用マテリアルデータ
-		std::vector<PbrMaterial>pbrMaterials;
-
 #pragma region ボーンとアニメーションの情報
 		static const UINT BONE_MAX = 64;
 		struct SkinConstBufferData
@@ -76,10 +70,8 @@ namespace MelLib
 		std::vector<ComPtr<ID3D12Resource>> constBuffer;//メイン(基本的な情報)
 
 		static const int MATERIAL_BUFFER_REGISTER = 2;
-		std::vector<ComPtr<ID3D12Resource>> materialConstBuffer;//マテリアル
 
-		static const int PBR_MATERIAL_BUFFER_REGISTER = 4;
-		std::vector<ComPtr<ID3D12Resource>> pbrMaterialConstBuffer;//PBRマテリアル
+		static const int COLOR_MATERIAL_BUFFER_REGISTER = 4;
 
 		static const int USER_BUFFER_REGISTER = 1;
 		std::vector<ComPtr<ID3D12Resource>> userConstBuffer;//ユーザー
@@ -179,7 +171,7 @@ namespace MelLib
 #pragma region ゲット
 
 		//コンピュートシェーダーで計算したほうがいい。
-		//できそうなら描画時に頂点シェーダーで計算した結果を持ってきたほうがいい。
+		//できそうなら描画時に頂点シェーダーで計算した結果を持ってきたほうがいい?
 		/// <summary>
 		/// 頂点座標を取得します。
 		/// </summary>

@@ -26,8 +26,7 @@ void ModelObject::CreateConstBuffer()
 #pragma region リサイズ
 
 	constBuffer.resize(modelFileObjectNum);
-	materialConstBuffer.resize(modelFileObjectNum);
-	pbrMaterialConstBuffer.resize(modelFileObjectNum);
+
 
 	if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL)
 	{
@@ -99,19 +98,6 @@ void ModelObject::CreateConstBuffer()
 			sizeof(ModelConstBufferData)
 		);
 
-		//マテリアル
-		CreateBuffer
-		(
-			&materialConstBuffer[i],
-			sizeof(MaterialConstBufferData)
-		);
-
-		//PBRマテリアル
-		CreateBuffer
-		(
-			&pbrMaterialConstBuffer[i],
-			sizeof(PbrMaterialConstBufferData)
-		);
 
 		//モデル
 		if (modelConstBufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
@@ -227,43 +213,6 @@ void ModelObject::MapConstData(const Camera* camera)
 		constBuffer[i]->Unmap(0, nullptr);
 
 #pragma endregion
-
-#pragma region マテリアルのマップ
-		MaterialConstBufferData* materialConstData;
-
-		materialConstBuffer[i]->Map(0, nullptr, (void**)&materialConstData);
-
-		materialConstData->ambient = materialDatas[i].ambient;
-		materialConstData->diffuse = materialDatas[i].diffuse;
-		materialConstData->specular = materialDatas[i].specular;
-		materialConstData->alpha = materialDatas[i].alpha;
-
-		materialConstBuffer[i]->Unmap(0, nullptr);
-
-#pragma endregion
-
-
-#pragma region PBRマテリアルのマップ
-		PbrMaterialConstBufferData* pbrMaterialConstData;
-
-		pbrMaterialConstBuffer[i]->Map(0, nullptr, (void**)&pbrMaterialConstData);
-	
-
-		pbrMaterialConstData->baseColor = pbrMaterials[i].baseColor;
-		pbrMaterialConstData->metalness = pbrMaterials[i].metalness;
-		pbrMaterialConstData->fSpecular = pbrMaterials[i].fSpecular;
-		pbrMaterialConstData->roughness = pbrMaterials[i].roughness;
-
-		//テスト用
-		pbrMaterialConstData->baseColor = pbrMaterials[i].baseColor;
-		pbrMaterialConstData->metalness = 1;
-		pbrMaterialConstData->fSpecular = 0.5;
-		pbrMaterialConstData->roughness = 0.3;
-
-		pbrMaterialConstBuffer[i]->Unmap(0, nullptr);
-#pragma endregion
-
-
 
 #pragma region ボーンのマップ
 
@@ -520,14 +469,6 @@ void ModelObject::SetCmdList()
 
 #pragma region テクスチャ
 
-	/*	D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-		(
-			textureDescHeap->GetGPUDescriptorHandleForHeapStart(),
-			i,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		);
-		cmdLists[0]->SetGraphicsRootDescriptorTable(TEXURE_ROOTPARAM_NUM, gpuDescHandle);*/
-
 	
 		if (mtls[i].GetPTexture()) 
 		{
@@ -555,13 +496,12 @@ void ModelObject::SetCmdList()
 		cmdLists[0]->SetGraphicsRootConstantBufferView(CONST_BUFFER_REGISTER, constBuffer[i]->GetGPUVirtualAddress());
 
 		//マテリアルバッファ
-		//cmdLists[0]->SetGraphicsRootConstantBufferView(MATERIAL_BUFFER_REGISTER, materialConstBuffer[i]->GetGPUVirtualAddress());
 		cmdLists[0]->SetGraphicsRootConstantBufferView
 		(MATERIAL_BUFFER_REGISTER, mtls[i].GetPConstBuffer(Material::MaterialConstBufferType::MATERIAL_DATA)->GetGPUVirtualAddress());
 
-		//PBRマテリアル
-		//cmdLists[0]->SetGraphicsRootConstantBufferView(PBR_MATERIAL_BUFFER_REGISTER, pbrMaterialConstBuffer[i]->GetGPUVirtualAddress());
-		cmdLists[0]->SetGraphicsRootConstantBufferView(PBR_MATERIAL_BUFFER_REGISTER, mtls[i].GetPConstBuffer(Material::MaterialConstBufferType::COLOR)->GetGPUVirtualAddress());
+		//Colorマテリアル
+		cmdLists[0]->SetGraphicsRootConstantBufferView
+		(COLOR_MATERIAL_BUFFER_REGISTER, mtls[i].GetPConstBuffer(Material::MaterialConstBufferType::COLOR)->GetGPUVirtualAddress());
 
 		//モデルバッファ
 		if (modelConstBufferData.bufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
@@ -633,7 +573,7 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	//マテリアル
 	rootparam[MATERIAL_BUFFER_REGISTER].InitAsConstantBufferView(MATERIAL_BUFFER_REGISTER, 0, D3D12_SHADER_VISIBILITY_PIXEL);
 	//PBRマテリアル
-	rootparam[PBR_MATERIAL_BUFFER_REGISTER].InitAsConstantBufferView(PBR_MATERIAL_BUFFER_REGISTER, 0, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootparam[COLOR_MATERIAL_BUFFER_REGISTER].InitAsConstantBufferView(COLOR_MATERIAL_BUFFER_REGISTER, 0, D3D12_SHADER_VISIBILITY_PIXEL);
 	//モデルごと
 	rootparam[MODEL_BUFFER_REGISTER].InitAsConstantBufferView(MODEL_BUFFER_REGISTER, 0, D3D12_SHADER_VISIBILITY_ALL);
 
@@ -855,28 +795,6 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	{
 		materials[i] = modelDataMtl[i];
 	}
-
-#pragma region マテリアル
-
-
-	materialDatas.resize(modelFileObjectNum);
-
-	for(int i = 0; i < modelFileObjectNum;i++)
-	{
-		materialDatas[i] = pModelData->GetMaterialData(i);
-	}
-
-#pragma endregion
-
-#pragma region PBRマテリアル
-	pbrMaterials.resize(modelFileObjectNum);
-
-	for (int i = 0; i < modelFileObjectNum; i++)
-	{
-		pbrMaterials[i] = pModelData->GetPbrMaterial(i);
-	}
-#pragma endregion
-
 
 #pragma region アニメーション関係
 

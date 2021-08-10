@@ -14,18 +14,6 @@ ADSAMaterial ModelData::primitiveModelMaterial;
 ID3D12Device* ModelData::device = nullptr;
 
 
-void ModelData::CreateDescriptorHeap(const UINT textureNum)
-{
-	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc{};
-	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	descHeapDesc.NumDescriptors = textureNum;
-	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	descHeapDesc.NodeMask = 0;
-
-	auto result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&textureDescHeap));
-
-
-} 
 
 
 void ModelData::CreateVertexBufferSet
@@ -92,48 +80,6 @@ void ModelData::MapIndices(const std::vector<std::vector<USHORT>>& indices)
 	}
 }
 
-void ModelData::CteateTextureBuffer()
-{
-	auto textureNum = pTextures.size();
-	textureBuffers.resize(textureNum);
-	for (int i = 0; i < textureNum; i++)
-	{
-		CreateBuffer::GetInstance()->CreateTextureBufferAndView
-		(
-			pTextures[i]->GetMetadata(),
-			pTextures[i]->GetImage()[0],
-			CD3DX12_CPU_DESCRIPTOR_HANDLE
-			(
-				textureDescHeap->GetCPUDescriptorHandleForHeapStart(),
-				i,
-				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-			),
-			&textureBuffers[i]
-		);
-	}
-
-}
-
-void ModelData::CteateTextureBufferSetColor()
-{
-	//トイレから帰ってきたらやること
-	//CteateTextureBuffer関数(一個上)と同じようにリサイズしたりする
-	textureBuffers.resize(modelFileObjectNum);
-	for (int i = 0; i < modelFileObjectNum; i++) 
-	{
-		CreateBuffer::GetInstance()->CreateOneColorTextureBufferAndView
-		(
-			Color(255,255,255,255),
-			CD3DX12_CPU_DESCRIPTOR_HANDLE
-			(
-				textureDescHeap->GetCPUDescriptorHandleForHeapStart(),
-				i,
-				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-			),
-			&textureBuffers[0]
-		);
-	}
-}
 
 void MelLib::ModelData::CreatePrimitiveModel()
 {
@@ -712,9 +658,6 @@ void ModelData::BufferPreparationSetTexture
 	CreateIndexBufferSet(indices);
 	MapIndices(indices);
 
-	CreateDescriptorHeap(pTextures.size());
-	CteateTextureBuffer();
-
 
 }
 
@@ -735,10 +678,6 @@ void ModelData::BufferPreparationSetColor
 
 	CreateIndexBufferSet(indices);
 	MapIndices(indices);
-
-	CreateDescriptorHeap(modelFileObjectNum);
-	CteateTextureBufferSetColor();
-
 
 }
 
