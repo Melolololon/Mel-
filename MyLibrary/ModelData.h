@@ -348,7 +348,7 @@ namespace MelLib
 
 		/// <summary>
 		/// 読み込んだモデルのマテリアルを取得します。
-		/// </summary>
+		/// </summary> 
 		/// <returns></returns>
 		std::vector<ADSAMaterial*> GetMaterial();
 		std::vector<Material> GetBaseClassMaterial()const;
