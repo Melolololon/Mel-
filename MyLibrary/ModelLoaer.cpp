@@ -4,7 +4,6 @@
 #include<sstream>
 #include<DirectXMath.h>
 
-
 using namespace MelLib;
 
 ModelLoader::ModelLoader()
@@ -395,15 +394,12 @@ bool  ModelLoader::LoadObjModel
 
 }
 
-bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<MaterialData>& materials, int* loadCount)
+bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<ADSAMaterial>& materials, int* loadCount)
 {
 	//読み込んだ回数
 	int loadNum = 0;
-	bool loadAmbient = false;
-	bool loadDiffuse = false;
-	bool loadSupecular = false;
-	bool loadTexture = false;
-
+	std::vector<ADSAMaterialData> mtl;
+	std::vector<std::string> mtlName;
 
 	std::ifstream file;
 	std::string fullPath = materialDirectoryPath + materialFileName;
@@ -432,10 +428,11 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 		if (materialData == "newmtl")
 		{
 			loadNum++;
-			materials.resize(loadNum);
+			mtl.resize(loadNum);
+			mtlName.resize(loadNum);
 
 			//名前取得
-			lineStream >> materials[loadNum - 1].materialName;
+			//lineStream >> materials[loadNum - 1].materialName;
 
 			//for (UINT i = 0; i < materialName.size(); i++) 
 			//{
@@ -454,38 +451,42 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 		}
 		if (materialData == "Ka") //アンビエント
 		{
-			lineStream >> materials[loadNum - 1].ambient.x;
-			lineStream >> materials[loadNum - 1].ambient.y;
-			lineStream >> materials[loadNum - 1].ambient.z;
-			loadAmbient = true;
+			lineStream >> mtl[loadNum - 1].ambient.v1;
+			lineStream >> mtl[loadNum - 1].ambient.v2;
+			lineStream >> mtl[loadNum - 1].ambient.v3;
+			
 		}
 		if (materialData == "Kd")
 		{
-			lineStream >> materials[loadNum - 1].diffuse.x;
-			lineStream >> materials[loadNum - 1].diffuse.y;
-			lineStream >> materials[loadNum - 1].diffuse.z;
-			loadDiffuse = true;
+			lineStream >> mtl[loadNum - 1].diffuse.v1;
+			lineStream >> mtl[loadNum - 1].diffuse.v2;
+			lineStream >> mtl[loadNum - 1].diffuse.v3;
+			
 		}
 		if (materialData == "Ks")
 		{
-			lineStream >> materials[loadNum - 1].specular.x;
-			lineStream >> materials[loadNum - 1].specular.y;
-			lineStream >> materials[loadNum - 1].specular.z;
-			loadSupecular = true;
+			lineStream >> mtl[loadNum - 1].specular.v1;
+			lineStream >> mtl[loadNum - 1].specular.v2;
+			lineStream >> mtl[loadNum - 1].specular.v3;
+			
 		}
 		if (materialData == "map_Kd")
 		{
-			lineStream >> materials[loadNum - 1].textureName;
-			loadTexture = true;
+			lineStream >> mtlName[loadNum - 1];
+			
 		}
 	}
 	file.close();
 
 	*loadCount = loadNum;
 
-	if (!loadAmbient)materials[loadNum - 1].ambient = DirectX::XMFLOAT3(0.3f, 0.3f, 0.3f);
-	if (!loadDiffuse)materials[loadNum - 1].diffuse = DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f);
-	if (!loadSupecular)materials[loadNum - 1].specular = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-
+	materials.resize(loadNum);
+	for(int i = 0; i < loadNum;i++)
+	{
+		materials[i].Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+		materials[i].SetMaterialData(mtl[i]);
+		materials[i].SetLoadTexture(mtlName[i]);
+	}
+		
 	return true;
 }

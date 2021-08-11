@@ -58,6 +58,7 @@ void Game::Initialize()
 
 	MelLib::ModelData::Load("Resources/Obj/Ball/ball.obj", false,"ball");
 	MelLib::ModelData::Load("Resources/Obj/Box/box.obj", false,"box");
+	//MelLib::ModelData::Load("Resources/PBRModels/SpiralPBR/SpiralPBR.fbx", false,"pbr");
 #pragma endregion
 
 #pragma region マネージャー初期化

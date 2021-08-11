@@ -35,7 +35,7 @@ namespace MelLib
 		static ComPtr<ID3D12RootSignature>rootSignature;
 	
 		//[モデル内のオブジェクトごと]
-		std::vector<Material>materials;
+		std::vector<Material*>materials;
 
 #pragma region ボーンとアニメーションの情報
 		static const UINT BONE_MAX = 64;

@@ -460,7 +460,7 @@ void ModelObject::SetCmdList()
 	for (int i = 0; i < modelFileObjectNum; i++)
 	{
 		//cmdLists[0]->SetPipelineState(pPipeline[i]->GetPipelineState().Get());
-		cmdLists[0]->SetPipelineState(materials[i].GetPPipelineState()->GetPipelineState().Get());
+		cmdLists[0]->SetPipelineState(materials[i]->GetPPipelineState()->GetPipelineState().Get());
 
 
 		cmdLists[0]->IASetVertexBuffers(0, 1, &vertexBufferSets[i].vertexBufferView);
@@ -469,9 +469,9 @@ void ModelObject::SetCmdList()
 #pragma region テクスチャ
 
 	
-		if (materials[i].GetPTexture())
+		if (materials[i]->GetPTexture())
 		{
-			ID3D12DescriptorHeap* textureDescHeap = materials[i].GetPTextureHeap();
+			ID3D12DescriptorHeap* textureDescHeap = materials[i]->GetPTextureHeap();
 			std::vector<ID3D12DescriptorHeap*> ppHeaps;
 			ppHeaps.push_back(textureDescHeap);
 			cmdLists[0]->SetDescriptorHeaps(1, &ppHeaps[0]);
@@ -479,7 +479,7 @@ void ModelObject::SetCmdList()
 
 			D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 			(
-				materials[i].GetPTextureHeap()->GetGPUDescriptorHandleForHeapStart(),
+				materials[i]->GetPTextureHeap()->GetGPUDescriptorHandleForHeapStart(),
 				i,
 				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			);
@@ -496,11 +496,11 @@ void ModelObject::SetCmdList()
 
 		//マテリアルバッファ
 		cmdLists[0]->SetGraphicsRootConstantBufferView
-		(MATERIAL_BUFFER_REGISTER, materials[i].GetPConstBuffer(Material::MaterialConstBufferType::MATERIAL_DATA)->GetGPUVirtualAddress());
+		(MATERIAL_BUFFER_REGISTER, materials[i]->GetPConstBuffer(Material::MaterialConstBufferType::MATERIAL_DATA)->GetGPUVirtualAddress());
 
 		//Colorマテリアル
 		cmdLists[0]->SetGraphicsRootConstantBufferView
-		(COLOR_MATERIAL_BUFFER_REGISTER, materials[i].GetPConstBuffer(Material::MaterialConstBufferType::COLOR)->GetGPUVirtualAddress());
+		(COLOR_MATERIAL_BUFFER_REGISTER, materials[i]->GetPConstBuffer(Material::MaterialConstBufferType::COLOR)->GetGPUVirtualAddress());
 
 		//モデルバッファ
 		if (modelConstBufferData.bufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
@@ -646,7 +646,13 @@ void MelLib::ModelObject::SetMaterial(Material* mtl, const int index)
 		OutputDebugString(L"マテリアルのセットに失敗しました。マテリアルがnullptrです。\n");
 		return;
 	}
-	materials[index] = *mtl;
+	if(index >= materials.size())
+	{
+		OutputDebugString(L"マテリアルのセットに失敗しました。indexの値が大きくてセットできません。\n");
+		return;
+	}
+
+	materials[index] = mtl;
 }
 
 
@@ -740,7 +746,7 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	
 
 	//マテリアル取得
-	std::vector<ADSAMaterial>modelDataMtl = pModelData->GetMaterial();
+	std::vector<ADSAMaterial*>modelDataMtl = pModelData->GetMaterial();
 	size_t size = modelDataMtl.size();
 	materials.resize(size);
 	for (int i = 0 ; i < size; i++) 

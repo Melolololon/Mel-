@@ -159,6 +159,9 @@ namespace MelLib
 		//PBR用マテリアルデータ
 		std::vector<PbrMaterial>pbrMaterials;
 
+
+		std::vector<ADSAMaterial> material;
+
 		//テクスチャを使わない場合の色
 		Color color;
 
@@ -216,7 +219,6 @@ namespace MelLib
 
 
 		static ADSAMaterial primitiveModelMaterial;
-		std::vector<ADSAMaterial> material;
 
 		static void CreatePrimitiveModel();
 		static void CalcPrimitiveModelNormal(std::vector<FbxVertex>& vertices,const std::vector<USHORT>& indices);
@@ -348,7 +350,7 @@ namespace MelLib
 		/// 読み込んだモデルのマテリアルを取得します。
 		/// </summary>
 		/// <returns></returns>
-		std::vector<ADSAMaterial> GetMaterial()const { return material; };
+		std::vector<ADSAMaterial*> GetMaterial();
 		std::vector<Material> GetBaseClassMaterial()const;
 
 		//これstringで指定するように。objの場合、"1"のように指定

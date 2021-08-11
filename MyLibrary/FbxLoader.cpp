@@ -260,14 +260,17 @@ void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh)
 
 void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 {
-	auto& materialVector = fbxModel->materials;
-	materialVector.resize(1);
-	MaterialData& modelMaterial = materialVector[0];
+	//auto& materialVector = fbxModel->materials;
+	//materialVector.resize(1);
+	//MaterialData& modelMaterial = materialVector[0];
+	fbxModel->material.resize(1);
+	fbxModel->material[0].Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+	ADSAMaterialData mtl;
 
 	//テスト用
-	auto& pbrMaterialVector = fbxModel->pbrMaterials;
+	/*auto& pbrMaterialVector = fbxModel->pbrMaterials;
 	pbrMaterialVector.resize(1);
-	PbrMaterial& pbrModelMaterial = pbrMaterialVector[0];
+	PbrMaterial& pbrModelMaterial = pbrMaterialVector[0];*/
 
 	const int materialCount = fbxNode->GetMaterialCount();
 
@@ -286,14 +289,14 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 
 
 				FbxPropertyT<FbxDouble3> ambient = lambert->Ambient;
-				modelMaterial.ambient.x = (float)ambient.Get()[0];
-				modelMaterial.ambient.y = (float)ambient.Get()[1];
-				modelMaterial.ambient.z = (float)ambient.Get()[2];
+				mtl.ambient.v1 = (float)ambient.Get()[0];
+				mtl.ambient.v2 = (float)ambient.Get()[1];
+				mtl.ambient.v3 = (float)ambient.Get()[2];
 
 				FbxPropertyT<FbxDouble3> diffuse = lambert->Diffuse;
-				modelMaterial.diffuse.x = (float)diffuse.Get()[0];
-				modelMaterial.diffuse.y = (float)diffuse.Get()[1];
-				modelMaterial.diffuse.z = (float)diffuse.Get()[2];
+				mtl.diffuse.v1 = (float)diffuse.Get()[0];
+				mtl.diffuse.v2 = (float)diffuse.Get()[1];
+				mtl.diffuse.v3 = (float)diffuse.Get()[2];
 				
 				
 
@@ -304,22 +307,22 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 				
 
 				FbxPropertyT<FbxDouble3> ambient = phong->Ambient;
-				modelMaterial.ambient.x = (float)ambient.Get()[0];
-				modelMaterial.ambient.y = (float)ambient.Get()[1];
-				modelMaterial.ambient.z = (float)ambient.Get()[2];
+				mtl.ambient.v1 = (float)ambient.Get()[0];
+				mtl.ambient.v2 = (float)ambient.Get()[1];
+				mtl.ambient.v3 = (float)ambient.Get()[2];
 
 				FbxPropertyT<FbxDouble3> diffuse = phong->Diffuse;
-				modelMaterial.diffuse.x = (float)diffuse.Get()[0];
-				modelMaterial.diffuse.y = (float)diffuse.Get()[1];
-				modelMaterial.diffuse.z = (float)diffuse.Get()[2];
+				mtl.diffuse.v1 = (float)diffuse.Get()[0];
+				mtl.diffuse.v2 = (float)diffuse.Get()[1];
+				mtl.diffuse.v3 = (float)diffuse.Get()[2];
 
 				FbxPropertyT<FbxDouble3> specular = phong->Specular;
-				modelMaterial.specular.x = (float)specular.Get()[0];
-				modelMaterial.specular.y = (float)specular.Get()[1];
-				modelMaterial.specular.z = (float)specular.Get()[2];
+				mtl.specular.v1 = (float)specular.Get()[0];
+				mtl.specular.v2 = (float)specular.Get()[1];
+				mtl.specular.v3 = (float)specular.Get()[2];
 			}
 			else
-			{
+			{/*
 				const FbxProperty propBaseColor = 
 					FbxSurfaceMaterialUtils::GetProperty("baseColor", materials);
 				if (propBaseColor.IsValid())
@@ -352,10 +355,12 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 				if (propSuecularRoughness.IsValid())
 				{
 					pbrModelMaterial.roughness = propSuecularRoughness.Get<float>();
-				}
+				}*/
 
 			}
 
+
+			fbxModel->material[0].SetMaterialData(mtl);
 
 			const FbxProperty diffuseProperty =
 				materials->FindProperty(FbxSurfaceMaterial::sDiffuse);
@@ -376,9 +381,7 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 					//読み込み処理またはModelDataクラスにパスを渡す処理をここに
 					//ファイル名のみ記述されてた
 					
-					fbxModel->pTextures.resize(1);
-					fbxModel->pTextures[0] = std::make_unique<Texture>();
-					fbxModel->pTextures[0]->LoadModelTexture(modelDirectryPath + name);
+					fbxModel->material[0].SetLoadTexture(modelDirectryPath + name);
 
 					textureLoader = true;
 				}
@@ -387,15 +390,15 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 		}
 		
 
-		if(!textureLoader)
-		{
-			//ライブラリで実装してるべた塗りテクスチャを持たせるようにするので、
-			//そのうちここ変更する
-			
-			fbxModel->pTextures.resize(1);
-			fbxModel->pTextures[0] = std::make_unique<Texture>();
-			fbxModel->pTextures[0]->LoadModelTexture("Resources/Texture/WhiteTex.png");
-		}
+		//if(!textureLoader)
+		//{
+		//	//ライブラリで実装してるべた塗りテクスチャを持たせるようにするので、
+		//	//そのうちここ変更する
+		//	
+		//	fbxModel->pTextures.resize(1);
+		//	fbxModel->pTextures[0] = std::make_unique<Texture>();
+		//	fbxModel->pTextures[0]->LoadModelTexture("Resources/Texture/WhiteTex.png");
+		//}
 	}
 }
 

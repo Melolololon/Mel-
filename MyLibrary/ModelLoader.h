@@ -3,6 +3,7 @@
 #include"DirectXStruct.h"
 #include<unordered_map>
 #include"Vector.h"
+#include"Material.h"
 
 namespace MelLib
 {
@@ -50,7 +51,7 @@ namespace MelLib
 		(
 			std::string materialDirectoryPath,
 			std::string materialFileName,
-			std::vector<MaterialData>& materials,
+			std::vector<ADSAMaterial>& materials,
 			int* loadCount
 		);
 	};

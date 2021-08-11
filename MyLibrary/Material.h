@@ -72,6 +72,9 @@ namespace MelLib
 
 		//(マテリアルのカラー + AddColor + SubColor)*MulColor = 追加色
 		Color color = Color(255, 255, 255, 255);
+		
+		//テクスチャ追加したらデストラクタとかにLoad関数で読み込んだテクスチャの開放処理を書くこと
+		//書く場所は、デストラクタ、Set関数、Load関数の失敗時に入るif内の3箇所
 		//テクスチャ
 		static const UINT TEXTURE_HANDLE_NUM = 0;
 		Texture* pTexture = nullptr;
@@ -91,9 +94,22 @@ namespace MelLib
 		//ファイルに複数モデルあってもレンダリングするタイミングが違うからまとめなくても問題ない
 		ComPtr<ID3D12DescriptorHeap>textureHeap;
 
+		enum class SetTextureType
+		{
+			NONE,//テクスチャ無し
+			SET,//Set関数で読み込んだテクスチャ
+			LOAD//LoadSet関数で読み込んだテクスチャ
+		};
+
+		SetTextureType textureType = SetTextureType::NONE;
+		SetTextureType normalMapTextureType = SetTextureType::NONE;
+		SetTextureType texture3DType = SetTextureType::NONE;
+
 	private:
 		void MapColorBuffer(const Color& color);
 
+		//メインのテクスチャをセットまたは読み込んだときに必ず呼び出す処理
+		void SetOrLoadTextureProcess();
 	protected:
 		PipelineState pipelineState;
 		//DrawData drawData;
@@ -110,7 +126,8 @@ namespace MelLib
 	public:
 
 		Material() {}
-		virtual ~Material() {}
+		virtual ~Material();
+		
 
 		static void Initialize(ID3D12Device* dev){ device = dev; }
 		
@@ -129,6 +146,7 @@ namespace MelLib
 		void SetTexture(Texture* pTex);
 		void SetNormalMapTexture(Texture* pNormalMapTex);
 		void SetTexture3D(Texture3D* pTex);
+		void SetLoadTexture(const std::string& path);
 
 		//void SetDrawData(const DrawData& drawData) { this->drawData = drawData; }
 
@@ -189,7 +207,7 @@ namespace MelLib
 		//アルベドはMaterialに定義
 
 		//金属度(0または1)
-		float metalness = 0.0f;
+		float metalness = 1.0f;
 		//鏡面反射光(float 0から1)
 		float fSpecular = 0.5f;
 		//粗さ

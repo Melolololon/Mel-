@@ -530,14 +530,14 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		(
 			directoryPath,
 			materialFileName,
-			materials,
+			material,
 			&materialNum
 		);
 		if (!result)LoadFalseEndProcess();
-		pbrMaterials.resize(modelFileObjectNum);
+		//pbrMaterials.resize(modelFileObjectNum);
 
 		//テクスチャ読み込み
-		pTextures.resize(materialNum);
+		/*pTextures.resize(materialNum);
 		for (int i = 0; i < materialNum; i++)
 		{
 			pTextures[i] = std::make_unique<Texture>();
@@ -549,7 +549,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 
 				return false;
 			}
-		}
+		}*/
 
 
 #pragma endregion
@@ -629,12 +629,17 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 
 
 	//マテリアル作成
-	material.resize(modelFileObjectNum);
-	for(int i = 0; i < modelFileObjectNum;i++)
-	{
-		material[i].Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
-		material[i].SetTexture(pTextures[i].get());
-	}
+	//読み込み時に生成するからここに書く必要ない
+	//material.resize(modelFileObjectNum);
+	//for(int i = 0; i < modelFileObjectNum;i++)
+	//{
+	//	material[i].Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+	//	
+	//	//マテリアルの値読み込むときに読み込むからいらん
+	//	//material[i].SetTexture(pTextures[i].get());
+
+
+	//}
 
 	return true;
 }
@@ -681,6 +686,18 @@ void ModelData::BufferPreparationSetColor
 
 }
 
+
+std::vector<ADSAMaterial*> MelLib::ModelData::GetMaterial()
+{
+	size_t size = material.size();
+	std::vector<ADSAMaterial*>pMtls(size);
+	for(int i = 0; i < size;i++)
+	{
+		pMtls[i] = &material[i];
+	}
+	return pMtls;
+
+}
 
 std::vector<Material> MelLib::ModelData::GetBaseClassMaterial() const
 {

@@ -3,13 +3,27 @@
 
 #include"ModelData.h"
 
+MelLib::PBRMaterial mtl;
+bool first = false;
+
 CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool inputMove) : inputFlag(inputMove)
 {
 	position = pos;
 	speed = 0.25f;
 	model[0] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get("ball"), nullptr);
-	model[1] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
+	model[1] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get("ball"), nullptr);
 	
+
+	//マテリアルテスト
+	/*if(!first)
+	{
+		MelLib::DrawData data = MelLib::PipelineState::GetDefaultDrawData(MelLib::PipelineStateType::MODEL);
+
+		first = true;
+		mtl.Create(data);
+	}
+
+	model[0]->SetMaterial(&mtl,0);*/
 
 	/*collisionFlag.sphere = true;
 	sphereData.resize(1);
