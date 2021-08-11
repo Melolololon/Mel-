@@ -11,7 +11,6 @@ std::unordered_map<std::string, std::unique_ptr<ModelObject>>ModelObject::pModel
 ID3D12Device* ModelObject::device;
 std::vector<ID3D12GraphicsCommandList*>ModelObject::cmdLists;
 ComPtr<ID3D12RootSignature> ModelObject::rootSignature;
-PipelineState ModelObject::defaultPipeline;
 
 ModelObject::ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
@@ -638,67 +637,6 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 
 	PipelineState::SetModelRootSignature(rootSignature.Get());
 
-#pragma region パイプライン
-	DrawData data;
-	data.alphaWrite = true;
-	data.blendMode = BlendMode::ADD;
-	data.cullMode = CullMode::BACK;
-	data.depthTest = true;
-	data.drawMode = DrawMode::SOLID;
-
-	//インプットレイアウト
-	std::vector<InputLayoutData> ilData(5);
-	ilData[0].formatType = FORMAT_TYPE::FLOAT;
-	ilData[0].number = 3;
-	ilData[0].semantics = "POSITION";
-	ilData[1].formatType = FORMAT_TYPE::FLOAT;
-	ilData[1].number = 2;
-	ilData[1].semantics = "TEXCOORD";
-	ilData[2].formatType = FORMAT_TYPE::FLOAT;
-	ilData[2].number = 3;
-	ilData[2].semantics = "NORMAL";
-
-	ilData[3].formatType = FORMAT_TYPE::UNSIGNED_INT;
-	ilData[3].number = 4;
-	ilData[3].semantics = "BONEINDICES";
-	ilData[4].formatType = FORMAT_TYPE::FLOAT;
-	ilData[4].number = 4;
-	ilData[4].semantics = "BONEWEIGHTS";
-
-	ShaderDataSet set =
-	{ 
-		{ L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" },
-		{ L"LIB","","" },
-		{ L"LIB","","" },
-		{ L"../MyLibrary/FbxGeometryShader.hlsl","main","gs_5_0" },
-		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" } 
-	};
-
-	bool pResult = defaultPipeline.CreatePipeline
-	(
-		data,
-		set,
-		PipelineStateType::MODEL,
-		&ilData,
-		1
-	);
-
-	if (!pResult)
-	{
-		OutputDebugString(L"ModelObjectの初期化に失敗しました。デフォルトパイプラインを生成できませんでした。\n");
-		return false;
-	}
-	return true;
-#pragma endregion
-
-}
-
-void ModelObject::SetPipeline(PipelineState* pipelineState)
-{
-	for (int i = 0; i < modelFileObjectNum; i++)
-	{
-		pPipeline[i] = pipelineState;
-	}
 }
 
 void MelLib::ModelObject::SetMaterial(Material* mtl, const int index)
@@ -826,7 +764,7 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	fbxAnimationData.animationTimes = pModelData->GetFbxAnimationTimes();
 #pragma endregion
 
-	pPipeline.resize(modelFileObjectNum, &defaultPipeline);
+	
 
 	return true;
 }

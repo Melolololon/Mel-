@@ -130,7 +130,6 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 			for(int i = objNum; i < dataNum;i++)
 			{
 				modelObjcts[i].Create(ModelData::Get(type), nullptr);
-				modelObjcts[i].SetPipeline(&collisionCheckModelPipelineState);
 
 				modelObjcts[i].SetMaterial(&material, 0);
 			}

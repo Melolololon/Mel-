@@ -33,11 +33,7 @@ namespace MelLib
 		static ID3D12Device* device;
 		static std::vector<ID3D12GraphicsCommandList*>cmdLists;
 		static ComPtr<ID3D12RootSignature>rootSignature;
-		static PipelineState defaultPipeline;
-
-
-		std::vector<PipelineState*> pPipeline;
-
+	
 		//[モデル内のオブジェクトごと]
 		std::vector<Material>materials;
 
@@ -163,8 +159,6 @@ namespace MelLib
 
 
 #pragma endregion
-
-		void SetPipeline(PipelineState* pipelineState);
 
 		void SetMaterial(Material* mtl, const int index);
 #pragma endregion

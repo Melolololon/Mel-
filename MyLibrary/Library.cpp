@@ -91,8 +91,6 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 
 #pragma region ウィンドウ処理
 
-
-
 	hwnd = LibWinAPI::CreateNormalWindow
 	(
 		windowName,
@@ -105,10 +103,6 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 		nullptr,
 		WindowProc
 	);
-
-
-	
-
 #pragma endregion
 
 #pragma region DC
@@ -229,14 +223,6 @@ void Library::Finalize()
 
 	CoUninitialize();
 }
-
-
-#pragma region WinAPI関係
-HWND Library::GetHWND()
-{
-	return hwnd;
-}
-#pragma endregion
 
 
 #pragma region 設定

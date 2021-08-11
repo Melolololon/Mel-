@@ -105,7 +105,7 @@ namespace MelLib
 #pragma endregion
 
 #pragma region ウィンドウ関係
-		static HWND GetHWND();
+		static HWND GetHWND(){ return hwnd; }
 		static std::wstring GetWindowName() { return winName; }
 #pragma endregion
 
