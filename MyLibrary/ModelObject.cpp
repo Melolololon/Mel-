@@ -746,7 +746,7 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	
 
 	//ƒ}ƒeƒŠƒAƒ‹Žæ“¾
-	std::vector<ADSAMaterial*>modelDataMtl = pModelData->GetMaterial();
+	std::vector<ADSAMaterial*>modelDataMtl = pModelData->GetPMaterial();
 	size_t size = modelDataMtl.size();
 	materials.resize(size);
 	for (int i = 0 ; i < size; i++) 

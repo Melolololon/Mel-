@@ -153,13 +153,6 @@ namespace MelLib
 		//モデル名
 		std::string modelName;
 
-		//読み取ったマテリアル
-		std::vector<MaterialData> materials;
-
-		//PBR用マテリアルデータ
-		std::vector<PbrMaterial>pbrMaterials;
-
-
 		std::vector<ADSAMaterial> material;
 
 		//テクスチャを使わない場合の色
@@ -172,7 +165,6 @@ namespace MelLib
 		std::vector<std::vector<DirectX::XMFLOAT3>> smoothNormal;
 
 		std::vector<std::vector<USHORT>> indices;
-		std::vector<std::unique_ptr<Texture>>pTextures;
 
 
 		UINT boneNum = 0;
@@ -350,18 +342,11 @@ namespace MelLib
 		/// 読み込んだモデルのマテリアルを取得します。
 		/// </summary> 
 		/// <returns></returns>
-		std::vector<ADSAMaterial*> GetMaterial();
+		std::vector<ADSAMaterial*> GetPMaterial();
 		std::vector<Material> GetBaseClassMaterial()const;
 
-		//これstringで指定するように。objの場合、"1"のように指定
-		/// <summary>
-		/// マテリアルを取得します。
-		/// </summary>
-		/// <param name="objectNum">モデルファイル内のモデルを指定する値</param>
-		/// <returns></returns>
-		MaterialData GetMaterialData(const int objectNum)const { return materials[objectNum]; }
-
-		PbrMaterial GetPbrMaterial(const int objectNum)const { return pbrMaterials[objectNum]; }
+	
+		
 
 		/// <summary>
 		/// モデルの頂点座標を取得します。

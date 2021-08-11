@@ -291,8 +291,7 @@ void MelLib::ModelData::CreateModel()
 		UnmapVertices(i);
 	}
 
-	materials.resize(modelFileObjectNum);
-	pbrMaterials.resize(modelFileObjectNum);
+
 	modelFormat = ModelFormat::MODEL_FORMAT_PRIMITIVE;
 }
 
@@ -687,7 +686,7 @@ void ModelData::BufferPreparationSetColor
 }
 
 
-std::vector<ADSAMaterial*> MelLib::ModelData::GetMaterial()
+std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 {
 	size_t size = material.size();
 	std::vector<ADSAMaterial*>pMtls(size);
