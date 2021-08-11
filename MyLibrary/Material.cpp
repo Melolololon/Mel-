@@ -3,6 +3,7 @@
 #include<d3dx12.h>
 
 ID3D12Device* MelLib::Material::device;
+std::unique_ptr<MelLib::PipelineState> MelLib::Material::defaultPipeline;
 
 void MelLib::Material::MapColorBuffer(const Color& color)
 {
@@ -13,7 +14,7 @@ void MelLib::Material::MapColorBuffer(const Color& color)
 
 }
 
-void MelLib::Material::CreateBufferAndDescriptorHeap(const size_t& mtlByte)
+void MelLib::Material::CreateInitialize(const size_t& mtlByte)
 {
 
 	//定数バッファ作成
@@ -42,6 +43,8 @@ void MelLib::Material::CreateBufferAndDescriptorHeap(const size_t& mtlByte)
 	descHeapDesc.NodeMask = 0;
 
 	auto result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&textureHeap));
+
+	pipelineState = defaultPipeline.get();
 }
 
 void MelLib::Material::MapMaterialData(void** pData)
@@ -53,6 +56,29 @@ void MelLib::Material::UnmapMaterialData()
 {
 	materialBuffer->Unmap(0, nullptr);
 	
+}
+
+void MelLib::Material::Initialize()
+{
+	defaultPipeline = std::make_unique<PipelineState>();
+
+	
+	ShaderDataSet set =
+	{
+		{ L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" },
+		{ L"LIB","","" },
+		{ L"LIB","","" },
+		{ L"../MyLibrary/FbxGeometryShader.hlsl","main","gs_5_0" },
+		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" }
+	};
+	defaultPipeline->CreatePipeline
+	(
+		PipelineState::GetDefaultPipelineData(PipelineStateType::MODEL),
+		set,
+		PipelineStateType::MODEL,
+		nullptr,
+		1
+	);
 }
 
 ID3D12Resource* MelLib::Material::GetPConstBuffer(const MaterialConstBufferType type) const
@@ -142,8 +168,16 @@ void MelLib::Material::SetTexture3D(Texture3D* pTex)
 
 void MelLib::ADSAMaterial::Create()
 {
-	CreateBufferAndDescriptorHeap(sizeof(ADSAMaterialData));
+	CreateInitialize(sizeof(ADSAMaterialData));
 	Map();
+
+	//各マテリアルにデフォルトパイプライン用意
+	////パイプライン作成
+	//pipelineState.Create
+	//(
+	//	drawData,
+	//);
+
 }
 
 void MelLib::ADSAMaterial::Map()
@@ -171,7 +205,7 @@ void MelLib::PBRMaterial::Map()
 
 void MelLib::PBRMaterial::Create()
 {
-	CreateBufferAndDescriptorHeap(sizeof(PBRMaterial)); 
+	CreateInitialize(sizeof(PBRMaterial)); 
 	Map();
 }
 

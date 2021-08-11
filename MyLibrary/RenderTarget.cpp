@@ -255,19 +255,23 @@ bool RenderTarget::Initialize()
 
 
 
-	PipelineStateData data = PipelineState::GetDefaultPipelineData( PipelineStateType::SPRITE);
+	DrawData data = PipelineState::GetDefaultPipelineData( PipelineStateType::SPRITE);
 
-	bool bResult  = defaultPipeline.CreatePipeline
-	(
-		data,
+	ShaderDataSet set =
+	{
 		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },
 		{ L"NULL","","" },
 		{ L"NULL","","" },
 		{ L"NULL","","" },
-		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
+		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" }
+	};
+
+	bool bResult  = defaultPipeline.CreatePipeline
+	(
+		data,
+		set,
 		PipelineStateType::RENDER_TARGET,
 		nullptr,
-		typeid(RenderTarget).name(),
 		1
 	);
 	if (!bResult)

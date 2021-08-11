@@ -7,6 +7,7 @@
 #include"Color.h"
 #include"Values.h"
 #include"Texture3D.h"
+#include"PipelineState.h"
 
 namespace MelLib
 {
@@ -42,6 +43,9 @@ namespace MelLib
 	//テンプレートのやつCreate呼べない。
 	//継承して作ってもらう?
 
+	//マテリアルにパイプライン持たせる
+	//パイプラインはprotectedで持たせる。カリング処理の設定とかの構造体はprivateに持たせる。
+
 	//とりあえず作るの進めよう
 
 	//マテリアル情報をまとめたクラス。
@@ -61,12 +65,7 @@ namespace MelLib
 		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 		static ID3D12Device* device;
-
-		//static std::unordered_map<std::string, Material<ADSAMaterialData>*>pAdsaMaterials;
-		//static std::unordered_map<std::string, Material<PBRMaterialData>*>pPbrMaterials;
-		
-
-		//MTL materialData;
+		static std::unique_ptr<PipelineState> defaultPipeline;
 
 		//マテリアルの定数バッファ
 		ComPtr<ID3D12Resource>colorBuffer = nullptr;
@@ -93,14 +92,20 @@ namespace MelLib
 		//ファイルに複数モデルあってもレンダリングするタイミングが違うからまとめなくても問題ない
 		ComPtr<ID3D12DescriptorHeap>textureHeap;
 
+		
+
+	private:
 		void MapColorBuffer(const Color& color);
 
 	protected:
+		PipelineState* pipelineState = nullptr;
+		DrawData drawData;
+	protected:
 		/// <summary>
-		/// マテリアルのバッファとか生成。
+		/// マテリアル生成時の初期化処理を行います。
 		/// </summary>
 		/// <param name="mtlByte">構造体のバイト数</param>
-		void CreateBufferAndDescriptorHeap(const size_t& mtlByte);
+		void CreateInitialize(const size_t& mtlByte);
 
 	
 		void MapMaterialData(void** pData);
@@ -115,10 +120,7 @@ namespace MelLib
 			device = dev;
 		}
 
-		//materialDataの型チェックして、umapに格納
-		/*static void Create();
-		static Material<MTL>* Get(const std::string& name);
-		static void Delete();*/
+		static void Initialize();
 
 		virtual void Create(){}
 
@@ -127,12 +129,15 @@ namespace MelLib
 		Texture* GetPTexture() { return pTexture; }
 		Texture* GetPNormalTexture() { return pNormalMapTexture; }
 		Texture3D* GetPTexture3D() { return pTexture3D; }
+		PipelineState* GetPipelineState() { return pipelineState; }
 		//MTL GetMaterialData(MTL data) const {  return materialData; }
 
 		void SetColor(const Color& color);
 		void SetTexture(Texture* pTex);
 		void SetNormalMapTexture(Texture* pNormalMapTex);
 		void SetTexture3D(Texture3D* pTex);
+
+		void SetDrawData(const DrawData& drawData) { this->drawData = drawData; }
 
 		//void SetMaterialData(MTL data) { materialData = data; }
 

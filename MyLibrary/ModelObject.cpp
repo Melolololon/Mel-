@@ -639,7 +639,7 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	PipelineState::SetModelRootSignature(rootSignature.Get());
 
 #pragma region パイプライン
-	PipelineStateData data;
+	DrawData data;
 	data.alphaWrite = true;
 	data.blendMode = BlendMode::ADD;
 	data.cullMode = CullMode::BACK;
@@ -665,17 +665,21 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	ilData[4].number = 4;
 	ilData[4].semantics = "BONEWEIGHTS";
 
-	bool pResult = defaultPipeline.CreatePipeline
-	(
-		data,
+	ShaderDataSet set =
+	{ 
 		{ L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" },
 		{ L"LIB","","" },
 		{ L"LIB","","" },
 		{ L"../MyLibrary/FbxGeometryShader.hlsl","main","gs_5_0" },
-		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" },
+		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" } 
+	};
+
+	bool pResult = defaultPipeline.CreatePipeline
+	(
+		data,
+		set,
 		PipelineStateType::MODEL,
 		&ilData,
-		typeid(ModelObject).name(),
 		1
 	);
 

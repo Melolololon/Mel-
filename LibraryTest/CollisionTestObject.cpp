@@ -7,8 +7,8 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 {
 	position = pos;
 	speed = 0.25f;
-	model[0] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get("ball"), nullptr);
-	model[1] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get("ball"), nullptr);
+	model[0] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
+	model[1] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
 	
 
 	/*collisionFlag.sphere = true;

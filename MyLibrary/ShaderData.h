@@ -45,7 +45,7 @@ namespace MelLib
 
 
 	//パイプラインの設定をまとめた構造体
-	struct PipelineStateData
+	struct DrawData
 	{
 		DrawMode drawMode = DrawMode::SOLID;
 		CullMode cullMode = CullMode::BACK;
@@ -61,5 +61,23 @@ namespace MelLib
 		const wchar_t* shaderPath;
 		const char* entryPoint;
 		const char* ver;
+	};
+
+	struct ShaderDataSet
+	{
+		//頂点シェーダー情報
+		ShaderData vShaderData;
+
+		//ハルシェーダー情報
+		ShaderData hShaderData;
+
+		//ドメインシェーダー情報
+		ShaderData dShaderData;
+
+		//ジオメトリシェーダー情報
+		ShaderData gShaderData;
+
+		//ピクセルシェーダー情報
+		ShaderData pShaderData;
 	};
 }

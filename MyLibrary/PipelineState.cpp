@@ -14,7 +14,7 @@ ID3D12RootSignature* PipelineState::renderTargetRootSignature;
 
 void PipelineState::SetPipelineDesc
 (
-	const PipelineStateData& pipelineData,
+	const DrawData& pipelineData,
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc,
 	const PipelineStateType type,
 	const int renderTargetNum
@@ -167,15 +167,10 @@ void PipelineState::SetPipelineDesc
 
 void PipelineState::Create
 (
-	const PipelineStateData& pipelineData,
-	const ShaderData& vShaderData,
-	const ShaderData& hShaderData,
-	const ShaderData& dShaderData,
-	const ShaderData& gShaderData,
-	const ShaderData& pShaderData,
+	const DrawData& drawData, 
+	const ShaderDataSet& shaderSet,
 	const PipelineStateType pipelineType,
 	const std::vector<InputLayoutData>* inputLayoutData,
-	const std::string& modelClassName,
 	const int renderTargetNum,
 	const std::string& name
 )
@@ -183,15 +178,10 @@ void PipelineState::Create
 	pPipelineState.emplace(name, std::make_unique<PipelineState>());
 	pPipelineState[name]->CreatePipeline
 	(
-		pipelineData,
-		vShaderData,
-		gShaderData,
-		hShaderData,
-		dShaderData,
-		pShaderData,
+		drawData,
+		shaderSet,
 		pipelineType,
 		inputLayoutData,
-		modelClassName,
 		renderTargetNum
 	);
 }
@@ -199,20 +189,15 @@ void PipelineState::Create
 
 bool PipelineState::CreatePipeline
 (
-	const PipelineStateData& pipelineData,
-	const ShaderData& vShaderData,
-	const ShaderData& hShaderData,
-	const ShaderData& dShaderData,
-	const ShaderData& gShaderData,
-	const ShaderData& pShaderData,
+	const DrawData& drawData,
+	const ShaderDataSet& shaderSet,
 	const PipelineStateType pipelineType,
 	const std::vector<InputLayoutData>* inputLayoutData,
-	const std::string& modelClassName,
 	const int renderTargetNum
 )
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pDesc = {};
-	SetPipelineDesc(pipelineData, pDesc, pipelineType,renderTargetNum);
+	SetPipelineDesc(drawData, pDesc, pipelineType,renderTargetNum);
 
 	
 
@@ -434,9 +419,9 @@ bool PipelineState::CreatePipeline
 
 #pragma region 頂点シェーダー
 
-	if (vShaderData.shaderPath == L"LIB")
+	if (shaderSet.vShaderData.shaderPath == L"LIB")
 	{
-		if (modelClassName == typeid(ModelObject).name()) 
+		if (pipelineType == PipelineStateType::MODEL)
 		{
 			result = D3DCompileFromFile(
 				L"../MyLibrary/FbxVertexShader.hlsl",
@@ -451,10 +436,10 @@ bool PipelineState::CreatePipeline
 	else
 	{
 		result = D3DCompileFromFile(
-			vShaderData.shaderPath,
+			shaderSet.vShaderData.shaderPath,
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE,
-			vShaderData.entryPoint, vShaderData.ver,
+			shaderSet.vShaderData.entryPoint, shaderSet.vShaderData.ver,
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 			0,
 			&vsBlob, &errorBlob);
@@ -474,9 +459,9 @@ bool PipelineState::CreatePipeline
 
 #pragma region ピクセルシェーダー
 
-	if (pShaderData.shaderPath == L"LIB")
+	if (shaderSet.pShaderData.shaderPath == L"LIB")
 	{
-		if (modelClassName == typeid(ModelObject).name()) 
+		if (pipelineType == PipelineStateType::MODEL)
 		{
 			result = D3DCompileFromFile(
 				L"../MyLibrary/FbxPixelShader.hlsl",
@@ -491,10 +476,10 @@ bool PipelineState::CreatePipeline
 	else
 	{
 		result = D3DCompileFromFile(
-			pShaderData.shaderPath,
+			shaderSet.pShaderData.shaderPath,
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE,
-			pShaderData.entryPoint, pShaderData.ver,
+			shaderSet.pShaderData.entryPoint, shaderSet.pShaderData.ver,
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 			0,
 			&psBlob, &errorBlob);
@@ -513,9 +498,9 @@ bool PipelineState::CreatePipeline
 
 #pragma region ハルシェーダー
 	
-	if (hShaderData.shaderPath == L"LIB")
+	if (shaderSet.hShaderData.shaderPath == L"LIB")
 	{
-		if (modelClassName == typeid(ModelObject).name()) 
+		if (pipelineType == PipelineStateType::MODEL)
 		{
 			result = D3DCompileFromFile(
 				L"../MyLibrary/TestHullShader.hlsl",
@@ -527,14 +512,14 @@ bool PipelineState::CreatePipeline
 				&hsBlob, &errorBlob);
 		}
 	}
-	else if(hShaderData.shaderPath == L"NULL"){}
+	else if(shaderSet.hShaderData.shaderPath == L"NULL"){}
 	else
 	{
 		result = D3DCompileFromFile(
-			hShaderData.shaderPath,
+			shaderSet.hShaderData.shaderPath,
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE,
-			hShaderData.entryPoint, hShaderData.ver,
+			shaderSet.hShaderData.entryPoint, shaderSet.hShaderData.ver,
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 			0,
 			&hsBlob, &errorBlob);
@@ -547,7 +532,7 @@ bool PipelineState::CreatePipeline
 		return false;
 	}
 	
-	if (hShaderData.shaderPath != L"NULL") 
+	if (shaderSet.hShaderData.shaderPath != L"NULL")
 	{
 		pDesc.HS.pShaderBytecode = hsBlob->GetBufferPointer();
 		pDesc.HS.BytecodeLength = hsBlob->GetBufferSize();
@@ -555,7 +540,7 @@ bool PipelineState::CreatePipeline
 #pragma endregion
 
 #pragma region ドメインシェーダー
-	if (dShaderData.shaderPath == L"LIB")
+	if (shaderSet.dShaderData.shaderPath == L"LIB")
 	{
 		result = D3DCompileFromFile(
 			L"../MyLibrary/TestDomainShader.hlsl",
@@ -566,14 +551,14 @@ bool PipelineState::CreatePipeline
 			0,
 			&dsBlob, &errorBlob);
 	}
-	else if (hShaderData.shaderPath == L"NULL") {}
+	else if (shaderSet.dShaderData.shaderPath == L"NULL") {}
 	else
 	{
 		result = D3DCompileFromFile(
-			dShaderData.shaderPath,
+			shaderSet.dShaderData.shaderPath,
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE,
-			dShaderData.entryPoint, dShaderData.ver,
+			shaderSet.dShaderData.entryPoint, shaderSet.dShaderData.ver,
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 			0,
 			&dsBlob, &errorBlob);
@@ -586,7 +571,7 @@ bool PipelineState::CreatePipeline
 		return false;
 	}
 
-	if (hShaderData.shaderPath != L"NULL") 
+	if (shaderSet.dShaderData.shaderPath != L"NULL")
 	{
 		pDesc.DS.pShaderBytecode = dsBlob->GetBufferPointer();
 		pDesc.DS.BytecodeLength = dsBlob->GetBufferSize();
@@ -595,9 +580,9 @@ bool PipelineState::CreatePipeline
 
 #pragma region ジオメトリシェーダー
 
-	if (gShaderData.shaderPath == L"LIB")
+	if (shaderSet.gShaderData.shaderPath == L"LIB")
 	{
-		if (modelClassName == typeid(ModelObject).name()) 
+		if (pipelineType == PipelineStateType::MODEL)
 		{
 			result = D3DCompileFromFile(
 				L"../MyLibrary/FbxGeometryShader.hlsl",
@@ -611,14 +596,14 @@ bool PipelineState::CreatePipeline
 
 
 	}
-		else if(gShaderData.shaderPath == L"NULL"){}
+		else if(shaderSet.gShaderData.shaderPath == L"NULL"){}
 		else
 		{
 			result = D3DCompileFromFile(
-				gShaderData.shaderPath,
+				shaderSet.gShaderData.shaderPath,
 				nullptr,
 				D3D_COMPILE_STANDARD_FILE_INCLUDE,
-				gShaderData.entryPoint, gShaderData.ver,
+				shaderSet.gShaderData.entryPoint, shaderSet.gShaderData.ver,
 				D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 				0,
 				&gsBlob, &errorBlob);
@@ -632,7 +617,7 @@ bool PipelineState::CreatePipeline
 		return false;
 	}
 
-	if (gShaderData.shaderPath != L"NULL") 
+	if (shaderSet.gShaderData.shaderPath != L"NULL")
 	{
 		pDesc.GS.pShaderBytecode = gsBlob->GetBufferPointer();
 		pDesc.GS.BytecodeLength = gsBlob->GetBufferSize();
@@ -654,7 +639,6 @@ bool PipelineState::CreatePipeline
 		return false;
 	}
 
-	this->modelClassName = modelClassName;
 	return true;
 }
 
@@ -663,9 +647,9 @@ void PipelineState::Delete(const std::string& name)
 	pPipelineState.erase(name);
 }
 
-PipelineStateData PipelineState::GetDefaultPipelineData(const PipelineStateType type)
+DrawData PipelineState::GetDefaultPipelineData(const PipelineStateType type)
 {
-	PipelineStateData data;
+	DrawData data;
 	switch (type)
 	{
 	case PipelineStateType::MODEL:

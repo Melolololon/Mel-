@@ -27,14 +27,13 @@ namespace MelLib
 
 		static void SetPipelineDesc
 		(
-			const PipelineStateData& pipelineData,
+			const DrawData& drawData,
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc,
 			const PipelineStateType type,
 			const int renderTargetNum
 		);
 
 
-		std::string modelClassName;
 
 		static ID3D12RootSignature* modelRootSignature;
 		static ID3D12RootSignature* spriteRootSignature;
@@ -53,29 +52,19 @@ namespace MelLib
 		/// <summary>
 		/// パイプラインを生成します
 		/// </summary>
-		/// <param name="pipelineData">パイプライン情報</param>
-		/// <param name="vShaderData">頂点シェーダー情報</param>
-		/// <param name="hShaderData">ハルシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
-		/// <param name="dShaderData">ドメインシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
-		/// <param name="gShaderData">ジオメトリシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
-		/// <param name="pShaderData">ピクセルシェーダー情報</param>
+		/// <param name="drawData">パイプライン情報</param>
+		/// <param name="shaderSet">シェーダーのデータをまとめたもの</param>
 		/// <param name="pipelineType">何のパイプラインを生成するか</param>
 		/// <param name="inputLayoutData">インプットレイアウト情報(指定しない場合は、nullptrを渡す)</param>
-		/// <param name="modelClassName">typeidにModelObjectなどを渡し、name関数で取得した文字列(誤セット防止に使用)</param>
 		/// <param name="renderTargetNum">同時にどのくらい出力するか</param>
 		/// <param name="name">登録名</param>
 		/// <returns></returns>
 		static void Create
 		(
-			const PipelineStateData& pipelineData,
-			const ShaderData& vShaderData,
-			const ShaderData& hShaderData,
-			const ShaderData& dShaderData,
-			const ShaderData& gShaderData,
-			const ShaderData& pShaderData,
+			const DrawData& drawData,
+			const ShaderDataSet& shaderSet,
 			const PipelineStateType pipelineType,
 			const std::vector<InputLayoutData>* inputLayoutData,
-			const std::string& modelClassName,
 			const int renderTargetNum,
 			const std::string& name
 		);
@@ -86,28 +75,19 @@ namespace MelLib
 		/// <summary>
 		/// パイプラインを生成します
 		/// </summary>
-		/// <param name="pipelineData">パイプライン情報</param>
-		/// <param name="vShaderData">頂点シェーダー情報</param>
-		/// <param name="hShaderData">ハルシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
-		/// <param name="dShaderData">ドメインシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
-		/// <param name="gShaderData">ジオメトリシェーダー情報(指定しない場合は、パスに"NULL"を記述)</param>
-		/// <param name="pShaderData">ピクセルシェーダー情報</param>
+		/// <param name="drawData">パイプライン情報</param>
+		/// <param name="shaderSet">シェーダーのデータをまとめたもの</param>
 		/// <param name="pipelineType">何のパイプラインを生成するか</param>
 		/// <param name="inputLayoutData">インプットレイアウト情報(指定しない場合は、nullptrを渡す)</param>
-		/// <param name="modelClassName">typeidにModelObjectなどを渡し、name関数で取得した文字列(誤セット防止に使用)</param>
 		/// <param name="renderTargetNum">同時にどのくらい出力するか</param>
 		/// <returns></returns>
 		bool CreatePipeline
 		(
-			const PipelineStateData& pipelineData,
-			const ShaderData& vShaderData,
-			const ShaderData& hShaderData,
-			const ShaderData& dShaderData,
-			const ShaderData& gShaderData,
-			const ShaderData& pShaderData,
+			const DrawData& drawData,
+			const ShaderDataSet& shaderSet,
 			const PipelineStateType pipelineType,
 			const std::vector<InputLayoutData>* inputLayoutData,
-			const std::string& modelClassName,
+		
 			const int renderTargetNum
 		);
 
@@ -129,7 +109,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="type"></param>
-		static PipelineStateData GetDefaultPipelineData( const PipelineStateType type);
+		static DrawData GetDefaultPipelineData( const PipelineStateType type);
 
 		static void SetModelRootSignature(ID3D12RootSignature* sig) { modelRootSignature = sig; }
 		static void SetSpriteRootSignature(ID3D12RootSignature* sig) { spriteRootSignature = sig; }

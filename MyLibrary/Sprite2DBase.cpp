@@ -28,23 +28,28 @@ bool Sprite2DBase::Initialize(const int winWidth, const int winHeight)
 		1.0f
 	);
 
-	PipelineStateData data;
+	DrawData data;
 	data.alphaWrite = true;
 	data.blendMode = BlendMode::ADD;
 	data.cullMode = CullMode::NONE;
 	data.depthTest = false;
 	data.drawMode = DrawMode::SOLID;
-	auto result = defaultPipeline.CreatePipeline
-	(
-		data,
+	
+	ShaderDataSet set =
+	{
 		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },
 		{ L"NULL","","" },
 		{ L"NULL","","" },
 		{ L"NULL","","" },
-		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" },
+		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" }
+	};
+	
+	auto result = defaultPipeline.CreatePipeline
+	(
+		data,
+		set,
 		PipelineStateType::SPRITE,
 		nullptr,
-		typeid(Sprite2DBase).name(),
 		1
 	);
 	if (!result)

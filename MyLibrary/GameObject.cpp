@@ -83,18 +83,23 @@ void GameObject::CalcMovePhysics()
 
 void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
 {
-	PipelineStateData pData = PipelineState::GetDefaultPipelineData(PipelineStateType::MODEL);
+	DrawData pData = PipelineState::GetDefaultPipelineData(PipelineStateType::MODEL);
 	pData.drawMode = DrawMode::WIREFRAME;
 	pData.cullMode = CullMode::NONE;
+
+	ShaderDataSet set =
+	{
+		{L"LIB","",""},
+		{L"LIB","",""},
+		{L"LIB","",""},
+		{L"LIB","",""},
+		{L"LIB","",""}
+	};
 
 	collisionCheckModelPipelineState.CreatePipeline
 	(
 		pData,
-		{L"LIB","",""},
-		{L"LIB","",""},
-		{L"LIB","",""},
-		{L"LIB","",""},
-		{L"LIB","",""},
+		set,
 		PipelineStateType::MODEL,
 		nullptr,
 		typeid(ModelObject).name(),
