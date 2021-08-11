@@ -105,25 +105,8 @@ cbuffer cbuff0 : register(b0)
 	float ex;
 };
 
-//マテリアル
-cbuffer cbuff2 : register(b2)
-{
-	float4 m_ambient;// : packoffset(c0);
-	float4 m_diffuse;// : packoffset(c1);
-	float4 m_specular;//: packoffset(c2);
-	float m_alpha;// : packoffset(c2.w);
 
 
-};
-
-//PBRマテリアル
-//cbuffer cbuff4 : register(b4)
-//{
-//	float3 baseColor;
-//	float metalness;
-//	float specular;
-//	float roughness;
-//}
 
 //色
 cbuffer cbuff4 : register(b4)

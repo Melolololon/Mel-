@@ -143,8 +143,6 @@ void MelLib::Material::SetTexture3D(Texture3D* pTex)
 
 #pragma region ADSA
 
-
-
 void MelLib::ADSAMaterial::Create(const DrawData& drawData)
 {
 	CreateInitialize(sizeof(ADSAMaterialData));
