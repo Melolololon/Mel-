@@ -166,6 +166,7 @@ namespace MelLib
 
 		void SetPipeline(PipelineState* pipelineState);
 
+		void SetMaterial(Material* mtl, const int index);
 #pragma endregion
 
 #pragma region ƒQƒbƒg

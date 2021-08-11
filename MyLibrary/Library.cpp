@@ -16,7 +16,7 @@
 #include"LibWinAPI.h"
 #include"TextWrite.h"
 
-
+#include"Material.h"
 #include"SpriteFont2D.h"
 
 using namespace MelLib;

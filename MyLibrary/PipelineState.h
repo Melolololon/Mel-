@@ -94,10 +94,6 @@ namespace MelLib
 
 
 
-		std::string GetModelClassName()
-		{
-			return modelClassName;
-		}
 
 		ComPtr<ID3D12PipelineState> GetPipelineState()
 		{
@@ -109,7 +105,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="type"></param>
-		static DrawData GetDefaultPipelineData( const PipelineStateType type);
+		static DrawData GetDefaultDrawData( const PipelineStateType type);
 
 		static void SetModelRootSignature(ID3D12RootSignature* sig) { modelRootSignature = sig; }
 		static void SetSpriteRootSignature(ID3D12RootSignature* sig) { spriteRootSignature = sig; }

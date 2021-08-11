@@ -105,9 +105,6 @@
     <ClCompile Include="DirectXTexLoader.cpp">
       <Filter>ソース ファイル\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="ModelLoaer.cpp">
-      <Filter>ソース ファイル\Loader</Filter>
-    </ClCompile>
     <ClCompile Include="Library.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -254,6 +251,9 @@
     </ClCompile>
     <ClCompile Include="Texture3D.cpp">
       <Filter>ソース ファイル\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoaer.cpp">
+      <Filter>ソース ファイル\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

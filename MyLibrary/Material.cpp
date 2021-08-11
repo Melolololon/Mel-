@@ -3,7 +3,6 @@
 #include<d3dx12.h>
 
 ID3D12Device* MelLib::Material::device;
-std::unique_ptr<MelLib::PipelineState> MelLib::Material::defaultPipeline;
 
 void MelLib::Material::MapColorBuffer(const Color& color)
 {
@@ -44,7 +43,7 @@ void MelLib::Material::CreateInitialize(const size_t& mtlByte)
 
 	auto result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&textureHeap));
 
-	pipelineState = defaultPipeline.get();
+	
 }
 
 void MelLib::Material::MapMaterialData(void** pData)
@@ -56,29 +55,6 @@ void MelLib::Material::UnmapMaterialData()
 {
 	materialBuffer->Unmap(0, nullptr);
 	
-}
-
-void MelLib::Material::Initialize()
-{
-	defaultPipeline = std::make_unique<PipelineState>();
-
-	
-	ShaderDataSet set =
-	{
-		{ L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" },
-		{ L"LIB","","" },
-		{ L"LIB","","" },
-		{ L"../MyLibrary/FbxGeometryShader.hlsl","main","gs_5_0" },
-		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" }
-	};
-	defaultPipeline->CreatePipeline
-	(
-		PipelineState::GetDefaultPipelineData(PipelineStateType::MODEL),
-		set,
-		PipelineStateType::MODEL,
-		nullptr,
-		1
-	);
 }
 
 ID3D12Resource* MelLib::Material::GetPConstBuffer(const MaterialConstBufferType type) const
@@ -165,18 +141,33 @@ void MelLib::Material::SetTexture3D(Texture3D* pTex)
 }
 
 
+#pragma region ADSA
 
-void MelLib::ADSAMaterial::Create()
+
+
+void MelLib::ADSAMaterial::Create(const DrawData& drawData)
 {
 	CreateInitialize(sizeof(ADSAMaterialData));
 	Map();
 
-	//各マテリアルにデフォルトパイプライン用意
-	////パイプライン作成
-	//pipelineState.Create
-	//(
-	//	drawData,
-	//);
+	//パイプライン作成
+	ShaderDataSet set =
+	{
+		{ L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" },
+		{ L"LIB","","" },
+		{ L"LIB","","" },
+		{ L"../MyLibrary/FbxGeometryShader.hlsl","main","gs_5_0" },
+		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" }
+	};
+
+	pipelineState.CreatePipeline
+	(
+		drawData,
+		set,
+		PipelineStateType::MODEL,
+		nullptr,
+		1
+	);
 
 }
 
@@ -195,6 +186,12 @@ void MelLib::ADSAMaterial::SetMaterialData(const ADSAMaterialData& data)
 	Map();
 }
 
+#pragma endregion
+
+
+#pragma region PBR
+
+
 void MelLib::PBRMaterial::Map()
 {
 	PBRMaterialData* mtl = nullptr;
@@ -203,10 +200,30 @@ void MelLib::PBRMaterial::Map()
 	UnmapMaterialData();
 }
 
-void MelLib::PBRMaterial::Create()
+void MelLib::PBRMaterial::Create(const DrawData& drawData)
 {
 	CreateInitialize(sizeof(PBRMaterial)); 
 	Map();
+
+	//ここPBRのシェーダー作ってセットするようにする
+	//パイプライン作成
+	ShaderDataSet set =
+	{
+		{ L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" },
+		{ L"LIB","","" },
+		{ L"LIB","","" },
+		{ L"../MyLibrary/FbxGeometryShader.hlsl","main","gs_5_0" },
+		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" }
+	};
+
+	pipelineState.CreatePipeline
+	(
+		drawData,
+		set,
+		PipelineStateType::MODEL,
+		nullptr,
+		1
+	);
 }
 
 void MelLib::PBRMaterial::SetMaterialData(const PBRMaterialData& data)
@@ -214,3 +231,5 @@ void MelLib::PBRMaterial::SetMaterialData(const PBRMaterialData& data)
 	materialData = data;
 	Map();
 }
+
+#pragma endregion

@@ -8,6 +8,7 @@
 #ifdef _DEBUG
 #include"PipelineState.h"
 #include"ModelObject.h"
+#include"Material.h"
 #endif // _DEBUG
 
 
@@ -31,6 +32,9 @@ namespace MelLib
 #ifdef _DEBUG
 		//判定確認用モデルのパイプライン
 		static PipelineState collisionCheckModelPipelineState;
+
+		//判定確認用モデルのマテリアル
+		static ADSAMaterial material;
 
 		//判定確認用モデル
 

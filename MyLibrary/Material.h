@@ -65,7 +65,6 @@ namespace MelLib
 		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 		static ID3D12Device* device;
-		static std::unique_ptr<PipelineState> defaultPipeline;
 
 		//マテリアルの定数バッファ
 		ComPtr<ID3D12Resource>colorBuffer = nullptr;
@@ -92,14 +91,12 @@ namespace MelLib
 		//ファイルに複数モデルあってもレンダリングするタイミングが違うからまとめなくても問題ない
 		ComPtr<ID3D12DescriptorHeap>textureHeap;
 
-		
-
 	private:
 		void MapColorBuffer(const Color& color);
 
 	protected:
-		PipelineState* pipelineState = nullptr;
-		DrawData drawData;
+		PipelineState pipelineState;
+		//DrawData drawData;
 	protected:
 		/// <summary>
 		/// マテリアル生成時の初期化処理を行います。
@@ -115,21 +112,17 @@ namespace MelLib
 		Material() {}
 		virtual ~Material() {}
 
-		static void Initialize(ID3D12Device* dev)
-		{
-			device = dev;
-		}
+		static void Initialize(ID3D12Device* dev){ device = dev; }
+		
 
-		static void Initialize();
-
-		virtual void Create(){}
+		virtual void Create(const DrawData& drawData){}
 
 		ID3D12DescriptorHeap* GetPTextureHeap() { return textureHeap.Get(); }
 		ID3D12Resource* GetPConstBuffer(const MaterialConstBufferType type)const;
 		Texture* GetPTexture() { return pTexture; }
 		Texture* GetPNormalTexture() { return pNormalMapTexture; }
 		Texture3D* GetPTexture3D() { return pTexture3D; }
-		PipelineState* GetPipelineState() { return pipelineState; }
+		PipelineState* GetPPipelineState() { return &pipelineState; }
 		//MTL GetMaterialData(MTL data) const {  return materialData; }
 
 		void SetColor(const Color& color);
@@ -137,7 +130,7 @@ namespace MelLib
 		void SetNormalMapTexture(Texture* pNormalMapTex);
 		void SetTexture3D(Texture3D* pTex);
 
-		void SetDrawData(const DrawData& drawData) { this->drawData = drawData; }
+		//void SetDrawData(const DrawData& drawData) { this->drawData = drawData; }
 
 		//void SetMaterialData(MTL data) { materialData = data; }
 
@@ -169,12 +162,13 @@ namespace MelLib
 	{
 	private:
 		//static std::unordered_map<std::string, std::unique_ptr<ADSAMaterial>>pMaterials;
+		
 
 		ADSAMaterialData materialData;
 		void Map();
 	public:
 
-		void Create()override;
+		void Create(const DrawData& drawData)override;
 
 #pragma region セット
 		void SetMaterialData(const ADSAMaterialData& data);
@@ -210,7 +204,7 @@ namespace MelLib
 
 		void Map();
 	public:
-		void Create()override;
+		void Create(const DrawData& drawData)override;
 
 #pragma region セット
 		void SetMaterialData(const PBRMaterialData& data);

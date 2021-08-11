@@ -275,10 +275,11 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	//FbxModel::Initialize();
 	//PrimitiveModel::Initialize();
 
-	Material::Initialize(dev.Get());
-	ModelData::Initialize(dev.Get());
 	std::vector<ID3D12GraphicsCommandList*> cmdLists(1, cmdList.Get());
+
+	Material::Initialize(dev.Get());
 	ModelObject::Initialize(dev.Get(), cmdLists);
+	ModelData::Initialize(dev.Get());
 
 	Sprite::Initialize(dev.Get(), cmdList.Get());
 	Sprite2DBase::Initialize(windouWidth, windowHeight);

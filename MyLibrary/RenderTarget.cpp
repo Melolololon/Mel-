@@ -255,7 +255,7 @@ bool RenderTarget::Initialize()
 
 
 
-	DrawData data = PipelineState::GetDefaultPipelineData( PipelineStateType::SPRITE);
+	DrawData data = PipelineState::GetDefaultDrawData( PipelineStateType::SPRITE);
 
 	ShaderDataSet set =
 	{

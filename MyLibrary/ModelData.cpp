@@ -339,7 +339,7 @@ void MelLib::ModelData::BatchDeletion()
 void ModelData::Initialize(ID3D12Device* pDevice)
 {
 	device = pDevice;
-	primitiveModelMaterial.Create();
+	primitiveModelMaterial.Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
 	CreatePrimitiveModel();
 }
 
@@ -632,7 +632,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 	material.resize(modelFileObjectNum);
 	for(int i = 0; i < modelFileObjectNum;i++)
 	{
-		material[i].Create();
+		material[i].Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
 		material[i].SetTexture(pTextures[i].get());
 	}
 

@@ -647,7 +647,7 @@ void PipelineState::Delete(const std::string& name)
 	pPipelineState.erase(name);
 }
 
-DrawData PipelineState::GetDefaultPipelineData(const PipelineStateType type)
+DrawData PipelineState::GetDefaultDrawData(const PipelineStateType type)
 {
 	DrawData data;
 	switch (type)

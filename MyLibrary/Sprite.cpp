@@ -286,11 +286,7 @@ void Sprite::CreateTextureBuffer(Texture* texture)
 
 void Sprite::SetPipeline(PipelineState* pipelineState)
 {
-	if (pipelineState->GetModelClassName() != typeid(*this).name())
-	{
-		OutputDebugString(L"パイプラインに設定されたモデルクラスと違います。\0");
-		return;
-	}
+	
 	pipeline = pipelineState->GetPipelineState();
 }
 

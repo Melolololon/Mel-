@@ -10,6 +10,9 @@ using namespace MelLib;
 
 //判定確認用モデルのパイプライン
 PipelineState GameObject::collisionCheckModelPipelineState;
+
+//マテリアル
+ADSAMaterial GameObject::material;
 #endif // _DEBUG
 
 GameObject::GameObject()
@@ -83,7 +86,7 @@ void GameObject::CalcMovePhysics()
 
 void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
 {
-	DrawData pData = PipelineState::GetDefaultPipelineData(PipelineStateType::MODEL);
+	DrawData pData = PipelineState::GetDefaultDrawData(PipelineStateType::MODEL);
 	pData.drawMode = DrawMode::WIREFRAME;
 	pData.cullMode = CullMode::NONE;
 
@@ -102,9 +105,14 @@ void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
 		set,
 		PipelineStateType::MODEL,
 		nullptr,
-		typeid(ModelObject).name(),
 		1
 	);
+
+	DrawData data = PipelineState::GetDefaultDrawData(PipelineStateType::MODEL);
+	data.cullMode = CullMode::NONE;
+	data.drawMode = DrawMode::WIREFRAME;
+	material.Create(data);
+
 }
 
 void MelLib::GameObject::CreateCollisionCheckModel()
@@ -123,6 +131,8 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 			{
 				modelObjcts[i].Create(ModelData::Get(type), nullptr);
 				modelObjcts[i].SetPipeline(&collisionCheckModelPipelineState);
+
+				modelObjcts[i].SetMaterial(&material, 0);
 			}
 		}
 		else if (dataNum < objNum)
