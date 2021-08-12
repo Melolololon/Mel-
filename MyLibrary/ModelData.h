@@ -153,6 +153,7 @@ namespace MelLib
 		//モデル名
 		std::string modelName;
 
+		std::vector<std::unique_ptr<Texture>>pTexture;
 		std::vector<ADSAMaterial> material;
 
 		//テクスチャを使わない場合の色
@@ -338,8 +339,9 @@ namespace MelLib
 		/// <returns></returns>
 		UINT GetModelFileObjectNumber()const { return modelFileObjectNum; }
 
+		//ポインタ返さないと、2回目呼び出した時にmetadataがちゃんと代入できてないのか初期化してないときと同じになるからポインタ返してる
 		/// <summary>
-		/// 読み込んだモデルのマテリアルを取得します。
+		/// 読み込んだモデルのマテリアルのポインタを取得します。
 		/// </summary> 
 		/// <returns></returns>
 		std::vector<ADSAMaterial*> GetPMaterial();

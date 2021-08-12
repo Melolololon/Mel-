@@ -51,7 +51,8 @@ namespace MelLib
 		(
 			std::string materialDirectoryPath,
 			std::string materialFileName,
-			std::vector<ADSAMaterial>& materials,
+			std::vector<std::string>& texPath,
+			std::vector<ADSAMaterialData>& materials,
 			int* loadCount
 		);
 	};

@@ -394,12 +394,17 @@ bool  ModelLoader::LoadObjModel
 
 }
 
-bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string materialFileName, std::vector<ADSAMaterial>& materials, int* loadCount)
+bool ModelLoader::LoadObjMaterial
+(
+	std::string materialDirectoryPath,
+	std::string materialFileName,
+	std::vector<std::string>& texPath,
+	std::vector<ADSAMaterialData>& materials,
+	int* loadCount
+)
 {
 	//読み込んだ回数
 	int loadNum = 0;
-	std::vector<ADSAMaterialData> mtl;
-	std::vector<std::string> mtlName;
 
 	std::ifstream file;
 	std::string fullPath = materialDirectoryPath + materialFileName;
@@ -428,8 +433,8 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 		if (materialData == "newmtl")
 		{
 			loadNum++;
-			mtl.resize(loadNum);
-			mtlName.resize(loadNum);
+			texPath.resize(loadNum);
+			materials.resize(loadNum);
 
 			//名前取得
 			//lineStream >> materials[loadNum - 1].materialName;
@@ -451,28 +456,28 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 		}
 		if (materialData == "Ka") //アンビエント
 		{
-			lineStream >> mtl[loadNum - 1].ambient.v1;
-			lineStream >> mtl[loadNum - 1].ambient.v2;
-			lineStream >> mtl[loadNum - 1].ambient.v3;
+			lineStream >> materials[loadNum - 1].ambient.v1;
+			lineStream >> materials[loadNum - 1].ambient.v2;
+			lineStream >> materials[loadNum - 1].ambient.v3;
 			
 		}
 		if (materialData == "Kd")
 		{
-			lineStream >> mtl[loadNum - 1].diffuse.v1;
-			lineStream >> mtl[loadNum - 1].diffuse.v2;
-			lineStream >> mtl[loadNum - 1].diffuse.v3;
+			lineStream >> materials[loadNum - 1].diffuse.v1;
+			lineStream >> materials[loadNum - 1].diffuse.v2;
+			lineStream >> materials[loadNum - 1].diffuse.v3;
 			
 		}
 		if (materialData == "Ks")
 		{
-			lineStream >> mtl[loadNum - 1].specular.v1;
-			lineStream >> mtl[loadNum - 1].specular.v2;
-			lineStream >> mtl[loadNum - 1].specular.v3;
+			lineStream >> materials[loadNum - 1].specular.v1;
+			lineStream >> materials[loadNum - 1].specular.v2;
+			lineStream >> materials[loadNum - 1].specular.v3;
 			
 		}
 		if (materialData == "map_Kd")
 		{
-			lineStream >> mtlName[loadNum - 1];
+			lineStream >> texPath[loadNum - 1];
 			
 		}
 	}
@@ -480,13 +485,6 @@ bool ModelLoader::LoadObjMaterial(std::string materialDirectoryPath, std::string
 
 	*loadCount = loadNum;
 
-	materials.resize(loadNum);
-	for(int i = 0; i < loadNum;i++)
-	{
-		materials[i].Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
-		materials[i].SetMaterialData(mtl[i]);
-		materials[i].SetLoadTexture(mtlName[i]);
-	}
-		
+	
 	return true;
 }

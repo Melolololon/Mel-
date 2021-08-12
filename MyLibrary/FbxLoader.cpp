@@ -265,6 +265,9 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 	//MaterialData& modelMaterial = materialVector[0];
 	fbxModel->material.resize(1);
 	fbxModel->material[0].Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+	fbxModel->pTexture.resize(1);
+	fbxModel->pTexture[0] = std::make_unique<Texture>();
+
 	ADSAMaterialData mtl;
 
 	//テスト用
@@ -381,7 +384,10 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 					//読み込み処理またはModelDataクラスにパスを渡す処理をここに
 					//ファイル名のみ記述されてた
 					
-					fbxModel->material[0].SetLoadTexture(modelDirectryPath + name);
+					//fbxModel->material[0].SetLoadTexture(modelDirectryPath + name);
+					fbxModel->pTexture[0]->LoadModelTexture(modelDirectryPath + name);
+					fbxModel->material[0].SetTexture(fbxModel->pTexture[0].get());
+
 
 					textureLoader = true;
 				}

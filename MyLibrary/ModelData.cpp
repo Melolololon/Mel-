@@ -525,32 +525,28 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 
 
 		int materialNum = 0;
+		std::vector<std::string>texPath;
+		std::vector<ADSAMaterialData>mtlData;
 		result = ModelLoader::GetInstance()->LoadObjMaterial
 		(
 			directoryPath,
 			materialFileName,
-			material,
+			texPath,
+			mtlData,
 			&materialNum
 		);
 		if (!result)LoadFalseEndProcess();
-		//pbrMaterials.resize(modelFileObjectNum);
 
-		//テクスチャ読み込み
-		/*pTextures.resize(materialNum);
+		pTexture.resize(materialNum);
+		material.resize(materialNum);
 		for (int i = 0; i < materialNum; i++)
 		{
-			pTextures[i] = std::make_unique<Texture>();
-			result = pTextures[i]->LoadModelTexture(materials[i].textureName);
-			if(!result)
-			{
-				OutputDebugStringA(path.data());
-				OutputDebugStringW(L"のテクスチャの読み込みに失敗しました。\n");
-
-				return false;
-			}
-		}*/
-
-
+			pTexture[i] = std::make_unique<Texture>();
+			pTexture[i]->LoadModelTexture(texPath[i]);
+			material[i].Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+			material[i].SetTexture(pTexture[i].get());
+			material[i].SetMaterialData(mtlData[i]);
+		}
 #pragma endregion
 
 		modelName = path;

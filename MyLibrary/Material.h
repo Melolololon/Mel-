@@ -75,6 +75,7 @@ namespace MelLib
 		
 		//テクスチャ追加したらデストラクタとかにLoad関数で読み込んだテクスチャの開放処理を書くこと
 		//書く場所は、デストラクタ、Set関数、Load関数の失敗時に入るif内の3箇所
+		//テクスチャをポインタとSetTextureTypeを持ったtupleにすれば忘れないかも
 		//テクスチャ
 		static const UINT TEXTURE_HANDLE_NUM = 0;
 		Texture* pTexture = nullptr;
@@ -82,6 +83,8 @@ namespace MelLib
 		Texture* pNormalMapTexture = nullptr;
 		static const UINT TEXTURE_3D_HANDLE_NUM = 2;
 		Texture3D* pTexture3D = nullptr;
+		
+
 
 		//テクスチャクラスに持たせるため、コメントアウト
 		//ComPtr<ID3D12Resource>textureBuffer;
@@ -94,16 +97,7 @@ namespace MelLib
 		//ファイルに複数モデルあってもレンダリングするタイミングが違うからまとめなくても問題ない
 		ComPtr<ID3D12DescriptorHeap>textureHeap;
 
-		enum class SetTextureType
-		{
-			NONE,//テクスチャ無し
-			SET,//Set関数で読み込んだテクスチャ
-			LOAD//LoadSet関数で読み込んだテクスチャ
-		};
-
-		SetTextureType textureType = SetTextureType::NONE;
-		SetTextureType normalMapTextureType = SetTextureType::NONE;
-		SetTextureType texture3DType = SetTextureType::NONE;
+		
 
 	private:
 		void MapColorBuffer(const Color& color);
@@ -126,7 +120,7 @@ namespace MelLib
 	public:
 
 		Material() {}
-		virtual ~Material();
+		virtual ~Material(){}
 		
 
 		static void Initialize(ID3D12Device* dev){ device = dev; }
@@ -146,7 +140,7 @@ namespace MelLib
 		void SetTexture(Texture* pTex);
 		void SetNormalMapTexture(Texture* pNormalMapTex);
 		void SetTexture3D(Texture3D* pTex);
-		void SetLoadTexture(const std::string& path);
+		
 
 		//void SetDrawData(const DrawData& drawData) { this->drawData = drawData; }
 

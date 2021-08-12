@@ -133,6 +133,7 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 
 void Library::LoopStartProcess()
 {
+	startProsessTime = timeGetTime();
 
 #pragma region ウィンドウ処理
 
@@ -149,7 +150,6 @@ void Library::LoopStartProcess()
 
 #pragma endregion
 
-	startProsessTime = timeGetTime();
 
 	dx12->LoopStartProcess();
 

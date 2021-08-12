@@ -29,7 +29,7 @@ void Play::Initialize()
 
 
 	MelLib::DirectionalLight::Create("test");
-	MelLib::DirectionalLight::Get("test").SetDirection(MelLib::Vector3(-1, 0, 0));
+	MelLib::DirectionalLight::Get("test").SetDirection(MelLib::Vector3(1, 0, 0));
 
 
 	

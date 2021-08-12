@@ -4,13 +4,6 @@
 
 ID3D12Device* MelLib::Material::device;
 
-MelLib::Material::~Material()
-{
-	if (textureType == SetTextureType::LOAD)delete pTexture;
-	if (normalMapTextureType == SetTextureType::LOAD)delete pNormalMapTexture;
-	if (texture3DType == SetTextureType::LOAD)delete pTexture3D;
-}
-
 
 void MelLib::Material::MapColorBuffer(const Color& color)
 {
@@ -23,30 +16,7 @@ void MelLib::Material::MapColorBuffer(const Color& color)
 
 void MelLib::Material::SetOrLoadTextureProcess()
 {
-	if (pTexture)
-	{
-		CreateBuffer::GetInstance()->CreateShaderResourceView
-		(
-			CD3DX12_CPU_DESCRIPTOR_HANDLE
-			(
-				textureHeap->GetCPUDescriptorHandleForHeapStart(),
-				TEXTURE_HANDLE_NUM,
-				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-			),
-			pTexture->GetTextureBuffer()
-		);
-
-
-		DirectX::XMFLOAT4* col;
-
-		MapColorBuffer(Color(0, 0, 0, 0));
-	}
-	else
-	{
-		textureType = SetTextureType::NONE;
-
-		MapColorBuffer(color);
-	}
+	
 
 
 }
@@ -116,34 +86,41 @@ void MelLib::Material::SetColor(const Color& color)
 
 void MelLib::Material::SetTexture(Texture* pTex)
 { 
-	//Load関数で読み込んだテクスチャがセットされてたら解放
-	if(textureType == SetTextureType::LOAD)
-	{
-		delete pTexture;
-	}
-
+	
 	pTexture = pTex; 
-	SetOrLoadTextureProcess();
-	if(pTexture)textureType = SetTextureType::SET;
-	else textureType = SetTextureType::NONE;
+	if (pTexture)
+	{
+		CreateBuffer::GetInstance()->CreateShaderResourceView
+		(
+			CD3DX12_CPU_DESCRIPTOR_HANDLE
+			(
+				textureHeap->GetCPUDescriptorHandleForHeapStart(),
+				TEXTURE_HANDLE_NUM,
+				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			),
+			pTexture->GetTextureBuffer()
+		);
 
+
+		DirectX::XMFLOAT4* col;
+
+		MapColorBuffer(Color(0, 0, 0, 0));
+	}
+	else
+	{
+		MapColorBuffer(color);
+	}
 }
 
 void MelLib::Material::SetNormalMapTexture(Texture* pTex)
 {
-	if (normalMapTextureType == SetTextureType::LOAD)
-	{
-		delete pNormalMapTexture;
-	}
-
+	
 	pNormalMapTexture = pTex; 
 	if (!pTex)
 	{
-		normalMapTextureType = SetTextureType::NONE;
+		
 		return;
 	}
-
-	normalMapTextureType = SetTextureType::SET;
 	CreateBuffer::GetInstance()->CreateShaderResourceView
 	(
 		CD3DX12_CPU_DESCRIPTOR_HANDLE
@@ -158,19 +135,15 @@ void MelLib::Material::SetNormalMapTexture(Texture* pTex)
 
 void MelLib::Material::SetTexture3D(Texture3D* pTex)
 {
-	if (texture3DType == SetTextureType::LOAD)
-	{
-		delete pTexture3D;
-	}
 
 	pTexture3D = pTex;
 	if (!pTex)
 	{
-		texture3DType = SetTextureType::NONE;
+		
 		return;
 	}
 	
-	texture3DType = SetTextureType::SET;
+
 	CreateBuffer::GetInstance()->CreateShaderResourceView
 	(
 		CD3DX12_CPU_DESCRIPTOR_HANDLE
@@ -182,26 +155,6 @@ void MelLib::Material::SetTexture3D(Texture3D* pTex)
 		pTex->GetTextureBuffer()
 	);
 }
-
-void MelLib::Material::SetLoadTexture(const std::string& path)
-{
-	Texture* preTexture = pTexture;
-	
-	pTexture = new Texture();
-	bool result = pTexture->LoadModelTexture(path);
-
-	//読み込み失敗したら元に戻す
-	if(!result)
-	{
-		delete pTexture;
-		pTexture = preTexture;
-		return;
-	}
-	
-	SetOrLoadTextureProcess();
-	textureType = SetTextureType::LOAD;
-}
-
 
 
 #pragma region ADSA
