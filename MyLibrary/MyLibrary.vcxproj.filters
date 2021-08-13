@@ -276,6 +276,8 @@
     <FxCompile Include="TestHullShader.hlsl" />
     <FxCompile Include="TestDomainShader.hlsl" />
     <FxCompile Include="PBRPixelShader.hlsl" />
+    <FxCompile Include="QuadHullShader.hlsl" />
+    <FxCompile Include="QuadDomainShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CreateBuffer.h">
@@ -462,5 +464,7 @@
     <None Include="FbxMultiShaderHeader.hlsli" />
     <None Include="ADSAHeader.hlsli" />
     <None Include="PBRHeader.hlsli" />
+    <None Include="QuadTessellateHeader.hlsli" />
+    <None Include="TriTessellateHeader.hlsli" />
   </ItemGroup>
 </Project>

@@ -32,13 +32,13 @@ void Play::Initialize()
 	//ライトを普通に加算すると、右側の面が0,0,1のライトのみの時より暗くなるから減衰をなくす
 	MelLib::DirectionalLight::Create("test");
 	
-	MelLib::DirectionalLight::Get().SetDirection(MelLib::Vector3(-1, 0, 0));
+	MelLib::DirectionalLight::Get().SetDirection(MelLib::Vector3(0, 0, 1));
 	
 }
 
 void Play::Update()
 {
-	if(MelLib::Input::KeyState(DIK_R))
+	/*if(MelLib::Input::KeyState(DIK_R))
 	{
 
 		MelLib::DirectionalLight::Get("test").SetDirection(MelLib::Vector3(1, 0, 0));
@@ -46,7 +46,7 @@ void Play::Update()
 	else
 	{
 		MelLib::DirectionalLight::Get("test").SetDirection(MelLib::Vector3(0, 0, 0));
-	}
+	}*/
 
 	if (MelLib::Input::KeyState(DIK_Q))scale -= 0.05;
 	if (MelLib::Input::KeyState(DIK_E))scale += 0.05;

@@ -110,7 +110,7 @@ void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
 
 	DrawData data = PipelineState::GetDefaultDrawData(PipelineStateType::MODEL);
 	data.cullMode = CullMode::NONE;
-	data.drawMode = DrawMode::SOLID;
+	data.drawMode = DrawMode::WIREFRAME;
 	material.Create(data);
 
 }
@@ -142,7 +142,7 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 	};
 
 	//Box
-	createOrDeleteModel(boxData.size(), boxModelObjects, ShapeType3D::BOX);
+	createOrDeleteModel(boxData.size(), boxModelObjects, ShapeType3D::BOARD);
 	
 	//Sphere
 	createOrDeleteModel(sphereData.size(), sphereModelObjects, ShapeType3D::BOX);

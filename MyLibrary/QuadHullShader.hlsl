@@ -7,11 +7,7 @@
 //ハルシェーダーは、2種類出力する(コントロールポイントと、パッチ定数データ)
 
 #include"FbxShaderHeader.hlsli"
-
-#include"TriTessellateHeader.hlsli"
-
-
-
+#include"QuadTessellateHeader.hlsli"
 
 //パッチ定数関数
 //EdgeTessFactorなどの変数の解説は、セマンティクスの解説に書かれている
@@ -22,10 +18,12 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 	HS_CONSTANT_DATA_OUTPUT Output;
 
 	//出力を計算するコード(1から32?1で通常通り)
-	Output.EdgeTessFactor[0] = 3;
-	Output.EdgeTessFactor[1] = 3;
-	Output.EdgeTessFactor[2] = 3;
-	Output.InsideTessFactor = 3;
+	Output.EdgeTessFactor[0] = 9;
+	Output.EdgeTessFactor[1] = 9;
+	Output.EdgeTessFactor[2] = 9;
+	Output.EdgeTessFactor[3] = 9;
+	Output.InsideTessFactor[0] = 9;
+	Output.InsideTessFactor[1] = 9;
 
 
 	return Output;
@@ -48,10 +46,10 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 [outputcontrolpoints(NUM_CONTROL_POINTS)]
 //パッチ定数データを計算する関数名
 [patchconstantfunc("CalcHSPatchConstants")]
-HS_CONTROL_POINT_OUTPUT main( 
-	InputPatch<VS_CONTROL_POINT_OUTPUT, NUM_CONTROL_POINTS> ip, 
+HS_CONTROL_POINT_OUTPUT main(
+	InputPatch<VS_CONTROL_POINT_OUTPUT, NUM_CONTROL_POINTS> ip,
 	uint i : SV_OutputControlPointID,
-	uint PatchID : SV_PrimitiveID )
+	uint PatchID : SV_PrimitiveID)
 {
 	HS_CONTROL_POINT_OUTPUT Output;
 
@@ -61,6 +59,3 @@ HS_CONTROL_POINT_OUTPUT main(
 
 	return Output;
 }
-
-
-
