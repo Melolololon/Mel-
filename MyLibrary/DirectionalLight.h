@@ -14,7 +14,7 @@ namespace MelLib
 	class DirectionalLight
 	{
 	public:
-
+		static const int LIGTH_MAX = 20;
 	private:
 		using UINT = unsigned int;
 		static std::unordered_map<std::string, std::unique_ptr<DirectionalLight>>pLights;

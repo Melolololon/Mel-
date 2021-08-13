@@ -121,12 +121,11 @@ void ModelObject::CreateConstBuffer()
 
 #pragma region ‰Šú‰»
 
-		
 		ModelConstBufferData* constBufferData;
 		constBuffer[i]->Map(0, nullptr, (void**)&constBufferData);
 		
 		//ƒ‰ƒCƒg
-		for (int j = 0, size = 20; j < size; j++)
+		for (int j = 0, size = DirectionalLight::LIGTH_MAX; j < size; j++)
 		{
 			constBufferData->light[j] = DirectX::XMFLOAT4(0, 0, 0, 0);
 			constBufferData->lightColor[j] = DirectX::XMFLOAT4(0, 0, 0, 0);
@@ -437,7 +436,7 @@ void ModelObject::SetCmdList()
 {
 
 	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
-	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_6_CONTROL_POINT_PATCHLIST);
 
 
 

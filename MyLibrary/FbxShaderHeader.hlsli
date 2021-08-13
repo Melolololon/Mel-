@@ -1,7 +1,7 @@
 
 
-#define NUM_CONTROL_POINTS 3
-#define DOMEIN "tri"
+#define NUM_CONTROL_POINTS 6
+#define DOMEIN "quad"
 
 
 //ハルシェーダー記述
@@ -40,11 +40,11 @@ struct HS_CONSTANT_DATA_OUTPUT
 	//パッチの各頂点のテッセレーション量(どのくらい分割するか?)(外側の辺をどのくらい分割するか?)
 	//[]内は頂点数?
 	//見た目だけ細かくしたい場合は、ここだけ値を大きくすればいい?
-	float EdgeTessFactor[3] : SV_TessFactor;
+	float EdgeTessFactor[4] : SV_TessFactor;
 	
 	//パッチサーフェス内のテッセレーションの量(ポリゴンの内側の分割量?)
 	//スプライトをばらばらにするときや波を作るときなどの平べったい部分(内側。面)も細かくしたいときはこれの値を大きくする?
-	float InsideTessFactor : SV_InsideTessFactor;
+	float InsideTessFactor[2] : SV_InsideTessFactor;
 
 };
 
