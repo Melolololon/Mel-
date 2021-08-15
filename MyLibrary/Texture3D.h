@@ -27,6 +27,7 @@ namespace MelLib
 		static void Delete(const std::string& name);
 		static Texture3D* Get(const std::string& name) { return pTextures[name].get(); }
 
+		bool Load3DTexture(const std::vector<std::string>& texturePath);
 	};
 }
 

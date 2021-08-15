@@ -119,8 +119,7 @@ namespace MelLib
 		void CreateTexture3DBuffer
 		(
 			const DirectX::TexMetadata& metadata,
-			const std::vector < DirectX::Image*>& image,
-			const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+			const std::vector <const DirectX::Image*>& image,
 			ID3D12Resource** textureBuffer
 		);
 

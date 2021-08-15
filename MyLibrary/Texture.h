@@ -26,9 +26,8 @@ namespace MelLib
 		//const DirectX::Image* image;
 
 
-		DirectX::TexMetadata metadata;
 		std::vector< DirectX::ScratchImage> scratchImage;
-		std::vector<const DirectX::Image*>image;
+
 
 
 		UINT textureNumber = 0;
@@ -41,7 +40,8 @@ namespace MelLib
 	protected:
 
 		ComPtr<ID3D12Resource>textureBuffer;
-
+		DirectX::TexMetadata metadata;
+		std::vector<const DirectX::Image*>image;
 	protected:
 		/// <summary>
 		/// DirectXTexの関数でメタデータを読み込むクラス。
@@ -50,6 +50,7 @@ namespace MelLib
 		/// <returns></returns>
 		bool LoadTexture(const std::vector<std::string>& path);
 	
+		void GetImage(const size_t textureNum);
 	public:
 		Texture() {}
 		~Texture() {}

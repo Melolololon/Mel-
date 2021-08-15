@@ -30,7 +30,7 @@ bool Texture::LoadTexture(const std::vector<std::string>& path)
 			texturePathW.size()
 		);
 
-
+		
 		auto result = LoadFromWICFile
 		(
 			texturePathW.c_str(),
@@ -39,11 +39,26 @@ bool Texture::LoadTexture(const std::vector<std::string>& path)
 			scratchImage[i]
 		); 
 		
-		if (result != S_OK) return false;
+		if (result != S_OK)
+		{
+#ifdef _DEBUG
+			OutputDebugString(texturePathW.c_str());
+			OutputDebugString(L"ÇÃì«Ç›çûÇ›Ç…é∏îsÇµÇ‹ÇµÇΩÅB\n");
+#endif // _DEBUG
+			return false;
+		}
 	}
 
 
 	return true;
+}
+
+void MelLib::Texture::GetImage(const size_t textureNum)
+{
+	for(int i = 0; i < textureNum;i++)
+	{
+		image[i] = scratchImage[i].GetImage(0, 0, 0);
+	}
 }
 
 bool Texture::Load(const std::string& path, const std::string& name)
@@ -72,7 +87,7 @@ bool Texture::LoadModelTexture(const std::string& texturePath)
 #endif // _DEBUG
 	}
 
-	image[0] = scratchImage[0].GetImage(0, 0, 0);
+	GetImage(1);
 	CreateBuffer::GetInstance()->CreateTextureBuffer(metadata, image[0], &textureBuffer);
 
 	return true;
@@ -86,14 +101,10 @@ bool Texture::LoadSpriteTexture(const std::string& texturePath)
 	//ì«Ç›çûÇ›é∏îs
 	if (!result)
 	{
-#ifdef _DEBUG
-		OutputDebugStringA(texturePath.c_str());
-		OutputDebugString(L"ÇÃì«Ç›çûÇ›Ç…é∏îsÇµÇ‹ÇµÇΩÅB\n");
-#endif // _DEBUG
 		return false;
 	}
 
-	image[0] = scratchImage[0].GetImage(0, 0, 0);
+	GetImage(1);
 
 	if (eraseTextureNumber.size() == 0)
 	{

@@ -1,6 +1,9 @@
 #include"FbxShaderHeader.hlsli"
 #include"ADSAHeader.hlsli"
 
+//一応テクスチャ1枚でもTexture3Dで描画できるが、
+//スプライトとバッファの生成関数同じだからスプライト側をどうにかしないといけない
+
 Texture2D<float4> tex:register(t0);
 SamplerState smp:register(s0);
 

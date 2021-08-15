@@ -546,10 +546,12 @@ void CreateBuffer::CreateOneColorTextureBufferAndView
 	);
 }
 
-void MelLib::CreateBuffer::CreateTexture3DBuffer(const DirectX::TexMetadata& metadata, const std::vector<DirectX::Image*>& image, const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle, ID3D12Resource** textureBuffer)
+void MelLib::CreateBuffer::CreateTexture3DBuffer(const DirectX::TexMetadata& metadata, const std::vector<const DirectX::Image*>& image, ID3D12Resource** textureBuffer)
 {
 	D3D12_HEAP_PROPERTIES texHeapprop{};
 	D3D12_RESOURCE_DESC texResDesc{};
+
+	int depth = image.size();
 
 	texHeapprop.Type = D3D12_HEAP_TYPE_CUSTOM;
 	texHeapprop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
@@ -560,11 +562,12 @@ void MelLib::CreateBuffer::CreateTexture3DBuffer(const DirectX::TexMetadata& met
 	texResDesc.Format = metadata.format;
 	texResDesc.Width = static_cast<UINT>(metadata.width);
 	texResDesc.Height = static_cast<UINT>(metadata.height);
-	texResDesc.DepthOrArraySize = image.size();//深度(w方向の数、3Dテクスチャ用)
+	texResDesc.DepthOrArraySize = depth;//深度(w方向の数、3Dテクスチャ用)
+	//texResDesc.DepthOrArraySize = 12;//深度(w方向の数、3Dテクスチャ用)
 	texResDesc.SampleDesc.Count = 1;
 	texResDesc.SampleDesc.Quality = 1;
 	texResDesc.MipLevels = static_cast<UINT16>(metadata.mipLevels);
-	texResDesc.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_TEXTURE3D);
+	texResDesc.Dimension = D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_TEXTURE3D;
 	texResDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	texResDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
@@ -578,28 +581,30 @@ void MelLib::CreateBuffer::CreateTexture3DBuffer(const DirectX::TexMetadata& met
 		IID_PPV_ARGS(textureBuffer)
 	);
 
-	int depth = image.size();
 	std::vector<uint8_t*>pixels3D(depth);
 	for (int i = 0; i < depth; i++)
 	{
 		pixels3D[i] = image[i]->pixels;
 	}
 
+	//2で生成できたから数値指定ミスってる?
+	//pixels3Dのデータはちゃんと取得できた
+	//読み込み枚数15にしたら読み込めたから枚数オーバー?
 	ID3D12Resource* r = *textureBuffer;
 	auto result = r->WriteToSubresource
 	(
 		0,
 		nullptr,
 		pixels3D.data(),
-		(UINT)image[0]->rowPitch,
-		(UINT)image[0]->slicePitch * (UINT)pixels3D.size()
+		(UINT)image[0]->rowPitch,//Xの数
+		(UINT)image[0]->slicePitch //縦*横(テクスチャ1枚のサイズ)
 	);
 
-	CreateShaderResourceView
+	/*CreateShaderResourceView
 	(
 		heapHandle,
 		*textureBuffer
-	);
+	);*/
 }
 
 void CreateBuffer::CreateDepthBuffer
