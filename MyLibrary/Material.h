@@ -49,7 +49,6 @@ namespace MelLib
 	//とりあえず作るの進めよう
 
 	//マテリアル情報をまとめたクラス。
-	//template<class MTL>
 	class Material
 	{
 	public:
@@ -58,6 +57,18 @@ namespace MelLib
 			MATERIAL_DATA,
 			COLOR
 		};
+
+		//3Dテクスチャレンダリング時にどの方向に向かってレンダリングするか
+		enum class Texture3DDirection
+		{
+			LEFT_TO_RIGHT,
+			RIGHT_TO_LEFT,
+			UP_TO_DOWN,
+			DOWN_TO_UP,
+			FRONT_TO_BACK,
+			BACK_TO_FRONT,
+		};
+
 
 	private:
 
@@ -79,11 +90,13 @@ namespace MelLib
 		//テクスチャ
 		static const UINT TEXTURE_HANDLE_NUM = 0;
 		Texture* pTexture = nullptr;
+		
 		static const UINT NORMAL_MAP_HANDLE_NUM = 1;
 		Texture* pNormalMapTexture = nullptr;
+		
 		static const UINT TEXTURE_3D_HANDLE_NUM = 2;
 		Texture3D* pTexture3D = nullptr;
-		
+		Texture3DDirection texture3DDirection = Texture3DDirection::FRONT_TO_BACK;
 
 
 		//テクスチャクラスに持たせるため、コメントアウト
@@ -140,6 +153,12 @@ namespace MelLib
 		void SetTexture(Texture* pTex);
 		void SetNormalMapTexture(Texture* pNormalMapTex);
 		void SetTexture3D(Texture3D* pTex);
+
+		/// <summary>
+		/// 3Dテクスチャをどの方向へ並べていくかを選択します。
+		/// </summary>
+		/// <param name="direction">向き</param>
+		void SetTexture3DDirection(const Texture3DDirection direction) { texture3DDirection = direction; }
 		
 
 		//void SetDrawData(const DrawData& drawData) { this->drawData = drawData; }

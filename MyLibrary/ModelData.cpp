@@ -621,7 +621,8 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		UnmapVertices(i);
 	}
 
-
+	//端っこ計算
+	directionMaxPos = GetDirectionMaxPosition();
 
 	//マテリアル作成
 	//読み込み時に生成するからここに書く必要ない
@@ -633,8 +634,6 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 	//	//マテリアルの値読み込むときに読み込むからいらん
 	//	//material[i].SetTexture(pTextures[i].get());
 
-
-	//}
 
 	return true;
 }
@@ -722,5 +721,25 @@ std::vector<std::vector<Vector3>> MelLib::ModelData::GetVerticesPosition()
 
 	return verticesPos;
 	
+}
+
+std::vector<std::array<float, 6>> MelLib::ModelData::GetDirectionMaxPosition()
+{
+	std::vector<std::array<float, 6>> pos
+	(modelFileObjectNum, std::array<float, 6>({ -FLT_MAX, FLT_MAX, FLT_MAX,-FLT_MAX, FLT_MAX,-FLT_MAX }));
+
+	for(int i = 0; i < modelFileObjectNum;i++)
+	{
+		for(const auto& v : vertices[i])
+		{
+			if (v.pos.y > pos[i][0])pos[i][0] = v.pos.y;
+			if (v.pos.y < pos[i][1])pos[i][1] = v.pos.y;
+			if (v.pos.x < pos[i][2])pos[i][2] = v.pos.x;
+			if (v.pos.x > pos[i][3])pos[i][3] = v.pos.x;
+			if (v.pos.z < pos[i][4])pos[i][4] = v.pos.z;
+			if (v.pos.z > pos[i][5])pos[i][5] = v.pos.z;
+		}
+	}
+	return pos;
 }
 

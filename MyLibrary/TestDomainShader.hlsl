@@ -24,10 +24,30 @@ DS_OUTPUT main(
 	//三角形の場合は、uvw全部が0になることはない?
 	//四角形だとある?あるから patch[0].pos * domain.x + patch[0].pos * domain.yの式で原点に頂点配置される?
 	float4 p = patch[0].pos * domain.x + patch[1].pos * domain.y + patch[2].pos * domain.z;
+	p.w = 1;
+	
+	//partitioningで頂点がどの頂点とつながるかが決まるから下の式では無理
+	/*float3 p0ToP1 = patch[1].pos.xyz - patch[0].pos.xyz;
+	float3 p1ToP2 = patch[2].pos.xyz - patch[1].pos.xyz;
+	float3 p2ToP0 = patch[0].pos.xyz - patch[2].pos.xyz;
+	float4 p = 
+		float4(patch[0].pos.xyz + p0ToP1 * domain.x
+	     + (p1ToP2 * domain.y + p0ToP1 * domain.y)
+	     + (p2ToP0 * domain.z + -p2ToP0 * domain.z)
+			, 1);*/
+
+	//無理やりquadでやる方法
+	//うまくいかなかった
+	//float3 p0ToP1 = patch[1].pos.xyz - patch[0].pos.xyz;
+	//float3 p1ToP2 = patch[2].pos.xyz - patch[1].pos.xyz;
+	//float4 p = float4(patch[0].pos.xyz + p0ToP1 * domain.y
+	//	+ (p1ToP2 * domain.x + p0ToP1 * (1 - domain.y) * domain.x)
+	//	, 1);
+
 
 	Output.worldPos = mul(worldMat, p);
 	Output.svpos = mul(mat, p);
-	Output.uv = patch[0].uv * domain.x + patch[1].uv * domain.y + patch[2].uv * domain.z;
+	Output.uv = patch[0].uv * domain.x + patch[1].uv * domain.y /*+ patch[2].uv * domain.z*/;
 
 	//折り曲げないから法線はそのまま
 	Output.normal = patch[0].normal;

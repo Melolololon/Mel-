@@ -13,7 +13,7 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 	model[0] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get("ball"), nullptr);
 	model[1] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get("ball"), nullptr);
 	
-
+	
 	//マテリアルテスト
 	/*if(!first)
 	{
@@ -85,8 +85,8 @@ void CollisionTestObject::Update()
 
 void CollisionTestObject::Draw()
 {
-	//model[0]->Draw();
-	//model[1]->Draw();
+	model[0]->Draw();
+	model[1]->Draw();
 
 	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");
 }

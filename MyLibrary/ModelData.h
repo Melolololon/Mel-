@@ -2,6 +2,7 @@
 
 #include<memory>
 #include<vector>
+#include<array>
 
 #include<DirectXMath.h>
 #include<d3d12.h>
@@ -52,6 +53,7 @@ namespace MelLib
 	class ModelData
 	{
 	public:
+	
 		enum class ModelFormat
 		{
 			MODEL_FORMAT_NONE,
@@ -164,6 +166,9 @@ namespace MelLib
 		std::vector<std::vector<FbxVertex>>vertices;
 		//スムーズシェーディング用法線
 		std::vector<std::vector<DirectX::XMFLOAT3>> smoothNormal;
+		//上下左右前後の最高(最低)座標の値(上下左右前後の順に格納)
+		std::vector<std::array<float, 6>>directionMaxPos;
+
 
 		std::vector<std::vector<USHORT>> indices;
 
@@ -248,6 +253,7 @@ namespace MelLib
 		);
 
 
+		std::vector<std::array<float, 6>>GetDirectionMaxPosition();
 	public:
 
 		ModelData() {}
@@ -355,6 +361,7 @@ namespace MelLib
 		/// </summary>
 		/// <returns>頂点座標</returns>
 		std::vector<std::vector<Vector3>>GetVerticesPosition();
+
 
 #pragma endregion
 

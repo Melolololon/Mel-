@@ -40,7 +40,7 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 //ドメイン(ハルシェーダーで使用される修正プログラム)"try"(3)"quad"(4)"isoline"(2)
 //今回は三角形単位で分割するため、"try"(これコマンドリストでセットしたトポロジーに関係なく設定できる?)
 [domain(DOMEIN)]
-//テッセレーションスキーム(分割方法)
+//テッセレーションスキーム(分割方法) 多分これによって、domainと頂点がどの頂点とつながるかが決まる
 [partitioning("integer")]
 //出力のプリミティブ(出力したときの形状)
 [outputtopology("triangle_cw")]
@@ -49,8 +49,8 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 //パッチ定数データを計算する関数名
 [patchconstantfunc("CalcHSPatchConstants")]
 HS_CONTROL_POINT_OUTPUT main( 
-	InputPatch<VS_CONTROL_POINT_OUTPUT, NUM_CONTROL_POINTS> ip, 
-	uint i : SV_OutputControlPointID,
+	InputPatch<VS_CONTROL_POINT_OUTPUT, NUM_CONTROL_POINTS> ip, //入力コントロールポイント(頂点)
+	uint i : SV_OutputControlPointID,//頂点番号
 	uint PatchID : SV_PrimitiveID )
 {
 	HS_CONTROL_POINT_OUTPUT Output;

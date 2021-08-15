@@ -171,16 +171,10 @@
     <ClCompile Include="SpriteFont2D.cpp">
       <Filter>ソース ファイル\Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="Random.cpp">
-      <Filter>ソース ファイル\Support</Filter>
-    </ClCompile>
     <ClCompile Include="FreamTimer.cpp">
       <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
     <ClCompile Include="MicroTimer.cpp">
-      <Filter>ソース ファイル\Support</Filter>
-    </ClCompile>
-    <ClCompile Include="Curve.cpp">
       <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
@@ -228,9 +222,6 @@
     <ClCompile Include="Texture.cpp">
       <Filter>ソース ファイル\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="Easing.cpp">
-      <Filter>ソース ファイル\Support</Filter>
-    </ClCompile>
     <ClCompile Include="Collision.cpp">
       <Filter>ソース ファイル\Calculation</Filter>
     </ClCompile>
@@ -255,6 +246,15 @@
     <ClCompile Include="ModelLoaer.cpp">
       <Filter>ソース ファイル\Loader</Filter>
     </ClCompile>
+    <ClCompile Include="Curve.cpp">
+      <Filter>ソース ファイル\Calculation</Filter>
+    </ClCompile>
+    <ClCompile Include="Easing.cpp">
+      <Filter>ソース ファイル\Calculation</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>ソース ファイル\Calculation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SpritePixelShader.hlsl" />
@@ -278,6 +278,7 @@
     <FxCompile Include="PBRPixelShader.hlsl" />
     <FxCompile Include="QuadHullShader.hlsl" />
     <FxCompile Include="QuadDomainShader.hlsl" />
+    <FxCompile Include="Texture3DPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CreateBuffer.h">
@@ -370,9 +371,6 @@
     <ClInclude Include="SpriteFont2D.h">
       <Filter>ヘッダー ファイル\Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="Random.h">
-      <Filter>ヘッダー ファイル\Support</Filter>
-    </ClInclude>
     <ClInclude Include="FrameTimer.h">
       <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
@@ -427,12 +425,6 @@
     <ClInclude Include="Texture.h">
       <Filter>ヘッダー ファイル\Texture</Filter>
     </ClInclude>
-    <ClInclude Include="Curve.h">
-      <Filter>ヘッダー ファイル\Support</Filter>
-    </ClInclude>
-    <ClInclude Include="Easing.h">
-      <Filter>ヘッダー ファイル\Support</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionType.h">
       <Filter>ヘッダー ファイル\Struct</Filter>
     </ClInclude>
@@ -453,6 +445,15 @@
     </ClInclude>
     <ClInclude Include="Texture3D.h">
       <Filter>ヘッダー ファイル\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Curve.h">
+      <Filter>ヘッダー ファイル\Calculation</Filter>
+    </ClInclude>
+    <ClInclude Include="Easing.h">
+      <Filter>ヘッダー ファイル\Calculation</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>ヘッダー ファイル\Calculation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
