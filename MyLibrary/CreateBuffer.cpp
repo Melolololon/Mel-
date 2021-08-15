@@ -445,7 +445,8 @@ void MelLib::CreateBuffer::CreateTextureBuffer(const DirectX::TexMetadata& metad
 	texResDesc.SampleDesc.Count = 1;
 	texResDesc.SampleDesc.Quality = 1;
 	texResDesc.MipLevels = static_cast<UINT16>(metadata.mipLevels);
-	texResDesc.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadata.dimension);
+	//texResDesc.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadata.dimension);
+	texResDesc.Dimension = D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_TEXTURE3D;
 	texResDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	texResDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
@@ -481,6 +482,55 @@ void CreateBuffer::CreateTextureBufferAndView
 )
 {
 	CreateTextureBuffer(metadata, image, textureBuffer);
+
+	CreateShaderResourceView
+	(
+		heapHandle,
+		*textureBuffer
+	);
+}
+
+void MelLib::CreateBuffer::CreateSpriteTextureBufferAndView(const DirectX::TexMetadata& metadata, const DirectX::Image* image, const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle, ID3D12Resource** textureBuffer)
+{
+	D3D12_HEAP_PROPERTIES texHeapprop{};
+	D3D12_RESOURCE_DESC texResDesc{};
+
+	texHeapprop.Type = D3D12_HEAP_TYPE_CUSTOM;
+	texHeapprop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	texHeapprop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	texHeapprop.CreationNodeMask = 0;
+	texHeapprop.VisibleNodeMask = 0;
+
+	texResDesc.Format = metadata.format;
+	texResDesc.Width = static_cast<UINT>(metadata.width);
+	texResDesc.Height = static_cast<UINT>(metadata.height);
+	texResDesc.DepthOrArraySize = static_cast<UINT16>(metadata.arraySize);//深度(w方向の数、3Dテクスチャ用)
+	texResDesc.SampleDesc.Count = 1;
+	texResDesc.SampleDesc.Quality = 1;
+	texResDesc.MipLevels = static_cast<UINT16>(metadata.mipLevels);
+	texResDesc.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadata.dimension);
+	texResDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	texResDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+	device->CreateCommittedResource
+	(
+		&texHeapprop,
+		D3D12_HEAP_FLAG_NONE,
+		&texResDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(textureBuffer)
+	);
+
+	ID3D12Resource* r = *textureBuffer;
+	auto result = r->WriteToSubresource
+	(
+		0,
+		nullptr,
+		image->pixels,
+		(UINT)image->rowPitch,
+		(UINT)image->slicePitch
+	);
 
 	CreateShaderResourceView
 	(
@@ -589,7 +639,7 @@ void MelLib::CreateBuffer::CreateTexture3DBuffer(const DirectX::TexMetadata& met
 
 	//2で生成できたから数値指定ミスってる?
 	//pixels3Dのデータはちゃんと取得できた
-	//読み込み枚数15にしたら読み込めたから枚数オーバー?
+	//テクスチャの読み込み枚数15にしたら読み込めたから枚数オーバー?
 	ID3D12Resource* r = *textureBuffer;
 	auto result = r->WriteToSubresource
 	(
@@ -689,8 +739,21 @@ void CreateBuffer::CreateShaderResourceView
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = pTextureBuffer->GetDesc().Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
+
+	switch (pTextureBuffer->GetDesc().Dimension)
+	{
+	case D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_TEXTURE2D:
+
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = 1;
+		break;
+
+	case D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_TEXTURE3D:
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+		srvDesc.Texture3D.MipLevels = 1;
+		break;
+	}
+	
 
 	device->CreateShaderResourceView
 	(

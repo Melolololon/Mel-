@@ -4,14 +4,17 @@
 //一応テクスチャ1枚でもTexture3Dで描画できるが、
 //スプライトとバッファの生成関数同じだからスプライト側をどうにかしないといけない
 
-Texture2D<float4> tex:register(t0);
+Texture3D<float4> tex:register(t0);
 SamplerState smp:register(s0);
 
 
 
 float4 main(GSOutput input) : SV_TARGET
 {
-	float4 texColor = tex.Sample(smp, input.uv) + baseColor;
+	//このwをsmoothstepで求める
+	float w = 0.0f;
+
+	float4 texColor = tex.Sample(smp, float3(input.uv, w)) + baseColor;
 	float4 shaderColor = m_ambient;
 
 	const float shininess = 4.0f;//光沢度

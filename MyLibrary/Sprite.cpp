@@ -271,7 +271,7 @@ void Sprite::CreateTextureBuffer(Texture* texture)
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 	);
 
-	CreateBuffer::GetInstance()->CreateTextureBufferAndView
+	CreateBuffer::GetInstance()->CreateSpriteTextureBufferAndView
 	(
 		texture->GetMetadata(),
 		texture->GetImage()[0],

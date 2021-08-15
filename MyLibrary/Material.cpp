@@ -139,7 +139,6 @@ void MelLib::Material::SetTexture3D(Texture3D* pTex)
 	pTexture3D = pTex;
 	if (!pTex)
 	{
-		
 		return;
 	}
 	

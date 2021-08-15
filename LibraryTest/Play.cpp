@@ -67,7 +67,7 @@ void Play::Draw()
 	
 	MelLib::SpriteFont2D::GetInstance()->Draw(0, testScale, MelLib::SpriteFont2D::CharSequence::BESIDE, "A", MelLib::TextureFont::Get("testFont"));
 
-	sprite2DTest->SetDrawArea(0, MelLib::Vector2(64, 64));
+	//sprite2DTest->SetDrawArea(0, MelLib::Vector2(64, 64));
 	sprite2DTest->Draw();
 	
 

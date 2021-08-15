@@ -109,6 +109,13 @@ namespace MelLib
 			ID3D12Resource** textureBuffer
 		);
 
+		void CreateSpriteTextureBufferAndView
+		(const DirectX::TexMetadata& metadata,
+			const DirectX::Image* image,
+			const D3D12_CPU_DESCRIPTOR_HANDLE& heapHandle,
+			ID3D12Resource** textureBuffer
+		);
+
 		void CreateOneColorTextureBufferAndView
 		(
 			const Color& color,
