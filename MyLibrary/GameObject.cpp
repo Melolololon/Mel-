@@ -111,6 +111,7 @@ void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
 	DrawData data = PipelineState::GetDefaultDrawData(PipelineStateType::MODEL);
 	data.cullMode = CullMode::NONE;
 	data.drawMode = DrawMode::WIREFRAME;
+	
 	material.Create(data);
 
 }

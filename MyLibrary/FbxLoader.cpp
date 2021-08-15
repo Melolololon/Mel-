@@ -264,7 +264,8 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 	//materialVector.resize(1);
 	//MaterialData& modelMaterial = materialVector[0];
 	fbxModel->material.resize(1);
-	fbxModel->material[0].Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+	fbxModel->material[0] = std::make_unique<ADSAMaterial>();
+	fbxModel->material[0]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
 	fbxModel->pTexture.resize(1);
 	fbxModel->pTexture[0] = std::make_unique<Texture>();
 
@@ -363,7 +364,7 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 			}
 
 
-			fbxModel->material[0].SetMaterialData(mtl);
+			fbxModel->material[0]->SetMaterialData(mtl);
 
 			const FbxProperty diffuseProperty =
 				materials->FindProperty(FbxSurfaceMaterial::sDiffuse);
@@ -386,7 +387,7 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 					
 					//fbxModel->material[0].SetLoadTexture(modelDirectryPath + name);
 					fbxModel->pTexture[0]->LoadModelTexture(modelDirectryPath + name);
-					fbxModel->material[0].SetTexture(fbxModel->pTexture[0].get());
+					fbxModel->material[0]->SetTexture(fbxModel->pTexture[0].get());
 
 
 					textureLoader = true;

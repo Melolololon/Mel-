@@ -9,7 +9,7 @@ using namespace MelLib;
 
 std::unordered_map<std::string, std::unique_ptr<ModelData>>ModelData::pModelDatas;
 std::unordered_map<ShapeType3D, std::unique_ptr<ModelData>>ModelData::pPrimitiveModelDatas;
-ADSAMaterial ModelData::primitiveModelMaterial;
+
 
 ID3D12Device* ModelData::device = nullptr;
 
@@ -93,7 +93,11 @@ void MelLib::ModelData::CreatePrimitiveModel()
 		pModelData->vertices = vertices;
 		pModelData->indices = indices;
 		pModelData->CreateModel();
-		pModelData->material.resize(1, primitiveModelMaterial);
+		
+		//pModelData->material.resize(1, primitiveModelMaterial);
+		pModelData->material.resize(1);
+		pModelData->material[0] = std::make_unique<ADSAMaterial>();
+		pModelData->material[0]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
 	};
 
 #pragma region BOARD
@@ -338,7 +342,6 @@ void MelLib::ModelData::BatchDeletion()
 void ModelData::Initialize(ID3D12Device* pDevice)
 {
 	device = pDevice;
-	primitiveModelMaterial.Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
 	CreatePrimitiveModel();
 }
 
@@ -543,9 +546,10 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		{
 			pTexture[i] = std::make_unique<Texture>();
 			pTexture[i]->LoadModelTexture(texPath[i]);
-			material[i].Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
-			material[i].SetTexture(pTexture[i].get());
-			material[i].SetMaterialData(mtlData[i]);
+			material[i] =std::make_unique<ADSAMaterial>();
+			material[i]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+			material[i]->SetTexture(pTexture[i].get());
+			material[i]->SetMaterialData(mtlData[i]);
 		}
 #pragma endregion
 
@@ -687,19 +691,19 @@ std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 	std::vector<ADSAMaterial*>pMtls(size);
 	for(int i = 0; i < size;i++)
 	{
-		pMtls[i] = &material[i];
+		pMtls[i] = material[i].get();
 	}
 	return pMtls;
 
 }
 
-std::vector<Material> MelLib::ModelData::GetBaseClassMaterial() const
+std::vector<Material*> MelLib::ModelData::GetBaseClassMaterial() 
 {
 	size_t size = material.size();
-	std::vector<Material>mtls(size);
+	std::vector<Material*>mtls(size);
 	for(int i = 0; i < size;i++)
 	{
-		mtls[i] = material[i];
+		mtls[i] = material[i].get();
 	}
 	return mtls;
 }

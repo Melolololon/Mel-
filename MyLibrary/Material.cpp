@@ -174,7 +174,8 @@ void MelLib::ADSAMaterial::Create(const DrawData& drawData)
 		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" }
 	};
 
-	pipelineState.CreatePipeline
+	pipelineState = std::make_unique<PipelineState>();
+	pipelineState->CreatePipeline
 	(
 		drawData,
 		set,
@@ -230,7 +231,7 @@ void MelLib::PBRMaterial::Create(const DrawData& drawData)
 		{ L"../MyLibrary/PBRPixelShader.hlsl","main","ps_5_0" }
 	};
 
-	pipelineState.CreatePipeline
+	pipelineState->CreatePipeline
 	(
 		drawData,
 		set,

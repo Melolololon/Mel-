@@ -156,7 +156,7 @@ namespace MelLib
 		std::string modelName;
 
 		std::vector<std::unique_ptr<Texture>>pTexture;
-		std::vector<ADSAMaterial> material;
+		std::vector<std::unique_ptr<ADSAMaterial>> material;
 
 		//テクスチャを使わない場合の色
 		Color color;
@@ -216,7 +216,6 @@ namespace MelLib
 #pragma endregion
 
 
-		static ADSAMaterial primitiveModelMaterial;
 
 		static void CreatePrimitiveModel();
 		static void CalcPrimitiveModelNormal(std::vector<FbxVertex>& vertices,const std::vector<USHORT>& indices);
@@ -351,7 +350,7 @@ namespace MelLib
 		/// </summary> 
 		/// <returns></returns>
 		std::vector<ADSAMaterial*> GetPMaterial();
-		std::vector<Material> GetBaseClassMaterial()const;
+		std::vector<Material*> GetBaseClassMaterial();
 
 	
 		

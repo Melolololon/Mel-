@@ -118,7 +118,7 @@ namespace MelLib
 		//メインのテクスチャをセットまたは読み込んだときに必ず呼び出す処理
 		void SetOrLoadTextureProcess();
 	protected:
-		PipelineState pipelineState;
+		std::unique_ptr<PipelineState> pipelineState;
 		//DrawData drawData;
 	protected:
 		/// <summary>
@@ -146,7 +146,7 @@ namespace MelLib
 		Texture* GetPTexture() { return pTexture; }
 		Texture* GetPNormalTexture() { return pNormalMapTexture; }
 		Texture3D* GetPTexture3D() { return pTexture3D; }
-		PipelineState* GetPPipelineState() { return &pipelineState; }
+		PipelineState* GetPPipelineState() { return pipelineState.get(); }
 		//MTL GetMaterialData(MTL data) const {  return materialData; }
 
 		void SetColor(const Color& color);
