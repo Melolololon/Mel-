@@ -12,9 +12,9 @@ SamplerState smp:register(s0);
 float4 main(GSOutput input) : SV_TARGET
 {
 	//‚±‚Ìw‚ğsmoothstep‚Å‹‚ß‚é
-	float w = 0.0f;
+	float w = smoothstep(tex3DStart,tex3DEnd,input.worldPos.z);
 
-	float4 texColor = tex.Sample(smp, float3(input.uv, w)) + baseColor;
+	float4 texColor = tex.Sample(smp, float3(input.uv, 0.5)) + baseColor;
 	float4 shaderColor = m_ambient;
 
 	const float shininess = 4.0f;//Œõ‘ò“x
@@ -32,6 +32,7 @@ float4 main(GSOutput input) : SV_TARGET
 	
 		shaderColor.rgb += diffuse + specular * lightColor[i];
 	}
+	
 	shaderColor.a = m_alpha;
 
 	texColor += addColor - subColor;

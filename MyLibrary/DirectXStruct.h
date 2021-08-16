@@ -173,6 +173,8 @@ namespace MelLib
 		DirectX::XMFLOAT4 mulColor;
 		DirectX::XMFLOAT4 addColor;
 		DirectX::XMFLOAT4 subColor;
+		float tex3DStart;
+		float tex3DEnd;
 		float ex;
 	};
 
@@ -210,62 +212,62 @@ namespace MelLib
 #pragma region OBJ
 
 
-	//データ格納用
-	struct MaterialData
-	{
-		DirectX::XMFLOAT3 ambient;
-		DirectX::XMFLOAT3 diffuse;
-		DirectX::XMFLOAT3 specular;
-		float alpha;
+	////データ格納用
+	//struct MaterialData
+	//{
+	//	DirectX::XMFLOAT3 ambient;
+	//	DirectX::XMFLOAT3 diffuse;
+	//	DirectX::XMFLOAT3 specular;
+	//	float alpha;
 
 
-		std::string materialName;
-		std::string textureName;
+	//	std::string materialName;
+	//	std::string textureName;
 
-		MaterialData()
-		{
-			ambient = { 0.3f,0.3f,0.3f };
-			diffuse = { 0.7f,0.7f,0.7f };
-			specular = { 0.0f,0.0f,0.0f };
-			alpha = 1.0f;
-		}
-	};
-
-
-	//データMap用
-	struct MaterialConstBufferData
-	{
-		DirectX::XMFLOAT3 ambient;
-		float pad1;
-		DirectX::XMFLOAT3 diffuse;
-		float pad2;
-		DirectX::XMFLOAT3 specular;
-		float alpha;
+	//	MaterialData()
+	//	{
+	//		ambient = { 0.3f,0.3f,0.3f };
+	//		diffuse = { 0.7f,0.7f,0.7f };
+	//		specular = { 0.0f,0.0f,0.0f };
+	//		alpha = 1.0f;
+	//	}
+	//};
 
 
-	};
+	////データMap用
+	//struct MaterialConstBufferData
+	//{
+	//	DirectX::XMFLOAT3 ambient;
+	//	float pad1;
+	//	DirectX::XMFLOAT3 diffuse;
+	//	float pad2;
+	//	DirectX::XMFLOAT3 specular;
+	//	float alpha;
 
 
-	struct PbrMaterial
-	{
-		//アルベド
-		DirectX::XMFLOAT3 baseColor = { 1,1,1 };
-		//金属度(0または1)
-		float metalness = 0.0f;
-		//鏡面反射光(float 0から1)
-		float fSpecular = 0.5f;
-		//粗さ
-		float roughness = 0.0f;
-	};
+	//};
 
-	struct PbrMaterialConstBufferData
-	{
-		DirectX::XMFLOAT3 baseColor;
-		float metalness;
-		float fSpecular;
-		float roughness;
-		float pad[2];
-	};
+
+	//struct PbrMaterial
+	//{
+	//	//アルベド
+	//	DirectX::XMFLOAT3 baseColor = { 1,1,1 };
+	//	//金属度(0または1)
+	//	float metalness = 0.0f;
+	//	//鏡面反射光(float 0から1)
+	//	float fSpecular = 0.5f;
+	//	//粗さ
+	//	float roughness = 0.0f;
+	//};
+
+	//struct PbrMaterialConstBufferData
+	//{
+	//	DirectX::XMFLOAT3 baseColor;
+	//	float metalness;
+	//	float fSpecular;
+	//	float roughness;
+	//	float pad[2];
+	//};
 
 #pragma endregion
 

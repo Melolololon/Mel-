@@ -252,7 +252,10 @@ namespace MelLib
 		);
 
 
-		std::vector<std::array<float, 6>>GetDirectionMaxPosition();
+		static std::vector<std::array<float, 6>>CalcDirectionMaxPosition
+		(
+			std::vector<std::vector<FbxVertex>>vertices
+		);
 	public:
 
 		ModelData() {}
@@ -353,7 +356,7 @@ namespace MelLib
 		std::vector<Material*> GetBaseClassMaterial();
 
 	
-		
+		std::vector<std::array<float, 6>>GetDirectionMaxPosition() const{ return directionMaxPos; }
 
 		/// <summary>
 		/// モデルの頂点座標を取得します。

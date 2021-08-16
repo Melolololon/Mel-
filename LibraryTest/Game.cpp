@@ -64,7 +64,8 @@ void Game::Initialize()
 	std::vector<std::string>path;
 	for(int i = 0; i < 2;i++)
 	{
-		path.push_back("Resources/Texture/Tex3D/Test_" + std::to_string(i) + ".png");
+		//path.push_back("Resources/Texture/Tex3D/Test_" + std::to_string(i) + ".png");
+		path.push_back("Resources/Texture/22Tex_" + std::to_string(i) + ".png");
 	}
 	MelLib::Texture3D::Load(path, "test");
 #pragma endregion

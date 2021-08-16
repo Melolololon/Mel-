@@ -93,6 +93,7 @@ void MelLib::ModelData::CreatePrimitiveModel()
 		pModelData->vertices = vertices;
 		pModelData->indices = indices;
 		pModelData->CreateModel();
+		pModelData->directionMaxPos = CalcDirectionMaxPosition(vertices);
 		
 		//pModelData->material.resize(1, primitiveModelMaterial);
 		pModelData->material.resize(1);
@@ -111,16 +112,16 @@ void MelLib::ModelData::CreatePrimitiveModel()
 
 
 
-	vertices[0][0].pos = { -0.5f,-0.5f,-0.5f };
+	vertices[0][0].pos = { -0.5f,-0.5f,0.0f };
 	vertices[0][0].uv = { 0.0f,1.0f };
 	vertices[0][0].normal = {0.0f,0.0f,-1.0f };
-	vertices[0][1].pos = { -0.5f,0.5f,-0.5f };
+	vertices[0][1].pos = { -0.5f,0.5f ,0.0f };
 	vertices[0][1].uv = { 0.0f,0.0f };
 	vertices[0][1].normal = { 0.0f,0.0f,-1.0f };
-	vertices[0][2].pos = { 0.5f,-0.5f,-0.5f };
+	vertices[0][2].pos = { 0.5f,-0.5f ,0.0f };
 	vertices[0][2].uv = { 1.0f,1.0f };
 	vertices[0][2].normal = { 0.0f,0.0f,-1.0f };
-	vertices[0][3].pos = { 0.5f,0.5f,-0.5f };
+	vertices[0][3].pos = { 0.5f,0.5f,0.0f };
 	vertices[0][3].uv = { 1.0f,0.0f };
 	vertices[0][3].normal = { 0.0f,0.0f,-1.0f };
 
@@ -626,7 +627,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 	}
 
 	//端っこ計算
-	directionMaxPos = GetDirectionMaxPosition();
+	directionMaxPos = CalcDirectionMaxPosition(vertices);
 
 	//マテリアル作成
 	//読み込み時に生成するからここに書く必要ない
@@ -727,12 +728,13 @@ std::vector<std::vector<Vector3>> MelLib::ModelData::GetVerticesPosition()
 	
 }
 
-std::vector<std::array<float, 6>> MelLib::ModelData::GetDirectionMaxPosition()
+std::vector<std::array<float, 6>> MelLib::ModelData::CalcDirectionMaxPosition(std::vector<std::vector<FbxVertex>>vertices)
 {
+	int modelNum = vertices.size();
 	std::vector<std::array<float, 6>> pos
-	(modelFileObjectNum, std::array<float, 6>({ -FLT_MAX, FLT_MAX, FLT_MAX,-FLT_MAX, FLT_MAX,-FLT_MAX }));
+	(modelNum, std::array<float, 6>({ -FLT_MAX, FLT_MAX, FLT_MAX,-FLT_MAX, FLT_MAX,-FLT_MAX }));
 
-	for(int i = 0; i < modelFileObjectNum;i++)
+	for(int i = 0; i < modelNum;i++)
 	{
 		for(const auto& v : vertices[i])
 		{

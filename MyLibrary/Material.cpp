@@ -45,7 +45,7 @@ void MelLib::Material::CreateInitialize(const size_t& mtlByte)
 	//ディスクリプタヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc{};
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	descHeapDesc.NumDescriptors = 3;
+	descHeapDesc.NumDescriptors = 2;
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	descHeapDesc.NodeMask = 0;
 
@@ -132,28 +132,28 @@ void MelLib::Material::SetNormalMapTexture(Texture* pTex)
 		pTex->GetTextureBuffer()
 	);
 }
-
-void MelLib::Material::SetTexture3D(Texture3D* pTex)
-{
-
-	pTexture3D = pTex;
-	if (!pTex)
-	{
-		return;
-	}
-	
-
-	CreateBuffer::GetInstance()->CreateShaderResourceView
-	(
-		CD3DX12_CPU_DESCRIPTOR_HANDLE
-		(
-			textureHeap->GetCPUDescriptorHandleForHeapStart(),
-			TEXTURE_3D_HANDLE_NUM,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		),
-		pTex->GetTextureBuffer()
-	);
-}
+//
+//void MelLib::Material::SetTexture3D(Texture3D* pTex)
+//{
+//
+//	pTexture3D = pTex;
+//	if (!pTex)
+//	{
+//		return;
+//	}
+//	
+//
+//	CreateBuffer::GetInstance()->CreateShaderResourceView
+//	(
+//		CD3DX12_CPU_DESCRIPTOR_HANDLE
+//		(
+//			textureHeap->GetCPUDescriptorHandleForHeapStart(),
+//			TEXTURE_3D_HANDLE_NUM,
+//			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+//		),
+//		pTex->GetTextureBuffer()
+//	);
+//}
 
 
 #pragma region ADSA

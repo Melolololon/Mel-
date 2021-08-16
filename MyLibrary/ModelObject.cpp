@@ -208,6 +208,16 @@ void ModelObject::MapConstData(const Camera* camera)
 #pragma endregion
 
 
+#pragma region レンダリング方向
+		//上下左右前後
+		std::array<float, 6>dirPos = pModelData->GetDirectionMaxPosition()[i];
+
+		//仮に前から奧
+		constBufferData->tex3DStart = dirPos[4];
+		constBufferData->tex3DEnd = dirPos[5];
+#pragma endregion
+
+
 		constBuffer[i]->Unmap(0, nullptr);
 
 #pragma endregion

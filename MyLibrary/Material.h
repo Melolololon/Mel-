@@ -58,16 +58,6 @@ namespace MelLib
 			COLOR
 		};
 
-		//3Dテクスチャレンダリング時にどの方向に向かってレンダリングするか
-		enum class Texture3DDirection
-		{
-			LEFT_TO_RIGHT,
-			RIGHT_TO_LEFT,
-			UP_TO_DOWN,
-			DOWN_TO_UP,
-			FRONT_TO_BACK,
-			BACK_TO_FRONT,
-		};
 
 
 	private:
@@ -94,9 +84,8 @@ namespace MelLib
 		static const UINT NORMAL_MAP_HANDLE_NUM = 1;
 		Texture* pNormalMapTexture = nullptr;
 		
-		static const UINT TEXTURE_3D_HANDLE_NUM = 2;
-		Texture3D* pTexture3D = nullptr;
-		Texture3DDirection texture3DDirection = Texture3DDirection::FRONT_TO_BACK;
+		/*static const UINT TEXTURE_3D_HANDLE_NUM = 2;
+		Texture3D* pTexture3D = nullptr;*/
 
 
 		//テクスチャクラスに持たせるため、コメントアウト
@@ -145,26 +134,17 @@ namespace MelLib
 		ID3D12Resource* GetPConstBuffer(const MaterialConstBufferType type)const;
 		Texture* GetPTexture() { return pTexture; }
 		Texture* GetPNormalTexture() { return pNormalMapTexture; }
-		Texture3D* GetPTexture3D() { return pTexture3D; }
+		//Texture3D* GetPTexture3D() { return pTexture3D; }
 		PipelineState* GetPPipelineState() { return pipelineState.get(); }
-		//MTL GetMaterialData(MTL data) const {  return materialData; }
+	
+
 
 		void SetColor(const Color& color);
 		void SetTexture(Texture* pTex);
 		void SetNormalMapTexture(Texture* pNormalMapTex);
-		void SetTexture3D(Texture3D* pTex);
+		//void SetTexture3D(Texture3D* pTex);
 
-		/// <summary>
-		/// 3Dテクスチャをどの方向へ並べていくかを選択します。
-		/// </summary>
-		/// <param name="direction">向き</param>
-		void SetTexture3DDirection(const Texture3DDirection direction) { texture3DDirection = direction; }
-		
-
-		//void SetDrawData(const DrawData& drawData) { this->drawData = drawData; }
-
-		//void SetMaterialData(MTL data) { materialData = data; }
-
+	
 	};
 
 

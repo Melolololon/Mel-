@@ -2,28 +2,33 @@
 #include"TextWrite.h"
 
 #include"ModelData.h"
+#include"Texture.h"
 
-MelLib::PBRMaterial mtl;
+MelLib::ADSAMaterial mtl;
 bool first = false;
 
 CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool inputMove) : inputFlag(inputMove)
 {
 	position = pos;
 	speed = 0.25f;
-	model[0] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get("ball"), nullptr);
-	model[1] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get("ball"), nullptr);
-	
+	model[0] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
+	model[1] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
+	model[0]->SetScale(9);
+	model[1]->SetScale(9);
 	
 	//マテリアルテスト
-	/*if(!first)
+	if(!first)
 	{
 		MelLib::DrawData data = MelLib::PipelineState::GetDefaultDrawData(MelLib::PipelineStateType::MODEL);
-
+		data.drawMode = MelLib::DrawMode::SOLID;
 		first = true;
 		mtl.Create(data);
+		mtl.SetColor(MelLib::Color(255, 0, 0, 255));
+
+		mtl.SetTexture(MelLib::Texture3D::Get("test"));
 	}
 
-	model[0]->SetMaterial(&mtl,0);*/
+	model[0]->SetMaterial(&mtl,0);
 
 	/*collisionFlag.sphere = true;
 	sphereData.resize(1);
@@ -78,15 +83,22 @@ void CollisionTestObject::Update()
 	//sphereData[0].position = position;
 	boxData[0].position = position;
 	
-	angle.y += 3.0f;
-	/*model[0]->SetAngle(angle);
-	model[1]->SetAngle(angle);*/
+	if(MelLib::Input::KeyState(DIK_LEFT))angle.y += 3.0f;
+	if(MelLib::Input::KeyState(DIK_RIGHT))angle.y -= 3.0f;
+	if(MelLib::Input::KeyState(DIK_UP))angle.x += 3.0f;
+	if(MelLib::Input::KeyState(DIK_DOWN))angle.x -= 3.0f;
+	MelLib::Camera::Get()->SetAngle(angle);
+	MelLib::Camera::Get()->SetCameraToTargetDistance(20.0f);
+	MelLib::Camera::Get()->SetRotatePoint(MelLib::Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
+	MelLib::Camera::Get()->SetRotateCriteriaPosition(0);
+	//model[0]->SetAngle(angle);
+	//model[1]->SetAngle(angle);*/
 }
 
 void CollisionTestObject::Draw()
 {
 	model[0]->Draw();
-	model[1]->Draw();
+	//model[1]->Draw();
 
 	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");
 }

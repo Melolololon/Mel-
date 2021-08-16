@@ -631,21 +631,57 @@ void MelLib::CreateBuffer::CreateTexture3DBuffer(const DirectX::TexMetadata& met
 		IID_PPV_ARGS(textureBuffer)
 	);
 
-	std::vector<uint8_t*>pixels3D(depth);
-	for (int i = 0; i < depth; i++)
+	//std::vector<uint8_t*>pixels3D(depth);
+	//for (int i = 0; i < depth; i++)
+	//{
+	//	pixels3D[i] = image[i]->pixels;
+	//}
+
+	////試し
+	////1要素1ピクセル
+	//std::vector<Color>pix(metadata.width * metadata.height * depth);
+	//
+	//for(int z = 0; z < depth;z++)
+	//{
+	//	int pad = 0;
+	//	for (int y = 0; y < metadata.height; y++)
+	//	{
+	//		for (int x = 0; x < metadata.width; x++)
+	//		{
+
+	//			UINT index = x + (y * metadata.width) + (z * metadata.width * metadata.height);
+	//			pix[index].r = image[z]->pixels[x + (y * metadata.width) + pad];
+	//			pix[index].g = image[z]->pixels[1 + x + (y * metadata.width) + pad];
+	//			pix[index].b = image[z]->pixels[2 + x + (y * metadata.width) + pad];
+	//			pix[index].a = image[z]->pixels[3 + x + (y * metadata.width) + pad];
+	//			pad++;
+	//		}
+	//	}
+	//}
+
+	////試し2
+	std::vector<unsigned char>pixel3D((UINT)image[0]->slicePitch * depth);
+	for (int z = 0; z < depth; z++)
 	{
-		pixels3D[i] = image[i]->pixels;
+		for (int s = 0; s < (UINT)image[0]->slicePitch; s++)
+		{
+			pixel3D[s + (z * (UINT)image[0]->slicePitch)] = image[z]->pixels[s];
+		}
 	}
+
 
 	//2で生成できたから数値指定ミスってる?
 	//pixels3Dのデータはちゃんと取得できた
 	//テクスチャの読み込み枚数15にしたら読み込めたから枚数オーバー?
+	//送ったテクスチャバグってる。1枚でもバグる
+	//pixels3D[0]で転送できた。data()が悪い?
+	//Imageのpixelってもしかして結構余分なデータ混ざってる?
 	ID3D12Resource* r = *textureBuffer;
 	auto result = r->WriteToSubresource
 	(
 		0,
 		nullptr,
-		pixels3D.data(),
+		pixel3D.data(),
 		(UINT)image[0]->rowPitch,//Xの数
 		(UINT)image[0]->slicePitch //縦*横(テクスチャ1枚のサイズ)
 	);
