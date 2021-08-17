@@ -11,9 +11,10 @@ SamplerState smp:register(s0);
 
 float4 main(GSOutput input) : SV_TARGET
 {
-	//このwをsmoothstepで求める
+	//ワールド行列適応
 	float start = mul(worldMat,tex3DStart);
 	float end = mul(worldMat, tex3DEnd);
+	//smoothstepと範囲で、wを求める
 	float w = smoothstep(start, end,input.worldPos.z);
 
 	float4 texColor = tex.Sample(smp, float3(input.uv, w)) + baseColor;
@@ -45,20 +46,4 @@ float4 main(GSOutput input) : SV_TARGET
 	float alphaSum = (shaderColor.a + texColor.a) / 2;
 
 	return float4(shaderColor.rgb * texColor.rgb, alphaSum);
-
-
-
-
-	//以下PBRの処理
-	/*N = input.normal;
-	float3 finalRGB = float3(0, 0, 0);
-	float3 eyedir = normalize(cameraPos.xyz - input.worldPos.xyz);
-
-	for (int i = 0; i < 3; i++) 
-	{
-		finalRGB += BRDF(-light.xyz, eyedir) * lightColor;
-	}
-	return float4(finalRGB, 1);*/
-	
-	
 }

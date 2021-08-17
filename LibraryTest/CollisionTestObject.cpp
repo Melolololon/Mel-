@@ -25,7 +25,7 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 		mtl.Create(data);
 		mtl.SetColor(MelLib::Color(255, 0, 0, 255));
 
-		mtl.SetTexture(MelLib::Texture3D::Get("test"));
+		mtl.SetTexture(MelLib::Texture::Get("t"));
 	}
 
 	model[0]->SetMaterial(&mtl,0);

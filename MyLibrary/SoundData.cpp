@@ -15,7 +15,7 @@ void SoundData::Delete(const std::string& name)
 {
 }
 
-void SoundData::Finitialize()
+void SoundData::Finalize()
 {
 	pSoundDatas.clear();
 }

@@ -14,7 +14,7 @@ public:
 	void Initialize()override;
 	void Update()override;
 	void Draw()override;
-	void Finitialize()override;
+	void Finalize()override;
 	Scene* GetNextScene()override;
 
 	static void LoadResources();

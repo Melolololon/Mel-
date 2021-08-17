@@ -86,7 +86,7 @@ namespace MelLib
 
 		static void Initialize(IXAudio2* pIXAudio2);
 		static void Update();
-		static void Finitialize();
+		static void Finalize();
 
 
 		/// <summary>

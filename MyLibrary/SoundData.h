@@ -48,7 +48,7 @@ namespace MelLib
 		static bool Load(const std::string& path, const std::string& name);
 		static SoundData* Get(const std::string& name) { return pSoundDatas[name].get(); }
 		static void Delete(const std::string& name);
-		static void Finitialize();
+		static void Finalize();
 
 		WAVEFORMATEX GetWaveFormatEX()const { return wfex; }
 		char* GetPBuffer() { return pBuffer; }

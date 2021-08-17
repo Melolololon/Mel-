@@ -736,7 +736,7 @@ void GameObjectManager::EraseObjectCheck()
 
 }
 
-void GameObjectManager::Finitialize() 
+void GameObjectManager::Finalize() 
 {
 	AllEraseObject();
 }

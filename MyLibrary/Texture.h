@@ -5,7 +5,7 @@
 
 #include"Vector.h"
 #include"Color.h"
-
+#include<memory>
 
 //Textureにテクスチャバッファ持たせる?
 //スプライトとかで同じテクスチャなのにバッファ毎回作るのもったいない

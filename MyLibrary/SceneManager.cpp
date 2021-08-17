@@ -37,7 +37,7 @@ void SceneManager::Update()
 	if (currentScene->GetIsEnd())
 	{
 		//終了処理
-		currentScene->Finitialize();
+		currentScene->Finalize();
 		//一括削除対象リソースを削除
 		currentScene->ResourceBatchDeletion();
 
@@ -67,10 +67,13 @@ void SceneManager::Draw()
 	currentScene->Draw();
 }
 
-void SceneManager::Finitialize()
+void SceneManager::Finalize()
 {
-	currentScene->Finitialize();
-	if (currentScene) delete currentScene;
+	if (currentScene)
+	{
+		currentScene->Finalize();
+		delete currentScene;
+	}
 	
 }
 

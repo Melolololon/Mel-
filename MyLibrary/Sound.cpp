@@ -109,7 +109,7 @@ void Sound::Update()
 
 }
 
-void Sound::Finitialize()
+void Sound::Finalize()
 {
 	pSounds.clear();
 	pNoneNameSounds.clear();

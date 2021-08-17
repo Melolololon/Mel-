@@ -460,7 +460,9 @@ void DirectX12::LoopEndProcess()
 
 void DirectX12::Finalize()
 {
+	LoopEndProcess();
 	FbxLoader::GetInstance()->Finalize();
+
 }
 
 

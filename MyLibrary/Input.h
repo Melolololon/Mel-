@@ -138,7 +138,7 @@ namespace MelLib
 	public:
 		static void Initialize(HWND hwnd, const int windowWidth, const int windowHeight);
 		static void Update();
-		static void Finitialize();
+		static void Finalize();
 
 		static bool GetPadConnectedFlag(const UCHAR padNum);
 

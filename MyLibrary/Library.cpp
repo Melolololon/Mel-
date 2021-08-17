@@ -207,17 +207,15 @@ bool Library::GetIsEnd()
 
 void Library::Finalize()
 {
-
-	SceneManager::GetInstace()->Finitialize();
-	GameObjectManager::GetInstance()->Finitialize();
-
-	Input::Finitialize();
-
-	Sound::Finitialize();
-	SoundData::Finitialize();
-
+	//LoopEndProcess呼んでから終了するので、dx12を先にリリースしないとモデルのバッファが消えて終了処理上手く実行できなくなる
 	dx12->Finalize();
 
+	SceneManager::GetInstace()->Finalize();
+	GameObjectManager::GetInstance()->Finalize();
+	Input::Finalize();
+
+	Sound::Finalize();
+	SoundData::Finalize();
 
 	UnregisterClass(w.lpszClassName, w.hInstance);
 

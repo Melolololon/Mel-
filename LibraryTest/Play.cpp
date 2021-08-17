@@ -78,7 +78,7 @@ void Play::Draw()
 
 }
 
-void Play::Finitialize()
+void Play::Finalize()
 {
 }
 

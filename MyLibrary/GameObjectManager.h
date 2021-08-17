@@ -87,7 +87,7 @@ namespace MelLib
 		/// <summary>
 		/// I—¹ˆ—‚ğs‚¢‚Ü‚·
 		/// </summary>
-		void Finitialize();
+		void Finalize();
 
 		///// <summary>
 		///// ‚Ç‚Ì”»’è‚ğs‚¤‚©‚ğİ’è‚µ‚Ü‚·

@@ -23,7 +23,7 @@ namespace MelLib
 		void SetStartScene(Scene* startScene);
 		void Update();
 		void Draw();
-		void Finitialize();
+		void Finalize();
 
 		/// <summary>
 		/// ƒV[ƒ“‚ğØ‚è‘Ö‚¦‚éˆ—‚ğs‚¢‚Ü‚·

@@ -304,7 +304,7 @@ void Input::Update()
 #pragma endregion
 }
 
-void Input::Finitialize()
+void Input::Finalize()
 {
 
 	devKeyBoard->Unacquire();
