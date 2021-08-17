@@ -12,8 +12,8 @@ namespace MelLib
 
 
 
-	public:
 		using UINT = unsigned int;
+	public:
 
 		static void Initialize();
 
