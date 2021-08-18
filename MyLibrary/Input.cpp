@@ -773,7 +773,7 @@ Vector2 Input::LeftStickVector2(const UCHAR padNum)
 }
 
 
-Vector3 Input::LeftStickVector3(const UCHAR padNum, Camera* pCamera)
+Vector3 Input::LeftStickVector3(const UCHAR padNum, Camera* pCamera, const bool rotX , const bool rotY)
 {
 	float angle = LeftStickAngle(padNum);
 	if (angle < 0)return 0;
@@ -784,7 +784,8 @@ Vector3 Input::LeftStickVector3(const UCHAR padNum, Camera* pCamera)
 	//ƒJƒƒ‰‚É‡‚í‚¹‚Ä‰ñ“]
 	//Y‚Í0ŒÅ’è‚É‚·‚é‚æ‚¤‚É
 	Vector3 cameraAngle = pCamera->GetAngle();
-	result = LibMath::RotateVector3(result, Vector3(0, 1, 0), cameraAngle.y);
+	if(rotX)result = LibMath::RotateVector3(result, Vector3(1, 0, 0), cameraAngle.x);
+	if(rotY)result = LibMath::RotateVector3(result, Vector3(0, 1, 0), cameraAngle.y);
 	return result;
 }
 
@@ -846,7 +847,7 @@ Vector2 Input::RightStickVector2(const UCHAR padNum)
 	return LibMath::AngleToVector2(angle, false);
 }
 
-Vector3 Input::RightStickVector3(const UCHAR padNum, Camera* pCamera)
+Vector3 Input::RightStickVector3(const UCHAR padNum, Camera* pCamera, const bool rotX, const bool rotY)
 {
 	float angle = RightStickAngle(padNum);
 	if (angle < 0)return 0;
@@ -857,7 +858,8 @@ Vector3 Input::RightStickVector3(const UCHAR padNum, Camera* pCamera)
 	//ƒJƒƒ‰‚É‡‚í‚¹‚Ä‰ñ“]
 	//Y‚Í0ŒÅ’è‚É‚·‚é‚æ‚¤‚É
 	Vector3 cameraAngle = pCamera->GetAngle();
-	result = LibMath::RotateVector3(result, Vector3(0, 1, 0), cameraAngle.y);
+	if (rotX)result = LibMath::RotateVector3(result, Vector3(1, 0, 0), cameraAngle.x);
+	if (rotY)result = LibMath::RotateVector3(result, Vector3(0, 1, 0), cameraAngle.y);
 	return result;
 }
 #pragma endregion

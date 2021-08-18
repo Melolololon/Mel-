@@ -283,7 +283,7 @@ namespace MelLib
 
 
 		static Vector2 LeftStickVector2(const UCHAR padNum);
-		static Vector3 LeftStickVector3(const UCHAR padNum, MelLib::Camera* pCamera = nullptr);
+		static Vector3 LeftStickVector3(const UCHAR padNum, Camera* pCamera = nullptr,const bool rotX = false, const bool rotY = false);
 #pragma endregion
 
 #pragma region ‰E
@@ -301,7 +301,7 @@ namespace MelLib
 
 
 		static Vector2 RightStickVector2(const UCHAR padNum);
-		static Vector3 RightStickVector3(const UCHAR padNum, MelLib::Camera* pCamera = nullptr);
+		static Vector3 RightStickVector3(const UCHAR padNum, Camera* pCamera = nullptr, const bool rotX = false, const bool rotY = false);
 #pragma endregion
 
 
