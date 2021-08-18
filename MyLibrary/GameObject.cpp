@@ -188,19 +188,22 @@ void MelLib::GameObject::SetCollisionCheckModelData()
 	dataNum = capsuleData.size();
 	for (size_t i = 0; i < dataNum; i++)
 	{
-		Value2<Vector3>lineSegmentPos = capsuleData[i].CalcCapsuleLineSegmentPos();
+		Value2<Vector3>lineSegmentPos = capsuleData[i].segmentData.GetRotatePosition();
 		
 		//éläpå`ÇÕÉXÉPÅ[Éã1ÇæÇ∆1ï”Ç™1Ç»ÇÃÇ≈ÅAîºåa1ÇÃÇ∆Ç´ÇÕ1ï”Ç2Ç…ÇµÇ»Ç¢Ç∆Ç¢ÇØÇ»Ç¢ÇΩÇﬂÅA2î{
 		capsuleModelObjects[0][i].SetScale(capsuleData[i].r * 2);
 		capsuleModelObjects[0][i].SetPosition(lineSegmentPos.v1);
+		capsuleModelObjects[0][i].SetAngle(capsuleData[i].segmentData.angle);
 
 		capsuleModelObjects[1][i].SetScale(capsuleData[i].r * 2);
 		capsuleModelObjects[1][i].SetPosition(lineSegmentPos.v2);
+		capsuleModelObjects[1][i].SetAngle(capsuleData[i].segmentData.angle);
 
 		//â~íå
-		capsuleModelObjects[2][i].SetScale(Vector3(capsuleData[i].r * 2, capsuleData[i].length, capsuleData[i].r * 2));
-		capsuleModelObjects[2][i].SetPosition(capsuleData[i].position);
-		capsuleModelObjects[2][i].SetAngle(capsuleData[i].angle);
+		capsuleModelObjects[2][i].SetScale
+		(Vector3(capsuleData[i].r * 2, capsuleData[i].segmentData.GetPositionDistance(), capsuleData[i].r * 2));
+		capsuleModelObjects[2][i].SetPosition(capsuleData[i].segmentData.GetCenterPosition());
+		capsuleModelObjects[2][i].SetAngle(capsuleData[i].segmentData.angle);
 	}
 
 }

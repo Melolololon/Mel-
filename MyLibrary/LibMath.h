@@ -182,6 +182,7 @@ namespace MelLib
 		/// <returns></returns>
 		static float CalcDistance2D(const Vector2& pos1, const Vector2& pos2);
 
+		static Vector2 CalcCenterPosition2D(const Vector2& pos1, const Vector2& pos2);
 
 		/// <summary>
 		/// 左右判定を行います。点がベクトルより右の場合は1、左の場合は-1、ベクトル上の場合は0を返します。
@@ -242,6 +243,14 @@ namespace MelLib
 		/// <param name="pos2">座標2</param>
 		/// <returns></returns>
 		static float CalcDistance3D(const Vector3& pos1, const Vector3& pos2);
+
+		/// <summary>
+		/// 2つの座標の中心座標を取得します。
+		/// </summary>
+		/// <param name="pos1"></param>
+		/// <param name="pos2"></param>
+		/// <returns></returns>
+		static Vector3 CalcCenterPosition3D(const Vector3& pos1, const Vector3& pos2);
 
 		/// <summary>
 		/// vex1からvec2のベクトルを取得します(正規化は行う)

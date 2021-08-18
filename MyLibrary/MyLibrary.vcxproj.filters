@@ -135,9 +135,6 @@
     <ClCompile Include="Quaternion.cpp">
       <Filter>ソース ファイル\Struct</Filter>
     </ClCompile>
-    <ClCompile Include="ModelBone.cpp">
-      <Filter>ソース ファイル\Object</Filter>
-    </ClCompile>
     <ClCompile Include="XInputManager.cpp">
       <Filter>ソース ファイル\Input</Filter>
     </ClCompile>
@@ -254,6 +251,9 @@
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>ソース ファイル\Calculation</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelBone.cpp">
+      <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -200,7 +200,29 @@ namespace MelLib
 	struct Segment3DData
 	{
 		Vector3 position[2];
+		Vector3 angle = 0;
 
+		
+
+		//これ計算毎フレーム1回にしてCalcResultに入れるようにする?
+		//セットしてすぐ取得したい場合あるかもしれないからこのままにする?
+		/// <summary>
+		/// 線分の中心を基準にangle分回転させた両端の座標を返します。
+		/// </summary>
+		/// <returns></returns>
+		Value2<Vector3>GetRotatePosition()const;
+
+		/// <summary>
+		/// 2点間の中心座標を取得します。
+		/// </summary>
+		/// <returns></returns>
+		Vector3 GetCenterPosition ()const;
+
+		/// <summary>
+		/// 2点間の距離を求めます。
+		/// </summary>
+		/// <returns></returns>
+		float GetPositionDistance()const;
 	};
 
 	struct Segment3DCalcResult
@@ -228,19 +250,9 @@ namespace MelLib
 	//カプセル
 	struct CapsuleData
 	{
-		/// <summary>
-		/// カプセルの線分の両端を求める関数。
-		/// </summary>
-		/// <param name="capsule"></param>
-		/// <returns></returns>
-		Value2<Vector3>CalcCapsuleLineSegmentPos()const;
-
-
-		//上の座標から下の座標の距離
-		float length = 0.0f;
+		Segment3DData segmentData;
+		
 		float r = 0.0f;
-		Vector3 angle = 0;
-		Vector3 position = 0;
 	};
 
 #pragma endregion

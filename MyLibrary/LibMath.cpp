@@ -525,6 +525,11 @@ float LibMath::CalcDistance2D(const Vector2& pos1, const Vector2& pos2)
 	);
 }
 
+Vector2 MelLib::LibMath::CalcCenterPosition2D(const Vector2& pos1, const Vector2& pos2)
+{
+	return Vector2(pos1 + pos2) / 2;
+}
+
 
 char LibMath::PointLeftRightCheck(const Vector2& vector, const Vector2& point)
 {
@@ -590,6 +595,11 @@ float LibMath::CalcDistance3D(const Vector3& pos1, const Vector3& pos2)
 		(pos1.y - pos2.y) * (pos1.y - pos2.y) +
 		(pos1.z - pos2.z) * (pos1.z - pos2.z)
 	);
+}
+
+Vector3 MelLib::LibMath::CalcCenterPosition3D(const Vector3& pos1, const Vector3& pos2)
+{
+	return (pos1 + pos2) / 2;
 }
 
 Vector3 LibMath::OtherVector(const Vector3& vec1, const Vector3& vec2)

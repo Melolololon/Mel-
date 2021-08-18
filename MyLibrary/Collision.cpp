@@ -274,10 +274,15 @@ bool Collision::Segment3DAndSegment3D
 	Segment3DCalcResult* lineSegment2CalcResult
 )
 {
-	Vector3 d1 = lineSegment1.position[1] - lineSegment1.position[0];
-	Vector3 d2 = lineSegment2.position[1] - lineSegment2.position[0];
+	Value2<Vector3>segmentPos1 = lineSegment1.GetRotatePosition();
+
+	Value2<Vector3>segmentPos2 = lineSegment2.GetRotatePosition();
+
+
+	Vector3 d1 = segmentPos1.v2 - segmentPos1.v1;
+	Vector3 d2 = segmentPos2.v2 - segmentPos2.v1;
 	//カプセルの処理の一部を使えば求められる?
-	Vector3 r = lineSegment1.position[0] - lineSegment2.position[0];
+	Vector3 r = segmentPos1.v1 - segmentPos2.v1;
 	float a = Vector3::Dot(d1, d1);
 	float b = Vector3::Dot(d1, d2);
 	float c = Vector3::Dot(d1, r);
@@ -294,8 +299,8 @@ bool Collision::Segment3DAndSegment3D
 		if (s > 1.0f)s = 1.0f;
 	}
 
-	Vector3 p1 = lineSegment1.position[0];
-	Vector3 p2 = lineSegment2.position[0];
+	Vector3 p1 = segmentPos1.v1;
+	Vector3 p2 = segmentPos2.v1;
 	float t = Vector3::Dot(((p1 + d1 * s) - p2), d2) / Vector3::Dot(d2, d2);
 
 	s = (t * b - c) / a;
@@ -313,8 +318,8 @@ bool Collision::Segment3DAndSegment3D
 	if (s > 1.0f)s = 1.0f;
 
 	//相手に一番近い場所
-	Vector3 c1 = lineSegment1.position[0] + s * d1;
-	Vector3 c2 = lineSegment2.position[0] + t * d2;
+	Vector3 c1 = segmentPos1.v1 + s * d1;
+	Vector3 c2 = segmentPos2.v1 + t * d2;
 
 	//近い場所の距離が0だったら当たっている(重なっている、交差している)
 	bool isHit = LibMath::CalcDistance3D(c1, c2) == 0.0f;
@@ -327,12 +332,11 @@ bool Collision::Segment3DAndSegment3D
 
 bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2)
 {
-	//線分部分の座標を求める
-	Value2<Vector3>capsule1LineSegmentPos = capsule1.CalcCapsuleLineSegmentPos();
-	Value2<Vector3>capsule2LineSegmentPos = capsule2.CalcCapsuleLineSegmentPos();
+	//回転適応.
+	Value2<Vector3>capsule1LineSegmentPos = capsule1.segmentData.GetRotatePosition();
 
-	//線上の座標
-	Vector3 capculeLinePos[2] = { 0.0f,0.0f };
+	Value2<Vector3>capsule2LineSegmentPos = capsule2.segmentData.GetRotatePosition();
+
 
 	Vector3 d1 = capsule1LineSegmentPos.v2 - capsule1LineSegmentPos.v1;
 	Vector3 d2 = capsule2LineSegmentPos.v2 - capsule2LineSegmentPos.v1;
@@ -490,7 +494,8 @@ bool Collision::SphereAndBox
 
 bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule)
 {
-	Value2<Vector3>capsuleLineSegmentPos = capsule.CalcCapsuleLineSegmentPos();
+	Value2<Vector3>capsuleLineSegmentPos = capsule.segmentData.GetRotatePosition();
+
 
 	Vector3 capsulePos0ToSphere = 
 		LibMath::OtherVector(capsuleLineSegmentPos.v1, sphere.position);

@@ -1,18 +1,32 @@
 #include"CollisionType.h"
 #include"LibMath.h"
 
-MelLib::Value2<MelLib::Vector3> MelLib::CapsuleData::CalcCapsuleLineSegmentPos()const
+using namespace MelLib;
+
+Value2<Vector3> MelLib::Segment3DData::GetRotatePosition()const
 {
-	//ベクトルを回転
-	Vector3 rotateVector(Quaternion::GetZXYRotateQuaternion(Vector3(0, 1, 0), angle).ToVector3());
+	Vector3 centerPos = GetCenterPosition();
+	
+	//中心が原点にいるときの座標で回転
+	Value2<Vector3> rotVector
+		(
+			Quaternion::GetZXYRotateQuaternion(position[0] - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3(),
+			Quaternion::GetZXYRotateQuaternion(position[1] - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3()
+		);
 
-	//回転させたベクトルの方向にlength / 2だけ移動
-	Vector3 rotateMovePos(LibMath::FloatDistanceMoveVector3(0, rotateVector, length / 2));
-	Value2<Vector3>capsuleLineSegmentPos(rotateMovePos, -rotateMovePos);
+	//引いた分戻す
+	rotVector.v1 += centerPos;
+	rotVector.v2 += centerPos;
 
-	//平行移動
-	capsuleLineSegmentPos.v1 += position;
-	capsuleLineSegmentPos.v2 += position;
+	return rotVector;
+}
 
-	return capsuleLineSegmentPos;
+Vector3 MelLib::Segment3DData::GetCenterPosition() const
+{
+	return LibMath::CalcCenterPosition3D(position[0], position[1]);
+}
+
+float MelLib::Segment3DData::GetPositionDistance() const
+{
+	return LibMath::CalcDistance3D(position[0], position[1]);
 }

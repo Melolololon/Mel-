@@ -36,15 +36,16 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 	sphereData.resize(1);
 	sphereData[0].r = 7.0f;*/
 
-	collisionFlag.box = true;
+	/*collisionFlag.box = true;
 	boxData.resize(1);
-	boxData[0].size = 4;
+	boxData[0].size = 4;*/
 	
 	//boxCalcResult.resize(1);
 
-	//collisionFlag.capsule = true;
-	//capsuleData.resize(1);
-	//capsuleData[0].r = 0.5f;
+	collisionFlag.capsule = true;
+	capsuleData.resize(1);
+	capsuleData[0].r = 3.0f;
+	capsuleData[0].segmentData.angle = 0;
 	
 	/*collisionFlag.lineSegment = true;
 	lineSegmentData.resize(1);
@@ -68,6 +69,9 @@ void CollisionTestObject::Update()
 	}
 	model[0]->SetPosition(position);
 
+
+	capsuleData[0].segmentData.position[0] = position + MelLib::Vector3(0,3,0);
+	capsuleData[0].segmentData.position[1] = position + MelLib::Vector3(0, -3, 0);
 	//capsuleData[0].angle = 0;
 	//capsuleData[0].length = 4.0f;
 	//capsuleData[0].position = position;
@@ -83,23 +87,26 @@ void CollisionTestObject::Update()
 	//}
 
 	//sphereData[0].position = position;
-	boxData[0].position = position;
+	//boxData[0].position = position;
 	
 	if(MelLib::Input::KeyState(DIK_LEFT))angle.y += 3.0f;
 	if(MelLib::Input::KeyState(DIK_RIGHT))angle.y -= 3.0f;
 	if(MelLib::Input::KeyState(DIK_UP))angle.x += 3.0f;
 	if(MelLib::Input::KeyState(DIK_DOWN))angle.x -= 3.0f;
-	MelLib::Camera::Get()->SetAngle(angle);
+	/*MelLib::Camera::Get()->SetAngle(angle);
 	MelLib::Camera::Get()->SetCameraToTargetDistance(20.0f);
 	MelLib::Camera::Get()->SetRotatePoint(MelLib::Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
-	MelLib::Camera::Get()->SetRotateCriteriaPosition(0);
+	MelLib::Camera::Get()->SetRotateCriteriaPosition(0);*/
+
+	capsuleData[0].segmentData.angle = angle;
+
 	//model[0]->SetAngle(angle);
 	//model[1]->SetAngle(angle);*/
 }
 
 void CollisionTestObject::Draw()
 {
-	model[0]->Draw();
+	//model[0]->Draw();
 	//model[1]->Draw();
 
 	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");
