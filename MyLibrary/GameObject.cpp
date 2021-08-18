@@ -17,7 +17,6 @@ ADSAMaterial GameObject::material;
 
 GameObject::GameObject()
 {
-	
 }
 
 
@@ -154,7 +153,7 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 	};
 
 	//Box
-	createOrDeleteModel(boxData.size(), boxModelObjects, ShapeType3D::BOARD);
+	createOrDeleteModel(boxData.size(), boxModelObjects, ShapeType3D::BOX);
 	
 	//Sphere
 	createOrDeleteModel(sphereData.size(), sphereModelObjects, ShapeType3D::BOX);

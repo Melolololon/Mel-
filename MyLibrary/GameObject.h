@@ -106,8 +106,6 @@ namespace MelLib
 		//デストラクタ
 		virtual ~GameObject();
 
-		////初期化
-		//virtual void Initialize();
 		//更新
 		virtual void Update();
 		//描画

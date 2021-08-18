@@ -16,6 +16,7 @@ private:
 public:
 	CollisionTestObject(const MelLib::Vector3& pos,const bool inputMove);
 
+
 	/// <summary>
 	/// XVˆ—
 	/// </summary>
