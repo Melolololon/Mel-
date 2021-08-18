@@ -765,11 +765,11 @@ float Input::LeftStickAngle(const UCHAR padNum)
 	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }), true);
 }
 
-Vector2 Input::LeftStickVector2(const UCHAR padNum)
+Vector2 Input::LeftStickVector2(const UCHAR padNum, const bool dimention3D)
 {
 	float angle = LeftStickAngle(padNum);
 	if (angle < 0)return 0;
-	return LibMath::AngleToVector2(angle, false);
+	return LibMath::AngleToVector2(angle, dimention3D);
 }
 
 
@@ -840,11 +840,11 @@ bool Input::RightStickDown(const UCHAR padNum, const float lYPar)
 
 
 
-Vector2 Input::RightStickVector2(const UCHAR padNum)
+Vector2 Input::RightStickVector2(const UCHAR padNum, const bool dimention3D)
 {
 	float angle = RightStickAngle(padNum);
 	if (angle < 0)return 0;
-	return LibMath::AngleToVector2(angle, false);
+	return LibMath::AngleToVector2(angle, dimention3D);
 }
 
 Vector3 Input::RightStickVector3(const UCHAR padNum, Camera* pCamera, const bool rotX, const bool rotY)

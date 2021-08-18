@@ -282,7 +282,7 @@ namespace MelLib
 		static float LeftStickAngle(const UCHAR padNum);
 
 
-		static Vector2 LeftStickVector2(const UCHAR padNum);
+		static Vector2 LeftStickVector2(const UCHAR padNum, const bool dimention3D);
 		static Vector3 LeftStickVector3(const UCHAR padNum, Camera* pCamera = nullptr,const bool rotX = false, const bool rotY = false);
 #pragma endregion
 
@@ -300,7 +300,7 @@ namespace MelLib
 		static float RightStickAngle(const UCHAR padNum);
 
 
-		static Vector2 RightStickVector2(const UCHAR padNum);
+		static Vector2 RightStickVector2(const UCHAR padNum,const bool dimention3D);
 		static Vector3 RightStickVector3(const UCHAR padNum, Camera* pCamera = nullptr, const bool rotX = false, const bool rotY = false);
 #pragma endregion
 
