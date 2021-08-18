@@ -38,7 +38,7 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 	boxData.resize(1);
 	boxData[0].size = 4;
 	
-	boxCalcResult.resize(1);
+	//boxCalcResult.resize(1);
 
 	//collisionFlag.capsule = true;
 	//capsuleData.resize(1);

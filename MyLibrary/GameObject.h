@@ -147,6 +147,16 @@ namespace MelLib
 		//物理に基づいた移動関係の計算を行う関数
 		void CalcMovePhysics();
 
+#pragma region セット
+
+
+		void SetPosition(const Vector3& position) { this->position = position; }
+		void SetVelocity(const Vector3& velocity) { this->velocity = velocity; }
+#pragma endregion
+
+#pragma region ゲット
+
+
 		Vector3 GetPosition()const { return position; }
 		Vector3 GetVelocity()const { return velocity; }
 		Vector3 GetAcceleration()const { return acceleration; }
@@ -157,6 +167,8 @@ namespace MelLib
 
 		//オブジェクトマネージャーから削除するかどうかのフラグを返す
 		bool GetEraseManager() { return eraseManager; }
+#pragma endregion
+
 
 #pragma region 判定用関数
 
@@ -170,6 +182,7 @@ namespace MelLib
 		std::vector<BoardData> GetBoardData() { return boardData; }
 		std::vector<CapsuleData>GetCapsuleData() { return capsuleData; }
 
+		//ここ参照取得じゃなくてSetにする?
 		std::vector<SphereCalcResult>& GetSphereCalcResult() { return sphereCalcResult; }
 		std::vector<BoxCalcResult>& GetBoxCalcResult() { return boxCalcResult; }
 		std::vector<Segment3DCalcResult>& GetSegmentCalcResult() { return lineSegmentCalcResult; }
@@ -179,6 +192,11 @@ namespace MelLib
 		//Vector3& GetBoardHitPosition(const int num);
 		//BoxHitDirection& GetSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }
 		//BoxHitDirection& GetBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
+
+		/// <summary>
+		/// 判定計算用のデータと計算結果格納関数が
+		/// </summary>
+		void CheckCalcResultSize();
 
 #ifdef _DEBUG
 		static void CreateCollisionCheckModelPipelineState();
@@ -193,7 +211,6 @@ namespace MelLib
 
 #pragma endregion
 
-		void SetPosition(const Vector3& position) { this->position = position; }
-		void SetVelocity(const Vector3& velocity) { this->velocity = velocity; }
+
 	};
 }
