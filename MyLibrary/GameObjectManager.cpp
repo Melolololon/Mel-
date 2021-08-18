@@ -50,6 +50,7 @@ void GameObjectManager::Update()
 	for (auto& obj : objects) 
 	{
 		if (obj->GetCalcPhysicsFlag())obj->CalcMovePhysics();
+		obj->ResizeCalcResult();
 		obj->Update();
 		
 	}
@@ -59,6 +60,8 @@ void GameObjectManager::Update()
 	{
 		for (auto& a : addObjects) 
 		{
+
+			a->ResizeCalcResult();
 			a.get()->Update();
 			objects.push_back(a);
 		}
@@ -79,7 +82,7 @@ void GameObjectManager::Update()
 	std::vector<CollisionDetectionFlag>collisionFlags(objectSize);
 	for (int i = 0; i < objectSize; i++)
 	{
-		objects[i]->CheckCalcResultSize();
+		objects[i]->ResizeCalcResult();
 		collisionFlags[i] = objects[i]->GetCollisionFlag();
 
 
@@ -154,15 +157,19 @@ void GameObjectManager::Update()
 				std::vector<BoxData>boxData2 = obj2->GetBoxData();
 				size_t boxData2Size = boxData2.size();
 
-				std::vector<BoxCalcResult>& boxCalcResult1 = obj1->GetBoxCalcResult();
-				std::vector<BoxCalcResult>& boxCalcResult2 = obj2->GetBoxCalcResult();
 
 				for (int colI = 0; colI < boxData1Size; colI++)
 				{
 					for (int colJ = 0; colJ < boxData2Size; colJ++)
 					{
-						if (Collision::BoxAndBox(boxData1[colI], &boxCalcResult1[colI], boxData2[colJ], &boxCalcResult2[colJ]))
+						BoxCalcResult result1;
+						BoxCalcResult result2;
+
+						if (Collision::BoxAndBox(boxData1[colI], &result1, boxData2[colJ], &result2))
 						{
+							obj1->SetBoxCalcResult(result1, colI);
+							obj2->SetBoxCalcResult(result2, colJ);
+
 							//hit‚ðŒÄ‚Ño‚·
 							obj1->Hit
 							(
@@ -184,6 +191,7 @@ void GameObjectManager::Update()
 					}
 				}
 
+
 			}
 #pragma endregion
 
@@ -197,22 +205,26 @@ void GameObjectManager::Update()
 				std::vector<Segment3DData>segmentData2 = obj2->GetSegmentData();
 				size_t segmentData2Size = segmentData2.size();
 
-				std::vector<Segment3DCalcResult>& segmentCalcResult1 = obj1->GetSegmentCalcResult();
-				std::vector<Segment3DCalcResult>& segmentCalcResult2 = obj2->GetSegmentCalcResult();
 
 
 				for (int colI = 0; colI < segmentData1Size; colI++)
 				{
 					for (int colJ = 0; colJ < segmentData2Size; colJ++)
 					{
+						Segment3DCalcResult result1;
+						Segment3DCalcResult result2;
+
 						if (Collision::Segment3DAndSegment3D
 						(
 							segmentData1[colI],
-							&segmentCalcResult1[colI], 
+							&result1,
 							segmentData2[colJ],
-							&segmentCalcResult2[colJ]
+							&result2
 						))
 						{
+							obj1->SetSegmentCalcResult(result1,colI);
+							obj2->SetSegmentCalcResult(result2,colJ);
+
 							//hit‚ðŒÄ‚Ño‚·
 							obj1->Hit
 							(
@@ -288,22 +300,25 @@ void GameObjectManager::Update()
 				std::vector<BoxData>boxData = obj2->GetBoxData();
 				size_t boxDataSize = boxData.size();
 
-				std::vector<SphereCalcResult>& sphereCalcResult = obj1->GetSphereCalcResult();
-				std::vector<BoxCalcResult>& boxCalcResult = obj2->GetBoxCalcResult();
 
 
 				for (int colI = 0; colI < sphereDataSize; colI++)
 				{
 					for (int colJ = 0; colJ < boxDataSize; colJ++)
 					{
+						SphereCalcResult result1;
+						BoxCalcResult result2;
+
 						if (Collision::SphereAndBox
 						(
 							sphereData[colI],
-							&sphereCalcResult[colI],
+							&result1,
 							boxData[colJ],
-							&boxCalcResult[colJ]
+							&result2
 						))
 						{
+							obj1->SetSphereCalcResult(result1, colI);
+							obj2->SetBoxCalcResult(result2, colJ);
 							//hit‚ðŒÄ‚Ño‚·
 							obj1->Hit
 							(
