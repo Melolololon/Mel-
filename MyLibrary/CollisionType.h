@@ -9,13 +9,13 @@ namespace MelLib
 	//衝突確認フラグ
 	struct CollisionDetectionFlag
 	{
-		bool sphere = false;
-		bool box = false;
-		bool ray = false;
-		bool segment = false;
-		bool plane = false;
-		bool board = false;
-		bool capsule = false;
+		bool sphere = true;
+		bool box = true;
+		bool ray = true;
+		bool segment = true;
+		bool plane = true;
+		bool board = true;
+		bool capsule = true;
 	};
 
 	//2Dの形状の列挙
