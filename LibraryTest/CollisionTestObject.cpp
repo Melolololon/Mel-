@@ -4,12 +4,13 @@
 #include"ModelData.h"
 #include"Texture.h"
 #include"Input.h"
-
+#include"LibMath.h"
 MelLib::ADSAMaterial mtl;
 bool first = false;
 
 CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool inputMove) : inputFlag(inputMove)
 {
+
 	position = pos;
 	speed = 0.25f;
 	model[0] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);

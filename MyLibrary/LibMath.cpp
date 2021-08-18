@@ -561,10 +561,9 @@ float LibMath::Vecto2ToAngle(const Vector2& v, const bool& v3)
 
 Vector2 LibMath::AngleToVector2(const float& angle, const bool& v3)
 {
-	Quaternion q = Quaternion::GetRotateQuaternion({ 1,0,0 }, { 0,0,1 }, angle);
+	Quaternion q = Quaternion::GetRotateQuaternion({ 1,0,0 }, { 0,0,-1 }, angle);
 
-	if (v3)
-		return { q.x,q.y };
+	if (v3)return { q.x,q.y };
 	return { q.x,-q.y };
 }
 
