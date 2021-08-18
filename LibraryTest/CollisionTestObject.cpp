@@ -3,6 +3,7 @@
 
 #include"ModelData.h"
 #include"Texture.h"
+#include"Input.h"
 
 MelLib::ADSAMaterial mtl;
 bool first = false;

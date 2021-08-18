@@ -7,6 +7,7 @@
 #include"SpriteFont2D.h"
 #include"TextureFont.h"
 #include"DirectionalLight.h"
+#include"Input.h"
 
 Play::Play(){}
 

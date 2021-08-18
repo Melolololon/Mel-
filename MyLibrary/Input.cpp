@@ -639,7 +639,7 @@ bool Input::PadCheck(const UCHAR padNum)
 #pragma region ボタン
 
 
-bool Input::ButtonState(const GamePadButton button, const UCHAR padNum)
+bool Input::ButtonState(const UCHAR padNum, const GamePadButton button)
 {
 	if (!PadCheck(padNum))return false;
 
@@ -650,25 +650,25 @@ bool Input::ButtonState(const GamePadButton button, const UCHAR padNum)
 	return false;
 }
 
-bool Input::ButtonTrigger(const GamePadButton button, const UCHAR padNum)
+bool Input::ButtonTrigger(const UCHAR padNum, const GamePadButton button)
 {
 	if (!PadCheck(padNum))return false;
 
 	int num = padPrevious[padNum - 1].Gamepad.wButtons & (int)button;
 	if (num != (int)button &&
-		ButtonState(button, padNum))
+		ButtonState(padNum,button))
 		return true;
 
 	return false;
 }
 
-bool Input::ButtonRelease(const GamePadButton button, const UCHAR padNum)
+bool Input::ButtonRelease(const UCHAR padNum, const GamePadButton button)
 {
 	if (!PadCheck(padNum))return false;
 
 	int num = padPrevious[padNum - 1].Gamepad.wButtons & (int)button;
 	if (num == (int)button &&
-		!ButtonState(button, padNum))
+		!ButtonState(padNum,button))
 		return true;
 
 	return false;
@@ -678,10 +678,10 @@ float Input::DirectionalButtonAngle(const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return -1.0f;
 
-	bool right = Input::ButtonState(GamePadButton::RIGHT, padNum);
-	bool left = Input::ButtonState(GamePadButton::LEFT, padNum);
-	bool up = Input::ButtonState(GamePadButton::UP, padNum);
-	bool down = Input::ButtonState(GamePadButton::DOWN, padNum);
+	bool right = Input::ButtonState(padNum,GamePadButton::RIGHT);
+	bool left = Input::ButtonState(padNum,GamePadButton::LEFT);
+	bool up = Input::ButtonState(padNum,GamePadButton::UP);
+	bool down = Input::ButtonState(padNum,GamePadButton::DOWN);
 
 	if (right && up)return 45.0f;
 	if (up && left)return 135.0f;
@@ -696,12 +696,19 @@ float Input::DirectionalButtonAngle(const UCHAR padNum)
 	return -1.0f;
 }
 
+
 #pragma endregion
 
 
 #pragma region スティック
 
-bool Input::LeftStickLeft(const float lXPar, const UCHAR padNum)
+#pragma region 左
+
+
+
+
+
+bool Input::LeftStickLeft(const UCHAR padNum, const float lXPar)
 {
 	if (!PadCheck(padNum))return false;
 	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLX)
@@ -710,7 +717,7 @@ bool Input::LeftStickLeft(const float lXPar, const UCHAR padNum)
 	return false;
 }
 
-bool Input::LeftStickRight(const float lXPar, const UCHAR padNum)
+bool Input::LeftStickRight(const UCHAR padNum, const float lXPar)
 {
 	if (!PadCheck(padNum))return false;
 
@@ -720,7 +727,7 @@ bool Input::LeftStickRight(const float lXPar, const UCHAR padNum)
 	return false;
 }
 
-bool Input::LeftStickUp(const float lYPar, const UCHAR padNum)
+bool Input::LeftStickUp(const UCHAR padNum, const float lYPar)
 {
 	if (!PadCheck(padNum))return false;
 
@@ -730,7 +737,7 @@ bool Input::LeftStickUp(const float lYPar, const UCHAR padNum)
 	return false;
 }
 
-bool Input::LeftStickDown(const float lYPar, const UCHAR padNum)
+bool Input::LeftStickDown(const UCHAR padNum, const float lYPar)
 {
 	if (!PadCheck(padNum))return false;
 
@@ -740,47 +747,6 @@ bool Input::LeftStickDown(const float lYPar, const UCHAR padNum)
 	return false;
 }
 
-bool Input::RightStickLeft(const float lXPar, const UCHAR padNum)
-{
-
-	if (!PadCheck(padNum))return false;
-
-	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbRX)
-		return true;
-
-	return false;
-}
-
-bool Input::RightStickRight(const float lXPar, const UCHAR padNum)
-{
-
-	if (!PadCheck(padNum))return false;
-	if (lXPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbRX)
-		return true;
-
-	return false;
-}
-
-bool Input::RightStickUp(const float lYPar, const UCHAR padNum)
-{
-
-	if (!PadCheck(padNum))return false;
-
-	if (lYPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbRY)
-		return true;
-
-	return false;
-}
-
-bool Input::RightStickDown(const float lYPar, const UCHAR padNum)
-{
-	if (!PadCheck(padNum))return false;
-
-	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbRY)
-		return true;
-
-	return false;
-}
 
 
 
@@ -798,6 +764,106 @@ float Input::LeftStickAngle(const UCHAR padNum)
 
 	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }), true);
 }
+
+Vector2 Input::LeftStickVector2(const UCHAR padNum)
+{
+	float angle = LeftStickAngle(padNum);
+	if (angle < 0)return 0;
+	return LibMath::AngleToVector2(angle, false);
+}
+
+
+Vector3 Input::LeftStickVector3(const UCHAR padNum, Camera* pCamera)
+{
+	float angle = LeftStickAngle(padNum);
+	if (angle < 0)return 0;
+	Vector2 vec2 = LibMath::AngleToVector2(angle, true);
+	Vector3 result(vec2.x, 0, vec2.y);
+	if (!pCamera) return result;
+
+	//カメラに合わせて回転
+	//Yは0固定にするように
+	Vector3 cameraAngle = pCamera->GetAngle();
+	result = LibMath::RotateVector3(result, Vector3(0, 1, 0), cameraAngle.y);
+	return result;
+}
+
+
+
+#pragma endregion
+
+#pragma region 右
+
+
+bool Input::RightStickLeft(const UCHAR padNum, const float lXPar)
+{
+
+	if (!PadCheck(padNum))return false;
+
+	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbRX)
+		return true;
+
+	return false;
+}
+
+bool Input::RightStickRight(const UCHAR padNum, const float lXPar)
+{
+
+	if (!PadCheck(padNum))return false;
+	if (lXPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbRX)
+		return true;
+
+	return false;
+}
+
+bool Input::RightStickUp(const UCHAR padNum, const float lYPar)
+{
+
+	if (!PadCheck(padNum))return false;
+
+	if (lYPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbRY)
+		return true;
+
+	return false;
+}
+
+bool Input::RightStickDown(const UCHAR padNum, const float lYPar)
+{
+	if (!PadCheck(padNum))return false;
+
+	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbRY)
+		return true;
+
+	return false;
+}
+
+
+
+Vector2 Input::RightStickVector2(const UCHAR padNum)
+{
+	float angle = RightStickAngle(padNum);
+	if (angle < 0)return 0;
+	return LibMath::AngleToVector2(angle, false);
+}
+
+Vector3 Input::RightStickVector3(const UCHAR padNum, Camera* pCamera)
+{
+	float angle = RightStickAngle(padNum);
+	if (angle < 0)return 0;
+	Vector2 vec2 = LibMath::AngleToVector2(angle, true);
+	Vector3 result(vec2.x, 0, vec2.y);
+	if(!pCamera) return result;
+
+	//カメラに合わせて回転
+	//Yは0固定にするように
+	Vector3 cameraAngle = pCamera->GetAngle();
+	result = LibMath::RotateVector3(result, Vector3(0, 1, 0), cameraAngle.y);
+	return result;
+}
+#pragma endregion
+
+
+
 
 float Input::RightStickAngle(const UCHAR padNum)
 {

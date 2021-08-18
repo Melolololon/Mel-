@@ -8,6 +8,7 @@
 #include"TextWrite.h"
 #include"Texture.h"
 #include"TextureFont.h"
+#include"Input.h"
 
 
 Game::Game() {}

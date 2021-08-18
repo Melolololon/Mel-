@@ -4,7 +4,7 @@
 #include<string>
 #include<memory>
 #include<unordered_map>
-#include"Input.h"
+//#include"Input.h"
 
 namespace MelLib
 {
@@ -101,7 +101,7 @@ namespace MelLib
 		void SetNear(const float num)
 		{
 			nearNum = num;
-			Input::SetNear(nearNum);
+			//Input::SetNear(nearNum);
 		}
 
 		/// <summary>
@@ -111,7 +111,7 @@ namespace MelLib
 		void SetFar(const float num)
 		{
 			farNum = num;
-			Input::SetFar(farNum);
+			//Input::SetFar(farNum);
 		}
 
 		/// <summary>
@@ -165,7 +165,7 @@ namespace MelLib
 		Vector3 GetUpVector()const { return upVector; }
 
 
-		Vector3 GetCameraAngle()const { return angle; }
+		Vector3 GetAngle()const { return angle; }
 
 #pragma endregion
 	};

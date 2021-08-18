@@ -12,7 +12,9 @@
 
 #include<DirectXMath.h>
 #include<unordered_map>
+
 #include"Vector.h"
+#include"Camera.h"
 
 namespace MelLib 
 {
@@ -253,9 +255,9 @@ namespace MelLib
 
 
 #pragma region ボタン
-		static bool ButtonState(const GamePadButton button, const UCHAR padNum);
-		static bool ButtonTrigger(const GamePadButton button, const UCHAR padNum);
-		static bool ButtonRelease(const GamePadButton button, const UCHAR padNum);
+		static bool ButtonState(const UCHAR padNum,const GamePadButton button);
+		static bool ButtonTrigger(const UCHAR padNum, const GamePadButton button);
+		static bool ButtonRelease(const UCHAR padNum, const GamePadButton button);
 
 		/// <summary>
 		/// 十字ボタンが示す角度を取得します。
@@ -265,26 +267,48 @@ namespace MelLib
 #pragma endregion
 
 #pragma region アナログスティック
-		static bool LeftStickLeft(const float lXPar, const UCHAR padNum);
-		static bool LeftStickRight(const float lXPar, const UCHAR padNum);
-		static bool LeftStickUp(const float lYPar, const UCHAR padNum);
-		static bool LeftStickDown(const float lYPar, const UCHAR padNum);
-		static bool RightStickLeft(const float lXPar, const UCHAR padNum);
-		static bool RightStickRight(const float lXPar, const UCHAR padNum);
-		static bool RightStickUp(const float lYPar, const UCHAR padNum);
-		static bool RightStickDown(const float lYPar, const UCHAR padNum);
+
+#pragma region 左
+
+		static bool LeftStickLeft(const UCHAR padNum, const float lXPar);
+		static bool LeftStickRight(const UCHAR padNum, const float lXPar);
+		static bool LeftStickUp(const UCHAR padNum, const float lYPar);
+		static bool LeftStickDown(const UCHAR padNum, const float lYPar);
 
 		/// <summary>
-		/// 左スティックが何度かを角度で返します。スティックが傾いていない場合、-1を返します。
+		/// 左スティックの角度を返します。スティックが傾いていない場合、-1を返します。
 		/// </summary>
 		/// <returns></returns>
 		static float LeftStickAngle(const UCHAR padNum);
+
+
+		static Vector2 LeftStickVector2(const UCHAR padNum);
+		static Vector3 LeftStickVector3(const UCHAR padNum, MelLib::Camera* pCamera = nullptr);
+#pragma endregion
+
+#pragma region 右
+		static bool RightStickLeft(const UCHAR padNum, const float lXPar);
+		static bool RightStickRight(const UCHAR padNum, const float lXPar);
+		static bool RightStickUp(const UCHAR padNum, const float lYPar);
+		static bool RightStickDown(const UCHAR padNum, const float lYPar);
+
 
 		/// <summary>
 		/// 右スティックが何度かを角度で返します。スティックが傾いていない場合、-1を返します。
 		/// </summary>
 		/// <returns></returns>
 		static float RightStickAngle(const UCHAR padNum);
+
+
+		static Vector2 RightStickVector2(const UCHAR padNum);
+		static Vector3 RightStickVector3(const UCHAR padNum, MelLib::Camera* pCamera = nullptr);
+#pragma endregion
+
+
+	
+
+	
+
 #pragma endregion
 
 #pragma region 振動
