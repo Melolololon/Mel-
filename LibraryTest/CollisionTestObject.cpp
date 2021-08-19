@@ -50,6 +50,10 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 	/*collisionFlag.lineSegment = true;
 	lineSegmentData.resize(1);
 	lineSegmentCalcResult.resize(1);*/
+
+
+
+	model[0]->MeshCat();
 }
 
 void CollisionTestObject::Update()

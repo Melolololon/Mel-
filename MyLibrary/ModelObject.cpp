@@ -537,6 +537,32 @@ void ModelObject::Draw(const std::string& rtName)
 	DrawCommonProcessing(rtName);
 }
 
+void MelLib::ModelObject::MeshCat()
+{
+	//この処理はBoxとBoardで行う
+
+	//とりあえず当たり判定処理をすっ飛ばして、
+	//インデックスのセットと断面の描画を行う(断面用のテクスチャは割り当てない)
+
+
+	//スケール
+	Vector3 scale = modelConstDatas[0].scale;
+
+	//仮実装用の衝突点。中心をぶった切ることを仮定
+	std::vector<Vector3>hitPoints =
+	{
+		Vector3(0,0.5f,0.5f) * scale,
+		Vector3(0,0.5f,-0.5f)* scale,
+		Vector3(0,-0.5f,0.5f)* scale,
+		Vector3(0,-0.5f,-0.5f)* scale
+	};
+
+	//四角形の頂点取得
+	std::vector<Vector3>modelVertices = pModelData->GetVerticesPosition()[0];
+
+	int z = 0;
+}
+
 void ModelObject::SetPosition(const Vector3& position)
 {
 	for (int i = 0; i < modelFileObjectNum; i++)

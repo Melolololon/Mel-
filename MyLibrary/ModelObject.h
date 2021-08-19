@@ -129,6 +129,14 @@ namespace MelLib
 
 #pragma endregion 生成
 
+#pragma region メッシュカット
+		/// <summary>
+		/// モデルの切断(仮実装用の関数)
+		/// </summary>
+		void MeshCat();
+#pragma endregion
+
+
 #pragma region セット
 
 #pragma region 操作見た目変更
