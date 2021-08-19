@@ -164,7 +164,6 @@ namespace MelLib
 		/// <returns>ãƒxƒNƒgƒ‹</returns>
 		Vector3 GetUpVector()const { return upVector; }
 
-
 		Vector3 GetAngle()const { return angle; }
 
 #pragma endregion

@@ -10,6 +10,7 @@
 #include"TextureFont.h"
 #include"Input.h"
 
+#include"Limit.h"
 
 Game::Game() {}
 
@@ -23,6 +24,10 @@ Game* Game::GetInstance()
 
 void Game::Run()
 {
+	float num = 1.0f;
+	num = MelLib::Limit::Smoothstep(num, 0.0f, 5.0f);
+
+
 	Initialize();
 
 	while (1)

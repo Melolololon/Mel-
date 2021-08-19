@@ -255,6 +255,9 @@
     <ClCompile Include="ModelBone.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Limit.cpp">
+      <Filter>ソース ファイル\Support</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SpritePixelShader.hlsl" />
@@ -454,6 +457,9 @@
     </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>ヘッダー ファイル\Calculation</Filter>
+    </ClInclude>
+    <ClInclude Include="Limit.h">
+      <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
