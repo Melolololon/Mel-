@@ -784,8 +784,8 @@ Vector3 Input::LeftStickVector3(const UCHAR padNum, Camera* pCamera, const bool 
 	//ƒJƒƒ‰‚É‡‚í‚¹‚Ä‰ñ“]
 	//Y‚Í0ŒÅ’è‚É‚·‚é‚æ‚¤‚É
 	Vector3 cameraAngle = pCamera->GetAngle();
-	if(rotX)result = LibMath::RotateVector3(result, Vector3(1, 0, 0), cameraAngle.x);
-	if(rotY)result = LibMath::RotateVector3(result, Vector3(0, 1, 0), cameraAngle.y);
+	if(rotX)result = LibMath::RotateVector3(result, Vector3(-1, 0, 0), cameraAngle.x);
+	if(rotY)result = LibMath::RotateVector3(result, Vector3(0, -1, 0), cameraAngle.y);
 	return result;
 }
 
@@ -858,8 +858,8 @@ Vector3 Input::RightStickVector3(const UCHAR padNum, Camera* pCamera, const bool
 	//ƒJƒƒ‰‚É‡‚í‚¹‚Ä‰ñ“]
 	//Y‚Í0ŒÅ’è‚É‚·‚é‚æ‚¤‚É
 	Vector3 cameraAngle = pCamera->GetAngle();
-	if (rotX)result = LibMath::RotateVector3(result, Vector3(1, 0, 0), cameraAngle.x);
-	if (rotY)result = LibMath::RotateVector3(result, Vector3(0, 1, 0), cameraAngle.y);
+	if (rotX)result = LibMath::RotateVector3(result, Vector3(-1, 0, 0), cameraAngle.x);
+	if (rotY)result = LibMath::RotateVector3(result, Vector3(0, -1, 0), cameraAngle.y);
 	return result;
 }
 #pragma endregion
