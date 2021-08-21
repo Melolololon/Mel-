@@ -540,6 +540,18 @@ char LibMath::PointLeftRightCheck(const Vector2& vector, const Vector2& point)
 	return 0;
 }
 
+char MelLib::LibMath::PointPlaneFrontBackCheck(const Vector3& point, const PlaneData& plane)
+{
+
+	//原点から法線方向に距離分動いた座標を求める。
+	Vector3 disPos = FloatDistanceMoveVector3(0, plane.normal, plane.distance);
+
+	if (Vector3::Dot(point - disPos, plane.normal) > 0)return 1;
+	else if (Vector3::Dot(point - disPos, plane.normal) < 0)return -1;
+	return 0;
+}
+
+
 float LibMath::TwoVector2Angle(const Vector2& v1, const Vector2& v2)
 {
 

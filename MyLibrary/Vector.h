@@ -126,8 +126,8 @@ namespace MelLib
 		void operator/= (const Vector3& vector);
 
 
-		bool operator==(const Vector3& vector);
-		bool operator!=(const Vector3& vector);
+		bool operator==(const Vector3& vector) const;
+		bool operator!=(const Vector3& vector)const;
 
 		void operator++();
 		void operator--();

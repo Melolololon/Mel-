@@ -709,7 +709,7 @@ std::vector<Material*> MelLib::ModelData::GetBaseClassMaterial()
 	return mtls;
 }
 
-std::vector<std::vector<Vector3>> MelLib::ModelData::GetVerticesPosition()
+std::vector<std::vector<Vector3>> MelLib::ModelData::GetVerticesPosition()const
 {
 	int verticesSize = vertices.size();
 	std::vector<std::vector<Vector3>>verticesPos(verticesSize);

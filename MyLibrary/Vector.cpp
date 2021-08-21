@@ -409,7 +409,7 @@ void Vector3::operator/= (const Vector3& vector)
 }
 
 
-bool Vector3::operator==(const Vector3& vector)
+bool Vector3::operator==(const Vector3& vector)const
 {
 	if (x == vector.x &&
 		y == vector.y &&
@@ -418,7 +418,7 @@ bool Vector3::operator==(const Vector3& vector)
 	return false;
 }
 
-bool Vector3::operator!=(const Vector3& vector)
+bool Vector3::operator!=(const Vector3& vector)const
 {
 	if (x == vector.x &&
 		y == vector.y &&

@@ -362,8 +362,7 @@ namespace MelLib
 		/// モデルの頂点座標を取得します。
 		/// </summary>
 		/// <returns>頂点座標</returns>
-		std::vector<std::vector<Vector3>>GetVerticesPosition();
-
+		std::vector<std::vector<Vector3>>GetVerticesPosition()const;
 
 #pragma endregion
 

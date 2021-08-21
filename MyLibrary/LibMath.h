@@ -193,6 +193,14 @@ namespace MelLib
 		static char PointLeftRightCheck(const Vector2& vector, const Vector2& point);
 
 		/// <summary>
+		/// 表裏判定を行います。点が平面の表側だったら1、裏側だったら-1、平面上だったら0を返します。
+		/// </summary>
+		/// <param name="point">点</param>
+		/// <param name="plane">平面情報</param>
+		/// <returns></returns>
+		static char PointPlaneFrontBackCheck(const Vector3& point,const PlaneData& plane);
+
+		/// <summary>
 		/// 2つのベクトルがなす角度を求めます
 		/// </summary>
 		/// <param name="v1"></param>
