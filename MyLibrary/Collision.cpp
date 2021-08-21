@@ -123,14 +123,18 @@ bool Collision::CircleAndSegment2D
 
 bool Collision::SphereAndSphere(const SphereData& sphere1, const SphereData& sphere2)
 {
+	Vector3 sphere1Pos = sphere1.GetPosition();
+	float sphere1R = sphere1.GetRadius();
+	Vector3 sphere2Pos = sphere2.GetPosition();
+	float sphere2R = sphere2.GetRadius();
 
-	return (sphere2.position.x - sphere1.position.x) *
-		(sphere2.position.x - sphere1.position.x) +
-		(sphere2.position.y - sphere1.position.y) *
-		(sphere2.position.y - sphere1.position.y) +
-		(sphere2.position.z - sphere1.position.z) *
-		(sphere2.position.z - sphere1.position.z) <=
-		(sphere1.r + sphere2.r) * (sphere1.r + sphere2.r);
+	return (sphere2Pos.x - sphere1Pos.x) *
+		(sphere2Pos.x - sphere1Pos.x) +
+		(sphere2Pos.y - sphere1Pos.y) *
+		(sphere2Pos.y - sphere1Pos.y) +
+		(sphere2Pos.z - sphere1Pos.z) *
+		(sphere2Pos.z - sphere1Pos.z) <=
+		(sphere1R + sphere2R) * (sphere1R + sphere2R);
 }
 
 bool Collision::BoxAndBox
@@ -333,9 +337,9 @@ bool Collision::Segment3DAndSegment3D
 bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2)
 {
 	//‰ñ“]“K‰ž.
-	Value2<Vector3>capsule1LineSegmentPos = capsule1.segmentData.GetRotatePosition();
+	Value2<Vector3>capsule1LineSegmentPos = capsule1.GetSegment3DData().GetRotatePosition();
 
-	Value2<Vector3>capsule2LineSegmentPos = capsule2.segmentData.GetRotatePosition();
+	Value2<Vector3>capsule2LineSegmentPos = capsule2.GetSegment3DData().GetRotatePosition();
 
 
 	Vector3 d1 = capsule1LineSegmentPos.v2 - capsule1LineSegmentPos.v1;
@@ -380,7 +384,7 @@ bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData
 	Vector3 c1 = p1 + s * d1;
 	Vector3 c2 = p2 + t * d2;
 
-	return LibMath::CalcDistance3D(c1,c2) < capsule1.r + capsule2.r;
+	return LibMath::CalcDistance3D(c1,c2) < capsule1.GetRadius() + capsule2.GetRadius();
 }
 
 bool Collision::SphereAndBox
@@ -494,11 +498,11 @@ bool Collision::SphereAndBox
 
 bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule)
 {
-	Value2<Vector3>capsuleLineSegmentPos = capsule.segmentData.GetRotatePosition();
-
+	Value2<Vector3>capsuleLineSegmentPos = capsule.GetSegment3DData().GetRotatePosition();
+	Vector3 spherePos = sphere.GetPosition();
 
 	Vector3 capsulePos0ToSphere = 
-		LibMath::OtherVector(capsuleLineSegmentPos.v1, sphere.position);
+		LibMath::OtherVector(capsuleLineSegmentPos.v1, spherePos);
 	
 	//Ž‘—¿‚Ìn
 	Vector3 capsuleLineSegmentVector =
@@ -513,18 +517,18 @@ bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& ca
 	float sphereAndCupsuleDis = 0.0f;
 	if(lenghtRate < 0.0f)
 	{
-		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, capsuleLineSegmentPos.v1);
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(spherePos, capsuleLineSegmentPos.v1);
 	}
 	else if(lenghtRate > 1.0f)
 	{
-		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, capsuleLineSegmentPos.v2);
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(spherePos, capsuleLineSegmentPos.v2);
 	}
 	else
 	{
-		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, onTheLinePos);
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(spherePos, onTheLinePos);
 	}
 
-	return sphereAndCupsuleDis < sphere.r;
+	return sphereAndCupsuleDis < sphere.GetRadius();
 }
 
 bool Collision::BoardAndLineSegment3D

@@ -39,7 +39,7 @@ namespace MelLib
 	};
 
 
-	enum BoxHitDirection
+	enum class BoxHitDirection
 	{
 		BOX_HIT_DIRECTION_NO_HIT,
 		BOX_HIT_DIRECTION_UP,
@@ -123,25 +123,37 @@ namespace MelLib
 #pragma region 球
 
 
-	//球
-	struct SphereData
+	struct SphereCalcResult
 	{
+		//箱のどの部分にぶつかったかという情報
+		BoxHitDirection boxHitDistance = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+	};
+
+	//球
+	class SphereData
+	{
+	private:
+		//座標
 		Vector3 position;
 
 		//半径
 		float r = 0.0f;
 
+		SphereCalcResult result;
+
+	public:
+		Vector3 GetPosition()const { return position; }
+		float GetRadius()const { return r; }
+		SphereCalcResult GetCalcResult() const { return result; }
+
+		void SetPosition(const Vector3& pos) { position = pos; }
+		void SetRadius(const float radius) { r = radius; }
 	};
 
-	struct SphereCalcResult
-	{
-		//箱のどの部分にぶつかったかという情報
-		BoxHitDirection boxHitDistance;
-	};
 
 #pragma endregion
 
-#pragma region 箱
+#pragma region AABB
 
 
 	//箱
@@ -161,13 +173,25 @@ namespace MelLib
 
 #pragma endregion
 
+#pragma region OBB
+
+#pragma endregion
+
 #pragma region 平面
 
 	//平面
-	struct PlaneData
+	class PlaneData
 	{
+	private:
 		Vector3 normal;
 		float distance = 0.0f;
+
+	public:
+		Vector3 GetNormal() { return normal; }
+		float GetDistance() { return distance; }
+
+		void SetNormal(const Vector3& normal) { this->normal = normal; }
+		void SetDistance(const float dis) { distance = dis; }
 	};
 #pragma endregion
 
@@ -199,51 +223,60 @@ namespace MelLib
 
 
 #pragma region 線分3D
-
-	//線分
-	struct Segment3DData
-	{
-		Vector3 position[2];
-		Vector3 angle = 0;
-
-		
-
-		//これ計算毎フレーム1回にしてCalcResultに入れるようにする?
-		//セットしてすぐ取得したい場合あるかもしれないからこのままにする?
-		/// <summary>
-		/// 線分の中心を基準にangle分回転させた両端の座標を返します。
-		/// </summary>
-		/// <returns></returns>
-		Value2<Vector3>GetRotatePosition()const;
-
-		/// <summary>
-		/// 2点間の中心座標を取得します。
-		/// </summary>
-		/// <returns></returns>
-		Vector3 GetCenterPosition ()const;
-
-		/// <summary>
-		/// 2点間の距離を求めます。
-		/// </summary>
-		/// <returns></returns>
-		float GetPositionDistance()const;
-	};
-
 	struct Segment3DCalcResult
 	{
 		Vector3 lineSegment3DHitPos;
 		Vector3 boardHitPos;
 	};
 
+	//線分
+	class Segment3DData
+	{
+	private:
+		Value2<Vector3> position;
+		Vector3 angle = 0;
+
+		//angleを適応させた座標
+		Value2<Vector3> rotatePosition;
+
+		Segment3DCalcResult result;
+
+	private:
+		//angle適応させた角度をrotatePositionに代入する関数
+		void CalcRotatePosition();
+
+		
+	public:
+		Value2<Vector3> GetPosition()const { return position; }
+		Value2<Vector3> GetRotatePosition()const { return rotatePosition; }
+		Vector3 GetAngle()const { return angle; }
+		Segment3DCalcResult GetCalcResult()const { return result; }
+
+		void SetPosition(const Vector3& pos) { position = pos; }
+		void SetAngle(const Vector3& angle);
+
+	
+	};
+
+	
+
 #pragma endregion
 
-#pragma region 線
+#pragma region レイ
 
 	//線
-	struct RayData
+	class RayData
 	{
-		Vector3 pos;
+	private:
+		Vector3 position;
 		Vector3 direction;
+
+	public:
+		Vector3 GetPosition()const { return position; }
+		Vector3 GetDirection()const { return direction; }
+
+		void SetPosition(const Vector3& pos) { position = pos; }
+		void SetDirection(const Vector3& dir) { direction = dir; }
 	};
 #pragma endregion
 
@@ -252,11 +285,19 @@ namespace MelLib
 
 
 	//カプセル
-	struct CapsuleData
+	class CapsuleData
 	{
+	private:
 		Segment3DData segmentData;
-		
 		float r = 0.0f;
+
+	public:
+		Segment3DData GetSegment3DData()const { return segmentData; }
+		float GetRadius()const { return r; }
+
+		void SetSegment3DData(const Segment3DData& data) { segmentData = data; }
+		void SetRadius(const float radius) { r = radius; }
+
 	};
 
 #pragma endregion

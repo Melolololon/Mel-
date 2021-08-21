@@ -3,30 +3,25 @@
 
 using namespace MelLib;
 
-Value2<Vector3> MelLib::Segment3DData::GetRotatePosition()const
+void  MelLib::Segment3DData::CalcRotatePosition()
 {
-	Vector3 centerPos = GetCenterPosition();
+	Vector3 centerPos = LibMath::CalcCenterPosition3D(position.v1, position.v2);;
 	
 	//’†S‚ªŒ´“_‚É‚¢‚é‚Æ‚«‚ÌÀ•W‚Å‰ñ“]
-	Value2<Vector3> rotVector
+	rotatePosition = Value2<Vector3>
 		(
-			Quaternion::GetZXYRotateQuaternion(position[0] - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3(),
-			Quaternion::GetZXYRotateQuaternion(position[1] - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3()
+			Quaternion::GetZXYRotateQuaternion(position.v1 - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3(),
+			Quaternion::GetZXYRotateQuaternion(position.v2 - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3()
 		);
 
 	//ˆø‚¢‚½•ª–ß‚·
-	rotVector.v1 += centerPos;
-	rotVector.v2 += centerPos;
+	rotatePosition.v1 += centerPos;
+	rotatePosition.v2 += centerPos;
 
-	return rotVector;
 }
 
-Vector3 MelLib::Segment3DData::GetCenterPosition() const
+void MelLib::Segment3DData::SetAngle(const Vector3& angle)
 {
-	return LibMath::CalcCenterPosition3D(position[0], position[1]);
-}
-
-float MelLib::Segment3DData::GetPositionDistance() const
-{
-	return LibMath::CalcDistance3D(position[0], position[1]);
+	this->angle = angle;
+	CalcRotatePosition();
 }

@@ -201,8 +201,8 @@ void MelLib::GameObject::SetCollisionCheckModelData()
 
 		//‰~’Œ
 		capsuleModelObjects[2][i].SetScale
-		(Vector3(capsuleData[i].r * 2, capsuleData[i].segmentData.GetPositionDistance(), capsuleData[i].r * 2));
-		capsuleModelObjects[2][i].SetPosition(capsuleData[i].segmentData.GetCenterPosition());
+		(Vector3(capsuleData[i].r * 2, capsuleData[i].segmentData.CalcPositionDistance(), capsuleData[i].r * 2));
+		capsuleModelObjects[2][i].SetPosition(capsuleData[i].segmentData.CalcCenterPosition());
 		capsuleModelObjects[2][i].SetAngle(capsuleData[i].segmentData.angle);
 	}
 
