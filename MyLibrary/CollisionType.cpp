@@ -25,3 +25,59 @@ void MelLib::Segment3DData::SetAngle(const Vector3& angle)
 	this->angle = angle;
 	CalcRotatePosition();
 }
+
+
+
+
+void MelLib::BoardData::SetSize(const Vector2& size)
+{
+	Vector2 preSize = this->size;
+	this->size = size;
+
+	
+	//前との差分を求めて、座標を移動させる
+	//差の大きさ分、中心方向の逆にlength分移動(lengthが-だったら中心に近づく)
+	//lengthだとマイナス入らない
+
+	//差(マイナスあり)を求める
+	Vector2 curSubPre = size - preSize;
+	Vector3 pos = position;
+
+	/// <summary>
+	/// サイズを適応させるラムダ式
+	/// </summary>
+	/// <param name="size"></param>
+	auto calcMovePos = [&curSubPre,&pos](const Vector3& dirPos)
+	{
+		Vector3 posToDirPos = LibMath::OtherVector(pos, dirPos);
+		Vector3 returnPos;
+
+		//差のX分移動
+		returnPos = LibMath::FloatDistanceMoveVector3(dirPos, posToDirPos.x, curSubPre.x);
+		//差のY分移動
+		returnPos = LibMath::FloatDistanceMoveVector3(returnPos, posToDirPos.y, curSubPre.y);
+
+		return returnPos;
+	};
+
+	//サイズ分拡縮
+	leftDownPos = calcMovePos(leftDownPos);
+	leftUpPos = calcMovePos(leftUpPos);
+	rightDownPos = calcMovePos(rightDownPos);
+	rightUpPos = calcMovePos(rightUpPos);
+
+}
+
+void MelLib::BoardData::SetAngle(const Vector3& angle)
+{
+	this->angle = angle;
+
+	//回転
+	normal = Quaternion::GetZXYRotateQuaternion(normal, angle).ToVector3();
+	leftDownPos = Quaternion::GetZXYRotateQuaternion(leftDownPos, angle).ToVector3();
+	leftUpPos = Quaternion::GetZXYRotateQuaternion(leftDownPos, angle).ToVector3();
+	rightDownPos = Quaternion::GetZXYRotateQuaternion(leftDownPos, angle).ToVector3();
+	rightUpPos = Quaternion::GetZXYRotateQuaternion(leftDownPos, angle).ToVector3();
+
+
+}

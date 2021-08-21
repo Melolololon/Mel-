@@ -627,15 +627,6 @@ Vector3 LibMath::RotateVector3(const Vector3& rotateV, const Vector3& vec, const
 	return { q.x, q.y, q.z };
 }
 
-Vector3 LibMath::FloatDistanceMoveVector3
-(
-	const Vector3& pos, 
-	const Vector3& vector, 
-	const float distance
-)
-{
-	return pos + vector * distance;
-}
 
 
 #pragma endregion

@@ -197,27 +197,43 @@ namespace MelLib
 
 #pragma region 板
 
+	struct BoardCalcResult
+	{
+		Vector3 lineSegment3DHitPos;
+	};
 
 	//板
-	struct BoardData
+	//板の判定。未回転時は、0,0,1の方向を向きます。
+	class BoardData
 	{
-
+	private:
 		Vector3 position;
 		Vector2 size;
 		Vector3 angle;
+		BoardCalcResult result;
 
-		Vector3 normal;
+		Vector3 normal = Vector3(0, 0, -1);
 		Vector3 leftDownPos;
 		Vector3 leftUpPos;
 		Vector3 rightUpPos;
 		Vector3 rightDownPos;
 
+	public:
+		Vector3 GetPosition()const { return position; }
+		Vector2 GetSize()const { return size; }
+		Vector3 GetAngle()const { return angle; }
+		BoardCalcResult GetCalcResult()const { return result; }
+
+		Vector3 GetNormal()const { return normal; }
+		//左下、左上、右下、右上の順で格納されている
+		Value4<Vector3>GetVertexPosition()const { Value4<Vector3>(leftDownPos, leftUpPos, rightDownPos, rightUpPos); }
+
+
+		void SetPosition(const Vector3& pos) { position = pos; }
+		void SetSize(const Vector2& size);
+		void SetAngle(const Vector3& angle);
 	};
 
-	struct BoardCalcResult
-	{
-		Vector3 lineSegment3DHitPos;
-	};
 
 #pragma endregion
 

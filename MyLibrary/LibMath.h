@@ -285,7 +285,10 @@ namespace MelLib
 		/// <param name="vector"></param>
 		/// <param name="distance"></param>
 		/// <returns></returns>
-		static Vector3 FloatDistanceMoveVector3(const Vector3& pos, const Vector3& vector, const float distance);
+		static Vector3 FloatDistanceMoveVector3(const Vector3& pos, const Vector3& vector, const float distance)
+		{
+			return pos + vector * distance;
+		}
 #pragma endregion
 
 
