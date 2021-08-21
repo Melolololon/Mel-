@@ -535,7 +535,19 @@ bool Collision::BoardAndLineSegment3D
 	Segment3DCalcResult* lineSegmentCalcResult
 )
 {
+	//Vector2 halfSize = board.size / 2;
 
+	////ç¿ïWÇãÅÇﬂÇÈ
+	//Vector3 leftDownPos = board.position + Vector3(-halfSize.x, -halfSize.y, 0);
+	//Vector3 leftUpPos = board.position + Vector3(-halfSize.x, halfSize.y, 0);
+	//Vector3 rightUpPos = board.position + Vector3(halfSize.x, halfSize.y, 0);
+	//Vector3 rightDownPos = board.position + Vector3(halfSize.x, -halfSize.y, 0);
+
+	////âÒì]
+	//leftDownPos = Quaternion::GetZXYRotateQuaternion(leftDownPos, board.angle).ToVector3();
+	//leftUpPos = Quaternion::GetZXYRotateQuaternion(leftUpPos, board.angle).ToVector3();
+	//rightUpPos = Quaternion::GetZXYRotateQuaternion(rightUpPos, board.angle).ToVector3();
+	//rightDownPos = Quaternion::GetZXYRotateQuaternion(rightDownPos, board.angle).ToVector3();
 
 	Vector3 v1;
 	Vector3 v2;

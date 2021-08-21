@@ -177,8 +177,12 @@ namespace MelLib
 	//”Â
 	struct BoardData
 	{
-		Vector3 normal;
+
 		Vector3 position;
+		Vector2 size;
+		Vector3 angle;
+
+		Vector3 normal;
 		Vector3 leftDownPos;
 		Vector3 leftUpPos;
 		Vector3 rightUpPos;
