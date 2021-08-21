@@ -145,10 +145,15 @@ bool Collision::BoxAndBox
 	BoxCalcResult* boxCalcResult2
 )
 {
-	Vector3 minPos1 = box1.position - box1.size / 2;
-	Vector3 maxPos1 = box1.position + box1.size / 2;
-	Vector3 minPos2 = box2.position - box2.size / 2;
-	Vector3 maxPos2 = box2.position + box2.size / 2;
+	Vector3 box1Pos = box1.GetPosition();
+	Vector3 box1Size = box1.GetPosition();
+	Vector3 box2Pos = box2.GetPosition();
+	Vector3 box2Size = box2.GetPosition();
+
+	Vector3 minPos1 = box1Pos - box1Size / 2;
+	Vector3 maxPos1 = box1Pos + box1Size / 2;
+	Vector3 minPos2 = box2Pos - box2Size / 2;
+	Vector3 maxPos2 = box2Pos + box2Size / 2;
 	bool isHit = false;
 
 	//1か2のminかmaxがXYZ全部相手の範囲内だったら当たってる
@@ -203,21 +208,21 @@ bool Collision::BoxAndBox
 		//3 Zが多い
 		char top = 0;
 		//対象へのベクトル
-		Vector3 targetToVector = box2.position - box1.position;
+		Vector3 targetToVector = box2Pos - box1Pos;
 
 		if (abs(targetToVector.x) > abs(targetToVector.y) &&
-			abs(targetToVector.x) > box2.size.x / 2)
+			abs(targetToVector.x) > box2Size.x / 2)
 		{
 			top = 1;
 			if (abs(targetToVector.z) > abs(targetToVector.x) &&
-				abs(targetToVector.z) > box2.size.z / 2)
+				abs(targetToVector.z) > box2Size.z / 2)
 				top = 3;
 		}
 		else
 		{
 			top = 2;
 			if (abs(targetToVector.z) > abs(targetToVector.y) &&
-				abs(targetToVector.z) > box2.size.z / 2)
+				abs(targetToVector.z) > box2Size.z / 2)
 				top = 3;
 		}
 
@@ -397,28 +402,28 @@ bool Collision::SphereAndBox
 {
 	float dir2 = 0.0f;
 
-	Vector3 minPos = box.position - box.size / 2;
-	Vector3 maxPos = box.position + box.size / 2;
+	Vector3 minPos = box.GetPosition() -box.GetSize() / 2;
+	Vector3 maxPos = box.GetPosition() +box.GetSize() / 2;
 
 	//x
-	if (sphere.position.x < minPos.x)
-		dir2 += (minPos.x - sphere.position.x) * (minPos.x - sphere.position.x);
-	if (sphere.position.x > maxPos.x)
-		dir2 += (sphere.position.x - maxPos.x) * (sphere.position.x - maxPos.x);
+	if (sphere.GetPosition().x < minPos.x)
+		dir2 += (minPos.x - sphere.GetPosition().x) * (minPos.x - sphere.GetPosition().x);
+	if (sphere.GetPosition().x > maxPos.x)
+		dir2 += (sphere.GetPosition().x - maxPos.x) * (sphere.GetPosition().x - maxPos.x);
 
 	//y
-	if (sphere.position.y < minPos.y)
-		dir2 += (minPos.y - sphere.position.y) * (minPos.y - sphere.position.y);
-	if (sphere.position.y > maxPos.y)
-		dir2 += (sphere.position.y - maxPos.y) * (sphere.position.y - maxPos.y);
+	if (sphere.GetPosition().y < minPos.y)
+		dir2 += (minPos.y - sphere.GetPosition().y) * (minPos.y - sphere.GetPosition().y);
+	if (sphere.GetPosition().y > maxPos.y)
+		dir2 += (sphere.GetPosition().y - maxPos.y) * (sphere.GetPosition().y - maxPos.y);
 
 	//z
-	if (sphere.position.z < minPos.z)
-		dir2 += (minPos.z - sphere.position.z) * (minPos.z - sphere.position.z);
-	if (sphere.position.z > maxPos.z)
-		dir2 += (sphere.position.z - maxPos.z) * (sphere.position.z - maxPos.z);
+	if (sphere.GetPosition().z < minPos.z)
+		dir2 += (minPos.z - sphere.GetPosition().z) * (minPos.z - sphere.GetPosition().z);
+	if (sphere.GetPosition().z > maxPos.z)
+		dir2 += (sphere.GetPosition().z - maxPos.z) * (sphere.GetPosition().z - maxPos.z);
 
-	bool isHit = dir2 < sphere.r * sphere.r;
+	bool isHit = dir2 < sphere.GetRadius() * sphere.GetRadius();
 
 	//どこに当たったかを返す
 	if (sphereCalcResult || boxCalcResult)
@@ -437,21 +442,21 @@ bool Collision::SphereAndBox
 		//3 Zが多い
 		char top = 0;
 		//ボックスへのベクトル
-		Vector3 sphereToVector = box.position - sphere.position;
+		Vector3 sphereToVector = box.GetPosition() - sphere.GetPosition();
 
 		if (abs(sphereToVector.x) > abs(sphereToVector.y) &&
-			abs(sphereToVector.x) > box.size.x / 2)
+			abs(sphereToVector.x) >box.GetSize().x / 2)
 		{
 			top = 1;
 			if (abs(sphereToVector.z) > abs(sphereToVector.x) &&
-				abs(sphereToVector.z) > box.size.z / 2)
+				abs(sphereToVector.z) >box.GetSize().z / 2)
 				top = 3;
 		}
 		else
 		{
 			top = 2;
 			if (abs(sphereToVector.z) > abs(sphereToVector.y) &&
-				abs(sphereToVector.z) > box.size.z / 2)
+				abs(sphereToVector.z) >box.GetSize().z / 2)
 				top = 3;
 		}
 

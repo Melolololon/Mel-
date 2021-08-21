@@ -154,22 +154,32 @@ namespace MelLib
 #pragma endregion
 
 #pragma region AABB
-
-
-	//” 
-	struct BoxData
-	{
-		Vector3 size;
-		Vector3 position;
-
-	};
-
 	struct BoxCalcResult
 	{
 
 		//‘ŠŽè‚ª‚Ç‚±‚É‚Ô‚Â‚©‚Á‚½‚©
 		BoxHitDirection boxHitDistance;
 	};
+
+	//” 
+	class BoxData
+	{
+	private:
+		Vector3 position;
+		Vector3 size;
+		BoxCalcResult result;
+
+	public:
+		Vector3 GetPosition()const{ return position; }
+		Vector3 GetSize()const { return size; }
+		BoxCalcResult GetCalcResult() { return result; }
+
+		void SetPosition(const Vector3& pos) { position = pos; }
+		void SetSize(const Vector3& size) { this->size = size; }
+
+	};
+
+
 
 #pragma endregion
 
