@@ -197,8 +197,8 @@ namespace MelLib
 		float distance = 0.0f;
 
 	public:
-		Vector3 GetNormal() { return normal; }
-		float GetDistance() { return distance; }
+		Vector3 GetNormal()const { return normal; }
+		float GetDistance()const { return distance; }
 
 		void SetNormal(const Vector3& normal) { this->normal = normal; }
 		void SetDistance(const float dis) { distance = dis; }
@@ -236,7 +236,7 @@ namespace MelLib
 
 		Vector3 GetNormal()const { return normal; }
 		//左下、左上、右下、右上の順で格納されている
-		Value4<Vector3>GetVertexPosition()const { Value4<Vector3>(leftDownPos, leftUpPos, rightDownPos, rightUpPos); }
+		Value4<Vector3>GetVertexPosition()const { return Value4<Vector3>(leftDownPos, leftUpPos, rightDownPos, rightUpPos); }
 
 
 		void SetPosition(const Vector3& pos) { position = pos; }
@@ -278,7 +278,7 @@ namespace MelLib
 		Vector3 GetAngle()const { return angle; }
 		Segment3DCalcResult GetCalcResult()const { return result; }
 
-		void SetPosition(const Vector3& pos) { position = pos; }
+		void SetPosition(const Value2<Vector3>& pos) { position = pos; }
 		void SetAngle(const Vector3& angle);
 
 	
@@ -320,6 +320,8 @@ namespace MelLib
 	public:
 		Segment3DData GetSegment3DData()const { return segmentData; }
 		float GetRadius()const { return r; }
+
+		Segment3DData& GetRefSegment3DData() { return segmentData; }
 
 		void SetSegment3DData(const Segment3DData& data) { segmentData = data; }
 		void SetRadius(const float radius) { r = radius; }

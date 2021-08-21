@@ -536,7 +536,7 @@ bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& ca
 	return sphereAndCupsuleDis < sphere.GetRadius();
 }
 
-bool Collision::BoardAndLineSegment3D
+bool Collision::BoardAndSegment3D
 (
 	const BoardData& board,
 	BoardCalcResult* boardCalcResult,

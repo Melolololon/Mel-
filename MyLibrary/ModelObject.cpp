@@ -548,8 +548,8 @@ void MelLib::ModelObject::MeshCat()
 
 	//ïΩñ èÓïÒ
 	PlaneData plane;
-	plane.distance = 0.0f;
-	plane.normal = 1.0f;
+	plane.SetDistance(0.0f);
+	plane.SetNormal(Vector3(1.0f, 0, 0));
 
 	//ÉXÉPÅ[Éã
 	Vector3 scale = modelConstDatas[0].scale;

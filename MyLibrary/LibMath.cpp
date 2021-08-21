@@ -544,10 +544,10 @@ char MelLib::LibMath::PointPlaneFrontBackCheck(const Vector3& point, const Plane
 {
 
 	//原点から法線方向に距離分動いた座標を求める。
-	Vector3 disPos = FloatDistanceMoveVector3(0, plane.normal, plane.distance);
+	Vector3 disPos = FloatDistanceMoveVector3(0, plane.GetNormal(), plane.GetDistance());
 
-	if (Vector3::Dot(point - disPos, plane.normal) > 0)return 1;
-	else if (Vector3::Dot(point - disPos, plane.normal) < 0)return -1;
+	if (Vector3::Dot(point - disPos, plane.GetNormal()) > 0)return 1;
+	else if (Vector3::Dot(point - disPos, plane.GetDistance()) < 0)return -1;
 	return 0;
 }
 

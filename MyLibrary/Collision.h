@@ -102,7 +102,7 @@ namespace MelLib
 		/// <returns>当たっていたらtrue</returns>
 		static bool SphereAndBox(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const BoxData& box, BoxCalcResult* boxCalcResult);
 
-		static bool SphereAndLineSegmrnt3D(const SphereData& sphere, const Segment3DData& lineSegment);
+		static bool SphereAndSegmrnt3D(const SphereData& sphere, const Segment3DData& lineSegment);
 
 		static bool SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule);
 
@@ -114,7 +114,7 @@ namespace MelLib
 		/// <param name="lineSegment">3Dの線分</param>
 		/// <param name="lineSegmentCalcResult">計算結果を入れる変数のポインタ</param>
 		/// <returns>当たっていたらtrue</returns>
-		static bool BoardAndLineSegment3D
+		static bool BoardAndSegment3D
 		(
 			const BoardData& board,
 			BoardCalcResult* boardCalcResult,

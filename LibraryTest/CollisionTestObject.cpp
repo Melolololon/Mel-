@@ -44,8 +44,10 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 
 	collisionFlag.capsule = true;
 	capsuleData.resize(1);
-	capsuleData[0].r = 3.0f;
-	capsuleData[0].segmentData.angle = 0;
+	/*capsuleData[0].r = 3.0f;
+	capsuleData[0].segmentData.angle = 0;*/
+	capsuleData[0].SetRadius(3.0f);
+
 	
 	/*collisionFlag.lineSegment = true;
 	lineSegmentData.resize(1);
@@ -73,9 +75,11 @@ void CollisionTestObject::Update()
 	}
 	model[0]->SetPosition(position);
 
-
-	capsuleData[0].segmentData.position[0] = position + MelLib::Vector3(0,3,0);
-	capsuleData[0].segmentData.position[1] = position + MelLib::Vector3(0, -3, 0);
+	
+	capsuleData[0].GetRefSegment3DData().
+		SetPosition(MelLib::Value2<MelLib::Vector3>
+			(position + MelLib::Vector3(0, 3, 0), position + MelLib::Vector3(0, -3, 0)));
+	
 	//capsuleData[0].angle = 0;
 	//capsuleData[0].length = 4.0f;
 	//capsuleData[0].position = position;
@@ -102,7 +106,8 @@ void CollisionTestObject::Update()
 	MelLib::Camera::Get()->SetRotatePoint(MelLib::Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(0);*/
 
-	capsuleData[0].segmentData.angle = angle;
+
+	capsuleData[0].GetRefSegment3DData().SetAngle(angle);
 
 	//model[0]->SetAngle(angle);
 	//model[1]->SetAngle(angle);*/
