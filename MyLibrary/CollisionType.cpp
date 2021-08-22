@@ -32,6 +32,7 @@ void MelLib::Segment3DData::SetPosition(const Value2<Vector3>& pos)
 
 void MelLib::Segment3DData::SetAngle(const Vector3& angle)
 {
+	if (this->angle == angle)return;
 	this->angle = angle;
 	CalcRotatePosition();
 }
@@ -93,6 +94,7 @@ void MelLib::BoardData::SetSize(const Vector2& size)
 
 void MelLib::BoardData::SetAngle(const Vector3& angle)
 {
+	if (this->angle == angle)return;
 	this->angle = angle;
 
 	//‰ñ“]

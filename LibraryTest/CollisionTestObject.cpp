@@ -97,8 +97,8 @@ void CollisionTestObject::Update()
 	//sphereData[0].position = position;
 	//boxData[0].position = position;
 	
-	if(MelLib::Input::KeyState(DIK_LEFT))angle.y += 3.0f;
-	if(MelLib::Input::KeyState(DIK_RIGHT))angle.y -= 3.0f;
+	if(MelLib::Input::KeyState(DIK_LEFT))angle.z += 3.0f;
+	if(MelLib::Input::KeyState(DIK_RIGHT))angle.z -= 3.0f;
 	if(MelLib::Input::KeyState(DIK_UP))angle.x += 3.0f;
 	if(MelLib::Input::KeyState(DIK_DOWN))angle.x -= 3.0f;
 	/*MelLib::Camera::Get()->SetAngle(angle);
