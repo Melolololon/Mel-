@@ -46,11 +46,7 @@ namespace MelLib
 		std::array<std::vector<ModelObject>, 3>capsuleModelObjects;
 #endif // _DEBUG
 
-		//判定計算結果
-		std::vector<SphereCalcResult> sphereCalcResult;
-		std::vector<BoxCalcResult> boxCalcResult;
-		std::vector<Segment3DCalcResult> lineSegmentCalcResult;
-		std::vector<BoardCalcResult>boardCalcResult;
+		
 
 
 	protected:
@@ -83,7 +79,7 @@ namespace MelLib
 		std::vector<BoxData> boxData;
 
 
-		std::vector<Segment3DData> lineSegmentData;
+		std::vector<Segment3DData> segment3DData;
 
 		std::vector<RayData> layData;
 		std::vector<PlaneData>planeData;
@@ -179,32 +175,24 @@ namespace MelLib
 		CollisionDetectionFlag GetCollisionFlag() { return collisionFlag; }
 		std::vector<SphereData> GetSphereData() { return sphereData; }
 		std::vector<BoxData> GetBoxData() { return boxData; }
-		std::vector<Segment3DData> GetSegmentData() { return lineSegmentData; }
+		std::vector<Segment3DData> GetSegmentData() { return segment3DData; }
 		std::vector<PlaneData> GetPlaneData() { return planeData; }
 		std::vector<BoardData> GetBoardData() { return boardData; }
 		std::vector<CapsuleData>GetCapsuleData() { return capsuleData; }
 
 		//ここ参照取得じゃなくてSetにする?
 		//そもそも持たせない。Hit関数で渡す
-		std::vector<SphereCalcResult> GetSphereCalcResult()const { return sphereCalcResult; }
-		std::vector<BoxCalcResult> GetBoxCalcResult()const { return boxCalcResult; }
-		std::vector<Segment3DCalcResult> GetSegmentCalcResult()const { return lineSegmentCalcResult; }
-		std::vector<BoardCalcResult> GetBoardCalcResult()const { return boardCalcResult; }
-
-		void SetSphereCalcResult(const SphereCalcResult& result,const UINT index) { sphereCalcResult[index] = result; }
-		void SetBoxCalcResult(const BoxCalcResult& result, const UINT index) { boxCalcResult[index] = result; }
-		void SetSegmentCalcResult(const Segment3DCalcResult& result, const UINT index) { lineSegmentCalcResult[index] = result; }
-		void SetBoardCalcResult(const BoardCalcResult& result, const UINT index) { boardCalcResult[index] = result; }
+		void SetSphereCalcResult(const SphereCalcResult& result, const UINT index) { sphereData[index].SetCalcResult(result); }
+		void SetBoxCalcResult(const BoxCalcResult& result, const UINT index) { boxData[index].SetCalcResult(result); }
+		void SetSegmentCalcResult(const Segment3DCalcResult& result, const UINT index) { segment3DData[index].SetCalcResult(result); }
+		void SetBoardCalcResult(const BoardCalcResult& result, const UINT index) { boardData[index].SetCalcResult(result); }
 
 		//Vector3& GetLineSegmentHitPosition(const int num);
 		//Vector3& GetBoardHitPosition(const int num);
 		//BoxHitDirection& GetSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }
 		//BoxHitDirection& GetBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
 
-		/// <summary>
-		/// 衝突判定に使用するデータ(○○Data)と計算結果を入れる変数(○○CalcResult)のサイズを同じにします。
-		/// </summary>
-		void ResizeCalcResult();
+
 
 #ifdef _DEBUG
 		static void CreateCollisionCheckModelPipelineState();

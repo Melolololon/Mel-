@@ -84,13 +84,7 @@ void GameObject::CalcMovePhysics()
 	position += velocity;
 }
 
-void MelLib::GameObject::ResizeCalcResult()
-{
-	if (sphereData.size() != sphereCalcResult.size()) sphereCalcResult.resize(sphereData.size());
-	if (boxData.size() != boxCalcResult.size()) boxCalcResult.resize(boxData.size());
-	if (lineSegmentData.size() != lineSegmentCalcResult.size()) lineSegmentCalcResult.resize(lineSegmentData.size());
-	if (boardData.size() != boardCalcResult.size()) boardCalcResult.resize(boardData.size());
-}
+
 #ifdef _DEBUG
 
 

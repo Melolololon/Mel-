@@ -50,7 +50,7 @@ void GameObjectManager::Update()
 	for (auto& obj : objects) 
 	{
 		if (obj->GetCalcPhysicsFlag())obj->CalcMovePhysics();
-		obj->ResizeCalcResult();
+	
 		obj->Update();
 		
 	}
@@ -61,7 +61,6 @@ void GameObjectManager::Update()
 		for (auto& a : addObjects) 
 		{
 
-			a->ResizeCalcResult();
 			a.get()->Update();
 			objects.push_back(a);
 		}
@@ -82,7 +81,6 @@ void GameObjectManager::Update()
 	std::vector<CollisionDetectionFlag>collisionFlags(objectSize);
 	for (int i = 0; i < objectSize; i++)
 	{
-		objects[i]->ResizeCalcResult();
 		collisionFlags[i] = objects[i]->GetCollisionFlag();
 
 

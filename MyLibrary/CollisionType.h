@@ -148,6 +148,7 @@ namespace MelLib
 
 		void SetPosition(const Vector3& pos) { position = pos; }
 		void SetRadius(const float radius) { r = radius; }
+		void SetCalcResult(const SphereCalcResult& result) { this->result = result; }
 	};
 
 
@@ -176,7 +177,7 @@ namespace MelLib
 
 		void SetPosition(const Vector3& pos) { position = pos; }
 		void SetSize(const Vector3& size) { this->size = size; }
-
+		void SetCalcResult(const BoxCalcResult& result) { this->result = result; }
 	};
 
 
@@ -242,6 +243,7 @@ namespace MelLib
 		void SetPosition(const Vector3& pos);
 		void SetSize(const Vector2& size);
 		void SetAngle(const Vector3& angle);
+		void SetCalcResult(const BoardCalcResult& result) { this->result = result; }
 	};
 
 
@@ -280,7 +282,7 @@ namespace MelLib
 
 		void SetPosition(const Value2<Vector3>& pos);
 		void SetAngle(const Vector3& angle);
-
+		void SetCalcResult(const Segment3DCalcResult& result) { this->result = result; }
 	
 	};
 
