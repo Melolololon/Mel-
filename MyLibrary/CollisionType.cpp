@@ -20,6 +20,16 @@ void  MelLib::Segment3DData::CalcRotatePosition()
 
 }
 
+void MelLib::Segment3DData::SetPosition(const Value2<Vector3>& pos)
+{
+	Value2<Vector3> prePos = position;
+	position = pos;
+
+
+	Value2<Vector3>posSubPre = pos - prePos;
+	rotatePosition += posSubPre;
+}
+
 void MelLib::Segment3DData::SetAngle(const Vector3& angle)
 {
 	this->angle = angle;
@@ -28,6 +38,19 @@ void MelLib::Segment3DData::SetAngle(const Vector3& angle)
 
 
 
+
+void MelLib::BoardData::SetPosition(const Vector3& pos)
+{
+	Vector3 prePos = position;
+	position = pos;
+
+	Vector3 posSubPre = pos - prePos;
+
+	leftDownPos += posSubPre;
+	leftUpPos += posSubPre;
+	rightUpPos += posSubPre;
+	rightDownPos += posSubPre;
+}
 
 void MelLib::BoardData::SetSize(const Vector2& size)
 {

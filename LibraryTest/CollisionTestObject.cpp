@@ -78,7 +78,7 @@ void CollisionTestObject::Update()
 	
 	capsuleData[0].GetRefSegment3DData().
 		SetPosition(MelLib::Value2<MelLib::Vector3>
-			(position + MelLib::Vector3(0, 3, 0), position + MelLib::Vector3(0, -3, 0)));
+			(position + MelLib::Vector3(0, 7, 0), position + MelLib::Vector3(0, -7, 0)));
 	
 	//capsuleData[0].angle = 0;
 	//capsuleData[0].length = 4.0f;

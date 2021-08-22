@@ -13,11 +13,33 @@ namespace MelLib
 		Value2(const V v1, const V v2) :v1(v1), v2(v2)
 		{}
 
-		Value2<V> operator+(const Value2<V>& value) { return Value2(v1 + value.v1, v2 + value.v2); }
-		Value2<V> operator-(const Value2<V>& value) { return Value2(v1 - value.v1, v2 - value.v2); }
-		Value2<V> operator*(const Value2<V>& value) { return Value2(v1 * value.v1, v2 * value.v2); }
-		Value2<V> operator/(const Value2<V>& value) { return Value2(v1 / value.v1, v2 / value.v2); }
-		Value2<V> operator%(const Value2<V>& value) { return Value2(v1 % value.v1, v2 % value.v2); }
+		Value2<V> operator+(const Value2<V>& value)const { return Value2(v1 + value.v1, v2 + value.v2); }
+		Value2<V> operator-(const Value2<V>& value)const { return Value2(v1 - value.v1, v2 - value.v2); }
+		Value2<V> operator*(const Value2<V>& value)const { return Value2(v1 * value.v1, v2 * value.v2); }
+		Value2<V> operator/(const Value2<V>& value)const { return Value2(v1 / value.v1, v2 / value.v2); }
+		Value2<V> operator%(const Value2<V>& value)const { return Value2(v1 % value.v1, v2 % value.v2); }
+
+
+		void operator+= (const Value2<V>& vector)
+		{
+			v1 += vector.v1;
+			v2 += vector.v2;
+		}
+		void operator-= (const Value2<V>& vector)
+		{
+			v1 -= vector.v1;
+			v2 -= vector.v2;
+		}
+		void operator*= (const Value2<V>& vector)
+		{
+			v1 *= vector.v1;
+			v2 *= vector.v2;
+		}
+		void operator/= (const Value2<V>& vector)
+		{
+			v1 /= vector.v1;
+			v2 /= vector.v2;
+		}
 
 		void operator=(const Value2<V> value)
 		{

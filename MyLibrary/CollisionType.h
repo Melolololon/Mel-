@@ -239,7 +239,7 @@ namespace MelLib
 		Value4<Vector3>GetVertexPosition()const { return Value4<Vector3>(leftDownPos, leftUpPos, rightDownPos, rightUpPos); }
 
 
-		void SetPosition(const Vector3& pos) { position = pos; }
+		void SetPosition(const Vector3& pos);
 		void SetSize(const Vector2& size);
 		void SetAngle(const Vector3& angle);
 	};
@@ -278,7 +278,7 @@ namespace MelLib
 		Vector3 GetAngle()const { return angle; }
 		Segment3DCalcResult GetCalcResult()const { return result; }
 
-		void SetPosition(const Value2<Vector3>& pos) { position = pos; }
+		void SetPosition(const Value2<Vector3>& pos);
 		void SetAngle(const Vector3& angle);
 
 	
