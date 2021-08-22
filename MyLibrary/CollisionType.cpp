@@ -1,23 +1,34 @@
 #include"CollisionType.h"
 #include"LibMath.h"
+#include"Interpolation.h"
 
 using namespace MelLib;
 
 void  MelLib::Segment3DData::CalcRotatePosition()
 {
-	Vector3 centerPos = LibMath::CalcCenterPosition3D(position.v1, position.v2);;
+	//Vector3 centerPos = LibMath::CalcCenterPosition3D(position.v1, position.v2);
+	//
+	////中心が原点にいるときの座標で回転
+	//rotatePosition = Value2<Vector3>
+	//	(
+	//		Quaternion::GetZXYRotateQuaternion(position.v1 - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3(),
+	//		Quaternion::GetZXYRotateQuaternion(position.v2 - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3()
+	//	);
+
+	////引いた分戻す
+	//rotatePosition.v1 += centerPos;
+	//rotatePosition.v2 += centerPos;
+
+	Vector3 v1ToV2 = Interpolation::Lerp(position.v1, position.v2, rotatePoint);
 	
-	//中心が原点にいるときの座標で回転
 	rotatePosition = Value2<Vector3>
 		(
-			Quaternion::GetZXYRotateQuaternion(position.v1 - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3(),
-			Quaternion::GetZXYRotateQuaternion(position.v2 - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3()
+			Quaternion::GetZXYRotateQuaternion(position.v1 - v1ToV2, Vector3(angle.x, angle.y, angle.z)).ToVector3(),
+			Quaternion::GetZXYRotateQuaternion(position.v2 - v1ToV2, Vector3(angle.x, angle.y, angle.z)).ToVector3()
 		);
-
-	//引いた分戻す
-	rotatePosition.v1 += centerPos;
-	rotatePosition.v2 += centerPos;
-
+	//戻す
+	rotatePosition.v1 += v1ToV2;
+	rotatePosition.v2 += v1ToV2;
 }
 
 void MelLib::Segment3DData::SetPosition(const Value2<Vector3>& pos)
@@ -36,7 +47,12 @@ void MelLib::Segment3DData::SetAngle(const Vector3& angle)
 	CalcRotatePosition();
 }
 
-
+void  MelLib::Segment3DData::SetRotatePoint(const float num)
+{
+	if (rotatePoint == num)return;
+	rotatePoint = num;
+	CalcRotatePosition();
+}
 
 
 void MelLib::BoardData::SetPosition(const Vector3& pos)

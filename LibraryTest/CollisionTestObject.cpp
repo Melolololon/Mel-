@@ -75,6 +75,8 @@ void CollisionTestObject::Update()
 	}
 	model[0]->SetPosition(position);
 
+	capsuleData[0].GetRefSegment3DData().SetRotatePoint(1.0f);
+
 	if (inputFlag)
 	{
 		capsuleData[0].GetRefSegment3DData().

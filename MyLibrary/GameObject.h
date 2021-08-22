@@ -43,7 +43,7 @@ namespace MelLib
 
 		//カプセル引き伸ばすと形崩れるから、球と円柱組み合わせて表示したほうがいいかも
 		//判定のデータの変数は今のまま(角度消すと円柱を組み合わせるのが大変になる)
-		std::array<std::vector<ModelObject>, 3>capsuleModelObjects;
+		std::array<std::vector<ModelObject>, 2>capsuleModelObjects;
 #endif // _DEBUG
 
 		

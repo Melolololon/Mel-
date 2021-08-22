@@ -182,6 +182,7 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionType.cpp" />
     <ClCompile Include="Counter.cpp" />
+    <ClCompile Include="Interpolation.cpp" />
     <ClCompile Include="Limit.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Physics.cpp" />
@@ -450,6 +451,7 @@
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Counter.h" />
+    <ClInclude Include="Interpolation.h" />
     <ClInclude Include="Limit.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Physics.h" />
