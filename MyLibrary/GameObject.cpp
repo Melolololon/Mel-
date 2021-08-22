@@ -196,7 +196,7 @@ void MelLib::GameObject::SetCollisionCheckModelData()
 
 		//‰~’Œ
 		Value2<Vector3>segmentPos = capsuleData[i].GetSegment3DData().GetRotatePosition();
-		float segmentLength = (segmentPos.v1 - segmentPos.v2).Length();
+		float segmentLength = (segmentPos.v1.y - segmentPos.v2.y);
 
 		capsuleModelObjects[2][i].SetScale
 		(Vector3(capsuleData[i].GetRadius() * 2, segmentLength, capsuleData[i].GetRadius() * 2));

@@ -75,11 +75,18 @@ void CollisionTestObject::Update()
 	}
 	model[0]->SetPosition(position);
 
-	
-	capsuleData[0].GetRefSegment3DData().
-		SetPosition(MelLib::Value2<MelLib::Vector3>
-			(position + MelLib::Vector3(0, 7, 0), position + MelLib::Vector3(0, -7, 0)));
-	
+	if (inputFlag)
+	{
+		capsuleData[0].GetRefSegment3DData().
+			SetPosition(MelLib::Value2<MelLib::Vector3>
+				(position + MelLib::Vector3(0, 7, 0), MelLib::Vector3(0, -7, 0)));
+	}
+	else
+	{
+		capsuleData[0].GetRefSegment3DData().
+			SetPosition(MelLib::Value2<MelLib::Vector3>
+				(position + MelLib::Vector3(0, 7, 0), position + MelLib::Vector3(0, -7, 0)));
+	}
 	//capsuleData[0].angle = 0;
 	//capsuleData[0].length = 4.0f;
 	//capsuleData[0].position = position;

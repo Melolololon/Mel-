@@ -25,9 +25,8 @@ void MelLib::Segment3DData::SetPosition(const Value2<Vector3>& pos)
 	Value2<Vector3> prePos = position;
 	position = pos;
 
-
-	Value2<Vector3>posSubPre = pos - prePos;
-	rotatePosition += posSubPre;
+	if (position == prePos)return;
+	CalcRotatePosition();
 }
 
 void MelLib::Segment3DData::SetAngle(const Vector3& angle)
