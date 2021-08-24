@@ -574,11 +574,18 @@ void MelLib::ModelObject::MeshCat()
 
 	//四角形の頂点とインデックス取得
 	std::vector<Vector3>modelVertices = pModelData->GetVerticesPosition()[0];
+	for (auto& v : modelVertices)v *= scale;
+	
 	std::vector<USHORT>modelIndices = pModelData->GetIndices()[0];
 	
 	//分割後の結果格納用配列
 	std::vector<Vector3>modelVerticesFront = modelVertices;
+	
 	std::vector<Vector3>modelVerticesBack = modelVertices;
+
+	
+	//テスト
+	float f = Vector3::Dot(hitLine[0].v1, 0);
 
 
 	//分離(モデルを2つに分ける処理)

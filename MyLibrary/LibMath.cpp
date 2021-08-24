@@ -547,7 +547,7 @@ char MelLib::LibMath::PointPlaneFrontBackCheck(const Vector3& point, const Plane
 	Vector3 disPos = FloatDistanceMoveVector3(0, plane.GetNormal(), plane.GetDistance());
 
 	if (Vector3::Dot(point - disPos, plane.GetNormal()) > 0)return 1;
-	else if (Vector3::Dot(point - disPos, plane.GetDistance()) < 0)return -1;
+	else if (Vector3::Dot(point - disPos, plane.GetNormal()) < 0)return -1;
 	return 0;
 }
 
