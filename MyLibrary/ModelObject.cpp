@@ -737,6 +737,9 @@ void ModelObject::SetScale(const Vector3& scale)
 	for (int i = 0; i < modelFileObjectNum; i++)
 	{
 		modelConstDatas[i].scale = scale.ToXMFLOAT3();
+		if (modelConstDatas[i].scale.x == 0.0f)modelConstDatas[i].scale.x = 0.0001f;
+		if (modelConstDatas[i].scale.y == 0.0f)modelConstDatas[i].scale.y = 0.0001f;
+		if (modelConstDatas[i].scale.z == 0.0f)modelConstDatas[i].scale.z = 0.0001f;
 	}
 }
 
