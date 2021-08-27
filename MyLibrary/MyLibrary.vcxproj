@@ -452,6 +452,7 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Counter.h" />
     <ClInclude Include="Interpolation.h" />
+    <ClInclude Include="LibraryEnum.h" />
     <ClInclude Include="Limit.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Physics.h" />

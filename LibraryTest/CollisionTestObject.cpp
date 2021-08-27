@@ -120,11 +120,23 @@ void CollisionTestObject::Update()
 
 	//model[0]->SetAngle(angle);
 	//model[1]->SetAngle(angle);*/
+
+	model[0]->SetScale(MelLib::Vector3(9, 9, 9));
+	if(MelLib::Input::KeyState(DIK_F))
+	{
+
+		model[0]->SetScale(MelLib::Vector3(9, 9, 0));
+	}
+	if (MelLib::Input::KeyState(DIK_G))
+	{
+
+		model[0]->SetScale(MelLib::Vector3(9, 9, 0.0001));
+	}
 }
 
 void CollisionTestObject::Draw()
 {
-	//model[0]->Draw();
+	model[0]->Draw();
 	//model[1]->Draw();
 
 	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");

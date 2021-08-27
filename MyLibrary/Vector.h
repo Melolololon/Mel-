@@ -1,6 +1,8 @@
 #pragma once
 #include<DirectXMath.h>
+#include<vector>
 #include"Quaternion.h"
+#include"LibraryEnum.h";
 
 namespace MelLib
 {
@@ -129,6 +131,7 @@ namespace MelLib
 		bool operator==(const Vector3& vector) const;
 		bool operator!=(const Vector3& vector)const;
 
+
 		void operator++();
 		void operator--();
 
@@ -150,6 +153,18 @@ namespace MelLib
 
 		Vector3 Abs()const;
 		static Vector3 Abs(const Vector3& vector);
+		
+		/// <summary>
+		/// ソートをします。
+		/// </summary>
+		/// <param name="vectors">ソートするVector3の配列</param>
+		/// <param name="standardVec">ソートの基準となる値</param>
+		/// <param name="type ">ソートタイプ</param>
+		/// <returns></returns>
+		static std::vector<Vector3>Sort(const std::vector<Vector3>& vectors,const Vector3& standardVec, const SortType type);
+
+
+
 #pragma endregion
 	};
 #pragma region 演算子

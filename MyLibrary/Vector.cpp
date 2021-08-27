@@ -1,4 +1,6 @@
 #include"Vector.h"
+#include<algorithm>
+#include<tuple>
 
 using namespace MelLib;
 
@@ -507,6 +509,58 @@ Vector3 Vector3::Abs()const
 Vector3 Vector3::Abs(const Vector3& vector)
 {
 	return vector.Abs();
+}
+
+std::vector<Vector3> MelLib::Vector3::Sort(const std::vector<Vector3>& vectors, const Vector3& standardVec, const SortType type)
+{
+	size_t vecNum = vectors.size();
+	std::vector<std::tuple<Vector3,float>>sortVectors(vecNum);
+	
+	for (int i = 0; i < vecNum; i++)
+	{	
+		Vector3 diff = (standardVec - vectors[i]).Abs();
+		sortVectors[i] = std::make_tuple(diff, diff.Length());
+		//std::get<1>(v)
+	}
+
+	if (type == SortType::ASCENDING)
+	{
+		std::sort(sortVectors.begin(), sortVectors.end(),
+			[](const std::tuple<Vector3, float>& t1, const std::tuple<Vector3, float>& t2)
+		{
+			return std::get<1>(t1) < std::get<1>(t2);
+		});
+	}
+	else
+	{
+		std::sort(sortVectors.begin(), sortVectors.end(),
+			[](const std::tuple<Vector3, float>& t1, const std::tuple<Vector3, float>& t2)
+		{
+			return std::get<1>(t1) > std::get<1>(t2);
+		});
+	}
+
+	std::vector<Vector3>returnVectors(vecNum);
+	for (int i = 0; i < vecNum; i++)
+	{
+		returnVectors[i] = std::get<0>(sortVectors[i]);
+	}
+
+	return returnVectors;
+
+	//auto vecSort = [&type,&standardVec](const Vector3& v1, const Vector3& v2)
+	//{
+	//	Vector3 diff1 = (standardVec - v1).Abs();
+	//	float sum1 = diff1.x + diff1.y + diff1.z;
+
+	//	Vector3 diff2 = (standardVec - v2).Abs();
+	//	float sum2 = diff2.x + diff2.y + diff2.z;
+
+	//	if (type == SortType::ASCENDING)return sum1 < sum2;
+	//	return sum1 > sum2;
+
+	//};
+
 }
 
 

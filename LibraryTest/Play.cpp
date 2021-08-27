@@ -8,6 +8,7 @@
 #include"TextureFont.h"
 #include"DirectionalLight.h"
 #include"Input.h"
+#include"LibMath.h"
 
 Play::Play(){}
 
@@ -17,6 +18,10 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
+
+	MelLib::Vector3 n = MelLib::LibMath::CalcNormal(1, 1, MelLib::Vector3(5, 0, 0));
+
+
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, -30));
 
 	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<CollisionTestObject>(0,true));
@@ -49,7 +54,6 @@ void Play::Update()
 	{
 		MelLib::DirectionalLight::Get("test").SetDirection(MelLib::Vector3(0, 0, 0));
 	}*/
-
 	if (MelLib::Input::KeyState(DIK_Q))scale -= 0.05;
 	if (MelLib::Input::KeyState(DIK_E))scale += 0.05;
 	sprite2DTest->SetScale(scale);

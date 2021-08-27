@@ -14,6 +14,8 @@ namespace MelLib
 
 	class Library
 	{
+
+
 	private:
 		Library() {}
 		~Library() {}

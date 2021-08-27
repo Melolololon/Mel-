@@ -358,6 +358,8 @@ namespace MelLib
 	
 		std::vector<std::array<float, 6>>GetDirectionMaxPosition() const{ return directionMaxPos; }
 
+		std::vector<std::vector<FbxVertex>>GetVertices()const { return vertices; }
+
 		/// <summary>
 		/// モデルの頂点座標を取得します。
 		/// </summary>
