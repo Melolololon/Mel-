@@ -1,6 +1,7 @@
 #include"LibMath.h"
 #include"DirectInput.h"
 
+#include"Interpolation.h"
 
 using namespace MelLib;
 
@@ -589,6 +590,68 @@ Vector2 LibMath::RotateVector2(const Vector2& v, const float& angle)
 {
 	Quaternion q = Quaternion::GetRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
 	return { q.x,q.y };
+}
+Vector2 MelLib::LibMath::RotateVector2Box(const Vector2& v, const float& angle)
+{
+	float rotAngle = angle;
+	int startNum = 0;
+
+	while(1)
+	{
+		if(rotAngle >= 90 && angle > 0)
+		{
+			rotAngle -= 90;
+			startNum++;
+
+			if (startNum == 4)startNum = 0;
+			
+		}
+		else if(rotAngle <= -90 && angle < 0)
+		{
+			rotAngle += 90;
+			startNum--;
+
+			if (startNum == -1)startNum = 3;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+
+	Vector2 startPos, endPos;
+	
+	
+	if(startNum == 0)
+	{
+		startPos = v;
+
+		if(angle > 0)endPos = RotateVector2(v, 90.0f);
+		else endPos = RotateVector2(v, -90.0f);
+	}
+	else if(startNum == 1)
+	{
+		startPos = RotateVector2(v, 90.0f);
+		endPos = RotateVector2(v, 180.0f);
+
+		endPos = RotateVector2(v, 180.0f);
+	
+	}
+	else if (startNum == 2)
+	{
+		startPos = RotateVector2(v, 180.0f);
+		if (angle > 0)endPos = RotateVector2(v, 270.0f);
+		else endPos = RotateVector2(v, -270.0f);
+	}
+	else if (startNum == 3)
+	{
+		startPos = RotateVector2(v, 270.0f);
+		endPos = v;
+	}
+
+	return  Interpolation::Lerp(startPos, endPos, rotAngle / 90.0f);
+
 }
 #pragma endregion
 

@@ -55,7 +55,7 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 
 
 
-	model[0]->MeshCat();
+	//model[0]->MeshCat();
 }
 
 void CollisionTestObject::Update()
@@ -115,8 +115,8 @@ void CollisionTestObject::Update()
 	MelLib::Camera::Get()->SetRotatePoint(MelLib::Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(0);*/
 
-
-	capsuleData[0].GetRefSegment3DData().SetAngle(angle);
+	model[0]->SetAngle(angle);
+	//capsuleData[0].GetRefSegment3DData().SetAngle(angle);
 
 	//model[0]->SetAngle(angle);
 	//model[1]->SetAngle(angle);*/

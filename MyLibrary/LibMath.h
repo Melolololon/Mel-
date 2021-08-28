@@ -231,6 +231,15 @@ namespace MelLib
 		/// <param name="angle"></param>
 		/// <returns></returns>
 		static Vector2 RotateVector2(const Vector2& v, const float& angle);
+
+		/// <summary>
+		/// 変数vと、それを90度、180度、270度回転させた座標で形成された四角形上で回転させた座標を返します。
+		/// </summary>
+		/// <param name="v"></param>
+		/// <param name="angle"></param>
+		/// <returns></returns>
+		static Vector2 RotateVector2Box(const Vector2& v, const float& angle);
+
 #pragma endregion
 
 #pragma region Vector3
