@@ -6,26 +6,26 @@ using namespace MelLib;
 
 void  MelLib::Segment3DData::CalcRotatePosition()
 {
-	//Vector3 centerPos = LibMath::CalcCenterPosition3D(position.v1, position.v2);
-	//
-	////íÜêSÇ™å¥ì_Ç…Ç¢ÇÈÇ∆Ç´ÇÃç¿ïWÇ≈âÒì]
-	//rotatePosition = Value2<Vector3>
-	//	(
-	//		Quaternion::GetZXYRotateQuaternion(position.v1 - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3(),
-	//		Quaternion::GetZXYRotateQuaternion(position.v2 - centerPos, Vector3(angle.x, angle.y, angle.z)).ToVector3()
-	//	);
-
-	////à¯Ç¢ÇΩï™ñﬂÇ∑
-	//rotatePosition.v1 += centerPos;
-	//rotatePosition.v2 += centerPos;
+	
 
 	Vector3 v1ToV2 = Interpolation::Lerp(position.v1, position.v2, rotatePoint);
 	
-	rotatePosition = Value2<Vector3>
-		(
-			Quaternion::GetZXYRotateQuaternion(position.v1 - v1ToV2, Vector3(angle.x, angle.y, angle.z)).ToVector3(),
-			Quaternion::GetZXYRotateQuaternion(position.v2 - v1ToV2, Vector3(angle.x, angle.y, angle.z)).ToVector3()
-		);
+	//rotatePosition = Value2<Vector3>
+	//	(
+	//		Quaternion::GetZXYRotateQuaternion(position.v1 - v1ToV2, Vector3(angle.x, angle.y, angle.z)).ToVector3(),
+	//		Quaternion::GetZXYRotateQuaternion(position.v2 - v1ToV2, Vector3(angle.x, angle.y, angle.z)).ToVector3()
+	//	);
+
+
+	rotatePosition.v1 = Quaternion::GetRotateQuaternion(position.v1 - v1ToV2, axisZVector, angle.z).ToVector3();
+	rotatePosition.v1 = Quaternion::GetRotateQuaternion(rotatePosition.v1, axisXVector, angle.x).ToVector3();
+	rotatePosition.v1 = Quaternion::GetRotateQuaternion(rotatePosition.v1, axisYVector, angle.y).ToVector3();
+
+
+	rotatePosition.v2 = Quaternion::GetRotateQuaternion(position.v2 - v1ToV2, axisZVector, angle.z).ToVector3();
+	rotatePosition.v2 = Quaternion::GetRotateQuaternion(rotatePosition.v2, axisXVector, angle.x).ToVector3();
+	rotatePosition.v2 = Quaternion::GetRotateQuaternion(rotatePosition.v2, axisYVector, angle.y).ToVector3();
+
 	//ñﬂÇ∑
 	rotatePosition.v1 += v1ToV2;
 	rotatePosition.v2 += v1ToV2;
@@ -52,6 +52,16 @@ void  MelLib::Segment3DData::SetRotatePoint(const float num)
 	if (rotatePoint == num)return;
 	rotatePoint = num;
 	CalcRotatePosition();
+}
+
+void MelLib::Segment3DData::SetAxisAngle(const Vector3& angle)
+{
+	if (axisAngle == angle)return;
+	axisAngle = angle;
+
+	axisXVector = Quaternion::GetZXYRotateQuaternion(Vector3(-1, 0, 0), angle).ToVector3().Normalize();
+	axisYVector = Quaternion::GetZXYRotateQuaternion(Vector3(0, -1, 0), angle).ToVector3().Normalize();
+	axisZVector = Quaternion::GetZXYRotateQuaternion(Vector3(0, 0, -1), angle).ToVector3().Normalize();
 }
 
 

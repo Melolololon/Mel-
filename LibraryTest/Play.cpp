@@ -18,10 +18,8 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
-	//ZXYŽ²Ž©‘Ì‚ð‰ñ“]‚³‚¹‚éŠÖ”ì‚é
 
-
-	MelLib::Vector2 n = MelLib::LibMath::RotateVector2Box(MelLib::Vector2(1, 0), -90);
+	MelLib::Vector3 n = MelLib::LibMath::RotateVector3(MelLib::Vector3(0, 1, 0), MelLib::Vector3(0.7, 0,0.7), 90);
 
 
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, -30));

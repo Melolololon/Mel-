@@ -266,10 +266,19 @@ namespace MelLib
 		//回転基準を決める変数(0.0fでv1基準、0.5fで中心、1.0fでv2基準)
 		float rotatePoint = 0.5f;
 
+		Vector3 axisAngle;
+
+
+		Vector3 axisXVector = MelLib::Vector3(-1, 0, 0);
+		Vector3 axisYVector = MelLib::Vector3(0, -1, 0);
+		Vector3 axisZVector = MelLib::Vector3(0, 0, -1);
+
 		//angleを適応させた座標
 		Value2<Vector3> rotatePosition;
 
 		Segment3DCalcResult result;
+
+		
 
 	private:
 		//angle適応させた角度をrotatePositionに代入する関数
@@ -291,6 +300,13 @@ namespace MelLib
 		/// </summary>
 		/// <param name="num">回転基準を決める数値(0.0fでv1基準、0.5fで中心、1.0fでv2基準)</param>
 		void SetRotatePoint(const float num);
+		
+		/// <summary>
+		/// 線分を回転させるのに使用するZXY軸自体の角度を設定します。
+		/// </summary>
+		/// <param name="angle"></param>
+		void SetAxisAngle(const Vector3& angle);
+		
 		void SetCalcResult(const Segment3DCalcResult& result) { this->result = result; }
 	
 	};
