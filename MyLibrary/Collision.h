@@ -121,6 +121,8 @@ namespace MelLib
 			const Segment3DData& lineSegment,
 			Segment3DCalcResult* lineSegmentCalcResult
 		);
+
+	
 #pragma endregion
 	};
 

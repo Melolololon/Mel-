@@ -153,6 +153,13 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 	//Sphere
 	createOrDeleteModel(sphereData.size(), sphereModelObjects, ShapeType3D::BOX);
 
+	//Board
+	createOrDeleteModel(boardModelObjects.size(), boardModelObjects, ShapeType3D::BOARD);
+
+	//Segment
+	createOrDeleteModel(segment3DData.size(), segmentModelObjects[0], ShapeType3D::BOX);
+	createOrDeleteModel(segment3DData.size(), segmentModelObjects[1], ShapeType3D::BOX);
+
 	//Capsule
 	//ãÖÇçÏê¨
 	createOrDeleteModel(capsuleData.size(), capsuleModelObjects[0], ShapeType3D::BOX);
@@ -178,6 +185,32 @@ void MelLib::GameObject::SetCollisionCheckModelData()
 		sphereModelObjects[i].SetScale(sphereData[i].GetRadius());
 		sphereModelObjects[i].SetPosition(sphereData[i].GetPosition());
 	}
+
+	//Board
+	dataNum = boardModelObjects.size();
+	for(size_t i = 0; i < dataNum;i++)
+	{
+		boardModelObjects[i].SetScale(boardData[i].GetSize().ToVector3());
+		boardModelObjects[i].SetAngle(boardData[i].GetAngle());
+		boardModelObjects[i].SetPosition(boardData[i].GetPosition());
+	}
+
+	//Segment
+	dataNum = segment3DData.size();
+	for (size_t i = 0; i < dataNum; i++)
+	{
+		Value2<Vector3>lineSegmentPos = segment3DData[i].GetRotatePosition();
+
+		segmentModelObjects[0][i].SetScale(1);
+		segmentModelObjects[0][i].SetPosition(lineSegmentPos.v1);
+		segmentModelObjects[0][i].SetAngle(segment3DData[i].GetAngle());
+
+		segmentModelObjects[1][i].SetScale(1);
+		segmentModelObjects[1][i].SetPosition(lineSegmentPos.v2);
+		segmentModelObjects[1][i].SetAngle(segment3DData[i].GetAngle());
+
+	}
+
 
 	//Capsule
 	dataNum = capsuleData.size();

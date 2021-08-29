@@ -40,10 +40,14 @@ namespace MelLib
 
 		std::vector<ModelObject>sphereModelObjects;
 		std::vector<ModelObject>boxModelObjects;
+		std::vector<ModelObject>boardModelObjects;
+		std::array<std::vector<ModelObject>, 2>segmentModelObjects;
 
 		//カプセル引き伸ばすと形崩れるから、球と円柱組み合わせて表示したほうがいいかも
 		//判定のデータの変数は今のまま(角度消すと円柱を組み合わせるのが大変になる)
 		std::array<std::vector<ModelObject>, 2>capsuleModelObjects;
+
+
 #endif // _DEBUG
 
 		
@@ -186,6 +190,8 @@ namespace MelLib
 		void SetBoxCalcResult(const BoxCalcResult& result, const UINT index) { boxData[index].SetCalcResult(result); }
 		void SetSegmentCalcResult(const Segment3DCalcResult& result, const UINT index) { segment3DData[index].SetCalcResult(result); }
 		void SetBoardCalcResult(const BoardCalcResult& result, const UINT index) { boardData[index].SetCalcResult(result); }
+		void SetCapsuleCalcResult(const Segment3DCalcResult& result, const UINT index)
+		{ capsuleData[index].GetRefSegment3DData().SetCalcResult(result); }
 
 		//Vector3& GetLineSegmentHitPosition(const int num);
 		//Vector3& GetBoardHitPosition(const int num);
