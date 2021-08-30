@@ -11,8 +11,8 @@ bool first = false;
 CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool inputMove) : inputFlag(inputMove)
 {
 
-	position = pos;
-	speed = 0.25f;
+	SetPosition(pos);
+	
 	model[0] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
 	model[1] = std::make_unique<MelLib::ModelObject>(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
 	model[0]->SetScale(9);
@@ -63,17 +63,17 @@ void CollisionTestObject::Update()
 	
 	hitFlag = false;
 
-	velocity = 0;
-
+	const float speed = 0.3f;
+	MelLib::Vector3 addPosition;
 	if (inputFlag) 
 	{
-		if (MelLib::Input::KeyState(DIK_W))velocity.y = 1.0f;
-		if (MelLib::Input::KeyState(DIK_S))velocity.y = -1.0f;
-		if (MelLib::Input::KeyState(DIK_D))velocity.x = 1.0f;
-		if (MelLib::Input::KeyState(DIK_A))velocity.x = -1.0f;
-		position += velocity * speed;
+		if (MelLib::Input::KeyState(DIK_W))addPosition.y = 1;
+		if (MelLib::Input::KeyState(DIK_S))addPosition.y = -1;
+		if (MelLib::Input::KeyState(DIK_D))addPosition.x = 1;
+		if (MelLib::Input::KeyState(DIK_A))addPosition.x = -1;
+		AddPosition(addPosition * speed);
 	}
-	model[0]->SetPosition(position);
+	model[0]->SetPosition(GetPosition());
 
 	capsuleData[0].GetRefSegment3DData().SetRotatePoint(1.0f);
 
@@ -81,13 +81,13 @@ void CollisionTestObject::Update()
 	{
 		capsuleData[0].GetRefSegment3DData().
 			SetPosition(MelLib::Value2<MelLib::Vector3>
-				(position + MelLib::Vector3(0, 7, 0), MelLib::Vector3(0, -7, 0)));
+				(GetPosition() + MelLib::Vector3(0, 7, 0), MelLib::Vector3(0, -7, 0)));
 	}
 	else
 	{
 		capsuleData[0].GetRefSegment3DData().
 			SetPosition(MelLib::Value2<MelLib::Vector3>
-				(position + MelLib::Vector3(0, 7, 0), position + MelLib::Vector3(0, -7, 0)));
+				(GetPosition() + MelLib::Vector3(0, 7, 0), GetPosition() + MelLib::Vector3(0, -7, 0)));
 	}
 	//capsuleData[0].angle = 0;
 	//capsuleData[0].length = 4.0f;

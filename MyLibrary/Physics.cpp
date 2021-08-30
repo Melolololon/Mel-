@@ -14,6 +14,24 @@ const float Physics::GRAVITATIONAL_ACCELERATION_NEPTUNE = 11.15f;
 const float Physics::GRAVITATIONAL_ACCELERATION_PLUTO = 0.62f;
 const float Physics::GRAVITATIONAL_ACCELERATION_MOON = 1.62f;
 
+Vector3 MelLib::Physics::CalcMoveResult
+(
+    Vector3& vel,
+    Vector3& acc,
+    const Vector3& force,
+    const float mass,
+    const float graviAcc
+)
+{
+    if (mass <= 0.0f)return vel;
+
+    acc += force / mass;
+    vel += acc;
+    vel.y -= graviAcc;
+
+    return vel;
+}
+
 Value2<Vector3> Physics::CalcRepulsionVelocity
 (
     const Value2<Vector3>& position, 

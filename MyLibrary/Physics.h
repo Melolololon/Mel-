@@ -33,6 +33,27 @@ namespace MelLib
 		static const float GRAVITATIONAL_ACCELERATION_MOON;
 
 
+		//計算ついでにそのまま座標に加算できるようにするためにreturnしてる。
+		//計算内容は順次追加していく
+		/// <summary>
+		/// 移動に関する計算を行います。
+		/// </summary>
+		/// <param name="vel">速度(計算後計算した速度に書き換えます)</param>
+		/// <param name="acc">加速度(計算後計算した加速度に書き換えます)</param>
+		/// <param name="force">力</param>
+		/// <param name="mass">重量(kg)</param>
+		/// <param name="graviAcc">重量加速度</param>
+		/// <param name=""></param>
+		/// <returns>速度</returns>
+		static Vector3 CalcMoveResult
+		(
+			Vector3& vel,
+			Vector3& acc,
+			const Vector3& force,
+			const float mass,
+			const float graviAcc
+		);
+
 		/// <summary>
 		/// 物体が衝突したときのvelocityを返します。
 		/// </summary>

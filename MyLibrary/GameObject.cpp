@@ -5,6 +5,7 @@
 
 using namespace MelLib;
 
+float GameObject::gravutationalAcc = Physics::GRAVITATIONAL_ACCELERATION_EARTH / 30;
 
 #ifdef _DEBUG
 
@@ -78,10 +79,18 @@ void GameObject::ObjectInitialize()
 
 void GameObject::CalcMovePhysics()
 {
-	if (mass <= 0.0f)return;
-	acceleration += force / mass;
-	velocity += acceleration;
-	position += velocity;
+	//ˆÚ“®‚ÉŠÖ”•¨—‰‰ŽZ
+	position += Physics::CalcMoveResult
+	(
+		velocity,
+		acceleration,
+		force,
+		mass,
+		gravutationalAcc
+	);
+
+
+
 }
 
 

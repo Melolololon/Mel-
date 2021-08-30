@@ -4,7 +4,7 @@
 #include"Library.h"
 #include"Vector.h"
 #include"CollisionType.h"
-
+#include"Physics.h"
 #ifdef _DEBUG
 #include"PipelineState.h"
 #include"ModelObject.h"
@@ -50,46 +50,39 @@ namespace MelLib
 
 #endif // _DEBUG
 
-		
-
-
-	protected:
-
-		Vector3 position = 0;
-		Vector3 velocity = 0;
-		Vector3 speed = 0;
 
 
 
 #pragma region 物理関係
 
-		//物理的な挙動を行うための計算を行うかどうか。
-		bool calcPhysics = false;
-
+		//速度
+		Vector3 velocity = 0;
+		//重力加速度
+		static float gravutationalAcc;
 		//加速度
 		Vector3 acceleration = 0;
+#pragma endregion
+
+
+
+	protected:
+		Vector3 position = 0;
+
 		//物体が動く力
 		Vector3 force = 0;
-		//重さ
-		float mass = 100.0f;
-#pragma endregion
+		//重さ(kg)
+		float mass = 1.0f;
+
 
 #pragma region 判定データ
 		CollisionDetectionFlag collisionFlag;
 
 		std::vector<SphereData> sphereData;
-		
-
 		std::vector<BoxData> boxData;
-
-
 		std::vector<Segment3DData> segment3DData;
-
 		std::vector<RayData> layData;
 		std::vector<PlaneData>planeData;
-
 		std::vector<BoardData>boardData;
-
 		std::vector<CapsuleData>capsuleData;
 
 
@@ -103,6 +96,11 @@ namespace MelLib
 		bool eraseManager = false;
 		
 
+	private:
+		/// <summary>
+		/// 現在設定されている値で物理演算を行います。
+		/// </summary>
+		void CalcMovePhysics();
 	public:
 
 		//コンストラクタ
@@ -146,14 +144,22 @@ namespace MelLib
 		//再追加したときに初期化したいからこのままでいい
 		void ObjectInitialize();
 
-		//物理に基づいた移動関係の計算を行う関数
-		void CalcMovePhysics();
+#pragma region 加算
+		virtual void AddPosition(const Vector3& vec) { position += vec; };
+#pragma endregion
+
 
 #pragma region セット
 
 
-		void SetPosition(const Vector3& position) { this->position = position; }
-		void SetVelocity(const Vector3& velocity) { this->velocity = velocity; }
+		virtual void SetPosition(const Vector3& position) { this->position = position; }
+		//void SetVelocity(const Vector3& velocity) { this->velocity = velocity; }
+
+		//void SetAcceleration(const Vector3& acc) { acceleration = acc; }
+		void SetForce(const Vector3& force) { this->force = force; }
+		void SetMass(const float mass) { this->mass = mass; }
+
+		static void SetGravutationalAcceleration(const float acc) { gravutationalAcc = acc; };
 #pragma endregion
 
 #pragma region ゲット
@@ -164,11 +170,10 @@ namespace MelLib
 		Vector3 GetAcceleration()const { return acceleration; }
 		Vector3 GetForce()const { return force; }
 		float GetMass()const { return mass; }
-		bool GetCalcPhysicsFlag()const { return calcPhysics; }
 		short GetSortNumber() const { return sortNumber; }
 
 		//オブジェクトマネージャーから削除するかどうかのフラグを返す
-		bool GetEraseManager() { return eraseManager; }
+		bool GetEraseManager()const { return eraseManager; }
 #pragma endregion
 
 
@@ -176,13 +181,13 @@ namespace MelLib
 
 
 		//判定用関数
-		CollisionDetectionFlag GetCollisionFlag() { return collisionFlag; }
-		std::vector<SphereData> GetSphereData() { return sphereData; }
-		std::vector<BoxData> GetBoxData() { return boxData; }
-		std::vector<Segment3DData> GetSegmentData() { return segment3DData; }
-		std::vector<PlaneData> GetPlaneData() { return planeData; }
-		std::vector<BoardData> GetBoardData() { return boardData; }
-		std::vector<CapsuleData>GetCapsuleData() { return capsuleData; }
+		CollisionDetectionFlag GetCollisionFlag() const { return collisionFlag; }
+		std::vector<SphereData> GetSphereData() const { return sphereData; }
+		std::vector<BoxData> GetBoxData() const { return boxData; }
+		std::vector<Segment3DData> GetSegmentData() const { return segment3DData; }
+		std::vector<PlaneData> GetPlaneData() const { return planeData; }
+		std::vector<BoardData> GetBoardData()const { return boardData; }
+		std::vector<CapsuleData>GetCapsuleData() const { return capsuleData; }
 
 		//ここ参照取得じゃなくてSetにする?
 		//そもそも持たせない。Hit関数で渡す
