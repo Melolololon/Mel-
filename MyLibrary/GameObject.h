@@ -97,10 +97,7 @@ namespace MelLib
 		
 
 	private:
-		/// <summary>
-		/// 現在設定されている値で物理演算を行います。
-		/// </summary>
-		void CalcMovePhysics();
+	
 	public:
 
 		//コンストラクタ
@@ -130,7 +127,10 @@ namespace MelLib
 			const int hitObjArrayNum
 		);
 
-
+		/// <summary>
+	/// 現在設定されている値で物理演算を行います。
+	/// </summary>
+		void CalcMovePhysics();
 
 
 		//void CalcHitPhysics(GameObject* hitObject,const Vector3& hutPreVelocity,const CollisionType& collisionType);
@@ -172,8 +172,12 @@ namespace MelLib
 		float GetMass()const { return mass; }
 		short GetSortNumber() const { return sortNumber; }
 
+		static float GetGravutationalAcceleration() { return gravutationalAcc; };
+
 		//オブジェクトマネージャーから削除するかどうかのフラグを返す
 		bool GetEraseManager()const { return eraseManager; }
+
+
 #pragma endregion
 
 

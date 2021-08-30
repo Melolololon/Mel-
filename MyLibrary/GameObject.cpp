@@ -85,10 +85,11 @@ void GameObject::CalcMovePhysics()
 		velocity,
 		acceleration,
 		force,
-		mass,
-		gravutationalAcc
+		mass
 	);
 
+	//èdóÕâ¡ë¨ìxìKâû
+	position.y -= gravutationalAcc;
 
 
 }

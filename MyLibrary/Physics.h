@@ -50,8 +50,7 @@ namespace MelLib
 			Vector3& vel,
 			Vector3& acc,
 			const Vector3& force,
-			const float mass,
-			const float graviAcc
+			const float mass
 		);
 
 		/// <summary>

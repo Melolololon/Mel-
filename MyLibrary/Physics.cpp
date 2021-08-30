@@ -19,16 +19,13 @@ Vector3 MelLib::Physics::CalcMoveResult
     Vector3& vel,
     Vector3& acc,
     const Vector3& force,
-    const float mass,
-    const float graviAcc
+    const float mass
 )
 {
     if (mass <= 0.0f)return vel;
 
     acc += force / mass;
     vel += acc;
-    vel.y -= graviAcc;
-
     return vel;
 }
 
