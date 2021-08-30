@@ -558,7 +558,7 @@ bool Collision::BoardAndSegment3D
 	//rightUpPos = Quaternion::GetZXYRotateQuaternion(rightUpPos, board.angle).ToVector3();
 	//rightDownPos = Quaternion::GetZXYRotateQuaternion(rightDownPos, board.angle).ToVector3();
 
-	Value2<Vector3> segmentPos = lineSegment.GetPosition();
+	Value2<Vector3> segmentPos = lineSegment.GetRotatePosition();
 	Value4<Vector3>boardVertexPos = board.GetVertexPosition();
 	Vector3 leftDownPos = boardVertexPos.v1;
 	Vector3 leftUpPos = boardVertexPos.v2;

@@ -171,7 +171,7 @@ namespace MelLib
 		BoxCalcResult result;
 
 	public:
-		Vector3 GetPosition()const{ return position; }
+		Vector3 GetPosition()const { return position; }
 		Vector3 GetSize()const { return size; }
 		BoxCalcResult GetCalcResult() { return result; }
 
@@ -229,6 +229,9 @@ namespace MelLib
 		Vector3 rightUpPos;
 		Vector3 rightDownPos;
 
+	private:
+		void CalcRotateDirPosition();
+
 	public:
 		Vector3 GetPosition()const { return position; }
 		Vector2 GetSize()const { return size; }
@@ -278,13 +281,13 @@ namespace MelLib
 
 		Segment3DCalcResult result;
 
-		
+
 
 	private:
 		//angle適応させた角度をrotatePositionに代入する関数
 		void CalcRotatePosition();
 
-		
+
 	public:
 		Value2<Vector3> GetPosition()const { return position; }
 		Value2<Vector3> GetRotatePosition()const { return rotatePosition; }
@@ -300,18 +303,18 @@ namespace MelLib
 		/// </summary>
 		/// <param name="num">回転基準を決める数値(0.0fでv1基準、0.5fで中心、1.0fでv2基準)</param>
 		void SetRotatePoint(const float num);
-		
+
 		/// <summary>
 		/// 線分を回転させるのに使用するZXY軸自体の角度を設定します。
 		/// </summary>
 		/// <param name="angle"></param>
 		void SetAxisAngle(const Vector3& angle);
-		
+
 		void SetCalcResult(const Segment3DCalcResult& result) { this->result = result; }
-	
+
 	};
 
-	
+
 
 #pragma endregion
 
