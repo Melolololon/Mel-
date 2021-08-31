@@ -29,6 +29,11 @@ Vector3 MelLib::Physics::CalcMoveResult
     return vel;
 }
 
+float MelLib::Physics::CalcFallVelocity(const float startSpeed, const float gravAcc, const float t)
+{
+    return startSpeed + gravAcc * t;
+}
+
 Value2<Vector3> Physics::CalcRepulsionVelocity
 (
     const Value2<Vector3>& position, 

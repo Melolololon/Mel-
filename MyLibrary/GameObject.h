@@ -24,6 +24,15 @@
 //positionもvelocityもセットできるようにする。(変数用意するのめんどいから)
 
 //SetPositionを仮想関数にして、モデルに座標セットする処理とか書けるようにする
+
+
+//やること(8/31 15:42記述)
+//落下の処理の実装
+//投げ上げのタイマーを他の落下と共通にする
+//落下フラグ作る
+//投げ上げの関数呼び出したら強制的にtrue、falseに切り替え。
+//落下フラグをいじってもらうことで、落下処理を行うようにする。
+
 namespace MelLib 
 {
 	class GameObject
@@ -64,14 +73,14 @@ namespace MelLib
 		//加速度
 		Vector3 acceleration = 0;
 
-		//投げ上げ時間
-		int upThrowTime = 0;
-		//投げ上げ初速
-		float upStartSpeed = 0.0f;
-		//現在の投げ上げの速度
-		float upThrowVelocity = 0.0f;
-		//投げ上げの処理を行っているかどうか
-		bool isUpThrow = false;
+		//落下時間
+		int fallTime = 0;
+		//落下初速
+		float fallStartSpeed = 0.0f;
+		//現在の落下速度
+		float currentFallVelovity = 0.0f;
+		//落下しているかどうか
+		bool isFall = false;
 #pragma endregion
 
 
@@ -159,30 +168,33 @@ namespace MelLib
 
 
 		/// <summary>
-		/// 投げ上げた時の座標の演算を開始します。
+		/// 落下処理を開始します。
 		/// </summary>
-		/// <param name="upPower">上方向への初速度</param>
-		void StartThrowUp(const float upSpeed)
+		/// <param name="startSpeed">初速度</param>
+		void StartFall(const float startSpeed)
 		{
-			this->upStartSpeed = upSpeed;
-			isUpThrow = true;
+			this->fallStartSpeed = startSpeed;
+			isFall = true;
 		}
+
 		/// <summary>
-		///  投げ上げの計算を終了します。
+		/// 落下処理を終了します。
 		/// </summary>
-		void StopThrowUp()
+		void EndFall()
 		{
-			upThrowTime = 0;
-			upStartSpeed = 0.0f;
-			isUpThrow = false;
+			fallTime = 0;
+			fallStartSpeed = 0.0f;
+			isFall = false;
 
 			//引いて投げ上げによる加速度をとりあえず引く
 			//本当は引かずに反発の処理やったほうがいい
-			velocity.y -= upThrowVelocity;
-		
+			velocity.y -= currentFallVelovity;
 
-			upThrowVelocity = 0.0f;
+
+			currentFallVelovity = 0.0f;
 		}
+
+		
 
 #pragma endregion
 
@@ -224,9 +236,14 @@ namespace MelLib
 		Vector3 GetAcceleration()const { return acceleration; }
 		Vector3 GetForce()const { return force; }
 		float GetMass()const { return mass; }
+		
+		bool GetIsFall()const { return isFall; }
+		
 		short GetSortNumber() const { return sortNumber; }
 
 		static float GetGravutationalAcceleration() { return gravutationalAcc; };
+
+
 
 		//オブジェクトマネージャーから削除するかどうかのフラグを返す
 		bool GetEraseManager()const { return eraseManager; }
