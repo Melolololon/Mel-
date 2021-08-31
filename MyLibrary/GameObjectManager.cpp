@@ -81,11 +81,6 @@ void GameObjectManager::Update()
 	{
 		collisionFlags[i] = objects[i]->GetCollisionFlag();
 
-
-#ifdef _DEBUG
-		objects[i]->CreateCollisionCheckModel();
-		objects[i]->SetCollisionCheckModelData();
-#endif // _DEBUG
 	}
 
 
@@ -654,7 +649,14 @@ void GameObjectManager::Update()
 		}
 	}
 
+#ifdef _DEBUG
+	for (int i = 0; i < objectSize; i++)
+	{
+		objects[i]->CreateCollisionCheckModel();
+		objects[i]->SetCollisionCheckModelData();
 
+	}
+#endif // _DEBUG
 
 
 

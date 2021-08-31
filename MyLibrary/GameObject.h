@@ -5,6 +5,8 @@
 #include"Vector.h"
 #include"CollisionType.h"
 #include"Physics.h"
+
+
 #ifdef _DEBUG
 #include"PipelineState.h"
 #include"ModelObject.h"
@@ -61,6 +63,15 @@ namespace MelLib
 		static float gravutationalAcc;
 		//加速度
 		Vector3 acceleration = 0;
+
+		//投げ上げ時間
+		int upThrowTime = 0;
+		//投げ上げ初速
+		float upStartSpeed = 0.0f;
+		//現在の投げ上げの速度
+		float upThrowVelocity = 0.0f;
+		//投げ上げの処理を行っているかどうか
+		bool isUpThrow = false;
 #pragma endregion
 
 
@@ -73,6 +84,7 @@ namespace MelLib
 		//重さ(kg)
 		float mass = 1.0f;
 
+		
 
 #pragma region 判定データ
 		CollisionDetectionFlag collisionFlag;
@@ -127,10 +139,52 @@ namespace MelLib
 			const int hitObjArrayNum
 		);
 
+
+#pragma region 物理演算
+		//反発とかもHit関数で自分で呼ぶようにする?
+		//名前PhysicsMoveに変える?
+		//CalcMovePhysicsで重力加速度計算しないようにする?
+
+		//もう物理演算まとめる?
+		//CalcThrowUpPhysicsとか引数いるやつはまとめられない
+
+		//物理演算行ったらマネージャーで座標移動させる?
+		//移動量計算すればちゃんと移動できる
+
 		/// <summary>
-	/// 現在設定されている値で物理演算を行います。
-	/// </summary>
+		/// 座標に関する物理演算を行います。
+		/// </summary>
 		void CalcMovePhysics();
+
+
+
+		/// <summary>
+		/// 投げ上げた時の座標の演算を開始します。
+		/// </summary>
+		/// <param name="upPower">上方向への初速度</param>
+		void StartThrowUp(const float upSpeed)
+		{
+			this->upStartSpeed = upSpeed;
+			isUpThrow = true;
+		}
+		/// <summary>
+		///  投げ上げの計算を終了します。
+		/// </summary>
+		void StopThrowUp()
+		{
+			upThrowTime = 0;
+			upStartSpeed = 0.0f;
+			isUpThrow = false;
+
+			//引いて投げ上げによる加速度をとりあえず引く
+			//本当は引かずに反発の処理やったほうがいい
+			velocity.y -= upThrowVelocity;
+		
+
+			upThrowVelocity = 0.0f;
+		}
+
+#pragma endregion
 
 
 		//void CalcHitPhysics(GameObject* hitObject,const Vector3& hutPreVelocity,const CollisionType& collisionType);

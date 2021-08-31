@@ -103,7 +103,7 @@ namespace MelLib
 		/// <param name="gravitationalAcceleration">重力加速度(このクラスで定義されている定数または自分で考えた値)</param>
 		/// <param name="springConstant">ばね定数</param>
 		/// <param name="viscousDragCoefficient">粘性抵抗係数</param>
-		/// <returns></returns>
+		/// <returns>速度</returns>
 		static Vector3 CalcSpringVelocity
 		(
 			const Vector3& currentPos,

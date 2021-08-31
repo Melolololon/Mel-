@@ -79,7 +79,7 @@ void GameObject::ObjectInitialize()
 
 void GameObject::CalcMovePhysics()
 {
-	//移動に関数物理演算
+	//力と重さと加速度と速度で座標を計算
 	position += Physics::CalcMoveResult
 	(
 		velocity,
@@ -88,11 +88,45 @@ void GameObject::CalcMovePhysics()
 		mass
 	);
 
+	//投げ上げた時の速度
+	if (isUpThrow) 
+	{
+		upThrowTime++;
+		//velocity.y += upSpeed + -gravutationalAcc * upThrowTime;
+		//position.y += velocity.y;
+
+		
+		const float PRE_VEL_Y = upThrowVelocity;
+		upThrowVelocity = upStartSpeed + -gravutationalAcc * upThrowTime;
+		const float ADD_VEL_Y = upThrowVelocity - PRE_VEL_Y;
+
+		//Velocity取得時に反映させるためにvelocityに代入
+		//Get関数でvelocityに加算するようにする? 
+		
+		//計算では、今までの速度を加算した合計速度ではなく、現在の速度を求めるため、
+		//velovcity.yは0秒の時の速度 + 現在の速度になるようにしないと
+		//velocity.y + upThrowVelocity(加算すると現在の速度)と同じにならない。
+		velocity.y += ADD_VEL_Y;
+
+		//毎フレーム速度を加算
+		position.y += upThrowVelocity;
+		
+	}
+
+	//重力加速度は落下中のみ適応するように変更して!!!!!!!
 	//重力加速度適応
-	position.y -= gravutationalAcc;
+	//position.y -= gravutationalAcc;
 
 
+	//ここで移動量を計算して、判定の座標を調整する?
+	//モデルはどうする?
+
+	//反発の計算関数はhit関数で呼び出してもらう?
 }
+
+
+
+
 
 
 #ifdef _DEBUG
