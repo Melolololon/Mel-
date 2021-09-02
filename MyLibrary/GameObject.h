@@ -109,6 +109,7 @@ namespace MelLib
 
 #pragma endregion
 
+		std::vector<std::string>classNames;
 
 		//ソート用数値。ソート順を自分で調整するための変数
 		short sortNumber = 0;
@@ -243,7 +244,7 @@ namespace MelLib
 
 		static float GetGravutationalAcceleration() { return gravutationalAcc; };
 
-
+		std::vector<std::string>GetClassNames()const { return classNames; }
 
 		//オブジェクトマネージャーから削除するかどうかのフラグを返す
 		bool GetEraseManager()const { return eraseManager; }

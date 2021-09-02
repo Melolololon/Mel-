@@ -125,7 +125,7 @@ void MelLib::BoardData::SetSize(const Vector2& size)
 		/// <param name="size"></param>
 		auto calcMovePos = [&curSubPre, &pos](const Vector3& dirPos)
 		{
-			Vector3 posToDirPos = LibMath::OtherVector(pos, dirPos);
+			Vector3 posToDirPos = LibMath::OtherVector3(pos, dirPos);
 			Vector3 returnPos;
 
 			//ç∑ÇÃXï™à⁄ìÆ

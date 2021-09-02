@@ -15,40 +15,6 @@
 namespace MelLib
 {
 
-	//Aスターのノード
-	struct AStarNode
-	{
-		//座標
-		Vector2 position = 0;
-
-		//コスト
-		UINT cost = 1;
-
-		//計算結果(ステップ + 距離 + コスト)
-		UINT calcNum = UINT_MAX;
-
-
-		//以下探索用変数
-
-		//配列のインデックス
-		int indexX = INT_MAX;
-		int indexY = INT_MAX;
-
-		//close配列のインデックス
-		int closeIndex = INT_MAX;
-
-		//スタートからの距離
-		int stepNum = 0;
-
-		AStarNode* previousNode = nullptr;
-
-		bool openFlag = false;
-		bool closeFlag = false;
-
-		//進行不能オブジェクトと重なっているノード
-		bool hitObjectNode = false;
-
-	};
 
 	class LibMath
 	{
@@ -56,61 +22,7 @@ namespace MelLib
 		LibMath() {}
 		~LibMath() {}
 	public:
-		//今度でいいから、プレイヤーや敵の大きさを考慮して経路を計算できるようにする
-
-#pragma region 最短経路
-
-	/// <summary>
-	/// 引数を基準にノードの座標をセットします。
-	/// </summary>
-	/// <param name="leftUpPos">左上座標</param>
-	/// <param name="rightDownPos">右下座標</param>
-	/// <param name="nodeNumX">横分割数</param>
-	/// <param name="nodeNumY">縦分割数</param>
-	/// <param name="nodes">ノードのvector(sizeは0でよい)</param>
-	/// <param name="upPlus">上方向がプラスかどうか</param>
-		static void SetAStarNodePosition
-		(
-			const Vector2& leftUpPos,
-			const Vector2& rightDownPos,
-			const UINT& nodeNumX,
-			const UINT& nodeNumY,
-			std::vector< std::vector<AStarNode>>& nodes,
-			const bool upPlus
-		);
-
-		//この関数でコストが1じゃないオブジェクトとそのコストを渡すようにする?
-		/// <summary>
-		/// ノードが進行不能オブジェクトにヒットしてるかを確認します。
-		/// </summary>
-		/// <param name="hitObjectsPos">障害物の座標のvector</param>
-		/// <param name="hitObjectsSize">障害物のサイズのvector</param>
-		/// <param name="nodes">ノードのvector(SetAStarNodePositionに渡した後の配列)</param>
-		static void SetAStarNodeHitObjectNodeFlag
-		(
-			const std::vector<Vector2>& hitObjectsPos,
-			const std::vector<Vector2>& hitObjectsSize,
-			std::vector< std::vector<AStarNode>>& nodes
-		);
-
-		/// <summary>
-		/// 渡されたデータをもとに最短経路を求めます。
-		/// </summary>
-		/// <param name="startPos">スタート地点の座標</param>
-		/// <param name="endPos">ゴール地点の座標</param>
-		/// <param name="nodes">ノードのvector(SetAStarNodeHitObjectNodeFlagに渡した後の配列)</param>
-		/// <param name="routeVector">ゴールまでのルートを格納するvector(sizeは0でよい)</param>
-		/// <returns>探索が成功したかどうか</returns>
-		static bool GetAStarCalcResult
-		(
-			const Vector2& startPos,
-			const Vector2& endPos,
-			std::vector< std::vector<AStarNode>>& nodes,
-			std::vector<Vector2>& routeVector
-		);
-
-#pragma endregion
-
+		
 
 		/// <summary>
 		/// 階乗
@@ -129,7 +41,7 @@ namespace MelLib
 
 
 		/// <summary>
-		/// num1とnum2の値の差を求め、差が基準の値より小さかったらtrueを返します
+		/// num1とnum2の値の差を求め、差が基準の値以内だったらtrueを返します
 		/// </summary>
 		/// <param name="num1">値1</param>
 		/// <param name="num2">値2</param>
@@ -145,6 +57,8 @@ namespace MelLib
 		/// <param name="difference"></param>
 		/// <returns></returns>
 		static bool AngleDifference(const float angle1, const float angle2, const float difference);
+
+
 
 		/// <summary>
 			/// 度数法の角度をラジアンに　ラジアンを度数法の角度に
@@ -183,6 +97,8 @@ namespace MelLib
 		static float CalcDistance2D(const Vector2& pos1, const Vector2& pos2);
 
 		static Vector2 CalcCenterPosition2D(const Vector2& pos1, const Vector2& pos2);
+
+		static Vector2 OtherVector2(const Vector2& vec1, const Vector2& vec2);
 
 		/// <summary>
 		/// 左右判定を行います。点がベクトルより右の場合は1、左の場合は-1、ベクトル上の場合は0を返します。
@@ -275,7 +191,7 @@ namespace MelLib
 		/// <param name="myPos"></param>
 		/// <param name="otherPos"></param>
 		/// <returns></returns>
-		static Vector3 OtherVector(const Vector3& vec1, const Vector3& vec2);
+		static Vector3 OtherVector3(const Vector3& vec1, const Vector3& vec2);
 
 		/// <summary>
 		/// ベクトルを回転させます

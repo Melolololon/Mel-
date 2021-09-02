@@ -20,6 +20,7 @@ void PipelineState::SetPipelineDesc
 	const int renderTargetNum
 )
 {
+	
 
 	//”ñ‹¤’Êİ’è
 	switch (type)

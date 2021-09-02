@@ -264,6 +264,9 @@
     <ClCompile Include="ModelData.cpp">
       <Filter>ソース ファイル\Model</Filter>
     </ClCompile>
+    <ClCompile Include="RouteSearch.cpp">
+      <Filter>ソース ファイル\Calculation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SpritePixelShader.hlsl" />
@@ -472,6 +475,9 @@
     </ClInclude>
     <ClInclude Include="LibraryEnum.h">
       <Filter>ヘッダー ファイル\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSearch.h">
+      <Filter>ヘッダー ファイル\Calculation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -56,13 +56,13 @@ namespace MelLib
 		/// <summary>
 		/// 自由落下の速度を計算します。
 		/// </summary>
-		/// <param name="startSpeed">初速度</param>
+		/// <param name="startVel">初速度</param>
 		/// <param name="gravAcc">重力加速度度</param>
 		/// <param name="t">時間(秒)</param>
 		/// <returns></returns>
 		static float CalcFallVelocity
 		(
-			const float startSpeed,
+			const float startVel,
 			const float gravAcc,
 			const float t
 		);

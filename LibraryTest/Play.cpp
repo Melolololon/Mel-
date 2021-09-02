@@ -15,9 +15,21 @@ Play::Play(){}
 
 Play::~Play(){}
 
+#include"Collision.h"
 
 void Play::Initialize()
 {
+	MelLib::Vector2 pPos(0, 5);
+	MelLib::CircularSectorData data;
+	data.SetAngle(180);
+	data.SetDirection(MelLib::Vector2(1, 0));
+	data.GetRefCircleData().SetPosition(0);
+	data.GetRefCircleData().SetRadius(3.0f);
+
+	//3Dで視界の処理する場合は、これの結果と、一番遠い場所(半径の位置)の視界の高さを求め、
+	//中心に近づくに応じて小さくすればいい。
+	bool res = MelLib::Collision::PointAndCircularSector(pPos, data);
+
 
 	MelLib::Vector3 n = MelLib::LibMath::RotateVector3(MelLib::Vector3(0, 1, 0), MelLib::Vector3(0.7, 0,0.7), 90);
 

@@ -12,19 +12,54 @@ using namespace MelLib;
 
 bool Collision::RectAndRect(const RectData& rect1, const RectData& rect2)
 {
-	return rect2.size.x + rect2.position.x > rect1.position.x &&
-		rect2.position.x < rect1.size.x + rect2.position.x &&
-		rect2.position.y < rect1.size.y + rect1.position.y &&
-		rect2.size.y + rect2.position.y > rect1.position.y;
+	Vector2 pos1 = rect1.GetPosition();
+	Vector2 pos2 = rect2.GetPosition();
+	Vector2 size1 = rect1.GetSize();
+	Vector2 size2 = rect2.GetSize();
+
+	return size2.x + pos2.x > pos1.x &&
+		pos2.x < size1.x + pos2.x &&
+		pos2.y < size1.y + pos1.y &&
+		size2.y + pos2.y > pos1.y;
 }
 
 bool Collision::CircleAndCircle(const CircleData& circle1, const CircleData& circle2)
 {
-	return (circle1.position.x - circle2.position.x) *
-		(circle1.position.x - circle2.position.x) +
-		(circle1.position.y - circle2.position.y) *
-		(circle1.position.y - circle2.position.y) <=
-		(circle1.r + circle2.r) * (circle1.r + circle2.r);
+	Vector2 pos1 = circle1.GetPosition();
+	Vector2 pos2 = circle2.GetPosition();
+	float r1 = circle1.GetRadius();
+	float r2 = circle2.GetRadius();
+
+	return (pos1.x - pos2.x) *
+		(pos1.x - pos2.x) +
+		(pos1.y - pos2.y) *
+		(pos1.y - pos2.y) <=
+		(r1 + r2) * (r1 + r2);
+}
+
+bool MelLib::Collision::PointAndCircle(const Vector2& pointPos, const CircleData& circle)
+{
+	Vector2 circlePos = circle.GetPosition();
+	float circleR = circle.GetRadius();
+	
+	//”¼ŒaˆÈ“à‚¾‚Á‚½‚çtrue
+	return LibMath::CalcDistance2D(pointPos, circlePos) <= circleR;
+}
+
+bool MelLib::Collision::PointAndCircularSector(const Vector2& pointPos, const CircularSectorData& circularSector)
+{
+	
+	
+	//“_‚Æ‰~‚Ì”»’è
+	if (!PointAndCircle(pointPos, circularSector.GetCircleData()))return false;
+
+	Vector2 circlePos = circularSector.GetCircleData().GetPosition();
+	float centerDirAngle = LibMath::Vecto2ToAngle(circularSector.GetDirection(), false);
+	float pointAngle = LibMath::Vecto2ToAngle(LibMath::OtherVector2(circlePos, pointPos), false);
+	float centerAngle = circularSector.GetAngle();
+
+	//centerAngleˆÈ“à‚¾‚Á‚½‚çtrue
+	return LibMath::AngleDifference(centerDirAngle, pointAngle, centerAngle / 2);
 }
 
 bool Collision::RectAndCircle(const RectData& rect, const CircleData& circle)
@@ -46,10 +81,14 @@ bool Collision::CircleAndSegment2D
 		lineSegmentCalcResult->hitPlace = hitPlace;
 	}
 
+	Value2<Vector2>segmentPos = lineSegment.GetPosition();
+	Vector2 circlePos = circle.GetPosition();
+	float circleR = circle.GetRadius();
+
 	//ü‚Ì’[‚©‚ç’[‚Ö‚ÌƒxƒNƒgƒ‹
-	Vector2 lineVector = lineSegment.position[1] - lineSegment.position[0];
+	Vector2 lineVector = segmentPos.v2 - segmentPos.v1;
 	//ü‚ÌÀ•W1‚©‚ç‰~‚Ì’†S
-	Vector2 linePos0ToSphere = circle.position - lineSegment.position[0];
+	Vector2 linePos0ToSphere = circlePos - segmentPos.v1;
 	//‰~‚Æü‚ÌÅ’Z‹——£‚ð‹‚ß‚é
 	float distance = abs(Vector2::Cross(lineVector, linePos0ToSphere) / Vector2::Length(lineVector));
 
@@ -61,14 +100,14 @@ bool Collision::CircleAndSegment2D
 	float linePos0ToNearPosDis = Vector2::Dot(Vector2::Normalize(lineVector), linePos0ToSphere);
 	if (lineSegmentCalcResult) 
 	{
-		lineSegmentCalcResult->nearPos = lineSegment.position[0] + (Vector2::Normalize(lineVector) * linePos0ToNearPosDis);
+		lineSegmentCalcResult->nearPos = segmentPos.v1 + (Vector2::Normalize(lineVector) * linePos0ToNearPosDis);
 	}
 
 	//‹——£‚Ì‚Ù‚¤‚ª‘å‚«‚©‚Á‚½‚çŒvŽZI—¹
-	if (distance > circle.r)return false;
+	if (distance > circleR)return false;
 
 	//ü‚ÌÀ•W2‚©‚ç‰~‚Ì’†S
-	Vector2 linePos2ToSphere = circle.position - lineSegment.position[1];
+	Vector2 linePos2ToSphere = circlePos - segmentPos.v2;
 	//³‚Ì”‚©‚Ç‚¤‚©‚ð”»•Ê‚·‚éƒtƒ‰ƒO
 	bool linePos1ToSpherePositive = false;
 	bool linePos2ToSpherePositive = false;
@@ -95,8 +134,8 @@ bool Collision::CircleAndSegment2D
 		float linePos2ToSphereLength = Vector2::Length(linePos2ToSphere);
 
 		//”¼Œa‚æ‚è‘å‚«‚©‚Á‚½‚ç“–‚½‚Á‚Ä‚È‚¢
-		if (linePos1ToSphereLength > circle.r
-			&& linePos2ToSphereLength > circle.r)
+		if (linePos1ToSphereLength > circleR
+			&& linePos2ToSphereLength > circleR)
 		{
 			return false;
 		}
@@ -507,11 +546,11 @@ bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& ca
 	Vector3 spherePos = sphere.GetPosition();
 
 	Vector3 capsulePos0ToSphere = 
-		LibMath::OtherVector(capsuleLineSegmentPos.v1, spherePos);
+		LibMath::OtherVector3(capsuleLineSegmentPos.v1, spherePos);
 	
 	//Ž‘—¿‚Ìn
 	Vector3 capsuleLineSegmentVector =
-		LibMath::OtherVector(capsuleLineSegmentPos.v1, capsuleLineSegmentPos.v2);
+		LibMath::OtherVector3(capsuleLineSegmentPos.v1, capsuleLineSegmentPos.v2);
 
 	float t = Vector3::Dot(capsulePos0ToSphere, capsuleLineSegmentVector);
 

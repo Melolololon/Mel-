@@ -186,6 +186,7 @@
     <ClCompile Include="Limit.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="RouteSearch.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sound_Unused.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -456,6 +457,7 @@
     <ClInclude Include="Limit.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="RouteSearch.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sound_Unused.h" />
     <ClInclude Include="BufferData.h" />

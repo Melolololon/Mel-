@@ -54,51 +54,86 @@ namespace MelLib
 
 #pragma region 2D
 
+
 #pragma region 四角形
 
 //四角形
-	struct RectData
+	class RectData
 	{
+	private:
 		//四角形の左上
 		Vector2 position;
 		//辺の長さ
 		Vector2 size;
+
+	public:
+
+		Vector2 GetPosition()const { return position; }
+		Vector2 GetSize()const { return size; }
+
+		void SetPosition(const Vector2& pos) { position = pos; }
+		void SetSize(const Vector2& size) { this->size = size; }
 	};
 #pragma endregion
 
 #pragma region 円
-
-
-	//円
-	struct CircleData
-	{
-		Vector2 position;
-		float r = 0.0f;
-
-	};
 
 	//円の計算結果
 	struct CircleCalcResult
 	{
 		Vector2 lineSegmentNearPosition;
 	};
+
+	//円
+	class CircleData
+	{
+	private:
+		Vector2 position;
+		float r = 0.0f;
+
+		CircleCalcResult result;
+	public:
+		Vector2 GetPosition()const { return position; }
+		float GetRadius()const { return r; }
+		CircleCalcResult GetCalcResult() { return result; }
+
+		void SetPosition(const Vector2& pos) { position = pos; }
+		void SetRadius(const float r) { this->r = r; }
+		void SetCalcResult(const CircleCalcResult& result) { this->result = result; }
+	};
+
 #pragma endregion
 
+#pragma region 扇形
+	class CircularSectorData
+	{
+	private:
+		CircleData circleData;
+
+		//向き
+		Vector2 direction;
+		//角度(合計)
+		float angle = 0.0f;
+
+	public:
+		CircleData GetCircleData()const { return circleData; }
+		CircleData& GetRefCircleData() { return circleData; }
+		Vector2 GetDirection()const { return direction; }
+		float GetAngle()const { return angle; }
+
+		void SetCircleData(const CircleData& data) { circleData = data; }
+		void SetDirection(const Vector2 direction) { this->direction = direction; }
+		void SetAngle(const float angle) { this->angle = angle; }
+	};
+#pragma endregion
+
+
 #pragma region 線分2D
-	enum SegmentHitPlace
+	enum class SegmentHitPlace
 	{
 		LS_HIT_POSITION_NOT_HIT,//衝突してない
 		LS_HIT_POSITION_LE_START_END,//線の端(始点終点)
 		LS_HIT_POSITION_LE_LINE,//線の端以外
-	};
-
-
-	struct Segment2DData
-	{
-		//座標(始点終点)
-		Vector2 position[2];
-
-
 	};
 
 	struct Segment2DCalcResult
@@ -111,6 +146,24 @@ namespace MelLib
 		//最近点
 		Vector2 nearPos;
 	};
+
+	class Segment2DData
+	{
+	private:
+		//座標(始点終点)
+		Value2<Vector2> position;
+
+		Segment2DCalcResult result;
+	public:
+
+		Value2<Vector2> GetPosition()const { return position; }
+		Segment2DCalcResult GetCalcResult()const { return result; }
+
+		void SetPosition(const Value2<Vector2>& pos) { position = pos; }
+		void SetCalcResult(const Segment2DCalcResult& result) { this->result = result; }
+	};
+
+
 
 
 #pragma endregion
