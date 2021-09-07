@@ -19,6 +19,19 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
+
+	MelLib::FrustumData fData;
+	fData.SetXYAngle(MelLib::Vector2(90,10));
+	fData.SetFar(10);
+	fData.SetNear(0.0001f);
+	bool r = MelLib::Collision::PointAndFrustum
+	(
+		MelLib::Vector3(0,10,5),
+		fData
+	);
+
+
+
 	MelLib::Vector2 pPos(0, 5);
 	MelLib::CircularSectorData data;
 	data.SetAngle(180);

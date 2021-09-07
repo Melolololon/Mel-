@@ -48,8 +48,6 @@ bool MelLib::Collision::PointAndCircle(const Vector2& pointPos, const CircleData
 
 bool MelLib::Collision::PointAndCircularSector(const Vector2& pointPos, const CircularSectorData& circularSector)
 {
-	
-	
 	//点と円の判定
 	if (!PointAndCircle(pointPos, circularSector.GetCircleData()))return false;
 
@@ -747,9 +745,53 @@ p[3] = c2.rightUpPos;*/
 
 }
 
+bool MelLib::Collision::PointAndSphere(const Vector3& pointPos, const SphereData& sphere)
+{
+	return LibMath::CalcDistance3D(pointPos, sphere.GetPosition()) <= sphere.GetRadius();
+}
 
+//
+//bool MelLib::Collision::PointAndCircularSector3D(const Vector3& pointPos, const CircularSector3DData& circularSector)
+//{
+//	//球の中にあるかどうか確認
+//	if (!PointAndSphere(pointPos, circularSector.GetSphereData()))return;
+//
+//	//やり方
+//	//1.
+//	//縦と横の角度に応じて、ボードを回転する?
+//	//どうやって中にあるか確認するの?
+//	//表裏の判定を行えば確認できる
+//
+//	//2.
+//	//扇形を2つ持たせる?
+//	//
+//
+//	BoardData nearBoard;
+//	BoardData farBoard;
+//	BoardData leftBoard;
+//	BoardData rightBoard;
+//	BoardData upBoard;
+//	BoardData downBoard;
+//
+//}
+//
+//#pragma endregion
+//
+//
 
+bool MelLib::Collision::PointAndFrustum(const Vector3& pointPos, const FrustumData& frustum)
+{
+	//点が、錐台の全ての面の裏側にあったらtrue
 
-#pragma endregion
+	std::vector<BoardData>boards = frustum.GetBoardDatas();
 
-
+	for(const auto& b : boards)
+	{
+		//表側にあったらfalse
+		if(LibMath::PointBoardFrontBackCheck(pointPos, b) == 1)
+		{
+			return false;
+		}
+	}
+	return true;
+}

@@ -153,6 +153,17 @@ char MelLib::LibMath::PointPlaneFrontBackCheck(const Vector3& point, const Plane
 	return 0;
 }
 
+char MelLib::LibMath::PointBoardFrontBackCheck(const Vector3& point, const BoardData& board)
+{
+
+	//原点から法線方向に距離分動いた座標を求める。
+	Vector3 disPos = board.GetPosition();
+
+	if (Vector3::Dot(point - disPos, board.GetNormal()) > 0)return 1;
+	else if (Vector3::Dot(point - disPos, board.GetNormal()) < 0)return -1;
+	return 0;
+}
+
 
 float LibMath::TwoVector2Angle(const Vector2& v1, const Vector2& v2)
 {
@@ -285,10 +296,15 @@ Vector3 LibMath::OtherVector3(const Vector3& vec1, const Vector3& vec2)
 	return Vector3Normalize(vec);
 }
 
-Vector3 LibMath::RotateVector3(const Vector3& rotateV, const Vector3& vec, const float& angle)
+Vector3 LibMath::RotateVector3(const Vector3& rotateV, const Vector3& vec, const float angle)
 {
 	Quaternion q = Quaternion::GetRotateQuaternion(rotateV, vec, angle);
 	return { q.x, q.y, q.z };
+}
+
+Vector3 MelLib::LibMath::RotateZXYVector3(const Vector3& rotateV, const Vector3& angle)
+{
+	return Quaternion::GetZXYRotateQuaternion(rotateV,angle).ToVector3();
 }
 
 

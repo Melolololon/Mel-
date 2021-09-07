@@ -5,6 +5,11 @@ namespace MelLib
 {
 
 	//CalcResultをCollisionResultにする?
+	//CollisionType.hからPrimitiveTypeに変える?
+	//衝突確認に使うデータだからこのままでいい?プリミティブじゃないデータ(線分)あるし
+	//ShapeTypeの名前変える?
+
+	//判定データに衝突確認関数持たせてもいい?
 
 	//衝突確認フラグ
 	struct CollisionDetectionFlag
@@ -411,6 +416,101 @@ namespace MelLib
 
 	};
 
+#pragma endregion
+
+#pragma region 錐台
+	
+	class FrustumData
+	{
+		//Boardだと台形表示できないといけない
+
+	private:
+		Vector3 position;
+
+		Vector3 angle;
+		//上下の角度
+		Vector2 xyAngle = 1.0f;
+		//手前
+		float nearNum = 0.0001f;
+		//奥
+		float farNum = 1000.0f;
+
+		//視錐台の平面(中にいるかを確認するためのもの)
+		BoardData nearBoard;
+		BoardData farBoard;
+		BoardData leftBoard;
+		BoardData rightBoard;
+		BoardData upBoard;
+		BoardData downBoard;
+
+		Vector3 leftAngle;
+		Vector3 rightAngle;
+		Vector3 upAngle;
+		Vector3 downAngle;
+
+		/// <summary>
+		/// xyAngleによる回転
+		/// </summary>
+		void XYRotate();
+
+		/// <summary>
+		/// angleによる回転
+		/// </summary>
+		void AngleRotate();
+
+		void SetBoardPosition();
+
+		/// <summary>
+		/// 平面の距離の設定
+		/// </summary>
+		void SetPlaneDistance();
+
+	public:
+		FrustumData();
+
+		Vector3 GetPosition()const { return position; }
+		Vector3 GetAngle()const { return angle; }
+		Vector2 GetXYAngle()const { return xyAngle; }
+		Vector2 GetNear()const { return xyAngle; }
+		Vector2 GetFar()const { return xyAngle; }
+		std::vector<BoardData>GetBoardDatas()const;
+
+		
+		void SetPosition(const Vector3& pos);
+		void SetAngle(const Vector3& angle);
+		void SetXYAngle(const Vector2& angle);
+		void SetNear(const float nearNum);
+		void SetFar(const float farNum);
+
+	
+	};
+#pragma endregion
+
+
+
+#pragma region 扇形3D
+	//class CircularSector3DData
+	//{
+	//private:
+	//	SphereData sphereData;
+
+	//	//向き
+	//	Vector3 direction;
+	//	//横の角度(合計)
+	//	float widthAngle = 0.0f;
+	//	//縦の角度(合計)
+	//	float heightAngle = 0.0f;
+	//public:
+	//	SphereData GetSphereData()const { return sphereData; }
+	//	SphereData& GetRefSphereData() { return sphereData; }
+	//	Vector3 GetDirection()const { return direction; }
+	//	float GetWidthAngle()const { return widthAngle; }
+	//	float GetHeightAngle()const { return heightAngle; }
+
+	//	void SetSphereData(const SphereData& data) { sphereData = data; }
+	//	void SetDirection(const Vector3 direction) { this->direction = direction; }
+	//	void SetHeightAngleAngle(const float angle) { this->heightAngle = angle; }
+	//};
 #pragma endregion
 
 

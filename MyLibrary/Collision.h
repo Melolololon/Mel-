@@ -140,7 +140,23 @@ namespace MelLib
 			Segment3DCalcResult* lineSegmentCalcResult
 		);
 
-	
+		static bool PointAndSphere
+		(
+			const Vector3& pointPos, 
+			const SphereData& sphere
+		);
+
+	/*	static bool PointAndCircularSector3D
+		(
+			const Vector3& pointPos,
+		    const CircularSector3DData& circularSector
+		);*/
+
+		static bool PointAndFrustum
+		(
+			const Vector3& pointPos,
+			const FrustumData& frustum
+		);
 #pragma endregion
 	};
 

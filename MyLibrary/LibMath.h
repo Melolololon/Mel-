@@ -115,6 +115,14 @@ namespace MelLib
 		/// <param name="plane">平面情報</param>
 		/// <returns></returns>
 		static char PointPlaneFrontBackCheck(const Vector3& point,const PlaneData& plane);
+		
+		/// <summary>
+		/// 表裏判定を行います。点が板の表側だったら1、裏側だったら-1、平面上だったら0を返します。
+		/// </summary>
+		/// <param name="point">点</param>
+		/// <param name="plane">板情報</param>
+		/// <returns></returns>
+		static char PointBoardFrontBackCheck(const Vector3& point, const BoardData& board);
 
 		/// <summary>
 		/// 2つのベクトルがなす角度を求めます
@@ -200,8 +208,9 @@ namespace MelLib
 		/// <param name="vec">軸のベクトル</param>
 		/// <param name="angle"></param>
 		/// <returns></returns>
-		static Vector3 RotateVector3(const Vector3& rotateV, const Vector3& vec, const float& angle);
+		static Vector3 RotateVector3(const Vector3& rotateV, const Vector3& vec, const float angle);
 
+		static Vector3 RotateZXYVector3(const Vector3& rotateV, const Vector3& angle);
 
 		/// <summary>
 		/// 座標を指定したベクトル方向にdistance分移動させたVector3型の値を返します。
