@@ -173,6 +173,19 @@ namespace MelLib
 
 #pragma region ゲット
 
+
+#pragma region 操作見た目変更
+
+#pragma region 操作
+		
+		//今はとりあえず全部値が一緒なので、0のやつを返してる
+		Vector3 GetPosition()const { return Vector3(modelConstDatas[0].position); }
+
+#pragma endregion
+#pragma endregion
+
+
+
 		//コンピュートシェーダーで計算したほうがいい。
 		//できそうなら描画時に頂点シェーダーで計算した結果を持ってきたほうがいい?
 		/// <summary>

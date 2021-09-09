@@ -140,6 +140,14 @@ namespace MelLib
 			Segment3DCalcResult* lineSegmentCalcResult
 		);
 
+		static bool BoardAndCapsule
+		(
+			const BoardData& board,
+			BoardCalcResult* boardCalcResult,
+			const CapsuleData& capsule,
+			Segment3DCalcResult* lineSegmentCalcResult
+		);
+
 		static bool PointAndSphere
 		(
 			const Vector3& pointPos, 

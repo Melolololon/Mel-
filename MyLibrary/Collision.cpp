@@ -581,19 +581,6 @@ bool Collision::BoardAndSegment3D
 	Segment3DCalcResult* lineSegmentCalcResult
 )
 {
-	//Vector2 halfSize = board.size / 2;
-
-	////座標を求める
-	//Vector3 leftDownPos = board.GetPosition() + Vector3(-halfSize.x, -halfSize.y, 0);
-	//Vector3 leftUpPos = board.GetPosition() + Vector3(-halfSize.x, halfSize.y, 0);
-	//Vector3 rightUpPos = board.GetPosition() + Vector3(halfSize.x, halfSize.y, 0);
-	//Vector3 rightDownPos = board.GetPosition() + Vector3(halfSize.x, -halfSize.y, 0);
-
-	////回転
-	//leftDownPos = Quaternion::GetZXYRotateQuaternion(leftDownPos, board.angle).ToVector3();
-	//leftUpPos = Quaternion::GetZXYRotateQuaternion(leftUpPos, board.angle).ToVector3();
-	//rightUpPos = Quaternion::GetZXYRotateQuaternion(rightUpPos, board.angle).ToVector3();
-	//rightDownPos = Quaternion::GetZXYRotateQuaternion(rightDownPos, board.angle).ToVector3();
 
 	Value2<Vector3> segmentPos = lineSegment.GetRotatePosition();
 	Value4<Vector3>boardVertexPos = board.GetVertexPosition();
@@ -618,47 +605,26 @@ bool Collision::BoardAndSegment3D
 	//線の端 - ポリゴンの角
 	v1 = segmentPos.v1 - leftDownPos;
 	v2 = segmentPos.v2 - leftDownPos;
-	/*v1 = normalize(v1);
-	v2 = normalize(v2);*/
-
-
-	//ここがおかしい?
-
-	////線の端から板ポリまでの距離を求める
-	//float d = dot(normal,pointPos);
-	//float kyori1;//平面から、linePos1までの距離
-	//kyori1 = 
-	//	abs(normal.x * linePos1.x + normal.y * linePos1.y +normal.z * linePos1.z + d) / 
-	//	sqrt(normal.x* normal.x + normal.y* normal.y + normal.z* normal.z);
-
-	//float kyori2;
-	//kyori2 = 
-	//	abs(normal.x * linePos2.x + normal.y * linePos2.y + normal.z * linePos2.z + d) /
-	//	sqrt(normal.x* normal.x + normal.y* normal.y + normal.z* normal.z);
-
+	
 	Vector3 vec1 = segmentPos.v1 - board.GetPosition();
 	Vector3 vec2 = segmentPos.v2 - board.GetPosition();
 
+	//線分の両端と板ポリの距離を求める
+	//0で割るのを防止するためのif
 	float kyori1 = 0;
 	if (board.GetNormal().x != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().x);
 	if (board.GetNormal().y != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().y);
 	if (board.GetNormal().z != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().z);
 	float kyori2 = 0;
 	if (board.GetNormal().x != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().x);
-	if (board.GetNormal().y != 0)	kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().y);
-	if (board.GetNormal().z != 0)	kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().z);
-
-	/*float kyori1 = abs(dot(normal, linePos1)) / abs(normal.x);
-	float kyori2 = abs(dot(normal, linePos2)) / abs(normal.x);*/
-
+	if (board.GetNormal().y != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().y);
+	if (board.GetNormal().z != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().z);
 
 
 	//内分比
-	float a;
-	a = kyori1 / (kyori1 + kyori2);
+	float a = kyori1 / (kyori1 + kyori2);
 
 
-	//ここおかしい
 
 	//線とポリゴンが当たっている場所を調べる
 	Vector3 crossVector;//ポリゴンの角から当たってる場所の座標へのベクトル
@@ -666,7 +632,7 @@ bool Collision::BoardAndSegment3D
 	crossVector.y = (1 - a) * v1.y + a * v2.y;
 	crossVector.z = (1 - a) * v1.z + a * v2.z;
 	Vector3 crossPos = leftDownPos + crossVector;
-	//crossPos.y *= - 1;
+
 
 
 
@@ -695,10 +661,6 @@ bool Collision::BoardAndSegment3D
 		equal1 = true;
 	}
 
-	/*p[0] = c2.leftDownPos;
-p[1] = c2.leftUpPos;
-p[2] = c2.rightDownPos;
-p[3] = c2.rightUpPos;*/
 
 	//三角形2個目の判定
 	normal1 = LibMath::CalcNormal(rightDownPos, leftUpPos, crossPos);
@@ -743,6 +705,47 @@ p[3] = c2.rightUpPos;*/
 	}
 	return false;
 
+}
+
+bool MelLib::Collision::BoardAndCapsule(const BoardData& board, BoardCalcResult* boardCalcResult, const CapsuleData& capsule, Segment3DCalcResult* lineSegmentCalcResult)
+{
+	//線分の判定が成立している、または、距離が半径以内
+	//後者が成立してるかを判断すればいい
+
+	//距離をどう求めるか
+
+	//これ実装できれば、壁との判定もとれる
+
+	//両端の辺の方向に板ポリゴンを半径分動かして、交差したら、
+	//カプセルと当たってるって言える?
+	//中心でもいい?
+
+	////点の方向に半径分移動した板ポリの座標
+	//Vector3 moveBoardPos = LibMath::FloatDistanceMoveVector3
+	//(board.GetPosition(), LibMath::OtherVector3(board.GetPosition(),capsule.GetSegment3DData().GetPosition().v1), capsule.GetRadius());
+	//BoardData bData = board;
+	//bData.SetPosition(moveBoardPos);
+
+	//bool result = BoardAndSegment3D(bData, boardCalcResult,capsule.GetSegment3DData(), lineSegmentCalcResult);
+	//if (result)return true;
+
+	//moveBoardPos = LibMath::FloatDistanceMoveVector3
+	//(board.GetPosition(), LibMath::OtherVector3(board.GetPosition(), capsule.GetSegment3DData().GetPosition().v2), capsule.GetRadius());
+	//bData.SetPosition(moveBoardPos);
+	//return BoardAndSegment3D(bData, boardCalcResult, capsule.GetSegment3DData(), lineSegmentCalcResult);
+
+	Vector3 segmentCenterPos = LibMath::CalcCenterPosition3D
+	(
+		capsule.GetSegment3DData().GetPosition().v1,
+		capsule.GetSegment3DData().GetPosition().v2
+	);
+
+	Vector3 moveBoardPos = LibMath::FloatDistanceMoveVector3
+	(board.GetPosition(), LibMath::OtherVector3(board.GetPosition(), segmentCenterPos), capsule.GetRadius());
+	BoardData bData = board;
+	bData.SetPosition(moveBoardPos);
+	bool result = BoardAndSegment3D(bData, boardCalcResult, capsule.GetSegment3DData(), lineSegmentCalcResult);
+	if (result)return true;
 }
 
 bool MelLib::Collision::PointAndSphere(const Vector3& pointPos, const SphereData& sphere)

@@ -17,6 +17,38 @@ PipelineState GameObject::collisionCheckModelPipelineState;
 ADSAMaterial GameObject::material;
 #endif // _DEBUG
 
+void MelLib::GameObject::SetModelPosition(const Vector3& diffPos)
+{
+	for(auto& m : modelObjects)
+	{
+		m.second.SetPosition(m.second.GetPosition() + diffPos);
+	}
+}
+
+void MelLib::GameObject::SetDataPosition(const Vector3& diffPos)
+{
+	for(auto& d : sphereData)
+	{
+		d.SetPosition(d.GetPosition() + diffPos);
+	}
+	for(auto& d : boxData)
+	{
+		d.SetPosition(d.GetPosition() + diffPos);
+	}
+	for (auto& d : boardData)
+	{
+		d.SetPosition(d.GetPosition() + diffPos);
+	}
+	for (auto& d : segment3DData)
+	{
+		d.SetPosition(d.GetPosition() + diffPos);
+	}
+	for (auto& d : capsuleData)
+	{
+		d.GetRefSegment3DData().SetPosition(d.GetSegment3DData().GetPosition() + diffPos);
+	}
+}
+
 GameObject::GameObject()
 {
 }
@@ -77,8 +109,25 @@ void GameObject::ObjectInitialize()
 
 }
 
+void MelLib::GameObject::AddPosition(const Vector3& vec)
+{
+	SetModelPosition(vec);
+	SetDataPosition(vec);
+	position += vec;
+}
+
+void MelLib::GameObject::SetPosition(const Vector3& pos)
+{
+	SetModelPosition(pos - position);
+	SetDataPosition(pos - position);
+
+	position = pos;
+	
+}
+
 void GameObject::CalcMovePhysics()
 {
+	Vector3 prePos = position;
 	//力と重さと加速度と速度で座標を計算
 	position += Physics::CalcMoveResult
 	(
@@ -111,6 +160,7 @@ void GameObject::CalcMovePhysics()
 		
 	}
 
+
 	//重力加速度は落下中のみ適応するように変更して!!!!!!!
 	//重力加速度適応
 	//position.y -= gravutationalAcc;
@@ -120,6 +170,9 @@ void GameObject::CalcMovePhysics()
 	//モデルはどうする?
 
 	//反発の計算関数はhit関数で呼び出してもらう?
+
+	SetModelPosition(position - prePos);
+	SetDataPosition(position - prePos);
 }
 
 

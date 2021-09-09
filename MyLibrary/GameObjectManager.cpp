@@ -615,7 +615,7 @@ void GameObjectManager::Update()
 						BoardCalcResult result1;
 						Segment3DCalcResult result2;
 
-						if (Collision::BoardAndSegment3D(boardData[colI], &result1, capsuleData[colJ].GetSegment3DData(), &result2))
+						if (Collision::BoardAndCapsule(boardData[colI], &result1, capsuleData[colJ], &result2))
 						{
 							obj2->SetBoardCalcResult(result1, colI);
 							obj1->SetCapsuleCalcResult(result2, colJ);

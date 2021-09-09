@@ -108,8 +108,11 @@ namespace MelLib
 
 
 #pragma endregion
-
+		
+		//継承したクラスを格納し、判定時に使う用
 		std::vector<std::string>classNames;
+
+		std::unordered_map<std::string, ModelObject>modelObjects;
 
 		//ソート用数値。ソート順を自分で調整するための変数
 		short sortNumber = 0;
@@ -119,7 +122,13 @@ namespace MelLib
 		
 
 	private:
-	
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="vec">移動量</param>
+		void SetModelPosition(const Vector3& vec);
+
+		void SetDataPosition(const Vector3& vec);
 	public:
 
 		//コンストラクタ
@@ -211,15 +220,24 @@ namespace MelLib
 		//再追加したときに初期化したいからこのままでいい
 		void ObjectInitialize();
 
+
+
 #pragma region 加算
-		virtual void AddPosition(const Vector3& vec) { position += vec; };
+		/// <summary>
+		/// 座標、モデルの座標、判定の座標に引数を加算します。
+		/// </summary>
+		/// <param name="vec"></param>
+		void AddPosition(const Vector3& vec);
 #pragma endregion
 
 
 #pragma region セット
 
-
-		virtual void SetPosition(const Vector3& position) { this->position = position; }
+		/// <summary>
+		/// 座標をセットします。モデルと衝突確認に使うデータは、セット前の座標との差だけ移動します。
+		/// </summary>
+		/// <param name="pos"></param>
+		void SetPosition(const Vector3& pos);
 		//void SetVelocity(const Vector3& velocity) { this->velocity = velocity; }
 
 		//void SetAcceleration(const Vector3& acc) { acceleration = acc; }

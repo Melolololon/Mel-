@@ -19,14 +19,26 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
+	MelLib::CapsuleData cData;
+	cData.SetRadius(2.0f);
+	cData.GetRefSegment3DData().SetPosition(MelLib::Value2(MelLib::Vector3(0, 1, 0), MelLib::Vector3(0, 5, 0)));
+
+	MelLib::BoardData bData;
+	bData.SetPosition(MelLib::Vector3(0,0,0));
+	bData.SetSize(MelLib::Vector2(4,4));
+	bData.SetAngle(MelLib::Vector3(90, 0, 0));
+	
+	bool re = MelLib::Collision::BoardAndCapsule(bData, nullptr, cData, nullptr);
+
 
 	MelLib::FrustumData fData;
 	fData.SetXYAngle(MelLib::Vector2(90,10));
 	fData.SetFar(10);
 	fData.SetNear(0.0001f);
+	fData.SetAngle(MelLib::Vector3(0, 0, 0));
 	bool r = MelLib::Collision::PointAndFrustum
 	(
-		MelLib::Vector3(0,10,5),
+		MelLib::Vector3(0,0,5),
 		fData
 	);
 
