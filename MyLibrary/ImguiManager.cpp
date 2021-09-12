@@ -15,6 +15,19 @@ ImguiManager* ImguiManager::GetInstance()
 
 bool ImguiManager::Initialize(ID3D12Device* pDev, ID3D12GraphicsCommandList* pCmdList)
 {
+    if (!releaseDrawFlag)
+    {
+
+#ifdef _DEBUG
+
+#else
+
+        return true;
+
+#endif // _DEBUG
+
+    }
+
     pDevice = pDev;
     this->pCmdList = pCmdList;
 
@@ -39,24 +52,64 @@ bool ImguiManager::Initialize(ID3D12Device* pDev, ID3D12GraphicsCommandList* pCm
         desHeap->GetGPUDescriptorHandleForHeapStart()
     ))return false;
 
-    
+ 
+
 }
 
 void MelLib::ImguiManager::Finalize()
 {
+    if (!releaseDrawFlag)
+    {
+
+#ifdef _DEBUG
+
+#else
+
+        return true;
+
+#endif // _DEBUG
+
+    }
+
     ImGui_ImplWin32_Shutdown();
     ImGui_ImplDX12_Shutdown();
 }
 
 void MelLib::ImguiManager::Begin()
 {
+    if (!releaseDrawFlag)
+    {
+
+#ifdef _DEBUG
+
+#else
+
+        return true;
+
+#endif // _DEBUG
+
+    }
+
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 }
 
 void MelLib::ImguiManager::Draw()
-{  
+{
+    if (!releaseDrawFlag)
+    {
+
+#ifdef _DEBUG
+
+#else
+
+        return true;
+
+#endif // _DEBUG
+
+    }
+
     //•`‰æˆ—
     ImGui::Render();
     pCmdList->SetDescriptorHeaps(1, desHeap.GetAddressOf());
@@ -71,10 +124,24 @@ void MelLib::ImguiManager::DrawWindow
     const Vector2& size
 )
 {
+    if (!releaseDrawFlag)
+    {
+
+#ifdef _DEBUG
+
+#else
+
+        return true;
+
+#endif // _DEBUG
+
+    }
     ImGui::Begin(name.c_str());
     
     ImGui::SetWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_::ImGuiCond_FirstUseEver);
     ImGui::SetWindowSize(ImVec2(size.x, size.y), ImGuiCond_::ImGuiCond_FirstUseEver);
 
     ImGui::End();
+
+    
 }

@@ -6,10 +6,10 @@
 #include"CollisionType.h"
 #include"Physics.h"
 
+#include"ModelObject.h"
 
 #ifdef _DEBUG
 #include"PipelineState.h"
-#include"ModelObject.h"
 #include"Material.h"
 #endif // _DEBUG
 

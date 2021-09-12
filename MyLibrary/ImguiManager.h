@@ -18,11 +18,14 @@ namespace MelLib
 
 		ComPtr<ID3D12DescriptorHeap>desHeap = nullptr;
 
+		bool releaseDrawFlag = true;
+
 		ID3D12Device* pDevice = nullptr;
 		ID3D12GraphicsCommandList* pCmdList = nullptr;
 	private:
 		ImguiManager() {}
 		~ImguiManager() {}
+
 	public:
 		ImguiManager(ImguiManager& i) = delete;
 		ImguiManager& operator=(ImguiManager& i) = delete;
@@ -40,6 +43,12 @@ namespace MelLib
 			const Vector2& pos,
 			const Vector2& size
 		);
+
+		/// <summary>
+		/// リリース時にウィンドウを描画するかを設定します。設定する場合は、ライブラリの初期化より前で呼び出してください。
+		/// </summary>
+		/// <param name="flag"></param>
+		void SetReleaseDrawFlag(const bool flag) { releaseDrawFlag = flag; }
 	};
 }
 
