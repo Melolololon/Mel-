@@ -9,7 +9,7 @@
 #include"DirectionalLight.h"
 #include"Input.h"
 #include"LibMath.h"
-
+#include"ImguiManager.h"
 Play::Play(){}
 
 
@@ -82,6 +82,20 @@ void Play::Initialize()
 
 void Play::Update()
 {
+	MelLib::ImguiManager::GetInstance()->DrawWindow
+	(
+		"TestWindow",
+		MelLib::Vector2(40, 40),
+		MelLib::Vector2(300, 400)
+	);
+
+	/*MelLib::ImguiManager::GetInstance()->DrawWindow
+	(
+		"eryu6tyutyfu",
+		MelLib::Vector2(600, 50),
+		MelLib::Vector2(300, 400)
+	);*/
+
 	/*if(MelLib::Input::KeyState(DIK_R))
 	{
 

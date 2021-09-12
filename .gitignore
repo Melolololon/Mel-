@@ -261,3 +261,5 @@ __pycache__/
 *.pyc
 /LibraryTest/lib/fbx_sdk
 /MyLibrary/lib/fbx_sdk
+/MyLibrary/imgui
+/LibraryTest/imgui.ini

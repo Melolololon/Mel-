@@ -1,6 +1,9 @@
 #include "DirectX12.h"
+
 #include"LibMath.h"
 #include"FbxLoader.h"
+#include"ImguiManager.h"
+
 #include"DirectionalLight.h"
 #include"RenderTarget.h"
 
@@ -307,6 +310,9 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	ID3D12Resource* pBackBuffer[] = { backBuffer[0].Get(),backBuffer[1].Get() };
 	TextWrite::Initialize(dev.Get(), cmdQueue.GetAddressOf(), pBackBuffer);
 
+	ImguiManager::GetInstance()->Initialize(dev.Get(), cmdList.Get());
+
+
 #pragma region テスト用
 	//PipelineState postEffectTestPipeline;
 
@@ -395,6 +401,7 @@ void DirectX12::LoopStartProcess()
 #pragma endregion
 
 	TextWrite::LoopStartProcess();
+	ImguiManager::GetInstance()->Begin();
 }
 
 void DirectX12::LoopEndProcess()
@@ -417,6 +424,7 @@ void DirectX12::LoopEndProcess()
 
 	RenderTarget::AllDraw();
 
+	ImguiManager::GetInstance()->Draw();
 #pragma region RTVからPRESENTへ
 	//TextWriteクラスで自動的に変更するからいらない
 
@@ -429,6 +437,8 @@ void DirectX12::LoopEndProcess()
 	//cmdList->ResourceBarrier(1, &barrierDesc);
 #pragma endregion
 
+
+
 #pragma region 実行
 
 
@@ -436,6 +446,7 @@ void DirectX12::LoopEndProcess()
 	ID3D12CommandList* cmdLists[] = { cmdList.Get() };
 	cmdQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
 	
+
 	//テキスト描画
 	TextWrite::LoopEndProcess(bbIndex);
 
@@ -462,7 +473,7 @@ void DirectX12::Finalize()
 {
 	LoopEndProcess();
 	FbxLoader::GetInstance()->Finalize();
-
+	ImguiManager::GetInstance()->Finalize();
 }
 
 

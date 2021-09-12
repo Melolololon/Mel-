@@ -227,7 +227,7 @@ namespace MelLib
 		/// 座標、モデルの座標、判定の座標に引数を加算します。
 		/// </summary>
 		/// <param name="vec"></param>
-		void AddPosition(const Vector3& vec);
+	    virtual void AddPosition(const Vector3& vec);
 #pragma endregion
 
 
@@ -237,7 +237,7 @@ namespace MelLib
 		/// 座標をセットします。モデルと衝突確認に使うデータは、セット前の座標との差だけ移動します。
 		/// </summary>
 		/// <param name="pos"></param>
-		void SetPosition(const Vector3& pos);
+		virtual void SetPosition(const Vector3& pos);
 		//void SetVelocity(const Vector3& velocity) { this->velocity = velocity; }
 
 		//void SetAcceleration(const Vector3& acc) { acceleration = acc; }
