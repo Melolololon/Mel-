@@ -60,7 +60,6 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 
 void CollisionTestObject::Update()
 {
-	
 	hitFlag = false;
 
 	const float speed = 0.3f;

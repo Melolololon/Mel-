@@ -80,14 +80,20 @@ void Play::Initialize()
 	
 }
 
+bool flag = false;
 void Play::Update()
 {
-	MelLib::ImguiManager::GetInstance()->DrawWindow
+	MelLib::ImguiManager::GetInstance()->BeginDrawWindow
 	(
 		"TestWindow",
 		MelLib::Vector2(40, 40),
 		MelLib::Vector2(300, 400)
 	);
+
+	ImGui::Checkbox("TestCheckBox", &flag);
+
+	MelLib::ImguiManager::GetInstance()->EndDrawWindow();
+
 
 	/*MelLib::ImguiManager::GetInstance()->DrawWindow
 	(
