@@ -56,9 +56,7 @@ namespace MelLib
 		/// <param name="size">サイズ</param>
 		void BeginDrawWindow
 		(
-			const std::string& name,
-			const Vector2& pos,
-			const Vector2& size
+			const std::string& name
 		);
 
 		/// <summary>
@@ -73,10 +71,12 @@ namespace MelLib
 		/// <param name="flag"></param>
 		void SetReleaseDrawFlag(const bool flag) { releaseDrawFlag = flag; }
 
+		void SetPosition(const Vector2& pos);
+		void SetSize(const Vector2& size);
 
 #pragma region 生成
 		/// <summary>
-		/// ラジオボタンをウィンドウに生成します。
+		/// ラジオボタンをウィンドウに表示します。
 		/// </summary>
 		/// <param name="label">ラベル名(チェックボックスの隣に表示される文字)</param>
 		/// <param name="pInt">選択されているときにnumの値を代入する変数のポインタ</param>

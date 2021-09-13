@@ -81,7 +81,7 @@ void Play::Initialize()
 }
 
 int testI = 0;
-MelLib::Color c;
+MelLib::Color c(255,255,0,255);
 
 float color[4] = {};
 void Play::Update()
@@ -89,18 +89,16 @@ void Play::Update()
 	MelLib::ImguiManager* pImGuiManager = MelLib::ImguiManager::GetInstance();
 	pImGuiManager->BeginDrawWindow
 	(
-		"TestWindow",
-		MelLib::Vector2(40, 40),
-		MelLib::Vector2(300, 400)
+		"TestWindow"
 	);
+
+	pImGuiManager->SetPosition(MelLib::Vector2(40, 40));
+	pImGuiManager->SetSize(MelLib::Vector2(300, 400));
 
 	pImGuiManager->DrawSliderInt("sTest", &testI, 0, 140);
 	pImGuiManager->DrawColorPocker("cTest", &c,
 		ImGuiColorEditFlags_::ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaBar);
 	
-	bool result = ImGui::ColorPicker4("weufhewi", color, ImGuiColorEditFlags_::ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaBar);
-	
-
 	pImGuiManager->EndDrawWindow();
 
 

@@ -95,17 +95,14 @@ void MelLib::ImguiManager::Draw()
 
 void MelLib::ImguiManager::BeginDrawWindow
 (
-    const std::string& name,
-    const Vector2& pos, 
-    const Vector2& size
+    const std::string& name
 )
 {
     if (CheckReleaseDrawFlag())return;
 
     ImGui::Begin(name.c_str());
     
-    ImGui::SetWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_::ImGuiCond_FirstUseEver);
-    ImGui::SetWindowSize(ImVec2(size.x, size.y), ImGuiCond_::ImGuiCond_FirstUseEver);
+  
 
 }
 
@@ -114,6 +111,19 @@ void MelLib::ImguiManager::EndDrawWindow()
     if (CheckReleaseDrawFlag())return;
 
     ImGui::End();
+}
+
+void MelLib::ImguiManager::SetPosition(const Vector2& pos)
+{
+    if (CheckReleaseDrawFlag())return;
+
+    ImGui::SetWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_::ImGuiCond_FirstUseEver);
+}
+
+void MelLib::ImguiManager::SetSize(const Vector2& size)
+{
+    if (CheckReleaseDrawFlag())return;
+    ImGui::SetWindowSize(ImVec2(size.x, size.y), ImGuiCond_::ImGuiCond_FirstUseEver);
 }
 
 
