@@ -6,6 +6,7 @@
 
 #include"Vector.h"
 #include"Color.h"
+#include"Values.h"
 
 #include"imgui/imgui.h"
 
@@ -44,9 +45,9 @@ namespace MelLib
 
 		bool Initialize(ID3D12Device* pDev, ID3D12GraphicsCommandList* pCmdList);
 		void Finalize();
+		void Draw();
 
 		void Begin();
-		void Draw();
 		
 		/// <summary>
 		/// ウィンドウを描画する準備を行います。
@@ -54,10 +55,7 @@ namespace MelLib
 		/// <param name="name">ウィンドウ名</param>
 		/// <param name="pos">座標</param>
 		/// <param name="size">サイズ</param>
-		void BeginDrawWindow
-		(
-			const std::string& name
-		);
+		void BeginDrawWindow(const std::string& name);
 
 		/// <summary>
 		/// 描画処理を終了します。BeginDrawWindowを呼び出し、ウィンドウの項目の設定を行った後に必ず呼び出してください。
@@ -82,7 +80,7 @@ namespace MelLib
 		/// <param name="pInt">選択されているときにnumの値を代入する変数のポインタ</param>
 		/// <param name="num">選択されているときにpIntが参照している変数に代入する値</param>
 		/// <returns>現在のフレームで選択されたらtrue(正確には、選択されて値の代入処理が行われたらtrue)</returns>
-		bool DrawRadioButton(const std::string& label, int* pInt, const int num);
+		bool DrawRadioButton(const std::string& label, int& refInt, const int num);
 
 		/// <summary>
 		/// チェックボックスをウィンドウに表示します。
@@ -90,12 +88,37 @@ namespace MelLib
 		/// <param name="label">ラベル名(チェックボックスの隣に表示される文字)</param>
 		/// <param name="flag">押されているかどうかのフラグを代入する変数のポインタ</param>
 		/// <returns></returns>
-		bool DrawCheckBox(const std::string& label, bool* flag);
+		bool DrawCheckBox(const std::string& label, bool& refBool);
 
-		bool DrawSliderInt(const std::string& label, int* pInt, const int numMin, const int numMax);
-		bool DrawSliderFloat(const std::string& label, float* pFloat, const float numMin, const float numMax);
+#pragma region スライダー
 
-		bool DrawColorPocker(const std::string& label, Color* pColor,const ImGuiColorEditFlags flag);
+
+		bool DrawSliderInt(const std::string& label, int& refInt, const int numMin, const int numMax);
+		bool DrawSliderInt2(const std::string& label, Value2<int>& refInt, const int numMin, const int numMax);
+		bool DrawSliderInt3(const std::string& label, Value3<int>& refInt, const int numMin, const int numMax);
+		bool DrawSliderInt4(const std::string& label, Value4<int>& refInt, const int numMin, const int numMax);
+
+		bool DrawSliderFloat(const std::string& label, float& refFloat, const float numMin, const float numMax);
+		bool DrawSliderFloat2(const std::string& label, Value2<float>& refFloat, const float numMin, const float numMax);
+		bool DrawSliderFloat3(const std::string& label, Value3<float>& refFloat, const float numMin, const float numMax);
+		bool DrawSliderFloat4(const std::string& label, Value4<float>& refFloat, const float numMin, const float numMax);
+
+		bool DrawSliderVector2(const std::string& label, Vector2& refVec2, const float numMin, const float numMax);
+		bool DrawSliderVector3(const std::string& label, Vector3& refVec3, const float numMin, const float numMax);
+
+#pragma endregion
+
+#pragma region カラー
+
+
+		bool DrawColorPocker(const std::string& label, Color& refColor,const ImGuiColorEditFlags flag = 0);
+#pragma endregion
+
+#pragma region 入力
+		bool DrawInputText(const std::string& label, std::string& text,const size_t maxChar,const ImGuiInputTextFlags flag = 0);
+#pragma endregion
+
+
 #pragma endregion
 
 	};

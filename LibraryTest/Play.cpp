@@ -82,6 +82,9 @@ void Play::Initialize()
 
 int testI = 0;
 MelLib::Color c(255,255,0,255);
+MelLib::Value4<float>i(0);
+MelLib::Vector3 v3 = 3;
+std::string str = "rgrege";
 
 float color[4] = {};
 void Play::Update()
@@ -95,10 +98,20 @@ void Play::Update()
 	pImGuiManager->SetPosition(MelLib::Vector2(40, 40));
 	pImGuiManager->SetSize(MelLib::Vector2(300, 400));
 
-	pImGuiManager->DrawSliderInt("sTest", &testI, 0, 140);
-	pImGuiManager->DrawColorPocker("cTest", &c,
+	if(MelLib::Input::KeyTrigger(DIK_A))
+	{
+		int x = 0;
+	}
+	pImGuiManager->DrawInputText("test",str,30);
+
+	pImGuiManager->DrawSliderVector3("test", v3,0, 100);
+
+	pImGuiManager->DrawSliderInt("sTest", testI, 0, 140);
+	pImGuiManager->DrawColorPocker("cTest", c,
 		ImGuiColorEditFlags_::ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaBar);
 	
+
+
 	pImGuiManager->EndDrawWindow();
 
 

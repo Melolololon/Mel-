@@ -127,41 +127,177 @@ void MelLib::ImguiManager::SetSize(const Vector2& size)
 }
 
 
-bool MelLib::ImguiManager::DrawRadioButton(const std::string& label, int* pInt, const int num)
+bool MelLib::ImguiManager::DrawRadioButton(const std::string& label, int& refInt, const int num)
 {
     if (CheckReleaseDrawFlag())return false;
 
-    return ImGui::RadioButton(label.c_str(), pInt, num);
+    return ImGui::RadioButton(label.c_str(), &refInt, num);
 }
 
-bool MelLib::ImguiManager::DrawCheckBox(const std::string& label, bool* flag)
+bool MelLib::ImguiManager::DrawCheckBox(const std::string& label, bool& refBool)
 {
     if (CheckReleaseDrawFlag())return false;
 
-    return ImGui::Checkbox(label.c_str(), flag);
+    return ImGui::Checkbox(label.c_str(), &refBool);
 }
 
-bool MelLib::ImguiManager::DrawSliderInt(const std::string& label, int* pInt, const int numMin, const int numMax)
+bool MelLib::ImguiManager::DrawSliderInt(const std::string& label, int& refInt, const int numMin, const int numMax)
 {
     if (CheckReleaseDrawFlag())return false;
 
-    return ImGui::SliderInt(label.c_str(), pInt, numMin, numMax);
+    return ImGui::SliderInt(label.c_str(), &refInt, numMin, numMax);
 }
 
-bool MelLib::ImguiManager::DrawSliderFloat(const std::string& label, float* pFloat, const float numMin, const float numMax)
+bool MelLib::ImguiManager::DrawSliderInt2(const std::string& label, Value2<int>& refInt, const int numMin, const int numMax)
 {
     if (CheckReleaseDrawFlag())return false;
 
-    return ImGui::SliderFloat(label.c_str(), pFloat, numMin, numMax);
+    int i[2] = { refInt.v1,refInt.v2 };
+    bool result = ImGui::SliderInt2(label.c_str(), i, numMin, numMax);
+    
+    refInt.v1 = i[0];
+    refInt.v2 = i[1];
+    
+    return result;
 }
 
-bool MelLib::ImguiManager::DrawColorPocker(const std::string& label, Color* pColor, const ImGuiColorEditFlags flag)
+bool MelLib::ImguiManager::DrawSliderInt3(const std::string& label, Value3<int>& refInt, const int numMin, const int numMax)
 {
     if (CheckReleaseDrawFlag())return false;
 
-    Value4<float>fCor4 = pColor->ToFloat();
+    int i[3] = { refInt.v1,refInt.v2,refInt.v3 };
+    bool result = ImGui::SliderInt3(label.c_str(), i, numMin, numMax);
+   refInt.v1 = i[0];
+   refInt.v2 = i[1];
+   refInt.v3 = i[2];
+
+    return result;
+}
+
+bool MelLib::ImguiManager::DrawSliderInt4(const std::string& label, Value4<int>& refInt, const int numMin, const int numMax)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    int i[4] = { refInt.v1,refInt.v2,refInt.v3,refInt.v4 };
+    bool result = ImGui::SliderInt4(label.c_str(), i, numMin, numMax);
+
+    refInt.v1 = i[0];
+    refInt.v2 = i[1];
+    refInt.v3 = i[2];
+    refInt.v4 = i[3];
+
+    return result;
+}
+
+
+bool MelLib::ImguiManager::DrawSliderFloat(const std::string& label, float& refFloat, const float numMin, const float numMax)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    return ImGui::SliderFloat(label.c_str(), &refFloat, numMin, numMax);
+}
+
+bool MelLib::ImguiManager::DrawSliderFloat2(const std::string& label, Value2<float>& refFloat, const float numMin, const float numMax)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    float f[2] = { refFloat.v1,refFloat.v2 };
+    bool result = ImGui::SliderFloat2(label.c_str(), f, numMin, numMax);
+
+    refFloat.v1 = f[0];
+    refFloat.v2 = f[1];
+
+    return result;
+}
+
+bool MelLib::ImguiManager::DrawSliderFloat3(const std::string& label, Value3<float>& refFloat, const float numMin, const float numMax)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    float f[3] = { refFloat.v1, refFloat.v2 , refFloat.v3 };
+    bool result = ImGui::SliderFloat3(label.c_str(), f, numMin, numMax);
+    refFloat.v1 = f[0];
+    refFloat.v2 = f[1];
+    refFloat.v3 = f[2];
+
+    return result;
+}
+
+bool MelLib::ImguiManager::DrawSliderFloat4(const std::string& label, Value4<float>& refFloat, const float numMin, const float numMax)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    float f[4] = { refFloat.v1,refFloat.v2 ,refFloat.v3 ,refFloat.v4 };
+    bool result = ImGui::SliderFloat4(label.c_str(), f, numMin, numMax);
+
+    refFloat.v1 = f[0];
+    refFloat.v2 = f[1];
+    refFloat.v3 = f[2];
+    refFloat.v4 = f[3];
+
+    return result;
+}
+
+bool MelLib::ImguiManager::DrawSliderVector2(const std::string& label, Vector2& refVec2, const float numMin, const float numMax)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    float f[2] = { refVec2.x,refVec2.y };
+    bool result = ImGui::SliderFloat2(label.c_str(), f, numMin, numMax);
+
+   refVec2.x = f[0];
+   refVec2.y = f[1];
+
+    return result;
+}
+
+bool MelLib::ImguiManager::DrawSliderVector3(const std::string& label, Vector3& refVec3, const float numMin, const float numMax)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    float f[3] = { refVec3.x,refVec3.y ,refVec3.z };
+    bool result = ImGui::SliderFloat3(label.c_str(), f, numMin, numMax);
+
+    refVec3.x = f[0];
+    refVec3.y = f[1];
+    refVec3.z = f[2];
+
+    return result;
+}
+
+
+bool MelLib::ImguiManager::DrawColorPocker(const std::string& label, Color& refColor, const ImGuiColorEditFlags flag)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    Value4<float>fCor4 = refColor.ToFloat();
     float color[4] = { fCor4.v1,fCor4.v2,fCor4.v3,fCor4.v4 };
     bool result = ImGui::ColorPicker4(label.c_str(), color, flag);
-    *pColor = Color(color[0] * 255.0f, color[1] * 255.0f, color[2] * 255.0f, color[3] * 255.0f);
+    refColor = Color(color[0] * 255.0f, color[1] * 255.0f, color[2] * 255.0f, color[3] * 255.0f);
     return result;
+}
+
+bool MelLib::ImguiManager::DrawInputText(const std::string& label, std::string& text, const size_t maxChar,const ImGuiInputTextFlags flag)
+{
+    // ウィジェットです。キーボードによる入力
+// - InputText()をstd::stringやカスタムの動的文字列型で使用したい場合は、misc/cpp/imgui_stdlib.hやimgui_demo.cppのコメントを参照してください。
+// - ImGuiInputTextFlagsフラグのほとんどはInputText()にのみ有効で、InputFloatX, InputIntX, InputDoubleなどには使えません。
+
+    //if (CheckReleaseDrawFlag())return false;
+   
+    //size_t size = text.size();
+    //char* str = new char[size + 1];
+    //for (int i = 0; i < size; i++)
+    //{
+    //    str[i] = text[i];
+    //}
+    //str[size] = '\0';
+
+    //bool result = ImGui::InputText(label.c_str(), str, maxChar,flag);
+    //text = str;
+    //delete[] str;
+    //return result;
+
+
+    return false;
 }
