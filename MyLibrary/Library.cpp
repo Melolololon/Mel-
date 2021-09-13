@@ -58,6 +58,9 @@ std::wstring Library::winName;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
 
+
+//利用者がウィンドウを自作して使う場合は、利用者が用意したProcでこのProcを呼び出してもらえば、
+//ImGuiの処理を行える
 LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	switch (msg)

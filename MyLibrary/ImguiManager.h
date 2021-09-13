@@ -5,7 +5,7 @@
 #include<string>
 
 #include"Vector.h"
-
+#include"Color.h"
 
 #include"imgui/imgui.h"
 
@@ -13,8 +13,11 @@
 
 namespace MelLib 
 {
+
 	class ImguiManager
 	{
+	public:
+
 	private:
 		template<class T>
 		using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -69,6 +72,32 @@ namespace MelLib
 		/// </summary>
 		/// <param name="flag"></param>
 		void SetReleaseDrawFlag(const bool flag) { releaseDrawFlag = flag; }
+
+
+#pragma region 生成
+		/// <summary>
+		/// ラジオボタンをウィンドウに生成します。
+		/// </summary>
+		/// <param name="label">ラベル名(チェックボックスの隣に表示される文字)</param>
+		/// <param name="pInt">選択されているときにnumの値を代入する変数のポインタ</param>
+		/// <param name="num">選択されているときにpIntが参照している変数に代入する値</param>
+		/// <returns>現在のフレームで選択されたらtrue(正確には、選択されて値の代入処理が行われたらtrue)</returns>
+		bool DrawRadioButton(const std::string& label, int* pInt, const int num);
+
+		/// <summary>
+		/// チェックボックスをウィンドウに表示します。
+		/// </summary>
+		/// <param name="label">ラベル名(チェックボックスの隣に表示される文字)</param>
+		/// <param name="flag">押されているかどうかのフラグを代入する変数のポインタ</param>
+		/// <returns></returns>
+		bool DrawCheckBox(const std::string& label, bool* flag);
+
+		bool DrawSliderInt(const std::string& label, int* pInt, const int numMin, const int numMax);
+		bool DrawSliderFloat(const std::string& label, float* pFloat, const float numMin, const float numMax);
+
+		bool DrawColorPocker(const std::string& label, Color* pColor,const ImGuiColorEditFlags flag);
+#pragma endregion
+
 	};
 }
 
