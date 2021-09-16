@@ -107,7 +107,7 @@ void Play::Update()
 	pImGuiManager->DrawSliderVector3("test", v3,0, 100);
 
 	pImGuiManager->DrawSliderInt("sTest", testI, 0, 140);
-	pImGuiManager->DrawColorPocker("cTest", c,
+	pImGuiManager->DrawColorPicker("cTest", c,
 		ImGuiColorEditFlags_::ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaBar);
 	
 

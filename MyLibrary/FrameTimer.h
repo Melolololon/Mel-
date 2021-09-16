@@ -47,6 +47,8 @@ namespace MelLib
 
 		~FrameTimer();
 
+	
+
 		static void AllUpdate();
 
 		/// <summary>

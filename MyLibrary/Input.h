@@ -18,7 +18,7 @@
 
 namespace MelLib 
 {
-	enum class GamePadButton
+	enum class PadButton
 	{
 		UP = 0x0001,//十字キー上
 		DOWN = 0x0002,//十字キー下
@@ -227,10 +227,6 @@ namespace MelLib
 		/// </summary>
 		/// <returns>角度</returns>
 		static float GetMouseAngle();
-#pragma endregion
-
-
-#pragma region ボタン
 
 
 		/// <summary>
@@ -239,6 +235,19 @@ namespace MelLib
 		/// <param name="nearPoint"></param>
 		/// <param name="farPoint"></param>
 		static void GetMouse3DLine(Vector3& nearPoint, Vector3& farPoint);
+
+		static void GetMouse3DLine2
+		(
+			Camera* pCamera,
+			Vector3* pNear,
+			Vector3* pFar
+		);
+#pragma endregion
+
+
+#pragma region ボタン
+
+
 
 		static bool MouseButtonState(const MouseButton mouseButton);
 
@@ -255,9 +264,9 @@ namespace MelLib
 
 
 #pragma region ボタン
-		static bool ButtonState(const UCHAR padNum,const GamePadButton button);
-		static bool ButtonTrigger(const UCHAR padNum, const GamePadButton button);
-		static bool ButtonRelease(const UCHAR padNum, const GamePadButton button);
+		static bool PadButtonState(const UCHAR padNum,const PadButton button);
+		static bool PadButtonTrigger(const UCHAR padNum, const PadButton button);
+		static bool PadButtonRelease(const UCHAR padNum, const PadButton button);
 
 		/// <summary>
 		/// 十字ボタンが示す角度を取得します。

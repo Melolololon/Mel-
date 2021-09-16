@@ -111,7 +111,7 @@ namespace MelLib
 #pragma region ƒJƒ‰[
 
 
-		bool DrawColorPocker(const std::string& label, Color& refColor,const ImGuiColorEditFlags flag = 0);
+		bool DrawColorPicker(const std::string& label, Color& refColor,const ImGuiColorEditFlags flag = 0);
 #pragma endregion
 
 #pragma region “ü—Í

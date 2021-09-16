@@ -62,10 +62,14 @@ namespace MelLib
 #endif // _DEBUG
 
 
-
+		Vector3 position = 0;
 
 #pragma region 物理関係
-
+		
+		//物体が動く力
+		Vector3 force = 0;
+		//重さ(kg)
+		float mass = 1.0f;
 		//速度
 		Vector3 velocity = 0;
 		//重力加速度
@@ -86,14 +90,6 @@ namespace MelLib
 
 
 	protected:
-		Vector3 position = 0;
-
-		//物体が動く力
-		Vector3 force = 0;
-		//重さ(kg)
-		float mass = 1.0f;
-
-		
 
 #pragma region 判定データ
 		CollisionDetectionFlag collisionFlag;
@@ -152,9 +148,9 @@ namespace MelLib
 		virtual void Hit
 		(
 			const GameObject* const  object,
-			const ShapeType3D collisionType,
+			const ShapeType3D& collisionType,
 			const int arrayNum,
-			const ShapeType3D hitObjColType,
+			const ShapeType3D& hitObjColType,
 			const int hitObjArrayNum
 		);
 

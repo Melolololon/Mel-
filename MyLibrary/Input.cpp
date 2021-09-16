@@ -1,6 +1,7 @@
 #include "Input.h"
 #include"LibMath.h"
 #include"LibWinAPI.h"
+#include"Library.h"
 
 #include<string>
 
@@ -571,6 +572,107 @@ void Input::GetMouse3DLine(Vector3& nearPoint, Vector3& farPoint)
 #pragma endregion
 }
 
+void MelLib::Input::GetMouse3DLine2(Camera* pCamera, Vector3* pNear, Vector3* pFar)
+{
+	if (!pCamera)return;
+
+	Vector2 mousePos = GetMousePosition();
+
+	DirectX::XMMATRIX mousePosMatrix;
+	DirectX::XMMATRIX viewportMatrix;
+	DirectX::XMMATRIX worldMousePosMatrix;
+
+	//逆行列
+	DirectX::XMMATRIX invViewPortMatrix;
+	DirectX::XMMATRIX invViewMatrix;
+	DirectX::XMMATRIX invProjectionMatrix;
+
+
+	//ビューポート行列を作成
+	viewportMatrix = DirectX::XMMatrixIdentity();
+
+	static const float WIDTH = (float)Library::GetWindowWidth();
+	static const float HEIGHT = (float)Library::GetWindowHeight();
+	viewportMatrix.r[0].m128_f32[0] = WIDTH / 2.0f;
+	viewportMatrix.r[1].m128_f32[1] = -HEIGHT / 2.0f;
+	viewportMatrix.r[3].m128_f32[0] = WIDTH / 2.0f;
+	viewportMatrix.r[3].m128_f32[1] = HEIGHT / 2.0f;
+
+	//マウス座標の行列
+	mousePosMatrix = DirectX::XMMatrixIdentity();
+
+	invViewPortMatrix = DirectX::XMMatrixInverse(nullptr, viewportMatrix);
+	invViewMatrix = DirectX::XMMatrixInverse(nullptr, pCamera->GetViewMatrix());
+	invProjectionMatrix = DirectX::XMMatrixInverse(nullptr, pCamera->GetProjectionMatrix());
+
+#pragma region Z = 0(最近点)
+
+	//z = 0の場合
+	mousePosMatrix = DirectX::XMMatrixTranslation(mousePos.x, mousePos.y, 0.0f);
+	//スクリーン座標をワールド座標に
+	worldMousePosMatrix = DirectX::XMMatrixIdentity();
+
+	worldMousePosMatrix *= mousePosMatrix;
+	worldMousePosMatrix *= invViewPortMatrix;
+	worldMousePosMatrix *= invProjectionMatrix;
+
+	//W除算
+	worldMousePosMatrix.r[3].m128_f32[0] /= worldMousePosMatrix.r[3].m128_f32[3];
+	worldMousePosMatrix.r[3].m128_f32[1] /= worldMousePosMatrix.r[3].m128_f32[3];
+	worldMousePosMatrix.r[3].m128_f32[2] /= worldMousePosMatrix.r[3].m128_f32[3];
+	worldMousePosMatrix.r[3].m128_f32[3] /= worldMousePosMatrix.r[3].m128_f32[3];
+
+	worldMousePosMatrix *= invViewMatrix;
+
+	//最近点
+	if (pNear) 
+	{
+		*pNear =
+		{
+			worldMousePosMatrix.r[3].m128_f32[0] ,
+			worldMousePosMatrix.r[3].m128_f32[1] ,
+			worldMousePosMatrix.r[3].m128_f32[2]
+		};
+	}
+#pragma endregion
+
+
+#pragma region z = 1(最遠点)
+
+
+	//z = 1の場合
+	mousePosMatrix = DirectX::XMMatrixTranslation(mousePos.x, mousePos.y, 1.0f);
+
+	//スクリーン座標をワールド座標に
+	worldMousePosMatrix = DirectX::XMMatrixIdentity();
+
+	worldMousePosMatrix *= mousePosMatrix;
+	worldMousePosMatrix *= invViewPortMatrix;
+	worldMousePosMatrix *= invProjectionMatrix;
+
+	//W除算
+	worldMousePosMatrix.r[3].m128_f32[0] /= worldMousePosMatrix.r[3].m128_f32[3];
+	worldMousePosMatrix.r[3].m128_f32[1] /= worldMousePosMatrix.r[3].m128_f32[3];
+	worldMousePosMatrix.r[3].m128_f32[2] /= worldMousePosMatrix.r[3].m128_f32[3];
+	worldMousePosMatrix.r[3].m128_f32[3] /= worldMousePosMatrix.r[3].m128_f32[3];
+
+	worldMousePosMatrix *= invViewMatrix;
+
+
+	//最遠点
+	if (pFar) 
+	{
+		*pFar =
+		{
+			worldMousePosMatrix.r[3].m128_f32[0] ,
+			worldMousePosMatrix.r[3].m128_f32[1] ,
+			worldMousePosMatrix.r[3].m128_f32[2]
+		};
+	}
+
+#pragma endregion
+}
+
 #pragma region ボタン
 
 //ボタン配列
@@ -639,7 +741,7 @@ bool Input::PadCheck(const UCHAR padNum)
 #pragma region ボタン
 
 
-bool Input::ButtonState(const UCHAR padNum, const GamePadButton button)
+bool Input::PadButtonState(const UCHAR padNum, const PadButton button)
 {
 	if (!PadCheck(padNum))return false;
 
@@ -650,25 +752,25 @@ bool Input::ButtonState(const UCHAR padNum, const GamePadButton button)
 	return false;
 }
 
-bool Input::ButtonTrigger(const UCHAR padNum, const GamePadButton button)
+bool Input::PadButtonTrigger(const UCHAR padNum, const PadButton button)
 {
 	if (!PadCheck(padNum))return false;
 
 	int num = padPrevious[padNum - 1].Gamepad.wButtons & (int)button;
 	if (num != (int)button &&
-		ButtonState(padNum,button))
+		PadButtonState(padNum,button))
 		return true;
 
 	return false;
 }
 
-bool Input::ButtonRelease(const UCHAR padNum, const GamePadButton button)
+bool Input::PadButtonRelease(const UCHAR padNum, const PadButton button)
 {
 	if (!PadCheck(padNum))return false;
 
 	int num = padPrevious[padNum - 1].Gamepad.wButtons & (int)button;
 	if (num == (int)button &&
-		!ButtonState(padNum,button))
+		!PadButtonState(padNum,button))
 		return true;
 
 	return false;
@@ -678,10 +780,10 @@ float Input::DirectionalButtonAngle(const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return -1.0f;
 
-	bool right = Input::ButtonState(padNum,GamePadButton::RIGHT);
-	bool left = Input::ButtonState(padNum,GamePadButton::LEFT);
-	bool up = Input::ButtonState(padNum,GamePadButton::UP);
-	bool down = Input::ButtonState(padNum,GamePadButton::DOWN);
+	bool right = Input::PadButtonState(padNum,PadButton::RIGHT);
+	bool left = Input::PadButtonState(padNum,PadButton::LEFT);
+	bool up = Input::PadButtonState(padNum,PadButton::UP);
+	bool down = Input::PadButtonState(padNum,PadButton::DOWN);
 
 	if (right && up)return 45.0f;
 	if (up && left)return 135.0f;

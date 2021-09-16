@@ -266,7 +266,7 @@ bool MelLib::ImguiManager::DrawSliderVector3(const std::string& label, Vector3& 
 }
 
 
-bool MelLib::ImguiManager::DrawColorPocker(const std::string& label, Color& refColor, const ImGuiColorEditFlags flag)
+bool MelLib::ImguiManager::DrawColorPicker(const std::string& label, Color& refColor, const ImGuiColorEditFlags flag)
 {
     if (CheckReleaseDrawFlag())return false;
 

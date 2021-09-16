@@ -144,9 +144,9 @@ void CollisionTestObject::Draw()
 void CollisionTestObject::Hit
 (
 	const GameObject* const object, 
-	const MelLib::ShapeType3D collisionType, 
+	const MelLib::ShapeType3D& collisionType,
 	const int arrayNum, 
-	const MelLib::ShapeType3D hitObjColType, 
+	const MelLib::ShapeType3D& hitObjColType,
 	const int hitObjArrayNum
 )
 {
