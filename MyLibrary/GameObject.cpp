@@ -73,7 +73,7 @@ void GameObject::Draw()
 
 void GameObject::Hit
 (
-	std::shared_ptr<GameObject>& object,
+	const GameObject* const  object,
 	const ShapeType3D& collisionType,
 	const int arrayNum,
 	const ShapeType3D& hitObjColType,

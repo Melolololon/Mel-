@@ -149,7 +149,7 @@ namespace MelLib
 		/// <param name="hitObjArrayNum">‘ŠŽè‚Ì‰½ŒÂ–Ú‚Ì”»’è‚É“–‚½‚Á‚½‚©</param>
 		virtual void Hit
 		(
-			std::shared_ptr<GameObject>& object,
+			const GameObject* const  object,
 			const ShapeType3D& collisionType,
 			const int arrayNum,
 			const ShapeType3D& hitObjColType,
