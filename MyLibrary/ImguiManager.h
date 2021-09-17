@@ -72,6 +72,8 @@ namespace MelLib
 		void SetPosition(const Vector2& pos);
 		void SetSize(const Vector2& size);
 
+		void SameLine();
+
 #pragma region 生成
 		/// <summary>
 		/// ラジオボタンをウィンドウに表示します。

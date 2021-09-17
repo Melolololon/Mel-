@@ -22,7 +22,31 @@ namespace MelLib
 		LibMath() {}
 		~LibMath() {}
 	public:
-		
+
+
+		enum MultipleClampType
+		{
+			CLAMP_TYPE_BIG,//大きい値を返す
+			CLAMP_TYPE_SMALL,//小さい値を返す
+			CLAMP_TYPE_NEAR_BIG,//大きい値と小さい値のうち近いほうを返し、差が同等だった場合、大きいほうを返します
+			CLAMP_TYPE_NEAR_SMALL,//大きい値と小さい値のうち近いほうを返し、差が同等だった場合、小さいほうを返します
+		};
+
+		/// <summary>
+		/// multipleの倍数でnumをクランプします。返す値はMultipleClampTypeでセットします。
+		/// </summary>
+		/// <param name="num">数値</param>
+		/// <param name="multiple">倍率</param>
+		/// <param name="type">返す値の種類</param>
+		/// <returns></returns>
+		static float MultipleClamp
+		(
+			const float num,
+			const float multiple,
+			const MultipleClampType type
+		);
+
+
 
 		/// <summary>
 		/// 階乗
@@ -38,6 +62,8 @@ namespace MelLib
 		/// <param name="index"></param>
 		/// <returns></returns>
 		static int Pow(const float num, const int index);
+
+
 
 
 		/// <summary>

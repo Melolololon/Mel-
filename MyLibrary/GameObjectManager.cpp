@@ -87,10 +87,10 @@ void GameObjectManager::Update()
 
 	for (int objI = 0; objI < objectSize; objI++)
 	{
-		GameObject* obj1 = objects[objI].get();
+		std::shared_ptr<GameObject> obj1 = objects[objI];
 		for (int objJ = 0; objJ < objectSize; objJ++)
 		{
-			GameObject* obj2 = objects[objJ].get();
+			std::shared_ptr<GameObject> obj2 = objects[objJ];
 			
 			////Ž©•ª‚Æ”äŠrA”äŠrÏ‚Ì‘g‚Ý‡‚í‚¹‚Ícontinue
 			if (objI >= objJ)continue;

@@ -7,6 +7,77 @@ using namespace MelLib;
 
 
 
+float LibMath::MultipleClamp
+(
+	const float num,
+	const float multiple,
+	const MultipleClampType type
+)
+{
+	if (multiple == 0.0f
+		|| num == 0.0f)return 0.0f;
+
+	//smallNumとbigNum確認用の変数
+	float checkNum = 0.0f;
+	//numより小さいかつ一番近い数値
+	float smallNum = 0.0f;
+	//numより大きいかつ一番近い数値
+	float bigNum = 0.0f;
+
+	bool checkSmall = false;
+	bool checkBig = false;
+
+	while (1)
+	{
+		if (num >= checkNum)
+		{
+			smallNum = checkNum;
+			checkSmall = true;
+		}
+		else
+		{
+			bigNum = checkNum;
+			checkBig = true;
+		}
+
+		if (checkSmall && checkBig)break;
+
+		//符号が違う場合は減らす
+		if (num >= 0 && multiple < 0
+			|| num < 0 && multiple >= 0)
+		{
+			checkNum -= multiple;
+		}
+		else
+		{
+			checkNum += multiple;
+		}
+	}
+
+	if (type == MultipleClampType::CLAMP_TYPE_BIG)return bigNum;
+	else if (type == MultipleClampType::CLAMP_TYPE_SMALL)return smallNum;
+
+	float bigDif = bigNum - num;
+	float smallDif = num - smallNum;
+
+
+	//差が小さいほう(近いほう)をリターン
+	if (smallDif > bigDif)
+	{
+		return bigNum;
+	}
+	else if (smallDif < bigDif)
+	{
+		return smallNum;
+	}
+	else//同じだった場合、タイプに従う
+	{
+		if (type == MultipleClampType::CLAMP_TYPE_NEAR_BIG)return bigNum;
+		return smallNum;
+	}
+}
+
+
 
 
 int LibMath::Factorial(const int num)
@@ -52,6 +123,9 @@ float LibMath::AngleConversion(int paterrn, float angle)
 	return (float)(angle * (180 / M_PI));
 
 }
+
+
+
 
 bool LibMath::Difference(const float num1, const float num2, const float difference)
 {

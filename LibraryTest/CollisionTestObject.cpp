@@ -143,7 +143,7 @@ void CollisionTestObject::Draw()
 
 void CollisionTestObject::Hit
 (
-	const GameObject* const object, 
+	std::shared_ptr<GameObject>& object,
 	const MelLib::ShapeType3D& collisionType,
 	const int arrayNum, 
 	const MelLib::ShapeType3D& hitObjColType,

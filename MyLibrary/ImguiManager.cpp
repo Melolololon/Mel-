@@ -126,6 +126,12 @@ void MelLib::ImguiManager::SetSize(const Vector2& size)
     ImGui::SetWindowSize(ImVec2(size.x, size.y), ImGuiCond_::ImGuiCond_FirstUseEver);
 }
 
+void MelLib::ImguiManager::SameLine()
+{
+    if (CheckReleaseDrawFlag())return;
+    ImGui::SameLine();
+}
+
 
 bool MelLib::ImguiManager::DrawRadioButton(const std::string& label, int& refInt, const int num)
 {

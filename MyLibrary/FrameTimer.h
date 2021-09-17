@@ -73,63 +73,63 @@ namespace MelLib
 		/// タイマーが停止しているかを返します。
 		/// </summary>
 		/// <returns></returns>
-		bool GetStopFlag() { return isStop; }
+		bool GetStopFlag()const { return isStop; }
 
 		/// <summary>
 		///	現在の時間を返します。
 		/// </summary>
 		/// <returns></returns>
-		int GetNowTime() { return time; }
+		int GetNowTime() const { return time; }
 
 		/// <summary>
 		/// 最大計測時間を取得します。
 		/// </summary>
 		/// <returns></returns>
-		int GetMaxTime() { return maxTime; }
+		int GetMaxTime() const { return maxTime; }
 
 		/// <summary>
 		/// 最小計測時間を取得します。
 		/// </summary>
 		/// <returns></returns>
-		int GetMinTime() { return minTime; }
+		int GetMinTime() const { return minTime; }
 
 		/// <summary>
 		/// 最大計測時間に達したときに現在の時間を上書きする時間を取得します。
 		/// </summary>
 		/// <returns></returns>
-		int GetResetMaxTime() { return resetMaxTime; }
+		int GetResetMaxTime()const { return resetMaxTime; }
 
 		/// <summary>
 		/// 最小計測時間に達したときに現在の時間を上書きする時間を取得します。
 		/// </summary>
 		/// <returns></returns>
-		int GetResetMinTime() { return resetMinTime; }
+		int GetResetMinTime()const { return resetMinTime; }
 
 		/// <summary>
 		/// 最大計測時間と現在の時間が同じになった瞬間にtrueを返します。
 		/// </summary>
 		/// <returns></returns>
-		bool GetSameAsMaxFlag() { return timeMaxMoment; }
+		bool GetSameAsMaxFlag()const { return timeMaxMoment; }
 
 		/// <summary>
 		/// 最小計測時間と現在の時間が同じになった瞬間にtrueを返します。
 		/// </summary>
 		/// <returns></returns>
-		bool GetSameAsMinFlag() { return timeMinMoment; }
+		bool GetSameAsMinFlag() const { return timeMinMoment; }
 
 		/// <summary>
 		/// 時間がセットした数値の倍数だった場合、trueを返します。
 		/// </summary>
 		/// <param name="num">数値</param>
 		/// <returns></returns>
-		bool GetMultipleTimeFlag(const int num) { return time % num == 0; }
+		bool GetMultipleTimeFlag(const int num)const { return time % num == 0; }
 
 		/// <summary>
 		/// セットした時間ごとにフラグをtrueとfalseに切り替えて返します。falseからスタートします。
 		/// </summary>
 		/// <param name="num">数値</param>
 		/// <returns></returns>
-		int GetSetByNumberFlag(const int num) { return time % (num * 2) >= num; }
+		int GetSetByNumberFlag(const int num) const { return time % (num * 2) >= num; }
 #pragma endregion
 
 #pragma region セット

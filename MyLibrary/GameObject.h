@@ -117,6 +117,7 @@ namespace MelLib
 		bool eraseManager = false;
 		
 
+		bool drawCollisionModel = true;
 	private:
 		/// <summary>
 		/// 
@@ -125,6 +126,7 @@ namespace MelLib
 		void SetModelPosition(const Vector3& vec);
 
 		void SetDataPosition(const Vector3& vec);
+
 	public:
 
 		//コンストラクタ
@@ -147,7 +149,7 @@ namespace MelLib
 		/// <param name="hitObjArrayNum">相手の何個目の判定に当たったか</param>
 		virtual void Hit
 		(
-			const GameObject* const  object,
+			std::shared_ptr<GameObject>& object,
 			const ShapeType3D& collisionType,
 			const int arrayNum,
 			const ShapeType3D& hitObjColType,
@@ -304,7 +306,10 @@ namespace MelLib
 		void SetCollisionCheckModelData();
 		//衝突確認用モデルの描画
 		void DrawCollisionCheckModel();
+
 #endif // _DEBUG
+
+
 
 #pragma endregion
 
