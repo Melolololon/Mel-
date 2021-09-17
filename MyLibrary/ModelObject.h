@@ -88,6 +88,8 @@ namespace MelLib
 		UINT modelFileObjectNum = 0;
 
 
+		//テクスチャ未セット時にセットする透明のテクスチャバッファ
+		static ComPtr<ID3D12Resource>colorZeroTexBuffer;
 	private:
 
 		void CreateConstBuffer();

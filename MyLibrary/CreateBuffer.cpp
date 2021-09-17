@@ -539,6 +539,52 @@ void MelLib::CreateBuffer::CreateSpriteTextureBufferAndView(const DirectX::TexMe
 	);
 }
 
+void MelLib::CreateBuffer::CreateOneColorTextureBuffer(const Color& color, ID3D12Resource** textureBuffer)
+{
+	D3D12_HEAP_PROPERTIES texHeapprop{};
+	D3D12_RESOURCE_DESC texResDesc{};
+
+	texHeapprop.Type = D3D12_HEAP_TYPE_CUSTOM;
+	texHeapprop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	texHeapprop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	texHeapprop.CreationNodeMask = 0;
+	texHeapprop.VisibleNodeMask = 0;
+
+	texResDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	texResDesc.Width = 1;
+	texResDesc.Height = 1;
+	texResDesc.DepthOrArraySize = 1;
+	texResDesc.SampleDesc.Count = 1;
+	texResDesc.SampleDesc.Quality = 1;
+	texResDesc.MipLevels = 1;
+	texResDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
+	texResDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	texResDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+	auto result = device->CreateCommittedResource
+	(
+		&texHeapprop,
+		D3D12_HEAP_FLAG_NONE,
+		&texResDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(textureBuffer)
+	);
+
+	ID3D12Resource* r = *textureBuffer;
+
+
+	//テクスチャサイズ1*1
+	result = r->WriteToSubresource
+	(
+		0,
+		nullptr,
+		&color,
+		sizeof(Color),//1列(横)
+		sizeof(Color)//全体サイズ
+	);
+}
+
 void CreateBuffer::CreateOneColorTextureBufferAndView
 (
 	const Color& color,

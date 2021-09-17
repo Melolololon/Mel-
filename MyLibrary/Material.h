@@ -99,8 +99,8 @@ namespace MelLib
 		//ファイルに複数モデルあってもレンダリングするタイミングが違うからまとめなくても問題ない
 		ComPtr<ID3D12DescriptorHeap>textureHeap;
 
-		
-
+		//テクスチャ未セット時にセットするテクスチャバッファ
+		static ComPtr<ID3D12Resource> textureNoneTextureBuffer;
 	private:
 		void MapColorBuffer(const Color& color);
 
@@ -125,7 +125,7 @@ namespace MelLib
 		virtual ~Material(){}
 		
 
-		static void Initialize(ID3D12Device* dev){ device = dev; }
+		static void Initialize(ID3D12Device* dev);
 		
 
 		virtual void Create(const DrawData& drawData){}

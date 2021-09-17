@@ -10,6 +10,7 @@ using namespace MelLib;
 
 std::unordered_map<std::string, std::unique_ptr<ModelObject>>ModelObject::pModelObjects;
 
+
 ID3D12Device* ModelObject::device;
 std::vector<ID3D12GraphicsCommandList*>ModelObject::cmdLists;
 ComPtr<ID3D12RootSignature> ModelObject::rootSignature;
@@ -479,7 +480,6 @@ void ModelObject::SetCmdList()
 
 #pragma region テクスチャ
 
-	
 		if (materials[i]->GetPTexture())
 		{
 			ID3D12DescriptorHeap* textureDescHeap = materials[i]->GetPTextureHeap();
@@ -835,6 +835,9 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 #pragma endregion
 
 	PipelineState::SetModelRootSignature(rootSignature.Get());
+
+
+	
 
 }
 

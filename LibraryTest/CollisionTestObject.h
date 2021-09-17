@@ -37,7 +37,7 @@ public:
 	/// <param name="hitObjArrayNum">‘ŠŽè‚Ì‰½ŒÂ–Ú‚Ì”»’è‚É“–‚½‚Á‚½‚©</param>
 	void Hit
 	(
-		std::shared_ptr<GameObject>& object,
+		const GameObject* const  object,
 		const MelLib::ShapeType3D& collisionType,
 		const int arrayNum,
 		const MelLib::ShapeType3D& hitObjColType,

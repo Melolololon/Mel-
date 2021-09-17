@@ -31,6 +31,7 @@ CollisionTestObject::CollisionTestObject(const MelLib::Vector3& pos, const bool 
 	}
 
 	model[0]->SetMaterial(&mtl,0);
+	model[1]->SetMaterial(&mtl,0);
 
 	/*collisionFlag.sphere = true;
 	sphereData.resize(1);
@@ -136,14 +137,14 @@ void CollisionTestObject::Update()
 void CollisionTestObject::Draw()
 {
 	model[0]->Draw();
-	//model[1]->Draw();
+	model[1]->Draw();
 
 	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255, 255, 255), std::to_wstring(hitFlag), "test");
 }
 
 void CollisionTestObject::Hit
 (
-	std::shared_ptr<GameObject>& object,
+	const GameObject* const object, 
 	const MelLib::ShapeType3D& collisionType,
 	const int arrayNum, 
 	const MelLib::ShapeType3D& hitObjColType,

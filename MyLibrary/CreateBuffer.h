@@ -116,6 +116,12 @@ namespace MelLib
 			ID3D12Resource** textureBuffer
 		);
 
+		void CreateOneColorTextureBuffer
+		(
+			const Color& color,
+			ID3D12Resource** textureBuffer
+		);
+
 		void CreateOneColorTextureBufferAndView
 		(
 			const Color& color,
