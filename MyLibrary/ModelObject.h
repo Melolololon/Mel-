@@ -173,6 +173,7 @@ namespace MelLib
 
 #pragma region ƒQƒbƒg
 
+		Material* GetPMaterial(const int num) { return materials[num]; }
 
 #pragma region ‘€ìŒ©‚½–Ú•ÏX
 
