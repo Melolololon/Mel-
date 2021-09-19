@@ -70,10 +70,11 @@ void MelLib::BoardData::CalcRotateDirPosition()
 	//ここ行列にしたほうがいい
 	//行列使いまわしたほうが計算コスト少ない
 
-	leftDownPos = Quaternion::GetZXYRotateQuaternion(leftDownPos, angle).ToVector3();
+	/*leftDownPos = Quaternion::GetZXYRotateQuaternion(leftDownPos, angle).ToVector3();
 	leftUpPos = Quaternion::GetZXYRotateQuaternion(leftUpPos, angle).ToVector3();
 	rightDownPos = Quaternion::GetZXYRotateQuaternion(rightDownPos, angle).ToVector3();
-	rightUpPos = Quaternion::GetZXYRotateQuaternion(rightUpPos, angle).ToVector3();
+	rightUpPos = Quaternion::GetZXYRotateQuaternion(rightUpPos, angle).ToVector3();*/
+
 }
 
 void MelLib::BoardData::SetPosition(const Vector3& pos)
@@ -149,18 +150,39 @@ void MelLib::BoardData::SetSize(const Vector2& size)
 	rightUpPos = MelLib::Vector3(size.x, size.y, 0) / 2;
 
 	//回転
-	CalcRotateDirPosition();
+	//ここ行列にしたほうがいい
+	//行列使いまわしたほうが計算コスト少ない
+	//CalcRotateDirPosition();
+	leftDownPos = Quaternion::GetZXYRotateQuaternion(leftDownPos, angle).ToVector3();
+	leftUpPos = Quaternion::GetZXYRotateQuaternion(leftUpPos, angle).ToVector3();
+	rightDownPos = Quaternion::GetZXYRotateQuaternion(rightDownPos, angle).ToVector3();
+	rightUpPos = Quaternion::GetZXYRotateQuaternion(rightUpPos, angle).ToVector3();
+
+
+	//移動
+	leftDownPos += position;
+	leftUpPos += position;
+	rightDownPos += position;
+	rightUpPos += position;
 }
 
 void MelLib::BoardData::SetAngle(const Vector3& angle)
 {
 	if (this->angle == angle)return;
-	this->angle = angle;
+	
 
 	//回転
 	normal = Quaternion::GetZXYRotateQuaternion(Vector3(0, 0, -1), angle).ToVector3();
-	CalcRotateDirPosition();
+	//CalcRotateDirPosition();
 
+	//ここ行列にしたほうがいい
+	//行列使いまわしたほうが計算コスト少ない
+	MelLib::Vector3 preSubCrr = angle - this->angle;
+	this->angle = angle;
+	leftDownPos = Quaternion::GetZXYRotateQuaternion(leftDownPos, preSubCrr).ToVector3();
+	leftUpPos = Quaternion::GetZXYRotateQuaternion(leftUpPos, preSubCrr).ToVector3();
+	rightDownPos = Quaternion::GetZXYRotateQuaternion(rightDownPos, preSubCrr).ToVector3();
+	rightUpPos = Quaternion::GetZXYRotateQuaternion(rightUpPos, preSubCrr).ToVector3();
 }
 
 
