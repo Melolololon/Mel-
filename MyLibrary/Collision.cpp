@@ -183,9 +183,9 @@ bool Collision::BoxAndBox
 )
 {
 	Vector3 box1Pos = box1.GetPosition();
-	Vector3 box1Size = box1.GetPosition();
+	Vector3 box1Size = box1.GetSize();
 	Vector3 box2Pos = box2.GetPosition();
-	Vector3 box2Size = box2.GetPosition();
+	Vector3 box2Size = box2.GetSize();
 
 	Vector3 minPos1 = box1Pos - box1Size / 2;
 	Vector3 maxPos1 = box1Pos + box1Size / 2;
