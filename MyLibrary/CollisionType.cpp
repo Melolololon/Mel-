@@ -103,45 +103,53 @@ void MelLib::BoardData::SetSize(const Vector2& size)
 
 
 	//0だとベクトルを求められないので、仕方なく回転させる
-	if (preSize == 0.0f)
-	{
-		leftDownPos = MelLib::Vector3(-size.x, -size.y, 0) / 2;
-		leftUpPos = MelLib::Vector3(-size.x, size.y, 0) / 2;
-		rightDownPos = MelLib::Vector3(size.x, -size.y, 0) / 2;
-		rightUpPos = MelLib::Vector3(size.x, size.y, 0) / 2;
+	//if (preSize == 0.0f)
+	//{
+	//	leftDownPos = MelLib::Vector3(-size.x, -size.y, 0) / 2;
+	//	leftUpPos = MelLib::Vector3(-size.x, size.y, 0) / 2;
+	//	rightDownPos = MelLib::Vector3(size.x, -size.y, 0) / 2;
+	//	rightUpPos = MelLib::Vector3(size.x, size.y, 0) / 2;
 
-		//回転
-		CalcRotateDirPosition();
-	}
-	else
-	{
-		//差(マイナスあり)を求める
-		Vector2 curSubPre = size - preSize;
-		Vector3 pos = position;
+	//	//回転
+	//	CalcRotateDirPosition();
+	//}
+	//else
+	//{
+	//	//差(マイナスあり)を求める
+	//	Vector2 curSubPre = size - preSize;
+	//	Vector3 pos = position;
 
-		/// <summary>
-		/// サイズを適応させるラムダ式
-		/// </summary>
-		/// <param name="size"></param>
-		auto calcMovePos = [&curSubPre, &pos](const Vector3& dirPos)
-		{
-			Vector3 posToDirPos = LibMath::OtherVector3(pos, dirPos);
-			Vector3 returnPos;
+	//	/// <summary>
+	//	/// サイズを適応させるラムダ式
+	//	/// </summary>
+	//	/// <param name="size"></param>
+	//	auto calcMovePos = [&curSubPre, &pos](const Vector3& dirPos)
+	//	{
+	//		Vector3 posToDirPos = LibMath::OtherVector3(pos, dirPos);
+	//		Vector3 returnPos;
 
-			//差のX分移動
-			returnPos = LibMath::FloatDistanceMoveVector3(dirPos, posToDirPos.x, curSubPre.x);
-			//差のY分移動
-			returnPos = LibMath::FloatDistanceMoveVector3(returnPos, posToDirPos.y, curSubPre.y);
+	//		//差のX分移動
+	//		returnPos = LibMath::FloatDistanceMoveVector3(dirPos, posToDirPos.x, curSubPre.x);
+	//		//差のY分移動
+	//		returnPos = LibMath::FloatDistanceMoveVector3(returnPos, posToDirPos.y, curSubPre.y);
 
-			return returnPos;
-		};
+	//		return returnPos;
+	//	};
 
-		//サイズ分拡縮
-		leftDownPos = calcMovePos(leftDownPos);
-		leftUpPos = calcMovePos(leftUpPos);
-		rightDownPos = calcMovePos(rightDownPos);
-		rightUpPos = calcMovePos(rightUpPos);
-	}
+	//	//サイズ分拡縮
+	//	leftDownPos = calcMovePos(leftDownPos);
+	//	leftUpPos = calcMovePos(leftUpPos);
+	//	rightDownPos = calcMovePos(rightDownPos);
+	//	rightUpPos = calcMovePos(rightUpPos);
+	//}
+
+	leftDownPos = MelLib::Vector3(-size.x, -size.y, 0) / 2;
+	leftUpPos = MelLib::Vector3(-size.x, size.y, 0) / 2;
+	rightDownPos = MelLib::Vector3(size.x, -size.y, 0) / 2;
+	rightUpPos = MelLib::Vector3(size.x, size.y, 0) / 2;
+
+	//回転
+	CalcRotateDirPosition();
 }
 
 void MelLib::BoardData::SetAngle(const Vector3& angle)

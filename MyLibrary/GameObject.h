@@ -45,7 +45,6 @@ namespace MelLib
 	{
 	private:
 
-
 #ifdef _DEBUG
 		//判定確認用モデルのパイプライン
 		static PipelineState collisionCheckModelPipelineState;
@@ -66,7 +65,6 @@ namespace MelLib
 
 
 #endif // _DEBUG
-
 
 		Vector3 position = 0;
 
@@ -93,7 +91,14 @@ namespace MelLib
 		bool isFall = false;
 #pragma endregion
 
-
+		//当たった相手のデータ
+		SphereData hitSphereData;
+		BoxData hitBoxData;
+		Segment3DData hitSegment3DData;
+		RayData hitLayData;
+		PlaneData hitPlaneData;
+		BoardData hitBoardData;
+		CapsuleData hitCapsuleData;
 
 	protected:
 
@@ -124,6 +129,15 @@ namespace MelLib
 		
 
 		bool drawCollisionModel = true;
+
+	protected:
+		SphereData GetHitSphereData() const { return hitSphereData; }
+		BoxData GetHitBoxData() const { return hitBoxData; }
+		Segment3DData GetHitSegmentData() const { return hitSegment3DData; }
+		PlaneData GetHitPlaneData() const { return hitPlaneData; }
+		BoardData GetHitBoardData()const { return hitBoardData; }
+		CapsuleData GetHitCapsuleData() const { return hitCapsuleData; }
+
 	private:
 		/// <summary>
 		/// 
@@ -301,7 +315,12 @@ namespace MelLib
 		//BoxHitDirection& GetSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }
 		//BoxHitDirection& GetBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
 
-
+		void SetHitSphereData(const SphereData& sphere) { hitSphereData = sphere; }
+		void SetHitBoxData(const BoxData& box) { hitBoxData = box; }
+		void SetHitBoardData(const BoardData& board) { hitBoardData = board; }
+		void SetHitPlaneData(const PlaneData& plane) { hitPlaneData = plane; }
+		void SetHitSegment3DData(const Segment3DData& segment) { hitSegment3DData = segment; }
+		void SetHitCapsuleData(const CapsuleData& capsule) { hitCapsuleData = capsule; }
 
 #ifdef _DEBUG
 		static void CreateCollisionCheckModelPipelineState();
@@ -318,7 +337,6 @@ namespace MelLib
 
 
 #pragma endregion
-
 
 	};
 }
