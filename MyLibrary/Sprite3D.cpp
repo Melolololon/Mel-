@@ -106,10 +106,10 @@ void Sprite3D::Draw(const std::string& rtName)
 	Vector2 uvLeftUp = { 1.0f / textureSize.x * drawLeftUpPosition.x ,1.0f / textureSize.y * drawLeftUpPosition.y };
 	Vector2 uvRightDown = { 1.0f / textureSize.x * drawRightDownPosition.x ,1.0f / textureSize.y * drawRightDownPosition.y };
 
-	vertices[0].uv = { uvLeftUp.x ,uvRightDown.y };
-	vertices[1].uv = { uvLeftUp.x,uvLeftUp.y };
-	vertices[2].uv = { uvRightDown.x ,uvRightDown.y };
-	vertices[3].uv = { uvRightDown.x ,uvLeftUp.y };
+	vertices[0].uv = { uvLeftUp.x ,-uvRightDown.y };
+	vertices[1].uv = { uvLeftUp.x,-uvLeftUp.y };
+	vertices[2].uv = { uvRightDown.x ,-uvRightDown.y };
+	vertices[3].uv = { uvRightDown.x ,-uvLeftUp.y };
 #pragma endregion
 	auto vertexNum = vertices.size();
 	for (int i = 0; i < vertexNum; i++)
