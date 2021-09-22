@@ -17,8 +17,9 @@ bool Collision::RectAndRect(const RectData& rect1, const RectData& rect2)
 	Vector2 size1 = rect1.GetSize();
 	Vector2 size2 = rect2.GetSize();
 
+
 	return size2.x + pos2.x > pos1.x &&
-		pos2.x < size1.x + pos2.x &&
+		pos2.x < size1.x + pos1.x &&
 		pos2.y < size1.y + pos1.y &&
 		size2.y + pos2.y > pos1.y;
 }

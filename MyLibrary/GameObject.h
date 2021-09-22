@@ -138,6 +138,56 @@ namespace MelLib
 		BoardData GetHitBoardData()const { return hitBoardData; }
 		CapsuleData GetHitCapsuleData() const { return hitCapsuleData; }
 
+
+
+#pragma region 物理演算
+		//反発とかもHit関数で自分で呼ぶようにする?
+		//名前PhysicsMoveに変える?
+		//CalcMovePhysicsで重力加速度計算しないようにする?
+
+		//もう物理演算まとめる?
+		//CalcThrowUpPhysicsとか引数いるやつはまとめられない
+
+		//物理演算行ったらマネージャーで座標移動させる?
+		//移動量計算すればちゃんと移動できる
+
+		/// <summary>
+		/// 座標に関する物理演算を行います。
+		/// </summary>
+		void CalcMovePhysics();
+
+
+
+		/// <summary>
+		/// 落下処理を開始します。
+		/// </summary>
+		/// <param name="startSpeed">初速度</param>
+		void FallStart(const float startSpeed)
+		{
+			this->fallStartSpeed = startSpeed;
+			isFall = true;
+		}
+
+		/// <summary>
+		/// 落下処理を終了します。
+		/// </summary>
+		void FallEnd()
+		{
+			fallTime = 0;
+			fallStartSpeed = 0.0f;
+			isFall = false;
+
+			//引いて投げ上げによる加速度をとりあえず引く
+			//本当は引かずに反発の処理やったほうがいい
+			velocity.y -= currentFallVelovity;
+
+
+			currentFallVelovity = 0.0f;
+		}
+
+
+
+#pragma endregion
 	private:
 		/// <summary>
 		/// 
@@ -176,55 +226,6 @@ namespace MelLib
 			const int hitObjArrayNum
 		);
 
-
-#pragma region 物理演算
-		//反発とかもHit関数で自分で呼ぶようにする?
-		//名前PhysicsMoveに変える?
-		//CalcMovePhysicsで重力加速度計算しないようにする?
-
-		//もう物理演算まとめる?
-		//CalcThrowUpPhysicsとか引数いるやつはまとめられない
-
-		//物理演算行ったらマネージャーで座標移動させる?
-		//移動量計算すればちゃんと移動できる
-
-		/// <summary>
-		/// 座標に関する物理演算を行います。
-		/// </summary>
-		void CalcMovePhysics();
-
-
-
-		/// <summary>
-		/// 落下処理を開始します。
-		/// </summary>
-		/// <param name="startSpeed">初速度</param>
-		void StartFall(const float startSpeed)
-		{
-			this->fallStartSpeed = startSpeed;
-			isFall = true;
-		}
-
-		/// <summary>
-		/// 落下処理を終了します。
-		/// </summary>
-		void EndFall()
-		{
-			fallTime = 0;
-			fallStartSpeed = 0.0f;
-			isFall = false;
-
-			//引いて投げ上げによる加速度をとりあえず引く
-			//本当は引かずに反発の処理やったほうがいい
-			velocity.y -= currentFallVelovity;
-
-
-			currentFallVelovity = 0.0f;
-		}
-
-		
-
-#pragma endregion
 
 
 		//void CalcHitPhysics(GameObject* hitObject,const Vector3& hutPreVelocity,const CollisionType& collisionType);
