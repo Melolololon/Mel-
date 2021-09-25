@@ -25,9 +25,9 @@ namespace MelLib
 
 	struct CollisionDetectionFlag2D
 	{
-		bool circle = false;
-		bool rect = false;
-		bool segment = false;
+		bool circle = true;
+		bool rect = true;
+		bool segment = true;
 	};
 
 	//2D‚ÌŒ`ó‚Ì—ñ‹“

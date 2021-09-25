@@ -23,9 +23,9 @@ GameObjectManager* GameObjectManager::GetInstance()
 	return &inst;
 }
 
-void GameObjectManager::Initialize() 
+void GameObjectManager::Initialize()
 {
-	
+
 
 	cursor = std::make_unique<MouseCursor>();
 	//cursor->Initialize();
@@ -36,21 +36,21 @@ void GameObjectManager::Initialize()
 	addObjects.reserve(100);
 }
 
-void GameObjectManager::Update() 
+void GameObjectManager::Update()
 {
 #pragma region オブジェクトのUpdate
 	//カーソルアップデート
-	if (cursor) 
+	if (cursor)
 	{
 		cursor->Update();
 		nearPos = cursor->GetNearPos();
 		farPos = cursor->GetFarPos();
 	}
-	
-	for (auto& obj : objects) 
+
+	for (auto& obj : objects)
 	{
 		obj->Update();
-		
+
 	}
 
 	for (auto& obj : object2Ds)
@@ -59,15 +59,15 @@ void GameObjectManager::Update()
 
 	}
 
-	if(addObjects.size() != 0)
+	if (addObjects.size() != 0)
 	{
-		for (auto& a : addObjects) 
+		for (auto& a : addObjects)
 		{
 
 			a.get()->Update();
 			objects.push_back(a);
 		}
-		
+
 		if (addObjectSort != OBJECT_SORT_NONE)
 			ObjectSort(addObjectSort, addObjectSortOrderType);
 
@@ -90,7 +90,7 @@ void GameObjectManager::Update()
 #pragma endregion
 
 #pragma region 新判定処理
-	
+
 	size_t objectSize = objects.size();
 
 	std::vector<CollisionDetectionFlag>collisionFlags(objectSize);
@@ -105,7 +105,7 @@ void GameObjectManager::Update()
 		for (int objJ = 0; objJ < objectSize; objJ++)
 		{
 			GameObject* obj2 = objects[objJ].get();
-			
+
 			////自分と比較、比較済の組み合わせはcontinue
 			if (objI >= objJ)continue;
 
@@ -113,7 +113,7 @@ void GameObjectManager::Update()
 
 
 			if (collisionFlags[objI].sphere
-				&& collisionFlags[objJ].sphere) 
+				&& collisionFlags[objJ].sphere)
 			{
 
 				std::vector<SphereData>sphereData1 = obj1->GetSphereData();
@@ -234,8 +234,8 @@ void GameObjectManager::Update()
 							&result2
 						))
 						{
-							obj1->SetSegmentCalcResult(result1,colI);
-							obj2->SetSegmentCalcResult(result2,colJ);
+							obj1->SetSegmentCalcResult(result1, colI);
+							obj2->SetSegmentCalcResult(result2, colJ);
 
 
 							obj1->SetHitSegment3DData(segmentData2[colJ]);
@@ -367,7 +367,7 @@ void GameObjectManager::Update()
 
 			}
 
-			if(collisionFlags[objJ].sphere
+			if (collisionFlags[objJ].sphere
 				&& collisionFlags[objI].box)
 			{
 
@@ -430,7 +430,7 @@ void GameObjectManager::Update()
 				size_t sphereDataSize = sphereData.size();
 				std::vector<CapsuleData>capsuleData = obj2->GetCapsuleData();
 				size_t capsuleDataSize = capsuleData.size();
-			
+
 				for (int colI = 0; colI < sphereDataSize; colI++)
 				{
 					for (int colJ = 0; colJ < capsuleDataSize; colJ++)
@@ -717,10 +717,10 @@ void GameObjectManager::Update()
 
 
 
-	size_t object2DSize = object2Ds.size();
+	objectSize = object2Ds.size();
 
-	std::vector<CollisionDetectionFlag2D>collisionFlag2Ds(object2DSize);
-	for (int i = 0; i < object2DSize; i++)
+	std::vector<CollisionDetectionFlag2D>collisionFlag2Ds(objectSize);
+	for (int i = 0; i < objectSize; i++)
 	{
 		collisionFlag2Ds[i] = object2Ds[i]->GetCollisionFlag();
 	}
@@ -833,19 +833,19 @@ void GameObjectManager::Update()
 
 }
 
-void GameObjectManager::Draw() 
+void GameObjectManager::Draw()
 {
 	for (auto& o : objects)
 	{
 		o->Draw();
-		
+
 #ifdef _DEBUG
 
 		o->DrawCollisionCheckModel();
 #endif // _DEBUG
 	}
 
-	for(auto& o : object2Ds)
+	for (auto& o : object2Ds)
 	{
 		o->Draw();
 	}
@@ -881,7 +881,7 @@ void GameObjectManager::EraseObjectCheck()
 	object2Ds.shrink_to_fit();
 }
 
-void GameObjectManager::Finalize() 
+void GameObjectManager::Finalize()
 {
 	AllEraseObject();
 }
@@ -927,7 +927,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 			Vector3 pos2 = obj2->GetPosition();
 			float posSum1 = pos1.x + pos1.y + pos1.z;
 			float posSum2 = pos2.x + pos2.y + pos2.z;
-			
+
 			if (orderType)return posSum1 < posSum2;
 			return posSum1 > posSum2;
 		});
@@ -937,12 +937,12 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		std::sort
 		(
 			objects.begin(),
-			objects.end(), 
+			objects.end(),
 			[&orderType]
 		(
-			const std::shared_ptr<GameObject>& obj1, 
+			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
-		)
+			)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
@@ -961,7 +961,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		(
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
-		)
+			)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
@@ -980,7 +980,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		(
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
-		)
+			)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
@@ -991,7 +991,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		break;
 
 	case OBJECT_SORT_NEAR_DISTANCE:
-		
+
 		std::sort
 		(
 			objects.begin(),
@@ -1000,7 +1000,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		(
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
-		)
+			)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
@@ -1023,7 +1023,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		(
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
-		)
+			)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
