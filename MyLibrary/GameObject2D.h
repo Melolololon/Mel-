@@ -29,6 +29,8 @@ namespace MelLib
 		std::vector<MelLib::Segment2DData>segmentDatas;
 
 		CollisionDetectionFlag2D collisionFlags;
+
+		bool eraseManager = false;
 	public:
 		//コンストラクタ
 		GameObject2D();
@@ -65,6 +67,7 @@ namespace MelLib
 
 		MelLib::Vector2 GetPosition()const { return position; }
 
+		bool GetEraseManager()const { return eraseManager; }
 #pragma region 判定関係
 		CollisionDetectionFlag2D GetCollisionFlag()const { return collisionFlags; }
 		std::vector<CircleData>GetCircleData()const { return circleDatas; }
@@ -76,7 +79,7 @@ namespace MelLib
 #pragma endregion
 
 #pragma region セット
-
+		void FalseEraseManager();
 
 		void SetPosition(const MelLib::Vector2& pos);
 

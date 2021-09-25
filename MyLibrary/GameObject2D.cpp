@@ -60,6 +60,11 @@ void MelLib::GameObject2D::AddPosition(const MelLib::Vector2& vec)
 	MoveDataPosition(preToPos);
 }
 
+void MelLib::GameObject2D::FalseEraseManager()
+{
+	eraseManager = false;
+}
+
 void MelLib::GameObject2D::SetPosition(const MelLib::Vector2& pos)
 {
 	Vector2 prePos = position;

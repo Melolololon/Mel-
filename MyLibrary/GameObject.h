@@ -237,7 +237,7 @@ namespace MelLib
 		//確実に初期値が決まっている変数(eraseManagerなど)を初期化する変数(初期化忘れ防止用)
 		//これで初期化せずにヘッダで初期化する?
 		//再追加したときに初期化したいからこのままでいい
-		void ObjectInitialize();
+		void FalsEraseManager();
 
 
 

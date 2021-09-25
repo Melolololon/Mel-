@@ -117,6 +117,12 @@ namespace MelLib
 		/// <returns></returns>
 		bool GetSameAsMinFlag() const { return timeMinMoment; }
 
+		bool GetMaxJustFlag()const { return time == maxTime; }
+		bool GetMinJustFlag()const { return time == minTime; }
+
+		bool GetMaxOverFlag()const { return time >= maxTime; }
+		bool GetMinOverFlag()const { return time <= minTime; }
+
 		/// <summary>
 		/// 時間がセットした数値の倍数だった場合、trueを返します。
 		/// </summary>

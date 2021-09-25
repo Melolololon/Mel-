@@ -81,7 +81,7 @@ void GameObjectManager::Update()
 		{
 
 			a.get()->Update();
-			addObject2Ds.push_back(a);
+			object2Ds.push_back(a);
 		}
 
 		addObject2Ds.clear();
@@ -865,9 +865,20 @@ void GameObjectManager::EraseObjectCheck()
 		}
 	}
 
-
 	objects.shrink_to_fit();
 
+	size = object2Ds.size();
+	for (size_t i = 0; i < size; i++)
+	{
+		if (object2Ds[i]->GetEraseManager())
+		{
+			object2Ds.erase(object2Ds.begin() + i);
+			i--;
+			size--;
+		}
+	}
+
+	object2Ds.shrink_to_fit();
 }
 
 void GameObjectManager::Finalize() 
@@ -885,7 +896,7 @@ void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 {
 	if (object)
 	{
-		object.get()->ObjectInitialize();
+		object.get()->FalsEraseManager();
 		addObjects.push_back(object);
 	}
 }
@@ -894,6 +905,7 @@ void GameObjectManager::AddObject(const std::shared_ptr<GameObject2D>& object)
 {
 	if (object)
 	{
+		object.get()->FalseEraseManager();
 		addObject2Ds.push_back(object);
 	}
 }

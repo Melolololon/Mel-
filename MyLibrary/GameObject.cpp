@@ -102,7 +102,7 @@ void GameObject::Hit
 //}
 
 
-void GameObject::ObjectInitialize() 
+void GameObject::FalsEraseManager() 
 {
 	eraseManager = false;
 
