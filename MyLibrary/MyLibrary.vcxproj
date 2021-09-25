@@ -182,6 +182,7 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionType.cpp" />
     <ClCompile Include="Counter.cpp" />
+    <ClCompile Include="GameObject2D.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="Interpolation.cpp" />
     <ClCompile Include="Limit.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="RouteSearch.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -460,6 +462,7 @@
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Counter.h" />
+    <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -473,6 +476,7 @@
     <ClInclude Include="LibraryEnum.h" />
     <ClInclude Include="Limit.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="RouteSearch.h" />
     <ClInclude Include="Sound.h" />

@@ -206,7 +206,7 @@ void TextWrite::LoopEndProcess(const UINT rtIndex)
     {
         
         Color color = std::get<1>(d);
-        //d2dSolidColorBrush->SetColor(D2D1::ColorF(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.f));
+        d2dSolidColorBrush->SetColor(D2D1::ColorF(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.f));
 
 
         Vector2 pos = std::get<0>(d);
@@ -275,7 +275,7 @@ bool TextWrite::CreateFontData(const std::wstring& fontName,const std::string& n
         DWRITE_FONT_WEIGHT_REGULAR,//太さ(enumで指定)
         DWRITE_FONT_STYLE_NORMAL,//スタイル(enumで指定)。ここで文字を斜めにしたりできる
         DWRITE_FONT_STRETCH_NORMAL,//ストレッチ(enumで指定)。文字の引き伸ばし具合
-        72.0f,//ピクセルが単位のフォントサイズ?
+        32.0f,//ピクセルが単位のフォントサイズ?
         L"en_us",//ロケール名を含む文字列 ロケールとは、言語の書式ルール
         &pWriteTextFormat
     );

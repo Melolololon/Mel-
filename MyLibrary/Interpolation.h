@@ -1,16 +1,20 @@
 #pragma once
 
 //ï‚ä‘ÉNÉâÉX
-class Interpolation
+namespace MelLib
 {
 
-
-public:
-	template<class VALUE>
-	static VALUE Lerp(const VALUE start,const VALUE end , const float t)
+	class Interpolation
 	{
-		return start * (1.0f - t) + end * t;
-	}
 
-};
 
+	public:
+		template<class VALUE>
+		static VALUE Lerp(const VALUE start, const VALUE end, const float t)
+		{
+			return start * (1.0f - t) + end * t;
+		}
+
+	};
+
+}

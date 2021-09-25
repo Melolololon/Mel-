@@ -23,6 +23,13 @@ namespace MelLib
 		bool capsule = true;
 	};
 
+	struct CollisionDetectionFlag2D
+	{
+		bool circle = false;
+		bool rect = false;
+		bool segment = false;
+	};
+
 	//2D‚ÌŒ`ó‚Ì—ñ‹“
 	enum class ShapeType2D
 	{
@@ -310,6 +317,15 @@ namespace MelLib
 
 #pragma endregion
 
+#pragma region ŽOŠpŒ`
+	class TriangleData
+	{
+	private:
+
+
+	};
+#pragma endregion
+
 
 #pragma region ü•ª3D
 	struct Segment3DCalcResult
@@ -512,6 +528,7 @@ namespace MelLib
 	//	void SetHeightAngleAngle(const float angle) { this->heightAngle = angle; }
 	//};
 #pragma endregion
+
 
 
 #pragma endregion

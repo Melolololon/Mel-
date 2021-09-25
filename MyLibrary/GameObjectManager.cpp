@@ -52,7 +52,12 @@ void GameObjectManager::Update()
 		obj->Update();
 		
 	}
-	
+
+	for (auto& obj : object2Ds)
+	{
+		obj->Update();
+
+	}
 
 	if(addObjects.size() != 0)
 	{
@@ -69,6 +74,19 @@ void GameObjectManager::Update()
 		addObjects.clear();
 	}
 
+
+	if (addObject2Ds.size() != 0)
+	{
+		for (auto& a : addObject2Ds)
+		{
+
+			a.get()->Update();
+			addObject2Ds.push_back(a);
+		}
+
+		addObject2Ds.clear();
+	}
+
 #pragma endregion
 
 #pragma region 新判定処理
@@ -79,7 +97,6 @@ void GameObjectManager::Update()
 	for (int i = 0; i < objectSize; i++)
 	{
 		collisionFlags[i] = objects[i]->GetCollisionFlag();
-
 	}
 
 	for (int objI = 0; objI < objectSize; objI++)
@@ -699,6 +716,117 @@ void GameObjectManager::Update()
 
 
 
+
+	size_t object2DSize = object2Ds.size();
+
+	std::vector<CollisionDetectionFlag2D>collisionFlag2Ds(object2DSize);
+	for (int i = 0; i < object2DSize; i++)
+	{
+		collisionFlag2Ds[i] = object2Ds[i]->GetCollisionFlag();
+	}
+
+	for (int objI = 0; objI < objectSize; objI++)
+	{
+		GameObject2D* obj1 = object2Ds[objI].get();
+		for (int objJ = 0; objJ < objectSize; objJ++)
+		{
+			GameObject2D* obj2 = object2Ds[objJ].get();
+
+			////自分と比較、比較済の組み合わせはcontinue
+			if (objI >= objJ)continue;
+
+#pragma region Circle&Circle
+			if (collisionFlag2Ds[objI].circle
+				&& collisionFlag2Ds[objJ].circle)
+			{
+
+				std::vector<CircleData>circleData1 = obj1->GetCircleData();
+				size_t circleData1Size = circleData1.size();
+				std::vector<CircleData>circleData2 = obj2->GetCircleData();
+				size_t circleData2Size = circleData2.size();
+
+
+				for (int colI = 0; colI < circleData1Size; colI++)
+				{
+					for (int colJ = 0; colJ < circleData2Size; colJ++)
+					{
+						if (Collision::CircleAndCircle(circleData1[colI], circleData2[colJ]))
+						{
+							//hitを呼び出す
+							obj1->SetHitCircleData(circleData2[colJ]);
+							obj2->SetHitCircleData(circleData1[colJ]);
+
+							obj1->Hit
+							(
+								obj2,
+								ShapeType2D::CIRCLE,
+								colI,
+								ShapeType2D::CIRCLE,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								ShapeType2D::CIRCLE,
+								colJ,
+								ShapeType2D::CIRCLE,
+								colI
+							);
+						}
+					}
+				}
+
+			}
+#pragma endregion
+
+#pragma region Rect&Rect
+			if (collisionFlag2Ds[objI].rect
+				&& collisionFlag2Ds[objJ].rect)
+			{
+
+				std::vector<RectData>rectData1 = obj1->GetRectData();
+				size_t rectData1Size = rectData1.size();
+				std::vector<RectData>rectData2 = obj2->GetRectData();
+				size_t rectData2Size = rectData2.size();
+
+
+				for (int colI = 0; colI < rectData1Size; colI++)
+				{
+					for (int colJ = 0; colJ < rectData2Size; colJ++)
+					{
+						if (Collision::RectAndRect(rectData1[colI], rectData2[colJ]))
+						{
+							//hitを呼び出す
+							obj1->SetHitRectData(rectData2[colJ]);
+							obj2->SetHitRectData(rectData1[colJ]);
+
+							obj1->Hit
+							(
+								obj2,
+								ShapeType2D::RECT,
+								colI,
+								ShapeType2D::RECT,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								ShapeType2D::RECT,
+								colJ,
+								ShapeType2D::RECT,
+								colI
+							);
+						}
+					}
+				}
+
+			}
+#pragma endregion
+
+
+		}
+	}
+
 #pragma endregion
 
 	EraseObjectCheck();
@@ -715,6 +843,11 @@ void GameObjectManager::Draw()
 
 		o->DrawCollisionCheckModel();
 #endif // _DEBUG
+	}
+
+	for(auto& o : object2Ds)
+	{
+		o->Draw();
 	}
 }
 
@@ -750,14 +883,19 @@ void GameObjectManager::ReserveObjectArray(const int& reserveNum)
 
 void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 {
-
 	if (object)
 	{
 		object.get()->ObjectInitialize();
 		addObjects.push_back(object);
 	}
+}
 
-	
+void GameObjectManager::AddObject(const std::shared_ptr<GameObject2D>& object)
+{
+	if (object)
+	{
+		addObject2Ds.push_back(object);
+	}
 }
 
 void GameObjectManager::SetAddObjectSortState(const ObjectSortType& sort, const bool& orderType)
@@ -921,6 +1059,17 @@ void GameObjectManager::SetMouseCollisionFlag(const bool& flag)
 
 
 void GameObjectManager::AllEraseObject()
+{
+	objects.clear();
+	object2Ds.clear();
+}
+
+void MelLib::GameObjectManager::AllEraseObject2D()
+{
+	object2Ds.clear();
+}
+
+void MelLib::GameObjectManager::AllEraseObject3D()
 {
 	objects.clear();
 }

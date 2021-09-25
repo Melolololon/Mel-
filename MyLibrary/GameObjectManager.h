@@ -1,8 +1,10 @@
 #pragma once
 #include"GameObject.h"
+#include"GameObject2D.h"
 #include"CollisionType.h"
-#include<vector>
 #include"MouseCursor.h"
+
+#include<vector>
 #include<memory>
 
 //カーソル判定用のソート作って、全体ソートなくす
@@ -40,6 +42,8 @@ namespace MelLib
 		//追加されたものを一時的に入れておく配列
 		std::vector<std::shared_ptr<GameObject>>addObjects;
 
+		std::vector<std::shared_ptr<GameObject2D>>object2Ds;
+		std::vector<std::shared_ptr<GameObject2D>>addObject2Ds;
 		//CollisionFlag checkCollision;
 
 		//追加したフレームごとにソートするか
@@ -115,6 +119,13 @@ namespace MelLib
 		/// <param name="object"></param>
 		void AddObject(const std::shared_ptr<GameObject>& object);
 
+
+		/// <summary>
+		/// オブジェクトを追加します。
+		/// </summary>
+		/// <param name="object"></param>
+		void AddObject(const std::shared_ptr<GameObject2D>& object);
+
 		/// <summary>
 		/// 追加したフレームごとにソートするかを設定します。追加しない場合、orderTypeは無視されます。
 		/// </summary>
@@ -138,6 +149,8 @@ namespace MelLib
 		/// </summary>
 		void AllEraseObject();
 
+		void AllEraseObject2D();
+		void AllEraseObject3D();
 	};
 
 }

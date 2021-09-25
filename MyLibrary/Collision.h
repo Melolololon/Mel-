@@ -165,6 +165,8 @@ namespace MelLib
 			const Vector3& pointPos,
 			const FrustumData& frustum
 		);
+
+
 #pragma endregion
 	};
 
