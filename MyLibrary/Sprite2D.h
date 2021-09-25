@@ -27,8 +27,8 @@ namespace MelLib
 		Sprite2D(Texture* pTexture);
 		~Sprite2D();
 
-		bool CreateSetColor(const Color& color);
-		bool CreateSetTexture(Texture* pTexture);
+		void Create(const Color& color);
+		void Create(Texture* pTexture);
 
 		/// <summary>
 		/// 生成します。
@@ -36,14 +36,15 @@ namespace MelLib
 		/// <param name="color"></param>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		static bool Create(const Color& color, const std::string& name);
+		//static bool Create(const Color& color, const std::string& name);
 		/// <summary>
 		/// 生成します。pTextureがnullptrの場合は何も表示されません。Textureをセットするか、DrawTypeをColorにしてColorをセットすると表示されます。
 		/// </summary>
 		/// <param name="pTexture"></param>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		static bool Create(Texture* pTexture, const std::string& name);
+		//static bool Create(Texture* pTexture, const std::string& name);
+		
 		static void Delete(const std::string& name);
 		static Sprite2D* Get(const std::string& name) { return pSprite2D[name].get(); }
 
