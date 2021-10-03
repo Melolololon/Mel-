@@ -113,8 +113,9 @@ void Sprite3D::Draw(const std::string& rtName)
 #pragma endregion
 	auto vertexNum = vertices.size();
 	for (int i = 0; i < vertexNum; i++)
+	{
 		vertex[i].uv = vertices[i].uv;
-
+	}
 	UnmapVertexBuffer();
 #pragma endregion
 

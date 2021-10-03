@@ -92,7 +92,7 @@ void Sprite2D::Draw(const std::string& rtName)
 	MapVertexBuffer((void**)&vertex);
 
 	Vector2 textureSize = 1;
-	if (pTexture)  textureSize = pTexture->GetTextureSize();
+	if (pTexture) textureSize = pTexture->GetTextureSize();
 
 #pragma region ’¸“_À•W
 

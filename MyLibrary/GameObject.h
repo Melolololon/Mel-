@@ -117,7 +117,7 @@ namespace MelLib
 #pragma endregion
 		
 		//継承したクラスを格納し、判定時に使う用
-		std::vector<std::string>classNames;
+		std::vector<std::string>tags;
 
 		std::unordered_map<std::string, ModelObject>modelObjects;
 
@@ -281,7 +281,7 @@ namespace MelLib
 
 		static float GetGravutationalAcceleration() { return gravutationalAcc; };
 
-		std::vector<std::string>GetClassNames()const { return classNames; }
+		std::vector<std::string>GetTags()const { return tags; }
 
 		//オブジェクトマネージャーから削除するかどうかのフラグを返す
 		bool GetEraseManager()const { return eraseManager; }
