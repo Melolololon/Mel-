@@ -479,7 +479,7 @@ Vector2 Input::GetCenterToMouseVector()
 
 float Input::GetMouseAngle()
 {
-	return LibMath::Vecto2ToAngle(GetCenterToMouseVector(), false);
+	return LibMath::Vector2ToAngle(GetCenterToMouseVector(), false);
 }
 
 void Input::GetMouse3DLine(Vector3& nearPoint, Vector3& farPoint)
@@ -864,7 +864,7 @@ float Input::LeftStickAngle(const UCHAR padNum)
 		return -1.0f;
 
 
-	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }), true);
+	return LibMath::Vector2ToAngle(Vector2Normalize({ x,y }), true);
 }
 
 Vector2 Input::LeftStickVector2(const UCHAR padNum, const bool dimention3D)
@@ -981,7 +981,7 @@ float Input::RightStickAngle(const UCHAR padNum)
 		return -1.0f;
 
 
-	return LibMath::Vecto2ToAngle(Vector2Normalize({ x,y }), true);
+	return LibMath::Vector2ToAngle(Vector2Normalize({ x,y }), true);
 }
 
 #pragma endregion

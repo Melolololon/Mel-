@@ -53,8 +53,8 @@ bool MelLib::Collision::PointAndCircularSector(const Vector2& pointPos, const Ci
 	if (!PointAndCircle(pointPos, circularSector.GetCircleData()))return false;
 
 	Vector2 circlePos = circularSector.GetCircleData().GetPosition();
-	float centerDirAngle = LibMath::Vecto2ToAngle(circularSector.GetDirection(), false);
-	float pointAngle = LibMath::Vecto2ToAngle(LibMath::OtherVector2(circlePos, pointPos), false);
+	float centerDirAngle = LibMath::Vector2ToAngle(circularSector.GetDirection(), false);
+	float pointAngle = LibMath::Vector2ToAngle(LibMath::OtherVector2(circlePos, pointPos), false);
 	float centerAngle = circularSector.GetAngle();
 
 	//centerAngleˆÈ“à‚¾‚Á‚½‚çtrue

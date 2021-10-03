@@ -29,7 +29,7 @@ namespace MelLib
 		std::vector<MelLib::Segment2DData>segmentDatas;
 
 		CollisionDetectionFlag2D collisionFlags;
-
+		std::vector<std::string>tags;
 		bool eraseManager = false;
 	public:
 		//コンストラクタ
@@ -68,6 +68,8 @@ namespace MelLib
 		MelLib::Vector2 GetPosition()const { return position; }
 
 		bool GetEraseManager()const { return eraseManager; }
+
+		std::vector<std::string> GetTags()const { return tags; }
 #pragma region 判定関係
 		CollisionDetectionFlag2D GetCollisionFlag()const { return collisionFlags; }
 		std::vector<CircleData>GetCircleData()const { return circleDatas; }

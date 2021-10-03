@@ -164,7 +164,7 @@ namespace MelLib
 		/// <param name="v"></param>
 		/// <param name="v3">3ŸŒ³À•WŒn‚©‚Ç‚¤‚©</param>
 		/// <returns></returns>
-		static float Vecto2ToAngle(const Vector2& v, const bool& v3);
+		static float Vector2ToAngle(const Vector2& v, const bool& v3);
 
 		/// <summary>
 		/// Šp“x‚ğVector2‚É•ÏŠ·‚µ‚Ü‚·

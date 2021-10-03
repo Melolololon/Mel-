@@ -252,7 +252,7 @@ float LibMath::TwoVector2Angle(const Vector2& v1, const Vector2& v2)
 	return f;
 }
 
-float LibMath::Vecto2ToAngle(const Vector2& v, const bool& v3)
+float LibMath::Vector2ToAngle(const Vector2& v, const bool& v3)
 {
 	float f = 0.0f;
 	if (v3)
