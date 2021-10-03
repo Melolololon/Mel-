@@ -85,26 +85,42 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 #pragma region アダプタの列挙
 
 	std::vector<IDXGIAdapter*> adapters;
-	IDXGIAdapter* tmpAdapter;
+	IDXGIAdapter* tmpAdapter = nullptr;
 	for (int i = 0; dxgiFactory->EnumAdapters(i, &tmpAdapter) != DXGI_ERROR_NOT_FOUND; i++)
 	{
 		adapters.push_back(tmpAdapter);
 	}
 
-
+	std::vector<std::wstring> strDescs(adapters.size());
+	bool useOnboard = true;
 	for (int i = 0; i < (int)adapters.size(); i++)
 	{
 		DXGI_ADAPTER_DESC adesc{};
 		adapters[i]->GetDesc(&adesc);
-		std::wstring strDesc = adesc.Description;
-		if (strDesc.find(L"Microsoft") == std::wstring::npos/*&& strDesc.find(L"Inter") == std::wstring::npos*/)
+		strDescs[i] = adesc.Description;
+
+		if (strDescs[i].find(L"Microsoft") == std::wstring::npos)
+		{
+			useOnboard = false;
+		}
+	}
+
+	for (int i = 0; i < (int)adapters.size(); i++)
+	{
+		if (strDescs[i].find(L"Microsoft") != std::wstring::npos && useOnboard)
+		{
+			tmpAdapter = adapters[i];
+			break;
+		}
+		else
 		{
 			tmpAdapter = adapters[i];
 			break;
 		}
 	}
 
-	for (int i = 0; i < (int)adapters.size(); i++)
+
+	/*for (int i = 0; i < (int)adapters.size(); i++)
 	{
 		DXGI_ADAPTER_DESC adesc{};
 		adapters[i]->GetDesc(&adesc);
@@ -126,7 +142,9 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 			tmpAdapter = adapters[i];
 			break;
 		}
-	}
+	}*/
+
+
 
 #pragma endregion
 
