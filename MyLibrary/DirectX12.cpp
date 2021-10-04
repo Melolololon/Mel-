@@ -1,5 +1,9 @@
 #include "DirectX12.h"
 
+#include<fstream>
+
+#include"ErrorProcess.h"
+
 #include"LibMath.h"
 #include"FbxLoader.h"
 #include"ImguiManager.h"
@@ -14,6 +18,7 @@
 
 
 using namespace MelLib;
+
 
 DirectX12::DirectX12()
 {
@@ -45,6 +50,8 @@ DirectX12* DirectX12::GetInstance()
 void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 {
 
+
+
 #pragma region 変数初期化
 
 	
@@ -73,6 +80,10 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	{
 		debugController->EnableDebugLayer();
 	}
+	else
+	{
+		ErrorProcess::GetInstance()->StartErroeProcess(L"デバッグレイヤーの生成に失敗。", true);
+	}
 
 #endif // _DEBUG
 
@@ -81,7 +92,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 #pragma region DirectX処理
 
 	result = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
-
+	if(result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"DXGIFactoryの生成に失敗。",true);
 #pragma region アダプタの列挙
 
 	std::vector<IDXGIAdapter*> adapters;
@@ -119,30 +130,9 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		}
 	}
 
+	if(!tmpAdapter)ErrorProcess::GetInstance()->StartErroeProcess(L"アダプターが見つかりませんでした。",true);
 
-	/*for (int i = 0; i < (int)adapters.size(); i++)
-	{
-		DXGI_ADAPTER_DESC adesc{};
-		adapters[i]->GetDesc(&adesc);
-		std::wstring strDesc = adesc.Description;
-		if (strDesc.find(L"NVIDIA") != std::wstring::npos)
-		{
-			tmpAdapter = adapters[i];
-			break;
-		}
-	}
 
-	for (int i = 0; i < (int)adapters.size(); i++)
-	{
-		DXGI_ADAPTER_DESC adesc{};
-		adapters[i]->GetDesc(&adesc);
-		std::wstring strDesc = adesc.Description;
-		if (strDesc.find(L"AMD") != std::wstring::npos)
-		{
-			tmpAdapter = adapters[i];
-			break;
-		}
-	}*/
 
 
 
@@ -176,8 +166,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		CreateBuffer::GetInstance()->Initialize(dev.Get(), windouWidth, windowHeight);
 	
 	}
-	else
-		assert(0);
+	else if (!tmpAdapter)ErrorProcess::GetInstance()->StartErroeProcess(L"デバイスの生成に失敗。",true);
 
 	tmpAdapter->Release();
 
@@ -188,14 +177,16 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 #pragma region アロケーター リスト生成
 	result = dev->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&cmdAllocator));
+	if(result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"コマンドアロケーターの生成に失敗。",true);
 
 	result = dev->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, cmdAllocator.Get(), nullptr, IID_PPV_ARGS(&cmdList));
+	if(result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"コマンドリストの生成に失敗。",true);
 #pragma endregion
 
 #pragma region コマンドキュー作成
 	D3D12_COMMAND_QUEUE_DESC cmdQueueDesc{};
-	dev->CreateCommandQueue(&cmdQueueDesc, IID_PPV_ARGS(&cmdQueue));
-
+	result = dev->CreateCommandQueue(&cmdQueueDesc, IID_PPV_ARGS(&cmdQueue));
+	if(result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"コマンドキューの生成に失敗。",true);
 
 #pragma endregion
 
@@ -210,7 +201,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	swapchainDesc.BufferCount = 2;
 	swapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapchainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	dxgiFactory->CreateSwapChainForHwnd(
+	result = dxgiFactory->CreateSwapChainForHwnd(
 		cmdQueue.Get(),
 		hwnd,
 		&swapchainDesc,
@@ -219,6 +210,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		&swapchain1
 	);
 	swapchain1.As(&swapchain);
+
+	if(result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"スワップチェーンの生成に失敗。",true);
 
 #pragma endregion
 
@@ -239,6 +232,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 			nullptr,
 			handle
 		);
+
+		if (result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"バックバッファの生成に失敗。",true);
 	}
 
 #pragma endregion
@@ -253,6 +248,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		&dsvHeapDesc,
 		IID_PPV_ARGS(&depthHeap)
 	);
+	if (result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"深度バッファの生成に失敗。",true);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE depthHeapHandle = depthHeap->GetCPUDescriptorHandleForHeapStart();
 
@@ -275,6 +271,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	fence = nullptr;
 	fenceVal = 0;
 	result = dev->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+	if (result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"フェンスの生成に失敗。",true);
 #pragma endregion
 
 
@@ -357,7 +354,6 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	//renderTarget->SetPipeline(&postEffectTestPipeline);
 #pragma endregion
 
-	
 }
 
 void DirectX12::LoopStartProcess()

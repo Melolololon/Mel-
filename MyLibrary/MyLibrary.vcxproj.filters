@@ -303,6 +303,9 @@
     <ClCompile Include="GameObject2D.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
+    <ClCompile Include="ErrorProcess.cpp">
+      <Filter>ソース ファイル\Support</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SpritePixelShader.hlsl" />
@@ -547,6 +550,9 @@
     </ClInclude>
     <ClInclude Include="GameObject2D.h">
       <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorProcess.h">
+      <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

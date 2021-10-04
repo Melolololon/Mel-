@@ -13,6 +13,7 @@
 #include"Limit.h"
 
 #include"ImguiManager.h"
+#include "ErrorProcess.h"
 
 Game::Game() {}
 
@@ -26,6 +27,8 @@ Game* Game::GetInstance()
 
 void Game::Run()
 {
+	MelLib::ErrorProcess::GetInstance()->StartErroeProcess(L"エラーテスト", false);
+
 	MelLib::ImguiManager::GetInstance()->SetReleaseDrawFlag(false);
 
 	Initialize();

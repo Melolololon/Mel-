@@ -182,6 +182,7 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionType.cpp" />
     <ClCompile Include="Counter.cpp" />
+    <ClCompile Include="ErrorProcess.cpp" />
     <ClCompile Include="GameObject2D.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -462,6 +463,7 @@
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Counter.h" />
+    <ClInclude Include="ErrorProcess.h" />
     <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="imgui\imconfig.h" />
