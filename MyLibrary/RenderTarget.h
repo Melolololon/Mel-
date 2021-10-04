@@ -8,6 +8,8 @@
 #include"PipelineState.h"
 #include"Camera.h"
 
+//レンダーターゲットをどこに描画するかを指定できるようにする
+
 namespace MelLib
 {
 	class RenderTarget :public Sprite2DBase
@@ -20,9 +22,12 @@ namespace MelLib
 		static UINT createCount;
 		static std::string mainRenderTargetNama;
 
-		static float clearColor[4];
+		static float sClearColor[4];
 		static PipelineState defaultPipeline;
 		static ComPtr<ID3D12RootSignature>rootSignature;
+
+		//現在描画対象になっているレンダーターゲット(マルチ対応のため、配列にしている)
+		static std::vector<RenderTarget*> pCurrentSelectRTs;
 
 		ComPtr<ID3D12Resource>textureBuffer[RT_NUM];
 		ComPtr<ID3D12DescriptorHeap>descHeap;//テクスチャ(レンダリング結果) + ポストエフェクトの定数バッファビュー
@@ -34,7 +39,8 @@ namespace MelLib
 
 		//カメラのポインタ
 		Camera* pCamera = nullptr;
-
+		RenderTarget* pRenderingRenderTarget = nullptr;
+		float clearColor[4];
 	public:
 
 		RenderTarget(const Color& color);
@@ -47,17 +53,31 @@ namespace MelLib
 
 		static bool Initialize();
 
+		//これprivateに
 		void PreDrawProcess();
 		void SetCmdList();
 		static void AllDraw();
+		//PreDrawProcessを呼び出す関数
+		static void AllDrawBegin();
 
+		static void ChangeCurrentRenderTarget(std::vector<RenderTarget*> pRTs);
 
-		void SetCamera(const std::string& name = Camera::GetMainCameraName()) { this->pCamera = Camera::Get(name); }
+		/// <summary>
+		/// カメラをセットします。
+		/// </summary>
+		/// <param name="name"></param>
+		void SetCamera(Camera* pCamera) { this->pCamera = pCamera; }
 
+		/// <summary>
+		/// レンダーターゲットを描画するレンダーターゲットを指定します。
+		/// </summary>
+		/// <param name="pRT">レンダーターゲットのポインタ。指定しない場合、メインレンダーターゲットに描画します。</param>
+		void SetRenderingRenderTarget(RenderTarget* pRT = RenderTarget::Get(mainRenderTargetNama)) { pRenderingRenderTarget = pRT; }
 
 		static const std::string& GetMainRenderTargetNama() { return mainRenderTargetNama; }
 
 		Camera* GetCamera() { return pCamera; }
+
 	};
 
 }

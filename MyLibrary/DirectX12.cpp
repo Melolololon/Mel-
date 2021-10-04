@@ -315,7 +315,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	
 	RenderTarget::Create(rtColor,"main");
 	Camera::Create("main");
-	RenderTarget::Get("main")->SetCamera();
+	RenderTarget::Get("main")->SetCamera(Camera::Get());
 	DirectionalLight::Create("main");
 
 	//renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));
@@ -377,42 +377,6 @@ void DirectX12::LoopStartProcess()
 
 	RenderTarget::Get("main")->PreDrawProcess();
 
-#pragma region 画面クリア
-
-	////D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
-	////rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvH = postEffectRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	//cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
-
-	////画面のクリア
-	//cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
-	//cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-
-
-#pragma region ビューポート_シザー矩形
-
-	D3D12_VIEWPORT viewport{};
-	viewport.Width = (float)winWidth;
-	viewport.Height = (float)winHeight;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-	cmdList->RSSetViewports(1, &viewport);
-
-
-	D3D12_RECT scissorrect{};
-	scissorrect.left = 0;
-	scissorrect.right = scissorrect.left + winWidth;
-	scissorrect.top = 0;
-	scissorrect.bottom = scissorrect.top + winHeight;
-	cmdList->RSSetScissorRects(1, &scissorrect);
-
-#pragma endregion
-
-#pragma endregion
 
 	TextWrite::LoopStartProcess();
 	ImguiManager::GetInstance()->Begin();

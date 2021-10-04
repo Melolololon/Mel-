@@ -25,6 +25,7 @@ namespace MelLib
 	//ƒ‚ƒfƒ‹‚ÌÀ•W‚È‚Ç‚ğ‚Ü‚Æ‚ß‚½‚à‚Ì
 	class ModelObject
 	{
+	private:
 
 	private:
 

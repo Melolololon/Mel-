@@ -10,35 +10,49 @@
 #include"Input.h"
 #include"LibMath.h"
 #include"ImguiManager.h"
-Play::Play(){}
-
-
-Play::~Play(){}
-
 #include"Collision.h"
+#include"RenderTarget.h"
 
-void Play::Initialize()
+void Play::CollisionTestInitialize()
 {
+
+#pragma region リソース読み込み
+
+	MelLib::ModelData::Load("Resources/Obj/Ball/ball.obj", false, "ball");
+	MelLib::ModelData::Load("Resources/Obj/Box/box.obj", false, "box");
+	//MelLib::ModelData::Load("Resources/PBRModels/SpiralPBR/SpiralPBR.fbx", false,"pbr");
+
+	MelLib::Texture::Load("Resources/Texture/Tex3D/test_0.png", "t");
+	std::vector<std::string>path;
+	for (int i = 0; i < 1; i++)
+	{
+		//path.push_back("Resources/Texture/Tex3D/Test_" + std::to_string(i) + ".png");
+		path.push_back("Resources/Texture/Tex3D/test_" + std::to_string(i) + ".png");
+	}
+	MelLib::Texture3D::Load(path, "test");
+#pragma endregion
+
+
 	MelLib::CapsuleData cData;
 	cData.SetRadius(2.0f);
 	cData.GetRefSegment3DData().SetPosition(MelLib::Value2(MelLib::Vector3(0, 1, 0), MelLib::Vector3(0, 5, 0)));
 
 	MelLib::BoardData bData;
-	bData.SetPosition(MelLib::Vector3(0,0,0));
-	bData.SetSize(MelLib::Vector2(4,4));
+	bData.SetPosition(MelLib::Vector3(0, 0, 0));
+	bData.SetSize(MelLib::Vector2(4, 4));
 	bData.SetAngle(MelLib::Vector3(90, 0, 0));
-	
+
 	bool re = MelLib::Collision::BoardAndCapsule(bData, nullptr, cData, nullptr);
 
 
 	MelLib::FrustumData fData;
-	fData.SetXYAngle(MelLib::Vector2(90,10));
+	fData.SetXYAngle(MelLib::Vector2(90, 10));
 	fData.SetFar(10);
 	fData.SetNear(0.0001f);
 	fData.SetAngle(MelLib::Vector3(0, 0, 0));
 	bool r = MelLib::Collision::PointAndFrustum
 	(
-		MelLib::Vector3(0,0,5),
+		MelLib::Vector3(0, 0, 5),
 		fData
 	);
 
@@ -56,72 +70,31 @@ void Play::Initialize()
 	bool res = MelLib::Collision::PointAndCircularSector(pPos, data);
 
 
-	MelLib::Vector3 n = MelLib::LibMath::RotateVector3(MelLib::Vector3(0, 1, 0), MelLib::Vector3(0.7, 0,0.7), 90);
+	MelLib::Vector3 n = MelLib::LibMath::RotateVector3(MelLib::Vector3(0, 1, 0), MelLib::Vector3(0.7, 0, 0.7), 90);
 
 
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, -30));
 
-	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<CollisionTestObject>(0,true));
+	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<CollisionTestObject>(0, true));
 	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<CollisionTestObject>(MelLib::Vector3(-10, 0, 0), false));
 
 	MelLib::Texture::Load("Resources/Texture/testTexture.png", "test");
 	sprite2DTest = std::make_unique<MelLib::Sprite2D>(MelLib::Texture::Get("test"));
 	//sprite2DTest->CreateSetColor(Color(255, 255, 255, 255));
-	
+
 	sprite2DTest->SetPosition(MelLib::Vector2(1280 / 2, 720 / 2));
 
 
 	//起きたらやること
 	//ライトを普通に加算すると、右側の面が0,0,1のライトのみの時より暗くなるから減衰をなくす
 	MelLib::DirectionalLight::Create("test");
-	
+
 	MelLib::DirectionalLight::Get().SetDirection(MelLib::Vector3(0, 0, 1));
 	MelLib::DirectionalLight::Get("test").SetDirection(MelLib::Vector3(0, -1, 0));
-	
+
 }
-
-int testI = 0;
-MelLib::Color c(255,255,0,255);
-MelLib::Value4<float>i(0);
-MelLib::Vector3 v3 = 3;
-std::string str = "rgrege";
-
-float color[4] = {};
-void Play::Update()
+void Play::CollisionTestUpdate()
 {
-	MelLib::ImguiManager* pImGuiManager = MelLib::ImguiManager::GetInstance();
-	pImGuiManager->BeginDrawWindow
-	(
-		"TestWindow"
-	);
-
-	pImGuiManager->SetPosition(MelLib::Vector2(40, 40));
-	pImGuiManager->SetSize(MelLib::Vector2(300, 400));
-
-	if(MelLib::Input::KeyTrigger(DIK_A))
-	{
-		int x = 0;
-	}
-	pImGuiManager->DrawInputText("test",str,30);
-
-	pImGuiManager->DrawSliderVector3("test", v3,0, 100);
-
-	pImGuiManager->DrawSliderInt("sTest", testI, 0, 140);
-	pImGuiManager->DrawColorPicker("cTest", c,
-		ImGuiColorEditFlags_::ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaBar);
-	
-
-
-	pImGuiManager->EndDrawWindow();
-
-
-	/*MelLib::ImguiManager::GetInstance()->DrawWindow
-	(
-		"eryu6tyutyfu",
-		MelLib::Vector2(600, 50),
-		MelLib::Vector2(300, 400)
-	);*/
-
 	/*if(MelLib::Input::KeyState(DIK_R))
 	{
 
@@ -135,29 +108,67 @@ void Play::Update()
 	if (MelLib::Input::KeyState(DIK_E))scale += 0.05;
 	sprite2DTest->SetScale(scale);
 
-	MelLib::GameObjectManager::GetInstance()->Update();
 
 	if (MelLib::Input::KeyTrigger(DIK_1))
 	{
 		isEnd = true;
 	}
 }
-
-MelLib::Vector2 testScale = 1;
-void Play::Draw()
+void Play::CollisionTestDraw()
 {
-	MelLib::GameObjectManager::GetInstance()->Draw();
-	
+
 	MelLib::SpriteFont2D::GetInstance()->Draw(0, testScale, MelLib::SpriteFont2D::CharSequence::BESIDE, "A", MelLib::TextureFont::Get("testFont"));
 
 	//sprite2DTest->SetDrawArea(0, MelLib::Vector2(64, 64));
 	sprite2DTest->Draw();
-	
+
 
 
 	if (MelLib::Input::KeyState(DIK_Z))testScale.x -= 0.025f;
 	if (MelLib::Input::KeyState(DIK_X))testScale.x += 0.025f;
+}
 
+void Play::RTTestInitialize()
+{
+	//MelLib::RenderTarget::Create(MelLib::Color(255, 0, 255, 255), "test");
+	rtTestObject.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
+}
+
+void Play::RTTestUpdate()
+{
+}
+
+void Play::RTTestDraw()
+{
+	rtTestObject.Draw();
+}
+
+
+
+Play::Play(){}
+
+
+Play::~Play(){}
+
+
+void Play::Initialize()
+{
+	RTTestInitialize();
+}
+
+void Play::Update()
+{
+	RTTestUpdate();
+	MelLib::GameObjectManager::GetInstance()->Update();
+
+
+}
+
+void Play::Draw()
+{
+	RTTestDraw();
+
+	MelLib::GameObjectManager::GetInstance()->Draw();
 }
 
 void Play::Finalize()

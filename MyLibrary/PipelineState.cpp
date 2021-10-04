@@ -98,8 +98,6 @@ void PipelineState::SetPipelineDesc
 		desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 	}
 
-
-
 	desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	desc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 

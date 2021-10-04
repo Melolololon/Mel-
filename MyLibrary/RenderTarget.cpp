@@ -11,8 +11,10 @@ UINT RenderTarget::createCount = 0;
 std::string RenderTarget::mainRenderTargetNama = "";
 
 PipelineState RenderTarget::defaultPipeline;
-float RenderTarget::clearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
+float RenderTarget::sClearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
 ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
+
+std::vector<RenderTarget*> RenderTarget::pCurrentSelectRTs;
 
 RenderTarget::RenderTarget(const Color& color)/*:
 	Sprite2DBase(Color(0,0,0,0))*/
@@ -190,7 +192,7 @@ bool RenderTarget::Initialize()
 	CD3DX12_ROOT_PARAMETER rootparam[1 + RT_NUM] = {};
 	rootparam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 
-	CD3DX12_DESCRIPTOR_RANGE descRangeSRV1[RT_NUM];
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV1[RT_NUM] = {};
 	for (int i = 0; i < RT_NUM; i++) 
 	{
 		descRangeSRV1[i].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, i);
@@ -409,5 +411,65 @@ void RenderTarget::AllDraw()
 		p.second->MatrixMap(nullptr);
 		p.second->SetCmdList();
 	}
+}
+
+void MelLib::RenderTarget::AllDrawBegin()
+{
+	for (auto& p : pRenderTargets)
+	{
+		p.second->PreDrawProcess();
+	}
+}
+
+void MelLib::RenderTarget::ChangeCurrentRenderTarget(std::vector<RenderTarget*> pRTs)
+{
+	if(pCurrentSelectRTs.size() == pRTs.size())
+	{
+		for (int i = 0, size = pCurrentSelectRTs.size(); i < size; i++)
+		{
+			if (pCurrentSelectRTs[i] != pRTs[i])break;
+			
+			//一致してたら変更しないため、return
+			if (i == size - 1)return;
+		}
+	}
+
+	//ここに、入れ替え前のレンダーターゲットのリソースバリアを
+	//D3D12_RESOURCE_STATE_RENDER_TARGETからD3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCEに戻す処理
+
+	//入れ替え
+	pCurrentSelectRTs = pRTs;
+
+	//レンダーターゲットをセット
+	//for (int i = 0; i < RT_NUM; i++)
+	//{
+	//	//セット
+	//	cmdList->ResourceBarrier
+	//	(
+	//		1,
+	//		&CD3DX12_RESOURCE_BARRIER::Transition
+	//		(
+	//			textureBuffer[i].Get(),
+	//			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+	//			D3D12_RESOURCE_STATE_RENDER_TARGET
+	//		)
+	//	);
+	//}
+
+	////レンダーターゲットセット
+	//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[RT_NUM];
+	//for (int i = 0; i < RT_NUM; i++)
+	//{
+	//	rtvHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE
+	//	(
+	//		rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+	//		i,
+	//		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+	//	);
+	//}
+
+	//D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+	//cmdList->OMSetRenderTargets(RT_NUM, rtvHandle, false, &dsvHandle);
+
 }
 
