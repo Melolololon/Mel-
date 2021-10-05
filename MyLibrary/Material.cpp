@@ -3,7 +3,7 @@
 #include<d3dx12.h>
 
 ID3D12Device* MelLib::Material::device;
-
+ComPtr<ID3D12Resource>MelLib::Material::textureNoneTextureBuffer;
 
 void MelLib::Material::MapColorBuffer(const Color& color)
 {
@@ -51,7 +51,17 @@ void MelLib::Material::CreateInitialize(const size_t& mtlByte)
 
 	auto result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&textureHeap));
 
-	
+	//デフォルトはテクスチャセットしないので、テクスチャ未セット時のバッファのビューを作成
+	CreateBuffer::GetInstance()->CreateShaderResourceView
+	(
+		CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			textureHeap->GetCPUDescriptorHandleForHeapStart(),
+			TEXTURE_HANDLE_NUM,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		),
+		textureNoneTextureBuffer.Get()
+	);
 }
 
 void MelLib::Material::MapMaterialData(void** pData)
@@ -63,6 +73,18 @@ void MelLib::Material::UnmapMaterialData()
 {
 	materialBuffer->Unmap(0, nullptr);
 	
+}
+
+void MelLib::Material::Initialize(ID3D12Device* dev)
+{ 
+	device = dev;
+
+	CreateBuffer::GetInstance()->CreateOneColorTextureBuffer
+	(
+		Color(0, 0, 0, 0),
+		&textureNoneTextureBuffer
+	);
+
 }
 
 ID3D12Resource* MelLib::Material::GetPConstBuffer(const MaterialConstBufferType type) const
@@ -86,7 +108,6 @@ void MelLib::Material::SetColor(const Color& color)
 
 void MelLib::Material::SetTexture(Texture* pTex)
 { 
-	
 	pTexture = pTex; 
 	if (pTexture)
 	{
@@ -101,14 +122,23 @@ void MelLib::Material::SetTexture(Texture* pTex)
 			pTexture->GetTextureBuffer()
 		);
 
-
-		DirectX::XMFLOAT4* col;
-
 		MapColorBuffer(Color(0, 0, 0, 0));
 	}
 	else
 	{
+		CreateBuffer::GetInstance()->CreateShaderResourceView
+		(
+			CD3DX12_CPU_DESCRIPTOR_HANDLE
+			(
+				textureHeap->GetCPUDescriptorHandleForHeapStart(),
+				TEXTURE_HANDLE_NUM,
+				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			),
+			textureNoneTextureBuffer.Get()
+		);
+
 		MapColorBuffer(color);
+
 	}
 }
 

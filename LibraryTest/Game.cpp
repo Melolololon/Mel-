@@ -12,6 +12,9 @@
 
 #include"Limit.h"
 
+#include"ImguiManager.h"
+#include "ErrorProcess.h"
+
 Game::Game() {}
 
 Game::~Game() {}
@@ -24,9 +27,8 @@ Game* Game::GetInstance()
 
 void Game::Run()
 {
-	float num = 1.0f;
-	num = MelLib::Limit::Smoothstep(num, 0.0f, 5.0f);
 
+	MelLib::ImguiManager::GetInstance()->SetReleaseDrawFlag(false);
 
 	Initialize();
 
@@ -57,21 +59,6 @@ void Game::Initialize()
 	//カメラは各シーンに移動しました
 
 
-#pragma region リソース読み込み
-
-	MelLib::ModelData::Load("Resources/Obj/Ball/ball.obj", false,"ball");
-	MelLib::ModelData::Load("Resources/Obj/Box/box.obj", false,"box");
-	//MelLib::ModelData::Load("Resources/PBRModels/SpiralPBR/SpiralPBR.fbx", false,"pbr");
-
-	MelLib::Texture::Load("Resources/Texture/Tex3D/test_0.png","t");
-	std::vector<std::string>path;
-	for(int i = 0; i < 1;i++)
-	{
-		//path.push_back("Resources/Texture/Tex3D/Test_" + std::to_string(i) + ".png");
-		path.push_back("Resources/Texture/Tex3D/test_" + std::to_string(i) + ".png");
-	}
-	MelLib::Texture3D::Load(path, "test");
-#pragma endregion
 
 #pragma region マネージャー初期化
 

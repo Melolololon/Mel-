@@ -20,6 +20,10 @@ namespace MelLib
 		virtual Scene* GetNextScene() = 0;//次のシーンの指定
 		bool GetIsEnd();//シーンが終わったかどうか
 		void* GetPtr();
+
+		/// <summary>
+		/// 一括削除の対象になっているリソースを削除します。
+		/// </summary>
 		void ResourceBatchDeletion();
 	};
 }

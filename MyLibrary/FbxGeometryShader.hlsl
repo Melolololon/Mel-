@@ -1,6 +1,6 @@
 #include"FbxShaderHeader.hlsli"
 
-#include"QuadTessellateHeader.hlsli"
+#include"TriTessellateHeader.hlsli"
 
 
 [maxvertexcount(3)]//Å‘å’¸“_”

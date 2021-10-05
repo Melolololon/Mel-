@@ -4,13 +4,13 @@
 
 namespace MelLib
 {
+
+	//—”ƒNƒ‰ƒX
 	class Random
 	{
 	private:
 		Random() {}
 		~Random() {}
-
-
 
 		using UINT = unsigned int;
 	public:

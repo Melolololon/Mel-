@@ -53,6 +53,15 @@ namespace MelLib
 
 		bool depthTest = false;
 		bool alphaWrite = false;
+
+		void SetModelDefData()
+		{
+			drawMode = DrawMode::SOLID;
+			cullMode = CullMode::BACK;
+			blendMode = BlendMode::ADD;
+			depthTest = true;
+			alphaWrite = true;
+		}
 	};
 
 	//シェーダーの情報をまとめた構造体

@@ -23,6 +23,7 @@ Color::Color(const unsigned char rgb, const unsigned char a)
 
 }
 
+
 Color Color::operator+(const Color& color)
 {
 	return { (unsigned char)(r + color.r),(unsigned char)(g + color.g ),(unsigned char)(b + color.b) ,(unsigned char)(a + color.a) };

@@ -57,8 +57,7 @@ namespace MelLib
 		PIPELINE_OBJ_ANIMATION,
 	};
 
-
-
+	//DirectX12関係の管理クラス
 	class DirectX12 final
 	{
 
@@ -76,6 +75,7 @@ namespace MelLib
 		};
 
 	private:
+		
 		float clearColor[4] = { 0,0,0,1 };
 
 #pragma region 現在の描画コマンド状態
@@ -127,7 +127,6 @@ namespace MelLib
 
 #pragma endregion
 
-
 		DirectX12();
 		~DirectX12();
 
@@ -158,11 +157,6 @@ namespace MelLib
 
 		//画面の色受け取り
 		void SetScreenColor(Color screenColor);
-
-
-
-
-
 
 	};
 

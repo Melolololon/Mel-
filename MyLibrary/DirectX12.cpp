@@ -1,6 +1,13 @@
 #include "DirectX12.h"
+
+#include<fstream>
+
+#include"ErrorProcess.h"
+
 #include"LibMath.h"
 #include"FbxLoader.h"
+#include"ImguiManager.h"
+
 #include"DirectionalLight.h"
 #include"RenderTarget.h"
 
@@ -11,6 +18,7 @@
 
 
 using namespace MelLib;
+
 
 DirectX12::DirectX12()
 {
@@ -42,6 +50,8 @@ DirectX12* DirectX12::GetInstance()
 void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 {
 
+
+
 #pragma region 変数初期化
 
 	
@@ -70,6 +80,10 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	{
 		debugController->EnableDebugLayer();
 	}
+	else
+	{
+		ErrorProcess::GetInstance()->StartErroeProcess(L"デバッグレイヤーの生成に失敗。", true);
+	}
 
 #endif // _DEBUG
 
@@ -78,52 +92,49 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 #pragma region DirectX処理
 
 	result = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
-
+	if(result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"DXGIFactoryの生成に失敗。",true);
 #pragma region アダプタの列挙
 
 	std::vector<IDXGIAdapter*> adapters;
-	IDXGIAdapter* tmpAdapter;
+	IDXGIAdapter* tmpAdapter = nullptr;
 	for (int i = 0; dxgiFactory->EnumAdapters(i, &tmpAdapter) != DXGI_ERROR_NOT_FOUND; i++)
 	{
 		adapters.push_back(tmpAdapter);
 	}
 
-
+	std::vector<std::wstring> strDescs(adapters.size());
+	bool useOnboard = true;
 	for (int i = 0; i < (int)adapters.size(); i++)
 	{
 		DXGI_ADAPTER_DESC adesc{};
 		adapters[i]->GetDesc(&adesc);
-		std::wstring strDesc = adesc.Description;
-		if (strDesc.find(L"Microsoft") == std::wstring::npos/*&& strDesc.find(L"Inter") == std::wstring::npos*/)
+		strDescs[i] = adesc.Description;
+
+		if (strDescs[i].find(L"Microsoft") == std::wstring::npos)
+		{
+			useOnboard = false;
+		}
+	}
+
+	for (int i = 0; i < (int)adapters.size(); i++)
+	{
+		if (strDescs[i].find(L"Microsoft") != std::wstring::npos && useOnboard)
+		{
+			tmpAdapter = adapters[i];
+			break;
+		}
+		else
 		{
 			tmpAdapter = adapters[i];
 			break;
 		}
 	}
 
-	for (int i = 0; i < (int)adapters.size(); i++)
-	{
-		DXGI_ADAPTER_DESC adesc{};
-		adapters[i]->GetDesc(&adesc);
-		std::wstring strDesc = adesc.Description;
-		if (strDesc.find(L"NVIDIA") != std::wstring::npos)
-		{
-			tmpAdapter = adapters[i];
-			break;
-		}
-	}
+	if(!tmpAdapter)ErrorProcess::GetInstance()->StartErroeProcess(L"アダプターが見つかりませんでした。",true);
 
-	for (int i = 0; i < (int)adapters.size(); i++)
-	{
-		DXGI_ADAPTER_DESC adesc{};
-		adapters[i]->GetDesc(&adesc);
-		std::wstring strDesc = adesc.Description;
-		if (strDesc.find(L"AMD") != std::wstring::npos)
-		{
-			tmpAdapter = adapters[i];
-			break;
-		}
-	}
+
+
+
 
 #pragma endregion
 
@@ -155,8 +166,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		CreateBuffer::GetInstance()->Initialize(dev.Get(), windouWidth, windowHeight);
 	
 	}
-	else
-		assert(0);
+	else if (!tmpAdapter)ErrorProcess::GetInstance()->StartErroeProcess(L"デバイスの生成に失敗。",true);
 
 	tmpAdapter->Release();
 
@@ -167,14 +177,16 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 #pragma region アロケーター リスト生成
 	result = dev->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&cmdAllocator));
+	if(result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"コマンドアロケーターの生成に失敗。",true);
 
 	result = dev->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, cmdAllocator.Get(), nullptr, IID_PPV_ARGS(&cmdList));
+	if(result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"コマンドリストの生成に失敗。",true);
 #pragma endregion
 
 #pragma region コマンドキュー作成
 	D3D12_COMMAND_QUEUE_DESC cmdQueueDesc{};
-	dev->CreateCommandQueue(&cmdQueueDesc, IID_PPV_ARGS(&cmdQueue));
-
+	result = dev->CreateCommandQueue(&cmdQueueDesc, IID_PPV_ARGS(&cmdQueue));
+	if(result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"コマンドキューの生成に失敗。",true);
 
 #pragma endregion
 
@@ -189,7 +201,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	swapchainDesc.BufferCount = 2;
 	swapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapchainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	dxgiFactory->CreateSwapChainForHwnd(
+	result = dxgiFactory->CreateSwapChainForHwnd(
 		cmdQueue.Get(),
 		hwnd,
 		&swapchainDesc,
@@ -198,6 +210,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		&swapchain1
 	);
 	swapchain1.As(&swapchain);
+
+	if(result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"スワップチェーンの生成に失敗。",true);
 
 #pragma endregion
 
@@ -218,6 +232,8 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 			nullptr,
 			handle
 		);
+
+		if (result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"バックバッファの生成に失敗。",true);
 	}
 
 #pragma endregion
@@ -232,6 +248,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 		&dsvHeapDesc,
 		IID_PPV_ARGS(&depthHeap)
 	);
+	if (result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"深度バッファの生成に失敗。",true);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE depthHeapHandle = depthHeap->GetCPUDescriptorHandleForHeapStart();
 
@@ -254,6 +271,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	fence = nullptr;
 	fenceVal = 0;
 	result = dev->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+	if (result != S_OK)ErrorProcess::GetInstance()->StartErroeProcess(L"フェンスの生成に失敗。",true);
 #pragma endregion
 
 
@@ -297,7 +315,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	
 	RenderTarget::Create(rtColor,"main");
 	Camera::Create("main");
-	RenderTarget::Get("main")->SetCamera();
+	RenderTarget::Get("main")->SetCamera(Camera::Get());
 	DirectionalLight::Create("main");
 
 	//renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));
@@ -306,6 +324,9 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 
 	ID3D12Resource* pBackBuffer[] = { backBuffer[0].Get(),backBuffer[1].Get() };
 	TextWrite::Initialize(dev.Get(), cmdQueue.GetAddressOf(), pBackBuffer);
+
+	ImguiManager::GetInstance()->Initialize(dev.Get(), cmdList.Get());
+
 
 #pragma region テスト用
 	//PipelineState postEffectTestPipeline;
@@ -333,7 +354,6 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	//renderTarget->SetPipeline(&postEffectTestPipeline);
 #pragma endregion
 
-	
 }
 
 void DirectX12::LoopStartProcess()
@@ -357,44 +377,9 @@ void DirectX12::LoopStartProcess()
 
 	RenderTarget::Get("main")->PreDrawProcess();
 
-#pragma region 画面クリア
-
-	////D3D12_CPU_DESCRIPTOR_HANDLE rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
-	////rtvH.ptr += bbIndex * dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvH = postEffectRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsvH = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	//cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
-
-	////画面のクリア
-	//cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
-	//cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-
-
-#pragma region ビューポート_シザー矩形
-
-	D3D12_VIEWPORT viewport{};
-	viewport.Width = (float)winWidth;
-	viewport.Height = (float)winHeight;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-	cmdList->RSSetViewports(1, &viewport);
-
-
-	D3D12_RECT scissorrect{};
-	scissorrect.left = 0;
-	scissorrect.right = scissorrect.left + winWidth;
-	scissorrect.top = 0;
-	scissorrect.bottom = scissorrect.top + winHeight;
-	cmdList->RSSetScissorRects(1, &scissorrect);
-
-#pragma endregion
-
-#pragma endregion
 
 	TextWrite::LoopStartProcess();
+	ImguiManager::GetInstance()->Begin();
 }
 
 void DirectX12::LoopEndProcess()
@@ -417,6 +402,7 @@ void DirectX12::LoopEndProcess()
 
 	RenderTarget::AllDraw();
 
+	ImguiManager::GetInstance()->Draw();
 #pragma region RTVからPRESENTへ
 	//TextWriteクラスで自動的に変更するからいらない
 
@@ -429,6 +415,8 @@ void DirectX12::LoopEndProcess()
 	//cmdList->ResourceBarrier(1, &barrierDesc);
 #pragma endregion
 
+
+
 #pragma region 実行
 
 
@@ -436,6 +424,7 @@ void DirectX12::LoopEndProcess()
 	ID3D12CommandList* cmdLists[] = { cmdList.Get() };
 	cmdQueue->ExecuteCommandLists(_countof(cmdLists), cmdLists);
 	
+
 	//テキスト描画
 	TextWrite::LoopEndProcess(bbIndex);
 
@@ -462,7 +451,7 @@ void DirectX12::Finalize()
 {
 	LoopEndProcess();
 	FbxLoader::GetInstance()->Finalize();
-
+	ImguiManager::GetInstance()->Finalize();
 }
 
 

@@ -62,7 +62,8 @@ namespace MelLib
 #pragma endregion
 
 
-
+		void SetColor(const Color& color) { this->color = color; }
+		void SetTexture(Texture* pTexture) { this->pTexture = pTexture; }
 
 #pragma region ëÄçÏ
 		void SetPosition(const Vector3& pos) { constData.position = pos.ToXMFLOAT3(); }

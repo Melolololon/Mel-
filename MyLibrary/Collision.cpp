@@ -12,19 +12,53 @@ using namespace MelLib;
 
 bool Collision::RectAndRect(const RectData& rect1, const RectData& rect2)
 {
-	return rect2.size.x + rect2.position.x > rect1.position.x &&
-		rect2.position.x < rect1.size.x + rect2.position.x &&
-		rect2.position.y < rect1.size.y + rect1.position.y &&
-		rect2.size.y + rect2.position.y > rect1.position.y;
+	Vector2 pos1 = rect1.GetPosition();
+	Vector2 pos2 = rect2.GetPosition();
+	Vector2 size1 = rect1.GetSize();
+	Vector2 size2 = rect2.GetSize();
+
+
+	return size2.x + pos2.x > pos1.x &&
+		pos2.x < size1.x + pos1.x &&
+		pos2.y < size1.y + pos1.y &&
+		size2.y + pos2.y > pos1.y;
 }
 
 bool Collision::CircleAndCircle(const CircleData& circle1, const CircleData& circle2)
 {
-	return (circle1.position.x - circle2.position.x) *
-		(circle1.position.x - circle2.position.x) +
-		(circle1.position.y - circle2.position.y) *
-		(circle1.position.y - circle2.position.y) <=
-		(circle1.r + circle2.r) * (circle1.r + circle2.r);
+	Vector2 pos1 = circle1.GetPosition();
+	Vector2 pos2 = circle2.GetPosition();
+	float r1 = circle1.GetRadius();
+	float r2 = circle2.GetRadius();
+
+	return (pos1.x - pos2.x) *
+		(pos1.x - pos2.x) +
+		(pos1.y - pos2.y) *
+		(pos1.y - pos2.y) <=
+		(r1 + r2) * (r1 + r2);
+}
+
+bool MelLib::Collision::PointAndCircle(const Vector2& pointPos, const CircleData& circle)
+{
+	Vector2 circlePos = circle.GetPosition();
+	float circleR = circle.GetRadius();
+	
+	//半径以内だったらtrue
+	return LibMath::CalcDistance2D(pointPos, circlePos) <= circleR;
+}
+
+bool MelLib::Collision::PointAndCircularSector(const Vector2& pointPos, const CircularSectorData& circularSector)
+{
+	//点と円の判定
+	if (!PointAndCircle(pointPos, circularSector.GetCircleData()))return false;
+
+	Vector2 circlePos = circularSector.GetCircleData().GetPosition();
+	float centerDirAngle = LibMath::Vector2ToAngle(circularSector.GetDirection(), false);
+	float pointAngle = LibMath::Vector2ToAngle(LibMath::OtherVector2(circlePos, pointPos), false);
+	float centerAngle = circularSector.GetAngle();
+
+	//centerAngle以内だったらtrue
+	return LibMath::AngleDifference(centerDirAngle, pointAngle, centerAngle / 2);
 }
 
 bool Collision::RectAndCircle(const RectData& rect, const CircleData& circle)
@@ -46,10 +80,14 @@ bool Collision::CircleAndSegment2D
 		lineSegmentCalcResult->hitPlace = hitPlace;
 	}
 
+	Value2<Vector2>segmentPos = lineSegment.GetPosition();
+	Vector2 circlePos = circle.GetPosition();
+	float circleR = circle.GetRadius();
+
 	//線の端から端へのベクトル
-	Vector2 lineVector = lineSegment.position[1] - lineSegment.position[0];
+	Vector2 lineVector = segmentPos.v2 - segmentPos.v1;
 	//線の座標1から円の中心
-	Vector2 linePos0ToSphere = circle.position - lineSegment.position[0];
+	Vector2 linePos0ToSphere = circlePos - segmentPos.v1;
 	//円と線の最短距離を求める
 	float distance = abs(Vector2::Cross(lineVector, linePos0ToSphere) / Vector2::Length(lineVector));
 
@@ -61,14 +99,14 @@ bool Collision::CircleAndSegment2D
 	float linePos0ToNearPosDis = Vector2::Dot(Vector2::Normalize(lineVector), linePos0ToSphere);
 	if (lineSegmentCalcResult) 
 	{
-		lineSegmentCalcResult->nearPos = lineSegment.position[0] + (Vector2::Normalize(lineVector) * linePos0ToNearPosDis);
+		lineSegmentCalcResult->nearPos = segmentPos.v1 + (Vector2::Normalize(lineVector) * linePos0ToNearPosDis);
 	}
 
 	//距離のほうが大きかったら計算終了
-	if (distance > circle.r)return false;
+	if (distance > circleR)return false;
 
 	//線の座標2から円の中心
-	Vector2 linePos2ToSphere = circle.position - lineSegment.position[1];
+	Vector2 linePos2ToSphere = circlePos - segmentPos.v2;
 	//正の数かどうかを判別するフラグ
 	bool linePos1ToSpherePositive = false;
 	bool linePos2ToSpherePositive = false;
@@ -95,8 +133,8 @@ bool Collision::CircleAndSegment2D
 		float linePos2ToSphereLength = Vector2::Length(linePos2ToSphere);
 
 		//半径より大きかったら当たってない
-		if (linePos1ToSphereLength > circle.r
-			&& linePos2ToSphereLength > circle.r)
+		if (linePos1ToSphereLength > circleR
+			&& linePos2ToSphereLength > circleR)
 		{
 			return false;
 		}
@@ -123,14 +161,18 @@ bool Collision::CircleAndSegment2D
 
 bool Collision::SphereAndSphere(const SphereData& sphere1, const SphereData& sphere2)
 {
+	Vector3 sphere1Pos = sphere1.GetPosition();
+	float sphere1R = sphere1.GetRadius();
+	Vector3 sphere2Pos = sphere2.GetPosition();
+	float sphere2R = sphere2.GetRadius();
 
-	return (sphere2.position.x - sphere1.position.x) *
-		(sphere2.position.x - sphere1.position.x) +
-		(sphere2.position.y - sphere1.position.y) *
-		(sphere2.position.y - sphere1.position.y) +
-		(sphere2.position.z - sphere1.position.z) *
-		(sphere2.position.z - sphere1.position.z) <=
-		(sphere1.r + sphere2.r) * (sphere1.r + sphere2.r);
+	return (sphere2Pos.x - sphere1Pos.x) *
+		(sphere2Pos.x - sphere1Pos.x) +
+		(sphere2Pos.y - sphere1Pos.y) *
+		(sphere2Pos.y - sphere1Pos.y) +
+		(sphere2Pos.z - sphere1Pos.z) *
+		(sphere2Pos.z - sphere1Pos.z) <=
+		(sphere1R + sphere2R) * (sphere1R + sphere2R);
 }
 
 bool Collision::BoxAndBox
@@ -141,10 +183,15 @@ bool Collision::BoxAndBox
 	BoxCalcResult* boxCalcResult2
 )
 {
-	Vector3 minPos1 = box1.position - box1.size / 2;
-	Vector3 maxPos1 = box1.position + box1.size / 2;
-	Vector3 minPos2 = box2.position - box2.size / 2;
-	Vector3 maxPos2 = box2.position + box2.size / 2;
+	Vector3 box1Pos = box1.GetPosition();
+	Vector3 box1Size = box1.GetSize();
+	Vector3 box2Pos = box2.GetPosition();
+	Vector3 box2Size = box2.GetSize();
+
+	Vector3 minPos1 = box1Pos - box1Size / 2;
+	Vector3 maxPos1 = box1Pos + box1Size / 2;
+	Vector3 minPos2 = box2Pos - box2Size / 2;
+	Vector3 maxPos2 = box2Pos + box2Size / 2;
 	bool isHit = false;
 
 	//1か2のminかmaxがXYZ全部相手の範囲内だったら当たってる
@@ -199,21 +246,21 @@ bool Collision::BoxAndBox
 		//3 Zが多い
 		char top = 0;
 		//対象へのベクトル
-		Vector3 targetToVector = box2.position - box1.position;
+		Vector3 targetToVector = box2Pos - box1Pos;
 
 		if (abs(targetToVector.x) > abs(targetToVector.y) &&
-			abs(targetToVector.x) > box2.size.x / 2)
+			abs(targetToVector.x) > box2Size.x / 2)
 		{
 			top = 1;
 			if (abs(targetToVector.z) > abs(targetToVector.x) &&
-				abs(targetToVector.z) > box2.size.z / 2)
+				abs(targetToVector.z) > box2Size.z / 2)
 				top = 3;
 		}
 		else
 		{
 			top = 2;
 			if (abs(targetToVector.z) > abs(targetToVector.y) &&
-				abs(targetToVector.z) > box2.size.z / 2)
+				abs(targetToVector.z) > box2Size.z / 2)
 				top = 3;
 		}
 
@@ -333,9 +380,9 @@ bool Collision::Segment3DAndSegment3D
 bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2)
 {
 	//回転適応.
-	Value2<Vector3>capsule1LineSegmentPos = capsule1.segmentData.GetRotatePosition();
+	Value2<Vector3>capsule1LineSegmentPos = capsule1.GetSegment3DData().GetRotatePosition();
 
-	Value2<Vector3>capsule2LineSegmentPos = capsule2.segmentData.GetRotatePosition();
+	Value2<Vector3>capsule2LineSegmentPos = capsule2.GetSegment3DData().GetRotatePosition();
 
 
 	Vector3 d1 = capsule1LineSegmentPos.v2 - capsule1LineSegmentPos.v1;
@@ -380,7 +427,7 @@ bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData
 	Vector3 c1 = p1 + s * d1;
 	Vector3 c2 = p2 + t * d2;
 
-	return LibMath::CalcDistance3D(c1,c2) < capsule1.r + capsule2.r;
+	return LibMath::CalcDistance3D(c1,c2) < capsule1.GetRadius() + capsule2.GetRadius();
 }
 
 bool Collision::SphereAndBox
@@ -393,28 +440,28 @@ bool Collision::SphereAndBox
 {
 	float dir2 = 0.0f;
 
-	Vector3 minPos = box.position - box.size / 2;
-	Vector3 maxPos = box.position + box.size / 2;
+	Vector3 minPos = box.GetPosition() -box.GetSize() / 2;
+	Vector3 maxPos = box.GetPosition() +box.GetSize() / 2;
 
 	//x
-	if (sphere.position.x < minPos.x)
-		dir2 += (minPos.x - sphere.position.x) * (minPos.x - sphere.position.x);
-	if (sphere.position.x > maxPos.x)
-		dir2 += (sphere.position.x - maxPos.x) * (sphere.position.x - maxPos.x);
+	if (sphere.GetPosition().x < minPos.x)
+		dir2 += (minPos.x - sphere.GetPosition().x) * (minPos.x - sphere.GetPosition().x);
+	if (sphere.GetPosition().x > maxPos.x)
+		dir2 += (sphere.GetPosition().x - maxPos.x) * (sphere.GetPosition().x - maxPos.x);
 
 	//y
-	if (sphere.position.y < minPos.y)
-		dir2 += (minPos.y - sphere.position.y) * (minPos.y - sphere.position.y);
-	if (sphere.position.y > maxPos.y)
-		dir2 += (sphere.position.y - maxPos.y) * (sphere.position.y - maxPos.y);
+	if (sphere.GetPosition().y < minPos.y)
+		dir2 += (minPos.y - sphere.GetPosition().y) * (minPos.y - sphere.GetPosition().y);
+	if (sphere.GetPosition().y > maxPos.y)
+		dir2 += (sphere.GetPosition().y - maxPos.y) * (sphere.GetPosition().y - maxPos.y);
 
 	//z
-	if (sphere.position.z < minPos.z)
-		dir2 += (minPos.z - sphere.position.z) * (minPos.z - sphere.position.z);
-	if (sphere.position.z > maxPos.z)
-		dir2 += (sphere.position.z - maxPos.z) * (sphere.position.z - maxPos.z);
+	if (sphere.GetPosition().z < minPos.z)
+		dir2 += (minPos.z - sphere.GetPosition().z) * (minPos.z - sphere.GetPosition().z);
+	if (sphere.GetPosition().z > maxPos.z)
+		dir2 += (sphere.GetPosition().z - maxPos.z) * (sphere.GetPosition().z - maxPos.z);
 
-	bool isHit = dir2 < sphere.r * sphere.r;
+	bool isHit = dir2 < sphere.GetRadius() * sphere.GetRadius();
 
 	//どこに当たったかを返す
 	if (sphereCalcResult || boxCalcResult)
@@ -433,21 +480,21 @@ bool Collision::SphereAndBox
 		//3 Zが多い
 		char top = 0;
 		//ボックスへのベクトル
-		Vector3 sphereToVector = box.position - sphere.position;
+		Vector3 sphereToVector = box.GetPosition() - sphere.GetPosition();
 
 		if (abs(sphereToVector.x) > abs(sphereToVector.y) &&
-			abs(sphereToVector.x) > box.size.x / 2)
+			abs(sphereToVector.x) >box.GetSize().x / 2)
 		{
 			top = 1;
 			if (abs(sphereToVector.z) > abs(sphereToVector.x) &&
-				abs(sphereToVector.z) > box.size.z / 2)
+				abs(sphereToVector.z) >box.GetSize().z / 2)
 				top = 3;
 		}
 		else
 		{
 			top = 2;
 			if (abs(sphereToVector.z) > abs(sphereToVector.y) &&
-				abs(sphereToVector.z) > box.size.z / 2)
+				abs(sphereToVector.z) >box.GetSize().z / 2)
 				top = 3;
 		}
 
@@ -494,15 +541,15 @@ bool Collision::SphereAndBox
 
 bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule)
 {
-	Value2<Vector3>capsuleLineSegmentPos = capsule.segmentData.GetRotatePosition();
-
+	Value2<Vector3>capsuleLineSegmentPos = capsule.GetSegment3DData().GetRotatePosition();
+	Vector3 spherePos = sphere.GetPosition();
 
 	Vector3 capsulePos0ToSphere = 
-		LibMath::OtherVector(capsuleLineSegmentPos.v1, sphere.position);
+		LibMath::OtherVector3(capsuleLineSegmentPos.v1, spherePos);
 	
 	//資料のn
 	Vector3 capsuleLineSegmentVector =
-		LibMath::OtherVector(capsuleLineSegmentPos.v1, capsuleLineSegmentPos.v2);
+		LibMath::OtherVector3(capsuleLineSegmentPos.v1, capsuleLineSegmentPos.v2);
 
 	float t = Vector3::Dot(capsulePos0ToSphere, capsuleLineSegmentVector);
 
@@ -513,21 +560,21 @@ bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& ca
 	float sphereAndCupsuleDis = 0.0f;
 	if(lenghtRate < 0.0f)
 	{
-		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, capsuleLineSegmentPos.v1);
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(spherePos, capsuleLineSegmentPos.v1);
 	}
 	else if(lenghtRate > 1.0f)
 	{
-		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, capsuleLineSegmentPos.v2);
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(spherePos, capsuleLineSegmentPos.v2);
 	}
 	else
 	{
-		sphereAndCupsuleDis = LibMath::CalcDistance3D(sphere.position, onTheLinePos);
+		sphereAndCupsuleDis = LibMath::CalcDistance3D(spherePos, onTheLinePos);
 	}
 
-	return sphereAndCupsuleDis < sphere.r;
+	return sphereAndCupsuleDis < sphere.GetRadius();
 }
 
-bool Collision::BoardAndLineSegment3D
+bool Collision::BoardAndSegment3D
 (
 	const BoardData& board,
 	BoardCalcResult* boardCalcResult,
@@ -536,123 +583,104 @@ bool Collision::BoardAndLineSegment3D
 )
 {
 
+	Value2<Vector3> segmentPos = lineSegment.GetRotatePosition();
+	Value4<Vector3>boardVertexPos = board.GetVertexPosition();
+	Vector3 leftDownPos = boardVertexPos.v1;
+	Vector3 leftUpPos = boardVertexPos.v2;
+	Vector3 rightDownPos = boardVertexPos.v3;
+	Vector3 rightUpPos = boardVertexPos.v4;
 
 	Vector3 v1;
 	Vector3 v2;
 
-	v1 = lineSegment.position[0] - board.position;
-	v2 = lineSegment.position[1] - board.position;
+	v1 = segmentPos.v1 - board.GetPosition();
+	v2 = segmentPos.v2 - board.GetPosition();
 
 	//線が板ポリと並行ではないかを調べる(平行だったらreturn)
-	if (Vector3Dot(v1, board.normal) * Vector3Dot(v2, board.normal) > 0)
+	if (Vector3Dot(v1, board.GetNormal()) * Vector3Dot(v2, board.GetNormal()) > 0)
 		return false;
 
 
 	//ここにポリゴンの範囲内かどうかの処理を書く
 
 	//線の端 - ポリゴンの角
-	v1 = lineSegment.position[0] - board.leftDownPos;
-	v2 = lineSegment.position[1] - board.leftDownPos;
-	/*v1 = normalize(v1);
-	v2 = normalize(v2);*/
+	v1 = segmentPos.v1 - leftDownPos;
+	v2 = segmentPos.v2 - leftDownPos;
+	
+	Vector3 vec1 = segmentPos.v1 - board.GetPosition();
+	Vector3 vec2 = segmentPos.v2 - board.GetPosition();
 
-
-	//ここがおかしい?
-
-	////線の端から板ポリまでの距離を求める
-	//float d = dot(normal,pointPos);
-	//float kyori1;//平面から、linePos1までの距離
-	//kyori1 = 
-	//	abs(normal.x * linePos1.x + normal.y * linePos1.y +normal.z * linePos1.z + d) / 
-	//	sqrt(normal.x* normal.x + normal.y* normal.y + normal.z* normal.z);
-
-	//float kyori2;
-	//kyori2 = 
-	//	abs(normal.x * linePos2.x + normal.y * linePos2.y + normal.z * linePos2.z + d) /
-	//	sqrt(normal.x* normal.x + normal.y* normal.y + normal.z* normal.z);
-
-	Vector3 vec1 = lineSegment.position[0] - board.position;
-	Vector3 vec2 = lineSegment.position[1] - board.position;
-
+	//線分の両端と板ポリの距離を求める
+	//0で割るのを防止するためのif
 	float kyori1 = 0;
-	if (board.normal.x != 0)kyori1 += abs(Vector3Dot(board.normal, vec1)) / abs(board.normal.x);
-	if (board.normal.y != 0)kyori1 += abs(Vector3Dot(board.normal, vec1)) / abs(board.normal.y);
-	if (board.normal.z != 0)kyori1 += abs(Vector3Dot(board.normal, vec1)) / abs(board.normal.z);
+	if (board.GetNormal().x != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().x);
+	if (board.GetNormal().y != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().y);
+	if (board.GetNormal().z != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().z);
 	float kyori2 = 0;
-	if (board.normal.x != 0)kyori2 += abs(Vector3Dot(board.normal, vec2)) / abs(board.normal.x);
-	if (board.normal.y != 0)	kyori2 += abs(Vector3Dot(board.normal, vec2)) / abs(board.normal.y);
-	if (board.normal.z != 0)	kyori2 += abs(Vector3Dot(board.normal, vec2)) / abs(board.normal.z);
-
-	/*float kyori1 = abs(dot(normal, linePos1)) / abs(normal.x);
-	float kyori2 = abs(dot(normal, linePos2)) / abs(normal.x);*/
-
+	if (board.GetNormal().x != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().x);
+	if (board.GetNormal().y != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().y);
+	if (board.GetNormal().z != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().z);
 
 
 	//内分比
-	float a;
-	a = kyori1 / (kyori1 + kyori2);
+	float a = kyori1 / (kyori1 + kyori2);
 
 
-	//ここおかしい
 
 	//線とポリゴンが当たっている場所を調べる
 	Vector3 crossVector;//ポリゴンの角から当たってる場所の座標へのベクトル
 	crossVector.x = (1 - a) * v1.x + a * v2.x;
 	crossVector.y = (1 - a) * v1.y + a * v2.y;
 	crossVector.z = (1 - a) * v1.z + a * v2.z;
-	Vector3 crossPos = board.leftDownPos + crossVector;
-	//crossPos.y *= - 1;
+	Vector3 crossPos = leftDownPos + crossVector;
+
 
 
 
 	//三角形1個目の判定
 	Vector3 normal1;
-	normal1 = LibMath::CalcNormal(board.leftDownPos, board.leftUpPos, crossPos);
+	normal1 = LibMath::CalcNormal(leftDownPos, leftUpPos, crossPos);
 	Vector3 normal2;
-	normal2 = LibMath::CalcNormal(board.leftUpPos, board.rightDownPos, crossPos);
+	normal2 = LibMath::CalcNormal(leftUpPos, rightDownPos, crossPos);
 	Vector3 normal3;
-	normal3 = LibMath::CalcNormal(board.rightDownPos, board.leftDownPos, crossPos);
+	normal3 = LibMath::CalcNormal(rightDownPos, leftDownPos, crossPos);
 
 	//板ポリと法線が同じか調べる
 	bool equal1 = false;//板ポリと法線が同じかどうか
 
 	//ほぼ同じだったらtrue
-	if (LibMath::Difference(board.normal.x, normal1.x, 0.0001f) &&
-		LibMath::Difference(board.normal.y, normal1.y, 0.0001f) &&
-		LibMath::Difference(board.normal.z, normal1.z, 0.0001f) &&
-		LibMath::Difference(board.normal.x, normal2.x, 0.0001f) &&
-		LibMath::Difference(board.normal.y, normal2.y, 0.0001f) &&
-		LibMath::Difference(board.normal.z, normal2.z, 0.0001f) &&
-		LibMath::Difference(board.normal.x, normal3.x, 0.0001f) &&
-		LibMath::Difference(board.normal.y, normal3.y, 0.0001f) &&
-		LibMath::Difference(board.normal.z, normal3.z, 0.0001f))
+	if (LibMath::Difference(board.GetNormal().x, normal1.x, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().y, normal1.y, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().z, normal1.z, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().x, normal2.x, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().y, normal2.y, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().z, normal2.z, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().x, normal3.x, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().y, normal3.y, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().z, normal3.z, 0.0001f))
 	{
 		equal1 = true;
 	}
 
-	/*p[0] = c2.leftDownPos;
-p[1] = c2.leftUpPos;
-p[2] = c2.rightDownPos;
-p[3] = c2.rightUpPos;*/
 
 	//三角形2個目の判定
-	normal1 = LibMath::CalcNormal(board.rightDownPos, board.leftUpPos, crossPos);
-	normal2 = LibMath::CalcNormal(board.leftUpPos, board.rightUpPos, crossPos);
-	normal3 = LibMath::CalcNormal(board.rightUpPos, board.rightDownPos, crossPos);
+	normal1 = LibMath::CalcNormal(rightDownPos, leftUpPos, crossPos);
+	normal2 = LibMath::CalcNormal(leftUpPos, rightUpPos, crossPos);
+	normal3 = LibMath::CalcNormal(rightUpPos, rightDownPos, crossPos);
 
 	//板ポリと法線が同じか調べる
 	bool equal2 = false;//板ポリと法線が同じかどうか
 
 	//ほぼ同じ(誤差0.0001以内)だったらtrue
-	if (LibMath::Difference(board.normal.x, normal1.x, 0.0001f) &&
-		LibMath::Difference(board.normal.y, normal1.y, 0.0001f) &&
-		LibMath::Difference(board.normal.z, normal1.z, 0.0001f) &&
-		LibMath::Difference(board.normal.x, normal2.x, 0.0001f) &&
-		LibMath::Difference(board.normal.y, normal2.y, 0.0001f) &&
-		LibMath::Difference(board.normal.z, normal2.z, 0.0001f) &&
-		LibMath::Difference(board.normal.x, normal3.x, 0.0001f) &&
-		LibMath::Difference(board.normal.y, normal3.y, 0.0001f) &&
-		LibMath::Difference(board.normal.z, normal3.z, 0.0001f))
+	if (LibMath::Difference(board.GetNormal().x, normal1.x, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().y, normal1.y, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().z, normal1.z, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().x, normal2.x, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().y, normal2.y, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().z, normal2.z, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().x, normal3.x, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().y, normal3.y, 0.0001f) &&
+		LibMath::Difference(board.GetNormal().z, normal3.z, 0.0001f))
 	{
 		equal2 = true;
 	}
@@ -660,15 +688,15 @@ p[3] = c2.rightUpPos;*/
 	//どちらかが同じ(板ポリの中)だったらifの中に
 	if (equal1 || equal2)
 	{
-		if (lineSegmentCalcResult) lineSegmentCalcResult->lineSegment3DHitPos = crossPos;
+		if (lineSegmentCalcResult) lineSegmentCalcResult->boardHitPos = crossPos;
 		if (boardCalcResult)boardCalcResult->lineSegment3DHitPos = crossPos;
 		return true;
 	}
 
 	//衝突位置と中心がほぼ同じだったらヒット
-	if (LibMath::Difference(crossPos.x, board.position.x, 0.001f)
-		&& LibMath::Difference(crossPos.y, board.position.y, 0.001f)
-		&& LibMath::Difference(crossPos.z, board.position.z, 0.001f)
+	if (LibMath::Difference(crossPos.x, board.GetPosition().x, 0.001f)
+		&& LibMath::Difference(crossPos.y, board.GetPosition().y, 0.001f)
+		&& LibMath::Difference(crossPos.z, board.GetPosition().z, 0.001f)
 		|| equal1
 		|| equal2)
 	{
@@ -680,7 +708,136 @@ p[3] = c2.rightUpPos;*/
 
 }
 
+bool MelLib::Collision::BoardAndCapsule(const BoardData& board, BoardCalcResult* boardCalcResult, const CapsuleData& capsule, Segment3DCalcResult* lineSegmentCalcResult)
+{
+	//線分の判定が成立している、または、距離が半径以内
+	//後者が成立してるかを判断すればいい
 
-#pragma endregion
+	//距離をどう求めるか
+
+	//これ実装できれば、壁との判定もとれる
+
+	//両端の辺の方向に板ポリゴンを半径分動かして、交差したら、
+	//カプセルと当たってるって言える?
+	//中心でもいい?
+	//この方法じゃダメだった
+	
+	//衝突点は交差してなくても求められる?(平面扱いして計算してるならできるはず)
+	//衝突点と四つの辺の距離が半径以内、または、平面との距離が半径以内だったらOK?
+	//それだと、範囲外でも平面と交差してたらアウトだからダメ
 
 
+	//じゃあ、四角形の範囲内だったら、両端と平面との距離を計算
+	//範囲外だったら、辺との距離を計算
+	//それだと、カプセルと板が平行の時アウト
+	//平行だったら範囲内でも平面との距離を計算する?
+	//あと、斜めになってて範囲外にいてかつ中心の近くにいて板がクソデカかったらアウト
+	//その場合、両端と平面の距離を求めればいい?
+	//そもそも、めちゃくちゃ長かったら、両端の距離求めても意味ない?
+
+	//範囲外の時、辺との距離を計算。それでだめだったら両端の距離を求めればいい?(球並みに短くて半径でかいやつ用)
+	//範囲外で両端の距離を求める場合、衝突点が中にあるか確認しないといけない?
+	//そもそも衝突点が外になる場合は、線分同士のチェックに引っかかるかあたらない
+	//クソ長いのが刺さってたら、両端と平面の距離求めても意味ない場合あるから、刺さってるかどうかも判断して、
+	//刺さってたら当たってる。刺さってなかったら両端求めればいい。
+	//平行の時、単純に距離を求めると、当たってないのにあたってることになる
+
+
+	//中の場合、
+	//1.刺さっている
+	//2.両端と平面の距離が半径以内
+	//どちらかが成立してればおそらく当たっている
+
+	//外の場合、
+	//1.線分と板の辺の距離が半径以内
+	// 
+	//普通に両端と平面の距離を計算すると、板からめちゃくちゃ離れてても平面に近かったらダメ
+	//2.
+
+
+	//難しく考えすぎ?
+	//刺さってるか確認し、
+
+	Value2<Vector3> segmentPos = capsule.GetSegment3DData().GetRotatePosition();
+	Value4<Vector3>boardVertexPos = board.GetVertexPosition();
+	Vector3 leftDownPos = boardVertexPos.v1;
+	Vector3 leftUpPos = boardVertexPos.v2;
+	Vector3 rightDownPos = boardVertexPos.v3;
+	Vector3 rightUpPos = boardVertexPos.v4;
+
+	Vector3 v1;
+	Vector3 v2;
+
+	v1 = segmentPos.v1 - board.GetPosition();
+	v2 = segmentPos.v2 - board.GetPosition();
+
+	//線が板ポリと並行ではないかを調べる(平行だったらreturn)
+	if (Vector3Dot(v1, board.GetNormal()) * Vector3Dot(v2, board.GetNormal()) > 0) 
+	{
+		//平行だった場合、両端と平面の距離が半径以内だったら当たってる
+		float planeDir = abs(Vector3::Dot(board.GetNormal(), segmentPos.v1 - board.GetPosition())) / board.GetNormal().Length();
+		if (planeDir <= capsule.GetRadius())return true;
+
+		planeDir = abs(Vector3::Dot(board.GetNormal(), segmentPos.v2 - board.GetPosition())) / board.GetNormal().Length();
+		if (planeDir <= capsule.GetRadius())return true;
+
+		return false;
+	}
+
+
+	//起きたらやること
+	//範囲内か外かを調べて処理を行う
+
+
+}
+
+bool MelLib::Collision::PointAndSphere(const Vector3& pointPos, const SphereData& sphere)
+{
+	return LibMath::CalcDistance3D(pointPos, sphere.GetPosition()) <= sphere.GetRadius();
+}
+
+//
+//bool MelLib::Collision::PointAndCircularSector3D(const Vector3& pointPos, const CircularSector3DData& circularSector)
+//{
+//	//球の中にあるかどうか確認
+//	if (!PointAndSphere(pointPos, circularSector.GetSphereData()))return;
+//
+//	//やり方
+//	//1.
+//	//縦と横の角度に応じて、ボードを回転する?
+//	//どうやって中にあるか確認するの?
+//	//表裏の判定を行えば確認できる
+//
+//	//2.
+//	//扇形を2つ持たせる?
+//	//
+//
+//	BoardData nearBoard;
+//	BoardData farBoard;
+//	BoardData leftBoard;
+//	BoardData rightBoard;
+//	BoardData upBoard;
+//	BoardData downBoard;
+//
+//}
+//
+//#pragma endregion
+//
+//
+
+bool MelLib::Collision::PointAndFrustum(const Vector3& pointPos, const FrustumData& frustum)
+{
+	//点が、錐台の全ての面の裏側にあったらtrue
+
+	std::vector<BoardData>boards = frustum.GetBoardDatas();
+
+	for(const auto& b : boards)
+	{
+		//表側にあったらfalse
+		if(LibMath::PointBoardFrontBackCheck(pointPos, b) == 1)
+		{
+			return false;
+		}
+	}
+	return true;
+}

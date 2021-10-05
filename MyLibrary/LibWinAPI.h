@@ -7,6 +7,7 @@
 
 namespace MelLib
 {
+	//WinAPIをまとめたもの
 	class LibWinAPI
 	{
 	private:
@@ -80,7 +81,7 @@ namespace MelLib
 		);
 
 		/// <summary>
-		///		開くためのウィンドウを生成し、入力したファイル名を取得します
+		///	開くためのウィンドウを生成し、入力したファイル名を取得します
 		/// </summary>
 		/// <param name="hwnd">ウィンドウハンドル</param>
 		/// <param name="fileName">ファイル名を入力する部分の初期名を記述する。trueが返された場合、入力したファイル名が格納される。</param>

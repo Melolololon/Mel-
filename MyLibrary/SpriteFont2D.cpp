@@ -15,7 +15,7 @@ void SpriteFont2D::Initialize()
 	for(auto& p : pSprites)
 	{
 		p = std::make_unique<Sprite2D>();
-		p->CreateSetTexture(nullptr);
+		p->Create(nullptr);
 	}
 }
 

@@ -10,7 +10,7 @@ namespace MelLib
 		~Easing() {}
 
 		static Vector3 CalcEasing(const Vector3& startPos, const Vector3& endPos, const float t);
-
+		
 	public:
 		static Vector3 EaseIn
 		(

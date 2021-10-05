@@ -13,25 +13,20 @@
 
 namespace MelLib
 {
-
+	//テクスチャ
 	class Texture
 	{
 	private:
 		template<class T>
 		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+		static UINT loadTextureNumber;
 		static std::unordered_map<std::string, std::unique_ptr<Texture>>pTextures;
-		//DirectX::TexMetadata metadata;
-		//DirectX::ScratchImage scratchImage;
-		//const DirectX::Image* image;
-
-
+		
+		//テクスチャ番号(ヒープの添え字)
+		UINT textureNumber = 0;
 		std::vector< DirectX::ScratchImage> scratchImage;
 
-
-
-		UINT textureNumber = 0;
-		static UINT loadTextureNumber;
 
 	private:
 
@@ -40,7 +35,7 @@ namespace MelLib
 	protected:
 
 		ComPtr<ID3D12Resource>textureBuffer;
-		DirectX::TexMetadata metadata;
+		DirectX::TexMetadata metadata = {};
 		std::vector<const DirectX::Image*>image;
 	protected:
 		/// <summary>
@@ -50,6 +45,10 @@ namespace MelLib
 		/// <returns></returns>
 		bool LoadTexture(const std::vector<std::string>& path);
 	
+		/// <summary>
+		/// スクラッチイメージからimageを取得
+		/// </summary>
+		/// <param name="textureNum"></param>
 		void GetImage(const size_t textureNum);
 	public:
 		Texture() {}

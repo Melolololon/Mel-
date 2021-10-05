@@ -97,8 +97,6 @@ void Sound::Update()
 		pNoneNameSounds[i]->CheckPlayEnd();
 		if(pNoneNameSounds[i]->playEndMoment)
 		{
-			pNoneNameSounds[i]->pSourceVoice->Stop();
-			pNoneNameSounds[i]->pSourceVoice->DestroyVoice();
 			pNoneNameSounds.erase(pNoneNameSounds.begin() + i);
 			
 			i--;

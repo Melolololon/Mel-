@@ -19,6 +19,7 @@
 #include"Material.h"
 #include"SpriteFont2D.h"
 
+
 using namespace MelLib;
 
 DirectX12* Library::dx12;
@@ -55,6 +56,11 @@ int Library::winHeight;
 Color Library::clearColor;
 std::wstring Library::winName;
 
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
+
+
+//利用者がウィンドウを自作して使う場合は、利用者が用意したProcでこのProcを呼び出してもらえば、
+//ImGuiの処理を行える
 LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	switch (msg)
@@ -63,6 +69,8 @@ LRESULT Library::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0);
 		return 0;
 	}
+
+	ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam);
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 
 }

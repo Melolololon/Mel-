@@ -15,40 +15,6 @@
 namespace MelLib
 {
 
-	//Aスターのノード
-	struct AStarNode
-	{
-		//座標
-		Vector2 position = 0;
-
-		//コスト
-		UINT cost = 1;
-
-		//計算結果(ステップ + 距離 + コスト)
-		UINT calcNum = UINT_MAX;
-
-
-		//以下探索用変数
-
-		//配列のインデックス
-		int indexX = INT_MAX;
-		int indexY = INT_MAX;
-
-		//close配列のインデックス
-		int closeIndex = INT_MAX;
-
-		//スタートからの距離
-		int stepNum = 0;
-
-		AStarNode* previousNode = nullptr;
-
-		bool openFlag = false;
-		bool closeFlag = false;
-
-		//進行不能オブジェクトと重なっているノード
-		bool hitObjectNode = false;
-
-	};
 
 	class LibMath
 	{
@@ -56,61 +22,18 @@ namespace MelLib
 		LibMath() {}
 		~LibMath() {}
 	public:
-		//今度でいいから、プレイヤーや敵の大きさを考慮して経路を計算できるようにする
-
-#pragma region 最短経路
-
-	/// <summary>
-	/// 引数を基準にノードの座標をセットします。
-	/// </summary>
-	/// <param name="leftUpPos">左上座標</param>
-	/// <param name="rightDownPos">右下座標</param>
-	/// <param name="nodeNumX">横分割数</param>
-	/// <param name="nodeNumY">縦分割数</param>
-	/// <param name="nodes">ノードのvector(sizeは0でよい)</param>
-	/// <param name="upPlus">上方向がプラスかどうか</param>
-		static void SetAStarNodePosition
-		(
-			const Vector2& leftUpPos,
-			const Vector2& rightDownPos,
-			const UINT& nodeNumX,
-			const UINT& nodeNumY,
-			std::vector< std::vector<AStarNode>>& nodes,
-			const bool upPlus
-		);
-
-		//この関数でコストが1じゃないオブジェクトとそのコストを渡すようにする?
-		/// <summary>
-		/// ノードが進行不能オブジェクトにヒットしてるかを確認します。
-		/// </summary>
-		/// <param name="hitObjectsPos">障害物の座標のvector</param>
-		/// <param name="hitObjectsSize">障害物のサイズのvector</param>
-		/// <param name="nodes">ノードのvector(SetAStarNodePositionに渡した後の配列)</param>
-		static void SetAStarNodeHitObjectNodeFlag
-		(
-			const std::vector<Vector2>& hitObjectsPos,
-			const std::vector<Vector2>& hitObjectsSize,
-			std::vector< std::vector<AStarNode>>& nodes
-		);
 
 		/// <summary>
-		/// 渡されたデータをもとに最短経路を求めます。
+		/// 円周率を取得します
 		/// </summary>
-		/// <param name="startPos">スタート地点の座標</param>
-		/// <param name="endPos">ゴール地点の座標</param>
-		/// <param name="nodes">ノードのvector(SetAStarNodeHitObjectNodeFlagに渡した後の配列)</param>
-		/// <param name="routeVector">ゴールまでのルートを格納するvector(sizeは0でよい)</param>
-		/// <returns>探索が成功したかどうか</returns>
-		static bool GetAStarCalcResult
-		(
-			const Vector2& startPos,
-			const Vector2& endPos,
-			std::vector< std::vector<AStarNode>>& nodes,
-			std::vector<Vector2>& routeVector
-		);
+		/// <returns></returns>
+		static float GetFloatPI();
 
-#pragma endregion
-
+		/// <summary>
+		/// 円周率を取得します
+		/// </summary>
+		/// <returns></returns>
+		static double GetDoublePI();
 
 		/// <summary>
 		/// 階乗
@@ -127,9 +50,31 @@ namespace MelLib
 		/// <returns></returns>
 		static int Pow(const float num, const int index);
 
+		enum MultipleClampType
+		{
+			CLAMP_TYPE_BIG,//大きい値を返す
+			CLAMP_TYPE_SMALL,//小さい値を返す
+			CLAMP_TYPE_NEAR_BIG,//大きい値と小さい値のうち近いほうを返し、差が同等だった場合、大きいほうを返します
+			CLAMP_TYPE_NEAR_SMALL,//大きい値と小さい値のうち近いほうを返し、差が同等だった場合、小さいほうを返します
+		};
 
 		/// <summary>
-		/// num1とnum2の値の差を求め、差が基準の値より小さかったらtrueを返します
+		/// multipleの倍数でnumをクランプします。返す値はMultipleClampTypeでセットします。
+		/// </summary>
+		/// <param name="num">数値</param>
+		/// <param name="multiple">倍率</param>
+		/// <param name="type">返す値の種類</param>
+		/// <returns></returns>
+		static float MultipleClamp
+		(
+			const float num,
+			const float multiple,
+			const MultipleClampType type
+		);
+
+
+		/// <summary>
+		/// num1とnum2の値の差を求め、差が基準の値以内だったらtrueを返します
 		/// </summary>
 		/// <param name="num1">値1</param>
 		/// <param name="num2">値2</param>
@@ -153,21 +98,31 @@ namespace MelLib
 			/// <param name="angle">角度</param>
 		static float AngleConversion(int pattern, float angle);
 
+		/// <summary>
+		/// 左右判定を行います。点がベクトルより右の場合は1、左の場合は-1、ベクトル上の場合は0を返します。
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <param name="point"></param>
+		/// <returns></returns>
+		static char PointLeftRightCheck(const Vector2& vector, const Vector2& point);
 
 		/// <summary>
-		/// 円周率を取得します
+		/// 表裏判定を行います。点が平面の表側だったら1、裏側だったら-1、平面上だったら0を返します。
 		/// </summary>
+		/// <param name="point">点</param>
+		/// <param name="plane">平面情報</param>
 		/// <returns></returns>
-		static float GetFloatPI();
+		static char PointPlaneFrontBackCheck(const Vector3& point, const PlaneData& plane);
 
 		/// <summary>
-		/// 円周率を取得します
+		/// 表裏判定を行います。点が板の表側だったら1、裏側だったら-1、平面上だったら0を返します。
 		/// </summary>
+		/// <param name="point">点</param>
+		/// <param name="plane">板情報</param>
 		/// <returns></returns>
-		static double GetDoublePI();
+		static char PointBoardFrontBackCheck(const Vector3& point, const BoardData& board);
 
-
-
+		//この辺Vectorクラスに移す?
 #pragma region ベクトル
 
 
@@ -182,15 +137,22 @@ namespace MelLib
 		/// <returns></returns>
 		static float CalcDistance2D(const Vector2& pos1, const Vector2& pos2);
 
+		/// <summary>
+		/// 2つの座標の間の座標を求めます。
+		/// </summary>
+		/// <param name="pos1"></param>
+		/// <param name="pos2"></param>
+		/// <returns></returns>
 		static Vector2 CalcCenterPosition2D(const Vector2& pos1, const Vector2& pos2);
 
 		/// <summary>
-		/// 左右判定を行います。点がベクトルより右の場合は1、左の場合は-1、ベクトル上の場合は0を返します。
+		/// vec1からvec2の正規化したベクトルを返します。
 		/// </summary>
-		/// <param name="vector"></param>
-		/// <param name="point"></param>
+		/// <param name="vec1"></param>
+		/// <param name="vec2"></param>
 		/// <returns></returns>
-		static char PointLeftRightCheck(const Vector2& vector, const Vector2& point);
+		static Vector2 OtherVector2(const Vector2& vec1, const Vector2& vec2);
+
 
 		/// <summary>
 		/// 2つのベクトルがなす角度を求めます
@@ -206,7 +168,7 @@ namespace MelLib
 		/// <param name="v"></param>
 		/// <param name="v3">3次元座標系かどうか</param>
 		/// <returns></returns>
-		static float Vecto2ToAngle(const Vector2& v, const bool& v3);
+		static float Vector2ToAngle(const Vector2& v, const bool& v3);
 
 		/// <summary>
 		/// 角度をVector2に変換します
@@ -223,6 +185,15 @@ namespace MelLib
 		/// <param name="angle"></param>
 		/// <returns></returns>
 		static Vector2 RotateVector2(const Vector2& v, const float& angle);
+
+		/// <summary>
+		/// 変数vと、それを90度、180度、270度回転させた座標で形成された四角形上で回転させた座標を返します。
+		/// </summary>
+		/// <param name="v"></param>
+		/// <param name="angle"></param>
+		/// <returns></returns>
+		static Vector2 RotateVector2Box(const Vector2& v, const float& angle);
+
 #pragma endregion
 
 #pragma region Vector3
@@ -258,7 +229,7 @@ namespace MelLib
 		/// <param name="myPos"></param>
 		/// <param name="otherPos"></param>
 		/// <returns></returns>
-		static Vector3 OtherVector(const Vector3& vec1, const Vector3& vec2);
+		static Vector3 OtherVector3(const Vector3& vec1, const Vector3& vec2);
 
 		/// <summary>
 		/// ベクトルを回転させます
@@ -267,8 +238,9 @@ namespace MelLib
 		/// <param name="vec">軸のベクトル</param>
 		/// <param name="angle"></param>
 		/// <returns></returns>
-		static Vector3 RotateVector3(const Vector3& rotateV, const Vector3& vec, const float& angle);
+		static Vector3 RotateVector3(const Vector3& rotateV, const Vector3& vec, const float angle);
 
+		static Vector3 RotateZXYVector3(const Vector3& rotateV, const Vector3& angle);
 
 		/// <summary>
 		/// 座標を指定したベクトル方向にdistance分移動させたVector3型の値を返します。
@@ -277,7 +249,10 @@ namespace MelLib
 		/// <param name="vector"></param>
 		/// <param name="distance"></param>
 		/// <returns></returns>
-		static Vector3 FloatDistanceMoveVector3(const Vector3& pos, const Vector3& vector, const float distance);
+		static Vector3 FloatDistanceMoveVector3(const Vector3& pos, const Vector3& vector, const float distance)
+		{
+			return pos + vector * distance;
+		}
 #pragma endregion
 
 

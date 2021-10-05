@@ -10,29 +10,28 @@ Sprite2D::Sprite2D()
 
 Sprite2D::Sprite2D(const Color& color)
 {
-	CreateSetColor(color);
+	Create(color);
 }
 
 Sprite2D::Sprite2D(Texture* pTexture)
 {
-	CreateSetTexture(pTexture);
+	Create(pTexture);
 }
 
 Sprite2D::~Sprite2D()
 {
 }
 
-bool Sprite2D::CreateSetColor(const Color& color)
+void Sprite2D::Create(const Color& color)
 {
 	SpriteInitialize();
 	SetOneColorSpriteColor(color);
 	drawMode = DrawMode::DRAW_COLOR;
 
 	pipeline = defaultPipeline.GetPipelineState();
-	return true;
 }
 
-bool Sprite2D::CreateSetTexture(Texture* pTexture)
+void Sprite2D::Create(Texture* pTexture)
 {
 	if (pTexture)
 	{
@@ -47,41 +46,40 @@ bool Sprite2D::CreateSetTexture(Texture* pTexture)
 
 	drawMode = DrawMode::DRAW_TEXTURE;
 	pipeline = defaultPipeline.GetPipelineState();
-	return true;
 }
-
-bool Sprite2D::Create(const Color& color, const std::string& name)
-{
-	pSprite2D.emplace(name, std::make_unique<Sprite2D>());
-	bool result = pSprite2D[name]->CreateSetColor(color);
-
-#ifdef _DEBUG
-	if (!result)
-	{
-		OutputDebugStringA(name.c_str());
-		OutputDebugStringW(L"ÇÃê∂ê¨Ç…é∏îsÇµÇ‹ÇµÇΩÅB\n");
-	}
-#endif // _DEBUG
-
-	return result;
-
-}
-
-bool Sprite2D::Create(Texture* pTexture, const std::string& name)
-{
-	pSprite2D.emplace(name, std::make_unique<Sprite2D>());
-	bool result = pSprite2D[name]->CreateSetTexture(pTexture);
-
-#ifdef _DEBUG
-	if(!result)
-	{
-		OutputDebugStringA(name.c_str());
-		OutputDebugStringW(L"ÇÃê∂ê¨Ç…é∏îsÇµÇ‹ÇµÇΩÅB\n");
-	}
-#endif // _DEBUG
-
-	return result;
-}
+//
+//bool Sprite2D::Create(const Color& color, const std::string& name)
+//{
+//	pSprite2D.emplace(name, std::make_unique<Sprite2D>());
+//	bool result = pSprite2D[name]->Create(color);
+//
+//#ifdef _DEBUG
+//	if (!result)
+//	{
+//		OutputDebugStringA(name.c_str());
+//		OutputDebugStringW(L"ÇÃê∂ê¨Ç…é∏îsÇµÇ‹ÇµÇΩÅB\n");
+//	}
+//#endif // _DEBUG
+//
+//	return result;
+//
+//}
+//
+//bool Sprite2D::Create(Texture* pTexture, const std::string& name)
+//{
+//	pSprite2D.emplace(name, std::make_unique<Sprite2D>());
+//	bool result = pSprite2D[name]->Create(pTexture);
+//
+//#ifdef _DEBUG
+//	if(!result)
+//	{
+//		OutputDebugStringA(name.c_str());
+//		OutputDebugStringW(L"ÇÃê∂ê¨Ç…é∏îsÇµÇ‹ÇµÇΩÅB\n");
+//	}
+//#endif // _DEBUG
+//
+//	return result;
+//}
 
 void Sprite2D::Delete(const std::string& name)
 {
@@ -94,7 +92,7 @@ void Sprite2D::Draw(const std::string& rtName)
 	MapVertexBuffer((void**)&vertex);
 
 	Vector2 textureSize = 1;
-	if (pTexture)  textureSize = pTexture->GetTextureSize();
+	if (pTexture) textureSize = pTexture->GetTextureSize();
 
 #pragma region í∏ì_ç¿ïW
 

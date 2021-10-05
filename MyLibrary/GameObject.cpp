@@ -1,9 +1,11 @@
 #include "GameObject.h"
 
+#include"LibMath.h"
 #include"Physics.h"
 
 using namespace MelLib;
 
+float GameObject::gravutationalAcc = Physics::GRAVITATIONAL_ACCELERATION_EARTH / 30;
 
 #ifdef _DEBUG
 
@@ -14,6 +16,38 @@ PipelineState GameObject::collisionCheckModelPipelineState;
 //マテリアル
 ADSAMaterial GameObject::material;
 #endif // _DEBUG
+
+void MelLib::GameObject::SetModelPosition(const Vector3& diffPos)
+{
+	for(auto& m : modelObjects)
+	{
+		m.second.SetPosition(m.second.GetPosition() + diffPos);
+	}
+}
+
+void MelLib::GameObject::SetDataPosition(const Vector3& diffPos)
+{
+	for(auto& d : sphereData)
+	{
+		d.SetPosition(d.GetPosition() + diffPos);
+	}
+	for(auto& d : boxData)
+	{
+		d.SetPosition(d.GetPosition() + diffPos);
+	}
+	for (auto& d : boardData)
+	{
+		d.SetPosition(d.GetPosition() + diffPos);
+	}
+	for (auto& d : segment3DData)
+	{
+		d.SetPosition(d.GetPosition() + diffPos);
+	}
+	for (auto& d : capsuleData)
+	{
+		d.GetRefSegment3DData().SetPosition(d.GetSegment3DData().GetPosition() + diffPos);
+	}
+}
 
 GameObject::GameObject()
 {
@@ -40,9 +74,9 @@ void GameObject::Draw()
 void GameObject::Hit
 (
 	const GameObject* const  object,
-	const ShapeType3D collisionType,
+	const ShapeType3D& collisionType,
 	const int arrayNum,
-	const ShapeType3D hitObjColType,
+	const ShapeType3D& hitObjColType,
 	const int hitObjArrayNum
 )
 {
@@ -68,28 +102,84 @@ void GameObject::Hit
 //}
 
 
-void GameObject::ObjectInitialize() 
+void GameObject::FalsEraseManager() 
 {
 	eraseManager = false;
 
 
 }
 
-void GameObject::CalcMovePhysics()
+void MelLib::GameObject::AddPosition(const Vector3& vec)
 {
-	if (mass <= 0.0f)return;
-	acceleration += force / mass;
-	velocity += acceleration;
-	position += velocity;
+	SetModelPosition(vec);
+	SetDataPosition(vec);
+	position += vec;
 }
 
-void MelLib::GameObject::ResizeCalcResult()
+void MelLib::GameObject::SetPosition(const Vector3& pos)
 {
-	if (sphereData.size() != sphereCalcResult.size()) sphereCalcResult.resize(sphereData.size());
-	if (boxData.size() != boxCalcResult.size()) boxCalcResult.resize(boxData.size());
-	if (lineSegmentData.size() != lineSegmentCalcResult.size()) lineSegmentCalcResult.resize(lineSegmentData.size());
-	if (boardData.size() != boardCalcResult.size()) boardCalcResult.resize(boardData.size());
+	SetModelPosition(pos - position);
+	SetDataPosition(pos - position);
+
+	position = pos;
+	
 }
+
+void GameObject::CalcMovePhysics()
+{
+	Vector3 prePos = position;
+	//力と重さと加速度と速度で座標を計算
+	position += Physics::CalcMoveResult
+	(
+		velocity,
+		acceleration,
+		force,
+		mass
+	);
+
+	//落下時の速度
+	if (isFall) 
+	{
+		fallTime++;
+
+		
+		const float PRE_VEL_Y = currentFallVelovity;
+		currentFallVelovity = Physics::CalcFallVelocity(fallStartSpeed, gravutationalAcc, fallTime);
+		const float ADD_VEL_Y = currentFallVelovity - PRE_VEL_Y;
+
+		//Velocity取得時に反映させるためにvelocityに代入
+		//Get関数でvelocityに加算するようにする? 
+		
+		//計算では、今までの速度を加算した合計速度ではなく、現在の速度を求めるため、
+		//velovcity.yは0秒の時の速度 + 現在の速度になるようにしないと
+		//velocity.y + upThrowVelocity(加算すると現在の速度)と同じにならない。
+		velocity.y += ADD_VEL_Y;
+
+		//毎フレーム速度を加算
+		position.y += currentFallVelovity;
+		
+	}
+
+
+	//重力加速度は落下中のみ適応するように変更して!!!!!!!
+	//重力加速度適応
+	//position.y -= gravutationalAcc;
+
+
+	//ここで移動量を計算して、判定の座標を調整する?
+	//モデルはどうする?
+
+	//反発の計算関数はhit関数で呼び出してもらう?
+
+	SetModelPosition(position - prePos);
+	SetDataPosition(position - prePos);
+}
+
+
+
+
+
+
 #ifdef _DEBUG
 
 
@@ -158,12 +248,19 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 	//Sphere
 	createOrDeleteModel(sphereData.size(), sphereModelObjects, ShapeType3D::BOX);
 
+	//Board
+	createOrDeleteModel(boardModelObjects.size(), boardModelObjects, ShapeType3D::BOARD);
+
+	//Segment
+	createOrDeleteModel(segment3DData.size(), segmentModelObjects[0], ShapeType3D::BOX);
+	createOrDeleteModel(segment3DData.size(), segmentModelObjects[1], ShapeType3D::BOX);
+
 	//Capsule
 	//球を作成
 	createOrDeleteModel(capsuleData.size(), capsuleModelObjects[0], ShapeType3D::BOX);
 	createOrDeleteModel(capsuleData.size(), capsuleModelObjects[1], ShapeType3D::BOX);
 	//円注を作成
-	createOrDeleteModel(capsuleData.size(), capsuleModelObjects[2], ShapeType3D::BOX);
+	//createOrDeleteModel(capsuleData.size(), capsuleModelObjects[2], ShapeType3D::BOX);
 }
 
 void MelLib::GameObject::SetCollisionCheckModelData()
@@ -172,44 +269,75 @@ void MelLib::GameObject::SetCollisionCheckModelData()
 	size_t dataNum = boxData.size();
 	for(size_t i = 0; i < dataNum;i++)
 	{
-		boxModelObjects[i].SetScale(boxData[i].size);
-		boxModelObjects[i].SetPosition(boxData[i].position);
+		boxModelObjects[i].SetScale(boxData[i].GetSize());
+		boxModelObjects[i].SetPosition(boxData[i].GetPosition());
 	}
 
 	//Sphere
 	dataNum = sphereData.size();
 	for (size_t i = 0; i < dataNum; i++)
 	{
-		sphereModelObjects[i].SetScale(sphereData[i].r);
-		sphereModelObjects[i].SetPosition(sphereData[i].position);
+		sphereModelObjects[i].SetScale(sphereData[i].GetRadius() * 2);
+		sphereModelObjects[i].SetPosition(sphereData[i].GetPosition());
 	}
+
+	//Board
+	dataNum = boardModelObjects.size();
+	for(size_t i = 0; i < dataNum;i++)
+	{
+		boardModelObjects[i].SetScale(boardData[i].GetSize().ToVector3());
+		boardModelObjects[i].SetAngle(boardData[i].GetAngle());
+		boardModelObjects[i].SetPosition(boardData[i].GetPosition());
+	}
+
+	//Segment
+	dataNum = segment3DData.size();
+	for (size_t i = 0; i < dataNum; i++)
+	{
+		Value2<Vector3>lineSegmentPos = segment3DData[i].GetRotatePosition();
+
+		segmentModelObjects[0][i].SetScale(1);
+		segmentModelObjects[0][i].SetPosition(lineSegmentPos.v1);
+		segmentModelObjects[0][i].SetAngle(segment3DData[i].GetAngle());
+
+		segmentModelObjects[1][i].SetScale(1);
+		segmentModelObjects[1][i].SetPosition(lineSegmentPos.v2);
+		segmentModelObjects[1][i].SetAngle(segment3DData[i].GetAngle());
+
+	}
+
 
 	//Capsule
 	dataNum = capsuleData.size();
 	for (size_t i = 0; i < dataNum; i++)
 	{
-		Value2<Vector3>lineSegmentPos = capsuleData[i].segmentData.GetRotatePosition();
+		Value2<Vector3>lineSegmentPos = capsuleData[i].GetSegment3DData().GetRotatePosition();
 		
 		//四角形はスケール1だと1辺が1なので、半径1のときは1辺を2にしないといけないため、2倍
-		capsuleModelObjects[0][i].SetScale(capsuleData[i].r * 2);
+		capsuleModelObjects[0][i].SetScale(capsuleData[i].GetRadius() * 2);
 		capsuleModelObjects[0][i].SetPosition(lineSegmentPos.v1);
-		capsuleModelObjects[0][i].SetAngle(capsuleData[i].segmentData.angle);
+		capsuleModelObjects[0][i].SetAngle(capsuleData[i].GetSegment3DData().GetAngle());
 
-		capsuleModelObjects[1][i].SetScale(capsuleData[i].r * 2);
+		capsuleModelObjects[1][i].SetScale(capsuleData[i].GetRadius() * 2);
 		capsuleModelObjects[1][i].SetPosition(lineSegmentPos.v2);
-		capsuleModelObjects[1][i].SetAngle(capsuleData[i].segmentData.angle);
+		capsuleModelObjects[1][i].SetAngle(capsuleData[i].GetSegment3DData().GetAngle());
 
 		//円柱
+		/*Value2<Vector3>segmentPos = capsuleData[i].GetSegment3DData().GetRotatePosition();
+		float segmentLength = (segmentPos.v1.y - segmentPos.v2.y);
+
 		capsuleModelObjects[2][i].SetScale
-		(Vector3(capsuleData[i].r * 2, capsuleData[i].segmentData.GetPositionDistance(), capsuleData[i].r * 2));
-		capsuleModelObjects[2][i].SetPosition(capsuleData[i].segmentData.GetCenterPosition());
-		capsuleModelObjects[2][i].SetAngle(capsuleData[i].segmentData.angle);
+		(Vector3(capsuleData[i].GetRadius() * 2, segmentLength, capsuleData[i].GetRadius() * 2));
+		capsuleModelObjects[2][i].SetPosition(LibMath::CalcCenterPosition3D(segmentPos.v1, segmentPos.v2));
+		capsuleModelObjects[2][i].SetAngle(capsuleData[i].GetSegment3DData().GetAngle());*/
 	}
 
 }
 
 void MelLib::GameObject::DrawCollisionCheckModel()
 {
+	if (!drawCollisionModel)return;
+
 	for(auto& box : boxModelObjects)
 	{
 		box.Draw();

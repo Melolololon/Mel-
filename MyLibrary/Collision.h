@@ -36,6 +36,23 @@ namespace MelLib
 			const CircleData& circle2
 		);
 
+		static bool PointAndCircle
+		(
+			const Vector2& pointPos,
+			const CircleData& circle
+		);
+
+		/// <summary>
+		/// 点と扇形が当たっているかを確認します。
+		/// </summary>
+		/// <param name="pointPos"></param>
+		/// <param name="circularSector"></param>
+		/// <returns></returns>
+		static bool PointAndCircularSector
+		(
+			const Vector2& pointPos,
+			const CircularSectorData& circularSector
+		);
 
 		static bool RectAndCircle(const RectData& rect, const CircleData& circle);
 
@@ -53,8 +70,8 @@ namespace MelLib
 			Segment2DCalcResult* lineSegmentCalcResult
 		);
 
-#pragma endregion
 
+#pragma endregion
 
 #pragma region 3D
 
@@ -102,7 +119,7 @@ namespace MelLib
 		/// <returns>当たっていたらtrue</returns>
 		static bool SphereAndBox(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const BoxData& box, BoxCalcResult* boxCalcResult);
 
-		static bool SphereAndLineSegmrnt3D(const SphereData& sphere, const Segment3DData& lineSegment);
+		static bool SphereAndSegmrnt3D(const SphereData& sphere, const Segment3DData& lineSegment);
 
 		static bool SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule);
 
@@ -114,13 +131,41 @@ namespace MelLib
 		/// <param name="lineSegment">3Dの線分</param>
 		/// <param name="lineSegmentCalcResult">計算結果を入れる変数のポインタ</param>
 		/// <returns>当たっていたらtrue</returns>
-		static bool BoardAndLineSegment3D
+		static bool BoardAndSegment3D
 		(
 			const BoardData& board,
 			BoardCalcResult* boardCalcResult,
 			const Segment3DData& lineSegment,
 			Segment3DCalcResult* lineSegmentCalcResult
 		);
+
+		static bool BoardAndCapsule
+		(
+			const BoardData& board,
+			BoardCalcResult* boardCalcResult,
+			const CapsuleData& capsule,
+			Segment3DCalcResult* lineSegmentCalcResult
+		);
+
+		static bool PointAndSphere
+		(
+			const Vector3& pointPos, 
+			const SphereData& sphere
+		);
+
+	/*	static bool PointAndCircularSector3D
+		(
+			const Vector3& pointPos,
+		    const CircularSector3DData& circularSector
+		);*/
+
+		static bool PointAndFrustum
+		(
+			const Vector3& pointPos,
+			const FrustumData& frustum
+		);
+
+
 #pragma endregion
 	};
 

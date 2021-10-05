@@ -56,6 +56,11 @@ namespace MelLib
 		void SetScale(const Vector2& scale) { constData.scale = scale.ToXMFLOAT2(); }
 #pragma endregion
 
+#pragma region ƒQƒbƒg
+		Vector2 GetPosition()const { return Vector2(constData.position.x, constData.position.y); }
+#pragma endregion
+
+
 
 		static PipelineState GetDefaultPipeline() { return defaultPipeline; }
 	};

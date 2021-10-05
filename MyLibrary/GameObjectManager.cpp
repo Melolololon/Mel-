@@ -23,9 +23,9 @@ GameObjectManager* GameObjectManager::GetInstance()
 	return &inst;
 }
 
-void GameObjectManager::Initialize() 
+void GameObjectManager::Initialize()
 {
-	
+
 
 	cursor = std::make_unique<MouseCursor>();
 	//cursor->Initialize();
@@ -36,63 +36,68 @@ void GameObjectManager::Initialize()
 	addObjects.reserve(100);
 }
 
-void GameObjectManager::Update() 
+void GameObjectManager::Update()
 {
 #pragma region オブジェクトのUpdate
 	//カーソルアップデート
-	if (cursor) 
+	if (cursor)
 	{
 		cursor->Update();
 		nearPos = cursor->GetNearPos();
 		farPos = cursor->GetFarPos();
 	}
-	
-	for (auto& obj : objects) 
-	{
-		if (obj->GetCalcPhysicsFlag())obj->CalcMovePhysics();
-		obj->ResizeCalcResult();
-		obj->Update();
-		
-	}
-	
 
-	if(addObjects.size() != 0)
+	for (auto& obj : objects)
 	{
-		for (auto& a : addObjects) 
+		obj->Update();
+
+	}
+
+	for (auto& obj : object2Ds)
+	{
+		obj->Update();
+
+	}
+
+	if (addObjects.size() != 0)
+	{
+		for (auto& a : addObjects)
 		{
 
-			a->ResizeCalcResult();
 			a.get()->Update();
 			objects.push_back(a);
 		}
-		
+
 		if (addObjectSort != OBJECT_SORT_NONE)
 			ObjectSort(addObjectSort, addObjectSortOrderType);
 
 		addObjects.clear();
 	}
 
+
+	if (addObject2Ds.size() != 0)
+	{
+		for (auto& a : addObject2Ds)
+		{
+
+			a.get()->Update();
+			object2Ds.push_back(a);
+		}
+
+		addObject2Ds.clear();
+	}
+
 #pragma endregion
 
 #pragma region 新判定処理
-	
 
 	size_t objectSize = objects.size();
 
 	std::vector<CollisionDetectionFlag>collisionFlags(objectSize);
 	for (int i = 0; i < objectSize; i++)
 	{
-		objects[i]->ResizeCalcResult();
 		collisionFlags[i] = objects[i]->GetCollisionFlag();
-
-
-#ifdef _DEBUG
-		objects[i]->CreateCollisionCheckModel();
-		objects[i]->SetCollisionCheckModelData();
-#endif // _DEBUG
 	}
-
-
 
 	for (int objI = 0; objI < objectSize; objI++)
 	{
@@ -100,7 +105,7 @@ void GameObjectManager::Update()
 		for (int objJ = 0; objJ < objectSize; objJ++)
 		{
 			GameObject* obj2 = objects[objJ].get();
-			
+
 			////自分と比較、比較済の組み合わせはcontinue
 			if (objI >= objJ)continue;
 
@@ -108,7 +113,7 @@ void GameObjectManager::Update()
 
 
 			if (collisionFlags[objI].sphere
-				&& collisionFlags[objJ].sphere) 
+				&& collisionFlags[objJ].sphere)
 			{
 
 				std::vector<SphereData>sphereData1 = obj1->GetSphereData();
@@ -124,6 +129,9 @@ void GameObjectManager::Update()
 						if (Collision::SphereAndSphere(sphereData1[colI], sphereData2[colJ]))
 						{
 							//hitを呼び出す
+							obj1->SetHitSphereData(sphereData2[colJ]);
+							obj2->SetHitSphereData(sphereData1[colJ]);
+
 							obj1->Hit
 							(
 								obj2,
@@ -170,6 +178,9 @@ void GameObjectManager::Update()
 							obj1->SetBoxCalcResult(result1, colI);
 							obj2->SetBoxCalcResult(result2, colJ);
 
+							obj1->SetHitBoxData(boxData2[colJ]);
+							obj2->SetHitBoxData(boxData1[colI]);
+
 							//hitを呼び出す
 							obj1->Hit
 							(
@@ -214,6 +225,7 @@ void GameObjectManager::Update()
 						Segment3DCalcResult result1;
 						Segment3DCalcResult result2;
 
+
 						if (Collision::Segment3DAndSegment3D
 						(
 							segmentData1[colI],
@@ -222,8 +234,12 @@ void GameObjectManager::Update()
 							&result2
 						))
 						{
-							obj1->SetSegmentCalcResult(result1,colI);
-							obj2->SetSegmentCalcResult(result2,colJ);
+							obj1->SetSegmentCalcResult(result1, colI);
+							obj2->SetSegmentCalcResult(result2, colJ);
+
+
+							obj1->SetHitSegment3DData(segmentData2[colJ]);
+							obj2->SetHitSegment3DData(segmentData1[colI]);
 
 							//hitを呼び出す
 							obj1->Hit
@@ -266,6 +282,10 @@ void GameObjectManager::Update()
 					{
 						if (Collision::CapsuleAndCapsule(capsuleData1[colI], capsuleData2[colJ]))
 						{
+							obj1->SetHitCapsuleData(capsuleData2[colJ]);
+							obj2->SetHitCapsuleData(capsuleData1[colI]);
+
+
 							//hitを呼び出す
 							obj1->Hit
 							(
@@ -300,8 +320,6 @@ void GameObjectManager::Update()
 				std::vector<BoxData>boxData = obj2->GetBoxData();
 				size_t boxDataSize = boxData.size();
 
-
-
 				for (int colI = 0; colI < sphereDataSize; colI++)
 				{
 					for (int colJ = 0; colJ < boxDataSize; colJ++)
@@ -319,6 +337,10 @@ void GameObjectManager::Update()
 						{
 							obj1->SetSphereCalcResult(result1, colI);
 							obj2->SetBoxCalcResult(result2, colJ);
+
+							obj1->SetHitBoxData(boxData[colJ]);
+							obj2->SetHitSphereData(sphereData[colI]);
+
 							//hitを呼び出す
 							obj1->Hit
 							(
@@ -331,6 +353,62 @@ void GameObjectManager::Update()
 							obj2->Hit
 							(
 								obj1,
+								ShapeType3D::BOX,
+								colJ,
+								ShapeType3D::SPHERE,
+								colI
+							);
+						}
+					}
+				}
+
+
+
+
+			}
+
+			if (collisionFlags[objJ].sphere
+				&& collisionFlags[objI].box)
+			{
+
+				std::vector<SphereData>sphereData = obj2->GetSphereData();
+				size_t sphereDataSize = sphereData.size();
+				std::vector<BoxData>boxData = obj1->GetBoxData();
+				size_t boxDataSize = boxData.size();
+
+				for (int colI = 0; colI < sphereDataSize; colI++)
+				{
+					for (int colJ = 0; colJ < boxDataSize; colJ++)
+					{
+						SphereCalcResult result1;
+						BoxCalcResult result2;
+
+						if (Collision::SphereAndBox
+						(
+							sphereData[colI],
+							&result1,
+							boxData[colJ],
+							&result2
+						))
+						{
+							obj2->SetSphereCalcResult(result1, colI);
+							obj1->SetBoxCalcResult(result2, colJ);
+
+							obj1->SetHitSphereData(sphereData[colI]);
+							obj2->SetHitBoxData(boxData[colJ]);
+
+							//hitを呼び出す
+							obj2->Hit
+							(
+								obj1,
+								ShapeType3D::SPHERE,
+								colI,
+								ShapeType3D::BOX,
+								colJ
+							);
+							obj1->Hit
+							(
+								obj2,
 								ShapeType3D::BOX,
 								colJ,
 								ShapeType3D::SPHERE,
@@ -350,15 +428,19 @@ void GameObjectManager::Update()
 			{
 				std::vector<SphereData>sphereData = obj1->GetSphereData();
 				size_t sphereDataSize = sphereData.size();
-				std::vector<CapsuleData>capsuleData = obj1->GetCapsuleData();
+				std::vector<CapsuleData>capsuleData = obj2->GetCapsuleData();
 				size_t capsuleDataSize = capsuleData.size();
-			
+
 				for (int colI = 0; colI < sphereDataSize; colI++)
 				{
 					for (int colJ = 0; colJ < capsuleDataSize; colJ++)
 					{
 						if (Collision::SphereAndCapsule(sphereData[colI], capsuleData[colJ]))
 						{
+							obj1->SetHitCapsuleData(capsuleData[colJ]);
+							obj2->SetHitSphereData(sphereData[colI]);
+
+
 							//hitを呼び出す
 							obj1->Hit
 							(
@@ -382,355 +464,390 @@ void GameObjectManager::Update()
 				}
 
 			}
+
+			if (collisionFlags[objJ].sphere
+				&& collisionFlags[objI].capsule)
+			{
+
+				std::vector<SphereData>sphereData = obj2->GetSphereData();
+				size_t sphereDataSize = sphereData.size();
+				std::vector<CapsuleData>capsuleData = obj1->GetCapsuleData();
+				size_t capsuleDataSize = capsuleData.size();
+
+				for (int colI = 0; colI < sphereDataSize; colI++)
+				{
+					for (int colJ = 0; colJ < capsuleDataSize; colJ++)
+					{
+						if (Collision::SphereAndCapsule(sphereData[colI], capsuleData[colJ]))
+						{
+							obj1->SetHitSphereData(sphereData[colI]);
+							obj2->SetHitCapsuleData(capsuleData[colJ]);
+
+							//hitを呼び出す
+							obj2->Hit
+							(
+								obj1,
+								ShapeType3D::SPHERE,
+								colI,
+								ShapeType3D::CAPSULE,
+								colJ
+							);
+							obj1->Hit
+							(
+								obj2,
+								ShapeType3D::CAPSULE,
+								colJ,
+								ShapeType3D::SPHERE,
+								colI
+							);
+
+						}
+					}
+				}
+			}
+
 #pragma endregion
 
 #pragma region Board & Segent
-		//板もカプセルと同じように角度セットするようにする
+			if (collisionFlags[objI].board
+				&& collisionFlags[objJ].segment)
+			{
+				std::vector<BoardData>boardData = obj1->GetBoardData();
+				size_t boardDataSize = boardData.size();
+				std::vector<Segment3DData>segmentData = obj2->GetSegmentData();
+				size_t segmentDataSize = segmentData.size();
+
+				for (int colI = 0; colI < boardDataSize; colI++)
+				{
+					for (int colJ = 0; colJ < segmentDataSize; colJ++)
+					{
+						BoardCalcResult result1;
+						Segment3DCalcResult result2;
+
+						if (Collision::BoardAndSegment3D(boardData[colI], &result1, segmentData[colJ], &result2))
+						{
+							obj1->SetBoardCalcResult(result1, colI);
+							obj2->SetSegmentCalcResult(result2, colJ);
+
+							obj1->SetHitSegment3DData(segmentData[colJ]);
+							obj2->SetHitBoardData(boardData[colI]);
+
+							//hitを呼び出す
+							obj1->Hit
+							(
+								obj2,
+								ShapeType3D::BOARD,
+								colI,
+								ShapeType3D::SEGMENT,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								ShapeType3D::SEGMENT,
+								colJ,
+								ShapeType3D::BOARD,
+								colI
+							);
+
+						}
+					}
+				}
+
+			}
+
+			if (collisionFlags[objJ].board
+				&& collisionFlags[objI].segment)
+			{
+				std::vector<BoardData>boardData = obj2->GetBoardData();
+				size_t boardDataSize = boardData.size();
+				std::vector<Segment3DData>segmentData = obj1->GetSegmentData();
+				size_t segmentDataSize = segmentData.size();
+
+				for (int colI = 0; colI < boardDataSize; colI++)
+				{
+					for (int colJ = 0; colJ < segmentDataSize; colJ++)
+					{
+						BoardCalcResult result1;
+						Segment3DCalcResult result2;
+
+						if (Collision::BoardAndSegment3D(boardData[colI], &result1, segmentData[colJ], &result2))
+						{
+							obj2->SetBoardCalcResult(result1, colI);
+							obj1->SetSegmentCalcResult(result2, colJ);
+
+							obj1->SetHitBoardData(boardData[colI]);
+							obj2->SetHitSegment3DData(segmentData[colJ]);
+
+							//hitを呼び出す
+							obj2->Hit
+							(
+								obj1,
+								ShapeType3D::BOARD,
+								colI,
+								ShapeType3D::SEGMENT,
+								colJ
+							);
+							obj1->Hit
+							(
+								obj2,
+								ShapeType3D::SEGMENT,
+								colJ,
+								ShapeType3D::BOARD,
+								colI
+							);
+
+						}
+					}
+				}
+
+			}
+
 #pragma endregion
+
+#pragma region Board & Capsule
+			if (collisionFlags[objI].board
+				&& collisionFlags[objJ].capsule)
+			{
+				std::vector<BoardData>boardData = obj1->GetBoardData();
+				size_t boardDataSize = boardData.size();
+				std::vector<CapsuleData>capsuleData = obj2->GetCapsuleData();
+				size_t capsuleDataSize = capsuleData.size();
+
+				for (int colI = 0; colI < boardDataSize; colI++)
+				{
+					for (int colJ = 0; colJ < capsuleDataSize; colJ++)
+					{
+						BoardCalcResult result1;
+						Segment3DCalcResult result2;
+
+						if (Collision::BoardAndCapsule(boardData[colI], &result1, capsuleData[colJ], &result2))
+						{
+							obj1->SetBoardCalcResult(result1, colI);
+							obj2->SetCapsuleCalcResult(result2, colJ);
+
+							obj1->SetHitCapsuleData(capsuleData[colJ]);
+							obj2->SetHitBoardData(boardData[colI]);
+
+							//hitを呼び出す
+							obj1->Hit
+							(
+								obj2,
+								ShapeType3D::BOARD,
+								colI,
+								ShapeType3D::CAPSULE,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								ShapeType3D::CAPSULE,
+								colJ,
+								ShapeType3D::BOARD,
+								colI
+							);
+
+						}
+					}
+				}
+
+			}
+
+			if (collisionFlags[objJ].board
+				&& collisionFlags[objI].capsule)
+			{
+				std::vector<BoardData>boardData = obj2->GetBoardData();
+				size_t boardDataSize = boardData.size();
+				std::vector<CapsuleData>capsuleData = obj1->GetCapsuleData();
+				size_t capsuleDataSize = capsuleData.size();
+
+				for (int colI = 0; colI < boardDataSize; colI++)
+				{
+					for (int colJ = 0; colJ < capsuleDataSize; colJ++)
+					{
+						BoardCalcResult result1;
+						Segment3DCalcResult result2;
+
+						if (Collision::BoardAndCapsule(boardData[colI], &result1, capsuleData[colJ], &result2))
+						{
+							obj2->SetBoardCalcResult(result1, colI);
+							obj1->SetCapsuleCalcResult(result2, colJ);
+
+							obj1->SetHitBoardData(boardData[colI]);
+							obj2->SetHitCapsuleData(capsuleData[colJ]);
+
+							//hitを呼び出す
+							obj2->Hit
+							(
+								obj1,
+								ShapeType3D::BOARD,
+								colI,
+								ShapeType3D::CAPSULE,
+								colJ
+							);
+							obj1->Hit
+							(
+								obj2,
+								ShapeType3D::CAPSULE,
+								colJ,
+								ShapeType3D::BOARD,
+								colI
+							);
+
+						}
+					}
+				}
+
+			}
+#pragma endregion
+
 
 		}
 	}
 
+#ifdef _DEBUG
+	for (int i = 0; i < objectSize; i++)
+	{
+		objects[i]->CreateCollisionCheckModel();
+		objects[i]->SetCollisionCheckModelData();
+
+	}
+#endif // _DEBUG
 
 
 
+
+	objectSize = object2Ds.size();
+
+	std::vector<CollisionDetectionFlag2D>collisionFlag2Ds(objectSize);
+	for (int i = 0; i < objectSize; i++)
+	{
+		collisionFlag2Ds[i] = object2Ds[i]->GetCollisionFlag();
+	}
+
+	for (int objI = 0; objI < objectSize; objI++)
+	{
+		GameObject2D* obj1 = object2Ds[objI].get();
+		for (int objJ = 0; objJ < objectSize; objJ++)
+		{
+			GameObject2D* obj2 = object2Ds[objJ].get();
+
+			////自分と比較、比較済の組み合わせはcontinue
+			if (objI >= objJ)continue;
+
+#pragma region Circle&Circle
+			if (collisionFlag2Ds[objI].circle
+				&& collisionFlag2Ds[objJ].circle)
+			{
+
+				std::vector<CircleData>circleData1 = obj1->GetCircleData();
+				size_t circleData1Size = circleData1.size();
+				std::vector<CircleData>circleData2 = obj2->GetCircleData();
+				size_t circleData2Size = circleData2.size();
+
+
+				for (int colI = 0; colI < circleData1Size; colI++)
+				{
+					for (int colJ = 0; colJ < circleData2Size; colJ++)
+					{
+						if (Collision::CircleAndCircle(circleData1[colI], circleData2[colJ]))
+						{
+							//hitを呼び出す
+							obj1->SetHitCircleData(circleData2[colJ]);
+							obj2->SetHitCircleData(circleData1[colJ]);
+
+							obj1->Hit
+							(
+								obj2,
+								ShapeType2D::CIRCLE,
+								colI,
+								ShapeType2D::CIRCLE,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								ShapeType2D::CIRCLE,
+								colJ,
+								ShapeType2D::CIRCLE,
+								colI
+							);
+						}
+					}
+				}
+
+			}
+#pragma endregion
+
+#pragma region Rect&Rect
+			if (collisionFlag2Ds[objI].rect
+				&& collisionFlag2Ds[objJ].rect)
+			{
+
+				std::vector<RectData>rectData1 = obj1->GetRectData();
+				size_t rectData1Size = rectData1.size();
+				std::vector<RectData>rectData2 = obj2->GetRectData();
+				size_t rectData2Size = rectData2.size();
+
+
+				for (int colI = 0; colI < rectData1Size; colI++)
+				{
+					for (int colJ = 0; colJ < rectData2Size; colJ++)
+					{
+						if (Collision::RectAndRect(rectData1[colI], rectData2[colJ]))
+						{
+							//hitを呼び出す
+							obj1->SetHitRectData(rectData2[colJ]);
+							obj2->SetHitRectData(rectData1[colJ]);
+
+							obj1->Hit
+							(
+								obj2,
+								ShapeType2D::RECT,
+								colI,
+								ShapeType2D::RECT,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								ShapeType2D::RECT,
+								colJ,
+								ShapeType2D::RECT,
+								colI
+							);
+						}
+					}
+				}
+
+			}
+#pragma endregion
+
+
+		}
+	}
 
 #pragma endregion
 
 	EraseObjectCheck();
 
-
-#pragma region 旧判定処理
-
-//	CollisionFlag f1;
-//	CollisionFlag f2;
-//
-//	//オブジェクトのループ数(内,外)
-//	int objectCount[2] = { 0,0 };
-//	//藩邸のループ数
-//	int collisionCount[2] = { 0,0 };
-//	int skipCount = 0;
-//
-//	std::vector<SphereData>sphere1;
-//	std::vector<SphereData>sphere2;
-//
-//	std::vector<BoxData>box1;
-//	std::vector<BoxData>box2;
-//	
-//	std::vector<BoardData>boardData1;
-//
-//	std::vector<LineSegment3DData>segmentData1;
-//
-//	//if文毎に関数呼ばずにあらかじめ取得したほうがいい(判定フラグのこと?)
-//#pragma region 球と球
-//	if (checkCollision.sphere) 
-//	{
-//		for (auto& o1 : objects)
-//		{
-//			skipCount = 0;
-//			for (auto& o2 : objects)
-//			{
-//				f1 = o1->GetCollisionFlag();
-//				f2 = o2->GetCollisionFlag();
-//
-//				
-//				//自分比較はカウントしない
-//				skipCount++;
-//				if (objectCount[0] > skipCount - 1)continue;
-//
-//				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
-//				if (o1 == o2 || !f1.sphere || !f2.sphere)continue;
-//
-//				sphere1 = o1->GetSphereData();
-// 				sphere2 = o2->GetSphereData();
-//
-//				for (const auto& c1 : sphere1)
-//				{
-//					for (const auto& c2 : sphere2)
-//					{
-//
-//						if (Collision::SphereAndSphere(c1, c2))
-//						{
-//							//反発
-//  							if (o1->GetCalcPhysicsFlag() && o2->GetCalcPhysicsFlag()) 
-//							{
-//								Value2<Vector3> velocity = Physics::CalcRepulsionVelocity
-//								(
-//									Value2<Vector3>(o1->GetPosition(), o2->GetPosition()),
-//									Value2<Vector3>(o1->GetVelocity(), o2->GetVelocity()),
-//									Value2<float>(o1->GetMass(), o2->GetMass()),
-//									Value2<Vector3>(1.0f, 1.0f)
-//								);
-//
-//								if (o1->GetCalcPhysicsFlag()) 
-//								{
-//									o1->SetPosition(o1->GetPosition() + velocity.v1);
-//									o1->SetVelocity(velocity.v1);
-//								}
-//								if (o2->GetCalcPhysicsFlag())
-//								{
-//									o2->SetPosition(o2->GetPosition() + velocity.v2);
-//									o2->SetVelocity(velocity.v2);
-//								}
-//							}
-//
-//							//hitを呼び出す
-//							o1->Hit
-//							(
-//								o2.get(),
-//								CollisionType::COLLISION_SPHERE, 
-//								collisionCount[0],
-//								CollisionType::COLLISION_SPHERE,
-//								collisionCount[1]
-//							);	
-//							o2->Hit
-//							(
-//								o1.get(),
-//								CollisionType::COLLISION_SPHERE,
-//								collisionCount[1],
-//								CollisionType::COLLISION_SPHERE, 
-//								collisionCount[0]
-//							);
-//
-//							//判定は2回、物理演算は1回なので、回数のズレにより、バグる。
-//							//1回に統一する。
-//							//物理演算2回にすると、衝突前ベクトル取得できなくて無理
-//							//一度確認(o1に割る当てられて確認)したら、検索対象外にする?A*のcloseみたいに
-//
-//						}
-//						collisionCount[1]++;
-//					}
-//					collisionCount[0]++;
-//					collisionCount[1] = 0;
-//				}
-//				collisionCount[0] = 0;
-//
-//				objectCount[1]++;
-//			}
-//			objectCount[0]++;
-//			objectCount[1] = 0;
-//		}
-//		objectCount[0] = 0;
-//	}
-//#pragma endregion
-//
-//#pragma region 球とAABB
-//	if (checkCollision.sphere && checkCollision.box)
-//	{
-//		for (auto& o1 : objects)
-//		{
-//			for (auto& o2 : objects)
-//			{
-//				f1 = o1->GetCollisionFlag();
-//				f2 = o2->GetCollisionFlag();
-//
-//				//自分比較はカウントしない
-//				//同じ判定の種類じゃなければこれいらない
-//				/*skipCount++;
-//				if (objectCount[0] > skipCount - 1)continue;*/
-//
-//				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
-//				if (o1 == o2 || !f1.sphere || !f2.box)continue;
-//
-//				sphere1 = o1->GetSphereData();
-//				box1 = o2->GetBoxData();
-//
-//				for (const auto& c1 : sphere1)
-//				{
-//					for (const auto& c2 : box1)
-//					{
-//						BoxHitDirection dis;
-//						if (LibMath::SphereAndBoxCollision
-//						(
-//							c1.position,
-//							c1.r,
-//							c2.position,
-//							c2.size,
-//							&dis
-//						))
-//						{
-//							o1->GetSphereBoxHitDistance(collisionCount[0]) = dis;
-//							o2->GetBoxBoxHitDistance(collisionCount[1]) = dis;
-//
-//							o1->Hit(o2.get(), CollisionType::COLLISION_SPHERE, collisionCount[0], CollisionType::COLLISION_BOX, collisionCount[1]);
-//							o2->Hit(o1.get(), CollisionType::COLLISION_BOX, collisionCount[1], CollisionType::COLLISION_SPHERE, collisionCount[0]);
-//						}
-//						
-//
-//						collisionCount[1]++;
-//					}
-//					collisionCount[0]++;
-//					collisionCount[1] = 0;
-//				}
-//				collisionCount[0] = 0;
-//				objectCount[1]++;
-//			}
-//			objectCount[0]++;
-//			objectCount[1] = 0;
-//		}
-//		objectCount[0] = 0;
-//	}
-//#pragma endregion
-//
-//#pragma region AABBとAABB
-//	if(checkCollision.box)
-//	{
-//		for (auto& o1 : objects)
-//		{
-//			for (auto& o2 : objects)
-//			{
-//				f1 = o1->GetCollisionFlag();
-//				f2 = o2->GetCollisionFlag();
-//
-//				//自分と比較、またはどちらかが判定確認しなくていい場合、無視
-//				if (o1 == o2 || !f1.box || !f2.box)continue;
-//
-//				box1 = o1->GetBoxData();
-//				box2 = o2->GetBoxData();
-//
-//				for (const auto& c1 : box1)
-//				{
-//					for (const auto& c2 : box2)
-//					{
-//						BoxHitDirection dis;
-//						if(LibMath::BoxAndBoxCollision
-//						(
-//							c1.position,
-//							c1.size,
-//							c2.position,
-//							c2.size,
-//							&dis,
-//							nullptr
-//						))
-//						{
-//							o1->GetBoxBoxHitDistance(collisionCount[0]) = dis;
-//							o1->Hit(o2.get(), CollisionType::COLLISION_BOX, collisionCount[0], CollisionType::COLLISION_BOX, collisionCount[1]);
-//						}
-//
-//
-//						collisionCount[1]++;
-//					}
-//					collisionCount[0]++;
-//					collisionCount[1] = 0;
-//				}
-//				collisionCount[0] = 0;
-//
-//			}
-//		}
-//	}
-//
-//#pragma endregion
-//
-//
-//#pragma region 線分と板
-//	if (checkCollision.lineSegment && checkCollision.board)
-//	{
-//		for (auto& o1 : objects)
-//		{
-//			for (auto& o2 : objects)
-//			{
-//				f1 = o1->GetCollisionFlag();
-//				f2 = o2->GetCollisionFlag();
-//
-//				if (o1 == o2 || !f1.lineSegment || !f2.board)continue;
-//
-//				segmentData1 = o1->GetLineSegmentData();
-//				boardData1 = o2->GetBoardData();
-//				for (const auto& c1 : segmentData1)
-//				{
-//					for (const auto& c2 : boardData1)
-//					{
-//						std::vector<Vector3>p(4);
-//						p[0] = c2.leftDownPos;
-//						p[1] = c2.leftUpPos;
-//						p[3] = c2.rightUpPos;
-//						p[2] = c2.rightDownPos;
-//
-//						Vector3 hitPos = { 0,0,0 };
-//						if (LibMath::LineSegmentAndBoardCollision
-//						(
-//							c1.position[0],
-//							c1.position[1],
-//							c2.normal,
-//							c2.position,
-//							p,
-//							&hitPos
-//
-//						))
-//						{
-//
-//							o1->GetLineSegmentHitPosition(collisionCount[0]) = hitPos;
-//							o2->GetBoardHitPosition(collisionCount[1]) = hitPos;
-//
-//							o1->Hit(o2.get(), CollisionType::COLLISION_LINESEGMENT, collisionCount[0], CollisionType::COLLISION_BOARD, collisionCount[1]);
-//							o2->Hit(o1.get(), CollisionType::COLLISION_BOARD, collisionCount[1], CollisionType::COLLISION_LINESEGMENT, collisionCount[0]);
-//						}
-//
-//						collisionCount[1]++;
-//					}
-//
-//					collisionCount[0]++;
-//					collisionCount[1] = 0;
-//				}
-//
-//				collisionCount[0] = 0;
-//			}
-//		}
-//	}
-//#pragma endregion
-//
-//#pragma region マウスカーソルと板ポリ
-//	/*if (checkMouseCollision && checkCollision.board)
-//	{
-//		for (auto& o1 : objects)
-//		{
-//			if(o1->GetCollisionFlag().board)
-//			{
-//				boardData1 = o1->GetBoardData();
-//				for (const auto& c1 : boardData1)
-//				{
-//					std::vector<Vector3>p(4);
-//					p[0] = c1.leftDownPos;
-//					p[1] = c1.leftUpPos;
-//					p[3] = c1.rightUpPos;
-//					p[2] = c1.rightDownPos;
-//					Vector3 hitPos = { 0,0,0 };
-//					if (LibMath::LineSegmentAndBoardCollision
-//					(
-//						nearPos,
-//						farPos,
-//						c1.normal,
-//						c1.position,
-//						p,
-//						&hitPos
-//						))
-//					{
-//						o1->GetBoardHitPosition(collisionCount[0]) = hitPos;
-//					
-//						o1->Hit(cursor.get(), CollisionType::COLLISION_BOARD, collisionCount[0]);
-//					}
-//					collisionCount[0]++;
-//				}
-//			}
-//		}
-//	}*/
-//#pragma endregion
-
-
-#pragma endregion
-
 }
 
-void GameObjectManager::Draw() 
+void GameObjectManager::Draw()
 {
 	for (auto& o : objects)
 	{
 		o->Draw();
-		
+
 #ifdef _DEBUG
 
 		o->DrawCollisionCheckModel();
 #endif // _DEBUG
+	}
+
+	for (auto& o : object2Ds)
+	{
+		o->Draw();
 	}
 }
 
@@ -748,12 +865,23 @@ void GameObjectManager::EraseObjectCheck()
 		}
 	}
 
-
 	objects.shrink_to_fit();
 
+	size = object2Ds.size();
+	for (size_t i = 0; i < size; i++)
+	{
+		if (object2Ds[i]->GetEraseManager())
+		{
+			object2Ds.erase(object2Ds.begin() + i);
+			i--;
+			size--;
+		}
+	}
+
+	object2Ds.shrink_to_fit();
 }
 
-void GameObjectManager::Finalize() 
+void GameObjectManager::Finalize()
 {
 	AllEraseObject();
 }
@@ -766,14 +894,20 @@ void GameObjectManager::ReserveObjectArray(const int& reserveNum)
 
 void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 {
-
 	if (object)
 	{
-		object.get()->ObjectInitialize();
+		object.get()->FalsEraseManager();
 		addObjects.push_back(object);
 	}
+}
 
-	
+void GameObjectManager::AddObject(const std::shared_ptr<GameObject2D>& object)
+{
+	if (object)
+	{
+		object.get()->FalseEraseManager();
+		addObject2Ds.push_back(object);
+	}
 }
 
 void GameObjectManager::SetAddObjectSortState(const ObjectSortType& sort, const bool& orderType)
@@ -793,7 +927,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 			Vector3 pos2 = obj2->GetPosition();
 			float posSum1 = pos1.x + pos1.y + pos1.z;
 			float posSum2 = pos2.x + pos2.y + pos2.z;
-			
+
 			if (orderType)return posSum1 < posSum2;
 			return posSum1 > posSum2;
 		});
@@ -803,12 +937,12 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		std::sort
 		(
 			objects.begin(),
-			objects.end(), 
+			objects.end(),
 			[&orderType]
 		(
-			const std::shared_ptr<GameObject>& obj1, 
+			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
-		)
+			)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
@@ -827,7 +961,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		(
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
-		)
+			)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
@@ -846,7 +980,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		(
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
-		)
+			)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
@@ -857,7 +991,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		break;
 
 	case OBJECT_SORT_NEAR_DISTANCE:
-		
+
 		std::sort
 		(
 			objects.begin(),
@@ -866,7 +1000,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		(
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
-		)
+			)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
@@ -889,7 +1023,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 		(
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
-		)
+			)
 		{
 			Vector3 pos1 = obj1->GetPosition();
 			Vector3 pos2 = obj2->GetPosition();
@@ -937,6 +1071,17 @@ void GameObjectManager::SetMouseCollisionFlag(const bool& flag)
 
 
 void GameObjectManager::AllEraseObject()
+{
+	objects.clear();
+	object2Ds.clear();
+}
+
+void MelLib::GameObjectManager::AllEraseObject2D()
+{
+	object2Ds.clear();
+}
+
+void MelLib::GameObjectManager::AllEraseObject3D()
 {
 	objects.clear();
 }

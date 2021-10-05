@@ -1,413 +1,81 @@
 #include"LibMath.h"
 #include"DirectInput.h"
 
+#include"Interpolation.h"
 
 using namespace MelLib;
 
-#pragma region 最短経路
 
-void LibMath::SetAStarNodePosition
+
+float LibMath::MultipleClamp
 (
-	const Vector2& leftUpPos,
-	const Vector2& rightDownPos,
-	const UINT& nodeNumX,
-	const UINT& nodeNumY,
-	std::vector< std::vector<AStarNode>>& nodes,
-	const bool upPlus
+	const float num,
+	const float multiple,
+	const MultipleClampType type
 )
 {
-	nodes.clear();
+	if (multiple == 0.0f
+		|| num == 0.0f)return 0.0f;
 
-	//マスのサイズを求める
-	Vector2 size = rightDownPos - leftUpPos;
-	size.x = abs(size.x);
-	size.y = abs(size.y);
-	if (nodeNumX >= 1) size.x /= nodeNumX - 1;
-	if (nodeNumY >= 1) size.y /= nodeNumY - 1;
+	//smallNumとbigNum確認用の変数
+	float checkNum = 0.0f;
+	//numより小さいかつ一番近い数値
+	float smallNum = 0.0f;
+	//numより大きいかつ一番近い数値
+	float bigNum = 0.0f;
 
-	//ノードリサイズ
-	nodes.resize(nodeNumY, std::vector<AStarNode>(nodeNumX));
-
-	//ノードの座標をセットしていく
-	Vector2 addPos = 0;
-	for (int y = 0; y < nodeNumY; y++)
-	{
-		for (int x = 0; x < nodeNumX; x++)
-		{
-			if (upPlus)addPos = Vector2(size.x * x, size.y * -y);
-			else addPos = Vector2(size.x * x, size.y * y);
-			nodes[y][x].position = leftUpPos + addPos;
-		}
-	}
-
-}
-
-void LibMath::SetAStarNodeHitObjectNodeFlag
-(
-	const std::vector<Vector2>& hitObjectsPos,
-	const std::vector<Vector2>& hitObjectsSize,
-	std::vector< std::vector<AStarNode>>& nodes
-)
-{
-	//サイズを求める
-	Vector2 nodeSize = 0;
-	nodeSize.x = abs(nodes[0][0].position.x - nodes[0][1].position.x);
-
-	float smallPos = 0.0f;
-	float bigPos = 0.0f;
-	if (nodes[0][0].position.y >= nodes[1][0].position.y)
-	{
-		bigPos = nodes[0][0].position.y;
-		smallPos = nodes[1][0].position.y;
-	}
-	else
-	{
-		bigPos = nodes[1][0].position.y;
-		smallPos = nodes[0][0].position.y;
-	}
-	nodeSize.y = abs(smallPos - bigPos);
-
-	//判定
-	auto nodesXNum = nodes[0].size();
-	auto nodesYNum = nodes.size();
-	auto hitObjectNum = hitObjectsPos.size();
-
-	//当たってるか確認
-	for (int y = 0; y < nodesYNum; y++)
-	{
-		for (int x = 0; x < nodesXNum; x++)
-		{
-
-			for (int i = 0; i < hitObjectNum; i++)
-			{
-				nodes[y][x].hitObjectNode =
-					LibMath::RectAndRectCollision
-					(
-						nodes[y][x].position - nodeSize / 2,
-						nodeSize,
-						hitObjectsPos[i] - hitObjectsSize[i] / 2,
-						hitObjectsSize[i]
-					);
-
-				//ぶつかってたらbreak
-				if (nodes[y][x].hitObjectNode)
-				{
-					break;
-				}
-
-			}
-		}
-	}
-}
-
-bool LibMath::GetAStarCalcResult
-(
-	const Vector2& startPos,
-	const Vector2& endPos,
-	std::vector< std::vector<AStarNode>>& nodes,
-	std::vector<Vector2>& routeVector
-)
-{
-
-	//やること
-	//ブロックに隣接してるマスから、同じブロックに隣接してるマスへ移動しないようにする
-
-
-	//リセット
-	for (auto& n1 : nodes)
-	{
-		for (auto& n2 : n1)
-		{
-			n2.closeFlag = false;
-			n2.openFlag = false;
-			n2.previousNode = nullptr;
-			n2.calcNum = UINT_MAX;
-			n2.closeIndex = INT_MAX;
-		}
-	}
-
-	//スタート地点に一番近いノードの距離を格納する変数
-	float startMinDistance = FLT_MAX;
-	//ゴール地点に一番近いノードの距離を格納する変数
-	float endMinDistance = FLT_MAX;
-
-	auto nodeXArrayNum = nodes[0].size();
-	auto nodeYArrayNum = nodes.size();
-
-	//スタートの添え字
-	int startNodeIndexX = 0;
-	int startNodeIndexY = 0;
-	bool trueStartNodeHitFlag = false;
-
-	//ノードの配列のゴール地点の場所を示す添え字
-	int endNodeIndexX = 0;
-	int endNodeIndexY = 0;
-	bool trueEndNodeHitFlag = false;
-
-	//一時的にfalseにしたときに戻す処理
-	auto ReturnHitObjectNode = [&]()
-	{
-		if (trueStartNodeHitFlag)nodes[startNodeIndexY][startNodeIndexX].hitObjectNode = true;
-		if (trueEndNodeHitFlag)nodes[endNodeIndexY][endNodeIndexX].hitObjectNode = true;
-
-	};
-
-	for (int y = 0; y < nodeYArrayNum; y++)
-	{
-		for (int x = 0; x < nodeXArrayNum; x++)
-		{
-			float distance = 0.0f;
-			distance = CalcDistance2D(nodes[y][x].position, startPos);
-
-			if (distance <= startMinDistance)
-			{
-				startMinDistance = distance;
-				startNodeIndexX = x;
-				startNodeIndexY = y;
-
-			}
-
-			distance = CalcDistance2D(nodes[y][x].position, endPos);
-			if (distance <= endMinDistance)
-			{
-				endMinDistance = distance;
-				endNodeIndexX = x;
-				endNodeIndexY = y;
-
-
-			}
-
-			//インデックス代入
-			nodes[y][x].indexX = x;
-			nodes[y][x].indexY = y;
-		}
-	}
-
-	if (nodes[startNodeIndexY][startNodeIndexX].hitObjectNode)
-	{
-		//一時的にfalse
-		nodes[startNodeIndexY][startNodeIndexX].hitObjectNode = false;
-		trueStartNodeHitFlag = true;
-	}
-
-	if (nodes[endNodeIndexY][endNodeIndexX].hitObjectNode)
-	{
-		//一時的にfalse
-		nodes[endNodeIndexY][endNodeIndexX].hitObjectNode = false;
-		trueEndNodeHitFlag = true;
-	}
-
-	//ゴールのノードまでの距離を求めるラムダ式
-	auto CalcNodeDistance = []
-	(
-		const int startX,
-		const int startY,
-		const int endX,
-		const int endY
-		)
-	{
-		//Xの差
-		int startXToEndXDiff = abs(startX - endX);
-		//Yの差
-		int startYToEndYDiff = abs(startY - endY);
-
-		//Xの差とYの差のどちらが大きいか求める。斜め移動ありの場合、大きいほうが最短距離
-		if (startXToEndXDiff >= startYToEndYDiff)return startXToEndXDiff;
-		return startYToEndYDiff;
-
-	};
-
-	//スタートのノードのインデックスを代入
-	int startToEndDis = CalcNodeDistance(startNodeIndexX, startNodeIndexY, endNodeIndexX, endNodeIndexY);
-	nodes[startNodeIndexY][startNodeIndexX].calcNum = startToEndDis + nodes[startNodeIndexY][startNodeIndexX].cost;
-
-	std::vector<AStarNode*>openNodes(1, &nodes[startNodeIndexY][startNodeIndexX]);
-	std::vector<AStarNode*>closeNodes;
-
-
-	AStarNode* endNode;
-
-
-	//ステップの計算は周りのノード調べるときにやる?
+	bool checkSmall = false;
+	bool checkBig = false;
 
 	while (1)
 	{
-		//探索終了かどうか
-		bool checkEnd = false;
-
-		//ゴールにたどり着けない場合
-		if (openNodes.size() == 0)
+		if (num >= checkNum)
 		{
-			ReturnHitObjectNode();
-			return false;
+			smallNum = checkNum;
+			checkSmall = true;
+		}
+		else
+		{
+			bigNum = checkNum;
+			checkBig = true;
 		}
 
-		//並び替え
-		std::sort
-		(
-			openNodes.begin(),
-			openNodes.end(),
-			[]
-		(
-			const AStarNode* node1,
-			const AStarNode* node2
-			)
-		{
-			int num1 = node1->calcNum;
-			int num2 = node2->calcNum;
+		if (checkSmall && checkBig)break;
 
-			return num1 > num2;
-		});
-
-		//calcNumが一番少ないやつを取得
-		AStarNode* mainNode = nullptr;
-		int minCalcNum = openNodes[openNodes.size() - 1]->calcNum;
-		float minDis = FLT_MAX;
-		int mainNodeOpenIndex = 0;
-		for (int i = openNodes.size() - 1;; i--)
+		//符号が違う場合は減らす
+		if (num >= 0 && multiple < 0
+			|| num < 0 && multiple >= 0)
 		{
-			float dis = CalcDistance2D(openNodes[i]->position, nodes[startNodeIndexY][startNodeIndexX].position);
-			if (minDis > dis)
-			{
-				minDis = dis;
-				mainNode = openNodes[i];
-				mainNodeOpenIndex = i;
-			}
-			if (openNodes[i]->calcNum != minCalcNum || i == 0)break;
+			checkNum -= multiple;
 		}
-
-
-
-		//オープンに追加するノードを格納する配列
-		std::vector<AStarNode*>openPushBackNode;
-
-		for (int y = -1; y < 2; y++)
+		else
 		{
-			int indexY = mainNode->indexY + y;
-
-			//Y範囲外指定防止
-			if (indexY <= -1 || indexY >= nodeYArrayNum)continue;
-
-			for (int x = -1; x < 2; x++)
-			{
-				int indexX = mainNode->indexX + x;
-
-				//X範囲外指定防止
-				if (indexX <= -1 || indexX >= nodeXArrayNum)continue;
-
-				//基準検索防止
-				if (indexX == mainNode->indexX && indexY == mainNode->indexY)continue;
-
-				AStarNode* checkNode = &nodes[indexY][indexX];
-
-				//オブジェクトに重なってるかどうか
-				if (checkNode->hitObjectNode)
-				{
-					checkNode->closeFlag = true;
-					continue;
-				}
-
-
-				//calcNum = ステップ数 + ゴールまでの距離 + コスト
-				int calcNum = mainNode->stepNum + 1
-					+ CalcNodeDistance(indexX, indexY, endNodeIndexX, endNodeIndexY)
-					+ checkNode->cost;
-
-				//条件を満たしたら代入
-				if (checkNode->openFlag)
-				{
-					if (calcNum < checkNode->calcNum)
-					{
-						checkNode->calcNum = calcNum;
-						checkNode->previousNode = mainNode;
-						checkNode->stepNum = mainNode->stepNum + 1;
-					}
-
-					continue;
-				}
-
-				//条件を満たしたら、closeからopenに移動&代入
-				if (checkNode->closeFlag)
-				{
-					if (calcNum < checkNode->calcNum)
-					{
-						//closeから削除
-						closeNodes.erase(closeNodes.begin() + checkNode->closeIndex);
-						checkNode->closeFlag = false;
-						checkNode->closeIndex = INT_MAX;
-
-						//openに追加
-						openNodes.push_back(checkNode);
-						checkNode->openFlag = true;
-
-						checkNode->calcNum = calcNum;
-						checkNode->previousNode = mainNode;
-						checkNode->stepNum = mainNode->stepNum + 1;
-					}
-					continue;
-				}
-
-
-				checkNode->calcNum = calcNum;
-				checkNode->previousNode = mainNode;
-				checkNode->stepNum = mainNode->stepNum + 1;
-
-				if (checkNode->indexX == endNodeIndexX && checkNode->indexY == endNodeIndexY)
-				{
-					checkEnd = true;
-					endNode = checkNode;
-				}
-
-
-				openPushBackNode.push_back(checkNode);
-				checkNode->openFlag = true;
-			}
+			checkNum += multiple;
 		}
-
-		if (checkEnd)break;
-
-		closeNodes.push_back(mainNode);
-		mainNode->closeFlag = true;
-		mainNode->closeIndex = closeNodes.size() - 1;
-
-		//検索したやつを消す
-		openNodes[openNodes.size() - 1]->openFlag = false;
-		openNodes.erase(openNodes.begin() + mainNodeOpenIndex);
-
-
-		for (auto& n : openPushBackNode)
-		{
-			openNodes.push_back(n);
-		}
-		openPushBackNode.clear();
 	}
 
-	AStarNode* currentNode = endNode;
-	std::vector<Vector2>routeNodeVectors;
-	while (1)
+	if (type == MultipleClampType::CLAMP_TYPE_BIG)return bigNum;
+	else if (type == MultipleClampType::CLAMP_TYPE_SMALL)return smallNum;
+
+	float bigDif = bigNum - num;
+	float smallDif = num - smallNum;
+
+
+	//差が小さいほう(近いほう)をリターン
+	if (smallDif > bigDif)
 	{
-		if (!currentNode)break;
-		routeNodeVectors.push_back(currentNode->position);
-		currentNode = currentNode->previousNode;
+		return bigNum;
 	}
-	std::reverse(routeNodeVectors.begin(), routeNodeVectors.end());
-
-	//ベクトルを求める
-	routeVector.clear();
-	auto routeVectorSize = routeNodeVectors.size() - 1;
-	routeVector.resize(routeVectorSize);
-	for (int i = 0; i < routeVectorSize; i++)
+	else if (smallDif < bigDif)
 	{
-		routeVector[i] = Vector2::Normalize(routeNodeVectors[i + 1] - routeNodeVectors[i]);
+		return smallNum;
 	}
-
-	ReturnHitObjectNode();
-	return true;
+	else//同じだった場合、タイプに従う
+	{
+		if (type == MultipleClampType::CLAMP_TYPE_NEAR_BIG)return bigNum;
+		return smallNum;
+	}
 }
-
-
-
-#pragma endregion
 
 
 
@@ -455,6 +123,9 @@ float LibMath::AngleConversion(int paterrn, float angle)
 	return (float)(angle * (180 / M_PI));
 
 }
+
+
+
 
 bool LibMath::Difference(const float num1, const float num2, const float difference)
 {
@@ -530,6 +201,11 @@ Vector2 MelLib::LibMath::CalcCenterPosition2D(const Vector2& pos1, const Vector2
 	return Vector2(pos1 + pos2) / 2;
 }
 
+Vector2 LibMath::OtherVector2(const Vector2& vec1, const Vector2& vec2)
+{
+	return (vec2 - vec1).Normalize();
+}
+
 
 char LibMath::PointLeftRightCheck(const Vector2& vector, const Vector2& point)
 {
@@ -539,6 +215,29 @@ char LibMath::PointLeftRightCheck(const Vector2& vector, const Vector2& point)
 	if (num < 0)return -1;
 	return 0;
 }
+
+char MelLib::LibMath::PointPlaneFrontBackCheck(const Vector3& point, const PlaneData& plane)
+{
+
+	//原点から法線方向に距離分動いた座標を求める。
+	Vector3 disPos = FloatDistanceMoveVector3(0, plane.GetNormal(), plane.GetDistance());
+
+	if (Vector3::Dot(point - disPos, plane.GetNormal()) > 0)return 1;
+	else if (Vector3::Dot(point - disPos, plane.GetNormal()) < 0)return -1;
+	return 0;
+}
+
+char MelLib::LibMath::PointBoardFrontBackCheck(const Vector3& point, const BoardData& board)
+{
+
+	//原点から法線方向に距離分動いた座標を求める。
+	Vector3 disPos = board.GetPosition();
+
+	if (Vector3::Dot(point - disPos, board.GetNormal()) > 0)return 1;
+	else if (Vector3::Dot(point - disPos, board.GetNormal()) < 0)return -1;
+	return 0;
+}
+
 
 float LibMath::TwoVector2Angle(const Vector2& v1, const Vector2& v2)
 {
@@ -553,7 +252,7 @@ float LibMath::TwoVector2Angle(const Vector2& v1, const Vector2& v2)
 	return f;
 }
 
-float LibMath::Vecto2ToAngle(const Vector2& v, const bool& v3)
+float LibMath::Vector2ToAngle(const Vector2& v, const bool& v3)
 {
 	float f = 0.0f;
 	if (v3)
@@ -577,6 +276,68 @@ Vector2 LibMath::RotateVector2(const Vector2& v, const float& angle)
 {
 	Quaternion q = Quaternion::GetRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
 	return { q.x,q.y };
+}
+Vector2 MelLib::LibMath::RotateVector2Box(const Vector2& v, const float& angle)
+{
+	float rotAngle = angle;
+	int startNum = 0;
+
+	while(1)
+	{
+		if(rotAngle >= 90 && angle > 0)
+		{
+			rotAngle -= 90;
+			startNum++;
+
+			if (startNum == 4)startNum = 0;
+			
+		}
+		else if(rotAngle <= -90 && angle < 0)
+		{
+			rotAngle += 90;
+			startNum--;
+
+			if (startNum == -1)startNum = 3;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+
+	Vector2 startPos, endPos;
+	
+	
+	if(startNum == 0)
+	{
+		startPos = v;
+
+		if(angle > 0)endPos = RotateVector2(v, 90.0f);
+		else endPos = RotateVector2(v, -90.0f);
+	}
+	else if(startNum == 1)
+	{
+		startPos = RotateVector2(v, 90.0f);
+		endPos = RotateVector2(v, 180.0f);
+
+		endPos = RotateVector2(v, 180.0f);
+	
+	}
+	else if (startNum == 2)
+	{
+		startPos = RotateVector2(v, 180.0f);
+		if (angle > 0)endPos = RotateVector2(v, 270.0f);
+		else endPos = RotateVector2(v, -270.0f);
+	}
+	else if (startNum == 3)
+	{
+		startPos = RotateVector2(v, 270.0f);
+		endPos = v;
+	}
+
+	return  Interpolation::Lerp(startPos, endPos, rotAngle / 90.0f);
+
 }
 #pragma endregion
 
@@ -602,28 +363,24 @@ Vector3 MelLib::LibMath::CalcCenterPosition3D(const Vector3& pos1, const Vector3
 	return (pos1 + pos2) / 2;
 }
 
-Vector3 LibMath::OtherVector(const Vector3& vec1, const Vector3& vec2)
+Vector3 LibMath::OtherVector3(const Vector3& vec1, const Vector3& vec2)
 {
 	Vector3 vec;
 	vec = vec2 - vec1;
 	return Vector3Normalize(vec);
 }
 
-Vector3 LibMath::RotateVector3(const Vector3& rotateV, const Vector3& vec, const float& angle)
+Vector3 LibMath::RotateVector3(const Vector3& rotateV, const Vector3& vec, const float angle)
 {
 	Quaternion q = Quaternion::GetRotateQuaternion(rotateV, vec, angle);
 	return { q.x, q.y, q.z };
 }
 
-Vector3 LibMath::FloatDistanceMoveVector3
-(
-	const Vector3& pos, 
-	const Vector3& vector, 
-	const float distance
-)
+Vector3 MelLib::LibMath::RotateZXYVector3(const Vector3& rotateV, const Vector3& angle)
 {
-	return pos + vector * distance;
+	return Quaternion::GetZXYRotateQuaternion(rotateV,angle).ToVector3();
 }
+
 
 
 #pragma endregion
