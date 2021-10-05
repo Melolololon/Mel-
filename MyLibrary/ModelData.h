@@ -85,6 +85,7 @@ namespace MelLib
 		{
 			FbxTime startTime;
 			FbxTime endTime;
+			//1フレームの時間
 			FbxTime freamTime;
 		};
 
@@ -102,7 +103,6 @@ namespace MelLib
 		};
 
 #pragma endregion
-
 
 #pragma region fbx構造体
 
@@ -132,11 +132,9 @@ namespace MelLib
 		//プリミティブモデルを格納する配列
 		static std::unordered_map<ShapeType3D, std::unique_ptr<ModelData>>pPrimitiveModelDatas;
 	
-
 		static ID3D12Device* device;
 
 #pragma region バッファ_ヒープ
-
 
 		//頂点
 		std::vector<VertexBufferSet> vertexBufferSet;
@@ -147,6 +145,7 @@ namespace MelLib
 
 #pragma endregion
 
+		//一斉削除対象フラグ
 		bool batchDeletionFlag = false;
 
 #pragma region モデル情報
@@ -155,7 +154,9 @@ namespace MelLib
 		//モデル名
 		std::string modelName;
 
+		//マテリアルにセットするテクスチャ
 		std::vector<std::unique_ptr<Texture>>pTexture;
+		//マテリアル
 		std::vector<std::unique_ptr<ADSAMaterial>> material;
 
 		//テクスチャを使わない場合の色
@@ -169,14 +170,11 @@ namespace MelLib
 		//上下左右前後の最高(最低)座標の値(上下左右前後の順に格納)
 		std::vector<std::array<float, 6>>directionMaxPos;
 
-
 		std::vector<std::vector<USHORT>> indices;
-
 
 		UINT boneNum = 0;
 
 		ObjBone objData;
-
 		FbxData fbxData;
 
 #pragma endregion
@@ -271,9 +269,24 @@ namespace MelLib
 		/// <returns></returns>
 		static bool Load(const std::string& path,const bool batchDeletionFlag, const std::string& name);
 
+		/// <summary>
+		///	モデルデータを取得します。
+		/// </summary>
+		/// <param name="name">モデルの登録名</param>
+		/// <returns></returns>
 		static ModelData* Get(const std::string& name) { return pModelDatas[name].get(); }
+
+		/// <summary>
+		/// モデルデータを取得します。
+		/// </summary>
+		/// <param name="type">取得したいモデルの形状</param>
+		/// <returns></returns>
 		static ModelData* Get(const ShapeType3D type) { return pPrimitiveModelDatas[type].get(); }
 
+		/// <summary>
+		/// モデルデータを削除します。
+		/// </summary>
+		/// <param name="name"></param>
 		static void Delete(const std::string& name);
 		
 		/// <summary>
@@ -325,6 +338,7 @@ namespace MelLib
 #pragma endregion
 
 #pragma region obj関係
+
 		const std::vector<Vector3>& GetObjBonePosition()const { return objData.bonePosition; }
 #pragma endregion
 
@@ -336,9 +350,16 @@ namespace MelLib
 #pragma endregion
 
 #pragma region ゲット
-
+		/// <summary>
+		/// モデルのフォーマットを取得します。
+		/// </summary>
+		/// <returns></returns>
 		ModelFormat GetModelFormat() const { return modelFormat; }
 
+		/// <summary>
+		/// ボーン数を取得します。
+		/// </summary>
+		/// <returns></returns>
 		UINT GetBoneNumber() const { return boneNum; }
 
 		/// <summary>
@@ -353,15 +374,21 @@ namespace MelLib
 		/// </summary> 
 		/// <returns></returns>
 		std::vector<ADSAMaterial*> GetPMaterial();
-		std::vector<Material*> GetBaseClassMaterial();
 
-	
+		/// <summary>
+		/// 上下左右前後の最高値を取得します。
+		/// </summary>
+		/// <returns></returns>
 		std::vector<std::array<float, 6>>GetDirectionMaxPosition() const{ return directionMaxPos; }
 
+		/// <summary>
+		/// 頂点を取得します。
+		/// </summary>
+		/// <returns></returns>
 		std::vector<std::vector<FbxVertex>>GetVertices()const { return vertices; }
 
 		/// <summary>
-		/// モデルの頂点座標を取得します。
+		/// 頂点座標を取得します。
 		/// </summary>
 		/// <returns>頂点座標</returns>
 		std::vector<std::vector<Vector3>>GetVerticesPosition()const;

@@ -10,11 +10,11 @@
 
 #include"imgui/imgui.h"
 
-//Imguiを管理するクラス
 
 namespace MelLib 
 {
 
+	//Imguiを管理するクラス
 	class ImguiManager
 	{
 	public:

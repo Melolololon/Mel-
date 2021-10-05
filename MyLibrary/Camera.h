@@ -26,6 +26,7 @@ namespace MelLib
 		static UINT createCount;
 		static std::string mainCameraName;
 
+		//‰ñ“]Šî€
 		RotatePoint rotatePoint = RotatePoint::ROTATE_POINT_CAMERA_POSITION;
 
 

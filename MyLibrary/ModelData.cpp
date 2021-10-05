@@ -698,16 +698,6 @@ std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 
 }
 
-std::vector<Material*> MelLib::ModelData::GetBaseClassMaterial() 
-{
-	size_t size = material.size();
-	std::vector<Material*>mtls(size);
-	for(int i = 0; i < size;i++)
-	{
-		mtls[i] = material[i].get();
-	}
-	return mtls;
-}
 
 std::vector<std::vector<Vector3>> MelLib::ModelData::GetVerticesPosition()const
 {

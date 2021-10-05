@@ -3,10 +3,8 @@
 //•âŠÔƒNƒ‰ƒX
 namespace MelLib
 {
-
 	class Interpolation
 	{
-
 
 	public:
 		template<class VALUE>

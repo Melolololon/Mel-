@@ -57,8 +57,7 @@ namespace MelLib
 		PIPELINE_OBJ_ANIMATION,
 	};
 
-
-
+	//DirectX12ŠÖŒW‚ÌŠÇ—ƒNƒ‰ƒX
 	class DirectX12 final
 	{
 
@@ -127,7 +126,6 @@ namespace MelLib
 
 
 #pragma endregion
-
 
 		DirectX12();
 		~DirectX12();

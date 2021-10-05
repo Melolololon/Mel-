@@ -18,14 +18,15 @@
 
 namespace MelLib 
 {
+	// ゲームパッドのボタンの列挙
 	enum class PadButton
 	{
 		UP = 0x0001,//十字キー上
 		DOWN = 0x0002,//十字キー下
 		LEFT = 0x0004,//十字キー左
 		RIGHT = 0x0008,//十字キー右
-		START = 0x00010,
-		BACK = 0x00020,
+		START = 0x00010,//スタートボタン PS4以降のOPTION
+		BACK = 0x00020,//バックボタン PS(1～3)、SwitchのStart PS4以降のSHARE
 		A = 0x1000,//PSの× SwitchのB
 		B = 0x2000,//PSの○ SwitchのA
 		X = 0x4000,//PSの□ SwitchのY
@@ -40,18 +41,23 @@ namespace MelLib
 	{
 		LEFT,
 		RIGHT,
-		CENTER,
+		CENTER,//ホイール押し込み
 	};
 
-	//GetPressKeyChars使わずに、WinAPIのエディットボックスで文字取得するようにする?
-	//エディットボックスを透明にできるか試す
-	//そもそも子ウィンドウ扱いだからゲーム画面に表示できない?できる?
-	//できなかった
-	//もしかして隠れてても入力はできる?ウィンドウタイプで設定すればいける
+	// Input リファレンス
+    // https://sites.google.com/view/melgames/%E8%87%AA%E4%BD%9C%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA/%E3%83%AA%E3%83%95%E3%82%A1%E3%83%AC%E3%83%B3%E3%82%B9/%E4%BD%BF%E7%94%A8%E4%BB%BB%E6%84%8F%E3%82%AF%E3%83%A9%E3%82%B9/%E5%85%A5%E5%8A%9B
 
-	//入力クラス
+	// 入力クラス
 	class Input
 	{
+		// メモエリア
+		// GetPressKeyChars使わずに、WinAPIのエディットボックスで文字取得するようにする?
+		// エディットボックスを透明にできるか試す
+		// そもそも子ウィンドウ扱いだからゲーム画面に表示できない?できる?
+		// できなかった
+		// もしかして隠れてても入力はできる?ウィンドウタイプで設定すればいける
+
+
 	private:
 		Input() {}
 		~Input() {}
@@ -142,17 +148,37 @@ namespace MelLib
 		static void Update();
 		static void Finalize();
 
+		/// <summary>
+		/// 指定したパッドが接続されているかを確認します。
+		/// </summary>
+		/// <param name="padNum"></param>
+		/// <returns></returns>
 		static bool GetPadConnectedFlag(const UCHAR padNum);
 
 
 #pragma region キーボード
 
-		//押しているか
+		/// <summary>
+		/// キーが押されていたらtrueを返します。
+		/// </summary>
+		/// <param name="keyDef"></param>
+		/// <returns></returns>
 		static bool KeyState(const BYTE keyDef);
-		//押した瞬間か
+
+		/// <summary>
+		/// キーが押された瞬間(押されたフレーム)だったらtrueを返します。
+		/// </summary>
+		/// <param name="keyDef"></param>
+		/// <returns></returns>
 		static bool KeyTrigger(const BYTE keyDef);
-		//離した瞬間か
+	
+		/// <summary>
+		/// キーを押すのをやめた瞬間(やめたフレーム)だったらtrueを返します。
+		/// </summary>
+		/// <param name="keyDef"></param>
+		/// <returns></returns>
 		static bool KeyRelease(const BYTE keyDef);
+
 
 #pragma region 文字取得
 		//GetPressKeyCharsとかは気軽に文字取得できるし、
@@ -185,7 +211,6 @@ namespace MelLib
 		static std::wstring GetInputString(const std::string& name);
 
 #pragma endregion
-
 		/// <summary>
 		/// 現在押されているキーを取得します。
 		/// </summary>

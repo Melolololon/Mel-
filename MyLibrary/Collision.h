@@ -73,7 +73,6 @@ namespace MelLib
 
 #pragma endregion
 
-
 #pragma region 3D
 
 		/// <summary>

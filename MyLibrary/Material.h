@@ -12,7 +12,7 @@
 namespace MelLib
 {
 
-
+	// メモエリア
 	//Materialを継承してパラメータを増やせるようにする
 	//継承してもどうやってシェーダーに渡す?利用者にMapしてもらうしかない?
 	//定数バッファを自由に作れるようにしたほうがいい?
@@ -48,17 +48,18 @@ namespace MelLib
 
 	//とりあえず作るの進めよう
 
-	//マテリアル情報をまとめたクラス。
+
+
+	//共通のマテリアル情報をまとめた基底クラス。
 	class Material
 	{
 	public:
+		
 		enum class MaterialConstBufferType
 		{
 			MATERIAL_DATA,
 			COLOR
 		};
-
-
 
 	private:
 
@@ -127,7 +128,6 @@ namespace MelLib
 
 		static void Initialize(ID3D12Device* dev);
 		
-
 		virtual void Create(const DrawData& drawData){}
 
 		ID3D12DescriptorHeap* GetPTextureHeap() { return textureHeap.Get(); }
@@ -149,8 +149,6 @@ namespace MelLib
 
 
 #pragma region ADSA
-
-
 
 	struct ADSAMaterialData
 	{

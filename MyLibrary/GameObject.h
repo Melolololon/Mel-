@@ -23,21 +23,12 @@
 //そうすれば、Unityみたいになる
 //positionもvelocityもセットできるようにする。(変数用意するのめんどいから)
 
-//SetPositionを仮想関数にして、モデルに座標セットする処理とか書けるようにする
-
-
-//やること(8/31 15:42記述)
-//落下の処理の実装
-//投げ上げのタイマーを他の落下と共通にする
-//落下フラグ作る
-//投げ上げの関数呼び出したら強制的にtrue、falseに切り替え。
-//落下フラグをいじってもらうことで、落下処理を行うようにする。
-
 
 //アクションRPGとかで当たったアイテムに称号とかついてたり、取得できるゴールドが不特定の場合、
 //管理クラス作って、アイテム出現時にそれに追加して、
 //Hit関数のObjectとアイテムのポインタが一致してたら、アイテム出現時に追加したポインタ全部と比較して、
 //アドレスが同じポインタもらってパラメータ受け取ればいい
+//プレイヤーのポインタ渡してお金側でセットしてもいい
 
 namespace MelLib 
 {
@@ -72,7 +63,7 @@ namespace MelLib
 		
 		//物体が動く力
 		Vector3 force = 0;
-		//重さ(kg)
+		//重さ
 		float mass = 1.0f;
 		//速度
 		Vector3 velocity = 0;
@@ -190,11 +181,15 @@ namespace MelLib
 #pragma endregion
 	private:
 		/// <summary>
-		/// 
+		/// モデルの移動
 		/// </summary>
 		/// <param name="vec">移動量</param>
 		void SetModelPosition(const Vector3& vec);
 
+		/// <summary>
+		/// 判定の移動
+		/// </summary>
+		/// <param name="vec"></param>
 		void SetDataPosition(const Vector3& vec);
 
 	public:
@@ -253,37 +248,83 @@ namespace MelLib
 #pragma region セット
 
 		/// <summary>
+		/// GameObject共通の重力加速度をセットします。
+		/// </summary>
+		/// <param name="acc"></param>
+		static void SetGravutationalAcceleration(const float acc) { gravutationalAcc = acc; };
+			
+		/// <summary>
 		/// 座標をセットします。モデルと衝突確認に使うデータは、セット前の座標との差だけ移動します。
 		/// </summary>
 		/// <param name="pos"></param>
 		virtual void SetPosition(const Vector3& pos);
-		//void SetVelocity(const Vector3& velocity) { this->velocity = velocity; }
 
-		//void SetAcceleration(const Vector3& acc) { acceleration = acc; }
+		/// <summary>
+		/// 力をセットします。
+		/// </summary>
+		/// <param name="force"></param>
 		void SetForce(const Vector3& force) { this->force = force; }
+		
+		/// <summary>
+		/// 重さをセットします。
+		/// </summary>
+		/// <param name="mass"></param>
 		void SetMass(const float mass) { this->mass = mass; }
 
-		static void SetGravutationalAcceleration(const float acc) { gravutationalAcc = acc; };
 #pragma endregion
 
 #pragma region ゲット
+		/// <summary>
+		/// GameObject共通の重力加速度を取得します。
+		/// </summary>
+		/// <returns></returns>
+		static float GetGravutationalAcceleration() { return gravutationalAcc; };
 
-
+		/// <summary>
+		/// 座標を取得します。
+		/// </summary>
+		/// <returns></returns>
 		Vector3 GetPosition()const { return position; }
+
+		/// <summary>
+		/// 速度を取得します。
+		/// </summary>
+		/// <returns></returns>
 		Vector3 GetVelocity()const { return velocity; }
+
+		/// <summary>
+		/// 加速度を取得します。
+		/// </summary>
+		/// <returns></returns>
 		Vector3 GetAcceleration()const { return acceleration; }
+
+		/// <summary>
+		/// 加えられている力を取得します。
+		/// </summary>
+		/// <returns></returns>
 		Vector3 GetForce()const { return force; }
+
+		/// <summary>
+		/// 重さを取得します。
+		/// </summary>
+		/// <returns></returns>
 		float GetMass()const { return mass; }
 		
+		/// <summary>
+		/// 落下中または投げ上げ中かどうかを取得します。
+		/// </summary>
+		/// <returns></returns>
 		bool GetIsFall()const { return isFall; }
 		
 		short GetSortNumber() const { return sortNumber; }
 
-		static float GetGravutationalAcceleration() { return gravutationalAcc; };
 
 		std::vector<std::string>GetTags()const { return tags; }
 
-		//オブジェクトマネージャーから削除するかどうかのフラグを返す
+		/// <summary>
+		/// ObjectManagerから削除するフラグを返します。
+		/// </summary>
+		/// <returns></returns>
 		bool GetEraseManager()const { return eraseManager; }
 
 
@@ -293,7 +334,7 @@ namespace MelLib
 #pragma region 判定用関数
 
 
-		//判定用関数
+		// 判定用関数
 		CollisionDetectionFlag GetCollisionFlag() const { return collisionFlag; }
 		std::vector<SphereData> GetSphereData() const { return sphereData; }
 		std::vector<BoxData> GetBoxData() const { return boxData; }
@@ -302,8 +343,8 @@ namespace MelLib
 		std::vector<BoardData> GetBoardData()const { return boardData; }
 		std::vector<CapsuleData>GetCapsuleData() const { return capsuleData; }
 
-		//ここ参照取得じゃなくてSetにする?
-		//そもそも持たせない。Hit関数で渡す
+		// ここ参照取得じゃなくてSetにする?
+		// そもそも持たせない。Hit関数で渡す
 		void SetSphereCalcResult(const SphereCalcResult& result, const UINT index) { sphereData[index].SetCalcResult(result); }
 		void SetBoxCalcResult(const BoxCalcResult& result, const UINT index) { boxData[index].SetCalcResult(result); }
 		void SetSegmentCalcResult(const Segment3DCalcResult& result, const UINT index) { segment3DData[index].SetCalcResult(result); }
@@ -316,6 +357,7 @@ namespace MelLib
 		//BoxHitDirection& GetSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }
 		//BoxHitDirection& GetBoxBoxHitDistance(const int num) { return boxData[num].boxHitDistance; }
 
+		// ヒットした相手の当たり判定の情報を渡す関数。
 		void SetHitSphereData(const SphereData& sphere) { hitSphereData = sphere; }
 		void SetHitBoxData(const BoxData& box) { hitBoxData = box; }
 		void SetHitBoardData(const BoardData& board) { hitBoardData = board; }

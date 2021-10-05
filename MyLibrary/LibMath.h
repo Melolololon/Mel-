@@ -23,6 +23,32 @@ namespace MelLib
 		~LibMath() {}
 	public:
 
+		/// <summary>
+		/// 円周率を取得します
+		/// </summary>
+		/// <returns></returns>
+		static float GetFloatPI();
+
+		/// <summary>
+		/// 円周率を取得します
+		/// </summary>
+		/// <returns></returns>
+		static double GetDoublePI();
+
+		/// <summary>
+		/// 階乗
+		/// </summary>
+		/// <param name="num"></param>
+		/// <returns></returns>
+		static int Factorial(const int num);
+
+		/// <summary>
+		/// 累乗
+		/// </summary>
+		/// <param name="num"></param>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		static int Pow(const float num, const int index);
 
 		enum MultipleClampType
 		{
@@ -47,25 +73,6 @@ namespace MelLib
 		);
 
 
-
-		/// <summary>
-		/// 階乗
-		/// </summary>
-		/// <param name="num"></param>
-		/// <returns></returns>
-		static int Factorial(const int num);
-
-		/// <summary>
-		/// 累乗
-		/// </summary>
-		/// <param name="num"></param>
-		/// <param name="index"></param>
-		/// <returns></returns>
-		static int Pow(const float num, const int index);
-
-
-
-
 		/// <summary>
 		/// num1とnum2の値の差を求め、差が基準の値以内だったらtrueを返します
 		/// </summary>
@@ -84,47 +91,12 @@ namespace MelLib
 		/// <returns></returns>
 		static bool AngleDifference(const float angle1, const float angle2, const float difference);
 
-
-
 		/// <summary>
 			/// 度数法の角度をラジアンに　ラジアンを度数法の角度に
 			/// </summary>
 			/// <param name="pattern">0 度数法の角度をラジアンに   1 ラジアンを度数法の角度に</param>
 			/// <param name="angle">角度</param>
 		static float AngleConversion(int pattern, float angle);
-
-
-		/// <summary>
-		/// 円周率を取得します
-		/// </summary>
-		/// <returns></returns>
-		static float GetFloatPI();
-
-		/// <summary>
-		/// 円周率を取得します
-		/// </summary>
-		/// <returns></returns>
-		static double GetDoublePI();
-
-
-
-#pragma region ベクトル
-
-
-#pragma region vector2
-
-
-		/// <summary>
-		/// 2つの座標の距離を取得します
-		/// </summary>
-		/// <param name="pos1">座標1</param>
-		/// <param name="pos2">座標2</param>
-		/// <returns></returns>
-		static float CalcDistance2D(const Vector2& pos1, const Vector2& pos2);
-
-		static Vector2 CalcCenterPosition2D(const Vector2& pos1, const Vector2& pos2);
-
-		static Vector2 OtherVector2(const Vector2& vec1, const Vector2& vec2);
 
 		/// <summary>
 		/// 左右判定を行います。点がベクトルより右の場合は1、左の場合は-1、ベクトル上の場合は0を返します。
@@ -140,8 +112,8 @@ namespace MelLib
 		/// <param name="point">点</param>
 		/// <param name="plane">平面情報</param>
 		/// <returns></returns>
-		static char PointPlaneFrontBackCheck(const Vector3& point,const PlaneData& plane);
-		
+		static char PointPlaneFrontBackCheck(const Vector3& point, const PlaneData& plane);
+
 		/// <summary>
 		/// 表裏判定を行います。点が板の表側だったら1、裏側だったら-1、平面上だったら0を返します。
 		/// </summary>
@@ -149,6 +121,38 @@ namespace MelLib
 		/// <param name="plane">板情報</param>
 		/// <returns></returns>
 		static char PointBoardFrontBackCheck(const Vector3& point, const BoardData& board);
+
+		//この辺Vectorクラスに移す?
+#pragma region ベクトル
+
+
+#pragma region vector2
+
+
+		/// <summary>
+		/// 2つの座標の距離を取得します
+		/// </summary>
+		/// <param name="pos1">座標1</param>
+		/// <param name="pos2">座標2</param>
+		/// <returns></returns>
+		static float CalcDistance2D(const Vector2& pos1, const Vector2& pos2);
+
+		/// <summary>
+		/// 2つの座標の間の座標を求めます。
+		/// </summary>
+		/// <param name="pos1"></param>
+		/// <param name="pos2"></param>
+		/// <returns></returns>
+		static Vector2 CalcCenterPosition2D(const Vector2& pos1, const Vector2& pos2);
+
+		/// <summary>
+		/// vec1からvec2の正規化したベクトルを返します。
+		/// </summary>
+		/// <param name="vec1"></param>
+		/// <param name="vec2"></param>
+		/// <returns></returns>
+		static Vector2 OtherVector2(const Vector2& vec1, const Vector2& vec2);
+
 
 		/// <summary>
 		/// 2つのベクトルがなす角度を求めます

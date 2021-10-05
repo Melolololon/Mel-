@@ -1,7 +1,7 @@
 #pragma once
 namespace MelLib 
 {
-
+	//定数バッファの情報
 	struct ConstBufferData
 	{
 		enum class BufferType
