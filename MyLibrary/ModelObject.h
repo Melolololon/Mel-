@@ -171,7 +171,7 @@ namespace MelLib
 
 #pragma endregion
 
-		void SetMaterial(Material* mtl, const int index);
+		void SetMaterial(Material* mtl, const UINT index);
 #pragma endregion
 
 #pragma region ƒQƒbƒg

@@ -82,7 +82,7 @@ namespace MelLib
 		bool isFall = false;
 #pragma endregion
 
-		//当たった相手のデータ
+		//当たった相手の当たり判定データ
 		SphereData hitSphereData;
 		BoxData hitBoxData;
 		Segment3DData hitSegment3DData;
@@ -107,7 +107,7 @@ namespace MelLib
 
 #pragma endregion
 		
-		//継承したクラスを格納し、判定時に使う用
+		//Hit処理などに使用するタグ
 		std::vector<std::string>tags;
 
 		std::unordered_map<std::string, ModelObject>modelObjects;
@@ -118,12 +118,27 @@ namespace MelLib
 		//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
 		bool eraseManager = false;
 		
-
+		//当たり判定可視化フラグ
 		bool drawCollisionModel = true;
 
 	protected:
+		
+		/// <summary>
+		/// 最後に衝突した球の情報を取得します。
+		/// </summary>
+		/// <returns></returns>
 		SphereData GetHitSphereData() const { return hitSphereData; }
+
+		/// <summary>
+		/// 最後に衝突した箱の情報を取得します。
+		/// </summary>
+		/// <returns></returns>
 		BoxData GetHitBoxData() const { return hitBoxData; }
+
+		/// <summary>
+		/// 最後に衝突した線分の情報を取得します。
+		/// </summary>
+		/// <returns></returns>
 		Segment3DData GetHitSegmentData() const { return hitSegment3DData; }
 		PlaneData GetHitPlaneData() const { return hitPlaneData; }
 		BoardData GetHitBoardData()const { return hitBoardData; }
@@ -179,6 +194,7 @@ namespace MelLib
 
 
 #pragma endregion
+
 	private:
 		/// <summary>
 		/// モデルの移動
@@ -225,9 +241,6 @@ namespace MelLib
 
 		//void CalcHitPhysics(GameObject* hitObject,const Vector3& hutPreVelocity,const CollisionType& collisionType);
 
-		//virtual const void* GetPtr()const;
-
-
 
 		//確実に初期値が決まっている変数(eraseManagerなど)を初期化する変数(初期化忘れ防止用)
 		//これで初期化せずにヘッダで初期化する?
@@ -243,7 +256,6 @@ namespace MelLib
 		/// <param name="vec"></param>
 	    virtual void AddPosition(const Vector3& vec);
 #pragma endregion
-
 
 #pragma region セット
 

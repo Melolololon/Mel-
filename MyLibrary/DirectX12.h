@@ -61,18 +61,6 @@ namespace MelLib
 	class DirectX12 final
 	{
 
-		enum DrawType
-		{
-			none,
-			box,
-			circle,
-		};
-
-		enum Dimension
-		{
-			dimention2D,
-			dimention3D
-		};
 
 	private:
 		

@@ -2,7 +2,7 @@
 
 namespace MelLib
 {
-	enum SortType
+	enum class SortType
 	{
 		ASCENDING,//è∏èá
 		DESCENDING,//ç~èá

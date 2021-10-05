@@ -155,7 +155,7 @@ namespace MelLib
 		static Vector3 Abs(const Vector3& vector);
 		
 		/// <summary>
-		/// ソートをします。
+		/// standardVecに近い順、または遠い順にソートをします。
 		/// </summary>
 		/// <param name="vectors">ソートするVector3の配列</param>
 		/// <param name="standardVec">ソートの基準となる値</param>

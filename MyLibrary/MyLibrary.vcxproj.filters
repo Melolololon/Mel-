@@ -306,6 +306,9 @@
     <ClCompile Include="ErrorProcess.cpp">
       <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SpritePixelShader.hlsl" />
@@ -553,6 +556,9 @@
     </ClInclude>
     <ClInclude Include="ErrorProcess.h">
       <Filter>ヘッダー ファイル\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
