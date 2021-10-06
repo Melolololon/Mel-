@@ -531,7 +531,7 @@ void ModelObject::SetCmdList()
 
 void ModelObject::Draw(const std::string& rtName)
 {
-	//RenderTarget::ChangeCurrentRenderTarget(RenderTarget::Get(rtName));
+	RenderTarget::ChangeCurrentRenderTarget(RenderTarget::Get(rtName));
 
 	FbxAnimation();
 

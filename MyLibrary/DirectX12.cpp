@@ -375,7 +375,8 @@ void DirectX12::LoopStartProcess()
 	cmdList->ResourceBarrier(1, &barrierDesc);*/
 #pragma endregion
 
-	RenderTarget::Get("main")->PreDrawProcess();
+	//RenderTarget::Get("main")->PreDrawProcess();
+	RenderTarget::DrawBegin();
 
 
 	TextWrite::LoopStartProcess();

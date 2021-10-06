@@ -93,6 +93,7 @@ void Sprite3D::Create(Texture* pTexture)
 
 void Sprite3D::Draw(const std::string& rtName)
 {
+	RenderTarget::ChangeCurrentRenderTarget(RenderTarget::Get(rtName));
 	
 #pragma region map
 

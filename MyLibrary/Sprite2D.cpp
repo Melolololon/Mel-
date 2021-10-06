@@ -1,4 +1,5 @@
 #include "Sprite2D.h"
+#include"RenderTarget.h"
 
 using namespace MelLib;
 
@@ -88,6 +89,7 @@ void Sprite2D::Delete(const std::string& name)
 
 void Sprite2D::Draw(const std::string& rtName)
 {
+	RenderTarget::ChangeCurrentRenderTarget(RenderTarget::Get(rtName));
 
 	SpriteVertex* vertex;
 	MapVertexBuffer((void**)&vertex);

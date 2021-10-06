@@ -130,7 +130,7 @@ void Play::CollisionTestDraw()
 
 void Play::RTTestInitialize()
 {
-	//MelLib::RenderTarget::Create(MelLib::Color(255, 0, 255, 255), "test");
+	MelLib::RenderTarget::Create(MelLib::Color(255, 0, 0, 255), "test");
 	rtTestObject.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
 }
 
@@ -140,7 +140,7 @@ void Play::RTTestUpdate()
 
 void Play::RTTestDraw()
 {
-	rtTestObject.Draw();
+	rtTestObject.Draw("test");
 }
 
 
@@ -161,7 +161,10 @@ void Play::Update()
 	RTTestUpdate();
 	MelLib::GameObjectManager::GetInstance()->Update();
 
-
+	std::vector<MelLib::RenderTarget::RenderTargetDrawData>data(1);
+	data[0].rt = MelLib::RenderTarget::Get("test");
+	data[0].renderingRT = MelLib::RenderTarget::Get();
+	MelLib::RenderTarget::SetRenderingRenderDrawData(data);
 }
 
 void Play::Draw()

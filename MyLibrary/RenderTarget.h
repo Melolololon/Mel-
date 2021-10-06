@@ -32,7 +32,7 @@ namespace MelLib
 	class RenderTarget
 	{
 	public:
-		struct RTDrawData
+		struct RenderTargetDrawData
 		{
 			//レンダーターゲット
 			RenderTarget* rt = nullptr;
@@ -54,7 +54,7 @@ namespace MelLib
 		VertexBufferSet vertexBufferSet;
 		ComPtr<ID3D12Resource> constBuffer;
 
-		static std::vector<RTDrawData> rtDrawData;
+		static std::vector<RenderTargetDrawData> rtDrawData;
 
 		static const int RT_NUM = 1;
 
@@ -79,7 +79,7 @@ namespace MelLib
 
 		//カメラのポインタ
 		Camera* pCamera = nullptr;
-		float clearColor[4];
+		float clearColor[4] = { 0.0f,0.0f,0.0f,0.0f };
 
 	private:
 		void ConstDataMat();
@@ -89,7 +89,7 @@ namespace MelLib
 		RenderTarget(const Color& color);
 		~RenderTarget();
 
-		static void SetRenderingRenderDrawData(const std::vector<RTDrawData>& data) { rtDrawData = data; }
+		static void SetRenderingRenderDrawData(const std::vector<RenderTargetDrawData>& data) { rtDrawData = data; }
 
 		static void Create(const Color& initColor, const std::string& name = "");
 		static void Delete(const std::string& name);
@@ -108,7 +108,6 @@ namespace MelLib
 		static void ChangeCurrentRenderTarget(RenderTarget* pRTs);
 
 #pragma region セット
-
 
 		/// <summary>
 		/// カメラをセットします。

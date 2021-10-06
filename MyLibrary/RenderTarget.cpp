@@ -11,7 +11,7 @@ DirectX::XMMATRIX RenderTarget::cameraMatrix;
 ID3D12GraphicsCommandList* RenderTarget::cmdList;
 ID3D12Device* RenderTarget::device;
 
-std::vector<RenderTarget::RTDrawData> RenderTarget::rtDrawData;
+std::vector<RenderTarget::RenderTargetDrawData> RenderTarget::rtDrawData;
 
 std::unordered_map<std::string, std::unique_ptr<RenderTarget>> RenderTarget::pRenderTargets;
 UINT RenderTarget::createCount = 0;
@@ -77,16 +77,14 @@ void MelLib::RenderTarget::MatrixMap()
 		0.0f
 	);*/
 
-
 	constBufferData->mat = matWorld * cameraMatrix;
-
 
 	constBuffer->Unmap(0, nullptr);
 }
 
-RenderTarget::RenderTarget(const Color& color)/*:
-	Sprite2DBase(Color(0,0,0,0))*/
+RenderTarget::RenderTarget(const Color& color)
 {
+	pCamera = Camera::Get();
 
 	//頂点、定数バッファ作成など
 		//頂点バッファ作成
@@ -435,7 +433,7 @@ void RenderTarget::PreDrawProcess()
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
 	
 	//仮
-	cmdList->OMSetRenderTargets(RT_NUM, rtvHandle, false, &dsvHandle);
+	//cmdList->OMSetRenderTargets(RT_NUM, rtvHandle, false, &dsvHandle);
 
 	//画面のクリア
 	for (int i = 0; i < RT_NUM; i++)
@@ -468,14 +466,11 @@ void RenderTarget::PreDrawProcess()
 		cmdList->RSSetScissorRects(1, &scissorRect[i]);
 	}
 #pragma endregion
-}
 
 
-void RenderTarget::SetCmdList()
-{
-	//戻す
 	for (int i = 0; i < RT_NUM; i++)
 	{
+		//セット
 		cmdList->ResourceBarrier
 		(
 			1,
@@ -487,6 +482,12 @@ void RenderTarget::SetCmdList()
 			)
 		);
 	}
+
+}
+
+
+void RenderTarget::SetCmdList()
+{
 
 	cmdList->SetPipelineState(pipeline.Get());
 
@@ -520,6 +521,7 @@ void RenderTarget::SetCmdList()
 
 void RenderTarget::AllDraw()
 {
+	
 	//共通のやつをセット
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
@@ -531,6 +533,22 @@ void RenderTarget::AllDraw()
 	//	p.second->MatrixMap(nullptr);
 	//	p.second->SetCmdList();
 	//}
+
+
+	// currentを戻す
+	for (int i = 0; i < RT_NUM; i++)
+	{
+		cmdList->ResourceBarrier
+		(
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition
+			(
+				pCurrentSelectRTs->textureBuffer[0].Get(),
+				D3D12_RESOURCE_STATE_RENDER_TARGET,
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+			)
+		);
+	}
 
 	for (auto& data : rtDrawData)
 	{
@@ -559,17 +577,34 @@ void RenderTarget::AllDraw()
 
 		data.rt->ConstDataMat();
 		data.rt->MatrixMap();
+
+
 		data.rt->SetCmdList();
+
+		cmdList->ResourceBarrier
+		(
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition
+			(
+				data.renderingRT->textureBuffer[0].Get(),
+				D3D12_RESOURCE_STATE_RENDER_TARGET,
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+			)
+		);
+
 	}
 }
 
 void MelLib::RenderTarget::DrawBegin()
 {
-	pCurrentSelectRTs = nullptr;
 	for (auto& p : pRenderTargets)
 	{
 		p.second->PreDrawProcess();
 	}
+
+	//毎フレームバリア書き換えるようにするためにnullptr代入
+	pCurrentSelectRTs = nullptr;
+	ChangeCurrentRenderTarget(Get());
 }
 
 void MelLib::RenderTarget::MainRTDraw()
@@ -583,7 +618,6 @@ void MelLib::RenderTarget::MainRTDraw()
 void MelLib::RenderTarget::ChangeCurrentRenderTarget(RenderTarget* pRTs)
 {
 	//仮
-
 	if (pCurrentSelectRTs == pRTs)return;
 
 	//ここに、入れ替え前のレンダーターゲットのリソースバリアを
@@ -592,16 +626,19 @@ void MelLib::RenderTarget::ChangeCurrentRenderTarget(RenderTarget* pRTs)
 	for (int i = 0; i < RT_NUM; i++)
 	{
 		//セット
-		cmdList->ResourceBarrier
-		(
-			1,
-			&CD3DX12_RESOURCE_BARRIER::Transition
+		if (pCurrentSelectRTs) 
+        {
+			cmdList->ResourceBarrier
 			(
-				pCurrentSelectRTs->textureBuffer[i].Get(),
-				D3D12_RESOURCE_STATE_RENDER_TARGET,
-				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-			)
-		);
+				1,
+				&CD3DX12_RESOURCE_BARRIER::Transition
+				(
+					pCurrentSelectRTs->textureBuffer[i].Get(),
+					D3D12_RESOURCE_STATE_RENDER_TARGET,
+					D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+				)
+			);
+		}
 
 		//セット
 		cmdList->ResourceBarrier
@@ -614,6 +651,8 @@ void MelLib::RenderTarget::ChangeCurrentRenderTarget(RenderTarget* pRTs)
 				D3D12_RESOURCE_STATE_RENDER_TARGET
 			)
 		);
+
+		
 	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[RT_NUM];
