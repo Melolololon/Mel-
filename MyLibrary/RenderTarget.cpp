@@ -552,6 +552,8 @@ void RenderTarget::AllDraw()
 
 	for (auto& data : rtDrawData)
 	{
+		if (!data.renderingRT || !data.rt)continue;
+
 		cmdList->ResourceBarrier
 		(
 			1,
