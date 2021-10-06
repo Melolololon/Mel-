@@ -13,8 +13,6 @@ namespace MelLib
 	public:
 		enum NetWorkError
 		{
-			ERROR_NONE,
-			FAILED_SOCKET_OPEN,
 
 		};
 
@@ -39,7 +37,7 @@ namespace MelLib
 		void Finalize();
 
 #pragma region 受信側(サーバー)
-		NetWorkError StartServer(const int portNum);
+		void StartServer(const int portNum);
 #pragma endregion
 
 #pragma region 送信側

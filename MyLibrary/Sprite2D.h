@@ -48,7 +48,7 @@ namespace MelLib
 		static void Delete(const std::string& name);
 		static Sprite2D* Get(const std::string& name) { return pSprite2D[name].get(); }
 
-		void Draw(const std::string& rtName = "");
+		void Draw(const std::string& rtName = "")override;
 
 		void SetColor(const Color& color);
 		void SetTexture(Texture* pTexture) { this->pTexture = pTexture; }

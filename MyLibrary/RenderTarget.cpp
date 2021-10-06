@@ -6,6 +6,8 @@
 
 using namespace MelLib;
 
+std::vector<RenderTarget::RTDrawData> RenderTarget::rtDrawData;
+
 std::unordered_map<std::string, std::unique_ptr<RenderTarget>> RenderTarget::pRenderTargets;
 UINT RenderTarget::createCount = 0;
 std::string RenderTarget::mainRenderTargetNama = "";
@@ -14,11 +16,12 @@ PipelineState RenderTarget::defaultPipeline;
 float RenderTarget::sClearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
 ComPtr<ID3D12RootSignature>RenderTarget::rootSignature;
 
-std::vector<RenderTarget*> RenderTarget::pCurrentSelectRTs;
+RenderTarget* RenderTarget::pCurrentSelectRTs;
 
 RenderTarget::RenderTarget(const Color& color)/*:
 	Sprite2DBase(Color(0,0,0,0))*/
 {
+
 	//頂点、定数バッファ作成など
 	SpriteInitialize();
 
@@ -315,6 +318,8 @@ void RenderTarget::PreDrawProcess()
 	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+	
+	//仮
 	cmdList->OMSetRenderTargets(RT_NUM, rtvHandle, false, &dsvHandle);
 
 	//画面のクリア
@@ -405,71 +410,115 @@ void RenderTarget::AllDraw()
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 
 	//ここで各レンダーターゲットのDrawを呼び出す
-	for(auto& p : pRenderTargets)
+	//for(auto& p : pRenderTargets)
+	//{
+	//	p.second->ConstDataMat();
+	//	p.second->MatrixMap(nullptr);
+	//	p.second->SetCmdList();
+	//}
+
+	for (auto& data : rtDrawData)
 	{
-		p.second->ConstDataMat();
-		p.second->MatrixMap(nullptr);
-		p.second->SetCmdList();
+		cmdList->ResourceBarrier
+		(
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition
+			(
+				data.renderingRT->textureBuffer[0].Get(),
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+				D3D12_RESOURCE_STATE_RENDER_TARGET
+			)
+		);
+
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
+		
+		rtvHandle= CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			data.renderingRT->rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+			0,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+		);
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = data.renderingRT->depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+
+		cmdList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+
+		data.rt->ConstDataMat();
+		data.rt->MatrixMap(nullptr);
+		data.rt->SetCmdList();
 	}
 }
 
-void MelLib::RenderTarget::AllDrawBegin()
+void MelLib::RenderTarget::DrawBegin()
 {
+	pCurrentSelectRTs = nullptr;
 	for (auto& p : pRenderTargets)
 	{
 		p.second->PreDrawProcess();
 	}
 }
 
-void MelLib::RenderTarget::ChangeCurrentRenderTarget(std::vector<RenderTarget*> pRTs)
+void MelLib::RenderTarget::MainRTDraw()
 {
-	if(pCurrentSelectRTs.size() == pRTs.size())
-	{
-		for (int i = 0, size = pCurrentSelectRTs.size(); i < size; i++)
-		{
-			if (pCurrentSelectRTs[i] != pRTs[i])break;
-			
-			//一致してたら変更しないため、return
-			if (i == size - 1)return;
-		}
-	}
+	//メインの描画
+	Get()->ConstDataMat();
+	Get()->MatrixMap(nullptr);
+	Get()->SetCmdList();
+}
+
+void MelLib::RenderTarget::ChangeCurrentRenderTarget(RenderTarget* pRTs)
+{
+	//仮
+
+	if (pCurrentSelectRTs == pRTs)return;
 
 	//ここに、入れ替え前のレンダーターゲットのリソースバリアを
 	//D3D12_RESOURCE_STATE_RENDER_TARGETからD3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCEに戻す処理
+	//レンダーターゲットのセットも
+	for (int i = 0; i < RT_NUM; i++)
+	{
+		//セット
+		cmdList->ResourceBarrier
+		(
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition
+			(
+				pCurrentSelectRTs->textureBuffer[i].Get(),
+				D3D12_RESOURCE_STATE_RENDER_TARGET,
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+			)
+		);
+
+		//セット
+		cmdList->ResourceBarrier
+		(
+			1,
+			&CD3DX12_RESOURCE_BARRIER::Transition
+			(
+				pRTs->textureBuffer[i].Get(),
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+				D3D12_RESOURCE_STATE_RENDER_TARGET
+			)
+		);
+	}
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[RT_NUM];
+	for (int i = 0; i < RT_NUM; i++)
+	{
+		rtvHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE
+		(
+			pRTs->rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+			i,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
+		);
+	}
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pRTs->depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
+
+	cmdList->OMSetRenderTargets(RT_NUM, rtvHandle, false, &dsvHandle);
+
 
 	//入れ替え
 	pCurrentSelectRTs = pRTs;
 
-	//レンダーターゲットをセット
-	//for (int i = 0; i < RT_NUM; i++)
-	//{
-	//	//セット
-	//	cmdList->ResourceBarrier
-	//	(
-	//		1,
-	//		&CD3DX12_RESOURCE_BARRIER::Transition
-	//		(
-	//			textureBuffer[i].Get(),
-	//			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-	//			D3D12_RESOURCE_STATE_RENDER_TARGET
-	//		)
-	//	);
-	//}
-
-	////レンダーターゲットセット
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[RT_NUM];
-	//for (int i = 0; i < RT_NUM; i++)
-	//{
-	//	rtvHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE
-	//	(
-	//		rtvHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-	//		i,
-	//		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
-	//	);
-	//}
-
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = depthHeap.Get()->GetCPUDescriptorHandleForHeapStart();
-	//cmdList->OMSetRenderTargets(RT_NUM, rtvHandle, false, &dsvHandle);
-
+	
 }
 

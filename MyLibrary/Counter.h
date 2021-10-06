@@ -100,7 +100,6 @@ namespace MelLib
 
 #pragma region ƒQƒbƒg
 
-
 		float GetCount() { return count; }
 
 #pragma endregion

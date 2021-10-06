@@ -384,6 +384,7 @@ void DirectX12::LoopStartProcess()
 
 void DirectX12::LoopEndProcess()
 {
+	RenderTarget::AllDraw();
 	//板ポリをバックバッファーに描画する準備
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 	barrierDesc.Transition.pResource = backBuffer[bbIndex].Get();
@@ -399,8 +400,8 @@ void DirectX12::LoopEndProcess()
 	//画面のクリア
 	cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
 	cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-	RenderTarget::AllDraw();
+	
+	RenderTarget::MainRTDraw();
 
 	ImguiManager::GetInstance()->Draw();
 #pragma region RTVからPRESENTへ

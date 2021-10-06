@@ -61,6 +61,18 @@ namespace MelLib
 	class DirectX12 final
 	{
 
+		enum DrawType
+		{
+			none,
+			box,
+			circle,
+		};
+
+		enum Dimension
+		{
+			dimention2D,
+			dimention3D
+		};
 
 	private:
 		
@@ -135,9 +147,10 @@ namespace MelLib
 		/// 描画コマンドなどを呼び出す前に呼ぶ処理
 		/// </summary>
 		void LoopStartProcess();
-
 		//描画処理。コマンドリストの命令を実行したりする
 		void LoopEndProcess();
+
+		void RenderingBackBaffer();
 
 		void Finalize();
 #pragma endregion

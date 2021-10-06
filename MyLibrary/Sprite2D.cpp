@@ -88,6 +88,7 @@ void Sprite2D::Delete(const std::string& name)
 
 void Sprite2D::Draw(const std::string& rtName)
 {
+
 	SpriteVertex* vertex;
 	MapVertexBuffer((void**)&vertex);
 

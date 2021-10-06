@@ -35,7 +35,6 @@ namespace MelLib
 		static bool isEnd;
 
 
-
 		static int loadFontTextureCounter;
 		static int loadTextureCounter;
 		static int createSpriteConter;

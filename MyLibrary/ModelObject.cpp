@@ -531,6 +531,8 @@ void ModelObject::SetCmdList()
 
 void ModelObject::Draw(const std::string& rtName)
 {
+	//RenderTarget::ChangeCurrentRenderTarget(RenderTarget::Get(rtName));
+
 	FbxAnimation();
 
 	DrawCommonProcessing(rtName);
@@ -842,12 +844,16 @@ void MelLib::ModelObject::SetMaterial(Material* mtl, const UINT index)
 { 
 	if (!mtl)
 	{
+#ifdef _DEBUG
 		OutputDebugString(L"マテリアルのセットに失敗しました。マテリアルがnullptrです。\n");
+#endif // _DEBUG
 		return;
 	}
 	if(index >= materials.size())
 	{
+#ifdef _DEBUG
 		OutputDebugString(L"マテリアルのセットに失敗しました。indexの値が大きくてセットできません。\n");
+#endif // _DEBUG
 		return;
 	}
 

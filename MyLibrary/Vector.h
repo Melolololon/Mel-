@@ -67,6 +67,9 @@ namespace MelLib
 
 		Vector2 Abs()const;
 		static Vector2 Abs(const Vector2& vector);
+
+
+
 #pragma endregion
 
 
