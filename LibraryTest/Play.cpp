@@ -131,6 +131,7 @@ void Play::CollisionTestDraw()
 void Play::RTTestInitialize()
 {
 	MelLib::RenderTarget::Create(MelLib::Color(255, 0, 0, 255), "test");
+	MelLib::RenderTarget::Get("test")->SetScale(300);
 	rtTestObject.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
 }
 
