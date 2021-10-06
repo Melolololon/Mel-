@@ -586,140 +586,217 @@ void MelLib::ModelObject::MeshCat()
 	plane.SetDistance(0.0f);
 	plane.SetNormal(Vector3(1.0f, 0, 0));
 
+#pragma region 旧
+
+	////スケール
+	//Vector3 scale = modelConstDatas[0].scale;
+
+	////仮実装用の衝突点。中心をぶった切ることを仮定
+	//std::vector<Vector3>hitPoints =
+	//{
+	//	Vector3(0,0.5f,0.5f) * scale,
+	//	Vector3(0,0.5f,-0.5f)* scale,
+	//	Vector3(0,-0.5f,0.5f)* scale,
+	//	Vector3(0,-0.5f,-0.5f)* scale
+	//};
+
+	////衝突した辺
+	//std::vector<Value2<Vector3>> hitLine =
+	//{
+	//	Value2<Vector3>(Vector3(-0.5f, 0.5f, 0.5f) * scale,Vector3(0.5f, 0.5f, 0.5f) * scale),
+	//	Value2<Vector3>(Vector3(-0.5f, 0.5f,-0.5f) * scale,Vector3(0.5f, 0.5f,-0.5f) * scale),
+	//	Value2<Vector3>(Vector3(-0.5f,-0.5f, 0.5f) * scale,Vector3(0.5f,-0.5f, 0.5f) * scale),
+	//	Value2<Vector3>(Vector3(-0.5f,-0.5f,-0.5f) * scale,Vector3(0.5f,-0.5f,-0.5f) * scale),
+	//};
+
+	////四角形の頂点とインデックス取得
+	//std::vector<Vector3>modelVertices = pModelData->GetVerticesPosition()[0];
+	//for (auto& v : modelVertices)v *= scale;
+	//
+	//std::vector<USHORT>modelIndices = pModelData->GetIndices()[0];
+	//
+	////分割後の結果格納用配列
+	//std::vector<Vector3>modelVerticesFront = modelVertices;
+	//
+	//std::vector<Vector3>modelVerticesBack = modelVertices;
+
+	////テスト
+	//float f = Vector3::Dot(hitLine[0].v1, 0);
+
+
+	////分離(モデルを2つに分ける処理)
+	//
+	////当たった辺の左右判定
+	//std::vector<Value2<char>> hitLineResult =
+	//{
+	//	Value2<char>
+	//	(LibMath::PointPlaneFrontBackCheck(hitLine[0].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[0].v2,plane)),
+
+	//	Value2<char>
+	//	(LibMath::PointPlaneFrontBackCheck(hitLine[1].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[1].v2,plane)),
+
+	//	Value2<char>
+	//	(LibMath::PointPlaneFrontBackCheck(hitLine[2].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[2].v2,plane)),
+
+	//	Value2<char>
+	//	(LibMath::PointPlaneFrontBackCheck(hitLine[3].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[3].v2,plane)),
+	//};
+
+	////頂点を左右で分ける
+	//size_t hitLineNum = hitLine.size();
+	//
+	////頂点を衝突点に
+	////表
+	//for(auto& v : modelVerticesFront)
+	//{
+	//	for(int i = 0; i < hitLineNum;i++)
+	//	{
+	//		//辺と同じ頂点かつ、頂点が裏側だったら入る
+	//		if(v == hitLine[i].v1
+	//			&& hitLineResult[i].v1 == -1)
+	//		{
+	//			//裏側の頂点を衝突点と入れ替え
+	//			v = hitPoints[i];
+	//		}
+	//		else if (v == hitLine[i].v2
+	//			&& hitLineResult[i].v2 == -1)
+	//		{
+	//			v = hitPoints[i];
+	//		}
+
+
+	//		
+	//	}
+	//}
+
+	////裏
+	//for (auto& v : modelVerticesBack)
+	//{
+	//	for (int i = 0; i < hitLineNum; i++)
+	//	{
+	//		//辺と同じ頂点かつ、頂点が表側だったら入る
+	//		if (v == hitLine[i].v1
+	//			&& hitLineResult[i].v1 == 1)
+	//		{
+	//			//表側の頂点を衝突点と入れ替え
+	//			v = hitPoints[i];
+	//		}
+	//		else if (v == hitLine[i].v2
+	//			&& hitLineResult[i].v2 == 1)
+	//		{
+	//			v = hitPoints[i];
+	//		}
+	//	}
+	//}
+
+	////面を生成
+	//
+	////やり方
+	////一番遠い頂点と、2、3番目に遠いまたは、一番遠い頂点に1番、2番目に近い頂点を使って面を生成。
+	////法線を計算して、-があったら、関数に渡す順番を入れ替えて計算。
+	////それを繰り返す。
+	////一番遠い頂点を取り除いていく。それ以外は取り除かない
+	//
+
+	////まず、衝突点を原点から近い順に並び替える。
+	////先頭に一番遠いのを持ってくると消した時に並び替えが発生しまくるので、近い順
+	//hitPoints = Vector3::Sort(hitPoints, 0, SortType::ASCENDING);
+
+	////断面のインデックス
+	//std::vector<USHORT>frontIndices;
+	//std::vector<USHORT>backIndices;
+
+	//while(1)
+	//{
+	//	size_t size = hitPoints.size();
+	//	//三角形の面を形成
+	//	Value3<Vector3>tri = 
+	//		Value3<Vector3>(hitPoints[size - 1], hitPoints[size - 2], hitPoints[size - 3]);
+
+	//	Vector3 normal = LibMath::CalcNormal(tri.v1, tri.v2, tri.v3);
+	//	if(normal.x < 0 || normal.y < 0|| normal.z < 0)
+	//	{
+	//		//frontIndices.push_back()
+	//	}
+	//}
+
+#pragma endregion
+
 	//スケール
 	Vector3 scale = modelConstDatas[0].scale;
 
 	//仮実装用の衝突点。中心をぶった切ることを仮定
 	std::vector<Vector3>hitPoints =
 	{
-		Vector3(0,0.5f,0.5f) * scale,
-		Vector3(0,0.5f,-0.5f)* scale,
-		Vector3(0,-0.5f,0.5f)* scale,
-		Vector3(0,-0.5f,-0.5f)* scale
+		Vector3(0,0.5f,0) * scale,
+		Vector3(0,-0.5f,0) * scale
 	};
 
 	//衝突した辺
 	std::vector<Value2<Vector3>> hitLine =
 	{
-		Value2<Vector3>(Vector3(-0.5f, 0.5f, 0.5f) * scale,Vector3(0.5f, 0.5f, 0.5f) * scale),
-		Value2<Vector3>(Vector3(-0.5f, 0.5f,-0.5f) * scale,Vector3(0.5f, 0.5f,-0.5f) * scale),
-		Value2<Vector3>(Vector3(-0.5f,-0.5f, 0.5f) * scale,Vector3(0.5f,-0.5f, 0.5f) * scale),
-		Value2<Vector3>(Vector3(-0.5f,-0.5f,-0.5f) * scale,Vector3(0.5f,-0.5f,-0.5f) * scale),
+		Value2<Vector3>(Vector3(-0.5f, 0.5f, 0) * scale,Vector3(0.5f, 0.5f, 0) * scale),
+		Value2<Vector3>(Vector3(-0.5f, -0.5f,0) * scale,Vector3(0.5f, -0.5f,0) * scale)
 	};
 
-	//四角形の頂点とインデックス取得
-	std::vector<Vector3>modelVertices = pModelData->GetVerticesPosition()[0];
-	for (auto& v : modelVertices)v *= scale;
-	
-	std::vector<USHORT>modelIndices = pModelData->GetIndices()[0];
-	
-	//分割後の結果格納用配列
-	std::vector<Vector3>modelVerticesFront = modelVertices;
-	
-	std::vector<Vector3>modelVerticesBack = modelVertices;
-
-	
-	//テスト
-	float f = Vector3::Dot(hitLine[0].v1, 0);
-
-
-	//分離(モデルを2つに分ける処理)
-	
-	//当たった辺の左右判定
+	//当たった辺の左右判定(辺を平面を基準に分ける)
 	std::vector<Value2<char>> hitLineResult =
 	{
 		Value2<char>
 		(LibMath::PointPlaneFrontBackCheck(hitLine[0].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[0].v2,plane)),
 
 		Value2<char>
-		(LibMath::PointPlaneFrontBackCheck(hitLine[1].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[1].v2,plane)),
-
-		Value2<char>
-		(LibMath::PointPlaneFrontBackCheck(hitLine[2].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[2].v2,plane)),
-
-		Value2<char>
-		(LibMath::PointPlaneFrontBackCheck(hitLine[3].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[3].v2,plane)),
+		(LibMath::PointPlaneFrontBackCheck(hitLine[1].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[1].v2,plane))
 	};
 
-	//頂点を左右で分ける
-	size_t hitLineNum = hitLine.size();
+
+	//表裏で分ける
+	std::vector<Vector3>frontPos = hitPoints;
+	std::vector<Vector3>backPos = hitPoints;
+
+	if (hitLineResult[0].v1 == 1)frontPos.push_back(hitLine[0].v1);
+	else backPos.push_back(hitLine[0].v1);
+	if (hitLineResult[0].v2 == 1)frontPos.push_back(hitLine[0].v2);
+	else backPos.push_back(hitLine[0].v2);
+	if (hitLineResult[1].v1 == 1)frontPos.push_back(hitLine[1].v1);
+	else backPos.push_back(hitLine[1].v1);
+	if (hitLineResult[1].v2 == 1)frontPos.push_back(hitLine[1].v2);
+	else backPos.push_back(hitLine[1].v2);
+
+
+	//表の三角形形成
 	
-	//頂点を衝突点に
-	//表
-	for(auto& v : modelVerticesFront)
-	{
-		for(int i = 0; i < hitLineNum;i++)
-		{
-			//辺と同じ頂点かつ、頂点が裏側だったら入る
-			if(v == hitLine[i].v1
-				&& hitLineResult[i].v1 == -1)
-			{
-				//裏側の頂点を衝突点と入れ替え
-				v = hitPoints[i];
-			}
-			else if (v == hitLine[i].v2
-				&& hitLineResult[i].v2 == -1)
-			{
-				v = hitPoints[i];
-			}
-
-
-			
-		}
-	}
-
-	//裏
-	for (auto& v : modelVerticesBack)
-	{
-		for (int i = 0; i < hitLineNum; i++)
-		{
-			//辺と同じ頂点かつ、頂点が表側だったら入る
-			if (v == hitLine[i].v1
-				&& hitLineResult[i].v1 == 1)
-			{
-				//表側の頂点を衝突点と入れ替え
-				v = hitPoints[i];
-			}
-			else if (v == hitLine[i].v2
-				&& hitLineResult[i].v2 == 1)
-			{
-				v = hitPoints[i];
-			}
-		}
-	}
-
-	//面を生成
-	
-	//やり方
-	//一番遠い頂点と、2、3番目に遠いまたは、一番遠い頂点に1番、2番目に近い頂点を使って面を生成。
-	//法線を計算して、-があったら、関数に渡す順番を入れ替えて計算。
-	//それを繰り返す。
-	//一番遠い頂点を取り除いていく。それ以外は取り除かない
+	frontPos = Vector3::Sort(frontPos, 0, SortType::ASCENDING);
 	
 
-	//まず、衝突点を原点から近い順に並び替える。
-	//先頭に一番遠いのを持ってくると消した時に並び替えが発生しまくるので、近い順
-	hitPoints = Vector3::Sort(hitPoints, 0, SortType::ASCENDING);
+	//仮
+	return;
 
-	//断面のインデックス
-	std::vector<USHORT>frontIndices;
-	std::vector<USHORT>backIndices;
-
-	while(1)
+	//分割ループ
+	while (1) 
 	{
-		size_t size = hitPoints.size();
-		//三角形の面を形成
-		Value3<Vector3>tri = 
-			Value3<Vector3>(hitPoints[size - 1], hitPoints[size - 2], hitPoints[size - 3]);
+		//原点から一番遠い座標
+		Vector3 farPos = frontPos[frontPos.size() - 1];
 
-		Vector3 normal = LibMath::CalcNormal(tri.v1, tri.v2, tri.v3);
-		if(normal.x < 0 || normal.y < 0|| normal.z < 0)
+		//一番遠い点に1、2番目に近い点(隣の点)を求める
+		Vector3 first = FLT_MAX, second = FLT_MAX;
+		float firstDis = FLT_MAX, secondDis = FLT_MAX;
+		for(int i = 0,size = frontPos.size();i < size;i++)
 		{
-			//frontIndices.push_back()
+			float calcDis = (frontPos[i] - farPos).Length();
+			if(first == FLT_MAX 
+				|| firstDis >= calcDis)
+			{
+				firstDis = calcDis;
+			}
+			else if(second == FLT_MAX
+				|| secondDis >= calcDis)
+			{
+				secondDis = calcDis;
+			}
 		}
+
 	}
-
-
 	int z = 0;
 }
 

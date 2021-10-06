@@ -514,19 +514,19 @@ Vector3 Vector3::Abs(const Vector3& vector)
 std::vector<Vector3> MelLib::Vector3::Sort(const std::vector<Vector3>& vectors, const Vector3& standardVec, const SortType type)
 {
 	size_t vecNum = vectors.size();
-	std::vector<std::tuple<Vector3,float>>sortVectors(vecNum);
+	std::vector<std::tuple<Vector3,float,int>>sortVectors(vecNum);
 	
 	for (int i = 0; i < vecNum; i++)
 	{	
 		Vector3 diff = (standardVec - vectors[i]).Abs();
-		sortVectors[i] = std::make_tuple(diff, diff.Length());
+		sortVectors[i] = std::make_tuple(diff, diff.Length(),i);
 		//std::get<1>(v)
 	}
 
 	if (type == SortType::ASCENDING)
 	{
 		std::sort(sortVectors.begin(), sortVectors.end(),
-			[](const std::tuple<Vector3, float>& t1, const std::tuple<Vector3, float>& t2)
+			[](const std::tuple<Vector3, float, int>& t1, const std::tuple<Vector3, float, int>& t2)
 		{
 			return std::get<1>(t1) < std::get<1>(t2);
 		});
@@ -534,7 +534,7 @@ std::vector<Vector3> MelLib::Vector3::Sort(const std::vector<Vector3>& vectors, 
 	else
 	{
 		std::sort(sortVectors.begin(), sortVectors.end(),
-			[](const std::tuple<Vector3, float>& t1, const std::tuple<Vector3, float>& t2)
+			[](const std::tuple<Vector3, float, int>& t1, const std::tuple<Vector3, float, int>& t2)
 		{
 			return std::get<1>(t1) > std::get<1>(t2);
 		});
@@ -543,7 +543,7 @@ std::vector<Vector3> MelLib::Vector3::Sort(const std::vector<Vector3>& vectors, 
 	std::vector<Vector3>returnVectors(vecNum);
 	for (int i = 0; i < vecNum; i++)
 	{
-		returnVectors[i] = std::get<0>(sortVectors[i]);
+		returnVectors[i] = vectors[std::get<2>(sortVectors[i])];
 	}
 
 	return returnVectors;

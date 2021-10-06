@@ -145,6 +145,7 @@ void Play::RTTestUpdate()
 void Play::RTTestDraw()
 {
 	rtTestObject.Draw("test");
+	rtTestObject.MeshCat();
 }
 
 
