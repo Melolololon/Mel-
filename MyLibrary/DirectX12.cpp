@@ -302,7 +302,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	Sprite::Initialize(dev.Get(), cmdList.Get());
 	Sprite2DBase::Initialize(windouWidth, windowHeight);
 	Sprite3D::Initialize();
-	RenderTarget::Initialize();
+	RenderTarget::Initialize(dev.Get(), cmdList.Get());
 
 	Color rtColor =
 		Color

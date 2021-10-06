@@ -55,15 +55,6 @@ namespace MelLib
 		std::array<SpriteVertex, 4> vertices;
 		static ComPtr<ID3D12RootSignature>rootSignature;
 
-
-		//描画するときの左上の座標
-		Vector2 drawLeftUpPosition = 0;
-		//描画するときの右下の座標
-		Vector2 drawRightDownPosition = 1;
-
-		//座標などの情報をまとめた構造体
-		SpriteConstData constData;
-
 #pragma region バッファ
 
 		//インデックスは、スプライトをバラバラにしたりする処理に使えそうだから実装しとく
@@ -74,6 +65,16 @@ namespace MelLib
 		static std::vector<ComPtr<ID3D12Resource>> textureBuffer;
 		static ComPtr<ID3D12DescriptorHeap> textureHeap;
 #pragma endregion
+
+
+		//描画するときの左上の座標
+		Vector2 drawLeftUpPosition = 0;
+		//描画するときの右下の座標
+		Vector2 drawRightDownPosition = 1;
+
+		//座標などの情報をまとめた構造体
+		SpriteConstData constData;
+
 
 		void CreateBuffer();
 

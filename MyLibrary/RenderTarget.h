@@ -29,7 +29,7 @@
 namespace MelLib
 {
 
-	class RenderTarget :public Sprite2DBase
+	class RenderTarget
 	{
 	public:
 		struct RTDrawData
@@ -41,6 +41,19 @@ namespace MelLib
 		};
 
 	private:
+		static DirectX::XMMATRIX cameraMatrix;
+
+		static ID3D12GraphicsCommandList* cmdList;
+		static ID3D12Device* device;
+		ComPtr<ID3D12PipelineState> pipeline;
+		std::array<SpriteVertex, 4> vertices;
+
+		//座標などの情報をまとめた構造体
+		SpriteConstData constData;
+
+		VertexBufferSet vertexBufferSet;
+		ComPtr<ID3D12Resource> constBuffer;
+
 		static std::vector<RTDrawData> rtDrawData;
 
 		static const int RT_NUM = 1;
@@ -67,6 +80,10 @@ namespace MelLib
 		//カメラのポインタ
 		Camera* pCamera = nullptr;
 		float clearColor[4];
+
+	private:
+		void ConstDataMat();
+		void MatrixMap();
 	public:
 
 		RenderTarget(const Color& color);
@@ -78,7 +95,7 @@ namespace MelLib
 		static void Delete(const std::string& name);
 		static RenderTarget* Get(const std::string& name = mainRenderTargetNama) { return pRenderTargets[name].get(); }
 
-		static bool Initialize();
+		static bool Initialize(ID3D12Device* dev,ID3D12GraphicsCommandList* list);
 
 		//これprivateに
 		void PreDrawProcess();
@@ -90,11 +107,20 @@ namespace MelLib
 
 		static void ChangeCurrentRenderTarget(RenderTarget* pRTs);
 
+#pragma region セット
+
+
 		/// <summary>
 		/// カメラをセットします。
 		/// </summary>
 		/// <param name="name"></param>
 		void SetCamera(Camera* pCamera) { this->pCamera = pCamera; }
+
+		void SetPosition(const Vector2& pos) { constData.position = DirectX::XMFLOAT3(pos.x, pos.y, 0); }
+		void SetScale(const Vector2& scale) { constData.scale = scale.ToXMFLOAT2(); }
+		void SetAngle(const float angle) { constData.angle = DirectX::XMFLOAT3(0, 0, angle); }
+
+#pragma endregion
 
 
 		static const std::string& GetMainRenderTargetNama() { return mainRenderTargetNama; }
