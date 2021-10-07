@@ -91,6 +91,8 @@ namespace MelLib
 
 		//テクスチャ未セット時にセットする透明のテクスチャバッファ
 		static ComPtr<ID3D12Resource>colorZeroTexBuffer;
+
+
 	private:
 
 		void CreateConstBuffer();
@@ -136,7 +138,7 @@ namespace MelLib
 		/// <summary>
 		/// モデルの切断(仮実装用の関数)
 		/// </summary>
-		void MeshCat();
+		void MeshCat(const PlaneData& plane);
 #pragma endregion
 
 

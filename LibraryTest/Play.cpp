@@ -142,12 +142,22 @@ void Play::RTTestUpdate()
 	//data[1].renderingRT = MelLib::RenderTarget::Get();
 
 	//MelLib::RenderTarget::SetRenderingRenderDrawData(data);
+
+
+
+	rtTestObject.SetAngle(MelLib::Vector3(0, 0, 0));
+	MelLib::PlaneData planeData;
+	planeData.SetNormal(MelLib::Vector3(0, 1, 0));
+	rtTestObject.MeshCat(planeData);
+
+
 }
 
 void Play::RTTestDraw()
 {
 	rtTestObject.Draw();
-	rtTestObject.MeshCat();
+
+
 }
 
 
