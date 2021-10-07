@@ -123,6 +123,8 @@ namespace MelLib
 
 		static bool SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule);
 
+		static bool PlaneAndSegment3D(const PlaneData& plane, const Segment3DData& segment,Segment3DCalcResult* segmentResult);
+
 		/// <summary>
 		/// ”Â‚Æ3D‚Ìü•ª‚ª“–‚½‚Á‚Ä‚¢‚é‚©‚ğŠm”F‚µ‚Ü‚·B
 		/// </summary>

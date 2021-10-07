@@ -220,7 +220,7 @@ char MelLib::LibMath::PointPlaneFrontBackCheck(const Vector3& point, const Plane
 {
 
 	//原点から法線方向に距離分動いた座標を求める。
-	Vector3 disPos = FloatDistanceMoveVector3(0, plane.GetNormal(), plane.GetDistance());
+	Vector3 disPos = plane.GetPosition();
 
 	if (Vector3::Dot(point - disPos, plane.GetNormal()) > 0)return 1;
 	else if (Vector3::Dot(point - disPos, plane.GetNormal()) < 0)return -1;

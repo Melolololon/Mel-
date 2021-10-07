@@ -574,6 +574,25 @@ bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& ca
 	return sphereAndCupsuleDis < sphere.GetRadius();
 }
 
+bool MelLib::Collision::PlaneAndSegment3D(const PlaneData& plane, const Segment3DData& segment, Segment3DCalcResult* segmentResult)
+{
+	Vector3 planeToSegV1 = segment.GetPosition().v1 - plane.GetPosition();
+	Vector3 planeToSegV2 = segment.GetPosition().v2 - plane.GetPosition();
+
+	bool result = Vector3::Dot(planeToSegV1, plane.GetNormal())* Vector3::Dot(planeToSegV2, plane.GetNormal()) <= 0;
+
+	if (segmentResult) 
+	{
+		//内分比を求め、衝突点を求める
+		float planeToSegV1Dis = abs(Vector3::Dot(plane.GetNormal(), segment.GetPosition().v1)) / plane.GetNormal().Length();
+		float planeToSegV2Dis = abs(Vector3::Dot(plane.GetNormal(), segment.GetPosition().v1)) / plane.GetNormal().Length();
+		float naibunhi = planeToSegV1Dis / (planeToSegV1Dis + planeToSegV2Dis);
+
+		segmentResult->planeHitPos = (1 - naibunhi) * segment.GetPosition().v1 + naibunhi * segment.GetPosition().v2;
+	}
+	return result;
+}
+
 bool Collision::BoardAndSegment3D
 (
 	const BoardData& board,
@@ -613,14 +632,15 @@ bool Collision::BoardAndSegment3D
 	//線分の両端と板ポリの距離を求める
 	//0で割るのを防止するためのif
 	float kyori1 = 0;
-	if (board.GetNormal().x != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().x);
+	/*if (board.GetNormal().x != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().x);
 	if (board.GetNormal().y != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().y);
-	if (board.GetNormal().z != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().z);
+	if (board.GetNormal().z != 0)kyori1 += abs(Vector3Dot(board.GetNormal(), vec1)) / abs(board.GetNormal().z);*/
+	kyori1 = abs(Vector3Dot(board.GetNormal(), vec1)) / board.GetNormal().Length();
 	float kyori2 = 0;
-	if (board.GetNormal().x != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().x);
+	/*if (board.GetNormal().x != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().x);
 	if (board.GetNormal().y != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().y);
-	if (board.GetNormal().z != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().z);
-
+	if (board.GetNormal().z != 0)kyori2 += abs(Vector3Dot(board.GetNormal(), vec2)) / abs(board.GetNormal().z);*/
+	kyori2 = abs(Vector3Dot(board.GetNormal(), vec2)) / board.GetNormal().Length();
 
 	//内分比
 	float a = kyori1 / (kyori1 + kyori2);

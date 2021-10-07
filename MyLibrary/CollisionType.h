@@ -11,6 +11,9 @@ namespace MelLib
 
 	//判定データに衝突確認関数持たせてもいい?
 
+	//CalcResultをDataに持たせなくてもいいかも
+	//Segment3Dなどのhit座標1つでいいかも
+
 	//衝突確認フラグ
 	struct CollisionDetectionFlag
 	{
@@ -255,20 +258,20 @@ namespace MelLib
 #pragma endregion
 
 #pragma region 平面
+	
 
 	//平面
 	class PlaneData
 	{
 	private:
+		Vector3 position;
 		Vector3 normal;
-		float distance = 0.0f;
-
 	public:
+		Vector3 GetPosition()const { return position; }
 		Vector3 GetNormal()const { return normal; }
-		float GetDistance()const { return distance; }
 
+		void SetPosition(const Vector3& pos) { position = pos; }
 		void SetNormal(const Vector3& normal) { this->normal = normal; }
-		void SetDistance(const float dis) { distance = dis; }
 	};
 #pragma endregion
 
@@ -329,10 +332,12 @@ namespace MelLib
 
 
 #pragma region 線分3D
+	
 	struct Segment3DCalcResult
 	{
 		Vector3 lineSegment3DHitPos;
 		Vector3 boardHitPos;
+		Vector3 planeHitPos;
 	};
 
 	//線分

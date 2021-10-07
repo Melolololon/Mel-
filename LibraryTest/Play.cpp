@@ -179,6 +179,12 @@ void Play::Update()
 	MelLib::GameObjectManager::GetInstance()->Update();
 
 
+	MelLib::PlaneData b;
+	b.SetNormal(MelLib::Vector3(0, 0, -1));
+	MelLib::Segment3DData s;
+	s.SetPosition(MelLib::Value2<MelLib::Vector3>(MelLib::Vector3(5, 0, -5), MelLib::Vector3(5, 0, 5)));
+	MelLib::Segment3DCalcResult r;
+	MelLib::Collision::PlaneAndSegment3D(b, s, &r);
 }
 
 void Play::Draw()

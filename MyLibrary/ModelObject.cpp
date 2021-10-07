@@ -612,7 +612,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 
 	// ïΩñ èÓïÒ
 	PlaneData planeData;
-	planeData.SetDistance(plane.GetDistance());
+	planeData.SetPosition(plane.GetPosition());
 	planeData.SetNormal(LibMath::RotateZXYVector3(plane.GetNormal(),
 		DirectX::XMFLOAT3(-modelConstDatas[0].angle.x, -modelConstDatas[0].angle.y, -modelConstDatas[0].angle.z)));
 
@@ -649,10 +649,10 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 
 	//îªíË
 	size_t sDatasSize = sDatas.size();
-	sDatas.resize(sDatasSize);
+	sDatasHit.resize(sDatasSize);
 	for (int i = 0; i < sDatasSize; i++)
 	{
-		//sDatas[i] = Collision::BoardAndSegment3D
+		//sDatasHit[i] = Collision::PlaneAndSegment3D(planeData, sDatas[i],);
 	}
 
 
