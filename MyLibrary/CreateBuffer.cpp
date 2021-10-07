@@ -382,8 +382,7 @@ void CreateBuffer::CreateIndexBuffer
 	auto indexNum = indices.size();
 	auto indexSize = sizeof(USHORT) * indexNum;
 
-	D3D12_RESOURCE_DESC resdesc = 
-		CD3DX12_RESOURCE_DESC::Buffer(indexSize);
+	D3D12_RESOURCE_DESC resdesc = CD3DX12_RESOURCE_DESC::Buffer(indexSize);
 
 	device->CreateCommittedResource(
 		&heapprop,
@@ -402,6 +401,7 @@ void CreateBuffer::CreateIndexBuffer
 	set.indexBufferView.BufferLocation = set.indexBuffer->GetGPUVirtualAddress();
 	set.indexBufferView.Format = DXGI_FORMAT_R16_UINT;
 	set.indexBufferView.SizeInBytes = indexSize;
+
 }
 
 void CreateBuffer::CreateConstBuffer

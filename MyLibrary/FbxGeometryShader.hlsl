@@ -16,8 +16,8 @@ void main
 
 	for (uint i = 0; i < 3; i++)
 	{
-		element.worldPos = input[i].worldPos;
-		element.svpos = input[i].svpos + float4(input[i].normal * ex, 0);
+		element.worldPos = mul(worldMat, input[i].worldPos);
+		element.svpos = mul(mat, input[i].svpos);
 		element.normal = input[i].normal;
 		element.uv = input[i].uv;
 		output.Append(element);

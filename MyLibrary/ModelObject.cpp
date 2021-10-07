@@ -722,81 +722,126 @@ void MelLib::ModelObject::MeshCat()
 
 #pragma endregion
 
-	//スケール
-	Vector3 scale = modelConstDatas[0].scale;
+#pragma region 2
 
-	//仮実装用の衝突点。中心をぶった切ることを仮定
-	std::vector<Vector3>hitPoints =
-	{
-		Vector3(0,0.5f,0) * scale,
-		Vector3(0,-0.5f,0) * scale
-	};
+	//立体だと多角形の分割じゃ無理かも
 
-	//衝突した辺
-	std::vector<Value2<Vector3>> hitLine =
-	{
-		Value2<Vector3>(Vector3(-0.5f, 0.5f, 0) * scale,Vector3(0.5f, 0.5f, 0) * scale),
-		Value2<Vector3>(Vector3(-0.5f, -0.5f,0) * scale,Vector3(0.5f, -0.5f,0) * scale)
-	};
+	////スケール
+	//Vector3 scale = modelConstDatas[0].scale;
 
-	//当たった辺の左右判定(辺を平面を基準に分ける)
-	std::vector<Value2<char>> hitLineResult =
-	{
-		Value2<char>
-		(LibMath::PointPlaneFrontBackCheck(hitLine[0].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[0].v2,plane)),
+	////仮実装用の衝突点。中心をぶった切ることを仮定
+	//std::vector<Vector3>hitPoints =
+	//{
+	//	Vector3(0,0.5f,0) * scale,
+	//	Vector3(0,-0.5f,0) * scale
+	//};
 
-		Value2<char>
-		(LibMath::PointPlaneFrontBackCheck(hitLine[1].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[1].v2,plane))
-	};
+	////衝突した辺
+	//std::vector<Value2<Vector3>> hitLine =
+	//{
+	//	Value2<Vector3>(Vector3(-0.5f, 0.5f, 0) * scale,Vector3(0.5f, 0.5f, 0) * scale),
+	//	Value2<Vector3>(Vector3(-0.5f, -0.5f,0) * scale,Vector3(0.5f, -0.5f,0) * scale)
+	//};
 
+	////当たった辺の左右判定(辺を平面を基準に分ける)
+	//std::vector<Value2<char>> hitLineResult =
+	//{
+	//	Value2<char>
+	//	(LibMath::PointPlaneFrontBackCheck(hitLine[0].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[0].v2,plane)),
 
-	//表裏で分ける
-	std::vector<Vector3>frontPos = hitPoints;
-	std::vector<Vector3>backPos = hitPoints;
-
-	if (hitLineResult[0].v1 == 1)frontPos.push_back(hitLine[0].v1);
-	else backPos.push_back(hitLine[0].v1);
-	if (hitLineResult[0].v2 == 1)frontPos.push_back(hitLine[0].v2);
-	else backPos.push_back(hitLine[0].v2);
-	if (hitLineResult[1].v1 == 1)frontPos.push_back(hitLine[1].v1);
-	else backPos.push_back(hitLine[1].v1);
-	if (hitLineResult[1].v2 == 1)frontPos.push_back(hitLine[1].v2);
-	else backPos.push_back(hitLine[1].v2);
+	//	Value2<char>
+	//	(LibMath::PointPlaneFrontBackCheck(hitLine[1].v1,plane),LibMath::PointPlaneFrontBackCheck(hitLine[1].v2,plane))
+	//};
 
 
-	//表の三角形形成
-	
-	frontPos = Vector3::Sort(frontPos, 0, SortType::ASCENDING);
-	
+	////表裏で分ける
+	//std::vector<Vector3>frontPos = hitPoints;
+	//std::vector<Vector3>backPos = hitPoints;
 
-	//仮
-	return;
+	//if (hitLineResult[0].v1 == 1)frontPos.push_back(hitLine[0].v1);
+	//else backPos.push_back(hitLine[0].v1);
+	//if (hitLineResult[0].v2 == 1)frontPos.push_back(hitLine[0].v2);
+	//else backPos.push_back(hitLine[0].v2);
+	//if (hitLineResult[1].v1 == 1)frontPos.push_back(hitLine[1].v1);
+	//else backPos.push_back(hitLine[1].v1);
+	//if (hitLineResult[1].v2 == 1)frontPos.push_back(hitLine[1].v2);
+	//else backPos.push_back(hitLine[1].v2);
 
-	//分割ループ
-	while (1) 
-	{
-		//原点から一番遠い座標
-		Vector3 farPos = frontPos[frontPos.size() - 1];
 
-		//一番遠い点に1、2番目に近い点(隣の点)を求める
-		Vector3 first = FLT_MAX, second = FLT_MAX;
-		float firstDis = FLT_MAX, secondDis = FLT_MAX;
-		for(int i = 0,size = frontPos.size();i < size;i++)
-		{
-			float calcDis = (frontPos[i] - farPos).Length();
-			if(first == FLT_MAX 
-				|| firstDis >= calcDis)
-			{
-				firstDis = calcDis;
-			}
-			else if(second == FLT_MAX
-				|| secondDis >= calcDis)
-			{
-				secondDis = calcDis;
-			}
-		}
+	////表の三角形形成
+	//
+	//frontPos = Vector3::Sort(frontPos, 0, SortType::ASCENDING);
+	//
 
-	}
+	////分割ループ
+	//while (1) 
+	//{
+	//	//原点から一番遠い座標
+	//	Vector3 farPos = frontPos[frontPos.size() - 1];
+
+	//	//条件を満たす三角形を形成
+	//	while (1) 
+	//	{
+	//		//一番遠い点に1、2番目に近い点(隣の点)を求める
+	//		Vector3 firstPos = FLT_MAX, secondPos = FLT_MAX;
+	//		float firstDis = FLT_MAX, secondDis = FLT_MAX;
+	//		for (int i = 0, size = frontPos.size(); i < size; i++)
+	//		{
+	//			//自分比較防止
+	//			if (farPos == frontPos[i])continue;
+
+	//			float calcDis = (frontPos[i] - farPos).Length();
+	//			if (firstPos == FLT_MAX
+	//				|| firstDis >= calcDis)
+	//			{
+	//				secondDis = firstDis;
+	//				firstDis = calcDis;
+
+	//				secondPos = firstPos;
+	//				firstPos = frontPos[i];
+
+	//			}
+	//			else if (secondPos == FLT_MAX
+	//				|| secondDis >= calcDis)
+	//			{
+	//				secondDis = calcDis;
+	//				secondPos = frontPos[i];
+	//			}
+	//		}
+
+
+	//		//三角形の表裏判定
+	//		//far,1,2
+
+
+	//	}
+
+	//}
+#pragma endregion
+
+
+//スケールだけではなく、回転と平行移動も考慮愛ないといけない
+//平行移動は問題ない。回転は、平面を回転させればいい
+
+//頂点に裏表の情報を持たせる?
+//シェーダーで分割する?
+
+//シェーダーで分割して、ストリーム出力で、インデックスも受け取れれば順序の問題は解決。
+//受け取れそうな気はするけど。そうしないと分割しても扱えないし
+
+
+//衝突点を求める
+//その位置を元に、シェーダーで点を生成。
+//ストリームで分割した頂点を出力
+//出力した頂点の表裏判定
+//2つのバッファに分ける
+
+//分割する三角形かどうか判別しないといけないため、
+//結局頂点に情報を追加しないといけない?
+//それとも、シェーダーで求められる?
+
+//ジオメトリシェーダーでやる処理をこちらで実装すれば楽に分割できる?
+
 	int z = 0;
 }
 

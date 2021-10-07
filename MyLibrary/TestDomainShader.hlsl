@@ -45,8 +45,11 @@ DS_OUTPUT main(
 	//	, 1);
 
 
-	Output.worldPos = mul(worldMat, p);
-	Output.svpos = mul(mat, p);
+	//Output.worldPos = mul(worldMat, p);
+	//Output.svpos = mul(mat, p);
+
+	Output.worldPos = p;
+	Output.svpos = p;
 	Output.uv = patch[0].uv * domain.x + patch[1].uv * domain.y + patch[2].uv * domain.z;
 
 	//ê‹ÇËã»Ç∞Ç»Ç¢Ç©ÇÁñ@ê¸ÇÕÇªÇÃÇ‹Ç‹

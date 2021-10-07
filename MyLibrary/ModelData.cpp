@@ -101,15 +101,41 @@ void MelLib::ModelData::CreatePrimitiveModel()
 		pModelData->material[0]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
 	};
 
+
+#pragma region TRIANGLE
+	pPrimitiveModelDatas.emplace(ShapeType3D::TRIANGLE, std::make_unique<ModelData>());
+	pModelData = pPrimitiveModelDatas[ShapeType3D::TRIANGLE].get();
+
+	vertices.resize(1);
+	vertices[0].resize(3);
+
+
+	vertices[0][0].pos = { -0.5f,-0.5f,0.0f };
+	vertices[0][0].uv = { 0.0f,1.0f };
+	vertices[0][0].normal = { 0.0f,0.0f,-1.0f };
+	vertices[0][1].pos = { 0.0f,0.5f ,0.0f };
+	vertices[0][1].uv = { 0.0f,0.0f };
+	vertices[0][1].normal = { 0.0f,0.0f,-1.0f };
+	vertices[0][2].pos = { 0.5f,-0.5f ,0.0f };
+	vertices[0][2].uv = { 1.0f,1.0f };
+	vertices[0][2].normal = { 0.0f,0.0f,-1.0f };
+
+
+	indices.resize(1);
+	indices[0] =
+	{
+		0,1,2,
+	};
+
+	setData();
+#pragma endregion
+
 #pragma region BOARD
 	pPrimitiveModelDatas.emplace(ShapeType3D::BOARD, std::make_unique<ModelData>());
 	pModelData = pPrimitiveModelDatas[ShapeType3D::BOARD].get();
 
-	
 	vertices.resize(1);
 	vertices[0].resize(4);
-
-
 
 
 	vertices[0][0].pos = { -0.5f,-0.5f,0.0f };

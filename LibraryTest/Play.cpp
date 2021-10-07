@@ -130,21 +130,23 @@ void Play::CollisionTestDraw()
 
 void Play::RTTestInitialize()
 {
-	MelLib::RenderTarget::Create(MelLib::Color(255, 0, 0, 255), "test");
-	MelLib::RenderTarget::Create(MelLib::Color(90, 90, 90, 255), "test2");
-	MelLib::RenderTarget::Get("test")->SetScale(300);
-	MelLib::RenderTarget::Get("test2")->SetScale(300);
-	MelLib::RenderTarget::Get("test2")->SetPosition(600);
-	rtTestObject.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
+	rtTestObject.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::TRIANGLE), nullptr);
 }
 
 void Play::RTTestUpdate()
-{
+{	//std::vector<MelLib::RenderTarget::RenderTargetDrawData>data(2);
+	//data[0].rt = MelLib::RenderTarget::Get("test");
+	//data[0].renderingRT = MelLib::RenderTarget::Get();
+
+	//data[1].rt = MelLib::RenderTarget::Get("test2");
+	//data[1].renderingRT = MelLib::RenderTarget::Get();
+
+	//MelLib::RenderTarget::SetRenderingRenderDrawData(data);
 }
 
 void Play::RTTestDraw()
 {
-	rtTestObject.Draw("test");
+	rtTestObject.Draw();
 	rtTestObject.MeshCat();
 }
 
@@ -166,14 +168,7 @@ void Play::Update()
 	RTTestUpdate();
 	MelLib::GameObjectManager::GetInstance()->Update();
 
-	std::vector<MelLib::RenderTarget::RenderTargetDrawData>data(2);
-	data[0].rt = MelLib::RenderTarget::Get("test");
-	data[0].renderingRT = MelLib::RenderTarget::Get();
 
-	data[1].rt = MelLib::RenderTarget::Get("test2");
-	data[1].renderingRT = MelLib::RenderTarget::Get();
-
-	MelLib::RenderTarget::SetRenderingRenderDrawData(data);
 }
 
 void Play::Draw()

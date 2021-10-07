@@ -44,6 +44,7 @@ namespace MelLib
 		SPHERE,
 		BOX,
 		PLANE,
+		TRIANGLE,
 		BOARD,
 		SEGMENT,
 		RAY,
