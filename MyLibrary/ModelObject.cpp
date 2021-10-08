@@ -705,36 +705,132 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 	std::vector<USHORT>backInd;
 
 	//OŠpŒ`‚ğŒ©‚Ä‚¢‚Á‚ÄAŠi”[‚µ‚Ä‚¢‚­
+	USHORT index = 0;
 	for (const auto& tri : modelTri)
 	{
-		//•\— ‚²‚Æ‚ÉŠi”[
-		if (tri.vertFB.v1 == 1)frontVert.push_back(tri.vertData.v1);
-		else backVert.push_back(tri.vertData.v1);
-		if (tri.vertFB.v2 == 1)frontVert.push_back(tri.vertData.v2);
-		else backVert.push_back(tri.vertData.v2);
-		if (tri.vertFB.v3 == 1)frontVert.push_back(tri.vertData.v3);
-		else backVert.push_back(tri.vertData.v3);
+		//ˆê“I‚ÉŠi”[‚·‚é‚½‚ß‚Ì”z—ñ
+		std::vector<FbxVertex>fVert;
+		std::vector<FbxVertex>bVert;
 
 		//•½–Ê‚Æ•Ó‚ª“–‚½‚Á‚Ä‚¢‚½‚çÕ“Ë“_‚ğŠi”[
 		if (tri.hitResult.v1)
 		{
 			frontVert.push_back(tri.hitPosVert.v1);
+			fVert.push_back(tri.hitPosVert.v1);
+
 			backVert.push_back(tri.hitPosVert.v1);
+			bVert.push_back(tri.hitPosVert.v1);
 		}
 		if (tri.hitResult.v2)
 		{
 			frontVert.push_back(tri.hitPosVert.v2);
+			fVert.push_back(tri.hitPosVert.v2);
 			backVert.push_back(tri.hitPosVert.v2);
+			bVert.push_back(tri.hitPosVert.v2);
 		}
 		if (tri.hitResult.v3)
 		{
 			frontVert.push_back(tri.hitPosVert.v3);
+			fVert.push_back(tri.hitPosVert.v3);
 			backVert.push_back(tri.hitPosVert.v3);
+			bVert.push_back(tri.hitPosVert.v3);
 		}
+
+
+		//•Ğ•û‚É•Î‚Á‚Ä‚½‚ç(a‚ç‚ê‚Ä‚È‚©‚Á‚½‚ç)ƒCƒ“ƒfƒbƒNƒX‚ğ’Êí’Ê‚èŠi”[‚µ‚ÄŸ‚Ö
+		if (!tri.hitResult.v1 && !tri.hitResult.v2 && !tri.hitResult.v3)
+		{
+			if (tri.vertFB.v1 == 1)
+			{
+				frontVert.push_back(tri.vertData.v1);
+				frontVert.push_back(tri.vertData.v2);
+				frontVert.push_back(tri.vertData.v3);
+
+				frontInd.push_back(index);
+				frontInd.push_back(index + 1);
+				frontInd.push_back(index + 2);
+			}
+			else
+			{
+				backVert.push_back(tri.vertData.v1);
+				backVert.push_back(tri.vertData.v2);
+				backVert.push_back(tri.vertData.v3);
+
+				backInd.push_back(index);
+				backInd.push_back(index + 1);
+				backInd.push_back(index + 2);
+			}
+			index += 3;
+			continue;
+		}
+
+
+		//•Î‚Á‚Ä‚È‚©‚Á‚½‚çA•\— ‚²‚Æ‚ÉŠi”[
+		if (tri.vertFB.v1 == 1)
+		{
+			frontVert.push_back(tri.vertData.v1);
+			fVert.push_back(tri.vertData.v1);
+		}
+		else
+		{
+			backVert.push_back(tri.vertData.v1);
+			bVert.push_back(tri.vertData.v1);
+		}
+		if (tri.vertFB.v2 == 1)
+		{
+			frontVert.push_back(tri.vertData.v2);
+			fVert.push_back(tri.vertData.v2);
+		}
+		else
+		{
+			backVert.push_back(tri.vertData.v2);
+			bVert.push_back(tri.vertData.v2);
+		}
+		if (tri.vertFB.v3 == 1)
+		{
+			frontVert.push_back(tri.vertData.v3);
+			fVert.push_back(tri.vertData.v3);
+		}
+		else
+		{
+			backVert.push_back(tri.vertData.v3);
+			bVert.push_back(tri.vertData.v3);
+		}
+		
+
+		//n‘½ŠpŒ`‚ÌOŠpŒ`•ªŠ„‚ğ—˜—p‚µ‚ÄŒvZ
+		//•\
+
+		//Œ´“_‚©‚çˆê”Ô‰“‚¢’¸“_
+		FbxVertex farVertex;
+
+		//ˆê”Ô‰“‚¢’¸“_‚ÌÀ•W
+		float farVertDis = 0.0f;
+
+		//farVertex‚Ì“Y‚¦š
+		int farVertIndex = 0;
+
+		//while (1) 
+		{
+			//ˆê”Ô‰“‚¢’¸“_‚ğ‹‚ß‚é
+			for (int i = 0, size = fVert.size(); i < size; i++)
+			{
+				float dis = Vector3(fVert[i].pos).Length();
+				if(farVertDis <= dis)
+				{
+					farVertex = fVert[i];
+					farVertDis = dis;
+					farVertIndex = i;
+				}
+			}
+
+
+		}
+
 	}
 
 
-	int s= 0;
+	int s = 0;
 
 	//// ‘S’¸“_‚Ì•\— ”»’è
 	//std::vector<std::vector<Vector3>> vertices = pModelData->GetVerticesPosition();

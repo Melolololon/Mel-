@@ -93,6 +93,7 @@ namespace MelLib
 		bool operator==(const Value4<V>& value)const { return v1 == value.v1 && v2 == value.v2 && v3 == value.v3 && v4 == value.v4; }
 		bool operator!=(const Value4<V>& value)const { return v1 != value.v1 || v2 != value.v2 || v3 != value.v3 || v4 != value.v4; }
 
+		
 		void operator=(const Value4<V> value)
 		{
 			v1 = value.v1;
@@ -101,5 +102,8 @@ namespace MelLib
 			v4 = value.v4;
 		}
 	};
+
+	template<class V>
+	
 
 }
