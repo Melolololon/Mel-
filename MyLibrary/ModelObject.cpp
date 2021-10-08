@@ -609,58 +609,139 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 	//ジオメトリシェーダーでやる処理をこちらで実装すれば楽に分割できる?
 
 
+	//先に三角形ごとに分けて処理したほうがやりやすいかも
+	//タプルに、インデックスを参考にValue3で頂点、インデックスの添え字(インデックス書き換え時にアクセスする用)
 
-	// 平面情報
-	PlaneData planeData;
-	planeData.SetPosition(plane.GetPosition());
-	planeData.SetNormal(LibMath::RotateZXYVector3(plane.GetNormal(),
+
+	// 平面情報(回転適応のため、作り直し)
+	PlaneData rotPlane;
+	rotPlane.SetPosition(plane.GetPosition());
+	rotPlane.SetNormal(LibMath::RotateZXYVector3(plane.GetNormal(),
 		DirectX::XMFLOAT3(-modelConstDatas[0].angle.x, -modelConstDatas[0].angle.y, -modelConstDatas[0].angle.z)));
 
-	// 全頂点の表裏判定
-	std::vector<std::vector<Vector3>> vertices = pModelData->GetVerticesPosition();
-	size_t size = vertices[0].size();
-	std::vector<char>verticesFB(size);
-	
-	for (int i = 0; i < size; i++)
+	//モデルの頂点を三角形ごとにまとめたもの
+	struct ModelTri
 	{
-		verticesFB[i] = LibMath::PointPlaneFrontBackCheck(vertices[0][i] * modelConstDatas[0].scale + modelConstDatas[0].position,planeData);
-	}
+		//頂点
+		Value3<Vector3> vertPos;
+		
+		//表裏判定結果
+		Value3<char>vertFB;
 
-	//全辺を計算
-	std::vector<Segment3DData>sDatas;
-	std::vector<bool>sDatasHit;
-	//大体確保
-	sDatas.reserve(size / 2);
+		//三角形の辺の情報
+		Value3<Segment3DData>segmentData;
 
+		//平面との衝突判定
+		Value3<bool>hitResult;
+
+		//リザルト(衝突地点格納用)
+		Value3<Segment3DCalcResult>calcResult;
+
+		//インデックスの配列のインデックス
+		Value3<int> indicesIndex = 0;
+	};
+
+
+	std::vector<std::vector<Vector3>>vertPos = pModelData->GetVerticesPosition();
 	std::vector<std::vector<USHORT>>indices = pModelData->GetIndices();
-	size_t iSize = indices.size();
-	for(int i = 0; i < iSize;i+= 3)
+
+	std::vector<ModelTri>modelTri(indices[0].size() / 3);
+	
+	//三角形ごとにデータ格納
+	for (int i = 0, size = indices[0].size(); i < size; i += 3)
 	{
-		Segment3DData sData;
-		sData.SetPosition(Value2<Vector3>(vertices[0][indices[0][i]], vertices[0][indices[0][i + 1]]));
-		sDatas.push_back(sData);
+		int triIndex = 0;
+		if (i == 0)triIndex = 0;
+		else triIndex = i / 3;
 
-		sData.SetPosition(Value2<Vector3>(vertices[0][indices[0][i + 1]], vertices[0][indices[0][i + 2]]));
-		sDatas.push_back(sData);
+		//頂点座標
+		modelTri[triIndex].vertPos.v1 = vertPos[0][indices[0][i]];
+		modelTri[triIndex].vertPos.v2 = vertPos[0][indices[0][i + 1]];
+		modelTri[triIndex].vertPos.v3 = vertPos[0][indices[0][i + 2]];
 
-		sData.SetPosition(Value2<Vector3>(vertices[0][indices[0][i + 2]], vertices[0][indices[0][i]]));
-		sDatas.push_back(sData);
+		//辺情報
+		modelTri[triIndex].segmentData.v1.SetPosition
+		(Value2<Vector3>(modelTri[triIndex].vertPos.v1, modelTri[triIndex].vertPos.v2));
+		modelTri[triIndex].segmentData.v1.SetPosition
+		(Value2<Vector3>(modelTri[triIndex].vertPos.v2, modelTri[triIndex].vertPos.v3));
+		modelTri[triIndex].segmentData.v1.SetPosition
+		(Value2<Vector3>(modelTri[triIndex].vertPos.v3, modelTri[triIndex].vertPos.v1));
+
+		//インデックスの配列のインデックス
+		modelTri[triIndex].indicesIndex.v1 = i;
+		modelTri[triIndex].indicesIndex.v1 = i + 1;
+		modelTri[triIndex].indicesIndex.v1 = i + 2;
+
+		//裏表判定結果
+		modelTri[triIndex].vertFB.v1 = LibMath::PointPlaneFrontBackCheck(modelTri[triIndex].vertPos.v1, rotPlane);
+		modelTri[triIndex].vertFB.v2 = LibMath::PointPlaneFrontBackCheck(modelTri[triIndex].vertPos.v2, rotPlane);
+		modelTri[triIndex].vertFB.v3 = LibMath::PointPlaneFrontBackCheck(modelTri[triIndex].vertPos.v3, rotPlane);
+
+		//辺の衝突確認、衝突点取得
+		modelTri[triIndex].hitResult.v1 
+			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v1, &modelTri[triIndex].calcResult.v1);
+		modelTri[triIndex].hitResult.v2
+			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v2, &modelTri[triIndex].calcResult.v2);
+		modelTri[triIndex].hitResult.v3
+			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v3, &modelTri[triIndex].calcResult.v3);
+
 	}
 
-	//判定
-	size_t sDatasSize = sDatas.size();
-	sDatasHit.resize(sDatasSize);
-	for (int i = 0; i < sDatasSize; i++)
-	{
-		//sDatasHit[i] = Collision::PlaneAndSegment3D(planeData, sDatas[i],);
-	}
+
+
+
+
+	int s= 0;
+
+	//// 全頂点の表裏判定
+	//std::vector<std::vector<Vector3>> vertices = pModelData->GetVerticesPosition();
+	//size_t size = vertices[0].size();
+	//std::vector<char>verticesFB(size);
+	//
+	//for (int i = 0; i < size; i++)
+	//{
+	//	verticesFB[i] = LibMath::PointPlaneFrontBackCheck(vertices[0][i] * modelConstDatas[0].scale + modelConstDatas[0].position,planeData);
+	//}
+
+	////全辺を計算
+	//std::vector<Segment3DData>sDatas;
+	//std::vector<bool>sDatasHit;
+	//std::vector<Vector3>sDatasHitPos;
+	////大体確保
+	//sDatas.reserve(size / 2);
+
+	//std::vector<std::vector<USHORT>>indices = pModelData->GetIndices();
+	//size_t iSize = indices.size();
+	//for(int i = 0; i < iSize;i+= 3)
+	//{
+	//	Segment3DData sData;
+	//	sData.SetPosition(Value2<Vector3>(vertices[0][indices[0][i]], vertices[0][indices[0][i + 1]]));
+	//	sDatas.push_back(sData);
+
+	//	sData.SetPosition(Value2<Vector3>(vertices[0][indices[0][i + 1]], vertices[0][indices[0][i + 2]]));
+	//	sDatas.push_back(sData);
+
+	//	sData.SetPosition(Value2<Vector3>(vertices[0][indices[0][i + 2]], vertices[0][indices[0][i]]));
+	//	sDatas.push_back(sData);
+	//}
+
+	////判定
+	//size_t sDatasSize = sDatas.size();
+	//sDatasHit.resize(sDatasSize);
+	//sDatasHitPos.resize(sDatasSize, FLT_MAX);
+	//for (int i = 0; i < sDatasSize; i++)
+	//{
+	//	Segment3DCalcResult result;
+	//	sDatasHit[i] = Collision::PlaneAndSegment3D(planeData, sDatas[i], &result);
+	//	sDatasHitPos[i] = result.planeHitPos;
+	//}
 
 
 	//やっぱn多角形の三角形分割形成で行ける
 	//面ごとにちゃんと指定すれば
 	
 
-	int z = 0;
+	//int z = 0;
 }
 
 void ModelObject::SetPosition(const Vector3& position)
