@@ -43,9 +43,6 @@
     <Filter Include="ヘッダー ファイル\Input">
       <UniqueIdentifier>{7639be86-2546-4a6a-9573-a7fd63bc5827}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Input">
-      <UniqueIdentifier>{70949721-ab70-469a-a147-b415eb763808}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Model">
       <UniqueIdentifier>{917291d3-5a22-46c3-9404-b78e4cb60f21}</UniqueIdentifier>
     </Filter>
@@ -93,6 +90,9 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\ImGui">
       <UniqueIdentifier>{573bb0e6-3319-4fb8-b295-3d57ef1e5e5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Input">
+      <UniqueIdentifier>{70949721-ab70-469a-a147-b415eb763808}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

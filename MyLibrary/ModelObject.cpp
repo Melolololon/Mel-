@@ -128,14 +128,14 @@ void ModelObject::CreateConstBuffer()
 
 		ModelConstBufferData* constBufferData;
 		constBuffer[i]->Map(0, nullptr, (void**)&constBufferData);
-		
+
 		//ライト
 		for (int j = 0, size = DirectionalLight::LIGTH_MAX; j < size; j++)
 		{
 			constBufferData->light[j] = DirectX::XMFLOAT4(0, 0, 0, 0);
 			constBufferData->lightColor[j] = DirectX::XMFLOAT4(0, 0, 0, 0);
 		}
-		
+
 		constBuffer[i]->Unmap(0, nullptr);
 #pragma endregion
 	}
@@ -165,7 +165,7 @@ void ModelObject::MapConstData(const Camera* camera)
 		constBufferData->ex = modelConstDatas[i].pushPolygonNum;
 
 		std::vector<DirectionalLight*> pLights = DirectionalLight::GetAll();
-		for (int i = 0, size = pLights.size(); i < size; i++) 
+		for (int i = 0, size = pLights.size(); i < size; i++)
 		{
 			Vector3 lightDir = pLights[i]->GetDirection();
 			constBufferData->light[i] = DirectX::XMFLOAT4(lightDir.x, lightDir.y, lightDir.z, 0);
@@ -550,7 +550,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 	//やること
 	//1.当たった辺だけじゃなく、全頂点に対して表裏判定を行う。
 	//(反対側の頂点をすべて消さないといけないため)
-	
+
 	//2.断面に使用する衝突点と入れ替える頂点かどうかの判断。
 	//使うか使わないかだけわかればいい。
 	//やり方は、ポートフォリオに書いてある
@@ -612,6 +612,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 	//先に三角形ごとに分けて処理したほうがやりやすいかも
 	//タプルに、インデックスを参考にValue3で頂点、インデックスの添え字(インデックス書き換え時にアクセスする用)
 
+	//三角形内部に頂点があるかないかの確認実装しといてね
 
 	// 平面情報(回転適応のため、作り直し)
 	PlaneData rotPlane;
@@ -624,7 +625,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 	{
 		//頂点
 		Value3<FbxVertex> vertData;
-		
+
 		//表裏判定結果
 		Value3<char>vertFB;
 
@@ -646,7 +647,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 	std::vector<std::vector<USHORT>>indices = pModelData->GetIndices();
 
 	std::vector<ModelTri>modelTri(indices[0].size() / 3);
-	
+
 	//三角形ごとにデータ格納
 	for (int i = 0, size = indices[0].size(); i < size; i += 3)
 	{
@@ -679,7 +680,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 
 		//辺の衝突確認、衝突点取得
 		Segment3DCalcResult res;
-		modelTri[triIndex].hitResult.v1 
+		modelTri[triIndex].hitResult.v1
 			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v1, &res);
 		modelTri[triIndex].hitPosVert.v1.pos = res.planeHitPos.ToXMFLOAT3();
 		modelTri[triIndex].hitPosVert.v1.normal = modelTri[triIndex].vertData.v1.normal;
@@ -690,7 +691,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		modelTri[triIndex].hitPosVert.v2.pos = res.planeHitPos.ToXMFLOAT3();
 		modelTri[triIndex].hitPosVert.v2.normal = modelTri[triIndex].vertData.v2.normal;
 		//modelTri[triIndex].hitPosVert.v2.uv = modelTri[triIndex].vertData.v2.normal;
-		
+
 		modelTri[triIndex].hitResult.v3
 			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v3, &res);
 		modelTri[triIndex].hitPosVert.v3.pos = res.planeHitPos.ToXMFLOAT3();
@@ -699,42 +700,21 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 	}
 
 	//表と裏で分ける
-	std::vector<FbxVertex>frontVert;
-	std::vector<FbxVertex>backVert;
-	std::vector<USHORT>frontInd;
-	std::vector<USHORT>backInd;
+	std::vector<FbxVertex>frontVertices;
+	std::vector<FbxVertex>backVertices;
+	std::vector<USHORT>frontIndices;
+	std::vector<USHORT>backIndices;
 
 	//三角形を見ていって、格納していく
-	USHORT index = 0;
+	USHORT frontIndex = 0;
+	USHORT backIndex = 0;
 	for (const auto& tri : modelTri)
 	{
 		//一時的に格納するための配列
 		std::vector<FbxVertex>fVert;
 		std::vector<FbxVertex>bVert;
 
-		//平面と辺が当たっていたら衝突点を格納
-		if (tri.hitResult.v1)
-		{
-			frontVert.push_back(tri.hitPosVert.v1);
-			fVert.push_back(tri.hitPosVert.v1);
 
-			backVert.push_back(tri.hitPosVert.v1);
-			bVert.push_back(tri.hitPosVert.v1);
-		}
-		if (tri.hitResult.v2)
-		{
-			frontVert.push_back(tri.hitPosVert.v2);
-			fVert.push_back(tri.hitPosVert.v2);
-			backVert.push_back(tri.hitPosVert.v2);
-			bVert.push_back(tri.hitPosVert.v2);
-		}
-		if (tri.hitResult.v3)
-		{
-			frontVert.push_back(tri.hitPosVert.v3);
-			fVert.push_back(tri.hitPosVert.v3);
-			backVert.push_back(tri.hitPosVert.v3);
-			bVert.push_back(tri.hitPosVert.v3);
-		}
 
 
 		//片方に偏ってたら(斬られてなかったら)インデックスを通常通り格納して次へ
@@ -742,61 +722,127 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		{
 			if (tri.vertFB.v1 == 1)
 			{
-				frontVert.push_back(tri.vertData.v1);
-				frontVert.push_back(tri.vertData.v2);
-				frontVert.push_back(tri.vertData.v3);
+				frontVertices.push_back(tri.vertData.v1);
+				frontVertices.push_back(tri.vertData.v2);
+				frontVertices.push_back(tri.vertData.v3);
 
-				frontInd.push_back(index);
-				frontInd.push_back(index + 1);
-				frontInd.push_back(index + 2);
+				frontIndices.push_back(frontIndex);
+				frontIndices.push_back(frontIndex + 1);
+				frontIndices.push_back(frontIndex + 2);
+
+				frontIndex += 3;
 			}
 			else
 			{
-				backVert.push_back(tri.vertData.v1);
-				backVert.push_back(tri.vertData.v2);
-				backVert.push_back(tri.vertData.v3);
+				backVertices.push_back(tri.vertData.v1);
+				backVertices.push_back(tri.vertData.v2);
+				backVertices.push_back(tri.vertData.v3);
 
-				backInd.push_back(index);
-				backInd.push_back(index + 1);
-				backInd.push_back(index + 2);
+				backIndices.push_back(backIndex);
+				backIndices.push_back(backIndex + 1);
+				backIndices.push_back(backIndex + 2);
+
+				backIndex += 3;
 			}
-			index += 3;
 			continue;
 		}
 
 
 		//偏ってなかったら、表裏ごとに格納
+		
+		//頂点のインデックス(frontInd、backIndに格納する値)
+		std::vector<USHORT>fVertInd;
+		std::vector<USHORT>bVertInd;
+
+		//平面と辺が当たっていたら衝突点を格納
+		if (tri.hitResult.v1)
+		{
+			frontVertices.push_back(tri.hitPosVert.v1);
+			fVert.push_back(tri.hitPosVert.v1);
+			fVertInd.push_back(frontIndex);
+			frontIndex++;
+
+			backVertices.push_back(tri.hitPosVert.v1);
+			bVert.push_back(tri.hitPosVert.v1);
+			bVertInd.push_back(backIndex);
+			backIndex++;
+
+		}
+		if (tri.hitResult.v2)
+		{
+			frontVertices.push_back(tri.hitPosVert.v2);
+			fVert.push_back(tri.hitPosVert.v2);
+			fVertInd.push_back(frontIndex);
+			frontIndex++;
+
+			backVertices.push_back(tri.hitPosVert.v2);
+			bVert.push_back(tri.hitPosVert.v2);
+			bVertInd.push_back(backIndex);
+			backIndex++;
+		}
+		if (tri.hitResult.v3)
+		{
+			frontVertices.push_back(tri.hitPosVert.v3);
+			fVert.push_back(tri.hitPosVert.v3);
+			fVertInd.push_back(frontIndex);
+			frontIndex++;
+
+			backVertices.push_back(tri.hitPosVert.v3);
+			bVert.push_back(tri.hitPosVert.v3);
+			bVertInd.push_back(backIndex);
+			backIndex++;
+		}
+
+
 		if (tri.vertFB.v1 == 1)
 		{
-			frontVert.push_back(tri.vertData.v1);
+			frontVertices.push_back(tri.vertData.v1);
 			fVert.push_back(tri.vertData.v1);
+
+			fVertInd.push_back(frontIndex);
+			frontIndex++;
 		}
 		else
 		{
-			backVert.push_back(tri.vertData.v1);
+			backVertices.push_back(tri.vertData.v1);
 			bVert.push_back(tri.vertData.v1);
+
+			bVertInd.push_back(backIndex);
+			backIndex++;
 		}
 		if (tri.vertFB.v2 == 1)
 		{
-			frontVert.push_back(tri.vertData.v2);
+			frontVertices.push_back(tri.vertData.v2);
 			fVert.push_back(tri.vertData.v2);
+
+			fVertInd.push_back(frontIndex);
+			frontIndex++;
 		}
 		else
 		{
-			backVert.push_back(tri.vertData.v2);
+			backVertices.push_back(tri.vertData.v2);
 			bVert.push_back(tri.vertData.v2);
+
+			bVertInd.push_back(backIndex);
+			backIndex++;
 		}
 		if (tri.vertFB.v3 == 1)
 		{
-			frontVert.push_back(tri.vertData.v3);
-			fVert.push_back(tri.vertData.v3);
+			frontVertices.push_back(tri.vertData.v3);
+			fVert.push_back(tri.vertData.v3); 
+			
+			fVertInd.push_back(frontIndex);
+			frontIndex++;
 		}
 		else
 		{
-			backVert.push_back(tri.vertData.v3);
+			backVertices.push_back(tri.vertData.v3);
 			bVert.push_back(tri.vertData.v3);
+
+			bVertInd.push_back(backIndex);
+			backIndex++;
 		}
-		
+
 
 		//n多角形の三角形分割を利用して計算
 		//表
@@ -807,16 +853,28 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		//一番遠い頂点の座標
 		float farVertDis = 0.0f;
 
-		//farVertexの添え字
+		//farVertexの添え字(形成後の削除用)
 		int farVertIndex = 0;
 
-		//while (1) 
+		//ferから1、2番目に近い頂点を求める為のデータ格納用変数
+		float farFirDir = FLT_MAX;
+		FbxVertex farFirVertex;
+		int farFirVertIndex = 0;
+
+		float farSecDir = FLT_MAX;
+		FbxVertex farSecVertex;
+		int farSecVertIndex = 0;
+
+		//表
+		while (1)
 		{
+			//三角形内部に頂点があるかないかの確認実装しといてね
+
 			//一番遠い頂点を求める
 			for (int i = 0, size = fVert.size(); i < size; i++)
 			{
 				float dis = Vector3(fVert[i].pos).Length();
-				if(farVertDis <= dis)
+				if (farVertDis <= dis)
 				{
 					farVertex = fVert[i];
 					farVertDis = dis;
@@ -824,8 +882,63 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 				}
 			}
 
+			//farから1、2番目に近い頂点(隣の頂点)を求める
+			for (int i = 0, size = fVert.size(); i < size; i++)
+			{
+				//自分比較防止
+				if (i == farVertIndex)continue;
 
+				float dis = Vector3(farVertex.pos - fVert[i].pos).Length();
+				if (farFirDir >= dis)
+				{
+					farSecVertex = farFirVertex;
+					farSecDir = farFirDir;
+					farSecVertIndex = farFirVertIndex;
+
+					farFirVertex = fVert[i];
+					farFirDir = dis;
+					farFirVertIndex = i;
+				}
+				else if (farSecDir >= dis)
+				{
+					farSecVertex = fVert[i];
+					farSecDir = dis;
+					farSecVertIndex = i;
+				}
+			}
+
+
+			//三角形を形成
+
+			//求めた外積と、面の外積が一致したら計算終了
+			//三角形の外積
+			Vector3 cross;
+
+			//far,1,2
+			cross = LibMath::CalcNormal(farVertex.pos, farFirVertex.pos, farSecVertex.pos);
+			if(Vector3(farVertex.normal) == cross)
+			{
+				frontIndices.push_back(fVertInd[farVertIndex]);
+				frontIndices.push_back(fVertInd[farFirVertIndex]);
+				frontIndices.push_back(fVertInd[farSecVertIndex]);
+			}
+			else//法線が逆だったら、逆にして格納 2,1,far
+			{
+				frontIndices.push_back(fVertInd[farSecVertIndex]);
+				frontIndices.push_back(fVertInd[farFirVertIndex]);
+				frontIndices.push_back(fVertInd[farVertIndex]);
+			}
+
+			//原点から一番遠い点を削除
+			fVert.erase(fVert.begin() + farVertIndex);
+
+			//形成不可になったら終了
+			if (fVert.size() == 2)break;
+			
 		}
+
+
+
 
 	}
 
@@ -878,7 +991,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 
 	//やっぱn多角形の三角形分割形成で行ける
 	//面ごとにちゃんと指定すれば
-	
+
 
 	//int z = 0;
 }
@@ -996,12 +1109,12 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 	PipelineState::SetModelRootSignature(rootSignature.Get());
 
 
-	
+
 
 }
 
 void MelLib::ModelObject::SetMaterial(Material* mtl, const UINT index)
-{ 
+{
 	if (!mtl)
 	{
 #ifdef _DEBUG
@@ -1009,7 +1122,7 @@ void MelLib::ModelObject::SetMaterial(Material* mtl, const UINT index)
 #endif // _DEBUG
 		return;
 	}
-	if(index >= materials.size())
+	if (index >= materials.size())
 	{
 #ifdef _DEBUG
 		OutputDebugString(L"マテリアルのセットに失敗しました。indexの値が大きくてセットできません。\n");
@@ -1024,10 +1137,10 @@ void MelLib::ModelObject::SetMaterial(Material* mtl, const UINT index)
 
 bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name)
 {
-	if(!pModelData)
+	if (!pModelData)
 	{
 #ifdef _DEBUG
-		
+
 		OutputDebugStringA(name.data());
 		OutputDebugStringW(L"の生成に失敗しました。\n");
 #endif // _DEBUG
@@ -1035,7 +1148,7 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	}
 
 	pModelObjects.emplace(name, std::make_unique<ModelObject>(pModelData, userConstBufferData));
-	
+
 
 	return true;
 }
@@ -1068,10 +1181,10 @@ void ModelObject::FbxAnimation()
 	//タイムを進める
 	fbxAnimationData.currentTime += fbxAnimationData.animationTimes.freamTime * fbxAnimationData.timeMag;
 
-	if (fbxAnimationData.currentTime  > fbxAnimationData.animationTimes.endTime)
-		fbxAnimationData.currentTime  = fbxAnimationData.animationTimes.startTime;
-	if (fbxAnimationData.currentTime  < fbxAnimationData.animationTimes.startTime)
-		fbxAnimationData.currentTime  = fbxAnimationData.animationTimes.endTime;
+	if (fbxAnimationData.currentTime > fbxAnimationData.animationTimes.endTime)
+		fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
+	if (fbxAnimationData.currentTime < fbxAnimationData.animationTimes.startTime)
+		fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime;
 }
 
 bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData)
@@ -1104,15 +1217,15 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 #pragma endregion
 
 	CreateConstBuffer();
-	
+
 	modelConstDatas.resize(modelFileObjectNum);
-	
+
 
 	//マテリアル取得
 	std::vector<ADSAMaterial*>modelDataMtl = pModelData->GetPMaterial();
 	size_t size = modelDataMtl.size();
 	materials.resize(size);
-	for (int i = 0 ; i < size; i++) 
+	for (int i = 0; i < size; i++)
 	{
 		materials[i] = modelDataMtl[i];
 	}
@@ -1133,7 +1246,7 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	fbxAnimationData.animationTimes = pModelData->GetFbxAnimationTimes();
 #pragma endregion
 
-	
+
 
 	return true;
 }
