@@ -623,7 +623,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 	struct ModelTri
 	{
 		//頂点
-		Value3<Vector3> vertPos;
+		Value3<FbxVertex> vertData;
 		
 		//表裏判定結果
 		Value3<char>vertFB;
@@ -634,15 +634,15 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		//平面との衝突判定
 		Value3<bool>hitResult;
 
-		//リザルト(衝突地点格納用)
-		Value3<Segment3DCalcResult>calcResult;
+		//衝突点の頂点情報
+		Value3<FbxVertex>hitPosVert;
 
 		//インデックスの配列のインデックス
 		Value3<int> indicesIndex = 0;
 	};
 
 
-	std::vector<std::vector<Vector3>>vertPos = pModelData->GetVerticesPosition();
+	std::vector<std::vector<FbxVertex>>vertPos = pModelData->GetVertices();
 	std::vector<std::vector<USHORT>>indices = pModelData->GetIndices();
 
 	std::vector<ModelTri>modelTri(indices[0].size() / 3);
@@ -654,41 +654,84 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		if (i == 0)triIndex = 0;
 		else triIndex = i / 3;
 
-		//頂点座標
-		modelTri[triIndex].vertPos.v1 = vertPos[0][indices[0][i]];
-		modelTri[triIndex].vertPos.v2 = vertPos[0][indices[0][i + 1]];
-		modelTri[triIndex].vertPos.v3 = vertPos[0][indices[0][i + 2]];
+		//頂点情報
+		modelTri[triIndex].vertData.v1 = vertPos[0][indices[0][i]];
+		modelTri[triIndex].vertData.v2 = vertPos[0][indices[0][i + 1]];
+		modelTri[triIndex].vertData.v3 = vertPos[0][indices[0][i + 2]];
 
 		//辺情報
 		modelTri[triIndex].segmentData.v1.SetPosition
-		(Value2<Vector3>(modelTri[triIndex].vertPos.v1, modelTri[triIndex].vertPos.v2));
-		modelTri[triIndex].segmentData.v1.SetPosition
-		(Value2<Vector3>(modelTri[triIndex].vertPos.v2, modelTri[triIndex].vertPos.v3));
-		modelTri[triIndex].segmentData.v1.SetPosition
-		(Value2<Vector3>(modelTri[triIndex].vertPos.v3, modelTri[triIndex].vertPos.v1));
+		(Value2<Vector3>(modelTri[triIndex].vertData.v1.pos, modelTri[triIndex].vertData.v2.pos));
+		modelTri[triIndex].segmentData.v2.SetPosition
+		(Value2<Vector3>(modelTri[triIndex].vertData.v2.pos, modelTri[triIndex].vertData.v3.pos));
+		modelTri[triIndex].segmentData.v3.SetPosition
+		(Value2<Vector3>(modelTri[triIndex].vertData.v3.pos, modelTri[triIndex].vertData.v1.pos));
 
 		//インデックスの配列のインデックス
 		modelTri[triIndex].indicesIndex.v1 = i;
-		modelTri[triIndex].indicesIndex.v1 = i + 1;
-		modelTri[triIndex].indicesIndex.v1 = i + 2;
+		modelTri[triIndex].indicesIndex.v2 = i + 1;
+		modelTri[triIndex].indicesIndex.v3 = i + 2;
 
 		//裏表判定結果
-		modelTri[triIndex].vertFB.v1 = LibMath::PointPlaneFrontBackCheck(modelTri[triIndex].vertPos.v1, rotPlane);
-		modelTri[triIndex].vertFB.v2 = LibMath::PointPlaneFrontBackCheck(modelTri[triIndex].vertPos.v2, rotPlane);
-		modelTri[triIndex].vertFB.v3 = LibMath::PointPlaneFrontBackCheck(modelTri[triIndex].vertPos.v3, rotPlane);
+		modelTri[triIndex].vertFB.v1 = LibMath::PointPlaneFrontBackCheck(modelTri[triIndex].vertData.v1.pos, rotPlane);
+		modelTri[triIndex].vertFB.v2 = LibMath::PointPlaneFrontBackCheck(modelTri[triIndex].vertData.v2.pos, rotPlane);
+		modelTri[triIndex].vertFB.v3 = LibMath::PointPlaneFrontBackCheck(modelTri[triIndex].vertData.v3.pos, rotPlane);
 
 		//辺の衝突確認、衝突点取得
+		Segment3DCalcResult res;
 		modelTri[triIndex].hitResult.v1 
-			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v1, &modelTri[triIndex].calcResult.v1);
-		modelTri[triIndex].hitResult.v2
-			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v2, &modelTri[triIndex].calcResult.v2);
-		modelTri[triIndex].hitResult.v3
-			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v3, &modelTri[triIndex].calcResult.v3);
+			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v1, &res);
+		modelTri[triIndex].hitPosVert.v1.pos = res.planeHitPos.ToXMFLOAT3();
+		modelTri[triIndex].hitPosVert.v1.normal = modelTri[triIndex].vertData.v1.normal;
+		//modelTri[triIndex].hitPosVert.v1.uv = modelTri[triIndex].vertData.v1.normal;
 
+		modelTri[triIndex].hitResult.v2
+			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v2, &res);
+		modelTri[triIndex].hitPosVert.v2.pos = res.planeHitPos.ToXMFLOAT3();
+		modelTri[triIndex].hitPosVert.v2.normal = modelTri[triIndex].vertData.v2.normal;
+		//modelTri[triIndex].hitPosVert.v2.uv = modelTri[triIndex].vertData.v2.normal;
+		
+		modelTri[triIndex].hitResult.v3
+			= Collision::PlaneAndSegment3D(rotPlane, modelTri[triIndex].segmentData.v3, &res);
+		modelTri[triIndex].hitPosVert.v3.pos = res.planeHitPos.ToXMFLOAT3();
+		modelTri[triIndex].hitPosVert.v3.normal = modelTri[triIndex].vertData.v3.normal;
+		//modelTri[triIndex].hitPosVert.v3.uv = modelTri[triIndex].vertData.v3.normal;
 	}
 
+	//表と裏で分ける
+	std::vector<FbxVertex>frontVert;
+	std::vector<FbxVertex>backVert;
+	std::vector<USHORT>frontInd;
+	std::vector<USHORT>backInd;
 
+	//三角形を見ていって、格納していく
+	for (const auto& tri : modelTri)
+	{
+		//表裏ごとに格納
+		if (tri.vertFB.v1 == 1)frontVert.push_back(tri.vertData.v1);
+		else backVert.push_back(tri.vertData.v1);
+		if (tri.vertFB.v2 == 1)frontVert.push_back(tri.vertData.v2);
+		else backVert.push_back(tri.vertData.v2);
+		if (tri.vertFB.v3 == 1)frontVert.push_back(tri.vertData.v3);
+		else backVert.push_back(tri.vertData.v3);
 
+		//平面と辺が当たっていたら衝突点を格納
+		if (tri.hitResult.v1)
+		{
+			frontVert.push_back(tri.hitPosVert.v1);
+			backVert.push_back(tri.hitPosVert.v1);
+		}
+		if (tri.hitResult.v2)
+		{
+			frontVert.push_back(tri.hitPosVert.v2);
+			backVert.push_back(tri.hitPosVert.v2);
+		}
+		if (tri.hitResult.v3)
+		{
+			frontVert.push_back(tri.hitPosVert.v3);
+			backVert.push_back(tri.hitPosVert.v3);
+		}
+	}
 
 
 	int s= 0;
