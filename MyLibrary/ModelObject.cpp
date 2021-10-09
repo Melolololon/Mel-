@@ -612,7 +612,17 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 	//先に三角形ごとに分けて処理したほうがやりやすいかも
 	//タプルに、インデックスを参考にValue3で頂点、インデックスの添え字(インデックス書き換え時にアクセスする用)
 
+
+	//最初の段階で、隣を求めたほうがいい
+	//既存の点(元々の三角形の点)と衝突点で距離を求め、その情報を元に、順序を決める
+
+	//それでも無理だから、辺ごとに衝突点格納して、
+	//三角形の座標どっちか、その座標が使われてる辺の衝突点、もう一個の衝突点、残りの座標という順序を使えばよい
+
+
 	//三角形内部に頂点があるかないかの確認実装しといてね
+
+
 
 	// 平面情報(回転適応のため、作り直し)
 	PlaneData rotPlane;
@@ -937,7 +947,77 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 			
 		}
 
+		//裏
+		while(1)
+		{//三角形内部に頂点があるかないかの確認実装しといてね
 
+			//一番遠い頂点を求める
+			for (int i = 0, size = bVert.size(); i < size; i++)
+			{
+				float dis = Vector3(bVert[i].pos).Length();
+				if (farVertDis <= dis)
+				{
+					farVertex = bVert[i];
+					farVertDis = dis;
+					farVertIndex = i;
+				}
+			}
+
+			//farから1、2番目に近い頂点(隣の頂点)を求める
+			farFirDir = FLT_MAX;
+			farSecDir = FLT_MAX;
+			for (int i = 0, size = bVert.size(); i < size; i++)
+			{
+				//自分比較防止
+				if (i == farVertIndex)continue;
+
+				float dis = Vector3(farVertex.pos - bVert[i].pos).Length();
+				if (farFirDir >= dis)
+				{
+					farSecVertex = farFirVertex;
+					farSecDir = farFirDir;
+					farSecVertIndex = farFirVertIndex;
+
+					farFirVertex = bVert[i];
+					farFirDir = dis;
+					farFirVertIndex = i;
+				}
+				else if (farSecDir >= dis)
+				{
+					farSecVertex = bVert[i];
+					farSecDir = dis;
+					farSecVertIndex = i;
+				}
+			}
+
+
+			//三角形を形成
+
+			//求めた外積と、面の外積が一致したら計算終了
+			//三角形の外積
+			Vector3 cross;
+
+			//far,1,2
+			cross = LibMath::CalcNormal(farVertex.pos, farFirVertex.pos, farSecVertex.pos);
+			if (Vector3(farVertex.normal) == cross)
+			{
+				backIndices.push_back(bVertInd[farVertIndex]);
+				backIndices.push_back(bVertInd[farFirVertIndex]);
+				backIndices.push_back(bVertInd[farSecVertIndex]);
+			}
+			else//法線が逆だったら、逆にして格納 2,1,far
+			{
+				backIndices.push_back(bVertInd[farSecVertIndex]);
+				backIndices.push_back(bVertInd[farFirVertIndex]);
+				backIndices.push_back(bVertInd[farVertIndex]);
+			}
+
+			//原点から一番遠い点を削除
+			bVert.erase(bVert.begin() + farVertIndex);
+
+			//形成不可になったら終了
+			if (bVert.size() == 2)break;
+		}
 
 
 	}

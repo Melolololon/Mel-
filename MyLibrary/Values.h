@@ -103,7 +103,6 @@ namespace MelLib
 		}
 	};
 
-	template<class V>
 	
 
 }
