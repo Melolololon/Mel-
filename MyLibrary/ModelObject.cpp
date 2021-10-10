@@ -709,7 +709,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		//modelTri[triIndex].hitPosVert.v3.uv = modelTri[triIndex].vertData.v3.normal;
 	}
 
-	//表と裏で分ける
+	//全頂点をまとめる配列。表と裏で分ける
 	std::vector<FbxVertex>frontVertices;
 	std::vector<FbxVertex>backVertices;
 	std::vector<USHORT>frontIndices;
@@ -723,8 +723,6 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		//一時的に格納するための配列
 		std::vector<FbxVertex>fVert;
 		std::vector<FbxVertex>bVert;
-
-
 
 
 		//片方に偏ってたら(斬られてなかったら)インデックスを通常通り格納して次へ
@@ -759,266 +757,415 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 
 
 		//偏ってなかったら、表裏ごとに格納
+
+		//順序決める
+
 		
 		//頂点のインデックス(frontInd、backIndに格納する値)
 		std::vector<USHORT>fVertInd;
 		std::vector<USHORT>bVertInd;
 
-		//平面と辺が当たっていたら衝突点を格納
-		if (tri.hitResult.v1)
-		{
-			frontVertices.push_back(tri.hitPosVert.v1);
-			fVert.push_back(tri.hitPosVert.v1);
-			fVertInd.push_back(frontIndex);
-			frontIndex++;
 
-			backVertices.push_back(tri.hitPosVert.v1);
-			bVert.push_back(tri.hitPosVert.v1);
-			bVertInd.push_back(backIndex);
-			backIndex++;
-
-		}
-		if (tri.hitResult.v2)
-		{
-			frontVertices.push_back(tri.hitPosVert.v2);
-			fVert.push_back(tri.hitPosVert.v2);
-			fVertInd.push_back(frontIndex);
-			frontIndex++;
-
-			backVertices.push_back(tri.hitPosVert.v2);
-			bVert.push_back(tri.hitPosVert.v2);
-			bVertInd.push_back(backIndex);
-			backIndex++;
-		}
-		if (tri.hitResult.v3)
-		{
-			frontVertices.push_back(tri.hitPosVert.v3);
-			fVert.push_back(tri.hitPosVert.v3);
-			fVertInd.push_back(frontIndex);
-			frontIndex++;
-
-			backVertices.push_back(tri.hitPosVert.v3);
-			bVert.push_back(tri.hitPosVert.v3);
-			bVertInd.push_back(backIndex);
-			backIndex++;
-		}
-
-
+		//三角形の点がどちらに偏ってるかを調べる
 		if (tri.vertFB.v1 == 1)
 		{
-			frontVertices.push_back(tri.vertData.v1);
 			fVert.push_back(tri.vertData.v1);
-
-			fVertInd.push_back(frontIndex);
-			frontIndex++;
 		}
 		else
 		{
-			backVertices.push_back(tri.vertData.v1);
 			bVert.push_back(tri.vertData.v1);
-
-			bVertInd.push_back(backIndex);
-			backIndex++;
 		}
 		if (tri.vertFB.v2 == 1)
 		{
-			frontVertices.push_back(tri.vertData.v2);
 			fVert.push_back(tri.vertData.v2);
-
-			fVertInd.push_back(frontIndex);
-			frontIndex++;
 		}
 		else
 		{
-			backVertices.push_back(tri.vertData.v2);
 			bVert.push_back(tri.vertData.v2);
-
-			bVertInd.push_back(backIndex);
-			backIndex++;
 		}
 		if (tri.vertFB.v3 == 1)
 		{
-			frontVertices.push_back(tri.vertData.v3);
-			fVert.push_back(tri.vertData.v3); 
-			
-			fVertInd.push_back(frontIndex);
-			frontIndex++;
+			fVert.push_back(tri.vertData.v3);
 		}
 		else
 		{
-			backVertices.push_back(tri.vertData.v3);
 			bVert.push_back(tri.vertData.v3);
-
-			bVertInd.push_back(backIndex);
-			backIndex++;
-		}
-
-
-		//n多角形の三角形分割を利用して計算
-		//表
-
-		//原点から一番遠い頂点
-		FbxVertex farVertex;
-
-		//一番遠い頂点の座標
-		float farVertDis = 0.0f;
-
-		//farVertexの添え字(形成後の削除用)
-		int farVertIndex = 0;
-
-		//ferから1、2番目に近い頂点を求める為のデータ格納用変数
-		float farFirDir = FLT_MAX;
-		FbxVertex farFirVertex;
-		int farFirVertIndex = 0;
-
-		float farSecDir = FLT_MAX;
-		FbxVertex farSecVertex;
-		int farSecVertIndex = 0;
-
-		//表
-		while (1)
-		{
-			//三角形内部に頂点があるかないかの確認実装しといてね
-
-			//一番遠い頂点を求める
-			for (int i = 0, size = fVert.size(); i < size; i++)
-			{
-				float dis = Vector3(fVert[i].pos).Length();
-				if (farVertDis <= dis)
-				{
-					farVertex = fVert[i];
-					farVertDis = dis;
-					farVertIndex = i;
-				}
-			}
-
-			//farから1、2番目に近い頂点(隣の頂点)を求める
-			for (int i = 0, size = fVert.size(); i < size; i++)
-			{
-				//自分比較防止
-				if (i == farVertIndex)continue;
-
-				float dis = Vector3(farVertex.pos - fVert[i].pos).Length();
-				if (farFirDir >= dis)
-				{
-					farSecVertex = farFirVertex;
-					farSecDir = farFirDir;
-					farSecVertIndex = farFirVertIndex;
-
-					farFirVertex = fVert[i];
-					farFirDir = dis;
-					farFirVertIndex = i;
-				}
-				else if (farSecDir >= dis)
-				{
-					farSecVertex = fVert[i];
-					farSecDir = dis;
-					farSecVertIndex = i;
-				}
-			}
-
-
-			//三角形を形成
-
-			//求めた外積と、面の外積が一致したら計算終了
-			//三角形の外積
-			Vector3 cross;
-
-			//far,1,2
-			cross = LibMath::CalcNormal(farVertex.pos, farFirVertex.pos, farSecVertex.pos);
-			if(Vector3(farVertex.normal) == cross)
-			{
-				frontIndices.push_back(fVertInd[farVertIndex]);
-				frontIndices.push_back(fVertInd[farFirVertIndex]);
-				frontIndices.push_back(fVertInd[farSecVertIndex]);
-			}
-			else//法線が逆だったら、逆にして格納 2,1,far
-			{
-				frontIndices.push_back(fVertInd[farSecVertIndex]);
-				frontIndices.push_back(fVertInd[farFirVertIndex]);
-				frontIndices.push_back(fVertInd[farVertIndex]);
-			}
-
-			//原点から一番遠い点を削除
-			fVert.erase(fVert.begin() + farVertIndex);
-
-			//形成不可になったら終了
-			if (fVert.size() == 2)break;
 			
 		}
+		
+		//片方の場合(多角形の面形成いらない場合)
+		if(fVert.size() == 1)
+		{
 
-		//裏
-		while(1)
-		{//三角形内部に頂点があるかないかの確認実装しといてね
+		}
+		else
+		{
+		}
+		if (bVert.size() == 1)
+		{
 
-			//一番遠い頂点を求める
-			for (int i = 0, size = bVert.size(); i < size; i++)
-			{
-				float dis = Vector3(bVert[i].pos).Length();
-				if (farVertDis <= dis)
-				{
-					farVertex = bVert[i];
-					farVertDis = dis;
-					farVertIndex = i;
-				}
-			}
-
-			//farから1、2番目に近い頂点(隣の頂点)を求める
-			farFirDir = FLT_MAX;
-			farSecDir = FLT_MAX;
-			for (int i = 0, size = bVert.size(); i < size; i++)
-			{
-				//自分比較防止
-				if (i == farVertIndex)continue;
-
-				float dis = Vector3(farVertex.pos - bVert[i].pos).Length();
-				if (farFirDir >= dis)
-				{
-					farSecVertex = farFirVertex;
-					farSecDir = farFirDir;
-					farSecVertIndex = farFirVertIndex;
-
-					farFirVertex = bVert[i];
-					farFirDir = dis;
-					farFirVertIndex = i;
-				}
-				else if (farSecDir >= dis)
-				{
-					farSecVertex = bVert[i];
-					farSecDir = dis;
-					farSecVertIndex = i;
-				}
-			}
-
-
-			//三角形を形成
-
-			//求めた外積と、面の外積が一致したら計算終了
-			//三角形の外積
-			Vector3 cross;
-
-			//far,1,2
-			cross = LibMath::CalcNormal(farVertex.pos, farFirVertex.pos, farSecVertex.pos);
-			if (Vector3(farVertex.normal) == cross)
-			{
-				backIndices.push_back(bVertInd[farVertIndex]);
-				backIndices.push_back(bVertInd[farFirVertIndex]);
-				backIndices.push_back(bVertInd[farSecVertIndex]);
-			}
-			else//法線が逆だったら、逆にして格納 2,1,far
-			{
-				backIndices.push_back(bVertInd[farSecVertIndex]);
-				backIndices.push_back(bVertInd[farFirVertIndex]);
-				backIndices.push_back(bVertInd[farVertIndex]);
-			}
-
-			//原点から一番遠い点を削除
-			bVert.erase(bVert.begin() + farVertIndex);
-
-			//形成不可になったら終了
-			if (bVert.size() == 2)break;
+		}
+		else
+		{
 		}
 
+		int x = 0;
+
+
+
+		//平面と辺が当たっていたら衝突点を格納
+		//if (tri.hitResult.v1)
+		//{
+		//	frontVertices.push_back(tri.hitPosVert.v1);
+		//	fVert.push_back(tri.hitPosVert.v1);
+		//	fVertInd.push_back(frontIndex);
+		//	frontIndex++;
+
+		//	backVertices.push_back(tri.hitPosVert.v1);
+		//	bVert.push_back(tri.hitPosVert.v1);
+		//	bVertInd.push_back(backIndex);
+		//	backIndex++;
+
+		//}
+		//if (tri.hitResult.v2)
+		//{
+		//	frontVertices.push_back(tri.hitPosVert.v2);
+		//	fVert.push_back(tri.hitPosVert.v2);
+		//	fVertInd.push_back(frontIndex);
+		//	frontIndex++;
+
+		//	backVertices.push_back(tri.hitPosVert.v2);
+		//	bVert.push_back(tri.hitPosVert.v2);
+		//	bVertInd.push_back(backIndex);
+		//	backIndex++;
+		//}
+		//if (tri.hitResult.v3)
+		//{
+		//	frontVertices.push_back(tri.hitPosVert.v3);
+		//	fVert.push_back(tri.hitPosVert.v3);
+		//	fVertInd.push_back(frontIndex);
+		//	frontIndex++;
+
+		//	backVertices.push_back(tri.hitPosVert.v3);
+		//	bVert.push_back(tri.hitPosVert.v3);
+		//	bVertInd.push_back(backIndex);
+		//	backIndex++;
+		//}
+
+		////三角形の頂点を格納するついでに、衝突点も格納するようにする
+		//if (tri.vertFB.v1 == 1)
+		//{
+		//	frontVertices.push_back(tri.vertData.v1);
+
+		//	//tri.vertData.v1が含まれてるかつ、切断
+		//}
+		//else
+		//{
+		//	backVertices.push_back(tri.vertData.v1);
+		//	bVert.push_back(tri.vertData.v1);
+
+		//	bVertInd.push_back(backIndex);
+		//	backIndex += 2;
+		//}
+		//if (tri.vertFB.v2 == 1)
+		//{
+		//	frontVertices.push_back(tri.vertData.v2);
+		//	fVert.push_back(tri.vertData.v2);
+
+		//	fVertInd.push_back(frontIndex);
+		//	frontIndex += 2;
+		//}
+		//else
+		//{
+		//	backVertices.push_back(tri.vertData.v2);
+		//	bVert.push_back(tri.vertData.v2);
+
+		//	bVertInd.push_back(backIndex);
+
+		//	backIndex += 2;
+		//}
+		//if (tri.vertFB.v3 == 1)
+		//{
+		//	frontVertices.push_back(tri.vertData.v3);
+		//	fVert.push_back(tri.vertData.v3);
+
+		//	fVertInd.push_back(frontIndex);
+		//	frontIndex += 2;
+		//}
+		//else
+		//{
+		//	backVertices.push_back(tri.vertData.v3);
+		//	bVert.push_back(tri.vertData.v3);
+
+		//	bVertInd.push_back(backIndex);
+
+		//	backIndex += 2;
+		//}
+
+
+#pragma region 変更前
+
+
+
+		//////三角形の頂点を格納
+		////if (tri.vertFB.v1 == 1)
+		////{
+		////	frontVertices.push_back(tri.vertData.v1);
+		////	fVert.push_back(tri.vertData.v1);
+
+		////	fVertInd.push_back(frontIndex);
+		////	frontIndex += 2;
+		////}
+		////else
+		////{
+		////	backVertices.push_back(tri.vertData.v1);
+		////	bVert.push_back(tri.vertData.v1);
+
+		////	bVertInd.push_back(backIndex);
+		////	backIndex+= 2;
+		////}
+		////if (tri.vertFB.v2 == 1)
+		////{
+		////	frontVertices.push_back(tri.vertData.v2);
+		////	fVert.push_back(tri.vertData.v2);
+
+		////	fVertInd.push_back(frontIndex);
+		////	frontIndex += 2;
+		////}
+		////else
+		////{
+		////	backVertices.push_back(tri.vertData.v2);
+		////	bVert.push_back(tri.vertData.v2);
+
+		////	bVertInd.push_back(backIndex);
+
+		////	backIndex += 2;
+		////}
+		////if (tri.vertFB.v3 == 1)
+		////{
+		////	frontVertices.push_back(tri.vertData.v3);
+		////	fVert.push_back(tri.vertData.v3); 
+		////	
+		////	fVertInd.push_back(frontIndex);
+		////	frontIndex += 2;
+		////}
+		////else
+		////{
+		////	backVertices.push_back(tri.vertData.v3);
+		////	bVert.push_back(tri.vertData.v3);
+
+		////	bVertInd.push_back(backIndex);
+
+		////	backIndex += 2;
+		////}
+
+
+		//////平面と辺が当たっていたら衝突点を格納
+		////if (tri.hitResult.v1)
+		////{
+		////	frontVertices.push_back(tri.hitPosVert.v1);
+		////	fVert.push_back(tri.hitPosVert.v1);
+		////	fVertInd.push_back(frontIndex);
+		////	frontIndex++;
+
+		////	backVertices.push_back(tri.hitPosVert.v1);
+		////	bVert.push_back(tri.hitPosVert.v1);
+		////	bVertInd.push_back(backIndex);
+		////	backIndex++;
+
+		////}
+		////if (tri.hitResult.v2)
+		////{
+		////	frontVertices.push_back(tri.hitPosVert.v2);
+		////	fVert.push_back(tri.hitPosVert.v2);
+		////	fVertInd.push_back(frontIndex);
+		////	frontIndex++;
+
+		////	backVertices.push_back(tri.hitPosVert.v2);
+		////	bVert.push_back(tri.hitPosVert.v2);
+		////	bVertInd.push_back(backIndex);
+		////	backIndex++;
+		////}
+		////if (tri.hitResult.v3)
+		////{
+		////	frontVertices.push_back(tri.hitPosVert.v3);
+		////	fVert.push_back(tri.hitPosVert.v3);
+		////	fVertInd.push_back(frontIndex);
+		////	frontIndex++;
+
+		////	backVertices.push_back(tri.hitPosVert.v3);
+		////	bVert.push_back(tri.hitPosVert.v3);
+		////	bVertInd.push_back(backIndex);
+		////	backIndex++;
+		////}
+
+
+		////n多角形の三角形分割を利用して計算
+		////表
+
+		////原点から一番遠い頂点
+		//FbxVertex farVertex;
+
+		////一番遠い頂点の座標
+		//float farVertDis = 0.0f;
+
+		////farVertexの添え字(形成後の削除用)
+		//int farVertIndex = 0;
+
+		////ferから1、2番目に近い頂点を求める為のデータ格納用変数
+		//float farFirDir = FLT_MAX;
+		//FbxVertex farFirVertex;
+		//int farFirVertIndex = 0;
+
+		//float farSecDir = FLT_MAX;
+		//FbxVertex farSecVertex;
+		//int farSecVertIndex = 0;
+
+		////表
+		//while (1)
+		//{
+		//	//三角形内部に頂点があるかないかの確認実装しといてね
+
+		//	//一番遠い頂点を求める
+		//	for (int i = 0, size = fVert.size(); i < size; i++)
+		//	{
+		//		float dis = Vector3(fVert[i].pos).Length();
+		//		if (farVertDis <= dis)
+		//		{
+		//			farVertex = fVert[i];
+		//			farVertDis = dis;
+		//			farVertIndex = i;
+		//		}
+		//	}
+
+		//	//farから1、2番目に近い頂点(隣の頂点)を求める
+		//	for (int i = 0, size = fVert.size(); i < size; i++)
+		//	{
+		//		//自分比較防止
+		//		if (i == farVertIndex)continue;
+
+		//		float dis = Vector3(farVertex.pos - fVert[i].pos).Length();
+		//		if (farFirDir >= dis)
+		//		{
+		//			farSecVertex = farFirVertex;
+		//			farSecDir = farFirDir;
+		//			farSecVertIndex = farFirVertIndex;
+
+		//			farFirVertex = fVert[i];
+		//			farFirDir = dis;
+		//			farFirVertIndex = i;
+		//		}
+		//		else if (farSecDir >= dis)
+		//		{
+		//			farSecVertex = fVert[i];
+		//			farSecDir = dis;
+		//			farSecVertIndex = i;
+		//		}
+		//	}
+
+
+		//	//三角形を形成
+
+		//	//求めた外積と、面の外積が一致したら計算終了
+		//	//三角形の外積
+		//	Vector3 cross;
+
+		//	//far,1,2
+		//	cross = LibMath::CalcNormal(farVertex.pos, farFirVertex.pos, farSecVertex.pos);
+		//	if(Vector3(farVertex.normal) == cross)
+		//	{
+		//		frontIndices.push_back(fVertInd[farVertIndex]);
+		//		frontIndices.push_back(fVertInd[farFirVertIndex]);
+		//		frontIndices.push_back(fVertInd[farSecVertIndex]);
+		//	}
+		//	else//法線が逆だったら、逆にして格納 2,1,far
+		//	{
+		//		frontIndices.push_back(fVertInd[farSecVertIndex]);
+		//		frontIndices.push_back(fVertInd[farFirVertIndex]);
+		//		frontIndices.push_back(fVertInd[farVertIndex]);
+		//	}
+
+		//	//原点から一番遠い点を削除
+		//	fVert.erase(fVert.begin() + farVertIndex);
+
+		//	//形成不可になったら終了
+		//	if (fVert.size() == 2)break;
+		//	
+		//}
+
+		////裏
+		//while(1)
+		//{//三角形内部に頂点があるかないかの確認実装しといてね
+
+		//	//一番遠い頂点を求める
+		//	for (int i = 0, size = bVert.size(); i < size; i++)
+		//	{
+		//		float dis = Vector3(bVert[i].pos).Length();
+		//		if (farVertDis <= dis)
+		//		{
+		//			farVertex = bVert[i];
+		//			farVertDis = dis;
+		//			farVertIndex = i;
+		//		}
+		//	}
+
+		//	//farから1、2番目に近い頂点(隣の頂点)を求める
+		//	farFirDir = FLT_MAX;
+		//	farSecDir = FLT_MAX;
+		//	for (int i = 0, size = bVert.size(); i < size; i++)
+		//	{
+		//		//自分比較防止
+		//		if (i == farVertIndex)continue;
+
+		//		float dis = Vector3(farVertex.pos - bVert[i].pos).Length();
+		//		if (farFirDir >= dis)
+		//		{
+		//			farSecVertex = farFirVertex;
+		//			farSecDir = farFirDir;
+		//			farSecVertIndex = farFirVertIndex;
+
+		//			farFirVertex = bVert[i];
+		//			farFirDir = dis;
+		//			farFirVertIndex = i;
+		//		}
+		//		else if (farSecDir >= dis)
+		//		{
+		//			farSecVertex = bVert[i];
+		//			farSecDir = dis;
+		//			farSecVertIndex = i;
+		//		}
+		//	}
+
+
+		//	//三角形を形成
+
+		//	//求めた外積と、面の外積が一致したら計算終了
+		//	//三角形の外積
+		//	Vector3 cross;
+
+		//	//far,1,2
+		//	cross = LibMath::CalcNormal(farVertex.pos, farFirVertex.pos, farSecVertex.pos);
+		//	if (Vector3(farVertex.normal) == cross)
+		//	{
+		//		backIndices.push_back(bVertInd[farVertIndex]);
+		//		backIndices.push_back(bVertInd[farFirVertIndex]);
+		//		backIndices.push_back(bVertInd[farSecVertIndex]);
+		//	}
+		//	else//法線が逆だったら、逆にして格納 2,1,far
+		//	{
+		//		backIndices.push_back(bVertInd[farSecVertIndex]);
+		//		backIndices.push_back(bVertInd[farFirVertIndex]);
+		//		backIndices.push_back(bVertInd[farVertIndex]);
+		//	}
+
+		//	//原点から一番遠い点を削除
+		//	bVert.erase(bVert.begin() + farVertIndex);
+
+		//	//形成不可になったら終了
+		//	if (bVert.size() == 2)break;
+		//}
+
+#pragma endregion
 
 	}
 
