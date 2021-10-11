@@ -1792,11 +1792,6 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 
 	//マテリアル取得
 	std::vector<ADSAMaterial*>modelDataMtl = pModelData->GetPMaterial();
-	//nullptrだったらデフォルトマテリアルを取得
-	for(auto& mtl: modelDataMtl)
-	{
-		if (!mtl)mtl = ModelData::GetDefaultMaterial();
-	}
 
 	size_t size = modelDataMtl.size();
 	materials.resize(size);

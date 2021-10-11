@@ -148,7 +148,7 @@ void Play::RTTestUpdate()
 	rtTestObject.SetAngle(MelLib::Vector3(0, 0, 0));
 	MelLib::PlaneData planeData;
 	planeData.SetNormal(MelLib::Vector3(0, -1, 0));
-	rtTestObject.MeshCat(planeData, nullptr, nullptr);
+	//rtTestObject.MeshCat(planeData, nullptr, nullptr);
 
 
 }

@@ -270,7 +270,7 @@ namespace MelLib
 		/// <param name="batchDeletionFlag"></param>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		static void Create(std::vector<std::vector<FbxVertex>>vertices, std::vector<std::vector<USHORT>>indices, const bool batchDeletionFlag, const std::string& name);
+		static bool Create(std::vector<std::vector<FbxVertex>>vertices, std::vector<std::vector<USHORT>>indices, const bool batchDeletionFlag, const std::string& name);
 
 		void Create(std::vector<std::vector<FbxVertex>>vertices, std::vector<std::vector<USHORT>>indices);
 
