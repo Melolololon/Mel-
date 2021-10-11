@@ -796,14 +796,136 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		//•Ğ•û‚Ìê‡(‘½ŠpŒ`‚Ì–ÊŒ`¬‚¢‚ç‚È‚¢ê‡)
 		if(fVert.size() == 1)
 		{
+			frontVertices.push_back(fVert[0]);
 
+			if (tri.hitResult.v1)
+			{
+				frontVertices.push_back(tri.hitPosVert.v1);
+				fVert.push_back(tri.hitPosVert.v1);
+			}
+			if (tri.hitResult.v2)
+			{
+				frontVertices.push_back(tri.hitPosVert.v2);
+				fVert.push_back(tri.hitPosVert.v2);
+			}
+			if (tri.hitResult.v3)
+			{
+				frontVertices.push_back(tri.hitPosVert.v3);
+				fVert.push_back(tri.hitPosVert.v3);
+			}
+
+			Vector3 cross;
+			cross = LibMath::CalcNormal(fVert[0].pos, fVert[1].pos, fVert[2].pos);
+			if (Vector3(tri.vertData.v1.normal) == cross)
+			{
+				frontIndices.push_back(frontIndex);
+				frontIndices.push_back(frontIndex + 1);
+				frontIndices.push_back(frontIndex + 2);
+			}
+			else//–@ü‚ª‹t‚¾‚Á‚½‚çA•À‚Ñ‚ğ‹t‚É‚µ‚ÄŠi”[
+			{
+				frontIndices.push_back(frontIndex + 2);
+				frontIndices.push_back(frontIndex + 1);
+				frontIndices.push_back(frontIndex);
+			}
+
+			frontIndex += 3;
 		}
 		else
 		{
+			frontVertices.push_back(fVert[0]);
+
+			//int fVert0Seg = 0;
+			
+			int fVertVNum = 0;
+			//fVert[0]‚ªŠÜ‚Ü‚ê‚Ä‚Ä‚©‚Âü•ª‚ª•½–Ê‚É“–‚½‚Á‚Ä‚½‚çÕ“Ë“_‚ğŠi”[
+			if (tri.hitResult.v1) 
+			{
+				if (tri.segmentData.v1.GetPosition().v1 == fVert[0].pos
+					|| tri.segmentData.v1.GetPosition().v2 == fVert[0].pos)
+				{
+					//fVert0Seg = 
+					fVertVNum = 1;
+					frontVertices.push_back(tri.hitPosVert.v1);
+				}
+			}
+			else if (tri.hitResult.v2)
+			{
+				if (tri.segmentData.v2.GetPosition().v1 == fVert[0].pos
+					|| tri.segmentData.v2.GetPosition().v2 == fVert[0].pos)
+				{
+					fVertVNum = 2;
+					frontVertices.push_back(tri.hitPosVert.v2);
+				}
+			}
+			else if (tri.hitResult.v3)
+			{
+				if (tri.segmentData.v3.GetPosition().v1 == fVert[0].pos
+					|| tri.segmentData.v3.GetPosition().v2 == fVert[0].pos)
+				{
+					fVertVNum = 3;
+					frontVertices.push_back(tri.hitPosVert.v3);
+				}
+			}
+
+
+			//‚²”ÑH‚×‚½‚ç‚â‚é‚±‚Æ
+			//“¯‚¶Õ“Ë“_‚ğ’Ç‰Á‚µ‚È‚¢‚æ‚¤‚É‚·‚é
+
+			//‚à‚¤ˆêŒÂ‚ÌÕ“Ë“_‚Æc‚è‚Ì’¸“_‚ğŠi”[
+			if (tri.hitResult.v1 && fVertVNum != 1)
+			{
+				frontVertices.push_back(tri.hitPosVert.v1);
+			}
+			else if (tri.hitResult.v2 && fVertVNum != 2)
+			{
+				frontVertices.push_back(tri.hitPosVert.v2);
+			}
+			else if (tri.hitResult.v3 && fVertVNum != 3)
+			{
+				frontVertices.push_back(tri.hitPosVert.v3);
+			}
+
+			frontVertices.push_back(fVert[1]);
+
 		}
+
 		if (bVert.size() == 1)
 		{
+			backVertices.push_back(fVert[0]);
 
+			if (tri.hitResult.v1)
+			{
+				backVertices.push_back(tri.hitPosVert.v1);
+				bVert.push_back(tri.hitPosVert.v1);
+			}
+			if (tri.hitResult.v2)
+			{
+				backVertices.push_back(tri.hitPosVert.v2);
+				bVert.push_back(tri.hitPosVert.v2);
+			}
+			if (tri.hitResult.v3)
+			{
+				backVertices.push_back(tri.hitPosVert.v3);
+				bVert.push_back(tri.hitPosVert.v3);
+			}
+
+			Vector3 cross;
+			cross = LibMath::CalcNormal(bVert[0].pos, bVert[1].pos, bVert[2].pos);
+			if (Vector3(tri.vertData.v1.normal) == cross)
+			{
+				backIndices.push_back(backIndex);
+				backIndices.push_back(backIndex + 1);
+				backIndices.push_back(backIndex + 2);
+			}
+			else//–@ü‚ª‹t‚¾‚Á‚½‚çA•À‚Ñ‚ğ‹t‚É‚µ‚ÄŠi”[
+			{
+				backIndices.push_back(backIndex + 2);
+				backIndices.push_back(backIndex + 1);
+				backIndices.push_back(backIndex);
+			}
+
+			backIndex += 3;
 		}
 		else
 		{
