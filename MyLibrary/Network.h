@@ -11,19 +11,20 @@ namespace MelLib
 	class Network
 	{
 	public:
-		enum NetWorkError
+		enum class NetWorkError
 		{
 			ERROR_NONE,
-			FAILED_SOCKET_OPEN
+			FAILED_SOCKET_OPEN,
+			FAILED_BIND,
+			FAILED_START_SOCKET_CONNECT_STANDBY,
+			FAILED_CONNECT,
+			FAILED_FIND_HOST,
 		};
 
 	private:
 		WSADATA wsaData = {};
 
-		SOCKET serverPreAcceptSocket = {};
 		SOCKET serverAcceptSocket = {};
-
-		SOCKET clientPreAcceptSocket = {};
 		SOCKET clientAcceptSocket = {};
 
 	private:
@@ -38,11 +39,11 @@ namespace MelLib
 		void Finalize();
 
 #pragma region 受信側(サーバー)
-		NetWorkError StartServer(const int portNum);
+		NetWorkError StartServer(const USHORT portNum);
 #pragma endregion
 
 #pragma region 送信側
-
+		NetWorkError StartClient(const std::string& address, const USHORT portNum);
 #pragma endregion
 
 
