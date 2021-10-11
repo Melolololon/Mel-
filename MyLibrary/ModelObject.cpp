@@ -835,8 +835,6 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		{
 			frontVertices.push_back(fVert[0]);
 
-			//int fVert0Seg = 0;
-			
 			int fVertVNum = 0;
 			//fVert[0]が含まれててかつ線分が平面に当たってたら衝突点を格納
 			if (tri.hitResult.v1) 
@@ -896,9 +894,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 				fVert[i - frontIndex] = frontVertices[i];
 			}
 			 
-			//n多角形の三角形分割を利用して計算
-			//表
-
+			//n多角形の三角形分割を利用してインデックスを求める
 			//原点から一番遠い頂点
 			FbxVertex farVertex;
 
@@ -907,15 +903,6 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 
 			//farVertexの添え字(形成後の削除用)
 			int farVertIndex = 0;
-
-			//ferから1、2番目に近い頂点を求める為のデータ格納用変数
-			float farFirDir = FLT_MAX;
-			FbxVertex farFirVertex;
-			int farFirVertIndex = 0;
-
-			float farSecDir = FLT_MAX;
-			FbxVertex farSecVertex;
-			int farSecVertIndex = 0;
 
 			//表
 			while (1)
@@ -974,10 +961,6 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 			}
 			frontIndex += 6;
 
-
-
-
-
 		}
 
 		if (bVert.size() == 1)
@@ -1019,9 +1002,138 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		}
 		else
 		{
+			backVertices.push_back(bVert[0]);
+
+			int bVertVNum = 0;
+			//bVert[0]が含まれててかつ線分が平面に当たってたら衝突点を格納
+			if (tri.hitResult.v1)
+			{
+				if (tri.segmentData.v1.GetPosition().v1 == bVert[0].pos
+					|| tri.segmentData.v1.GetPosition().v2 == bVert[0].pos)
+				{
+					//bVert0Seg = 
+					bVertVNum = 1;
+					backVertices.push_back(tri.hitPosVert.v1);
+				}
+			}
+			else if (tri.hitResult.v2)
+			{
+				if (tri.segmentData.v2.GetPosition().v1 == bVert[0].pos
+					|| tri.segmentData.v2.GetPosition().v2 == bVert[0].pos)
+				{
+					bVertVNum = 2;
+					backVertices.push_back(tri.hitPosVert.v2);
+				}
+			}
+			else if (tri.hitResult.v3)
+			{
+				if (tri.segmentData.v3.GetPosition().v1 == bVert[0].pos
+					|| tri.segmentData.v3.GetPosition().v2 == bVert[0].pos)
+				{
+					bVertVNum = 3;
+					backVertices.push_back(tri.hitPosVert.v3);
+				}
+			}
+
+			//もう一個の衝突点と残りの頂点を格納
+			if (tri.hitResult.v1 && bVertVNum != 1)
+			{
+				backVertices.push_back(tri.hitPosVert.v1);
+			}
+			else if (tri.hitResult.v2 && bVertVNum != 2)
+			{
+				backVertices.push_back(tri.hitPosVert.v2);
+			}
+			else if (tri.hitResult.v3 && bVertVNum != 3)
+			{
+				backVertices.push_back(tri.hitPosVert.v3);
+			}
+
+			backVertices.push_back(bVert[1]);
+
+
+
+			//三角形を形成
+
+			//bVertをクリアして、今回追加した三角形を追加
+			bVert.clear();
+			bVert.resize(4);
+			for (int i = backIndex; i < backIndex + 4; i++)
+			{
+				bVert[i - backIndex] = backVertices[i];
+			}
+
+			//n多角形の三角形分割を利用してインデックスを求める
+			//原点から一番遠い頂点
+			FbxVertex farVertex;
+
+			//一番遠い頂点の座標
+			float farVertDis = 0.0f;
+
+			//farVertexの添え字(形成後の削除用)
+			int farVertIndex = 0;
+
+			//裏
+			while (1)
+			{
+				//三角形内部に頂点があるかないかの確認実装しといてね
+
+				//一番遠い頂点を求める
+				for (int i = 0, size = bVert.size(); i < size; i++)
+				{
+					float dis = Vector3(bVert[i].pos).Length();
+					if (farVertDis <= dis)
+					{
+						farVertex = bVert[i];
+						farVertDis = dis;
+						farVertIndex = i;
+					}
+				}
+
+				//10/11 ここ書き換えないといけない(距離じゃなくて配列のインデックスから求める)
+				//隣の頂点を求める
+				int farAddIndex = farVertIndex + 1;
+				if (farAddIndex >= bVert.size())farAddIndex = 0;
+				int farSubIndex = farVertIndex - 1;
+				if (farSubIndex <= 0)farSubIndex = bVert.size() - 1;
+
+
+
+
+				//三角形を形成
+
+				//求めた外積と、面の外積が一致したら計算終了
+				//三角形の外積
+				Vector3 cross;
+
+				//sub,far,add
+				cross = LibMath::CalcNormal(bVert[farSubIndex].pos, farVertex.pos, bVert[farAddIndex].pos);
+				if (Vector3(farVertex.normal) == cross)
+				{
+					backIndices.push_back(backIndex + farSubIndex);
+					backIndices.push_back(backIndex + farVertIndex);
+					backIndices.push_back(backIndex + farAddIndex);
+				}
+				else//法線が逆だったら、逆にして格納 2,1,far
+				{
+					backIndices.push_back(backIndex + farAddIndex);
+					backIndices.push_back(backIndex + farVertIndex);
+					backIndices.push_back(backIndex + farSubIndex);
+				}
+
+				//原点から一番遠い点を削除
+				bVert.erase(bVert.begin() + farVertIndex);
+
+				//形成不可になったら終了
+				if (bVert.size() == 2)break;
+
+			}
+			backIndex += 6;
+
 		}
 
-		int x = 0;
+
+#pragma region 旧
 
 
 
@@ -1114,6 +1226,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 		//	backIndex += 2;
 		//}
 
+#pragma endregion
 
 #pragma region 変更前
 
@@ -1381,8 +1494,9 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 
 	}
 
+	//頂点とインデックスを元にバッファを作成&更新(Map)
+	//バッファ作成よりモデルデータを作成する感じにする?
 
-	int s = 0;
 
 	//// 全頂点の表裏判定
 	//std::vector<std::vector<Vector3>> vertices = pModelData->GetVerticesPosition();
