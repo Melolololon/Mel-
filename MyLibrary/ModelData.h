@@ -131,7 +131,11 @@ namespace MelLib
 		static std::unordered_map<std::string, std::unique_ptr<ModelData>>pModelDatas;
 		//プリミティブモデルを格納する配列
 		static std::unordered_map<ShapeType3D, std::unique_ptr<ModelData>>pPrimitiveModelDatas;
-	
+
+		//プリミティブモデル、マテリアルがnullptrのモデルデータに割り当てられるマテリアル
+		static std::unique_ptr<ADSAMaterial>defaultMaterial;
+
+
 		static ID3D12Device* device;
 
 #pragma region バッファ_ヒープ
@@ -178,8 +182,6 @@ namespace MelLib
 		FbxData fbxData;
 
 #pragma endregion
-
-
 
 #pragma region 頂点
 
@@ -259,6 +261,18 @@ namespace MelLib
 		ModelData() {}
 		~ModelData() {}
 
+		/// <summary>
+		/// 頂点情報を元にモデルデータを生成します。
+		/// </summary>
+		/// <param name="vertices"></param>
+		/// <param name="indices"></param>
+		/// <param name=""></param>
+		/// <param name="batchDeletionFlag"></param>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		static void Create(std::vector<std::vector<FbxVertex>>vertices, std::vector<std::vector<USHORT>>indices, const bool batchDeletionFlag, const std::string& name);
+
+		void Create(std::vector<std::vector<FbxVertex>>vertices, std::vector<std::vector<USHORT>>indices);
 
 		/// <summary>
 		/// モデルを読み込みます。
@@ -374,6 +388,8 @@ namespace MelLib
 		/// </summary> 
 		/// <returns></returns>
 		std::vector<ADSAMaterial*> GetPMaterial();
+
+		static ADSAMaterial* GetDefaultMaterial() { return defaultMaterial.get(); }
 
 		/// <summary>
 		/// 上下左右前後の最高値を取得します。

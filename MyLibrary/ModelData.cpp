@@ -9,7 +9,7 @@ using namespace MelLib;
 
 std::unordered_map<std::string, std::unique_ptr<ModelData>>ModelData::pModelDatas;
 std::unordered_map<ShapeType3D, std::unique_ptr<ModelData>>ModelData::pPrimitiveModelDatas;
-
+std::unique_ptr<ADSAMaterial>ModelData::defaultMaterial;
 
 ID3D12Device* ModelData::device = nullptr;
 
@@ -96,9 +96,9 @@ void MelLib::ModelData::CreatePrimitiveModel()
 		pModelData->directionMaxPos = CalcDirectionMaxPosition(vertices);
 		
 		//pModelData->material.resize(1, primitiveModelMaterial);
-		pModelData->material.resize(1);
+		/*pModelData->material.resize(1);
 		pModelData->material[0] = std::make_unique<ADSAMaterial>();
-		pModelData->material[0]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+		pModelData->material[0]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));*/
 	};
 
 
@@ -326,6 +326,38 @@ void MelLib::ModelData::CreateModel()
 	modelFormat = ModelFormat::MODEL_FORMAT_PRIMITIVE;
 }
 
+void MelLib::ModelData::Create(std::vector<std::vector<FbxVertex>> vertices, std::vector<std::vector<USHORT>> indices, const bool batchDeletionFlag, const std::string& name)
+{
+	pModelDatas.emplace(name, std::make_unique<ModelData>());
+
+	ModelData* pModelData = pModelDatas["name"].get();
+
+	pModelData->vertices = vertices;
+	pModelData->indices = indices;
+	pModelData->CreateModel();
+	pModelData->directionMaxPos = CalcDirectionMaxPosition(vertices);
+
+	pModelData->material.resize(1);
+	pModelData->material[0] = std::make_unique<ADSAMaterial>();
+	pModelData->material[0]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+
+
+	pModelDatas[name]->batchDeletionFlag = batchDeletionFlag;
+
+}
+
+void MelLib::ModelData::Create(std::vector<std::vector<FbxVertex>> vertices, std::vector<std::vector<USHORT>> indices)
+{
+	this->vertices = vertices;
+	this->indices = indices;
+	CreateModel();
+	directionMaxPos = CalcDirectionMaxPosition(vertices);
+
+	/*material.resize(1);
+	material[0] = std::make_unique<ADSAMaterial>();
+	material[0]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));*/
+}
+
 bool ModelData::Load(const std::string& path, const bool batchDeletionFlag, const std::string& name)
 {
 	pModelDatas.emplace(name, std::make_unique<ModelData>());
@@ -369,6 +401,8 @@ void MelLib::ModelData::BatchDeletion()
 void ModelData::Initialize(ID3D12Device* pDevice)
 {
 	device = pDevice;
+	defaultMaterial = std::make_unique<ADSAMaterial>();
+	defaultMaterial->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
 	CreatePrimitiveModel();
 }
 
@@ -718,7 +752,8 @@ std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 	std::vector<ADSAMaterial*>pMtls(size);
 	for(int i = 0; i < size;i++)
 	{
-		pMtls[i] = material[i].get();
+		if (!material[i]) pMtls[i] = defaultMaterial.get();
+		else pMtls[i] = material[i].get();
 	}
 	return pMtls;
 

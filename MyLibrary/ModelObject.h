@@ -5,9 +5,11 @@
 
 #include<DirectXMath.h>
 #include<vector>
+#include<memory>
 #include<d3d12.h>
 #include<d3dx12.h>
 #include<dxgi.h>
+
 
 #include"ModelData.h"
 #include"PipelineState.h"
@@ -92,6 +94,10 @@ namespace MelLib
 		//テクスチャ未セット時にセットする透明のテクスチャバッファ
 		static ComPtr<ID3D12Resource>colorZeroTexBuffer;
 
+		std::unique_ptr<ModelData> catFrontModelData;
+		std::unique_ptr<ModelData> catBackModelData;
+		//ModelData* catFrontModelData;
+		//ModelData* catBackModelData;
 
 	private:
 
@@ -138,7 +144,7 @@ namespace MelLib
 		/// <summary>
 		/// モデルの切断(仮実装用の関数)
 		/// </summary>
-		void MeshCat(const PlaneData& plane);
+		void MeshCat(const PlaneData& plane,ModelData* pFront, ModelData* pBack);
 #pragma endregion
 
 

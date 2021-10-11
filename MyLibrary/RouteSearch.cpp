@@ -4,44 +4,44 @@
 
 using namespace MelLib;
 
-#ifdef _DEBUG
-std::vector<AStarNode*>AStarNode::pNodes;
+//#ifdef _DEBUG
+//std::vector<AStarNode*>AStarNode::pNodes;
+//
+//MelLib::AStarNode::AStarNode()
+//{
+//	pNodes.push_back(this);
+//
+//	//角度設定めんどいからボックスにしてる
+//	nodeModel.Create(ModelData::Get(ShapeType3D::BOX), nullptr);
+//	//nodeModel.SetScale(size)
+//}
+//
+//MelLib::AStarNode::~AStarNode()
+//{
+//	for (int i = 0, size = pNodes.size(); i < size; i++) 
+//	{
+//		if (pNodes[i] == this) 
+//		{
+//			pNodes.erase(pNodes.begin() + i);
+//			break;
+//		}
+//	}
+//}
+//
+//void MelLib::AStarNode::Draw()
+//{
+//	nodeModel.Draw();
+//}
+//
+//void MelLib::AStarNode::AllDraw()
+//{
+//	for(auto& p : pNodes)
+//	{
+//		p->Draw();
+//	}
+//}
 
-MelLib::AStarNode::AStarNode()
-{
-	pNodes.push_back(this);
-
-	//角度設定めんどいからボックスにしてる
-	nodeModel.Create(ModelData::Get(ShapeType3D::BOX), nullptr);
-	//nodeModel.SetScale(size)
-}
-
-MelLib::AStarNode::~AStarNode()
-{
-	for (int i = 0, size = pNodes.size(); i < size; i++) 
-	{
-		if (pNodes[i] == this) 
-		{
-			pNodes.erase(pNodes.begin() + i);
-			break;
-		}
-	}
-}
-
-void MelLib::AStarNode::Draw()
-{
-	nodeModel.Draw();
-}
-
-void MelLib::AStarNode::AllDraw()
-{
-	for(auto& p : pNodes)
-	{
-		p->Draw();
-	}
-}
-
-#endif // _DEBUG
+//#endif // _DEBUG
 
 
 #pragma region 最短経路

@@ -45,17 +45,19 @@ namespace MelLib
 		//進行不能オブジェクトと重なっているノード
 		bool hitObjectNode = false;
 
-
+		
 #ifdef _DEBUG
-		AStarNode();
-		~AStarNode();
-		static std::vector<AStarNode*>pNodes;
 
-		//マス目
-		ModelObject nodeModel;
+		/*AStarNode();
+		~AStarNode();*/
 
-		void Draw();
-		static void AllDraw();
+		//static std::vector<AStarNode*>pNodes;
+
+		////マス目
+		//ModelObject nodeModel;
+
+		//void Draw();
+		//static void AllDraw();
 
 #endif // _DEBUG
 

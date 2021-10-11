@@ -540,7 +540,7 @@ void ModelObject::Draw(const std::string& rtName)
 	DrawCommonProcessing(rtName);
 }
 
-void MelLib::ModelObject::MeshCat(const PlaneData& plane)
+void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData* pFront, ModelData* pBack)
 {
 	//緊急(解決優先度高めの現在の問題点)
 	//1.そもそも四角形でも斬り方によっては5角形になるので、どっちみち面の再形成は必要
@@ -965,7 +965,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 
 		if (bVert.size() == 1)
 		{
-			backVertices.push_back(fVert[0]);
+			backVertices.push_back(bVert[0]);
 
 			if (tri.hitResult.v1)
 			{
@@ -1494,10 +1494,26 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 
 	}
 
-	//頂点とインデックスを元にバッファを作成&更新(Map)
-	//バッファ作成よりモデルデータを作成する感じにする?
+	//ここで、断面の情報をセットしていく
 
-
+	if (!pFront)
+	{
+		//頂点とインデックスを元にバッファを作成&更新(Map)
+		//バッファ作成よりモデルデータを作成する感じにする?
+		std::vector<std::vector<FbxVertex>> vert(1, frontVertices);
+		std::vector<std::vector<USHORT>> ind(1, frontIndices);
+		catFrontModelData = std::make_unique<ModelData>();
+		catFrontModelData->Create(vert, ind);
+		pFront = catFrontModelData.get();
+	}
+	if (!pBack) 
+	{
+		std::vector<std::vector<FbxVertex>> vert(1, backVertices);
+		std::vector<std::vector<USHORT>> ind(1, backIndices);
+		catBackModelData = std::make_unique<ModelData>();
+		catBackModelData->Create(vert, ind);
+		pBack = catBackModelData.get();
+	}
 	//// 全頂点の表裏判定
 	//std::vector<std::vector<Vector3>> vertices = pModelData->GetVerticesPosition();
 	//size_t size = vertices[0].size();
@@ -1776,6 +1792,12 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 
 	//マテリアル取得
 	std::vector<ADSAMaterial*>modelDataMtl = pModelData->GetPMaterial();
+	//nullptrだったらデフォルトマテリアルを取得
+	for(auto& mtl: modelDataMtl)
+	{
+		if (!mtl)mtl = ModelData::GetDefaultMaterial();
+	}
+
 	size_t size = modelDataMtl.size();
 	materials.resize(size);
 	for (int i = 0; i < size; i++)
