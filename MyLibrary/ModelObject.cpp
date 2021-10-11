@@ -868,10 +868,6 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 				}
 			}
 
-
-			//ご飯食べたらやること
-			//同じ衝突点を追加しないようにする
-
 			//もう一個の衝突点と残りの頂点を格納
 			if (tri.hitResult.v1 && fVertVNum != 1)
 			{
@@ -887,6 +883,100 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane)
 			}
 
 			frontVertices.push_back(fVert[1]);
+
+
+
+			//三角形を形成
+			
+			//fVertをクリアして、今回追加した三角形を追加
+			fVert.clear();
+			fVert.resize(4);
+			for (int i = frontIndex; i < frontIndex + 4; i++)
+			{
+				fVert[i - frontIndex] = frontVertices[i];
+			}
+			 
+			//n多角形の三角形分割を利用して計算
+			//表
+
+			//原点から一番遠い頂点
+			FbxVertex farVertex;
+
+			//一番遠い頂点の座標
+			float farVertDis = 0.0f;
+
+			//farVertexの添え字(形成後の削除用)
+			int farVertIndex = 0;
+
+			//ferから1、2番目に近い頂点を求める為のデータ格納用変数
+			float farFirDir = FLT_MAX;
+			FbxVertex farFirVertex;
+			int farFirVertIndex = 0;
+
+			float farSecDir = FLT_MAX;
+			FbxVertex farSecVertex;
+			int farSecVertIndex = 0;
+
+			//表
+			while (1)
+			{
+				//三角形内部に頂点があるかないかの確認実装しといてね
+
+				//一番遠い頂点を求める
+				for (int i = 0, size = fVert.size(); i < size; i++)
+				{
+					float dis = Vector3(fVert[i].pos).Length();
+					if (farVertDis <= dis)
+					{
+						farVertex = fVert[i];
+						farVertDis = dis;
+						farVertIndex = i;
+					}
+				}
+
+				//10/11 ここ書き換えないといけない(距離じゃなくて配列のインデックスから求める)
+				//隣の頂点を求める
+				int farAddIndex = farVertIndex + 1;
+				if (farAddIndex >= fVert.size())farAddIndex = 0;
+				int farSubIndex = farVertIndex - 1;
+				if (farSubIndex <= 0)farSubIndex = fVert.size() - 1;
+
+				
+
+
+				//三角形を形成
+
+				//求めた外積と、面の外積が一致したら計算終了
+				//三角形の外積
+				Vector3 cross;
+
+				//sub,far,add
+				cross = LibMath::CalcNormal(fVert[farSubIndex].pos,farVertex.pos, fVert[farAddIndex].pos);
+				if (Vector3(farVertex.normal) == cross)
+				{
+					frontIndices.push_back(frontIndex + farSubIndex);
+					frontIndices.push_back(frontIndex + farVertIndex);
+					frontIndices.push_back(frontIndex + farAddIndex);
+				}
+				else//法線が逆だったら、逆にして格納 2,1,far
+				{
+					frontIndices.push_back(frontIndex + farAddIndex);
+					frontIndices.push_back(frontIndex + farVertIndex);
+					frontIndices.push_back(frontIndex + farSubIndex);
+				}
+
+				//原点から一番遠い点を削除
+				fVert.erase(fVert.begin() + farVertIndex);
+
+				//形成不可になったら終了
+				if (fVert.size() == 2)break;
+
+			}
+			frontIndex += 6;
+
+
+
+
 
 		}
 
