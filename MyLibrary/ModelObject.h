@@ -101,6 +101,9 @@ namespace MelLib
 		//渡すとなると、生成するごとに頂点のコピーが必要になる(コピーしないとカットしたモデルの頂点参照できない)
 		//直接ModelObjectに頂点とか渡して作れるようにしてもいいかも
 		//頂点とインデックス関係のものだけをまとめたクラスを作って、それをこれに持たせるのもあり
+		
+		// //ModelDataないとヒープ用意できないから、
+		//マテリアルとかのコピーコンストラクタ作ったほうがいいかも
 		//std::unique_ptr<ModelData> catFrontModelData;
 		//std::unique_ptr<ModelData> catBackModelData;
 		//ModelData* catFrontModelData;
