@@ -91,11 +91,18 @@ namespace MelLib
 		UINT modelFileObjectNum = 0;
 
 
+
 		//テクスチャ未セット時にセットする透明のテクスチャバッファ
 		static ComPtr<ID3D12Resource>colorZeroTexBuffer;
 
-		std::unique_ptr<ModelData> catFrontModelData;
-		std::unique_ptr<ModelData> catBackModelData;
+		//こいつ宣言してModelObjectのvectorとかresizeするとエラー出る。対策して
+		//ModelDataを持たせないでモデルデータ渡した時に使うデータだけ持ってくればいい?
+		//一時的にModelData作ってModelObjectにセットしてすぐ消しちゃう
+		//渡すとなると、生成するごとに頂点のコピーが必要になる(コピーしないとカットしたモデルの頂点参照できない)
+		//直接ModelObjectに頂点とか渡して作れるようにしてもいいかも
+		//頂点とインデックス関係のものだけをまとめたクラスを作って、それをこれに持たせるのもあり
+		//std::unique_ptr<ModelData> catFrontModelData;
+		//std::unique_ptr<ModelData> catBackModelData;
 		//ModelData* catFrontModelData;
 		//ModelData* catBackModelData;
 

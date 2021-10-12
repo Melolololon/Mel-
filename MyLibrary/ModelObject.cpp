@@ -1496,24 +1496,24 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData* pFront, Mod
 
 	//ここで、断面の情報をセットしていく
 
-	if (!pFront)
-	{
-		//頂点とインデックスを元にバッファを作成&更新(Map)
-		//バッファ作成よりモデルデータを作成する感じにする?
-		std::vector<std::vector<FbxVertex>> vert(1, frontVertices);
-		std::vector<std::vector<USHORT>> ind(1, frontIndices);
-		catFrontModelData = std::make_unique<ModelData>();
-		catFrontModelData->Create(vert, ind);
-		pFront = catFrontModelData.get();
-	}
-	if (!pBack) 
-	{
-		std::vector<std::vector<FbxVertex>> vert(1, backVertices);
-		std::vector<std::vector<USHORT>> ind(1, backIndices);
-		catBackModelData = std::make_unique<ModelData>();
-		catBackModelData->Create(vert, ind);
-		pBack = catBackModelData.get();
-	}
+	//if (!pFront)
+	//{
+	//	//頂点とインデックスを元にバッファを作成&更新(Map)
+	//	//バッファ作成よりモデルデータを作成する感じにする?
+	//	std::vector<std::vector<FbxVertex>> vert(1, frontVertices);
+	//	std::vector<std::vector<USHORT>> ind(1, frontIndices);
+	//	catFrontModelData = std::make_unique<ModelData>();
+	//	catFrontModelData->Create(vert, ind);
+	//	pFront = catFrontModelData.get();
+	//}
+	//if (!pBack) 
+	//{
+	//	std::vector<std::vector<FbxVertex>> vert(1, backVertices);
+	//	std::vector<std::vector<USHORT>> ind(1, backIndices);
+	//	catBackModelData = std::make_unique<ModelData>();
+	//	catBackModelData->Create(vert, ind);
+	//	pBack = catBackModelData.get();
+	//}
 	//// 全頂点の表裏判定
 	//std::vector<std::vector<Vector3>> vertices = pModelData->GetVerticesPosition();
 	//size_t size = vertices[0].size();
