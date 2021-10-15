@@ -148,8 +148,8 @@ void Play::RTTestUpdate()
 	rtTestObject.SetAngle(MelLib::Vector3(0, 0, 0));
 	rtTestObject.SetScale(4);
 	MelLib::PlaneData planeData;
-	planeData.SetNormal(MelLib::Vector3(1, 0, 0).Normalize());
-	planeData.SetPosition(MelLib::Vector3(0.3, 0, 0));
+	planeData.SetNormal(MelLib::Vector3(0, -1, 0).Normalize());
+	planeData.SetPosition(MelLib::Vector3(0, 0.25, 0));
 	
 	
 	MelLib::ModelData* pFront = nullptr;
