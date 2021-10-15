@@ -192,6 +192,11 @@ void Play::RTTestUpdate()
 		backObj.SetPosition(backPos);
 
 	}
+
+	if(MelLib::Input::KeyTrigger(DIK_Z))
+	{
+		isEnd = true;
+	}
 }
 
 void Play::RTTestDraw()

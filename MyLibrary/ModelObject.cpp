@@ -954,9 +954,66 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				//10/11 ここ書き換えないといけない(距離じゃなくて配列のインデックスから求める)
 				//隣の頂点を求める
 				int farAddIndex = farVertIndex + 1;
-				if (farAddIndex >= fVert.size())farAddIndex = 0;
+			/*	if (farAddIndex >= fVert.size())farAddIndex = 0;
+				for (const auto& ind : skipVertIndices)
+				{
+					if (ind == farAddIndex)
+					{
+						farAddIndex++;
+						break;
+					}
+				}*/
+
+				if (farAddIndex >= frontVertices.size())farAddIndex = 0;
+
+				bool whileEnd = false;
+				while (!whileEnd && skipVertIndices.size() != 0)
+				{
+					for (const auto& ind : skipVertIndices)
+					{
+						if (ind == farAddIndex || farAddIndex == farVertIndex)
+						{
+							farAddIndex++;
+							if (farAddIndex >= frontVertices.size())farAddIndex = 0;
+						}
+						else
+						{
+							whileEnd = true;
+						}
+					}
+				}
+
+
+
+
+
 				int farSubIndex = farVertIndex - 1;
-				if (farSubIndex <= 0)farSubIndex = fVert.size() - 1;
+			/*	if (farSubIndex <= 0)farSubIndex = fVert.size() - 1;
+				for (const auto& ind : skipVertIndices)
+				{
+					if (ind == farSubIndex)
+					{
+						farSubIndex--;
+						break;
+					}
+				}*/
+				if (farSubIndex <= 0)farSubIndex = frontVertices.size() - 1;
+				whileEnd = false;
+				while (!whileEnd && skipVertIndices.size() != 0)
+				{
+					for (const auto& ind : skipVertIndices)
+					{
+						if (ind == farSubIndex || farSubIndex == farVertIndex || farSubIndex == farAddIndex)
+						{
+							farSubIndex--;
+							if (farSubIndex <= 0)farSubIndex = frontVertices.size() - 1;
+						}
+						else
+						{
+							whileEnd = true;
+						}
+					}
+				}
 
 				
 
@@ -968,7 +1025,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				Vector3 cross;
 
 				//sub,far,add
-				cross = LibMath::CalcNormal(fVert[farSubIndex].pos,farVertex.pos, fVert[farAddIndex].pos);
+				cross = LibMath::CalcNormal(frontVertices[farSubIndex].pos,farVertex.pos, frontVertices[farAddIndex].pos);
 				if (Vector3(farVertex.normal) == cross)
 				{
 					frontIndices.push_back(frontIndex + farSubIndex);
@@ -1132,11 +1189,64 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				//10/11 ここ書き換えないといけない(距離じゃなくて配列のインデックスから求める)
 				//隣の頂点を求める
 				int farAddIndex = farVertIndex + 1;
-				if (farAddIndex >= bVert.size())farAddIndex = 0;
+				if (farAddIndex >= backVertices.size())farAddIndex = 0;
+
+				/*for (const auto& ind : skipVertIndices)
+				{
+					if (ind == farAddIndex)
+					{
+						farAddIndex++;
+
+						if (farAddIndex == farVertIndex)farAddIndex++;
+					}
+				}*/
+
+				bool whileEnd = false;
+				while(!whileEnd && skipVertIndices.size() != 0)
+				{
+					for (const auto& ind : skipVertIndices)
+					{
+						if (ind == farAddIndex || farAddIndex == farVertIndex)
+						{
+							farAddIndex++;
+							if (farAddIndex >= backVertices.size())farAddIndex = 0;
+						}
+						else
+						{
+							whileEnd = true;
+						}
+					}
+				}
+
+
+
 				int farSubIndex = farVertIndex - 1;
-				if (farSubIndex <= 0)farSubIndex = bVert.size() - 1;
+				if (farSubIndex <= 0)farSubIndex = backVertices.size() - 1;
+				/*for (const auto& ind : skipVertIndices)
+				{
+					if (ind == farSubIndex)
+					{
+						farSubIndex--;
 
-
+						if (farSubIndex == farVertIndex || farSubIndex == farAddIndex)farSubIndex--;
+					}
+				}*/
+				whileEnd = false;
+				while (!whileEnd && skipVertIndices.size() != 0)
+				{
+					for (const auto& ind : skipVertIndices)
+					{
+						if (ind == farSubIndex || farSubIndex == farVertIndex || farSubIndex == farAddIndex)
+						{
+							farSubIndex--;
+							if (farSubIndex <= 0)farSubIndex = backVertices.size() - 1;
+						}
+						else
+						{
+							whileEnd = true;
+						}
+					}
+				}
 
 
 				//三角形を形成
@@ -1146,7 +1256,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				Vector3 cross;
 
 				//sub,far,add
-				cross = LibMath::CalcNormal(bVert[farSubIndex].pos, farVertex.pos, bVert[farAddIndex].pos);
+				cross = LibMath::CalcNormal(backVertices[farSubIndex].pos, farVertex.pos, backVertices[farAddIndex].pos);
 				if (Vector3(farVertex.normal) == cross)
 				{
 					backIndices.push_back(backIndex + farSubIndex);
