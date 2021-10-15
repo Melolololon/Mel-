@@ -671,6 +671,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 		modelTri[triIndex].vertData.v3 = vertPos[0][indices[0][i + 2]];
 
 		//拡縮、平行移動適応
+		//このままだとモデルデータの頂点も倍率かかった状態になるので、注意
 		modelTri[triIndex].vertData.v1.pos.x *= modelConstDatas[0].scale.x;
 		modelTri[triIndex].vertData.v1.pos.y *= modelConstDatas[0].scale.y;
 		modelTri[triIndex].vertData.v1.pos.z *= modelConstDatas[0].scale.z;
@@ -925,6 +926,8 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			//farVertexの添え字(形成後の削除用)
 			int farVertIndex = 0;
 
+			//スキップする頂点(1度最遠点に選ばれた点)
+			std::vector<int>skipVerticesIndex;
 			//表
 			while (1)
 			{
@@ -934,6 +937,17 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				//一番遠い頂点を求める
 				for (int i = 0, size = fVert.size(); i < size; i++)
 				{
+					bool isCountinue = false;
+					for (const auto& fars : skipVerticesIndex)
+					{
+						if (fars == i)
+						{
+							isCountinue = true;
+							break;
+						}
+					}
+					if (isCountinue)continue;
+
 					float dis = Vector3(fVert[i].pos).Length();
 					if (farVertDis <= dis)
 					{
@@ -975,10 +989,12 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				}
 
 				//原点から一番遠い点を削除
-				fVert.erase(fVert.begin() + farVertIndex);
+				//fVert.erase(fVert.begin() + farVertIndex);
+				skipVerticesIndex.push_back(farVertIndex);
 
 				//形成不可になったら終了
-				if (fVert.size() == 2)break;
+				//if (fVert.size() == 2)break;
+				if (skipVerticesIndex.size() == fVert.size() - 2)break;
 
 			}
 			frontIndex += 6;
@@ -1095,6 +1111,9 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			//farVertexの添え字(形成後の削除用)
 			int farVertIndex = 0;
 
+			//スキップする頂点(1度最遠点に選ばれた点)
+			std::vector<int>skipVerticesIndex;
+
 			//裏
 			while (1)
 			{
@@ -1104,6 +1123,17 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				//一番遠い頂点を求める
 				for (int i = 0, size = bVert.size(); i < size; i++)
 				{
+					bool isCountinue = false;
+					for (const auto& fars : skipVerticesIndex)
+					{
+						if (fars == i)
+						{
+							isCountinue = true;
+							break;
+						}
+					}
+					if (isCountinue)continue;
+
 					float dis = Vector3(bVert[i].pos).Length();
 					if (farVertDis <= dis)
 					{
@@ -1145,12 +1175,13 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				}
 
 				//原点から一番遠い点を削除
-				bVert.erase(bVert.begin() + farVertIndex);
+				//bVert.erase(bVert.begin() + farVertIndex);
+				skipVerticesIndex.push_back(farVertIndex);
 
 
 				//形成不可になったら終了
-				if (bVert.size() == 2)break;
-
+				//if (bVert.size() == 2)break;
+				if (skipVerticesIndex.size() == bVert.size() - 2)break;
 			}
 			backIndex += 6;
 
