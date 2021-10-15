@@ -1593,6 +1593,28 @@ void ModelObject::SetAngle(const Vector3& angle)
 }
 
 
+MelLib::ModelObject::ModelObject( ModelObject& obj)
+{
+	Create(obj.pModelData, nullptr);
+	modelConstDatas = obj.modelConstDatas;
+
+	if(obj.catFrontModelData)
+	{
+		catFrontModelData = std::make_unique<ModelData>();
+		*catFrontModelData = *obj.catFrontModelData;
+	}
+	if (obj.catBackModelData)
+	{
+		catBackModelData = std::make_unique<ModelData>();
+		*catBackModelData = *obj.catBackModelData;
+	}
+}
+
+ModelObject& MelLib::ModelObject::operator=(ModelObject& obj)
+{
+	return ModelObject(obj);
+}
+
 bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12GraphicsCommandList*>& cmdList)
 {
 	device = dev;

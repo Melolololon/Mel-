@@ -188,6 +188,16 @@ void MelLib::Material::SetNormalMapTexture(Texture* pTex)
 
 #pragma region ADSA
 
+MelLib::ADSAMaterial::ADSAMaterial(ADSAMaterial& mtl)
+{
+	Create(mtl.drawData);
+}
+
+MelLib::ADSAMaterial& MelLib::ADSAMaterial::operator=(ADSAMaterial& mtl)
+{
+	return ADSAMaterial(mtl);
+}
+
 void MelLib::ADSAMaterial::Create(const DrawData& drawData)
 {
 	CreateInitialize(sizeof(ADSAMaterialData));
@@ -213,6 +223,7 @@ void MelLib::ADSAMaterial::Create(const DrawData& drawData)
 		1
 	);
 
+	this->drawData = drawData;
 }
 
 void MelLib::ADSAMaterial::Map()
@@ -274,6 +285,16 @@ void MelLib::PBRMaterial::SetMaterialData(const PBRMaterialData& data)
 {
 	materialData = data;
 	Map();
+}
+
+MelLib::PBRMaterial::PBRMaterial(PBRMaterial& mtl)
+{
+	Create(mtl.drawData);
+}
+
+MelLib::PBRMaterial MelLib::PBRMaterial::operator=(PBRMaterial& mtl)
+{
+	return PBRMaterial(mtl);
 }
 
 #pragma endregion

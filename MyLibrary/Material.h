@@ -98,7 +98,7 @@ namespace MelLib
 		//コンピュートシェーダーを使うオブジェクトのみ専用のヒープ作る?
 	    //ここに作ると複数のマテリアルのテクスチャをまとめられない
 		//ファイルに複数モデルあってもレンダリングするタイミングが違うからまとめなくても問題ない
-		ComPtr<ID3D12DescriptorHeap>textureHeap;
+		ComPtr<ID3D12DescriptorHeap>textureHeap = nullptr;
 
 		//テクスチャ未セット時にセットするテクスチャバッファ
 		static ComPtr<ID3D12Resource> textureNoneTextureBuffer;
@@ -109,7 +109,7 @@ namespace MelLib
 		void SetOrLoadTextureProcess();
 	protected:
 		std::unique_ptr<PipelineState> pipelineState;
-		//DrawData drawData;
+		DrawData drawData;
 	protected:
 		/// <summary>
 		/// マテリアル生成時の初期化処理を行います。
@@ -176,6 +176,9 @@ namespace MelLib
 		ADSAMaterialData materialData;
 		void Map();
 	public:
+		ADSAMaterial(){}
+		ADSAMaterial(ADSAMaterial& mtl);
+		ADSAMaterial& operator=(ADSAMaterial& mtl);
 
 		void Create(const DrawData& drawData)override;
 
@@ -213,6 +216,10 @@ namespace MelLib
 
 		void Map();
 	public:
+		PBRMaterial(){}
+		PBRMaterial(PBRMaterial& mtl);
+		PBRMaterial operator=(PBRMaterial& mtl);
+
 		void Create(const DrawData& drawData)override;
 
 #pragma region セット

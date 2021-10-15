@@ -168,7 +168,7 @@ namespace MelLib
 		/// <param name="v"></param>
 		/// <param name="v3">3次元座標系かどうか</param>
 		/// <returns></returns>
-		static float Vector2ToAngle(const Vector2& v, const bool& v3);
+		static float Vector2ToAngle(const Vector2& v, const bool v3);
 
 		/// <summary>
 		/// 角度をVector2に変換します
@@ -176,7 +176,7 @@ namespace MelLib
 		/// <param name="angle"></param>
 		/// <param name="v3">3次元座標系かどうか</param>
 		/// <returns></returns>
-		static Vector2 AngleToVector2(const float& angle, const bool& v3);
+		static Vector2 AngleToVector2(const float& angle, const bool v3);
 
 		/// <summary>
 		/// Vector2のベクトルを指定した角度に応じて回転させます
@@ -184,7 +184,7 @@ namespace MelLib
 		/// <param name="v"></param>
 		/// <param name="angle"></param>
 		/// <returns></returns>
-		static Vector2 RotateVector2(const Vector2& v, const float& angle);
+		static Vector2 RotateVector2(const Vector2& v, const float angle);
 
 		/// <summary>
 		/// 変数vと、それを90度、180度、270度回転させた座標で形成された四角形上で回転させた座標を返します。
@@ -192,7 +192,7 @@ namespace MelLib
 		/// <param name="v"></param>
 		/// <param name="angle"></param>
 		/// <returns></returns>
-		static Vector2 RotateVector2Box(const Vector2& v, const float& angle);
+		static Vector2 RotateVector2Box(const Vector2& v, const float angle);
 
 #pragma endregion
 

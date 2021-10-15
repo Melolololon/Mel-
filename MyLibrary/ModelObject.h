@@ -104,8 +104,8 @@ namespace MelLib
 		
 		// //ModelDataないとヒープ用意できないから、
 		//マテリアルとかのコピーコンストラクタ作ったほうがいいかも
-		//std::unique_ptr<ModelData> catFrontModelData;
-		//std::unique_ptr<ModelData> catBackModelData;
+		std::unique_ptr<ModelData> catFrontModelData;
+		std::unique_ptr<ModelData> catBackModelData;
 		//ModelData* catFrontModelData;
 		//ModelData* catBackModelData;
 
@@ -122,7 +122,8 @@ namespace MelLib
 
 		//nullptr渡される可能性を考えると、boolをreturnできるようにしたほうがいい?
 		ModelObject() {}
-
+		ModelObject( ModelObject& obj);
+		ModelObject& operator= (ModelObject& obj);
 		~ModelObject() {}
 
 		static bool Initialize(ID3D12Device* dev, const std::vector<ID3D12GraphicsCommandList*>& cmdList);
@@ -194,6 +195,9 @@ namespace MelLib
 
 #pragma region ゲット
 
+		//この辺constにする
+
+		ModelData* GetPModelData() { return pModelData; }
 		Material* GetPMaterial(const int num) { return materials[num]; }
 
 #pragma region 操作見た目変更

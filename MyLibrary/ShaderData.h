@@ -12,14 +12,17 @@ namespace MelLib
 	//パイプライン作成時に
 	struct InputLayoutData
 	{
+
 		//セマンティクス名
-		const char* semantics;
+		std::string semantics;
 
 		//送る値の数
 		UINT number = 4;
 
 		//送る値の型
 		FORMAT_TYPE formatType = FORMAT_TYPE::FLOAT;
+
+
 	};
 
 

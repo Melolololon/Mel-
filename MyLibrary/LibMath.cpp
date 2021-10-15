@@ -252,7 +252,7 @@ float LibMath::TwoVector2Angle(const Vector2& v1, const Vector2& v2)
 	return f;
 }
 
-float LibMath::Vector2ToAngle(const Vector2& v, const bool& v3)
+float LibMath::Vector2ToAngle(const Vector2& v, const bool v3)
 {
 	float f = 0.0f;
 	if (v3)
@@ -263,7 +263,7 @@ float LibMath::Vector2ToAngle(const Vector2& v, const bool& v3)
 }
 
 
-Vector2 LibMath::AngleToVector2(const float& angle, const bool& v3)
+Vector2 LibMath::AngleToVector2(const float& angle, const bool v3)
 {
 	Quaternion q = Quaternion::GetRotateQuaternion({ 1,0,0 }, { 0,0,-1 }, angle);
 
@@ -272,12 +272,12 @@ Vector2 LibMath::AngleToVector2(const float& angle, const bool& v3)
 }
 
 
-Vector2 LibMath::RotateVector2(const Vector2& v, const float& angle)
+Vector2 LibMath::RotateVector2(const Vector2& v, const float angle)
 {
 	Quaternion q = Quaternion::GetRotateQuaternion({ v.x,v.y,0 }, { 0,0,1 }, angle);
 	return { q.x,q.y };
 }
-Vector2 MelLib::LibMath::RotateVector2Box(const Vector2& v, const float& angle)
+Vector2 MelLib::LibMath::RotateVector2Box(const Vector2& v, const float angle)
 {
 	float rotAngle = angle;
 	int startNum = 0;

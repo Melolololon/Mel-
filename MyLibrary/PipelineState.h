@@ -21,9 +21,8 @@ namespace MelLib
 
 	private:
 		static std::unordered_map<std::string, std::unique_ptr<PipelineState>>pPipelineState;
-
-		ComPtr<ID3D12PipelineState>pipeline;
 		static ID3D12Device* device;
+
 
 		static void SetPipelineDesc
 		(
@@ -33,15 +32,23 @@ namespace MelLib
 			const int renderTargetNum
 		);
 
-
-
 		static ID3D12RootSignature* modelRootSignature;
 		static ID3D12RootSignature* spriteRootSignature;
 		static ID3D12RootSignature* renderTargetRootSignature;
 
 
+
+		ComPtr<ID3D12PipelineState>pipelineState;
+		DrawData drawData;
+		ShaderDataSet shaderSet;
+		PipelineStateType pipelineType = PipelineStateType::MODEL;
+		std::unique_ptr<std::vector<InputLayoutData>> inputLayoutData = nullptr;
+		int renderTargetNum = 1;
 	public:
 		PipelineState() {}
+		PipelineState(PipelineState& pso);
+		PipelineState& operator= (PipelineState& pso);
+
 		~PipelineState() {}
 
 		static bool Initialize
@@ -87,7 +94,6 @@ namespace MelLib
 			const ShaderDataSet& shaderSet,
 			const PipelineStateType pipelineType,
 			const std::vector<InputLayoutData>* inputLayoutData,
-		
 			const int renderTargetNum
 		);
 
@@ -97,7 +103,7 @@ namespace MelLib
 
 		ComPtr<ID3D12PipelineState> GetPipelineState()
 		{
-			return pipeline;
+			return pipelineState;
 		}
 
 		/// <summary>

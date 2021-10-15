@@ -20,7 +20,6 @@ namespace MelLib
 		void MoveSpritePosition(const Vector2& vec);
 		void MoveDataPosition(const Vector2& vec);
 
-
 	protected:
 		std::unordered_map<std::string, MelLib::Sprite2D>sprites;
 

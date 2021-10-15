@@ -415,7 +415,6 @@ void ModelData::Initialize(ID3D12Device* pDevice)
 }
 
 
-
 bool ModelData::LoadModel(const std::string& path, const std::string& name)
 {
 	bool result = false;
@@ -806,5 +805,27 @@ std::vector<std::array<float, 6>> MelLib::ModelData::CalcDirectionMaxPosition(st
 		}
 	}
 	return pos;
+}
+
+MelLib::ModelData::ModelData(ModelData& data)
+{
+	Create(data.vertices, data.indices);
+
+	modelName = data.modelName;
+
+	for (int i = 0, size = data.material.size(); i < size; i++)
+	{
+		//nullptr‚¶‚á‚È‚©‚Á‚½‚ç¶¬(‘ã“ü‚µ‚½‚ç¶¬‚³‚ê‚é)
+		if (data.material[i])
+		{
+			material[i] = std::make_unique<ADSAMaterial>();
+			*material[i] = *data.material[i];
+		}
+	}
+}
+
+ModelData& MelLib::ModelData::operator=(ModelData& data)
+{
+	return ModelData(data);
 }
 

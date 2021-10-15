@@ -72,25 +72,12 @@ namespace MelLib
 
 		static GameObjectManager* GetInstance();
 
-		/// <summary>
-		/// 初期化します
-		/// </summary>
 		void Initialize();
 
-		/// <summary>
-		/// 更新処理を行います
-		/// </summary>
 		void Update();
 
-		/// <summary>
-		/// 描画処理を行います
-		/// </summary>
 		void Draw();
 
-
-		/// <summary>
-		/// 終了処理を行います
-		/// </summary>
 		void Finalize();
 
 		///// <summary>
@@ -103,7 +90,7 @@ namespace MelLib
 		/// マウスカーソルとの判定をとるか設定します
 		/// </summary>
 		/// <param name="flag"></param>
-		void SetMouseCollisionFlag(const bool& flag);
+		void SetMouseCollisionFlag(const bool flag);
 
 #pragma region オブジェクト管理
 
@@ -111,7 +98,7 @@ namespace MelLib
 		/// オブジェクトの配列のメモリを確保します。
 		/// </summary>
 		/// <param name="reserveNum"></param>
-		void ReserveObjectArray(const int& reserveNum);
+		void ReserveObjectArray(const int reserveNum);
 
 		/// <summary>
 		/// オブジェクトを追加します。

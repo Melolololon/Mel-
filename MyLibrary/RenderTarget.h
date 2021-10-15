@@ -28,7 +28,6 @@
 
 namespace MelLib
 {
-
 	class RenderTarget
 	{
 	public:
@@ -93,7 +92,7 @@ namespace MelLib
 		/// レンダーターゲットを描画するレンダーターゲットを指定します。
 		/// </summary>
 		/// <param name="data">描画情報</param>
-		static void SetRenderingRenderDrawData(const std::vector<RenderTargetDrawData>& data) { rtDrawData = data; }
+		static void SetRenderTargetDrawData(const std::vector<RenderTargetDrawData>& data) { rtDrawData = data; }
 
 		static void Create(const Color& initColor, const std::string& name = "");
 		static void Delete(const std::string& name);

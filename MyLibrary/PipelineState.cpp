@@ -289,7 +289,7 @@ bool PipelineState::CreatePipeline
 
 			inputLayout =
 			{
-				ilData.semantics,
+				ilData.semantics.c_str(),
 				0,
 				dxgiFormat,
 				0,
@@ -631,13 +631,24 @@ bool PipelineState::CreatePipeline
 #pragma endregion
 
 		//パイプラインの生成
-	result = device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(&pipeline));
+	result = device->CreateGraphicsPipelineState(&pDesc, IID_PPV_ARGS(&pipelineState));
 	if (result != S_OK)
 	{
 		OutputDebugString(L"パイプラインの生成に失敗しました\n");
 		return false;
 	}
 
+	this->drawData = drawData;
+	this->shaderSet = shaderSet;
+	this->pipelineType = pipelineType;
+	this->renderTargetNum = renderTargetNum;
+	
+	if (inputLayoutData)
+	{
+		this->inputLayoutData = std::make_unique<std::vector<InputLayoutData>>();
+		*this->inputLayoutData = *inputLayoutData;
+	}
+	
 	return true;
 }
 
@@ -670,6 +681,23 @@ DrawData PipelineState::GetDefaultDrawData(const PipelineStateType type)
 		break;
 	}
 	return data;
+}
+
+MelLib::PipelineState::PipelineState(PipelineState& pso)
+{
+	CreatePipeline
+	(
+		pso.drawData,
+		pso.shaderSet,
+		pso.pipelineType,
+		pso.inputLayoutData.get(),
+		pso.renderTargetNum
+	);
+}
+
+PipelineState& MelLib::PipelineState::operator=(PipelineState& pso)
+{
+	return PipelineState(pso);
 }
 
 bool PipelineState::Initialize

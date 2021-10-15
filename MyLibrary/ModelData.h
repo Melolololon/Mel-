@@ -259,6 +259,9 @@ namespace MelLib
 	public:
 
 		ModelData() {}
+		ModelData(ModelData& data);
+		ModelData& operator=(ModelData& data);
+
 		~ModelData() {}
 
 		/// <summary>

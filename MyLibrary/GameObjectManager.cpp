@@ -887,7 +887,7 @@ void GameObjectManager::Finalize()
 }
 
 #pragma region オブジェクト関数
-void GameObjectManager::ReserveObjectArray(const int& reserveNum)
+void GameObjectManager::ReserveObjectArray(const int reserveNum)
 {
 	objects.reserve(reserveNum);
 }
@@ -1063,7 +1063,7 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 //	checkCollision = type;
 //}
 
-void GameObjectManager::SetMouseCollisionFlag(const bool& flag)
+void GameObjectManager::SetMouseCollisionFlag(const bool flag)
 {
 	checkMouseCollision = flag;
 }
