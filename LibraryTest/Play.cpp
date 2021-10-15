@@ -147,23 +147,14 @@ void Play::RTTestUpdate()
 
 	rtTestObject.SetAngle(MelLib::Vector3(0, 0, 0));
 	MelLib::PlaneData planeData;
-	planeData.SetNormal(MelLib::Vector3(1, 0, 0).Normalize());
-	planeData.SetPosition(MelLib::Vector3(0.2, 0, 0));
+	planeData.SetNormal(MelLib::Vector3(-1, 0, 0).Normalize());
+	planeData.SetPosition(MelLib::Vector3(-0.3, 0, 0));
 	
 	
 	MelLib::ModelData* pFront = nullptr;
 	MelLib::ModelData* pBack = nullptr;
 	if (MelLib::Input::KeyTrigger(DIK_SPACE) && !isCat) 
 	{
-		//ƒeƒXƒg
-		MelLib::BoardData b;
-		b.SetAngle(MelLib::Vector3(0, 0, 0));
-		b.SetPosition(MelLib::Vector3(0, 0.25, 0));
-		MelLib::Segment3DData s;
-		s.SetPosition(MelLib::Value2<MelLib::Vector3>(MelLib::Vector3(-0.5, -0.5, 0), MelLib::Vector3(0, 0.5, 0)));
-		MelLib::Collision::BoardAndSegment3D(b, nullptr, s, nullptr);
-
-
 
 		rtTestObject.MeshCat(planeData, pFront, pBack);
 
@@ -173,10 +164,10 @@ void Play::RTTestUpdate()
 	}
 	if(isCat)
 	{
-		frontPos.y += 0.25f;
+		frontPos.y += 0.1f;
 		frontObj.SetPosition(frontPos);
 
-		backPos.y -= 0.2f;
+		backPos.y -= 0.1f;
 		backObj.SetPosition(backPos);
 
 	}

@@ -847,7 +847,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 					frontVertices.push_back(tri.hitPosVert.v1);
 				}
 			}
-			else if (tri.hitResult.v2)
+			 if (tri.hitResult.v2)
 			{
 				if (tri.segmentData.v2.GetPosition().v1 == fVert[0].pos
 					|| tri.segmentData.v2.GetPosition().v2 == fVert[0].pos)
@@ -856,7 +856,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 					frontVertices.push_back(tri.hitPosVert.v2);
 				}
 			}
-			else if (tri.hitResult.v3)
+			 if (tri.hitResult.v3)
 			{
 				if (tri.segmentData.v3.GetPosition().v1 == fVert[0].pos
 					|| tri.segmentData.v3.GetPosition().v2 == fVert[0].pos)
@@ -907,6 +907,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			//表
 			while (1)
 			{
+				farVertDis = 0.0f;
 				//三角形内部に頂点があるかないかの確認実装しといてね
 
 				//一番遠い頂点を求める
@@ -1076,6 +1077,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			//裏
 			while (1)
 			{
+				farVertDis = 0.0f;
 				//三角形内部に頂点があるかないかの確認実装しといてね
 
 				//一番遠い頂点を求める
@@ -1123,6 +1125,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 				//原点から一番遠い点を削除
 				bVert.erase(bVert.begin() + farVertIndex);
+
 
 				//形成不可になったら終了
 				if (bVert.size() == 2)break;
