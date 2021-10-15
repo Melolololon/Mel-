@@ -670,6 +670,27 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 		modelTri[triIndex].vertData.v2 = vertPos[0][indices[0][i + 1]];
 		modelTri[triIndex].vertData.v3 = vertPos[0][indices[0][i + 2]];
 
+		//ägèkÅAïΩçsà⁄ìÆìKâû
+		modelTri[triIndex].vertData.v1.pos.x *= modelConstDatas[0].scale.x;
+		modelTri[triIndex].vertData.v1.pos.y *= modelConstDatas[0].scale.y;
+		modelTri[triIndex].vertData.v1.pos.z *= modelConstDatas[0].scale.z;
+		modelTri[triIndex].vertData.v2.pos.x *= modelConstDatas[0].scale.x;
+		modelTri[triIndex].vertData.v2.pos.y *= modelConstDatas[0].scale.y;
+		modelTri[triIndex].vertData.v2.pos.z *= modelConstDatas[0].scale.z;
+		modelTri[triIndex].vertData.v3.pos.x *= modelConstDatas[0].scale.x;
+		modelTri[triIndex].vertData.v3.pos.y *= modelConstDatas[0].scale.y;
+		modelTri[triIndex].vertData.v3.pos.z *= modelConstDatas[0].scale.z;
+
+		modelTri[triIndex].vertData.v1.pos.x += modelConstDatas[0].position.x;
+		modelTri[triIndex].vertData.v1.pos.y += modelConstDatas[0].position.y;
+		modelTri[triIndex].vertData.v1.pos.z += modelConstDatas[0].position.z;
+		modelTri[triIndex].vertData.v2.pos.x += modelConstDatas[0].position.x;
+		modelTri[triIndex].vertData.v2.pos.y += modelConstDatas[0].position.y;
+		modelTri[triIndex].vertData.v2.pos.z += modelConstDatas[0].position.z;
+		modelTri[triIndex].vertData.v3.pos.x += modelConstDatas[0].position.x;
+		modelTri[triIndex].vertData.v3.pos.y += modelConstDatas[0].position.y;
+		modelTri[triIndex].vertData.v3.pos.z += modelConstDatas[0].position.z;
+
 		//ï”èÓïÒ
 		modelTri[triIndex].segmentData.v1.SetPosition
 		(Value2<Vector3>(modelTri[triIndex].vertData.v1.pos, modelTri[triIndex].vertData.v2.pos));
