@@ -144,12 +144,32 @@ void Play::RTTestUpdate()
 	//MelLib::RenderTarget::SetRenderingRenderDrawData(data);
 
 
+	MelLib::ImguiManager::GetInstance()->BeginDrawWindow("Plane");
+
+	MelLib::Vector3 pos = planeData.GetPosition();
+	MelLib::ImguiManager::GetInstance()->DrawSliderVector3("pos", pos, -2, 2);
+
+
+	MelLib::Vector3 normal = planeData.GetNormal();
+	MelLib::ImguiManager::GetInstance()->DrawSliderVector3("normal", normal, -1, 1);
+
+	
+	MelLib::ImguiManager::GetInstance()->DrawCheckBox("normalize", isNormalize);
+	if (isNormalize)
+	{
+		normal = normal.Normalize();
+		isNormalize = false;
+	}
+
+	MelLib::ImguiManager::GetInstance()->EndDrawWindow();
+
+	
+
 
 	rtTestObject.SetAngle(MelLib::Vector3(0, 0, 0));
 	rtTestObject.SetScale(4);
-	MelLib::PlaneData planeData;
-	planeData.SetNormal(MelLib::Vector3(0, -1, 0).Normalize());
-	planeData.SetPosition(MelLib::Vector3(0, 0.25, 0));
+	planeData.SetNormal(normal);
+	planeData.SetPosition(pos);
 	
 	
 	MelLib::ModelData* pFront = nullptr;

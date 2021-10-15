@@ -25,6 +25,10 @@ private:
 	MelLib::ModelObject backObj;
 	MelLib::Vector3 backPos;
 	bool isCat = false;
+
+	bool isNormalize = false;
+	MelLib::PlaneData planeData;
+
 	void RTTestInitialize();
 	void RTTestUpdate();
 	void RTTestDraw();
