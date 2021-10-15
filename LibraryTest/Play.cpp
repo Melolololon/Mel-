@@ -147,16 +147,54 @@ void Play::RTTestUpdate()
 
 	rtTestObject.SetAngle(MelLib::Vector3(0, 0, 0));
 	MelLib::PlaneData planeData;
-	planeData.SetNormal(MelLib::Vector3(0, -1, 0));
-	//rtTestObject.MeshCat(planeData, nullptr, nullptr);
+	planeData.SetNormal(MelLib::Vector3(1, 0, 0).Normalize());
+	planeData.SetPosition(MelLib::Vector3(0.2, 0, 0));
+	
+	
+	MelLib::ModelData* pFront = nullptr;
+	MelLib::ModelData* pBack = nullptr;
+	if (MelLib::Input::KeyTrigger(DIK_SPACE) && !isCat) 
+	{
+		//ƒeƒXƒg
+		MelLib::BoardData b;
+		b.SetAngle(MelLib::Vector3(0, 0, 0));
+		b.SetPosition(MelLib::Vector3(0, 0.25, 0));
+		MelLib::Segment3DData s;
+		s.SetPosition(MelLib::Value2<MelLib::Vector3>(MelLib::Vector3(-0.5, -0.5, 0), MelLib::Vector3(0, 0.5, 0)));
+		MelLib::Collision::BoardAndSegment3D(b, nullptr, s, nullptr);
 
 
+
+		rtTestObject.MeshCat(planeData, pFront, pBack);
+
+		frontObj.Create(pFront, nullptr);
+		backObj.Create(pBack, nullptr);
+		isCat = true;
+	}
+	if(isCat)
+	{
+		frontPos.y += 0.25f;
+		frontObj.SetPosition(frontPos);
+
+		backPos.y -= 0.2f;
+		backObj.SetPosition(backPos);
+
+	}
 }
 
 void Play::RTTestDraw()
 {
-	rtTestObject.Draw();
+	
 
+	if (isCat)
+	{
+		frontObj.Draw();
+		backObj.Draw();
+	}
+	else
+	{
+		rtTestObject.Draw();
+	}
 
 }
 

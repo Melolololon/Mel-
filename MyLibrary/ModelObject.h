@@ -155,7 +155,7 @@ namespace MelLib
 		/// <summary>
 		/// ƒ‚ƒfƒ‹‚ÌØ’f(‰¼À‘•—p‚ÌŠÖ”)
 		/// </summary>
-		void MeshCat(const PlaneData& plane,ModelData* pFront, ModelData* pBack);
+		void MeshCat(const PlaneData& plane,ModelData*& pFront, ModelData*& pBack);
 #pragma endregion
 
 

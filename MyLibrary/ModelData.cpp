@@ -96,7 +96,6 @@ void MelLib::ModelData::CreatePrimitiveModel()
 		pModelData->directionMaxPos = CalcDirectionMaxPosition(vertices);
 		
 
-		pModelData->material.resize(1);
 		/*pModelData->material.resize(1);
 		pModelData->material[0] = std::make_unique<ADSAMaterial>();
 		pModelData->material[0]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));*/
@@ -325,6 +324,7 @@ void MelLib::ModelData::CreateModel()
 
 
 	modelFormat = ModelFormat::MODEL_FORMAT_PRIMITIVE;
+	material.resize(vertices.size());
 }
 
 bool MelLib::ModelData::Create(std::vector<std::vector<FbxVertex>> vertices, std::vector<std::vector<USHORT>> indices, const bool batchDeletionFlag, const std::string& name)
@@ -812,8 +812,10 @@ MelLib::ModelData::ModelData(ModelData& data)
 	Create(data.vertices, data.indices);
 
 	modelName = data.modelName;
+	pTexture.resize(data.vertices.size());
+	material.resize(data.material.size());
 
-	for (int i = 0, size = data.material.size(); i < size; i++)
+	for (int i = 0; i < data.material.size(); i++)
 	{
 		//nullptr‚¶‚á‚È‚©‚Á‚½‚ç¶¬(‘ã“ü‚µ‚½‚ç¶¬‚³‚ê‚é)
 		if (data.material[i])

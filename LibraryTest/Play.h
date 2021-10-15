@@ -20,6 +20,11 @@ private:
 
 #pragma region レンダーターゲットテスト
 	MelLib::ModelObject rtTestObject;
+	MelLib::ModelObject frontObj;
+	MelLib::Vector3 frontPos;
+	MelLib::ModelObject backObj;
+	MelLib::Vector3 backPos;
+	bool isCat = false;
 	void RTTestInitialize();
 	void RTTestUpdate();
 	void RTTestDraw();

@@ -540,7 +540,7 @@ void ModelObject::Draw(const std::string& rtName)
 	DrawCommonProcessing(rtName);
 }
 
-void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData* pFront, ModelData* pBack)
+void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, ModelData*& pBack)
 {
 	//緊急(解決優先度高めの現在の問題点)
 	//1.そもそも四角形でも斬り方によっては5角形になるので、どっちみち面の再形成は必要
@@ -1016,7 +1016,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData* pFront, Mod
 					backVertices.push_back(tri.hitPosVert.v1);
 				}
 			}
-			else if (tri.hitResult.v2)
+			 if (tri.hitResult.v2)
 			{
 				if (tri.segmentData.v2.GetPosition().v1 == bVert[0].pos
 					|| tri.segmentData.v2.GetPosition().v2 == bVert[0].pos)
@@ -1025,7 +1025,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData* pFront, Mod
 					backVertices.push_back(tri.hitPosVert.v2);
 				}
 			}
-			else if (tri.hitResult.v3)
+			 if (tri.hitResult.v3)
 			{
 				if (tri.segmentData.v3.GetPosition().v1 == bVert[0].pos
 					|| tri.segmentData.v3.GetPosition().v2 == bVert[0].pos)
@@ -1496,24 +1496,26 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData* pFront, Mod
 
 	//ここで、断面の情報をセットしていく
 
-	//if (!pFront)
-	//{
-	//	//頂点とインデックスを元にバッファを作成&更新(Map)
-	//	//バッファ作成よりモデルデータを作成する感じにする?
-	//	std::vector<std::vector<FbxVertex>> vert(1, frontVertices);
-	//	std::vector<std::vector<USHORT>> ind(1, frontIndices);
-	//	catFrontModelData = std::make_unique<ModelData>();
-	//	catFrontModelData->Create(vert, ind);
-	//	pFront = catFrontModelData.get();
-	//}
-	//if (!pBack) 
-	//{
-	//	std::vector<std::vector<FbxVertex>> vert(1, backVertices);
-	//	std::vector<std::vector<USHORT>> ind(1, backIndices);
-	//	catBackModelData = std::make_unique<ModelData>();
-	//	catBackModelData->Create(vert, ind);
-	//	pBack = catBackModelData.get();
-	//}
+	if (!pFront && !catFrontModelData)
+	{
+		//頂点とインデックスを元にバッファを作成&更新(Map)
+		//バッファ作成よりモデルデータを作成する感じにする?
+		std::vector<std::vector<FbxVertex>> vert(1, frontVertices);
+		std::vector<std::vector<USHORT>> ind(1, frontIndices);
+		catFrontModelData = std::make_unique<ModelData>();
+		catFrontModelData->Create(vert, ind);
+		pFront = catFrontModelData.get();
+	}
+	if (!pBack && !catBackModelData)
+	{
+		std::vector<std::vector<FbxVertex>> vert(1, backVertices);
+		std::vector<std::vector<USHORT>> ind(1, backIndices);
+		catBackModelData = std::make_unique<ModelData>();
+		catBackModelData->Create(vert, ind);
+		pBack = catBackModelData.get();
+	}
+
+
 	//// 全頂点の表裏判定
 	//std::vector<std::vector<Vector3>> vertices = pModelData->GetVerticesPosition();
 	//size_t size = vertices[0].size();

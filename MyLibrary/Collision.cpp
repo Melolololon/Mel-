@@ -583,9 +583,12 @@ bool MelLib::Collision::PlaneAndSegment3D(const PlaneData& plane, const Segment3
 
 	if (segmentResult) 
 	{
+		MelLib::Vector3 vec1 = segment.GetPosition().v1 - plane.GetPosition();
+		MelLib::Vector3 vec2 = segment.GetPosition().v2 - plane.GetPosition();
+
 		//“à•ª”ä‚ð‹‚ßAÕ“Ë“_‚ð‹‚ß‚é
-		float planeToSegV1Dis = abs(Vector3::Dot(plane.GetNormal(), segment.GetPosition().v1)) / plane.GetNormal().Length();
-		float planeToSegV2Dis = abs(Vector3::Dot(plane.GetNormal(), segment.GetPosition().v1)) / plane.GetNormal().Length();
+		float planeToSegV1Dis = abs(Vector3::Dot(plane.GetNormal(), vec1)) / plane.GetNormal().Length();
+		float planeToSegV2Dis = abs(Vector3::Dot(plane.GetNormal(), vec2)) / plane.GetNormal().Length();
 		float naibunhi = planeToSegV1Dis / (planeToSegV1Dis + planeToSegV2Dis);
 
 		segmentResult->planeHitPos = (1 - naibunhi) * segment.GetPosition().v1 + naibunhi * segment.GetPosition().v2;
