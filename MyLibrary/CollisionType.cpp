@@ -360,3 +360,36 @@ void MelLib::FrustumData::SetFar(const float farNum)
 	SetBoardPosition();
 }
 
+void MelLib::TriangleData::CalcNormal()
+{
+	//‰ñ“]“K‰ž
+	rotPos.v1 = MelLib::Quaternion::GetZXYRotateQuaternion(position.v1, angle).ToVector3();
+	rotPos.v2 = MelLib::Quaternion::GetZXYRotateQuaternion(position.v2, angle).ToVector3();
+	rotPos.v3 = MelLib::Quaternion::GetZXYRotateQuaternion(position.v3, angle).ToVector3();
+
+	normal = LibMath::CalcNormal(rotPos.v1, rotPos.v2, rotPos.v3);
+
+}
+
+void MelLib::TriangleData::SetPosition(const Value3<Vector3>& pos)
+{
+	if (position == pos)return;
+
+	position = pos;
+	CalcNormal();
+}
+
+void MelLib::TriangleData::SetAngle(const Vector3& angle)
+{
+	if (this->angle == angle || angle == 0)return;
+
+	this->angle = angle;
+	CalcNormal();
+}
+
+void MelLib::TriangleData::SetTranslationPosition(const Vector3& vec)
+{
+	transVec = vec;
+	transPos = rotPos + vec;
+
+}

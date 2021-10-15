@@ -153,9 +153,13 @@ namespace MelLib
 
 #pragma region メッシュカット
 		/// <summary>
-		/// モデルの切断(仮実装用の関数)
+		/// モデルを平面に応じて切断します。
 		/// </summary>
-		void MeshCat(const PlaneData& plane,ModelData*& pFront, ModelData*& pBack);
+		/// <param name="plane">平面</param>
+		/// <param name="pFront">平面の表側にあるモデル情報を格納するModelDataのポインタ</param>
+		/// <param name="pBack">平面の裏側にあるモデル情報を格納するModelDataのポインタ<</param>
+		/// <param name="createCrossSection">断面を形成するかどうか</param>
+		void MeshCat(const PlaneData& plane,ModelData*& pFront, ModelData*& pBack,const bool createCrossSection);
 #pragma endregion
 
 
@@ -229,7 +233,11 @@ namespace MelLib
 			const bool transformImpact
 		);
 
-
+		/// <summary>
+		/// モデルのポリゴンを当たり判定に使えるデータに変換して返します。
+		/// </summary>
+		/// <returns>モデルを元にセットした三角形の情報の配列</returns>
+		std::vector<std::vector<TriangleData>>GetModelTriangleData()const;
 #pragma endregion
 
 

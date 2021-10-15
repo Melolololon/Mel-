@@ -4,6 +4,8 @@
 
 //”½”­ŒW”float‚Å‚à‚æ‚³‚»‚¤‚¾‚Á‚½‚çfloat‚É•Ï‚¦‚é
 
+// ‚±‚ê‚¾‚ÆŠÖ”‚ª‚©‚È‚è‚Ì—Ê‚É‚È‚é‚©‚çA€–Ú‚²‚Æ‚É•ª‚¯‚½‚Ù‚¤‚ª‚¢‚¢‚©‚à
+
 namespace MelLib
 {
 	//•¨—‰‰ŽZƒNƒ‰ƒX

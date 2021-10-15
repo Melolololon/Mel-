@@ -14,6 +14,8 @@ namespace MelLib
 	//CalcResultをDataに持たせなくてもいいかも
 	//Segment3Dなどのhit座標1つでいいかも
 
+	//これヘッダーファイル分けたほうがいいかも
+
 	//衝突確認フラグ
 	struct CollisionDetectionFlag
 	{
@@ -322,11 +324,50 @@ namespace MelLib
 #pragma endregion
 
 #pragma region 三角形
+	struct TriangleCalcResult
+	{
+		Vector3 lineSegment3DHitPos;
+	};
+
 	class TriangleData
 	{
 	private:
+		Value3<Vector3>position;
+
+		Vector3 angle;
+		Value3<Vector3>rotPos;
+
+		//平行移動する量
+		Vector3 transVec;
+		//平行移動後の座標
+		Value3<Vector3>transPos;
+
+		Vector3 normal;
+
+	private:
+		void CalcNormal();
+
+	public:
+		Value3<Vector3> GetPosition()const { return position; }
+		Value3<Vector3> GetTranslationPosition()const { return transPos; }
+		Vector3 GetAngle()const { return angle; }
+		Vector3 GetTransFormVector()const { return transVec; }
+		Vector3 GetNormal()const { return normal; }
 
 
+		/// <summary>
+		/// 座標をセットします。頂点の順序で法線が変わります。
+		/// </summary>
+		/// <param name="pos"></param>
+		void SetPosition(const Value3<Vector3>& pos);
+		void SetAngle(const Vector3& angle);
+
+		/// <summary>
+		/// 座標を元に回転させた状態からどのくらい動かすのかを設定します。
+		/// </summary>
+		/// <param name="vec"></param>
+		void SetTranslationPosition(const Vector3& vec);
+		
 	};
 #pragma endregion
 

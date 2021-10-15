@@ -177,7 +177,7 @@ void Play::RTTestUpdate()
 	if (MelLib::Input::KeyTrigger(DIK_SPACE) && !isCat) 
 	{
 
-		rtTestObject.MeshCat(planeData, pFront, pBack);
+		rtTestObject.MeshCat(planeData, pFront, pBack,false);
 
 		frontObj.Create(pFront, nullptr);
 		backObj.Create(pBack, nullptr);
@@ -197,6 +197,11 @@ void Play::RTTestUpdate()
 	{
 		isEnd = true;
 	}
+
+
+	std::vector<std::vector<MelLib::TriangleData>>triData;
+	triData = rtTestObject.GetModelTriangleData();
+	int a = 0;
 }
 
 void Play::RTTestDraw()

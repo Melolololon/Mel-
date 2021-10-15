@@ -179,6 +179,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="ClothSimulator.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionType.cpp" />
     <ClCompile Include="Counter.cpp" />
@@ -463,6 +464,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="ClothSimulator.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Counter.h" />
     <ClInclude Include="ErrorProcess.h" />

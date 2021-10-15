@@ -540,7 +540,7 @@ void ModelObject::Draw(const std::string& rtName)
 	DrawCommonProcessing(rtName);
 }
 
-void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, ModelData*& pBack)
+void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, ModelData*& pBack, const bool createCrossSection)
 {
 	//緊急(解決優先度高めの現在の問題点)
 	//1.そもそも四角形でも斬り方によっては5角形になるので、どっちみち面の再形成は必要
@@ -2015,4 +2015,30 @@ std::vector<std::vector<Vector3>> MelLib::ModelObject::GetVerticesData(const boo
 	}
 	return verticesPos;
 
+}
+
+std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData() const
+{
+
+	std::vector<std::vector<Vector3>>vertPos = pModelData->GetVerticesPosition();
+	std::vector<std::vector<USHORT>>vertInd = pModelData->GetIndices();
+
+	std::vector<std::vector<TriangleData>> result(vertInd.size());
+	
+	
+	for (int i = 0; i < vertInd.size(); i++)
+	{
+		result[i].resize(vertInd[i].size() / 3);
+
+		for (int j = 0, loopCount = 0; j < vertInd[i].size(); j += 3, loopCount++)
+		{
+			Value3<Vector3>pos(vertPos[i][vertInd[i][j]], vertPos[i][vertInd[i][j + 1]], vertPos[i][vertInd[i][j + 2]]);
+
+			result[i][loopCount].SetPosition(pos * Vector3(modelConstDatas[i].scale));
+			result[i][loopCount].SetAngle(modelConstDatas[i].angle);
+			result[i][loopCount].SetTranslationPosition(modelConstDatas[i].position);
+		}
+	}
+
+	return result;
 }
