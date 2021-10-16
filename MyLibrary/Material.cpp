@@ -195,7 +195,8 @@ MelLib::ADSAMaterial::ADSAMaterial(ADSAMaterial& mtl)
 
 MelLib::ADSAMaterial& MelLib::ADSAMaterial::operator=(ADSAMaterial& mtl)
 {
-	return ADSAMaterial(mtl);
+	Create(mtl.drawData);
+	return * this;
 }
 
 void MelLib::ADSAMaterial::Create(const DrawData& drawData)

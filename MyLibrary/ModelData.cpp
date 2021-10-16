@@ -828,6 +828,22 @@ MelLib::ModelData::ModelData(ModelData& data)
 
 ModelData& MelLib::ModelData::operator=(ModelData& data)
 {
-	return ModelData(data);
+	Create(data.vertices, data.indices);
+
+	modelName = data.modelName;
+	pTexture.resize(data.vertices.size());
+	material.resize(data.material.size());
+
+	for (int i = 0; i < data.material.size(); i++)
+	{
+		//nullptr‚¶‚á‚È‚©‚Á‚½‚ç¶¬(‘ã“ü‚µ‚½‚ç¶¬‚³‚ê‚é)
+		if (data.material[i])
+		{
+			material[i] = std::make_unique<ADSAMaterial>();
+			*material[i] = *data.material[i];
+		}
+	}
+
+	return *this;
 }
 

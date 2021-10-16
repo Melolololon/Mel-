@@ -697,7 +697,15 @@ MelLib::PipelineState::PipelineState(PipelineState& pso)
 
 PipelineState& MelLib::PipelineState::operator=(PipelineState& pso)
 {
-	return PipelineState(pso);
+	CreatePipeline
+	(
+		pso.drawData,
+		pso.shaderSet,
+		pso.pipelineType,
+		pso.inputLayoutData.get(),
+		pso.renderTargetNum
+	);
+	return *this;
 }
 
 bool PipelineState::Initialize
