@@ -540,8 +540,9 @@ void ModelObject::Draw(const std::string& rtName)
 	DrawCommonProcessing(rtName);
 }
 
-void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, ModelData*& pBack, const bool createCrossSection)
+bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, ModelData*& pBack, const bool createCrossSection)
 {
+
 	//緊急(解決優先度高めの現在の問題点)
 	//1.そもそも四角形でも斬り方によっては5角形になるので、どっちみち面の再形成は必要
 	//やり方は、斬られた辺の自分側(反対側じゃない方)の頂点と衝突点で多角形の三角形化を行う
@@ -622,7 +623,8 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 	//三角形内部に頂点があるかないかの確認実装しといてね
 
-
+	//法線0だったら切断できないため、false
+	if (plane.GetNormal() == 0.0f)return false;
 
 	// 平面情報(回転適応のため、作り直し)
 	PlaneData rotPlane;
@@ -742,6 +744,42 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 	USHORT backIndex = 0;
 	for (const auto& tri : modelTri)
 	{
+		//ヒットしてるのに表裏に分かれてないということは頂点にかすってるだけなので、分割しない
+		if(tri.hitResult.v1 || tri.hitResult.v2 || tri.hitResult.v3)
+		{
+			
+			if(tri.vertFB.v1 != -1 && tri.vertFB.v2 != -1 && tri.vertFB.v3 != -1
+				|| tri.vertFB.v1 != 1 && tri.vertFB.v2 != 1 && tri.vertFB.v3 != 1)
+			{
+				if (tri.vertFB.v1 == 1 || tri.vertFB.v2 == 1 || tri.vertFB.v3 == 1)
+				{
+					frontVertices.push_back(tri.vertData.v1);
+					frontVertices.push_back(tri.vertData.v2);
+					frontVertices.push_back(tri.vertData.v3);
+
+					frontIndices.push_back(frontIndex);
+					frontIndices.push_back(frontIndex + 1);
+					frontIndices.push_back(frontIndex + 2);
+
+					frontIndex += 3;
+				}
+				else if(tri.vertFB.v1 == -1 || tri.vertFB.v2 == -1 || tri.vertFB.v3 == -1)
+				{
+					backVertices.push_back(tri.vertData.v1);
+					backVertices.push_back(tri.vertData.v2);
+					backVertices.push_back(tri.vertData.v3);
+
+					backIndices.push_back(backIndex);
+					backIndices.push_back(backIndex + 1);
+					backIndices.push_back(backIndex + 2);
+
+					backIndex += 3;
+				}
+				continue;
+			}
+		}
+
+
 		//一時的に格納するための配列
 		std::vector<FbxVertex>fVert;
 		std::vector<FbxVertex>bVert;
@@ -776,22 +814,6 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			}
 			continue;
 		}
-
-		//衝突点と頂点が同じだったら、表裏均等に分配
-		//if(Vector3(tri.vertData.v1.pos) == Vector3(tri.hitPosVert.v1.pos)
-		//	|| Vector3(tri.vertData.v1.pos) == Vector3(tri.hitPosVert.v2.pos)
-		//	|| Vector3(tri.vertData.v1.pos) == Vector3(tri.hitPosVert.v3.pos)
-		//	|| Vector3(tri.vertData.v2.pos) == Vector3(tri.hitPosVert.v1.pos)
-		//	|| Vector3(tri.vertData.v2.pos) == Vector3(tri.hitPosVert.v2.pos)
-		//	|| Vector3(tri.vertData.v2.pos) == Vector3(tri.hitPosVert.v3.pos)
-		//	|| Vector3(tri.vertData.v3.pos) == Vector3(tri.hitPosVert.v1.pos)
-		//	|| Vector3(tri.vertData.v3.pos) == Vector3(tri.hitPosVert.v2.pos)
-		//	|| Vector3(tri.vertData.v3.pos) == Vector3(tri.hitPosVert.v3.pos))
-		//{
-		//	
-		//	continue;
-		//}
-
 
 		//偏ってなかったら、表裏ごとに格納
 
@@ -1719,6 +1741,9 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 	}
 
+	//完全にどっちかに偏っていたら切れてないので、false
+	if (frontVertices.size() == 0 || backVertices.size() == 0)return false;
+
 	//ここで、断面の情報をセットしていく
 
 	if (!pFront && !catFrontModelData)
@@ -1740,6 +1765,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 		pBack = catBackModelData.get();
 	}
 
+	return true;
 
 	//// 全頂点の表裏判定
 	//std::vector<std::vector<Vector3>> vertices = pModelData->GetVerticesPosition();
@@ -1790,6 +1816,8 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 
 	//int z = 0;
+
+
 }
 
 void ModelObject::SetPosition(const Vector3& position)

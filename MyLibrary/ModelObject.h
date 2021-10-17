@@ -159,7 +159,8 @@ namespace MelLib
 		/// <param name="pFront">平面の表側にあるモデル情報を格納するModelDataのポインタ</param>
 		/// <param name="pBack">平面の裏側にあるモデル情報を格納するModelDataのポインタ<</param>
 		/// <param name="createCrossSection">断面を形成するかどうか</param>
-		void MeshCat(const PlaneData& plane,ModelData*& pFront, ModelData*& pBack,const bool createCrossSection);
+		/// <returns>切断できたかどうか</returns>
+		bool MeshCat(const PlaneData& plane,ModelData*& pFront, ModelData*& pBack,const bool createCrossSection);
 #pragma endregion
 
 
