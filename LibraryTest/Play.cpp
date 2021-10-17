@@ -130,7 +130,7 @@ void Play::CollisionTestDraw()
 
 void Play::RTTestInitialize()
 {
-	rtTestObject.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::TRIANGLE), nullptr);
+	rtTestObject.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOARD), nullptr);
 }
 
 void Play::RTTestUpdate()
@@ -174,14 +174,16 @@ void Play::RTTestUpdate()
 	
 	MelLib::ModelData* pFront = nullptr;
 	MelLib::ModelData* pBack = nullptr;
-	if (MelLib::Input::KeyTrigger(DIK_SPACE) && !isCat) 
+	if (MelLib::Input::KeyTrigger(DIK_SPACE) && !isCat)
 	{
 
-		rtTestObject.MeshCat(planeData, pFront, pBack,false);
-
-		frontObj.Create(pFront, nullptr);
-		backObj.Create(pBack, nullptr);
-		isCat = true;
+		bool res = rtTestObject.MeshCat(planeData, pFront, pBack, false);
+		if (res) 
+		{
+			frontObj.Create(pFront, nullptr);
+			backObj.Create(pBack, nullptr);
+			isCat = true;
+		}
 	}
 	if(isCat)
 	{
