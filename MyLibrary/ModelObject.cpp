@@ -777,6 +777,21 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			continue;
 		}
 
+		//衝突点と頂点が同じだったら、表裏均等に分配
+		//if(Vector3(tri.vertData.v1.pos) == Vector3(tri.hitPosVert.v1.pos)
+		//	|| Vector3(tri.vertData.v1.pos) == Vector3(tri.hitPosVert.v2.pos)
+		//	|| Vector3(tri.vertData.v1.pos) == Vector3(tri.hitPosVert.v3.pos)
+		//	|| Vector3(tri.vertData.v2.pos) == Vector3(tri.hitPosVert.v1.pos)
+		//	|| Vector3(tri.vertData.v2.pos) == Vector3(tri.hitPosVert.v2.pos)
+		//	|| Vector3(tri.vertData.v2.pos) == Vector3(tri.hitPosVert.v3.pos)
+		//	|| Vector3(tri.vertData.v3.pos) == Vector3(tri.hitPosVert.v1.pos)
+		//	|| Vector3(tri.vertData.v3.pos) == Vector3(tri.hitPosVert.v2.pos)
+		//	|| Vector3(tri.vertData.v3.pos) == Vector3(tri.hitPosVert.v3.pos))
+		//{
+		//	
+		//	continue;
+		//}
+
 
 		//偏ってなかったら、表裏ごとに格納
 
@@ -793,7 +808,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 		{
 			fVert.push_back(tri.vertData.v1);
 		}
-		else
+		else if (tri.vertFB.v1 == -1)
 		{
 			bVert.push_back(tri.vertData.v1);
 		}
@@ -801,7 +816,7 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 		{
 			fVert.push_back(tri.vertData.v2);
 		}
-		else
+		else if (tri.vertFB.v2 == -1)
 		{
 			bVert.push_back(tri.vertData.v2);
 		}
@@ -809,12 +824,14 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 		{
 			fVert.push_back(tri.vertData.v3);
 		}
-		else
+		else if (tri.vertFB.v3 == -1)
 		{
 			bVert.push_back(tri.vertData.v3);
 			
 		}
 		
+
+		bool addVert = true;
 		//片方の場合(多角形の面形成いらない場合)
 		if(fVert.size() == 1)
 		{
@@ -822,18 +839,46 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 			if (tri.hitResult.v1)
 			{
-				frontVertices.push_back(tri.hitPosVert.v1);
-				fVert.push_back(tri.hitPosVert.v1);
+				if (Vector3(frontVertices[0].pos) != Vector3(tri.hitPosVert.v1.pos)) 
+				{
+					frontVertices.push_back(tri.hitPosVert.v1);
+					fVert.push_back(tri.hitPosVert.v1);
+				}
 			}
 			if (tri.hitResult.v2)
 			{
-				frontVertices.push_back(tri.hitPosVert.v2);
-				fVert.push_back(tri.hitPosVert.v2);
+				for (int i = 0; i < frontVertices.size(); i++)
+				{
+					if (Vector3(frontVertices[i].pos) == Vector3(tri.hitPosVert.v2.pos))
+					{
+						addVert = false;
+						break;
+					}
+				}
+
+				if (addVert)
+				{
+					frontVertices.push_back(tri.hitPosVert.v2);
+					fVert.push_back(tri.hitPosVert.v2);
+				}
 			}
+			
+			addVert = true;
 			if (tri.hitResult.v3)
 			{
-				frontVertices.push_back(tri.hitPosVert.v3);
-				fVert.push_back(tri.hitPosVert.v3);
+				for (int i = 0; i < frontVertices.size(); i++)
+				{
+					if (Vector3(frontVertices[i].pos) == Vector3(tri.hitPosVert.v3.pos))
+					{
+						addVert = false;
+						break;
+					}
+				}
+				if (addVert)
+				{
+					frontVertices.push_back(tri.hitPosVert.v3);
+					fVert.push_back(tri.hitPosVert.v3);
+				}
 			}
 
 			Vector3 cross;
@@ -1051,24 +1096,53 @@ void MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 		}
 
+
 		if (bVert.size() == 1)
 		{
 			backVertices.push_back(bVert[0]);
 
+			bool addVert = true;
 			if (tri.hitResult.v1)
 			{
-				backVertices.push_back(tri.hitPosVert.v1);
-				bVert.push_back(tri.hitPosVert.v1);
+				if (Vector3(backVertices[0].pos) != Vector3(tri.hitPosVert.v2.pos)) 
+{
+					backVertices.push_back(tri.hitPosVert.v1);
+					bVert.push_back(tri.hitPosVert.v1);
+				}
 			}
 			if (tri.hitResult.v2)
 			{
-				backVertices.push_back(tri.hitPosVert.v2);
-				bVert.push_back(tri.hitPosVert.v2);
+				for (int i = 0; i < backVertices.size(); i++)
+				{
+					if (Vector3(backVertices[i].pos) == Vector3(tri.hitPosVert.v2.pos))
+					{
+						addVert = false;
+						break;
+					}
+				}
+				if(addVert)
+				{
+					backVertices.push_back(tri.hitPosVert.v2);
+					bVert.push_back(tri.hitPosVert.v2);
+				}
 			}
+			
+			addVert = true;
 			if (tri.hitResult.v3)
 			{
-				backVertices.push_back(tri.hitPosVert.v3);
-				bVert.push_back(tri.hitPosVert.v3);
+				for (int i = 0; i < backVertices.size(); i++)
+				{
+					if (Vector3(backVertices[i].pos) == Vector3(tri.hitPosVert.v3.pos))
+					{
+						addVert = false;
+						break;
+					}
+				}
+				if(addVert)
+				{
+					backVertices.push_back(tri.hitPosVert.v3);
+					bVert.push_back(tri.hitPosVert.v3);
+				}
 			}
 
 			Vector3 cross;
