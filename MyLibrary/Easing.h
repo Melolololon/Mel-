@@ -42,40 +42,79 @@ namespace MelLib
 	class Easing
 	{
 	private:
-		V value;
-		V start;
-		V end;
+		V value = 0.0f;
+		V start = 0.0f;
+		V end = 1.0f;
 
 		//パーセント
 		float par = 0.0f;
+		//関数呼び出し時の加算値
+		float addPar = 0.0f;
 
-		void CalcEasing(const V startPos, const V endPos, const float par) { return startPos * (1.0f - (par / 100.0f)) + endPos * (par / 100.0f); }
+		void CalcEasing(const V startPos, const V endPos, const float par) 
+		{
+			value = startPos * (1.0f - (par / 100.0f)) + endPos * (par / 100.0f); 
+		}
 	public:
 		Easing() {}
-		Easing(V start, V end) :start(start), end(end), par(0.0f) {}
+		Easing(V start, V end) :start(start), end(end) {}
 		Easing(V start, V end, const float par) :start(start), end(end), par(par) {}
+		Easing(V start, V end, const float addPar) :start(start), end(end), addPar(addPar) {}
+		Easing(V start, V end, const float par, const float addPar) :start(start), end(end), par(par), addPar(addPar) {}
 
 
-		void EaseIn()
+		V EaseIn()
 		{
+			par += addPar;
 			float p = (par * par);
-			return CalcEasing(start, end, p);
+			CalcEasing(start, end, p);
+			return v;
 		}
 
-		void EaseOut()
+		V EaseOut()
 		{
+			par += addPar;
 			float p = par * (2 - par);
-			return CalcEasing(start, end, p);
+			CalcEasing(start, end, p);
+			return v;
 		}
 
-		void EaseInOut()
+		V EaseInOut()
 		{
+			par += addPar;
 			float p = par * par * (3 - 2 * par);
-			return CalcEasing(start, end, p);
+			CalcEasing(start, end, p);
+			return v;
 		}
 
+		/// <summary>
+		/// 範囲の開始をセットします。
+		/// </summary>
+		/// <param name="start"></param>
 		void SetStart(const V start) { this->start = start; }
+
+		/// <summary>
+		/// 範囲の終了をセットします。
+		/// </summary>
+		/// <param name="end"></param>
 		void SetEnd(const V end) { this->end = end; }
+
+		/// <summary>
+		/// startからendの範囲どの辺かを%で設定します。
+		/// </summary>
+		/// <param name="par"></param>
 		void SetPar(const float par) { this->par = par; }
+
+		/// <summary>
+		/// EaseInなどのvalueに代入する関数を呼び出した時に加算する値を設定します。
+		/// </summary>
+		/// <param name="par"></param>
+		void SetAddPar(const float par) { addPar = par; }
+
+		V GetValue() { return value; }
+		V GetStart() { return start; }
+		V GetEnd() { return end; }
+		V GetPar() { return par; }
+		V GetAddPar() { return addPar; }
 	};
 }
