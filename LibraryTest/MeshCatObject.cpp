@@ -15,7 +15,7 @@ MeshCatObject::MeshCatObject(MelLib::Vector3 pos, MelLib::ModelData* pModel)
 	}
 	else
 	{
-		modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOARD), nullptr);
+		modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
 		modelObjects["main"].SetScale(2);
 	}
 
@@ -32,8 +32,8 @@ void MeshCatObject::Update()
 		bool res = modelObjects["main"].MeshCat(*pPlaneData, pFront, pBack, false);
 		if (res)
 		{
-			MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<MeshCatObject>(pPlaneData->GetNormal() * 0.4f, pFront));
-			MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<MeshCatObject>(pPlaneData->GetNormal() * -0.4f, pBack));
+			MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<MeshCatObject>(pPlaneData->GetNormal() * 0.2f, pFront));
+			MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<MeshCatObject>(pPlaneData->GetNormal() * -0.2f, pBack));
 			//eraseManager = true;
 			isCat = true;
 		}

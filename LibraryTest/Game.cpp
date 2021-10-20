@@ -28,7 +28,7 @@ Game* Game::GetInstance()
 void Game::Run()
 {
 
-	MelLib::ImguiManager::GetInstance()->SetReleaseDrawFlag(false);
+	MelLib::ImguiManager::GetInstance()->SetReleaseDrawFlag(true);
 
 	Initialize();
 

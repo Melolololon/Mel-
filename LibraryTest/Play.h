@@ -8,6 +8,7 @@ class Play:public MelLib::Scene
 private:
 	std::unique_ptr<MelLib::Sprite2D>sprite2DTest;
 	MelLib::Vector2 scale = 1;
+	MelLib::Vector3 angle;
 
 #pragma region ”»’èƒeƒXƒg
 

@@ -154,7 +154,7 @@ void Play::RTTestUpdate()
 	MelLib::ImguiManager::GetInstance()->BeginDrawWindow("Plane");
 
 	MelLib::Vector3 pos = planeData.GetPosition();
-	MelLib::ImguiManager::GetInstance()->DrawSliderVector3("pos", pos, -2, 2);
+	MelLib::ImguiManager::GetInstance()->DrawSliderVector3("pos", pos, -5, 5);
 
 
 	MelLib::Vector3 normal = planeData.GetNormal();
@@ -222,6 +222,26 @@ void Play::RTTestUpdate()
 	//int a = 0;
 
 
+	if(MelLib::Input::KeyState(DIK_UP))
+	{
+		angle.x -= 2;
+	}
+	if (MelLib::Input::KeyState(DIK_DOWN))
+	{
+		angle.x += 2;
+	}
+	if (MelLib::Input::KeyState(DIK_LEFT))
+	{
+		angle.y -= 2;
+	}
+	if (MelLib::Input::KeyState(DIK_RIGHT))
+	{
+		angle.y += 2;
+	}
+	MelLib::Camera::Get()->SetAngle(angle);
+	MelLib::Camera::Get()->SetRotatePoint(MelLib::Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
+	MelLib::Camera::Get()->SetCameraToTargetDistance(10.0f);
+	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,0,0));
 }
 
 void Play::RTTestDraw()
