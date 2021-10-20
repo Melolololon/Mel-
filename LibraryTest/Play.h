@@ -27,6 +27,7 @@ private:
 	bool isCat = false;
 
 	bool isNormalize = false;
+	bool isReset = false;
 	MelLib::PlaneData planeData;
 
 	void RTTestInitialize();

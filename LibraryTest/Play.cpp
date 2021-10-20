@@ -2,6 +2,8 @@
 
 #include"CollisionTestObject.h"
 
+#include"MeshCatObject.h"
+
 #include"GameObjectManager.h"
 #include"Camera.h"
 #include"SpriteFont2D.h"
@@ -130,7 +132,12 @@ void Play::CollisionTestDraw()
 
 void Play::RTTestInitialize()
 {
-	rtTestObject.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOARD), nullptr);
+	//rtTestObject.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOARD), nullptr);
+
+	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<MeshCatObject>(0,nullptr));
+
+
+	MeshCatObject::SetPlaneData(&planeData);
 }
 
 void Play::RTTestUpdate()
@@ -161,18 +168,27 @@ void Play::RTTestUpdate()
 		isNormalize = false;
 	}
 
+	MelLib::ImguiManager::GetInstance()->DrawCheckBox("reset", isReset);
+	if (isReset)
+	{
+		normal = 0;
+		isReset = false;
+	}
+
+
 	MelLib::ImguiManager::GetInstance()->EndDrawWindow();
 
 	
 
 
-	rtTestObject.SetAngle(MelLib::Vector3(0, 0, 0));
-	rtTestObject.SetScale(4);
+	//rtTestObject.SetAngle(MelLib::Vector3(0, 0, 0));
+	//rtTestObject.SetScale(4);
 	planeData.SetNormal(normal);
 	planeData.SetPosition(pos);
 	
-	
-	MelLib::ModelData* pFront = nullptr;
+
+
+	/*MelLib::ModelData* pFront = nullptr;
 	MelLib::ModelData* pBack = nullptr;
 	if (MelLib::Input::KeyTrigger(DIK_SPACE) && !isCat)
 	{
@@ -193,7 +209,7 @@ void Play::RTTestUpdate()
 		backPos.y -= 0.1f;
 		backObj.SetPosition(backPos);
 
-	}
+	}*/
 
 	if(MelLib::Input::KeyTrigger(DIK_Z))
 	{
@@ -201,25 +217,25 @@ void Play::RTTestUpdate()
 	}
 
 
-	std::vector<std::vector<MelLib::TriangleData>>triData;
-	triData = rtTestObject.GetModelTriangleData();
-	int a = 0;
+	//std::vector<std::vector<MelLib::TriangleData>>triData;
+	//triData = rtTestObject.GetModelTriangleData();
+	//int a = 0;
+
+
 }
 
 void Play::RTTestDraw()
 {
 	
-
-	if (isCat)
-	{
-		frontObj.Draw();
-		backObj.Draw();
-	}
-	else
-	{
-		rtTestObject.Draw();
-	}
-
+	//if (isCat)
+	//{
+	//	frontObj.Draw();
+	//	backObj.Draw();
+	//}
+	//else
+	//{
+	//	rtTestObject.Draw();
+	//}
 }
 
 
@@ -238,15 +254,9 @@ void Play::Initialize()
 void Play::Update()
 {
 	RTTestUpdate();
+
 	MelLib::GameObjectManager::GetInstance()->Update();
-
-
-	MelLib::PlaneData b;
-	b.SetNormal(MelLib::Vector3(0, 0, -1));
-	MelLib::Segment3DData s;
-	s.SetPosition(MelLib::Value2<MelLib::Vector3>(MelLib::Vector3(5, 0, -5), MelLib::Vector3(5, 0, 5)));
-	MelLib::Segment3DCalcResult r;
-	MelLib::Collision::PlaneAndSegment3D(b, s, &r);
+	int z = 0;
 }
 
 void Play::Draw()
@@ -258,6 +268,7 @@ void Play::Draw()
 
 void Play::Finalize()
 {
+	MelLib::GameObjectManager::GetInstance()->AllEraseObject();
 }
 
 MelLib::Scene* Play::GetNextScene()

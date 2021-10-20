@@ -160,11 +160,13 @@
     <ClCompile Include="CollisionTestObject.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MeshCatObject.cpp" />
     <ClCompile Include="Play.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CollisionTestObject.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="MeshCatObject.h" />
     <ClInclude Include="Play.h" />
   </ItemGroup>
   <ItemGroup>

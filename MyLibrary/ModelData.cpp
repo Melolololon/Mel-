@@ -325,6 +325,7 @@ void MelLib::ModelData::CreateModel()
 
 	modelFormat = ModelFormat::MODEL_FORMAT_PRIMITIVE;
 	material.resize(vertices.size());
+	directionMaxPos = CalcDirectionMaxPosition(vertices);
 }
 
 bool MelLib::ModelData::Create(std::vector<std::vector<FbxVertex>> vertices, std::vector<std::vector<USHORT>> indices, const bool batchDeletionFlag, const std::string& name)

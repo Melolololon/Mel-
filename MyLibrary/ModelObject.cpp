@@ -621,6 +621,8 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 	//三角形の座標どっちか、その座標が使われてる辺の衝突点、もう一個の衝突点、残りの座標という順序を使えばよい
 
 
+	if (catFrontModelData || catBackModelData)return false;
+
 	//三角形内部に頂点があるかないかの確認実装しといてね
 
 	//法線0だったら切断できないため、false
@@ -739,9 +741,12 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 	std::vector<USHORT>frontIndices;
 	std::vector<USHORT>backIndices;
 
+
+
 	//三角形を見ていって、格納していく
 	USHORT frontIndex = 0;
 	USHORT backIndex = 0;
+
 	for (const auto& tri : modelTri)
 	{
 		//ヒットしてるのに表裏に分かれてないということは頂点にかすってるだけなので、分割しない
@@ -861,7 +866,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 			if (tri.hitResult.v1)
 			{
-				if (Vector3(frontVertices[0].pos) != Vector3(tri.hitPosVert.v1.pos)) 
+				if (Vector3(fVert[0].pos) != Vector3(tri.hitPosVert.v1.pos))
 				{
 					frontVertices.push_back(tri.hitPosVert.v1);
 					fVert.push_back(tri.hitPosVert.v1);
@@ -869,9 +874,9 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			}
 			if (tri.hitResult.v2)
 			{
-				for (int i = 0; i < frontVertices.size(); i++)
+				for (int i = 0; i < fVert.size(); i++)
 				{
-					if (Vector3(frontVertices[i].pos) == Vector3(tri.hitPosVert.v2.pos))
+					if (Vector3(fVert[i].pos) == Vector3(tri.hitPosVert.v2.pos))
 					{
 						addVert = false;
 						break;
@@ -888,9 +893,9 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			addVert = true;
 			if (tri.hitResult.v3)
 			{
-				for (int i = 0; i < frontVertices.size(); i++)
+				for (int i = 0; i < fVert.size(); i++)
 				{
-					if (Vector3(frontVertices[i].pos) == Vector3(tri.hitPosVert.v3.pos))
+					if (Vector3(fVert[i].pos) == Vector3(tri.hitPosVert.v3.pos))
 					{
 						addVert = false;
 						break;
@@ -994,6 +999,8 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			int farVertIndex = 0;
 
 			std::vector<int>skipVertIndices;
+
+			int vertCount = fVert.size();
 			//表
 			while (1)
 			{
@@ -1003,10 +1010,12 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				//一番遠い頂点を求める
 				for (int i = 0, size = fVert.size(); i < size; i++)
 				{
+					bool skip = false;
 					for (const auto& ind : skipVertIndices)
 					{
-						if (i == ind)i++;
+						if (i == ind)skip = true;
 					}
+					if (skip)continue;
 
 
 					float dis = Vector3(fVert[i].pos).Length();
@@ -1041,7 +1050,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 						if (ind == farAddIndex || farAddIndex == farVertIndex)
 						{
 							farAddIndex++;
-							if (farAddIndex >= frontVertices.size())farAddIndex = 0;
+							if (farAddIndex >= fVert.size())farAddIndex = 0;
 						}
 						else
 						{
@@ -1064,7 +1073,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 						break;
 					}
 				}*/
-				if (farSubIndex <= 0)farSubIndex = fVert.size() - 1;
+				if (farSubIndex < 0)farSubIndex = 3;
 				whileEnd = false;
 				while (!whileEnd && skipVertIndices.size() != 0)
 				{
@@ -1073,7 +1082,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 						if (ind == farSubIndex || farSubIndex == farVertIndex || farSubIndex == farAddIndex)
 						{
 							farSubIndex--;
-							if (farSubIndex <= 0)farSubIndex = frontVertices.size() - 1;
+							if (farSubIndex < 0)farSubIndex = 3;
 						}
 						else
 						{
@@ -1081,9 +1090,6 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 						}
 					}
 				}
-
-				
-
 
 				//三角形を形成
 
@@ -1107,11 +1113,13 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				}
 
 				//原点から一番遠い点を削除
-				fVert.erase(fVert.begin() + farVertIndex);
+				//fVert.erase(fVert.begin() + farVertIndex);
+				vertCount--;
 				skipVertIndices.push_back(farVertIndex);
 
 				//形成不可になったら終了
-				if (fVert.size() == 2)break;
+				//if (fVert.size() == 2)break;
+				if (vertCount == 2)break;
 
 			}
 			frontIndex += 4;
@@ -1126,17 +1134,19 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			bool addVert = true;
 			if (tri.hitResult.v1)
 			{
-				if (Vector3(backVertices[0].pos) != Vector3(tri.hitPosVert.v2.pos)) 
-{
+				if (Vector3(bVert[0].pos) != Vector3(tri.hitPosVert.v2.pos))
+				{
 					backVertices.push_back(tri.hitPosVert.v1);
 					bVert.push_back(tri.hitPosVert.v1);
 				}
 			}
 			if (tri.hitResult.v2)
 			{
-				for (int i = 0; i < backVertices.size(); i++)
+				for (int i = 0; i < bVert.size(); i++)
 				{
-					if (Vector3(backVertices[i].pos) == Vector3(tri.hitPosVert.v2.pos))
+					//これだと、衝突点が他の三角形で含まれたら、絶対に入らなくなって頂点足りなくてエラー出る
+					//backVerticesじゃなくてbVertでいける?
+					if (Vector3(bVert[i].pos) == Vector3(tri.hitPosVert.v2.pos))
 					{
 						addVert = false;
 						break;
@@ -1152,9 +1162,9 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			addVert = true;
 			if (tri.hitResult.v3)
 			{
-				for (int i = 0; i < backVertices.size(); i++)
+				for (int i = 0; i < bVert.size(); i++)
 				{
-					if (Vector3(backVertices[i].pos) == Vector3(tri.hitPosVert.v3.pos))
+					if (Vector3(bVert[i].pos) == Vector3(tri.hitPosVert.v3.pos))
 					{
 						addVert = false;
 						break;
@@ -1258,6 +1268,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			int farVertIndex = 0;
 
 			std::vector<int>skipVertIndices;
+			int vertCount = bVert.size();
 			//裏
 			while (1)
 			{
@@ -1267,10 +1278,12 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				//一番遠い頂点を求める
 				for (int i = 0, size = bVert.size(); i < size; i++)
 				{
+					bool skip = false;
 					for(const auto& ind : skipVertIndices)
 					{
-						if (i == ind)i++;
+						if (i == ind)skip = true;
 					}
+					if (skip)continue;
 
 					float dis = Vector3(bVert[i].pos).Length();
 					if (farVertDis <= dis)
@@ -1305,7 +1318,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 						if (ind == farAddIndex || farAddIndex == farVertIndex)
 						{
 							farAddIndex++;
-							if (farAddIndex >= backVertices.size())farAddIndex = 0;
+							if (farAddIndex >= bVert.size())farAddIndex = 0;
 						}
 						else
 						{
@@ -1317,7 +1330,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 
 				int farSubIndex = farVertIndex - 1;
-				if (farSubIndex <= 0)farSubIndex = bVert.size() - 1;
+				if (farSubIndex < 0)farSubIndex = 3;
 				/*for (const auto& ind : skipVertIndices)
 				{
 					if (ind == farSubIndex)
@@ -1335,7 +1348,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 						if (ind == farSubIndex || farSubIndex == farVertIndex || farSubIndex == farAddIndex)
 						{
 							farSubIndex--;
-							if (farSubIndex <= 0)farSubIndex = backVertices.size() - 1;
+							if (farSubIndex < 0)farSubIndex = 3;
 						}
 						else
 						{
@@ -1367,377 +1380,19 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				}
 
 				//原点から一番遠い点を削除
-				bVert.erase(bVert.begin() + farVertIndex);
+				//bVert.erase(bVert.begin() + farVertIndex);
+				vertCount--;
 				skipVertIndices.push_back(farVertIndex);
 
 
 				//形成不可になったら終了
-				if (bVert.size() == 2)break;
+				//if (bVert.size() == 2)break;
+				if (vertCount == 2)break;
 
 			}
 			backIndex += 4;
 
 		}
-
-
-#pragma region 旧
-
-
-
-		//平面と辺が当たっていたら衝突点を格納
-		//if (tri.hitResult.v1)
-		//{
-		//	frontVertices.push_back(tri.hitPosVert.v1);
-		//	fVert.push_back(tri.hitPosVert.v1);
-		//	fVertInd.push_back(frontIndex);
-		//	frontIndex++;
-
-		//	backVertices.push_back(tri.hitPosVert.v1);
-		//	bVert.push_back(tri.hitPosVert.v1);
-		//	bVertInd.push_back(backIndex);
-		//	backIndex++;
-
-		//}
-		//if (tri.hitResult.v2)
-		//{
-		//	frontVertices.push_back(tri.hitPosVert.v2);
-		//	fVert.push_back(tri.hitPosVert.v2);
-		//	fVertInd.push_back(frontIndex);
-		//	frontIndex++;
-
-		//	backVertices.push_back(tri.hitPosVert.v2);
-		//	bVert.push_back(tri.hitPosVert.v2);
-		//	bVertInd.push_back(backIndex);
-		//	backIndex++;
-		//}
-		//if (tri.hitResult.v3)
-		//{
-		//	frontVertices.push_back(tri.hitPosVert.v3);
-		//	fVert.push_back(tri.hitPosVert.v3);
-		//	fVertInd.push_back(frontIndex);
-		//	frontIndex++;
-
-		//	backVertices.push_back(tri.hitPosVert.v3);
-		//	bVert.push_back(tri.hitPosVert.v3);
-		//	bVertInd.push_back(backIndex);
-		//	backIndex++;
-		//}
-
-		////三角形の頂点を格納するついでに、衝突点も格納するようにする
-		//if (tri.vertFB.v1 == 1)
-		//{
-		//	frontVertices.push_back(tri.vertData.v1);
-
-		//	//tri.vertData.v1が含まれてるかつ、切断
-		//}
-		//else
-		//{
-		//	backVertices.push_back(tri.vertData.v1);
-		//	bVert.push_back(tri.vertData.v1);
-
-		//	bVertInd.push_back(backIndex);
-		//	backIndex += 2;
-		//}
-		//if (tri.vertFB.v2 == 1)
-		//{
-		//	frontVertices.push_back(tri.vertData.v2);
-		//	fVert.push_back(tri.vertData.v2);
-
-		//	fVertInd.push_back(frontIndex);
-		//	frontIndex += 2;
-		//}
-		//else
-		//{
-		//	backVertices.push_back(tri.vertData.v2);
-		//	bVert.push_back(tri.vertData.v2);
-
-		//	bVertInd.push_back(backIndex);
-
-		//	backIndex += 2;
-		//}
-		//if (tri.vertFB.v3 == 1)
-		//{
-		//	frontVertices.push_back(tri.vertData.v3);
-		//	fVert.push_back(tri.vertData.v3);
-
-		//	fVertInd.push_back(frontIndex);
-		//	frontIndex += 2;
-		//}
-		//else
-		//{
-		//	backVertices.push_back(tri.vertData.v3);
-		//	bVert.push_back(tri.vertData.v3);
-
-		//	bVertInd.push_back(backIndex);
-
-		//	backIndex += 2;
-		//}
-
-#pragma endregion
-
-#pragma region 変更前
-
-
-
-		//////三角形の頂点を格納
-		////if (tri.vertFB.v1 == 1)
-		////{
-		////	frontVertices.push_back(tri.vertData.v1);
-		////	fVert.push_back(tri.vertData.v1);
-
-		////	fVertInd.push_back(frontIndex);
-		////	frontIndex += 2;
-		////}
-		////else
-		////{
-		////	backVertices.push_back(tri.vertData.v1);
-		////	bVert.push_back(tri.vertData.v1);
-
-		////	bVertInd.push_back(backIndex);
-		////	backIndex+= 2;
-		////}
-		////if (tri.vertFB.v2 == 1)
-		////{
-		////	frontVertices.push_back(tri.vertData.v2);
-		////	fVert.push_back(tri.vertData.v2);
-
-		////	fVertInd.push_back(frontIndex);
-		////	frontIndex += 2;
-		////}
-		////else
-		////{
-		////	backVertices.push_back(tri.vertData.v2);
-		////	bVert.push_back(tri.vertData.v2);
-
-		////	bVertInd.push_back(backIndex);
-
-		////	backIndex += 2;
-		////}
-		////if (tri.vertFB.v3 == 1)
-		////{
-		////	frontVertices.push_back(tri.vertData.v3);
-		////	fVert.push_back(tri.vertData.v3); 
-		////	
-		////	fVertInd.push_back(frontIndex);
-		////	frontIndex += 2;
-		////}
-		////else
-		////{
-		////	backVertices.push_back(tri.vertData.v3);
-		////	bVert.push_back(tri.vertData.v3);
-
-		////	bVertInd.push_back(backIndex);
-
-		////	backIndex += 2;
-		////}
-
-
-		//////平面と辺が当たっていたら衝突点を格納
-		////if (tri.hitResult.v1)
-		////{
-		////	frontVertices.push_back(tri.hitPosVert.v1);
-		////	fVert.push_back(tri.hitPosVert.v1);
-		////	fVertInd.push_back(frontIndex);
-		////	frontIndex++;
-
-		////	backVertices.push_back(tri.hitPosVert.v1);
-		////	bVert.push_back(tri.hitPosVert.v1);
-		////	bVertInd.push_back(backIndex);
-		////	backIndex++;
-
-		////}
-		////if (tri.hitResult.v2)
-		////{
-		////	frontVertices.push_back(tri.hitPosVert.v2);
-		////	fVert.push_back(tri.hitPosVert.v2);
-		////	fVertInd.push_back(frontIndex);
-		////	frontIndex++;
-
-		////	backVertices.push_back(tri.hitPosVert.v2);
-		////	bVert.push_back(tri.hitPosVert.v2);
-		////	bVertInd.push_back(backIndex);
-		////	backIndex++;
-		////}
-		////if (tri.hitResult.v3)
-		////{
-		////	frontVertices.push_back(tri.hitPosVert.v3);
-		////	fVert.push_back(tri.hitPosVert.v3);
-		////	fVertInd.push_back(frontIndex);
-		////	frontIndex++;
-
-		////	backVertices.push_back(tri.hitPosVert.v3);
-		////	bVert.push_back(tri.hitPosVert.v3);
-		////	bVertInd.push_back(backIndex);
-		////	backIndex++;
-		////}
-
-
-		////n多角形の三角形分割を利用して計算
-		////表
-
-		////原点から一番遠い頂点
-		//FbxVertex farVertex;
-
-		////一番遠い頂点の座標
-		//float farVertDis = 0.0f;
-
-		////farVertexの添え字(形成後の削除用)
-		//int farVertIndex = 0;
-
-		////ferから1、2番目に近い頂点を求める為のデータ格納用変数
-		//float farFirDir = FLT_MAX;
-		//FbxVertex farFirVertex;
-		//int farFirVertIndex = 0;
-
-		//float farSecDir = FLT_MAX;
-		//FbxVertex farSecVertex;
-		//int farSecVertIndex = 0;
-
-		////表
-		//while (1)
-		//{
-		//	//三角形内部に頂点があるかないかの確認実装しといてね
-
-		//	//一番遠い頂点を求める
-		//	for (int i = 0, size = fVert.size(); i < size; i++)
-		//	{
-		//		float dis = Vector3(fVert[i].pos).Length();
-		//		if (farVertDis <= dis)
-		//		{
-		//			farVertex = fVert[i];
-		//			farVertDis = dis;
-		//			farVertIndex = i;
-		//		}
-		//	}
-
-		//	//farから1、2番目に近い頂点(隣の頂点)を求める
-		//	for (int i = 0, size = fVert.size(); i < size; i++)
-		//	{
-		//		//自分比較防止
-		//		if (i == farVertIndex)continue;
-
-		//		float dis = Vector3(farVertex.pos - fVert[i].pos).Length();
-		//		if (farFirDir >= dis)
-		//		{
-		//			farSecVertex = farFirVertex;
-		//			farSecDir = farFirDir;
-		//			farSecVertIndex = farFirVertIndex;
-
-		//			farFirVertex = fVert[i];
-		//			farFirDir = dis;
-		//			farFirVertIndex = i;
-		//		}
-		//		else if (farSecDir >= dis)
-		//		{
-		//			farSecVertex = fVert[i];
-		//			farSecDir = dis;
-		//			farSecVertIndex = i;
-		//		}
-		//	}
-
-
-		//	//三角形を形成
-
-		//	//求めた外積と、面の外積が一致したら計算終了
-		//	//三角形の外積
-		//	Vector3 cross;
-
-		//	//far,1,2
-		//	cross = LibMath::CalcNormal(farVertex.pos, farFirVertex.pos, farSecVertex.pos);
-		//	if(Vector3(farVertex.normal) == cross)
-		//	{
-		//		frontIndices.push_back(fVertInd[farVertIndex]);
-		//		frontIndices.push_back(fVertInd[farFirVertIndex]);
-		//		frontIndices.push_back(fVertInd[farSecVertIndex]);
-		//	}
-		//	else//法線が逆だったら、逆にして格納 2,1,far
-		//	{
-		//		frontIndices.push_back(fVertInd[farSecVertIndex]);
-		//		frontIndices.push_back(fVertInd[farFirVertIndex]);
-		//		frontIndices.push_back(fVertInd[farVertIndex]);
-		//	}
-
-		//	//原点から一番遠い点を削除
-		//	fVert.erase(fVert.begin() + farVertIndex);
-
-		//	//形成不可になったら終了
-		//	if (fVert.size() == 2)break;
-		//	
-		//}
-
-		////裏
-		//while(1)
-		//{//三角形内部に頂点があるかないかの確認実装しといてね
-
-		//	//一番遠い頂点を求める
-		//	for (int i = 0, size = bVert.size(); i < size; i++)
-		//	{
-		//		float dis = Vector3(bVert[i].pos).Length();
-		//		if (farVertDis <= dis)
-		//		{
-		//			farVertex = bVert[i];
-		//			farVertDis = dis;
-		//			farVertIndex = i;
-		//		}
-		//	}
-
-		//	//farから1、2番目に近い頂点(隣の頂点)を求める
-		//	farFirDir = FLT_MAX;
-		//	farSecDir = FLT_MAX;
-		//	for (int i = 0, size = bVert.size(); i < size; i++)
-		//	{
-		//		//自分比較防止
-		//		if (i == farVertIndex)continue;
-
-		//		float dis = Vector3(farVertex.pos - bVert[i].pos).Length();
-		//		if (farFirDir >= dis)
-		//		{
-		//			farSecVertex = farFirVertex;
-		//			farSecDir = farFirDir;
-		//			farSecVertIndex = farFirVertIndex;
-
-		//			farFirVertex = bVert[i];
-		//			farFirDir = dis;
-		//			farFirVertIndex = i;
-		//		}
-		//		else if (farSecDir >= dis)
-		//		{
-		//			farSecVertex = bVert[i];
-		//			farSecDir = dis;
-		//			farSecVertIndex = i;
-		//		}
-		//	}
-
-
-		//	//三角形を形成
-
-		//	//求めた外積と、面の外積が一致したら計算終了
-		//	//三角形の外積
-		//	Vector3 cross;
-
-		//	//far,1,2
-		//	cross = LibMath::CalcNormal(farVertex.pos, farFirVertex.pos, farSecVertex.pos);
-		//	if (Vector3(farVertex.normal) == cross)
-		//	{
-		//		backIndices.push_back(bVertInd[farVertIndex]);
-		//		backIndices.push_back(bVertInd[farFirVertIndex]);
-		//		backIndices.push_back(bVertInd[farSecVertIndex]);
-		//	}
-		//	else//法線が逆だったら、逆にして格納 2,1,far
-		//	{
-		//		backIndices.push_back(bVertInd[farSecVertIndex]);
-		//		backIndices.push_back(bVertInd[farFirVertIndex]);
-		//		backIndices.push_back(bVertInd[farVertIndex]);
-		//	}
-
-		//	//原点から一番遠い点を削除
-		//	bVert.erase(bVert.begin() + farVertIndex);
-
-		//	//形成不可になったら終了
-		//	if (bVert.size() == 2)break;
-		//}
-
-#pragma endregion
 
 	}
 
@@ -1767,55 +1422,6 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 	return true;
 
-	//// 全頂点の表裏判定
-	//std::vector<std::vector<Vector3>> vertices = pModelData->GetVerticesPosition();
-	//size_t size = vertices[0].size();
-	//std::vector<char>verticesFB(size);
-	//
-	//for (int i = 0; i < size; i++)
-	//{
-	//	verticesFB[i] = LibMath::PointPlaneFrontBackCheck(vertices[0][i] * modelConstDatas[0].scale + modelConstDatas[0].position,planeData);
-	//}
-
-	////全辺を計算
-	//std::vector<Segment3DData>sDatas;
-	//std::vector<bool>sDatasHit;
-	//std::vector<Vector3>sDatasHitPos;
-	////大体確保
-	//sDatas.reserve(size / 2);
-
-	//std::vector<std::vector<USHORT>>indices = pModelData->GetIndices();
-	//size_t iSize = indices.size();
-	//for(int i = 0; i < iSize;i+= 3)
-	//{
-	//	Segment3DData sData;
-	//	sData.SetPosition(Value2<Vector3>(vertices[0][indices[0][i]], vertices[0][indices[0][i + 1]]));
-	//	sDatas.push_back(sData);
-
-	//	sData.SetPosition(Value2<Vector3>(vertices[0][indices[0][i + 1]], vertices[0][indices[0][i + 2]]));
-	//	sDatas.push_back(sData);
-
-	//	sData.SetPosition(Value2<Vector3>(vertices[0][indices[0][i + 2]], vertices[0][indices[0][i]]));
-	//	sDatas.push_back(sData);
-	//}
-
-	////判定
-	//size_t sDatasSize = sDatas.size();
-	//sDatasHit.resize(sDatasSize);
-	//sDatasHitPos.resize(sDatasSize, FLT_MAX);
-	//for (int i = 0; i < sDatasSize; i++)
-	//{
-	//	Segment3DCalcResult result;
-	//	sDatasHit[i] = Collision::PlaneAndSegment3D(planeData, sDatas[i], &result);
-	//	sDatasHitPos[i] = result.planeHitPos;
-	//}
-
-
-	//やっぱn多角形の三角形分割形成で行ける
-	//面ごとにちゃんと指定すれば
-
-
-	//int z = 0;
 
 
 }
