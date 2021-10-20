@@ -781,6 +781,14 @@ bool MelLib::Collision::BoardAndCapsule(const BoardData& board, BoardCalcResult*
 	//難しく考えすぎ?
 	//刺さってるか確認し、
 
+
+
+	//https://www.antun.net/tips/algorithm/collision.html
+	//線分と三角形の距離を求めればいけそう。
+	//(四角形は三角形を二つ合わせたものなので)
+	//書かれてるの2Dのやつだった
+
+
 	Value2<Vector3> segmentPos = capsule.GetSegment3DData().GetRotatePosition();
 	Value4<Vector3>boardVertexPos = board.GetVertexPosition();
 	Vector3 leftDownPos = boardVertexPos.v1;

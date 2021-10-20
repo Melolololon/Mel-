@@ -632,7 +632,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 	PlaneData rotPlane;
 	rotPlane.SetPosition(plane.GetPosition());
 	rotPlane.SetNormal(LibMath::RotateZXYVector3(plane.GetNormal(),
-		DirectX::XMFLOAT3(-modelConstDatas[0].angle.x, -modelConstDatas[0].angle.y, -modelConstDatas[0].angle.z)));
+		DirectX::XMFLOAT3(-modelConstDatas[0].angle.x, -modelConstDatas[0].angle.y, -modelConstDatas[0].angle.z)).Normalize());
 
 	//モデルの頂点を三角形ごとにまとめたもの
 	struct ModelTri
