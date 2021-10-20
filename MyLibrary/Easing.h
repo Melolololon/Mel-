@@ -58,9 +58,8 @@ namespace MelLib
 	public:
 		Easing() {}
 		Easing(V start, V end) :start(start), end(end) {}
-		Easing(V start, V end, const float par) :start(start), end(end), par(par) {}
 		Easing(V start, V end, const float addPar) :start(start), end(end), addPar(addPar) {}
-		Easing(V start, V end, const float par, const float addPar) :start(start), end(end), par(par), addPar(addPar) {}
+		Easing(V start, V end, const float addPar, const float par) :start(start), end(end), par(par), addPar(addPar) {}
 
 
 		V EaseIn()
@@ -68,7 +67,7 @@ namespace MelLib
 			par += addPar;
 			float p = (par * par);
 			CalcEasing(start, end, p);
-			return v;
+			return value;
 		}
 
 		V EaseOut()
@@ -76,7 +75,7 @@ namespace MelLib
 			par += addPar;
 			float p = par * (2 - par);
 			CalcEasing(start, end, p);
-			return v;
+			return value;
 		}
 
 		V EaseInOut()
@@ -84,7 +83,7 @@ namespace MelLib
 			par += addPar;
 			float p = par * par * (3 - 2 * par);
 			CalcEasing(start, end, p);
-			return v;
+			return value;
 		}
 
 		/// <summary>
@@ -114,7 +113,7 @@ namespace MelLib
 		V GetValue() { return value; }
 		V GetStart() { return start; }
 		V GetEnd() { return end; }
-		V GetPar() { return par; }
-		V GetAddPar() { return addPar; }
+		float GetPar() { return par; }
+		float GetAddPar() { return addPar; }
 	};
 }
