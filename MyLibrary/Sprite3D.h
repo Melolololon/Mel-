@@ -1,6 +1,7 @@
 #pragma once
 #include"Sprite.h"
 #include"PipelineState.h"
+#include"RenderTarget.h"
 
 namespace MelLib
 {
@@ -40,7 +41,7 @@ namespace MelLib
 
 
 		//レンダーターゲットでDrawを使うため、仮想関数にしてる
-		virtual void Draw(const std::string& rtName = "")override;
+		virtual void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama())override;
 
 #pragma region 開発者用関数
 

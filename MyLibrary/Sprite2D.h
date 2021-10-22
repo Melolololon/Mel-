@@ -1,6 +1,8 @@
 #pragma once
 #include "Sprite2DBase.h"
 
+#include"RenderTarget.h"
+
 //Šgk‚¾‚¯’¸“_‚¢‚¶‚é?ƒsƒNƒZƒ‹’PˆÊ‚ÌŠgk‚â‚è‚â‚·‚»‚¤‚¾‚µ
 namespace MelLib
 {
@@ -48,7 +50,7 @@ namespace MelLib
 		static void Delete(const std::string& name);
 		static Sprite2D* Get(const std::string& name) { return pSprite2D[name].get(); }
 
-		void Draw(const std::string& rtName = "")override;
+		void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama())override;
 
 		void SetColor(const Color& color);
 		void SetTexture(Texture* pTexture) { this->pTexture = pTexture; }
