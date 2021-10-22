@@ -46,17 +46,20 @@ namespace MelLib
 
 	// Input リファレンス
 	// https://sites.google.com/view/melgames/%E8%87%AA%E4%BD%9C%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA/%E3%83%AA%E3%83%95%E3%82%A1%E3%83%AC%E3%83%B3%E3%82%B9/%E4%BD%BF%E7%94%A8%E4%BB%BB%E6%84%8F%E3%82%AF%E3%83%A9%E3%82%B9/%E5%85%A5%E5%8A%9B
+	
+	// メモエリア
+	// GetPressKeyChars使わずに、WinAPIのエディットボックスで文字取得するようにする?
+	// エディットボックスを透明にできるか試す
+	// そもそも子ウィンドウ扱いだからゲーム画面に表示できない?できる?
+	// できなかった
+	// もしかして隠れてても入力はできる?ウィンドウタイプで設定すればいける
+
+	// デバイスごとにクラス分けしてもいいかも。
+	// Inputは各デバイスの処理の呼び出しをするクラスにする
 
 	// 入力クラス
 	class Input
 	{
-		// メモエリア
-		// GetPressKeyChars使わずに、WinAPIのエディットボックスで文字取得するようにする?
-		// エディットボックスを透明にできるか試す
-		// そもそも子ウィンドウ扱いだからゲーム画面に表示できない?できる?
-		// できなかった
-		// もしかして隠れてても入力はできる?ウィンドウタイプで設定すればいける
-
 
 	private:
 		Input() {}
@@ -113,6 +116,24 @@ namespace MelLib
 
 		static XINPUT_STATE padState[4];
 		static XINPUT_STATE padPrevious[4];
+
+		static float leftStickLeftPar;
+		static float preLeftStickLeftPar;
+		static float leftStickRightPar;
+		static float preLeftStickRightPar;
+		static float leftStickUpPar;
+		static float preLeftStickUpPar;
+		static float leftStickDownPar;
+		static float preLeftStickDownPar;
+
+		static float rightStickLeftPar;
+		static float preRightStickLeftPar;
+		static float rightStickRightPar;
+		static float preRightStickRightPar;
+		static float rightStickUpPar;
+		static float preRightStickUpPar;
+		static float rightStickDownPar;
+		static float preRightStickDownPar;
 
 		static bool padConnected[4];
 
@@ -261,6 +282,12 @@ namespace MelLib
 		/// <param name="farPoint"></param>
 		static void GetMouse3DLine( Vector3& nearPoint,   Vector3& farPoint);
 
+		/// <summary>
+		/// カメラの情報を元に、マウスカーソルを座標変換したときの最近点と最遠点を求めます。
+		/// </summary>
+		/// <param name="pCamera"></param>
+		/// <param name="pNear"></param>
+		/// <param name="pFar"></param>
 		static void GetMouse3DLine2
 		(
 			Camera* pCamera,
@@ -273,11 +300,25 @@ namespace MelLib
 #pragma region ボタン
 
 
-
+		/// <summary>
+		/// マウスのボタンを取得します。
+		/// </summary>
+		/// <param name="mouseButton"></param>
+		/// <returns></returns>
 		static bool MouseButtonState(MouseButton mouseButton);
 
+		/// <summary>
+		/// マウスのボタンが押された瞬間(押されたフレーム)かどうかを取得します。
+		/// </summary>
+		/// <param name="mouseButton"></param>
+		/// <returns></returns>
 		static bool MouseButtonTrigger(MouseButton mouseButton);
 
+		/// <summary>
+		/// マウスのボタンが離された瞬間(押すのを止めたフレーム)かどうかを取得します。
+		/// </summary>
+		/// <param name="mouseButton"></param>
+		/// <returns></returns>
 		static bool MouseButtonRelease(MouseButton mouseButton);
 
 
@@ -303,11 +344,58 @@ namespace MelLib
 #pragma region アナログスティック
 
 #pragma region 左
+		
+#pragma region 状態
+
 
 		static bool LeftStickLeft(float lXPar, UCHAR padNum = 1);
 		static bool LeftStickRight(float lXPar, UCHAR padNum = 1);
 		static bool LeftStickUp(float lYPar, UCHAR padNum = 1);
 		static bool LeftStickDown(float lYPar, UCHAR padNum = 1);
+
+#pragma endregion
+
+#pragma region トリガー
+
+		/// <summary>
+		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
+		/// </summary>
+		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
+		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
+		/// <param name="padNum">パッド番号</param>
+		/// <returns></returns>
+		static bool LeftStickLeftTrigger(float lXPar,float preLXPar,UCHAR padNum = 1);
+
+		/// <summary>
+		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
+		/// </summary>
+		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
+		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
+		/// <param name="padNum">パッド番号</param>
+		/// <returns></returns>
+		static bool LeftStickRightTrigger(float lXPar, float preLXPar, UCHAR padNum = 1);
+
+		/// <summary>
+		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
+		/// </summary>
+		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
+		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
+		/// <param name="padNum">パッド番号</param>
+		/// <returns></returns>
+		static bool LeftStickUpTrigger(float lXPar, float preLYPar, UCHAR padNum = 1);
+
+		/// <summary>
+		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
+		/// </summary>
+		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
+		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
+		/// <param name="padNum">パッド番号</param>
+		/// <returns></returns>
+		static bool LeftStickDownTrigger(float lXPar, float preLYPar, UCHAR padNum = 1);
+
+
+#pragma endregion
+
 
 		/// <summary>
 		/// 左スティックの角度を返します。スティックが傾いていない場合、-1を返します。
@@ -321,10 +409,53 @@ namespace MelLib
 #pragma endregion
 
 #pragma region 右
+
+#pragma region 状態
+
 		static bool RightStickLeft(float lXPar, UCHAR padNum = 1);
 		static bool RightStickRight(float lXPar, UCHAR padNum = 1);
 		static bool RightStickUp(float lYPar, UCHAR padNum = 1);
 		static bool RightStickDown(float lYPar, UCHAR padNum = 1);
+#pragma endregion
+
+#pragma region トリガー
+		/// <summary>
+	/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
+	/// </summary>
+	/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
+	/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
+	/// <param name="padNum">パッド番号</param>
+	/// <returns></returns>
+		static bool RightStickLeftTrigger(float lXPar, float preLXPar, UCHAR padNum = 1);
+
+		/// <summary>
+		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
+		/// </summary>
+		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
+		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
+		/// <param name="padNum">パッド番号</param>
+		/// <returns></returns>
+		static bool RightStickRightTrigger(float lXPar, float preLXPar, UCHAR padNum = 1);
+
+		/// <summary>
+		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
+		/// </summary>
+		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
+		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
+		/// <param name="padNum">パッド番号</param>
+		/// <returns></returns>
+		static bool RightStickUpTrigger(float lXPar, float preLYPar, UCHAR padNum = 1);
+
+		/// <summary>
+		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
+		/// </summary>
+		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
+		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
+		/// <param name="padNum">パッド番号</param>
+		/// <returns></returns>
+		static bool RightStickDownTrigger(float lXPar, float preLYPar, UCHAR padNum = 1);
+#pragma endregion
+
 
 
 		/// <summary>

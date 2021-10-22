@@ -219,6 +219,23 @@ XINPUT_STATE Input::padState[4];
 XINPUT_STATE Input::padPrevious[4];
 bool Input::padConnected[4];
 
+float Input::leftStickLeftPar;
+float Input::preLeftStickLeftPar;
+float Input::leftStickRightPar;
+float Input::preLeftStickRightPar;
+float Input::leftStickUpPar;
+float Input::preLeftStickUpPar;
+float Input::leftStickDownPar;
+float Input::preLeftStickDownPar;
+float Input::rightStickLeftPar;
+float Input::preRightStickLeftPar;
+float Input::rightStickRightPar;
+float Input::preRightStickRightPar;
+float Input::rightStickUpPar;
+float Input::preRightStickUpPar;
+float Input::rightStickDownPar;
+float Input::preRightStickDownPar;
+
 LRESULT Input::ParamChildWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	return DefWindowProc(hwnd, msg, wparam, lparam);
@@ -293,7 +310,14 @@ void Input::Update()
 #pragma endregion
 
 #pragma region パッド
-
+	preLeftStickLeftPar = leftStickLeftPar;
+	preLeftStickRightPar = leftStickRightPar;
+	preLeftStickUpPar = leftStickUpPar;
+	preLeftStickDownPar = leftStickDownPar;
+	preRightStickLeftPar = rightStickLeftPar;
+	preRightStickRightPar = rightStickRightPar;
+	preRightStickUpPar = rightStickUpPar;
+	preRightStickDownPar = rightStickDownPar;
 
 	for (int i = 0; i < XUSER_MAX_COUNT; i++)
 	{
@@ -538,7 +562,6 @@ void Input::GetMouse3DLine( Vector3& nearPoint,  Vector3& farPoint)
 	};
 #pragma endregion
 
-
 #pragma region z = 1(最遠点)
 
 
@@ -570,6 +593,7 @@ void Input::GetMouse3DLine( Vector3& nearPoint,  Vector3& farPoint)
 	};
 
 #pragma endregion
+
 }
 
 void MelLib::Input::GetMouse3DLine2(Camera* pCamera, Vector3* pNear, Vector3* pFar)
@@ -806,15 +830,15 @@ float Input::DirectionalButtonAngle(const UCHAR padNum)
 
 #pragma region 左
 
-
-
+#pragma region 状態
 
 
 bool Input::LeftStickLeft(const float lXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLX)
-		return true;
+	leftStickLeftPar = lXPar;
+
+	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLX) return true;
 
 	return false;
 }
@@ -822,7 +846,7 @@ bool Input::LeftStickLeft(const float lXPar, const UCHAR padNum)
 bool Input::LeftStickRight(const float lXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-
+	leftStickRightPar = lXPar;
 	if (lXPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbLX)
 		return true;
 
@@ -843,14 +867,53 @@ bool Input::LeftStickDown(const float lYPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 
-	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLY)
-		return true;
+	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLY) return true;
+
+	return false;
+}
+
+#pragma endregion
+
+#pragma region トリガー
+
+bool Input::LeftStickLeftTrigger(const float lXPar,const float preLXPar, const UCHAR padNum = 1)
+{
+	if (!PadCheck(padNum))return false;
+	if (preLeftStickLeftPar >= preLXPar
+		|| LeftStickLeft(lXPar, padNum))return true;
+
+	return false;
+}
+
+bool Input::LeftStickRightTrigger(const float lXPar, const float preLXPar, const UCHAR padNum = 1)
+{
+	if (!PadCheck(padNum))return false;
+	if (preLeftStickRightPar >= preLXPar
+		|| LeftStickRight(lXPar, padNum))return true;
+
+	return false;
+}
+
+bool Input::LeftStickUpTrigger(const float lYPar, const float preLYPar, const UCHAR padNum = 1)
+{
+	if (!PadCheck(padNum))return false;
+	if (preLeftStickUpPar >= preLYPar
+		|| LeftStickUp(lYPar, padNum))return true;
+
+	return false;
+}
+
+bool Input::LeftStickDownTrigger(const float lYPar, const float preLYPar, const UCHAR padNum = 1)
+{
+	if (!PadCheck(padNum))return false;
+	if (preLeftStickDownPar >= preLYPar
+		|| LeftStickDown(lYPar, padNum))return true;
 
 	return false;
 }
 
 
-
+#pragma endregion
 
 float Input::LeftStickAngle(const UCHAR padNum)
 {
@@ -941,6 +1004,46 @@ bool Input::RightStickDown(const float lYPar, const UCHAR padNum)
 }
 
 
+#pragma region トリガー
+
+bool Input::RightStickLeftTrigger(const float lXPar, const float preLXPar, const UCHAR padNum = 1)
+{
+	if (!PadCheck(padNum))return false;
+	if (preRightStickLeftPar >= preLXPar
+		|| RightStickLeft(lXPar, padNum))return true;
+
+	return false;
+}
+
+bool Input::RightStickRightTrigger(const float lXPar, const float preLXPar, const UCHAR padNum = 1)
+{
+	if (!PadCheck(padNum))return false;
+	if (preRightStickRightPar >= preLXPar
+		|| RightStickRight(lXPar, padNum))return true;
+
+	return false;
+}
+
+bool Input::RightStickUpTrigger(const float lYPar, const float preLYPar, const UCHAR padNum = 1)
+{
+	if (!PadCheck(padNum))return false;
+	if (preRightStickUpPar >= preLYPar
+		|| RightStickUp(lYPar, padNum))return true;
+
+	return false;
+}
+
+bool Input::RightStickDownTrigger(const float lYPar, const float preLYPar, const UCHAR padNum = 1)
+{
+	if (!PadCheck(padNum))return false;
+	if (preRightStickDownPar >= preLYPar
+		|| RightStickDown(lYPar, padNum))return true;
+
+	return false;
+}
+
+
+#pragma endregion
 
 Vector2 Input::RightStickVector2(const bool dimention3D, const UCHAR padNum)
 {
