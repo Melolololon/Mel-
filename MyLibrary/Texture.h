@@ -2,6 +2,7 @@
 #include<d3d12.h>
 #include<DirectXTex.h>
 #include<wrl.h>
+#include<unordered_map>
 
 #include"Vector.h"
 #include"Color.h"
