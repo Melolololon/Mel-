@@ -53,6 +53,12 @@ namespace MelLib
 		//	RIGHT_JUSTIFIED,//右揃え
 		//	POINT//中心揃え
 		//};
+		struct FontName
+		{
+			const std::wstring ARIAL = L"Arial";
+			const std::wstring HGP_GOSIC_E = L"HGPｺﾞｼｯｸE";
+		};
+
 
 	private:
 		static std::vector<std::wstring>tests;
@@ -103,7 +109,6 @@ namespace MelLib
 
 		//フォントのデータをセットする関数作る?
 		static bool CreateFontData(const std::wstring& fontName, const std::string& name);
-
 
 
 		//文字サイズは行列設定できるからそれで変えるようにする?
