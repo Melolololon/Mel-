@@ -178,48 +178,16 @@ void Play::RTTestUpdate()
 
 	MelLib::ImguiManager::GetInstance()->EndDrawWindow();
 
-	
-
-
-	//rtTestObject.SetAngle(MelLib::Vector3(0, 0, 0));
-	//rtTestObject.SetScale(4);
 	planeData.SetNormal(normal);
 	planeData.SetPosition(pos);
 	
 
 
-	/*MelLib::ModelData* pFront = nullptr;
-	MelLib::ModelData* pBack = nullptr;
-	if (MelLib::Input::KeyTrigger(DIK_SPACE) && !isCat)
-	{
-
-		bool res = rtTestObject.MeshCat(planeData, pFront, pBack, false);
-		if (res) 
-		{
-			frontObj.Create(pFront, nullptr);
-			backObj.Create(pBack, nullptr);
-			isCat = true;
-		}
-	}
-	if(isCat)
-	{
-		frontPos.y += 0.1f;
-		frontObj.SetPosition(frontPos);
-
-		backPos.y -= 0.1f;
-		backObj.SetPosition(backPos);
-
-	}*/
 
 	if(MelLib::Input::KeyTrigger(DIK_Z))
 	{
 		isEnd = true;
 	}
-
-
-	//std::vector<std::vector<MelLib::TriangleData>>triData;
-	//triData = rtTestObject.GetModelTriangleData();
-	//int a = 0;
 
 
 	if(MelLib::Input::KeyState(DIK_UP))
@@ -242,6 +210,9 @@ void Play::RTTestUpdate()
 	MelLib::Camera::Get()->SetRotatePoint(MelLib::Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
 	MelLib::Camera::Get()->SetCameraToTargetDistance(10.0f);
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,0,0));
+
+
+	if(MelLib::Input::LeftStickUpTrigger())
 }
 
 void Play::RTTestDraw()

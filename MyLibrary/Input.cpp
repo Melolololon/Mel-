@@ -319,6 +319,15 @@ void Input::Update()
 	preRightStickUpPar = rightStickUpPar;
 	preRightStickDownPar = rightStickDownPar;
 
+	leftStickLeftPar = 0.0f;
+	leftStickRightPar = 0.0f;
+	leftStickUpPar = 0.0f;
+	leftStickDownPar = 0.0f;
+	rightStickLeftPar = 0.0f;
+	rightStickRightPar = 0.0f;
+	rightStickUpPar = 0.0f;
+	rightStickDownPar = 0.0f;
+
 	for (int i = 0; i < XUSER_MAX_COUNT; i++)
 	{
 		padPrevious[i] = padState[i];
