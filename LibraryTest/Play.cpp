@@ -212,10 +212,6 @@ void Play::RTTestUpdate()
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,0,0));
 
 
-	if(MelLib::Input::LeftStickUpTrigger(30,30))
-	{
-		int z = 0;
-	}
 }
 
 void Play::RTTestDraw()

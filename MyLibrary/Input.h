@@ -358,39 +358,18 @@ namespace MelLib
 #pragma region トリガー
 
 		/// <summary>
-		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
+		/// 前フレームのスティックの傾きがpreLXPar以下、現在のスティックの傾きがlXPar以上だったらtrueを返します。
 		/// </summary>
 		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
-		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
+		/// <param name="preLYPar">前フレームのスティックの傾きと比較する割合</param>
 		/// <param name="padNum">パッド番号</param>
 		/// <returns></returns>
 		static bool LeftStickLeftTrigger(float lXPar,float preLXPar,UCHAR padNum = 1);
 
-		/// <summary>
-		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
-		/// </summary>
-		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
-		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
-		/// <param name="padNum">パッド番号</param>
-		/// <returns></returns>
 		static bool LeftStickRightTrigger(float lXPar, float preLXPar, UCHAR padNum = 1);
 
-		/// <summary>
-		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
-		/// </summary>
-		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
-		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
-		/// <param name="padNum">パッド番号</param>
-		/// <returns></returns>
 		static bool LeftStickUpTrigger(float lXPar, float preLYPar, UCHAR padNum = 1);
 
-		/// <summary>
-		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
-		/// </summary>
-		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
-		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
-		/// <param name="padNum">パッド番号</param>
-		/// <returns></returns>
 		static bool LeftStickDownTrigger(float lXPar, float preLYPar, UCHAR padNum = 1);
 
 
@@ -419,41 +398,13 @@ namespace MelLib
 #pragma endregion
 
 #pragma region トリガー
-		/// <summary>
-	/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
-	/// </summary>
-	/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
-	/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
-	/// <param name="padNum">パッド番号</param>
-	/// <returns></returns>
 		static bool RightStickLeftTrigger(float lXPar, float preLXPar, UCHAR padNum = 1);
 
-		/// <summary>
-		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
-		/// </summary>
-		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
-		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
-		/// <param name="padNum">パッド番号</param>
-		/// <returns></returns>
 		static bool RightStickRightTrigger(float lXPar, float preLXPar, UCHAR padNum = 1);
 
-		/// <summary>
-		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
-		/// </summary>
-		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
-		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
-		/// <param name="padNum">パッド番号</param>
-		/// <returns></returns>
-		static bool RightStickUpTrigger(float lXPar, float preLYPar, UCHAR padNum = 1);
+		static bool RightStickUpTrigger(float lYPar, float preLYPar, UCHAR padNum = 1);
 
-		/// <summary>
-		/// 前フレームと現在のフレームのスティックの傾きの割合が引数以上だったらtrueを返します。
-		/// </summary>
-		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
-		/// <param name="preLYPar">前フレームでスティックが何%傾いていたらtrueにするか</param>
-		/// <param name="padNum">パッド番号</param>
-		/// <returns></returns>
-		static bool RightStickDownTrigger(float lXPar, float preLYPar, UCHAR padNum = 1);
+		static bool RightStickDownTrigger(float lYPar, float preLYPar, UCHAR padNum = 1);
 #pragma endregion
 
 
