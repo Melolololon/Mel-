@@ -515,7 +515,7 @@ float Input::GetMouseAngle()
 	return LibMath::Vector2ToAngle(GetCenterToMouseVector(), false);
 }
 
-void Input::GetMouse3DLine( Vector3& nearPoint,  Vector3& farPoint)
+void Input::GetMouse3DLine(Vector3& nearPoint, Vector3& farPoint)
 {
 	Vector2 mousePos = GetMousePosition();
 
@@ -885,7 +885,7 @@ bool Input::LeftStickDown(const float lYPar, const UCHAR padNum)
 
 #pragma region ƒgƒŠƒK[
 
-bool Input::LeftStickLeftTrigger(const float lXPar,const float preLXPar, const UCHAR padNum = 1)
+bool Input::LeftStickLeftTrigger(const float lXPar, const float preLXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 	if (preLeftStickLeftPar >= preLXPar
@@ -894,7 +894,7 @@ bool Input::LeftStickLeftTrigger(const float lXPar,const float preLXPar, const U
 	return false;
 }
 
-bool Input::LeftStickRightTrigger(const float lXPar, const float preLXPar, const UCHAR padNum = 1)
+bool Input::LeftStickRightTrigger(const float lXPar, const float preLXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 	if (preLeftStickRightPar >= preLXPar
@@ -903,7 +903,7 @@ bool Input::LeftStickRightTrigger(const float lXPar, const float preLXPar, const
 	return false;
 }
 
-bool Input::LeftStickUpTrigger(const float lYPar, const float preLYPar, const UCHAR padNum = 1)
+bool Input::LeftStickUpTrigger(const float lYPar, const float preLYPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 	if (preLeftStickUpPar >= preLYPar
@@ -912,7 +912,7 @@ bool Input::LeftStickUpTrigger(const float lYPar, const float preLYPar, const UC
 	return false;
 }
 
-bool Input::LeftStickDownTrigger(const float lYPar, const float preLYPar, const UCHAR padNum = 1)
+bool Input::LeftStickDownTrigger(const float lYPar, const float preLYPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 	if (preLeftStickDownPar >= preLYPar
@@ -1015,7 +1015,7 @@ bool Input::RightStickDown(const float lYPar, const UCHAR padNum)
 
 #pragma region ƒgƒŠƒK[
 
-bool Input::RightStickLeftTrigger(const float lXPar, const float preLXPar, const UCHAR padNum = 1)
+bool Input::RightStickLeftTrigger(const float lXPar, const float preLXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 	if (preRightStickLeftPar >= preLXPar
@@ -1024,7 +1024,7 @@ bool Input::RightStickLeftTrigger(const float lXPar, const float preLXPar, const
 	return false;
 }
 
-bool Input::RightStickRightTrigger(const float lXPar, const float preLXPar, const UCHAR padNum = 1)
+bool Input::RightStickRightTrigger(const float lXPar, const float preLXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 	if (preRightStickRightPar >= preLXPar
@@ -1033,7 +1033,7 @@ bool Input::RightStickRightTrigger(const float lXPar, const float preLXPar, cons
 	return false;
 }
 
-bool Input::RightStickUpTrigger(const float lYPar, const float preLYPar, const UCHAR padNum = 1)
+bool Input::RightStickUpTrigger(const float lYPar, const float preLYPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 	if (preRightStickUpPar >= preLYPar
@@ -1042,7 +1042,7 @@ bool Input::RightStickUpTrigger(const float lYPar, const float preLYPar, const U
 	return false;
 }
 
-bool Input::RightStickDownTrigger(const float lYPar, const float preLYPar, const UCHAR padNum = 1)
+bool Input::RightStickDownTrigger(const float lYPar, const float preLYPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
 	if (preRightStickDownPar >= preLYPar
