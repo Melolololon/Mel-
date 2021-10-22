@@ -51,9 +51,15 @@ namespace MelLib
 		//ŠÖ”ŒÄ‚Ño‚µ‚Ì‰ÁZ’l
 		float addPar = 0.0f;
 
-		void CalcEasing(const V startPos, const V endPos, const float par) 
+		void CalcEasing(const V startPos, const V endPos, const float t)
 		{
-			value = startPos * (1.0f - (par / 100.0f)) + endPos * (par / 100.0f); 
+			value = startPos * (1.0f - t) + endPos * t;
+		}
+
+		void Clamp()
+		{
+			if (par >= 100.0f)par = 100.0f;
+			else if (par <= 0.0f)par = 0.0f;
 		}
 	public:
 		Easing() {}
@@ -65,24 +71,27 @@ namespace MelLib
 		V EaseIn()
 		{
 			par += addPar;
-			float p = (par * par);
-			CalcEasing(start, end, p);
+			float max1Par = (par / 100.0f);
+			float t = (max1Par * max1Par);
+			CalcEasing(start, end, t);
 			return value;
 		}
 
 		V EaseOut()
 		{
 			par += addPar;
-			float p = par * (2 - par);
-			CalcEasing(start, end, p);
+			float max1Par = (par / 100.0f);
+			float t = max1Par * (2 - max1Par);
+			CalcEasing(start, end, t);
 			return value;
 		}
 
 		V EaseInOut()
 		{
 			par += addPar;
-			float p = par * par * (3 - 2 * par);
-			CalcEasing(start, end, p);
+			float max1Par = (par / 100.0f);
+			float t = max1Par * max1Par * (3 - 2 * max1Par);
+			CalcEasing(start, end, t);
 			return value;
 		}
 
