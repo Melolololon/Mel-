@@ -3,7 +3,7 @@
 using namespace MelLib;
 std::unordered_map<std::string, std::unique_ptr<DirectionalLight>>DirectionalLight::pLights;
 DirectionalLight::UINT DirectionalLight::createCount = 0;
-std::string DirectionalLight::mainCameraName = "";
+std::string DirectionalLight::mainLightName = "main";
 
 
 
@@ -15,7 +15,7 @@ void DirectionalLight::Create(const std::string& name)
 
 	pLights.emplace(key,std::make_unique<DirectionalLight>());
 
-	if (mainCameraName == "")mainCameraName = key;
+	if (mainLightName == "")mainLightName = key;
 
 }
 

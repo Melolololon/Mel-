@@ -19,7 +19,7 @@ namespace MelLib
 		using UINT = unsigned int;
 		static std::unordered_map<std::string, std::unique_ptr<DirectionalLight>>pLights;
 		static UINT createCount;
-		static std::string mainCameraName;
+		static std::string mainLightName;
 
 		Vector3 direction = Vector3(0, 0, 1);
 		Color color = Color(255, 255, 255, 255);
@@ -32,7 +32,7 @@ namespace MelLib
 
 		static void Create(const std::string& name = "");
 		static void Delete(const std::string& name);
-		static DirectionalLight& Get(const std::string& name = mainCameraName) { return *pLights[name]; }
+		static DirectionalLight& Get(const std::string& name = mainLightName) { return *pLights[name]; }
 
 		//ライトの向きをセットします。
 		void SetDirection(const Vector3& vector);

@@ -315,7 +315,7 @@ void DirectX12::Initialize(HWND hwnd, int windouWidth, int windowHeight)
 	
 	RenderTarget::Create(rtColor,"main");
 	Camera::Create("main");
-	RenderTarget::Get("main")->SetCamera(Camera::Get());
+	RenderTarget::Get()->SetCamera(Camera::Get());
 	DirectionalLight::Create("main");
 
 	//renderTarget = std::make_unique<RenderTarget>(Color(255, 0, 255, 255));

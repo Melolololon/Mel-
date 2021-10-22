@@ -15,7 +15,7 @@ std::vector<RenderTarget::RenderTargetDrawData> RenderTarget::rtDrawData;
 
 std::unordered_map<std::string, std::unique_ptr<RenderTarget>> RenderTarget::pRenderTargets;
 UINT RenderTarget::createCount = 0;
-std::string RenderTarget::mainRenderTargetNama = "";
+std::string RenderTarget::mainRenderTargetNama = "main";
 
 PipelineState RenderTarget::defaultPipeline;
 float RenderTarget::sClearColor[4] = { 0.5f,0.5f,0.5f,0.0f };
