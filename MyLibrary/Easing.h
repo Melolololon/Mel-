@@ -67,6 +67,13 @@ namespace MelLib
 		Easing(V start, V end, const float addPar) :start(start), end(end), addPar(addPar) {}
 		Easing(V start, V end, const float addPar, const float par) :start(start), end(end), par(par), addPar(addPar) {}
 
+		V Lerp()
+		{
+			par += addPar;
+			float max1Par = (par / 100.0f);
+			CalcEasing(start, end, max1Par);
+			return value;
+		}
 
 		V EaseIn()
 		{

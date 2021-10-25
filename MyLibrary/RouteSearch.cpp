@@ -1,5 +1,6 @@
 #include "RouteSearch.h"
 #include"LibMath.h"
+#include"Collision.h"
 #include"ModelData.h"
 
 using namespace MelLib;
@@ -446,5 +447,430 @@ bool RouteSearch::GetAStarCalcResult
 }
 
 
+#pragma endregion
+
+#pragma region 新経路探索
+
+void MelLib::RouteSearch::SetNodePosition
+(
+	const Vector3& leftDownNearPos, 
+	const Vector3& rightUpFarPos, 
+	const Value3<UINT>& nodeNum, 
+	std::vector<std::vector<std::vector<AStarNode2>>>& nodes
+)
+{
+	nodes.clear();
+	nodes.resize(nodeNum.v3, std::vector< std::vector<AStarNode2>>(nodeNum.v2, std::vector<AStarNode2>(nodeNum.v1)));
+
+
+	for (int z = 0; z < nodes.size(); z++)
+	{
+
+		for (int y = 0; y < nodes[z].size(); y++)
+		{
+
+			for (int x = 0; x < nodes[z][y].size(); x++)
+			{
+				//サイズ計算
+				nodes[z][y][x].size = (rightUpFarPos - leftDownNearPos).Abs();
+				nodes[z][y][x].size.x /= nodeNum.v1;
+				nodes[z][y][x].size.y /= nodeNum.v2;
+				nodes[z][y][x].size.z /= nodeNum.v3;
+
+				//座標計算
+				nodes[z][y][x].position = leftDownNearPos + nodes[z][y][x].size * Vector3(x, y, z);
+			}
+		}
+	}
+}
+
+void MelLib::RouteSearch::SetHitObjectFlag
+(
+	const std::vector<BoxData>& hitObjectsBoxData, 
+	std::vector<std::vector<std::vector<AStarNode2>>>& nodes
+)
+{
+	for (auto& nZ : nodes)
+	{
+		for (auto& nY : nZ)
+		{
+			for (auto& nX : nY)
+			{
+				for (int i = 0; i < hitObjectsBoxData.size(); i++) 
+				{
+					BoxData nodeBoxData;
+					nodeBoxData.SetPosition(nX.position);
+					nodeBoxData.SetSize(nX.size);
+
+					if(Collision::BoxAndBox(nodeBoxData, nullptr, hitObjectsBoxData[i], nullptr))
+					{
+						nX.hitObjectNode = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+}
+
+void MelLib::RouteSearch::SetCost(const std::vector<BoxData>& hitObjectsBoxData, const std::vector<UINT>& costs, std::vector<std::vector<std::vector<AStarNode2>>>& nodes)
+{
+	for (auto& nZ : nodes)
+	{
+		for (auto& nY : nZ)
+		{
+			for (auto& nX : nY)
+			{
+				for (int i = 0; i < hitObjectsBoxData.size(); i++)
+				{
+					BoxData nodeBoxData;
+					nodeBoxData.SetPosition(nX.position);
+					nodeBoxData.SetSize(nX.size);
+
+					if (Collision::BoxAndBox(nodeBoxData, nullptr, hitObjectsBoxData[i], nullptr))
+					{
+						nX.cost += costs[i];
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+bool MelLib::RouteSearch::CalcRoute
+(
+	const Vector3& startPos, 
+	const Vector3& endPos, 
+	std::vector<std::vector<std::vector<AStarNode2>>>& nodes, 
+	std::vector<Vector3>& routeVector
+)
+{
+	//リセット
+	for (auto& nZ : nodes)
+	{
+		for (auto& nY : nZ)
+		{
+			for (auto& nX : nY) 
+			{
+				nX.closeFlag = false;
+				nX.openFlag = false;
+				nX.previousNode = nullptr;
+				nX.calcNum = UINT_MAX;
+				nX.closeIndex = INT_MAX;
+			}
+		}
+	}
+
+
+
+
+
+	//スタート地点に一番近いノードの距離を格納する変数
+	float startMinDistance = FLT_MAX;
+	//ゴール地点に一番近いノードの距離を格納する変数
+	float endMinDistance = FLT_MAX;
+
+	auto nodeXArrayNum = nodes[0][0].size();
+	auto nodeYArrayNum = nodes[0].size();
+	auto nodeZArrayNum = nodes.size();
+
+	//スタートの添え字
+	int startNodeIndexX = 0;
+	int startNodeIndexY = 0;
+	int startNodeIndexZ = 0;
+	bool trueStartNodeHitFlag = false;
+
+	//ノードの配列のゴール地点の場所を示す添え字
+	int endNodeIndexX = 0;
+	int endNodeIndexY = 0;
+	int endNodeIndexZ = 0;
+	bool trueEndNodeHitFlag = false;
+
+	//一時的にfalseにしたときに戻す処理
+	auto ReturnHitObjectNode = [&]()
+	{
+		if (trueStartNodeHitFlag)nodes[endNodeIndexZ][startNodeIndexY][startNodeIndexX].hitObjectNode = true;
+		if (trueEndNodeHitFlag)nodes[endNodeIndexZ][endNodeIndexY][endNodeIndexX].hitObjectNode = true;
+
+	};
+
+	for (int z = 0; z < nodeZArrayNum; z++) 
+	{
+		for (int y = 0; y < nodeYArrayNum; y++)
+		{
+			for (int x = 0; x < nodeXArrayNum; x++)
+			{
+				float distance = 0.0f;
+				distance = LibMath::CalcDistance3D(nodes[z][y][x].position, startPos);
+
+				if (distance <= startMinDistance)
+				{
+					startMinDistance = distance;
+					startNodeIndexX = x;
+					startNodeIndexY = y;
+
+				}
+
+				distance = LibMath::CalcDistance3D(nodes[z][y][x].position, endPos);
+				if (distance <= endMinDistance)
+				{
+					endMinDistance = distance;
+					endNodeIndexX = x;
+					endNodeIndexY = y;
+
+
+				}
+
+				//インデックス代入
+				nodes[z][y][x].indexX = x;
+				nodes[z][y][x].indexY = y;
+				nodes[z][y][x].indexZ = z;
+			}
+		}
+	}
+
+	if (nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].hitObjectNode)
+	{
+		//一時的にfalse
+		nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].hitObjectNode = false;
+		trueStartNodeHitFlag = true;
+	}
+
+	if (nodes[startNodeIndexZ][endNodeIndexY][endNodeIndexX].hitObjectNode)
+	{
+		//一時的にfalse
+		nodes[startNodeIndexZ][endNodeIndexY][endNodeIndexX].hitObjectNode = false;
+		trueEndNodeHitFlag = true;
+	}
+
+	//ゴールのノードまでの距離を求めるラムダ式
+	auto CalcNodeDistance = []
+	(
+		const int startX,
+		const int startY,
+		const int startZ,
+		const int endX,
+		const int endY,
+		const int endZ
+		)
+	{
+		//Xの差
+		int startXToEndXDiff = abs(startX - endX);
+		//Yの差
+		int startYToEndYDiff = abs(startY - endY);
+		int startZToEndZDiff = abs(startZ - endZ);
+
+		//Xの差とYの差のどちらが大きいか求める。斜め移動ありの場合、大きいほうが最短距離
+		if(startXToEndXDiff > startYToEndYDiff)
+		{
+			if (startXToEndXDiff > startZToEndZDiff)return startXToEndXDiff;
+			else return startZToEndZDiff;
+		}
+		else
+		{
+			if (startYToEndYDiff > startZToEndZDiff)return startYToEndYDiff;
+			else return startZToEndZDiff;
+		}
+
+
+	};
+
+	//スタートのノードのインデックスを代入
+	int startToEndDis = CalcNodeDistance(startNodeIndexX, startNodeIndexY, startNodeIndexZ, endNodeIndexX, endNodeIndexY, endNodeIndexZ);
+	nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].calcNum = startToEndDis + nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].cost;
+
+	std::vector<AStarNode2*>openNodes(1, &nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX]);
+	std::vector<AStarNode2*>closeNodes;
+
+
+	AStarNode2* endNode = nullptr;
+
+
+	//ステップの計算は周りのノード調べるときにやる?
+
+	while (1)
+	{
+		//探索終了かどうか
+		bool checkEnd = false;
+
+		//ゴールにたどり着けない場合
+		if (openNodes.size() == 0)
+		{
+			ReturnHitObjectNode();
+			return false;
+		}
+
+		//並び替え
+		std::sort
+		(
+			openNodes.begin(),
+			openNodes.end(),
+			[]
+		(
+			const AStarNode* node1,
+			const AStarNode* node2
+			)
+		{
+			int num1 = node1->calcNum;
+			int num2 = node2->calcNum;
+
+			return num1 > num2;
+		});
+
+		//calcNumが一番少ないやつを取得
+		AStarNode2* mainNode = nullptr;
+		int minCalcNum = openNodes[openNodes.size() - 1]->calcNum;
+		float minDis = FLT_MAX;
+		int mainNodeOpenIndex = 0;
+		for (int i = openNodes.size() - 1;; i--)
+		{
+			float dis = LibMath::CalcDistance3D(openNodes[i]->position, nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].position);
+			if (minDis > dis)
+			{
+				minDis = dis;
+				mainNode = openNodes[i];
+				mainNodeOpenIndex = i;
+			}
+			if (openNodes[i]->calcNum != minCalcNum || i == 0)break;
+		}
+
+
+
+		//オープンに追加するノードを格納する配列
+		std::vector<AStarNode2*>openPushBackNode;
+
+		for (int z = -1; z < 2; z++) 
+		{	
+			int indexZ = mainNode->indexZ + z;
+			if (indexZ <= -1 || indexZ >= nodeZArrayNum)continue;
+
+			for (int y = -1; y < 2; y++)
+			{
+				int indexY = mainNode->indexY + y;
+
+				//Y範囲外指定防止
+				if (indexY <= -1 || indexY >= nodeYArrayNum)continue;
+
+				for (int x = -1; x < 2; x++)
+				{
+					int indexX = mainNode->indexX + x;
+
+					//X範囲外指定防止
+					if (indexX <= -1 || indexX >= nodeXArrayNum)continue;
+
+					//基準検索防止
+					if (indexX == mainNode->indexX && indexY == mainNode->indexY)continue;
+
+					AStarNode2* checkNode = &nodes[indexZ][indexY][indexX];
+
+					//オブジェクトに重なってるかどうか
+					if (checkNode->hitObjectNode)
+					{
+						checkNode->closeFlag = true;
+						continue;
+					}
+
+
+					//calcNum = ステップ数 + ゴールまでの距離 + コスト
+					int calcNum = mainNode->stepNum + 1
+						+ CalcNodeDistance(indexX, indexY,indexZ, endNodeIndexX, endNodeIndexY, endNodeIndexZ)
+						+ checkNode->cost;
+
+					//条件を満たしたら代入
+					if (checkNode->openFlag)
+					{
+						if (calcNum < checkNode->calcNum)
+						{
+							checkNode->calcNum = calcNum;
+							checkNode->previousNode = mainNode;
+							checkNode->stepNum = mainNode->stepNum + 1;
+						}
+
+						continue;
+					}
+
+					//条件を満たしたら、closeからopenに移動&代入
+					if (checkNode->closeFlag)
+					{
+						if (calcNum < checkNode->calcNum)
+						{
+							//closeから削除
+							closeNodes.erase(closeNodes.begin() + checkNode->closeIndex);
+							checkNode->closeFlag = false;
+							checkNode->closeIndex = INT_MAX;
+
+							//openに追加
+							openNodes.push_back(checkNode);
+							checkNode->openFlag = true;
+
+							checkNode->calcNum = calcNum;
+							checkNode->previousNode = mainNode;
+							checkNode->stepNum = mainNode->stepNum + 1;
+						}
+						continue;
+					}
+
+
+					checkNode->calcNum = calcNum;
+					checkNode->previousNode = mainNode;
+					checkNode->stepNum = mainNode->stepNum + 1;
+
+					if (checkNode->indexX == endNodeIndexX && checkNode->indexY == endNodeIndexY)
+					{
+						checkEnd = true;
+						endNode = checkNode;
+					}
+
+
+					openPushBackNode.push_back(checkNode);
+					checkNode->openFlag = true;
+				}
+			}
+		}
+
+		if (checkEnd)break;
+
+		closeNodes.push_back(mainNode);
+		mainNode->closeFlag = true;
+		mainNode->closeIndex = closeNodes.size() - 1;
+
+		//検索したやつを消す
+		openNodes[openNodes.size() - 1]->openFlag = false;
+		openNodes.erase(openNodes.begin() + mainNodeOpenIndex);
+
+
+		for (auto& n : openPushBackNode)
+		{
+			openNodes.push_back(n);
+		}
+		openPushBackNode.clear();
+	}
+
+	AStarNode2* currentNode = endNode;
+	std::vector<Vector3>routeNodeVectors;
+	while (1)
+	{
+		if (!currentNode)break;
+		routeNodeVectors.push_back(currentNode->position);
+		currentNode = currentNode->previousNode;
+	}
+	std::reverse(routeNodeVectors.begin(), routeNodeVectors.end());
+
+	//ベクトルを求める
+	routeVector.clear();
+	auto routeVectorSize = routeNodeVectors.size() - 1;
+	routeVector.resize(routeVectorSize);
+	for (int i = 0; i < routeVectorSize; i++)
+	{
+		routeVector[i] = Vector3::Normalize(routeNodeVectors[i + 1] - routeNodeVectors[i]);
+	}
+
+	ReturnHitObjectNode();
+	return true;
+}
+
 
 #pragma endregion
+

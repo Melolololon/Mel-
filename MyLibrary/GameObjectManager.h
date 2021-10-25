@@ -35,8 +35,6 @@ namespace MelLib
 
 
 	private:
-		GameObjectManager();
-		~GameObjectManager();
 
 		std::vector<std::shared_ptr<GameObject>>objects;
 		//追加されたものを一時的に入れておく配列
@@ -45,6 +43,7 @@ namespace MelLib
 		std::vector<std::shared_ptr<GameObject2D>>object2Ds;
 		std::vector<std::shared_ptr<GameObject2D>>addObject2Ds;
 		//CollisionFlag checkCollision;
+
 
 		//追加したフレームごとにソートするか
 		ObjectSortType addObjectSort;
@@ -59,9 +58,12 @@ namespace MelLib
 		Vector3 nearPos;
 		Vector3 farPos;
 
+	private:
 
+		GameObjectManager();
+		~GameObjectManager();
 		/// <summary>
-		/// eraseManagerがtrueかどうかを確認します。trueの場合は、削除されます
+		/// eraseManagerがtrueかどうかを確認します。trueの場合は削除されます
 		/// </summary>
 		void EraseObjectCheck();
 
