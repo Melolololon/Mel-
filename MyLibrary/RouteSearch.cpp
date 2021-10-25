@@ -508,6 +508,7 @@ void MelLib::RouteSearch::SetHitObjectFlag
 						break;
 					}
 				}
+				if (nX.hitObjectNode)break;
 			}
 		}
 	}
@@ -531,7 +532,6 @@ void MelLib::RouteSearch::SetCost(const std::vector<BoxData>& hitObjectsBoxData,
 					if (Collision::BoxAndBox(nodeBoxData, nullptr, hitObjectsBoxData[i], nullptr))
 					{
 						nX.cost += costs[i];
-						break;
 					}
 				}
 			}
@@ -547,25 +547,6 @@ bool MelLib::RouteSearch::CalcRoute
 	std::vector<Vector3>& routeVector
 )
 {
-	//リセット
-	for (auto& nZ : nodes)
-	{
-		for (auto& nY : nZ)
-		{
-			for (auto& nX : nY) 
-			{
-				nX.closeFlag = false;
-				nX.openFlag = false;
-				nX.previousNode = nullptr;
-				nX.calcNum = UINT_MAX;
-				nX.closeIndex = INT_MAX;
-			}
-		}
-	}
-
-
-
-
 
 	//スタート地点に一番近いノードの距離を格納する変数
 	float startMinDistance = FLT_MAX;
@@ -587,6 +568,48 @@ bool MelLib::RouteSearch::CalcRoute
 	int endNodeIndexY = 0;
 	int endNodeIndexZ = 0;
 	bool trueEndNodeHitFlag = false;
+
+
+	struct AStarCalcData
+	{
+		//計算結果(ステップ + 距離 + コスト)
+		UINT calcNum = UINT_MAX;
+
+		//配列のインデックス
+		int indexX = INT_MAX;
+		int indexY = INT_MAX;
+		int indexZ = INT_MAX;
+
+		//close配列のインデックス
+		int closeIndex = INT_MAX;
+
+		//スタートからの距離
+		int stepNum = 0;
+
+		AStarNode2* pNode = nullptr;
+		//前のノードのデータ
+		AStarCalcData* previousNode = nullptr;
+
+		bool openFlag = false;
+		bool closeFlag = false;
+
+	};
+	std::vector<std::vector<std::vector<AStarCalcData>>>calcData
+	(nodeZArrayNum, std::vector<std::vector<AStarCalcData>>(nodeYArrayNum, std::vector<AStarCalcData>(nodeXArrayNum)));
+	
+	//ノードセット
+	for (int z = 0; z < calcData.size(); z++)
+	{
+
+		for (int y = 0; y < calcData[z].size(); y++)
+		{
+			for (int x = 0; x < calcData[z][y].size(); x++)
+			{
+				calcData[z][y][x].pNode = &nodes[z][y][x];
+			}
+		}
+	}
+
 
 	//一時的にfalseにしたときに戻す処理
 	auto ReturnHitObjectNode = [&]()
@@ -624,9 +647,9 @@ bool MelLib::RouteSearch::CalcRoute
 				}
 
 				//インデックス代入
-				nodes[z][y][x].indexX = x;
-				nodes[z][y][x].indexY = y;
-				nodes[z][y][x].indexZ = z;
+				calcData[z][y][x].indexX = x;
+				calcData[z][y][x].indexY = y;
+				calcData[z][y][x].indexZ = z;
 			}
 		}
 	}
@@ -679,16 +702,18 @@ bool MelLib::RouteSearch::CalcRoute
 
 	//スタートのノードのインデックスを代入
 	int startToEndDis = CalcNodeDistance(startNodeIndexX, startNodeIndexY, startNodeIndexZ, endNodeIndexX, endNodeIndexY, endNodeIndexZ);
-	nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].calcNum = startToEndDis + nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].cost;
+	calcData[startNodeIndexZ][startNodeIndexY][startNodeIndexX].calcNum = 
+		startToEndDis + nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].cost;
 
-	std::vector<AStarNode2*>openNodes(1, &nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX]);
-	std::vector<AStarNode2*>closeNodes;
+	std::vector<AStarCalcData*>openNodes(1, &calcData[startNodeIndexZ][startNodeIndexY][startNodeIndexX]);
+	std::vector<AStarCalcData*>closeNodes;
 
 
-	AStarNode2* endNode = nullptr;
+	AStarCalcData* endNode = nullptr;
 
 
 	//ステップの計算は周りのノード調べるときにやる?
+
 
 	while (1)
 	{
@@ -720,13 +745,13 @@ bool MelLib::RouteSearch::CalcRoute
 		});
 
 		//calcNumが一番少ないやつを取得
-		AStarNode2* mainNode = nullptr;
+		AStarCalcData* mainNode = nullptr;
 		int minCalcNum = openNodes[openNodes.size() - 1]->calcNum;
 		float minDis = FLT_MAX;
 		int mainNodeOpenIndex = 0;
 		for (int i = openNodes.size() - 1;; i--)
 		{
-			float dis = LibMath::CalcDistance3D(openNodes[i]->position, nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].position);
+			float dis = LibMath::CalcDistance3D(openNodes[i]->pNode->position, nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].position);
 			if (minDis > dis)
 			{
 				minDis = dis;
@@ -739,7 +764,7 @@ bool MelLib::RouteSearch::CalcRoute
 
 
 		//オープンに追加するノードを格納する配列
-		std::vector<AStarNode2*>openPushBackNode;
+		std::vector<AStarCalcData*>openPushBackNode;
 
 		for (int z = -1; z < 2; z++) 
 		{	
@@ -763,10 +788,10 @@ bool MelLib::RouteSearch::CalcRoute
 					//基準検索防止
 					if (indexX == mainNode->indexX && indexY == mainNode->indexY)continue;
 
-					AStarNode2* checkNode = &nodes[indexZ][indexY][indexX];
+					AStarCalcData* checkNode = &calcData[indexZ][indexY][indexX];
 
 					//オブジェクトに重なってるかどうか
-					if (checkNode->hitObjectNode)
+					if (checkNode->pNode->hitObjectNode)
 					{
 						checkNode->closeFlag = true;
 						continue;
@@ -776,7 +801,7 @@ bool MelLib::RouteSearch::CalcRoute
 					//calcNum = ステップ数 + ゴールまでの距離 + コスト
 					int calcNum = mainNode->stepNum + 1
 						+ CalcNodeDistance(indexX, indexY,indexZ, endNodeIndexX, endNodeIndexY, endNodeIndexZ)
-						+ checkNode->cost;
+						+ checkNode->pNode->cost;
 
 					//条件を満たしたら代入
 					if (checkNode->openFlag)
@@ -848,12 +873,12 @@ bool MelLib::RouteSearch::CalcRoute
 		openPushBackNode.clear();
 	}
 
-	AStarNode2* currentNode = endNode;
+	AStarCalcData* currentNode = endNode;
 	std::vector<Vector3>routeNodeVectors;
 	while (1)
 	{
 		if (!currentNode)break;
-		routeNodeVectors.push_back(currentNode->position);
+		routeNodeVectors.push_back(currentNode->pNode->position);
 		currentNode = currentNode->previousNode;
 	}
 	std::reverse(routeNodeVectors.begin(), routeNodeVectors.end());
@@ -870,7 +895,6 @@ bool MelLib::RouteSearch::CalcRoute
 	ReturnHitObjectNode();
 	return true;
 }
-
 
 #pragma endregion
 

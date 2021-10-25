@@ -65,30 +65,7 @@ namespace MelLib
 
 	};
 
-	struct AStarNode2;
-	struct AstarCalcData
-	{
-		//計算結果(ステップ + 距離 + コスト)
-		UINT calcNum = UINT_MAX;
-
-		//配列のインデックス
-		int indexX = INT_MAX;
-		int indexY = INT_MAX;
-		int indexZ = INT_MAX;
-
-		//close配列のインデックス
-		int closeIndex = INT_MAX;
-
-		//スタートからの距離
-		int stepNum = 0;
-
-		//前のノード
-		AStarNode2* previousNode = nullptr;
-
-		bool openFlag = false;
-		bool closeFlag = false;
-
-	};
+	
 
 	struct AStarNode2
 	{
@@ -102,26 +79,6 @@ namespace MelLib
 		//コスト
 		UINT cost = 1;
 		
-		//計算結果(ステップ + 距離 + コスト)
-		UINT calcNum = UINT_MAX;
-		 
-		//配列のインデックス
-		int indexX = INT_MAX;
-		int indexY = INT_MAX;
-		int indexZ = INT_MAX;
-
-		//close配列のインデックス
-		int closeIndex = INT_MAX;
-
-		//スタートからの距離
-		int stepNum = 0;
-
-		//前のノード
-		AStarNode2* previousNode = nullptr;
-
-		bool openFlag = false;
-		bool closeFlag = false;
-
 		//進行不能オブジェクトと重なっているノードかどうか
 		bool hitObjectNode = false;
 
@@ -232,7 +189,7 @@ namespace MelLib
 		);
 
 		/// <summary>
-		/// 渡されたデータをもとに最短経路を求めます。
+		/// 渡されたデータをもとに最短経路を計算します。
 		/// </summary>
 		/// <param name="startPos">スタート地点の座標</param>
 		/// <param name="endPos">ゴール地点の座標</param>
