@@ -91,7 +91,7 @@ namespace MelLib
 	{
 		using UINT = unsigned int;
 		//今度でいいから、プレイヤーや敵の大きさを考慮して経路を計算できるようにする
-
+	public:
 #pragma region 最短経路
 
 		///// <summary>
