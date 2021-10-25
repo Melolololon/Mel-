@@ -453,9 +453,9 @@ using namespace MelLib;
 
 void MelLib::RouteSearch::SetNodePosition
 (
-	const Vector3& leftDownNearPos, 
-	const Vector3& rightUpFarPos, 
-	const Value3<UINT>& nodeNum, 
+	const Vector3& leftDownNearPos,
+	const Vector3& rightUpFarPos,
+	const Value3<UINT>& nodeNum,
 	std::vector<std::vector<std::vector<AStarNode>>>& nodes
 )
 {
@@ -486,7 +486,7 @@ void MelLib::RouteSearch::SetNodePosition
 
 void MelLib::RouteSearch::SetHitObjectFlag
 (
-	const std::vector<BoxData>& hitObjectsBoxData, 
+	const std::vector<BoxData>& hitObjectsBoxData,
 	std::vector<std::vector<std::vector<AStarNode>>>& nodes
 )
 {
@@ -496,13 +496,13 @@ void MelLib::RouteSearch::SetHitObjectFlag
 		{
 			for (auto& nX : nY)
 			{
-				for (int i = 0; i < hitObjectsBoxData.size(); i++) 
+				for (int i = 0; i < hitObjectsBoxData.size(); i++)
 				{
 					BoxData nodeBoxData;
 					nodeBoxData.SetPosition(nX.position);
 					nodeBoxData.SetSize(nX.size);
 
-					if(Collision::BoxAndBox(nodeBoxData, nullptr, hitObjectsBoxData[i], nullptr))
+					if (Collision::BoxAndBox(nodeBoxData, nullptr, hitObjectsBoxData[i], nullptr))
 					{
 						nX.hitObjectNode = true;
 						break;
@@ -541,9 +541,9 @@ void MelLib::RouteSearch::SetCost(const std::vector<BoxData>& hitObjectsBoxData,
 
 bool MelLib::RouteSearch::CalcRoute
 (
-	const Vector3& startPos, 
-	const Vector3& endPos, 
-	std::vector<std::vector<std::vector<AStarNode>>>& nodes, 
+	const Vector3& startPos,
+	const Vector3& endPos,
+	std::vector<std::vector<std::vector<AStarNode>>>& nodes,
 	std::vector<Vector3>& routeVector
 )
 {
@@ -596,7 +596,7 @@ bool MelLib::RouteSearch::CalcRoute
 	};
 	std::vector<std::vector<std::vector<AStarCalcData>>>calcData
 	(nodeZArrayNum, std::vector<std::vector<AStarCalcData>>(nodeYArrayNum, std::vector<AStarCalcData>(nodeXArrayNum)));
-	
+
 	//ノードセット
 	for (int z = 0; z < calcData.size(); z++)
 	{
@@ -619,7 +619,7 @@ bool MelLib::RouteSearch::CalcRoute
 
 	};
 
-	for (int z = 0; z < nodeZArrayNum; z++) 
+	for (int z = 0; z < nodeZArrayNum; z++)
 	{
 		for (int y = 0; y < nodeYArrayNum; y++)
 		{
@@ -633,6 +633,7 @@ bool MelLib::RouteSearch::CalcRoute
 					startMinDistance = distance;
 					startNodeIndexX = x;
 					startNodeIndexY = y;
+					startNodeIndexZ = z;
 
 				}
 
@@ -642,6 +643,7 @@ bool MelLib::RouteSearch::CalcRoute
 					endMinDistance = distance;
 					endNodeIndexX = x;
 					endNodeIndexY = y;
+					endNodeIndexZ = z;
 
 
 				}
@@ -661,10 +663,10 @@ bool MelLib::RouteSearch::CalcRoute
 		trueStartNodeHitFlag = true;
 	}
 
-	if (nodes[startNodeIndexZ][endNodeIndexY][endNodeIndexX].hitObjectNode)
+	if (nodes[endNodeIndexZ][endNodeIndexY][endNodeIndexX].hitObjectNode)
 	{
 		//一時的にfalse
-		nodes[startNodeIndexZ][endNodeIndexY][endNodeIndexX].hitObjectNode = false;
+		nodes[endNodeIndexZ][endNodeIndexY][endNodeIndexX].hitObjectNode = false;
 		trueEndNodeHitFlag = true;
 	}
 
@@ -686,7 +688,7 @@ bool MelLib::RouteSearch::CalcRoute
 		int startZToEndZDiff = abs(startZ - endZ);
 
 		//Xの差とYの差のどちらが大きいか求める。斜め移動ありの場合、大きいほうが最短距離
-		if(startXToEndXDiff > startYToEndYDiff)
+		if (startXToEndXDiff > startYToEndYDiff)
 		{
 			if (startXToEndXDiff > startZToEndZDiff)return startXToEndXDiff;
 			else return startZToEndZDiff;
@@ -702,7 +704,7 @@ bool MelLib::RouteSearch::CalcRoute
 
 	//スタートのノードのインデックスを代入
 	int startToEndDis = CalcNodeDistance(startNodeIndexX, startNodeIndexY, startNodeIndexZ, endNodeIndexX, endNodeIndexY, endNodeIndexZ);
-	calcData[startNodeIndexZ][startNodeIndexY][startNodeIndexX].calcNum = 
+	calcData[startNodeIndexZ][startNodeIndexY][startNodeIndexX].calcNum =
 		startToEndDis + nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].cost;
 
 	std::vector<AStarCalcData*>openNodes(1, &calcData[startNodeIndexZ][startNodeIndexY][startNodeIndexX]);
@@ -766,8 +768,8 @@ bool MelLib::RouteSearch::CalcRoute
 		//オープンに追加するノードを格納する配列
 		std::vector<AStarCalcData*>openPushBackNode;
 
-		for (int z = -1; z < 2; z++) 
-		{	
+		for (int z = -1; z < 2; z++)
+		{
 			int indexZ = mainNode->indexZ + z;
 			if (indexZ <= -1 || indexZ >= nodeZArrayNum)continue;
 
@@ -800,7 +802,7 @@ bool MelLib::RouteSearch::CalcRoute
 
 					//calcNum = ステップ数 + ゴールまでの距離 + コスト
 					int calcNum = mainNode->stepNum + 1
-						+ CalcNodeDistance(indexX, indexY,indexZ, endNodeIndexX, endNodeIndexY, endNodeIndexZ)
+						+ CalcNodeDistance(indexX, indexY, indexZ, endNodeIndexX, endNodeIndexY, endNodeIndexZ)
 						+ checkNode->pNode->cost;
 
 					//条件を満たしたら代入
@@ -842,7 +844,9 @@ bool MelLib::RouteSearch::CalcRoute
 					checkNode->previousNode = mainNode;
 					checkNode->stepNum = mainNode->stepNum + 1;
 
-					if (checkNode->indexX == endNodeIndexX && checkNode->indexY == endNodeIndexY)
+					if (checkNode->indexX == endNodeIndexX
+						&& checkNode->indexY == endNodeIndexY
+						&& checkNode->indexZ == endNodeIndexZ)
 					{
 						checkEnd = true;
 						endNode = checkNode;
