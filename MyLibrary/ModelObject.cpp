@@ -542,6 +542,9 @@ void ModelObject::Draw(const std::string& rtName)
 
 bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, ModelData*& pBack, const bool createCrossSection)
 {
+	// 平面を回転させるとき、ZXYじゃなくてYXZでやったほうがいい?
+
+
 
 	//緊急(解決優先度高めの現在の問題点)
 	//1.そもそも四角形でも斬り方によっては5角形になるので、どっちみち面の再形成は必要

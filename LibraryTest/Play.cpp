@@ -239,6 +239,16 @@ Play::~Play(){}
 void Play::Initialize()
 {
 	RTTestInitialize();
+
+
+	MelLib::BoxData box;
+	box.SetPosition(0);
+	box.SetSize(10);
+	MelLib::RayData ray;
+	ray.SetPosition(MelLib::Vector3(0, 0, 1000));
+	ray.SetDirection(MelLib::Vector3(0, 0, 1));
+	bool result = MelLib::Collision::BoxAndRay(box, ray);
+	int x = 0;
 }
 
 void Play::Update()

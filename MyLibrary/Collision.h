@@ -74,6 +74,7 @@ namespace MelLib
 #pragma endregion
 
 #pragma region 3D
+		// ○○And○○じゃなくて、○○HitCheck関数をオーバーロードしたほうがいい
 
 		/// <summary>
 		/// 球同士が当たっているかを確認します。
@@ -167,7 +168,11 @@ namespace MelLib
 			const FrustumData& frustum
 		);
 
-
+		static bool BoxAndRay
+		(
+			const BoxData& box,
+			const RayData& ray
+		);
 #pragma endregion
 	};
 

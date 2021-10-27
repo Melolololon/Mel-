@@ -872,3 +872,145 @@ bool MelLib::Collision::PointAndFrustum(const Vector3& pointPos, const FrustumDa
 	}
 	return true;
 }
+
+bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray)
+{
+	// https://plaza.rakuten.co.jp/ootorii/diary/200705140000/
+	
+	// https://el-ement.com/blog/2017/08/16/primitives-ray-intersection/
+
+	// p 始点座標
+	// d 方向ベクトル
+	// hw hh hd boxSizeHの x y z
+
+	Vector3 boxSize = box.GetSize() / 2;
+	Vector3 tMin = -FLT_MAX;
+	Vector3 tMax = FLT_MAX;
+	Vector3 t;
+
+	// boxを原点にある場合でしか求められない方法なので、rayを動かして四角形が原点にあるときと同じ状況にする
+	Vector3 rayMovePos = ray.GetPosition() - box.GetPosition();
+
+	// 法線ベクトルが0の場合、レイの点が四角形に入っているかを確認する
+	if(ray.GetDirection().x == 0)
+	{
+
+		if(-boxSize.x < rayMovePos.x && rayMovePos.x < boxSize.x)
+		{
+			t.x = FLT_MAX;
+		}
+		else
+		{
+			t.x = -1;
+			tMin.x = 0;
+			tMax.x = 0;
+		}
+	}
+	else
+	{
+		float num1 = (boxSize.x - rayMovePos.x) / ray.GetDirection().x;
+		float num2 = (-boxSize.x - rayMovePos.x) / ray.GetDirection().x;
+		if(num1 > num2)
+		{
+			tMin.x = num2;
+			tMax.x = num1;
+		}
+		else
+		{
+			tMin.x = num1;
+			tMax.x = num2;
+		}
+		t.x = tMax.x - tMin.x;
+	}
+
+	if (ray.GetDirection().y == 0)
+	{
+		if (-boxSize.y < rayMovePos.y && rayMovePos.y < boxSize.y)
+		{
+			t.y = FLT_MAX;
+		}
+		else
+		{
+			t.y = -1;
+			tMin.y = 0;
+			tMax.y = 0;
+		}
+	}
+	else
+	{
+		float num1 = (boxSize.y - rayMovePos.y) / ray.GetDirection().y;
+		float num2 = (-boxSize.y - rayMovePos.y) / ray.GetDirection().y;
+		if (num1 > num2)
+		{
+			tMin.y = num2;
+			tMax.y = num1;
+		}
+		else
+		{
+			tMin.y = num1;
+			tMax.y = num2;
+		}
+		t.y = tMax.y - tMin.y;
+
+	}
+
+	if (ray.GetDirection().z == 0)
+	{
+		if (-boxSize.z < rayMovePos.z && rayMovePos.z < boxSize.z)
+		{
+			t.z = FLT_MAX;
+		}
+		else
+		{
+			t.z = -1;
+			tMin.z = 0;
+			tMax.z = 0;
+		}
+	}
+	else
+	{
+		float num1 = (boxSize.z - rayMovePos.z) / ray.GetDirection().z;
+		float num2 = (-boxSize.z - rayMovePos.z) / ray.GetDirection().z;
+		if (num1 > num2)
+		{
+			tMin.z = num2;
+			tMax.z = num1;
+		}
+		else
+		{
+			tMin.z = num1;
+			tMax.z = num2;
+		}
+
+		t.z = tMax.z - tMin.z;
+	}
+
+	float min = FLT_MAX;
+	
+	/*if (0 <= t.x)min = t.x;
+	if (0 <= t.y && min > t.y)min = t.y;
+	if (0 <= t.z && min > t.z)min = t.z;*/
+
+	if (0 <= tMax.x)min = tMax.x;
+	if (0 <= tMin.x && min > tMin.x)min = tMin.x;
+	if (0 <= tMax.y && min > tMax.y)min = tMax.y;
+	if (0 <= tMin.y && min > tMin.y)min = tMin.y;
+	if (0 <= tMax.z && min > tMax.z)min = tMax.z;
+	if (0 <= tMin.z && min > tMin.z)min = tMin.z;
+	
+
+	if (min == FLT_MAX)return false;
+
+	// n = 交点?
+	// そうだとすると、minがおかしいこといなる?
+	// rayMovePosから動かして当たってるか調べる処理ってことになるし
+	// minの部分には、衝突してる部分のレイの距離じゃなくて、レイの点から衝突点までの距離を入れるのが正しい?
+	// もしかして、tが0越えてたら(min == FLT_MAX)じゃなかったら当たってる判定でいい?
+	Vector3 n = rayMovePos + min * ray.GetDirection();
+	if (-boxSize.x <= n.x && n.x <= boxSize.x
+		&& -boxSize.y <= n.y && n.y <= boxSize.y
+		&& -boxSize.z <= n.z && n.z <= boxSize.z)return true;
+	return false;
+
+	//return true;
+}
