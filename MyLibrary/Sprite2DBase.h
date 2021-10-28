@@ -4,6 +4,7 @@
 
 namespace MelLib
 {
+	//レンダーターゲットを分離したから消す
 	//スプライト2D基底クラス
 	class Sprite2DBase :public Sprite
 	{

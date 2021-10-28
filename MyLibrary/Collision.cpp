@@ -873,7 +873,7 @@ bool MelLib::Collision::PointAndFrustum(const Vector3& pointPos, const FrustumDa
 	return true;
 }
 
-bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray)
+bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCalcResult* rayResult)
 {
 	// https://plaza.rakuten.co.jp/ootorii/diary/200705140000/
 	
@@ -991,6 +991,7 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray)
 	if (0 <= t.y && min > t.y)min = t.y;
 	if (0 <= t.z && min > t.z)min = t.z;*/
 
+	//	ここmaxいらない?
 	if (0 <= tMax.x)min = tMax.x;
 	if (0 <= tMin.x && min > tMin.x)min = tMin.x;
 	if (0 <= tMax.y && min > tMax.y)min = tMax.y;
@@ -998,19 +999,65 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray)
 	if (0 <= tMax.z && min > tMax.z)min = tMax.z;
 	if (0 <= tMin.z && min > tMin.z)min = tMin.z;
 	
-
+	// 条件を満たさなかったらfalse
 	if (min == FLT_MAX)return false;
 
-	// n = 交点?
-	// そうだとすると、minがおかしいこといなる?
-	// rayMovePosから動かして当たってるか調べる処理ってことになるし
-	// minの部分には、衝突してる部分のレイの距離じゃなくて、レイの点から衝突点までの距離を入れるのが正しい?
-	// もしかして、tが0越えてたら(min == FLT_MAX)じゃなかったら当たってる判定でいい?
 	Vector3 n = rayMovePos + min * ray.GetDirection();
 	if (-boxSize.x <= n.x && n.x <= boxSize.x
 		&& -boxSize.y <= n.y && n.y <= boxSize.y
-		&& -boxSize.z <= n.z && n.z <= boxSize.z)return true;
+		&& -boxSize.z <= n.z && n.z <= boxSize.z)
+	{
+		if (rayResult)
+		{
+			/*Vector3 hitPos;
+			if (abs(tMin.x - rayMovePos.x) < abs(tMax.x - rayMovePos.x))hitPos.x = tMin.x - rayMovePos.x;
+			else hitPos.x = tMax.x + rayMovePos.x;
+			if (hitPos.x == FLT_MAX)hitPos.x = ray.GetPosition().x;
+
+			if (abs(tMin.y - rayMovePos.y) < abs(tMax.y - rayMovePos.y))hitPos.y = tMin.y - rayMovePos.y;
+			else hitPos.y = tMax.y + rayMovePos.y;
+			if (hitPos.y == FLT_MAX)hitPos.y = ray.GetPosition().y;
+
+			if (abs(tMin.z - rayMovePos.z) < abs(tMax.z - rayMovePos.z))hitPos.z = tMin.z - rayMovePos.z;
+			else hitPos.z = tMax.z + rayMovePos.z;
+			if (hitPos.z == FLT_MAX)hitPos.z = ray.GetPosition().z;
+
+			rayResult->hitPosition = hitPos;*/
+			//rayResult->hitPosition = hitPos - box.GetPosition();
+			//rayResult->hitPosition = hitPos + ray.GetPosition();
+
+			rayResult->hitPosition = n + box.GetPosition();
+		}
+
+		return true;
+	}
 	return false;
 
 	//return true;
+}
+
+bool MelLib::Collision::BoxAndSegment3D(const BoxData& box, const Segment3DData& segment)
+{
+	RayData ray;
+	ray.SetPosition(segment.GetPosition().v1);
+	ray.SetDirection((segment.GetPosition().v2 - segment.GetPosition().v1).Normalize());
+	RayCalcResult result;
+
+	if (!BoxAndRay(box, ray, &result))return false;
+
+	// 衝突点が線分と重なってたら当たってる判定
+	if (PointAndSegment3D(result.hitPosition, segment))return true;
+	return false;
+
+}
+
+bool MelLib::Collision::PointAndSegment3D(const Vector3& pointPos, const Segment3DData& segment)
+{
+	Vector3 segmentPosVector = (segment.GetRotatePosition().v2 - segment.GetRotatePosition().v1).Normalize();
+	Vector3 segmentV1ToPoint = pointPos - segment.GetRotatePosition().v1;
+	Vector3 pointToSegment = segmentPosVector *
+		Vector3::Dot(segmentPosVector, segmentV1ToPoint)
+		/ segmentPosVector.Length() - segmentV1ToPoint;
+
+	return pointToSegment == 0.0f;
 }

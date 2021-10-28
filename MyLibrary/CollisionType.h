@@ -441,6 +441,11 @@ namespace MelLib
 
 #pragma region ƒŒƒC
 
+	struct RayCalcResult
+	{
+		Vector3 hitPosition;
+	};
+
 	//ü
 	class RayData
 	{

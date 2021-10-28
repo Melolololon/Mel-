@@ -5,68 +5,7 @@
 
 namespace MelLib 
 {
-	//サイズ持たせるようにする?
-	//コストも進行不可能オブジェクトとの判定時に計算するようにする
-
-	//Aスターのノード
-//	struct AStarNode
-//	{
-//
-//		using UINT = unsigned int;
-//
-//		
-//		//座標
-//		Vector2 position = 0;
-//
-//		//コスト
-//		UINT cost = 1;
-//
-//		//計算結果(ステップ + 距離 + コスト)
-//		UINT calcNum = UINT_MAX;
-//		
-//
-//		//以下探索用変数
-//
-//		//配列のインデックス
-//		int indexX = INT_MAX;
-//		int indexY = INT_MAX;
-//
-//		//close配列のインデックス
-//		int closeIndex = INT_MAX;
-//
-//		//スタートからの距離
-//		int stepNum = 0;
-//
-//		//前のノード
-//		AStarNode* previousNode = nullptr;
-//
-//		bool openFlag = false;
-//		bool closeFlag = false;
-//
-//		//進行不能オブジェクトと重なっているノード
-//		bool hitObjectNode = false;
-//
-//		
-//#ifdef _DEBUG
-//
-//		/*AStarNode();
-//		~AStarNode();*/
-//
-//		//static std::vector<AStarNode*>pNodes;
-//
-//		////マス目
-//		//ModelObject nodeModel;
-//
-//		//void Draw();
-//		//static void AllDraw();
-//
-//#endif // _DEBUG
-//
-//
-//	};
-//
-//	
-
+	// A*用ノード(マス)
 	struct AStarNode
 	{
 		using UINT = unsigned int;
@@ -78,19 +17,19 @@ namespace MelLib
 
 		//コスト
 		UINT cost = 1;
-		
+
 		//進行不能オブジェクトと重なっているノードかどうか
 		bool hitObjectNode = false;
 
 	};
 
-	
 
-	//経路探索クラス
+	// 今度でいいから、プレイヤーや敵の大きさを考慮して経路を計算できるようにする
+
+	// 経路探索クラス
 	class RouteSearch
 	{
 		using UINT = unsigned int;
-		//今度でいいから、プレイヤーや敵の大きさを考慮して経路を計算できるようにする
 	public:
 #pragma region 最短経路
 
@@ -195,13 +134,17 @@ namespace MelLib
 		/// <param name="endPos">ゴール地点の座標</param>
 		/// <param name="nodes">ノードのvector(SetAStarNodeHitObjectNodeFlagに渡した後の配列)</param>
 		/// <param name="routeVector">ゴールまでのルートを格納するvector(sizeは0でよい)</param>
+		/// <param name="straight">startPosからendPosまでの間に進行不可能ノードがない場合、routeVectorにstartPosからendPosへのベクトルを格納するかどうか</param>
+		/// <param name="straightDis">straightがtrueの時、進行ノードと進行不可能ノードの距離がどのくらい離れていたら直進するベクトルを格納するか</param>
 		/// <returns>探索が成功したかどうか</returns>
 		static bool CalcRoute
 		(
 			const Vector3& startPos,
 			const Vector3& endPos,
 			std::vector<std::vector<std::vector<AStarNode>>>& nodes,
-			std::vector<Vector3>& routeVector
+			std::vector<Vector3>& routeVector,
+			bool straight,
+			float straightDis
 		);
 #pragma endregion
 

@@ -240,19 +240,29 @@ void Play::Initialize()
 {
 	RTTestInitialize();
 
-
-	MelLib::BoxData box;
-	box.SetPosition(0);
-	box.SetSize(10);
-	MelLib::RayData ray;
-	ray.SetPosition(MelLib::Vector3(0, 0, 1000));
-	ray.SetDirection(MelLib::Vector3(0, 0, 1));
-	bool result = MelLib::Collision::BoxAndRay(box, ray);
-	int x = 0;
 }
 
 void Play::Update()
 {
+	MelLib::Vector3 pointPos = MelLib::Vector3(5, 0, 0);
+	MelLib::Segment3DData segment;
+	segment.SetPosition(MelLib::Value2<MelLib::Vector3>(MelLib::Vector3(0, 0, -10), MelLib::Vector3(0, 0, 10)));
+	bool res =  MelLib::Collision::PointAndSegment3D(pointPos, segment);
+
+	MelLib::BoxData box;
+	box.SetPosition(MelLib::Vector3(0, 40, 40));
+	box.SetSize(MelLib::Vector3(1,1,1));
+
+	res = MelLib::Collision::BoxAndSegment3D(box, segment);
+
+	MelLib::RayData ray;
+	MelLib::RayCalcResult rayRes;
+	ray.SetPosition(MelLib::Vector3(0, -40, -40));
+	ray.SetDirection(MelLib::Vector3(0, 1,1).Normalize());
+	bool result = MelLib::Collision::BoxAndRay(box, ray,&rayRes);
+	int x = 0;
+
+
 	RTTestUpdate();
 
 	MelLib::GameObjectManager::GetInstance()->Update();

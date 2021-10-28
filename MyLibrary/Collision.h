@@ -171,7 +171,20 @@ namespace MelLib
 		static bool BoxAndRay
 		(
 			const BoxData& box,
-			const RayData& ray
+			const RayData& ray,
+			RayCalcResult* rayResult
+		);
+
+		static bool BoxAndSegment3D
+		(
+			const BoxData& box,
+			const Segment3DData& segment
+		);
+
+		static bool PointAndSegment3D
+		(
+			const Vector3& pointPos,
+			const Segment3DData& segment
 		);
 #pragma endregion
 	};
