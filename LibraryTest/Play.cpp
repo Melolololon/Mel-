@@ -244,13 +244,13 @@ void Play::Initialize()
 
 void Play::Update()
 {
-	MelLib::Vector3 pointPos = MelLib::Vector3(5, 0, 0);
+	MelLib::Vector3 pointPos = MelLib::Vector3(0, 0, 23);
 	MelLib::Segment3DData segment;
-	segment.SetPosition(MelLib::Value2<MelLib::Vector3>(MelLib::Vector3(0, 0, -10), MelLib::Vector3(0, 0, 10)));
+	segment.SetPosition(MelLib::Value2<MelLib::Vector3>(MelLib::Vector3(0, 0, 0), MelLib::Vector3(0, 0, 30)));
 	bool res =  MelLib::Collision::PointAndSegment3D(pointPos, segment);
 
 	MelLib::BoxData box;
-	box.SetPosition(MelLib::Vector3(0, 40, 40));
+	box.SetPosition(MelLib::Vector3(0, 0, -40));
 	box.SetSize(MelLib::Vector3(1,1,1));
 
 	res = MelLib::Collision::BoxAndSegment3D(box, segment);

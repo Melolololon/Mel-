@@ -1053,11 +1053,10 @@ bool MelLib::Collision::BoxAndSegment3D(const BoxData& box, const Segment3DData&
 
 bool MelLib::Collision::PointAndSegment3D(const Vector3& pointPos, const Segment3DData& segment)
 {
-	Vector3 segmentPosVector = (segment.GetRotatePosition().v2 - segment.GetRotatePosition().v1).Normalize();
+	Vector3 segmentPosVector = segment.GetRotatePosition().v2 - segment.GetRotatePosition().v1;
 	Vector3 segmentV1ToPoint = pointPos - segment.GetRotatePosition().v1;
-	Vector3 pointToSegment = segmentPosVector *
-		Vector3::Dot(segmentPosVector, segmentV1ToPoint)
-		/ segmentPosVector.Length() - segmentV1ToPoint;
 
-	return pointToSegment == 0.0f;
+	return LibMath::Difference(Vector3::Cross(segmentV1ToPoint, segmentPosVector).Length(), 0.0f, 0.0001f) 
+		&& segmentV1ToPoint.Length() <= segmentPosVector.Length();
+	
 }

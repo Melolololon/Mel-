@@ -552,21 +552,20 @@ bool MelLib::RouteSearch::CalcRoute
 	const Vector3& startPos,
 	const Vector3& endPos,
 	std::vector<std::vector<std::vector<AStarNode>>>& nodes,
-	std::vector<Vector3>& routeVector,
+	std::vector<Vector3>& routeVector, 
 	const bool straight,
 	const float straightDis
 )
 {
-	// レイだとプレイヤーの奥にあった進行不可能ノードにも当たっちゃうから、線分にする
-
+	// ノードにたどり着くまで(一定距離になるまで)計算しない処理入れてもいいかも
+	// たどり着くまで呼ばないとなると、直進可能判断が不可能なため却下
 
 	// そもそもルート確認する必要ないか確認する	
 	if(straight)
 	{
 		bool straightMove = true;
-		RayData ray;
-		ray.SetPosition(startPos);
-		ray.SetDirection((endPos - startPos).Normalize());
+		Segment3DData segment;
+		segment.SetPosition(MelLib::Value2<MelLib::Vector3>(startPos, endPos));
 
 		for(const auto& nZ : nodes)
 		{
@@ -579,7 +578,7 @@ bool MelLib::RouteSearch::CalcRoute
 					box.SetSize(nX.size);
 					
 					// 当たらなかったら次へ
-					if (!Collision::BoxAndRay(box, ray,nullptr))continue;
+					if (!Collision::BoxAndSegment3D(box, segment))continue;
 
 					// 進行不可能ノードだったら直進不可なので確認終了
 					if(nX.hitObjectNode)
@@ -607,9 +606,8 @@ bool MelLib::RouteSearch::CalcRoute
 							if (!straightMove)break;
 						}
 						if (!straightMove)break;
-
 					}
-
+					if (!straightMove)break;
 				}
 				if (!straightMove)break;
 			}
@@ -694,7 +692,7 @@ bool MelLib::RouteSearch::CalcRoute
 	//一時的にfalseにしたときに戻す処理
 	auto ReturnHitObjectNode = [&]()
 	{
-		if (trueStartNodeHitFlag)nodes[endNodeIndexZ][startNodeIndexY][startNodeIndexX].hitObjectNode = true;
+		if (trueStartNodeHitFlag)nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].hitObjectNode = true;
 		if (trueEndNodeHitFlag)nodes[endNodeIndexZ][endNodeIndexY][endNodeIndexX].hitObjectNode = true;
 
 	};
@@ -962,7 +960,9 @@ bool MelLib::RouteSearch::CalcRoute
 	while (1)
 	{
 		if (!currentNode)break;
+
 		routeNodeVectors.push_back(currentNode->pNode->position);
+		
 		currentNode = currentNode->previousNode;
 	}
 	std::reverse(routeNodeVectors.begin(), routeNodeVectors.end());
