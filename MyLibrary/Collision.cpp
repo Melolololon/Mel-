@@ -895,7 +895,7 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	if(ray.GetDirection().x == 0)
 	{
 
-		if(-boxSize.x < rayMovePos.x && rayMovePos.x < boxSize.x)
+		if(-boxSize.x <= rayMovePos.x && rayMovePos.x <= boxSize.x)
 		{
 			t.x = FLT_MAX;
 		}
@@ -925,7 +925,7 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 
 	if (ray.GetDirection().y == 0)
 	{
-		if (-boxSize.y < rayMovePos.y && rayMovePos.y < boxSize.y)
+		if (-boxSize.y <= rayMovePos.y && rayMovePos.y <= boxSize.y)
 		{
 			t.y = FLT_MAX;
 		}
@@ -956,7 +956,7 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 
 	if (ray.GetDirection().z == 0)
 	{
-		if (-boxSize.z < rayMovePos.z && rayMovePos.z < boxSize.z)
+		if (-boxSize.z <= rayMovePos.z && rayMovePos.z <= boxSize.z)
 		{
 			t.z = FLT_MAX;
 		}

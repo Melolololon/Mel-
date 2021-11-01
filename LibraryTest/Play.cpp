@@ -250,15 +250,15 @@ void Play::Update()
 	bool res =  MelLib::Collision::PointAndSegment3D(pointPos, segment);
 
 	MelLib::BoxData box;
-	box.SetPosition(MelLib::Vector3(0, 0, -40));
-	box.SetSize(MelLib::Vector3(1,1,1));
+	box.SetPosition(MelLib::Vector3(2, 0,8));
+	box.SetSize(MelLib::Vector3(2,1000,2));
 
 	res = MelLib::Collision::BoxAndSegment3D(box, segment);
 
 	MelLib::RayData ray;
 	MelLib::RayCalcResult rayRes;
-	ray.SetPosition(MelLib::Vector3(0, -40, -40));
-	ray.SetDirection(MelLib::Vector3(0, 1,1).Normalize());
+	ray.SetPosition(MelLib::Vector3(1, 0, 30));
+	ray.SetDirection(MelLib::Vector3(0, 0,-1).Normalize());
 	bool result = MelLib::Collision::BoxAndRay(box, ray,&rayRes);
 	int x = 0;
 
