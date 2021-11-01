@@ -158,7 +158,8 @@ namespace MelLib
 			const Vector3& startPos,
 			const Vector3& endPos,
 			std::vector<std::vector<std::vector<AStarNode>>>& nodes,
-			std::vector<Vector3>& routeVector
+			std::vector<Vector3>* routeVector,
+			std::vector<Vector3>* routeNodePos
 		);
 #pragma endregion
 

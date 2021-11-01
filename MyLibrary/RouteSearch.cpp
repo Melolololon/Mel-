@@ -547,7 +547,7 @@ void MelLib::RouteSearch::SetCost(const std::vector<BoxData>& hitObjectsBoxData,
 	}
 }
 
-bool MelLib::RouteSearch::CheckStraightMove(const Vector3& startPos, const Vector3& endPos, std::vector<std::vector<std::vector<AStarNode>>>& nodes,const float straightDis, Vector3& startToEnd)
+bool MelLib::RouteSearch::CheckStraightMove(const Vector3& startPos, const Vector3& endPos, std::vector<std::vector<std::vector<AStarNode>>>& nodes, const float straightDis, Vector3& startToEnd)
 {
 	bool straightMove = true;
 	Segment3DData segment;
@@ -613,7 +613,8 @@ bool MelLib::RouteSearch::CalcRoute
 	const Vector3& startPos,
 	const Vector3& endPos,
 	std::vector<std::vector<std::vector<AStarNode>>>& nodes,
-	std::vector<Vector3>& routeVector
+	std::vector<Vector3>* routeVector,
+	std::vector<Vector3>* routeNodePos
 )
 {
 
@@ -822,7 +823,8 @@ bool MelLib::RouteSearch::CalcRoute
 		int mainNodeOpenIndex = 0;
 		for (int i = openNodes.size() - 1;; i--)
 		{
-			float dis = LibMath::CalcDistance3D(openNodes[i]->pNode->position, nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].position);
+			//float dis = LibMath::CalcDistance3D(openNodes[i]->pNode->position, nodes[startNodeIndexZ][startNodeIndexY][startNodeIndexX].position);
+			float dis = LibMath::CalcDistance3D(openNodes[i]->pNode->position, nodes[endNodeIndexZ][endNodeIndexY][endNodeIndexX].position);
 			if (minDis > dis)
 			{
 				minDis = dis;
@@ -831,8 +833,6 @@ bool MelLib::RouteSearch::CalcRoute
 			}
 			if (openNodes[i]->calcNum != minCalcNum || i == 0)break;
 		}
-
-
 
 		//オープンに追加するノードを格納する配列
 		std::vector<AStarCalcData*>openPushBackNode;
@@ -857,11 +857,11 @@ bool MelLib::RouteSearch::CalcRoute
 					if (indexX <= -1 || indexX >= nodeXArrayNum)continue;
 
 					//基準検索防止
-					if (indexX == mainNode->indexX && indexY == mainNode->indexY)continue;
+					if (indexX == mainNode->indexX && indexY == mainNode->indexY && indexZ == mainNode->indexZ)continue;
 
 					AStarCalcData* checkNode = &calcData[indexZ][indexY][indexX];
 
-					//オブジェクトに重なってるかどうか
+					//オブジェクトに重なってたら次のノードへ　
 					if (checkNode->pNode->hitObjectNode)
 					{
 						checkNode->closeFlag = true;
@@ -947,26 +947,36 @@ bool MelLib::RouteSearch::CalcRoute
 	}
 
 	AStarCalcData* currentNode = endNode;
-	std::vector<Vector3>routeNodeVectors;
+	std::vector<Vector3>routeNodePositions;
 	while (1)
 	{
 		if (!currentNode)break;
 
-		routeNodeVectors.push_back(currentNode->pNode->position);
-		
+		routeNodePositions.push_back(currentNode->pNode->position);
+
 		currentNode = currentNode->previousNode;
 	}
-	std::reverse(routeNodeVectors.begin(), routeNodeVectors.end());
+	std::reverse(routeNodePositions.begin(), routeNodePositions.end());
+
+	if (routeNodePos)
+	{
+		routeNodePos->clear();
+		*routeNodePos = routeNodePositions;
+	}
 
 	//ベクトルを求める
-	routeVector.clear();
-	size_t routeVectorSize = routeNodeVectors.size() - 1;
-	routeVector.resize(routeVectorSize);
-	for (size_t i = 0; i < routeVectorSize; i++)
+	if (routeVector)
 	{
-		routeVector[i] = Vector3::Normalize(routeNodeVectors[i + 1] - routeNodeVectors[i]);
+		std::vector<Vector3>& refRouteVector = *routeVector;
+		refRouteVector.clear();
+		size_t routeVectorSize = routeNodePositions.size() - 1;
+		refRouteVector.resize(routeVectorSize);
+		for (size_t i = 0; i < routeVectorSize; i++)
+		{
+			refRouteVector[i] = Vector3::Normalize(routeNodePositions[i + 1] - routeNodePositions[i]);
+		}
 	}
-	
+
 	ReturnHitObjectNode();
 	return true;
 }
