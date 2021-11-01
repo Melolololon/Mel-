@@ -456,15 +456,15 @@ float Input::ArrowKeyAngle()
 	bool up = Input::KeyState(DIK_UP);
 	bool down = Input::KeyState(DIK_DOWN);
 
-	if (right && up)return 45.0f;
-	if (up && left)return 135.0f;
-	if (left && down)return 225.0f;
-	if (down && right)return 315.0f;
-
 	if (right)return 0.0f;
 	if (up)return 90.0f;
 	if (left)return 180.0f;
 	if (down)return 270.0f;
+
+	if (right && up)return 45.0f;
+	if (up && left)return 135.0f;
+	if (left && down)return 225.0f;
+	if (down && right)return 315.0f;
 
 	return -1.0f;
 }

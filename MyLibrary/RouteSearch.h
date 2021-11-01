@@ -128,23 +128,37 @@ namespace MelLib
 		);
 
 		/// <summary>
+		/// startPosからendPosまで直進可能かどうかを判定します。
+		/// </summary>
+		/// <param name="startPos">開始位置</param>
+		/// <param name="endPos">目的地</param>
+		/// <param name="nodes">ノード</param>
+		/// <param name="straightDis">直進したときに通過するノードから進行不可能ノードの距離を計算して直進可能か判定するときに使用する距離</param>
+		/// <param name="startToEnd">startPosからendPosへのベクトル</param>
+		/// <returns></returns>
+		static bool CheckStraightMove
+		(
+			const Vector3& startPos,
+			const Vector3& endPos,
+			std::vector<std::vector<std::vector<AStarNode>>>& nodes,
+			float straightDis,
+			Vector3& startToEnd
+		);
+
+		/// <summary>
 		/// 渡されたデータをもとに最短経路を計算します。
 		/// </summary>
 		/// <param name="startPos">スタート地点の座標</param>
 		/// <param name="endPos">ゴール地点の座標</param>
 		/// <param name="nodes">ノードのvector(SetAStarNodeHitObjectNodeFlagに渡した後の配列)</param>
 		/// <param name="routeVector">ゴールまでのルートを格納するvector(sizeは0でよい)</param>
-		/// <param name="straight">startPosからendPosまでの間に進行不可能ノードがない場合、routeVectorにstartPosからendPosへのベクトルを格納するかどうか</param>
-		/// <param name="straightDis">straightがtrueの時、進行ノードと進行不可能ノードの距離がどのくらい離れていたら直進するベクトルを格納するか</param>
 		/// <returns>探索が成功したかどうか</returns>
 		static bool CalcRoute
 		(
 			const Vector3& startPos,
 			const Vector3& endPos,
 			std::vector<std::vector<std::vector<AStarNode>>>& nodes,
-			std::vector<Vector3>& routeVector,
-			bool straight,
-			float straightDis
+			std::vector<Vector3>& routeVector
 		);
 #pragma endregion
 

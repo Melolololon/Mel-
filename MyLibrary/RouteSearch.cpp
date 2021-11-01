@@ -547,63 +547,47 @@ void MelLib::RouteSearch::SetCost(const std::vector<BoxData>& hitObjectsBoxData,
 	}
 }
 
-bool MelLib::RouteSearch::CalcRoute
-(
-	const Vector3& startPos,
-	const Vector3& endPos,
-	std::vector<std::vector<std::vector<AStarNode>>>& nodes,
-	std::vector<Vector3>& routeVector, 
-	const bool straight,
-	const float straightDis
-)
+bool MelLib::RouteSearch::CheckStraightMove(const Vector3& startPos, const Vector3& endPos, std::vector<std::vector<std::vector<AStarNode>>>& nodes,const float straightDis, Vector3& startToEnd)
 {
-	// ノードにたどり着くまで(一定距離になるまで)計算しない処理入れてもいいかも
-	// たどり着くまで呼ばないとなると、直進可能判断が不可能なため却下
+	bool straightMove = true;
+	Segment3DData segment;
+	segment.SetPosition(MelLib::Value2<MelLib::Vector3>(startPos, endPos));
 
-	// そもそもルート確認する必要ないか確認する	
-	if(straight)
+	for (const auto& nZ : nodes)
 	{
-		bool straightMove = true;
-		Segment3DData segment;
-		segment.SetPosition(MelLib::Value2<MelLib::Vector3>(startPos, endPos));
-
-		for(const auto& nZ : nodes)
+		for (const auto& nY : nZ)
 		{
-			for(const auto& nY : nZ)
+			for (const auto& nX : nY)
 			{
-				for(const auto& nX : nY)
+				BoxData box;
+				box.SetPosition(nX.position);
+				box.SetSize(nX.size);
+
+				// 当たらなかったら次へ
+				if (!Collision::BoxAndSegment3D(box, segment))continue;
+
+				// 進行不可能ノードだったら直進不可なので確認終了
+				if (nX.hitObjectNode)
 				{
-					BoxData box;
-					box.SetPosition(nX.position);
-					box.SetSize(nX.size);
-					
-					// 当たらなかったら次へ
-					if (!Collision::BoxAndSegment3D(box, segment))continue;
+					straightMove = false;
+					break;
+				}
 
-					// 進行不可能ノードだったら直進不可なので確認終了
-					if(nX.hitObjectNode)
+				// 別のノードと確認
+				for (const auto& nZ2 : nodes)
+				{
+					for (const auto& nY2 : nZ2)
 					{
-						straightMove = false;
-						break;
-					}
-
-					// 別のノードと確認
-					for (const auto& nZ2 : nodes)
-					{
-						for (const auto& nY2 : nZ2)
+						for (const auto& nX2 : nY2)
 						{
-							for (const auto& nX2 : nY2)
-							{
-								// ヒットオブジェクトじゃなかったら次へ
-								if (!nX2.hitObjectNode)continue;
+							// ヒットオブジェクトじゃなかったら次へ
+							if (!nX2.hitObjectNode)continue;
 
-								if((nX.position - nX2.position).Length() < straightDis)
-								{
-									straightMove = false;
-									break;
-								}
+							if ((nX.position - nX2.position).Length() < straightDis)
+							{
+								straightMove = false;
+								break;
 							}
-							if (!straightMove)break;
 						}
 						if (!straightMove)break;
 					}
@@ -613,18 +597,25 @@ bool MelLib::RouteSearch::CalcRoute
 			}
 			if (!straightMove)break;
 		}
-
-		// 可能だったら直進して処理終了
-		if(straightMove)
-		{
-			routeVector.clear();
-			routeVector.resize(1);
-			routeVector[0] = (endPos - startPos).Normalize();
-			return true;
-		}
+		if (!straightMove)break;
 	}
 
+	// 可能だったら直進して処理終了
+	if (straightMove)
+	{
+		startToEnd = (endPos - startPos).Normalize();
+		return true;
+	}
+}
 
+bool MelLib::RouteSearch::CalcRoute
+(
+	const Vector3& startPos,
+	const Vector3& endPos,
+	std::vector<std::vector<std::vector<AStarNode>>>& nodes,
+	std::vector<Vector3>& routeVector
+)
+{
 
 	//スタート地点に一番近いノードの距離を格納する変数
 	float startMinDistance = FLT_MAX;

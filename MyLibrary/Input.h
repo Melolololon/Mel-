@@ -347,7 +347,6 @@ namespace MelLib
 		
 #pragma region 状態
 
-
 		static bool LeftStickLeft(float lXPar, UCHAR padNum = 1);
 		static bool LeftStickRight(float lXPar, UCHAR padNum = 1);
 		static bool LeftStickUp(float lYPar, UCHAR padNum = 1);
@@ -382,8 +381,14 @@ namespace MelLib
 		/// <returns></returns>
 		static float LeftStickAngle(UCHAR padNum = 1);
 
-
+		/// <summary>
+		/// スティックが傾いている方向をVector2で返します。
+		/// </summary>
 		static Vector2 LeftStickVector2(bool dimention3D, UCHAR padNum = 1);
+
+		/// <summary>
+		/// スティックが傾いている方向をVector3で返します。
+		/// </summary>
 		static Vector3 LeftStickVector3(Camera* pCamera = nullptr, bool rotX = false, bool rotY = false, UCHAR padNum = 1);
 #pragma endregion
 
