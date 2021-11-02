@@ -883,7 +883,7 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	// d 方向ベクトル
 	// hw hh hd boxSizeHの x y z
 
-	Vector3 boxSize = box.GetSize() / 2;
+	Vector3 boxSizeH = box.GetSize() / 2;
 	Vector3 tMin = -FLT_MAX;
 	Vector3 tMax = FLT_MAX;
 	Vector3 t;
@@ -895,7 +895,7 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	if(ray.GetDirection().x == 0)
 	{
 
-		if(-boxSize.x <= rayMovePos.x && rayMovePos.x <= boxSize.x)
+		if(-boxSizeH.x <= rayMovePos.x && rayMovePos.x <= boxSizeH.x)
 		{
 			t.x = FLT_MAX;
 		}
@@ -908,8 +908,8 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	}
 	else
 	{
-		float num1 = (boxSize.x - rayMovePos.x) / ray.GetDirection().x;
-		float num2 = (-boxSize.x - rayMovePos.x) / ray.GetDirection().x;
+		float num1 = (boxSizeH.x - rayMovePos.x) / ray.GetDirection().x;
+		float num2 = (-boxSizeH.x - rayMovePos.x) / ray.GetDirection().x;
 		if(num1 > num2)
 		{
 			tMin.x = num2;
@@ -925,7 +925,7 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 
 	if (ray.GetDirection().y == 0)
 	{
-		if (-boxSize.y <= rayMovePos.y && rayMovePos.y <= boxSize.y)
+		if (-boxSizeH.y <= rayMovePos.y && rayMovePos.y <= boxSizeH.y)
 		{
 			t.y = FLT_MAX;
 		}
@@ -938,8 +938,8 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	}
 	else
 	{
-		float num1 = (boxSize.y - rayMovePos.y) / ray.GetDirection().y;
-		float num2 = (-boxSize.y - rayMovePos.y) / ray.GetDirection().y;
+		float num1 = (boxSizeH.y - rayMovePos.y) / ray.GetDirection().y;
+		float num2 = (-boxSizeH.y - rayMovePos.y) / ray.GetDirection().y;
 		if (num1 > num2)
 		{
 			tMin.y = num2;
@@ -956,7 +956,7 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 
 	if (ray.GetDirection().z == 0)
 	{
-		if (-boxSize.z <= rayMovePos.z && rayMovePos.z <= boxSize.z)
+		if (-boxSizeH.z <= rayMovePos.z && rayMovePos.z <= boxSizeH.z)
 		{
 			t.z = FLT_MAX;
 		}
@@ -969,8 +969,8 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	}
 	else
 	{
-		float num1 = (boxSize.z - rayMovePos.z) / ray.GetDirection().z;
-		float num2 = (-boxSize.z - rayMovePos.z) / ray.GetDirection().z;
+		float num1 = (boxSizeH.z - rayMovePos.z) / ray.GetDirection().z;
+		float num2 = (-boxSizeH.z - rayMovePos.z) / ray.GetDirection().z;
 		if (num1 > num2)
 		{
 			tMin.z = num2;
@@ -985,27 +985,32 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 		t.z = tMax.z - tMin.z;
 	}
 
-	float min = FLT_MAX;
-	
-	/*if (0 <= t.x)min = t.x;
-	if (0 <= t.y && min > t.y)min = t.y;
-	if (0 <= t.z && min > t.z)min = t.z;*/
+	//float min = FLT_MAX;
+	//
+	//if (0 <= tMax.x)min = tMax.x;
+	//if (0 <= tMin.x && min > tMin.x)min = tMin.x;
+	//if (0 <= tMax.y && min > tMax.y)min = tMax.y;
+	//if (0 <= tMin.y && min > tMin.y)min = tMin.y;
+	//if (0 <= tMax.z && min > tMax.z)min = tMax.z;
+	//if (0 <= tMin.z && min > tMin.z)min = tMin.z;
+	//
+	//// 条件を満たさなかったらfalse
+	//if (min == FLT_MAX)return false;
 
-	//	ここmaxいらない?
-	if (0 <= tMax.x)min = tMax.x;
-	if (0 <= tMin.x && min > tMin.x)min = tMin.x;
-	if (0 <= tMax.y && min > tMax.y)min = tMax.y;
-	if (0 <= tMin.y && min > tMin.y)min = tMin.y;
-	if (0 <= tMax.z && min > tMax.z)min = tMax.z;
-	if (0 <= tMin.z && min > tMin.z)min = tMin.z;
-	
-	// 条件を満たさなかったらfalse
-	if (min == FLT_MAX)return false;
+	// 新案
+	Vector3 minVector3 = FLT_MAX;
+	if (0 <= tMax.x)minVector3.x = tMax.x;
+	if (0 <= tMin.x && minVector3.x > tMin.x)minVector3.x = tMin.x;
+	if (0 <= tMax.y && minVector3.y > tMax.y)minVector3.y = tMax.y;
+	if (0 <= tMin.y && minVector3.y > tMin.y)minVector3.y = tMin.y;
+	if (0 <= tMax.z && minVector3.z > tMax.z)minVector3.z = tMax.z;
+	if (0 <= tMin.z && minVector3.z > tMin.z)minVector3.z = tMin.z;
 
-	Vector3 n = rayMovePos + min * ray.GetDirection();
-	if (-boxSize.x <= n.x && n.x <= boxSize.x
-		&& -boxSize.y <= n.y && n.y <= boxSize.y
-		&& -boxSize.z <= n.z && n.z <= boxSize.z)
+
+	Vector3 n = rayMovePos + minVector3 * ray.GetDirection();
+	if (-boxSizeH.x <= n.x && n.x <= boxSizeH.x
+		&& -boxSizeH.y <= n.y && n.y <= boxSizeH.y
+		&& -boxSizeH.z <= n.z && n.z <= boxSizeH.z)
 	{
 		if (rayResult)
 		{
@@ -1026,7 +1031,15 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 			//rayResult->hitPosition = hitPos - box.GetPosition();
 			//rayResult->hitPosition = hitPos + ray.GetPosition();
 
-			rayResult->hitPosition = n + box.GetPosition();
+			//rayResult->hitPosition = n + box.GetPosition();
+		
+		
+			float minT = minVector3.x;
+			if (minT > minVector3.y)minT = minVector3.y;
+			if (minT > minVector3.z)minT = minVector3.z;
+
+			rayResult->hitPosition = ray.GetPosition() + minT * ray.GetDirection();
+		
 		}
 
 		return true;
