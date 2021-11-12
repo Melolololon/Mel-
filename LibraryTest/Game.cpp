@@ -73,7 +73,7 @@ void Game::Initialize()
 	MelLib::GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	MelLib::SceneManager::GetInstace()->SetStartScene(new Play());
+	MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
 
 	MelLib::TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial", "test");
@@ -89,10 +89,10 @@ void Game::Finalize()
 }
 void Game::Update()
 {
-	MelLib::SceneManager::GetInstace()->Update();
+	MelLib::SceneManager::GetInstance()->Update();
 }
 
 void Game::Draw()
 {
-	MelLib::SceneManager::GetInstace()->Draw();
+	MelLib::SceneManager::GetInstance()->Draw();
 }

@@ -563,6 +563,11 @@ bool MelLib::RouteSearch::CheckStraightMove(const Vector3& startPos, const Vecto
 				box.SetPosition(nX.position);
 				box.SetSize(nX.size);
 
+				if(nX.position == MelLib::Vector3(0,0,8))
+				{
+					int z = 0;
+				}
+
 				// “–‚½‚ç‚È‚©‚Á‚½‚çŽŸ‚Ö
 				if (!Collision::BoxAndSegment3D(box, segment))continue;
 

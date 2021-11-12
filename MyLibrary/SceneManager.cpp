@@ -14,7 +14,7 @@ SceneManager::~SceneManager()
 
 }
 
-SceneManager* SceneManager::GetInstace()
+SceneManager* SceneManager::GetInstance()
 {
 	static SceneManager inst;
 	return &inst;

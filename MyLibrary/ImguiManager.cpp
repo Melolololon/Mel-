@@ -286,8 +286,8 @@ bool MelLib::ImguiManager::DrawColorPicker(const std::string& label, Color& refC
 bool MelLib::ImguiManager::DrawInputText(const std::string& label, std::string& text, const size_t maxChar,const ImGuiInputTextFlags flag)
 {
     // ウィジェットです。キーボードによる入力
-// - InputText()をstd::stringやカスタムの動的文字列型で使用したい場合は、misc/cpp/imgui_stdlib.hやimgui_demo.cppのコメントを参照してください。
-// - ImGuiInputTextFlagsフラグのほとんどはInputText()にのみ有効で、InputFloatX, InputIntX, InputDoubleなどには使えません。
+    // - InputText()をstd::stringやカスタムの動的文字列型で使用したい場合は、misc/cpp/imgui_stdlib.hやimgui_demo.cppのコメントを参照してください。
+    // - ImGuiInputTextFlagsフラグのほとんどはInputText()にのみ有効で、InputFloatX, InputIntX, InputDoubleなどには使えません。
 
     //if (CheckReleaseDrawFlag())return false;
    

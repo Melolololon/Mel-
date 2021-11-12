@@ -17,35 +17,97 @@ PipelineState GameObject::collisionCheckModelPipelineState;
 ADSAMaterial GameObject::material;
 #endif // _DEBUG
 
-void MelLib::GameObject::SetModelPosition(const Vector3& diffPos)
+void MelLib::GameObject::SetModelPosition(const Vector3& vec)
 {
 	for(auto& m : modelObjects)
 	{
-		m.second.SetPosition(m.second.GetPosition() + diffPos);
+		m.second.SetPosition(m.second.GetPosition() + vec);
 	}
 }
 
-void MelLib::GameObject::SetDataPosition(const Vector3& diffPos)
+void MelLib::GameObject::SetDataPosition(const Vector3& vec)
 {
 	for(auto& d : sphereData)
 	{
-		d.SetPosition(d.GetPosition() + diffPos);
+		d.SetPosition(d.GetPosition() + vec);
 	}
 	for(auto& d : boxData)
 	{
-		d.SetPosition(d.GetPosition() + diffPos);
+		d.SetPosition(d.GetPosition() + vec);
 	}
 	for (auto& d : boardData)
 	{
-		d.SetPosition(d.GetPosition() + diffPos);
+		d.SetPosition(d.GetPosition() + vec);
 	}
 	for (auto& d : segment3DData)
 	{
-		d.SetPosition(d.GetPosition() + diffPos);
+		d.SetPosition(d.GetPosition() + vec);
 	}
 	for (auto& d : capsuleData)
 	{
-		d.GetRefSegment3DData().SetPosition(d.GetSegment3DData().GetPosition() + diffPos);
+		d.GetRefSegment3DData().SetPosition(d.GetSegment3DData().GetPosition() + vec);
+	}
+}
+
+void MelLib::GameObject::SetModelAngle(const Vector3& angle)
+{
+
+	for (auto& m : modelObjects)
+	{
+		m.second.SetAngle(angle);
+	}
+}
+
+void MelLib::GameObject::SetDataAngle(const Vector3& angle)
+{
+
+	for (auto& d : boardData)
+	{
+		d.SetAngle(angle);
+	}
+	for (auto& d : segment3DData)
+	{
+		d.SetAngle(angle);
+	}
+	for (auto& d : capsuleData)
+	{
+		d.GetRefSegment3DData().SetAngle(angle);
+	}
+}
+
+void MelLib::GameObject::SetModelScale(const Vector3& scale)
+{
+	for (auto& m : modelObjects)
+	{
+		m.second.SetScale(scale);
+	}
+}
+
+void MelLib::GameObject::SetDataScale(const Vector3& scale)
+{
+	for (auto& d : sphereData)
+	{
+		float setRadius = scale.x;
+		if (setRadius < scale.y)setRadius = scale.y;
+		if (setRadius < scale.z)setRadius = scale.z;
+
+		d.SetRadius(setRadius);
+	}
+	for (auto& d : boxData)
+	{
+		d.SetSize(scale);
+	}
+	for (auto& d : boardData)
+	{
+		d.SetSize(scale.ToVector2());
+	}
+	for (auto& d : segment3DData)
+	{
+		d.SetPosition(d.GetPosition() * scale);
+	}
+	for (auto& d : capsuleData)
+	{
+		d.GetRefSegment3DData().SetPosition(d.GetSegment3DData().GetPosition() * scale);
 	}
 }
 
@@ -123,6 +185,26 @@ void MelLib::GameObject::SetPosition(const Vector3& pos)
 
 	position = pos;
 	
+}
+
+void MelLib::GameObject::SetAngle(const Vector3& angle)
+{
+	if (this->angle == angle)return;
+
+	this->angle = angle;
+
+	SetModelAngle(angle);
+	SetDataAngle(angle);
+}
+
+void MelLib::GameObject::SetScale(const Vector3& scale)
+{
+	if (this->scale == scale)return;
+
+	this->scale = scale;
+
+	SetModelScale(scale);
+	SetDataScale(scale);
 }
 
 void GameObject::CalcMovePhysics()

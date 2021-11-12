@@ -1,13 +1,23 @@
 #pragma once
 #include "GameObject.h"
 
+// パーティクルクラスじゃなくてエミッタークラスにする?
+// テンプレートでパーティクルを指定するようにする?
+
 namespace MelLib 
 {
 
-    class Particle :
-        public MelLib::GameObject
+    class Emitter :public MelLib::GameObject
     {
 
+
+
     };
+
+    //class Particle :
+    //    public MelLib::GameObject
+    //{
+
+    //};
 
 }

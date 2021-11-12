@@ -244,43 +244,7 @@ void Play::Initialize()
 
 void Play::Update()
 {
-	MelLib::Vector3 pointPos = MelLib::Vector3(0, 0, 23);
-	MelLib::Segment3DData segment;
-	segment.SetPosition(MelLib::Value2<MelLib::Vector3>(MelLib::Vector3(0, 0, 0), MelLib::Vector3(0, 0, 30)));
-	bool res =  MelLib::Collision::PointAndSegment3D(pointPos, segment);
 
-	MelLib::BoxData box;
-	box.SetPosition(MelLib::Vector3(2,0,8));
-	box.SetSize(MelLib::Vector3(2,1000,2));
-
-	//res = MelLib::Collision::BoxAndSegment3D(box, segment);
-
-	MelLib::RayData ray;
-	MelLib::RayCalcResult rayRes;
-	ray.SetPosition(MelLib::Vector3(1.2, 0, 29.8));
-	ray.SetDirection(MelLib::Vector3(-0.03, 0.01,-0.96).Normalize());
-	
-	//for (int z = 0; z < 32; z += 2)
-	//{
-	//	for (int x = -2; x < 4; x += 2) 
-	//	{
-	//		box.SetPosition(MelLib::Vector3(x, 0, z));
-	//		bool result = MelLib::Collision::BoxAndRay(box, ray, &rayRes);
-	//		if(result)
-	//		{
-	//			int f = 0;
-	//		}
-	//		int ukgyu = 0;
-	//	}
-	//}
-
-	ray.SetPosition(MelLib::Vector3(-1, -1, -1));
-	ray.SetDirection(MelLib::Vector3(1,1,1).Normalize());
-	box.SetPosition(MelLib::Vector3(0,0,0));
-	box.SetSize(MelLib::Vector3(1, 10000, 1));
-	bool result = MelLib::Collision::BoxAndRay(box, ray, &rayRes);
-
-	MelLib::Vector3 vec = 1.2 + -0.03 * (1.2);
 
 	RTTestUpdate();
 

@@ -94,7 +94,7 @@ namespace MelLib
 		/// <param name="flag"></param>
 		void SetMouseCollisionFlag(const bool flag);
 
-#pragma region オブジェクト管理
+#pragma region オブジェクトの配列関係
 
 		/// <summary>
 		/// オブジェクトの配列のメモリを確保します。
@@ -129,6 +129,19 @@ namespace MelLib
 		/// <param name="sort">ソートの仕方</param>
 		/// <param name="orderType">true 昇順  false 降順</param>
 		void ObjectSort(const ObjectSortType& sort, const bool& orderType);
+
+		/// <summary>
+		/// オブジェクトマネージャーに格納されたオブジェクトの配列をconst参照で受け取ります
+		/// </summary>
+		/// <returns></returns>
+		const std::vector<std::shared_ptr<GameObject>>& GetRefGameObject() { return objects; };
+
+		/// <summary>
+		/// オブジェクトマネージャーに格納されたオブジェクト2Dの配列をconst参照で受け取ります
+		/// </summary>
+		/// <returns></returns>
+		const std::vector<std::shared_ptr<GameObject2D>>& GetRefGameObject2D() { return object2Ds; };
+
 #pragma endregion
 
 

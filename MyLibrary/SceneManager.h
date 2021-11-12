@@ -18,7 +18,7 @@ namespace MelLib
 
 		SceneManager(const SceneManager& sceneManager) = delete;//コピーコンストラクタ
 		SceneManager& operator=(const SceneManager& sceneManager) = delete;//コピー代入演算子
-		static SceneManager* GetInstace();
+		static SceneManager* GetInstance();
 
 		void SetStartScene(Scene* startScene);
 		void Update();

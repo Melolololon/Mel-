@@ -58,6 +58,8 @@ namespace MelLib
 #endif // _DEBUG
 
 		Vector3 position = 0;
+		Vector3 angle = 0;
+		Vector3 scale = 0;
 
 #pragma region 物理関係
 		
@@ -192,6 +194,14 @@ namespace MelLib
 		/// <param name="vec"></param>
 		void SetDataPosition(const Vector3& vec);
 
+		void SetModelAngle(const Vector3& angle);
+
+		void SetDataAngle(const Vector3& angle);
+
+		void SetModelScale(const Vector3& scale);
+
+		void SetDataScale(const Vector3& scale);
+
 	public:
 
 		//コンストラクタ
@@ -258,6 +268,14 @@ namespace MelLib
 		/// </summary>
 		/// <param name="pos"></param>
 		virtual void SetPosition(const Vector3& pos);
+
+		/// <summary>
+		/// 角度をセットします。
+		/// </summary>
+		/// <param name="angle"></param>
+		virtual void SetAngle(const Vector3& angle);
+
+		virtual void SetScale(const Vector3& scale);
 
 		/// <summary>
 		/// 力をセットします。
@@ -327,8 +345,18 @@ namespace MelLib
 		/// <returns></returns>
 		bool GetEraseManager()const { return eraseManager; }
 
+#pragma region モデル関係
+		const std::unordered_map<std::string, ModelObject>& GetRefModelObjects()const { return modelObjects; }
+#pragma endregion
+
+#pragma region 判定関係
+		
+#pragma endregion
+
 
 #pragma endregion
+
+
 
 
 #pragma region 判定用関数

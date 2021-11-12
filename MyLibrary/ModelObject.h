@@ -212,6 +212,8 @@ namespace MelLib
 		//¡‚Í‚Æ‚è‚ ‚¦‚¸‘S•”’l‚ªˆê‚È‚Ì‚ÅA0‚Ì‚â‚Â‚ğ•Ô‚µ‚Ä‚é
 		Vector3 GetPosition()const { return Vector3(modelConstDatas[0].position); }
 
+		Vector3 GetAngle()const { return Vector3(modelConstDatas[0].angle); }
+		Vector3 GetScale()const { return Vector3(modelConstDatas[0].scale); }
 #pragma endregion
 #pragma endregion
 

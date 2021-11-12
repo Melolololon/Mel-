@@ -42,7 +42,7 @@ bool MelLib::Collision::PointAndCircle(const Vector2& pointPos, const CircleData
 {
 	Vector2 circlePos = circle.GetPosition();
 	float circleR = circle.GetRadius();
-	
+
 	//半径以内だったらtrue
 	return LibMath::CalcDistance2D(pointPos, circlePos) <= circleR;
 }
@@ -75,7 +75,7 @@ bool Collision::CircleAndSegment2D
 )
 {
 	SegmentHitPlace hitPlace = SegmentHitPlace::LS_HIT_POSITION_NOT_HIT;
-	if (lineSegmentCalcResult) 
+	if (lineSegmentCalcResult)
 	{
 		lineSegmentCalcResult->hitPlace = hitPlace;
 	}
@@ -97,7 +97,7 @@ bool Collision::CircleAndSegment2D
 
 	//linePos1から最近点の距離を求める
 	float linePos0ToNearPosDis = Vector2::Dot(Vector2::Normalize(lineVector), linePos0ToSphere);
-	if (lineSegmentCalcResult) 
+	if (lineSegmentCalcResult)
 	{
 		lineSegmentCalcResult->nearPos = segmentPos.v1 + (Vector2::Normalize(lineVector) * linePos0ToNearPosDis);
 	}
@@ -146,7 +146,7 @@ bool Collision::CircleAndSegment2D
 		hitPlace = SegmentHitPlace::LS_HIT_POSITION_LE_LINE;
 	}
 
-	if(lineSegmentCalcResult)
+	if (lineSegmentCalcResult)
 	{
 		lineSegmentCalcResult->hitPlace = hitPlace;
 	}
@@ -177,9 +177,9 @@ bool Collision::SphereAndSphere(const SphereData& sphere1, const SphereData& sph
 
 bool Collision::BoxAndBox
 (
-	const BoxData& box1, 
+	const BoxData& box1,
 	BoxCalcResult* boxCalcResult1,
-	const BoxData& box2, 
+	const BoxData& box2,
 	BoxCalcResult* boxCalcResult2
 )
 {
@@ -221,7 +221,7 @@ bool Collision::BoxAndBox
 				minPos2.z >= minPos1.z &&
 				minPos2.z < maxPos1.z ||
 				maxPos2.z >= minPos1.z &&
-				maxPos2.z < maxPos1.z) 
+				maxPos2.z < maxPos1.z)
 			{
 				isHit = true;
 			}
@@ -269,7 +269,7 @@ bool Collision::BoxAndBox
 		{
 			if (targetToVector.x >= 0)
 			{
-				
+
 				direction1 = BoxHitDirection::BOX_HIT_DIRECTION_RIGHT;
 				direction2 = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
 			}
@@ -370,7 +370,7 @@ bool Collision::Segment3DAndSegment3D
 
 	//近い場所の距離が0だったら当たっている(重なっている、交差している)
 	bool isHit = LibMath::CalcDistance3D(c1, c2) == 0.0f;
-	
+
 	if (lineSegment1CalcResult)lineSegment1CalcResult->lineSegment3DHitPos = c1;
 	if (lineSegment2CalcResult)lineSegment2CalcResult->lineSegment3DHitPos = c2;
 	return isHit;
@@ -410,12 +410,12 @@ bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData
 	float t = Vector3::Dot(((p1 + d1 * s) - p2), d2) / Vector3::Dot(d2, d2);
 
 	s = (t * b - c) / a;
-	if(t < 0.0f)
+	if (t < 0.0f)
 	{
 		t = 0.0f;
 		s = -c / a;
 	}
-	else if(t > 1.0f)
+	else if (t > 1.0f)
 	{
 		t = 1.0f;
 		s = (b - c) / a;
@@ -427,21 +427,21 @@ bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData
 	Vector3 c1 = p1 + s * d1;
 	Vector3 c2 = p2 + t * d2;
 
-	return LibMath::CalcDistance3D(c1,c2) < capsule1.GetRadius() + capsule2.GetRadius();
+	return LibMath::CalcDistance3D(c1, c2) < capsule1.GetRadius() + capsule2.GetRadius();
 }
 
 bool Collision::SphereAndBox
 (
-	const SphereData& sphere, 
-	SphereCalcResult* sphereCalcResult, 
-	const BoxData& box, 
+	const SphereData& sphere,
+	SphereCalcResult* sphereCalcResult,
+	const BoxData& box,
 	BoxCalcResult* boxCalcResult
 )
 {
 	float dir2 = 0.0f;
 
-	Vector3 minPos = box.GetPosition() -box.GetSize() / 2;
-	Vector3 maxPos = box.GetPosition() +box.GetSize() / 2;
+	Vector3 minPos = box.GetPosition() - box.GetSize() / 2;
+	Vector3 maxPos = box.GetPosition() + box.GetSize() / 2;
 
 	//x
 	if (sphere.GetPosition().x < minPos.x)
@@ -461,7 +461,7 @@ bool Collision::SphereAndBox
 	if (sphere.GetPosition().z > maxPos.z)
 		dir2 += (sphere.GetPosition().z - maxPos.z) * (sphere.GetPosition().z - maxPos.z);
 
-	bool isHit = dir2 < sphere.GetRadius() * sphere.GetRadius();
+	bool isHit = dir2 < sphere.GetRadius()* sphere.GetRadius();
 
 	//どこに当たったかを返す
 	if (sphereCalcResult || boxCalcResult)
@@ -483,18 +483,18 @@ bool Collision::SphereAndBox
 		Vector3 sphereToVector = box.GetPosition() - sphere.GetPosition();
 
 		if (abs(sphereToVector.x) > abs(sphereToVector.y) &&
-			abs(sphereToVector.x) >box.GetSize().x / 2)
+			abs(sphereToVector.x) > box.GetSize().x / 2)
 		{
 			top = 1;
 			if (abs(sphereToVector.z) > abs(sphereToVector.x) &&
-				abs(sphereToVector.z) >box.GetSize().z / 2)
+				abs(sphereToVector.z) > box.GetSize().z / 2)
 				top = 3;
 		}
 		else
 		{
 			top = 2;
 			if (abs(sphereToVector.z) > abs(sphereToVector.y) &&
-				abs(sphereToVector.z) >box.GetSize().z / 2)
+				abs(sphereToVector.z) > box.GetSize().z / 2)
 				top = 3;
 		}
 
@@ -532,8 +532,8 @@ bool Collision::SphereAndBox
 			}
 		}
 
-		if(sphereCalcResult)sphereCalcResult->boxHitDistance = hitDirection;
-		if(boxCalcResult)boxCalcResult->boxHitDistance = hitDirection;
+		if (sphereCalcResult)sphereCalcResult->boxHitDistance = hitDirection;
+		if (boxCalcResult)boxCalcResult->boxHitDistance = hitDirection;
 	}
 
 	return isHit;
@@ -544,9 +544,9 @@ bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& ca
 	Value2<Vector3>capsuleLineSegmentPos = capsule.GetSegment3DData().GetRotatePosition();
 	Vector3 spherePos = sphere.GetPosition();
 
-	Vector3 capsulePos0ToSphere = 
+	Vector3 capsulePos0ToSphere =
 		LibMath::OtherVector3(capsuleLineSegmentPos.v1, spherePos);
-	
+
 	//資料のn
 	Vector3 capsuleLineSegmentVector =
 		LibMath::OtherVector3(capsuleLineSegmentPos.v1, capsuleLineSegmentPos.v2);
@@ -558,11 +558,11 @@ bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& ca
 
 	float lenghtRate = t * onTheLinePos.Length();
 	float sphereAndCupsuleDis = 0.0f;
-	if(lenghtRate < 0.0f)
+	if (lenghtRate < 0.0f)
 	{
 		sphereAndCupsuleDis = LibMath::CalcDistance3D(spherePos, capsuleLineSegmentPos.v1);
 	}
-	else if(lenghtRate > 1.0f)
+	else if (lenghtRate > 1.0f)
 	{
 		sphereAndCupsuleDis = LibMath::CalcDistance3D(spherePos, capsuleLineSegmentPos.v2);
 	}
@@ -579,9 +579,9 @@ bool MelLib::Collision::PlaneAndSegment3D(const PlaneData& plane, const Segment3
 	Vector3 planeToSegV1 = segment.GetPosition().v1 - plane.GetPosition();
 	Vector3 planeToSegV2 = segment.GetPosition().v2 - plane.GetPosition();
 
-	bool result = Vector3::Dot(planeToSegV1, plane.GetNormal())* Vector3::Dot(planeToSegV2, plane.GetNormal()) <= 0;
+	bool result = Vector3::Dot(planeToSegV1, plane.GetNormal()) * Vector3::Dot(planeToSegV2, plane.GetNormal()) <= 0;
 
-	if (segmentResult) 
+	if (segmentResult)
 	{
 		MelLib::Vector3 vec1 = segment.GetPosition().v1 - plane.GetPosition();
 		MelLib::Vector3 vec2 = segment.GetPosition().v2 - plane.GetPosition();
@@ -628,7 +628,7 @@ bool Collision::BoardAndSegment3D
 	//線の端 - ポリゴンの角
 	v1 = segmentPos.v1 - leftDownPos;
 	v2 = segmentPos.v2 - leftDownPos;
-	
+
 	Vector3 vec1 = segmentPos.v1 - board.GetPosition();
 	Vector3 vec2 = segmentPos.v2 - board.GetPosition();
 
@@ -744,7 +744,7 @@ bool MelLib::Collision::BoardAndCapsule(const BoardData& board, BoardCalcResult*
 	//カプセルと当たってるって言える?
 	//中心でもいい?
 	//この方法じゃダメだった
-	
+
 	//衝突点は交差してなくても求められる?(平面扱いして計算してるならできるはず)
 	//衝突点と四つの辺の距離が半径以内、または、平面との距離が半径以内だったらOK?
 	//それだと、範囲外でも平面と交差してたらアウトだからダメ
@@ -803,7 +803,7 @@ bool MelLib::Collision::BoardAndCapsule(const BoardData& board, BoardCalcResult*
 	v2 = segmentPos.v2 - board.GetPosition();
 
 	//線が板ポリと並行ではないかを調べる(平行だったらreturn)
-	if (Vector3Dot(v1, board.GetNormal()) * Vector3Dot(v2, board.GetNormal()) > 0) 
+	if (Vector3Dot(v1, board.GetNormal()) * Vector3Dot(v2, board.GetNormal()) > 0)
 	{
 		//平行だった場合、両端と平面の距離が半径以内だったら当たってる
 		float planeDir = abs(Vector3::Dot(board.GetNormal(), segmentPos.v1 - board.GetPosition())) / board.GetNormal().Length();
@@ -862,10 +862,10 @@ bool MelLib::Collision::PointAndFrustum(const Vector3& pointPos, const FrustumDa
 
 	std::vector<BoardData>boards = frustum.GetBoardDatas();
 
-	for(const auto& b : boards)
+	for (const auto& b : boards)
 	{
 		//表側にあったらfalse
-		if(LibMath::PointBoardFrontBackCheck(pointPos, b) == 1)
+		if (LibMath::PointBoardFrontBackCheck(pointPos, b) == 1)
 		{
 			return false;
 		}
@@ -876,7 +876,7 @@ bool MelLib::Collision::PointAndFrustum(const Vector3& pointPos, const FrustumDa
 bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCalcResult* rayResult)
 {
 	// https://plaza.rakuten.co.jp/ootorii/diary/200705140000/
-	
+
 	// https://el-ement.com/blog/2017/08/16/primitives-ray-intersection/
 
 	// p 始点座標
@@ -892,10 +892,10 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	Vector3 rayMovePos = ray.GetPosition() - box.GetPosition();
 
 	// 法線ベクトルが0の場合、レイの点が四角形に入っているかを確認する
-	if(ray.GetDirection().x == 0)
+	if (ray.GetDirection().x == 0)
 	{
 
-		if(-boxSizeH.x <= rayMovePos.x && rayMovePos.x <= boxSizeH.x)
+		if (-boxSizeH.x <= rayMovePos.x && rayMovePos.x <= boxSizeH.x)
 		{
 			t.x = FLT_MAX;
 		}
@@ -910,7 +910,7 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	{
 		float num1 = (boxSizeH.x - rayMovePos.x) / ray.GetDirection().x;
 		float num2 = (-boxSizeH.x - rayMovePos.x) / ray.GetDirection().x;
-		if(num1 > num2)
+		if (num1 > num2)
 		{
 			tMin.x = num2;
 			tMax.x = num1;
@@ -1033,13 +1033,14 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 
 			//rayResult->hitPosition = n + box.GetPosition();
 		
-		
+
+
 			float minT = minVector3.x;
 			if (minT > minVector3.y)minT = minVector3.y;
 			if (minT > minVector3.z)minT = minVector3.z;
 
 			rayResult->hitPosition = ray.GetPosition() + minT * ray.GetDirection();
-		
+
 		}
 
 		return true;
@@ -1069,7 +1070,9 @@ bool MelLib::Collision::PointAndSegment3D(const Vector3& pointPos, const Segment
 	Vector3 segmentPosVector = segment.GetRotatePosition().v2 - segment.GetRotatePosition().v1;
 	Vector3 segmentV1ToPoint = pointPos - segment.GetRotatePosition().v1;
 
-	return LibMath::Difference(Vector3::Cross(segmentV1ToPoint, segmentPosVector).Length(), 0.0f, 0.0001f) 
+	float v1 = segmentV1ToPoint.Length();
+	float v2 = segmentPosVector.Length();
+	return LibMath::Difference(Vector3::Cross(segmentV1ToPoint, segmentPosVector).Length(), 0.0f, 0.0001f)
 		&& segmentV1ToPoint.Length() <= segmentPosVector.Length();
-	
+
 }

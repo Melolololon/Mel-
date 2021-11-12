@@ -218,7 +218,7 @@ void Library::Finalize()
 	//LoopEndProcess呼んでから終了するので、dx12を先にリリースしないとモデルのバッファが消えて終了処理上手く実行できなくなる
 	dx12->Finalize();
 
-	SceneManager::GetInstace()->Finalize();
+	SceneManager::GetInstance()->Finalize();
 	GameObjectManager::GetInstance()->Finalize();
 	Input::Finalize();
 
