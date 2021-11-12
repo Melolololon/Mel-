@@ -15,6 +15,9 @@
 #include"Collision.h"
 #include"RenderTarget.h"
 
+#include<Emitter3D.h>
+#include"TestParticle.h"
+
 void Play::CollisionTestInitialize()
 {
 
@@ -130,7 +133,7 @@ void Play::CollisionTestDraw()
 	if (MelLib::Input::KeyState(DIK_X))testScale.x += 0.025f;
 }
 
-void Play::RTTestInitialize()
+void Play::CatInitialize()
 {
 	//rtTestObject.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOARD), nullptr);
 
@@ -140,7 +143,7 @@ void Play::RTTestInitialize()
 	MeshCatObject::SetPlaneData(&planeData);
 }
 
-void Play::RTTestUpdate()
+void Play::CatTestUpdate()
 {	//std::vector<MelLib::RenderTarget::RenderTargetDrawData>data(2);
 	//data[0].rt = MelLib::RenderTarget::Get("test");
 	//data[0].renderingRT = MelLib::RenderTarget::Get();
@@ -214,7 +217,7 @@ void Play::RTTestUpdate()
 
 }
 
-void Play::RTTestDraw()
+void Play::CatTestDraw()
 {
 	
 	//if (isCat)
@@ -230,6 +233,24 @@ void Play::RTTestDraw()
 
 
 
+void Play::ParticleTestInitialize()
+{
+	// パーティクルの作成
+	TestParticle particle;
+
+	// エミッターの追加
+	//MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<MelLib::Emitter3D>());
+}
+
+void Play::ParticleTestUpdate()
+{
+}
+
+void Play::ParticleTestDraw()
+{
+
+}
+
 Play::Play(){}
 
 
@@ -238,7 +259,7 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
-	RTTestInitialize();
+	CatInitialize();
 
 }
 
@@ -246,7 +267,7 @@ void Play::Update()
 {
 
 
-	RTTestUpdate();
+	CatTestUpdate();
 
 	MelLib::GameObjectManager::GetInstance()->Update();
 	int z = 0;
@@ -254,7 +275,7 @@ void Play::Update()
 
 void Play::Draw()
 {
-	RTTestDraw();
+	CatTestDraw();
 
 	MelLib::GameObjectManager::GetInstance()->Draw();
 }

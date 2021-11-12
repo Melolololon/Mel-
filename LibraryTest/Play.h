@@ -31,9 +31,13 @@ private:
 	bool isReset = false;
 	MelLib::PlaneData planeData;
 
-	void RTTestInitialize();
-	void RTTestUpdate();
-	void RTTestDraw();
+	void CatInitialize();
+	void CatTestUpdate();
+	void CatTestDraw();
+
+	void ParticleTestInitialize();
+	void ParticleTestUpdate();
+	void ParticleTestDraw();
 #pragma endregion
 
 
