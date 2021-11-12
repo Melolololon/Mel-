@@ -66,6 +66,8 @@ namespace MelLib
 		}
 #pragma endregion
 
+#pragma region ƒZƒbƒg
+
 
 		void SetColor(const Color& color) { this->color = color; }
 		void SetTexture(Texture* pTexture) { this->pTexture = pTexture; }
@@ -75,7 +77,12 @@ namespace MelLib
 		void SetAngle(const Vector3& angle) { constData.angle = angle.ToXMFLOAT3(); }
 		void SetScale(const Vector2& scale) { constData.scale = scale.ToXMFLOAT2(); }
 #pragma endregion
-		void SetBillboardFlag(const bool flagX, const bool flagY, const bool flagZ);
+		void SetBillboardFlag(bool flagX, bool flagY, bool flagZ);
+
+
+#pragma endregion
+
+
 
 		static PipelineState GetDefaultPipeline() { return defaultPipeline; }
 
