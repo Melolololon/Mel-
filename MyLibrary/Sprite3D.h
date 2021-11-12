@@ -82,6 +82,11 @@ namespace MelLib
 
 #pragma endregion
 
+#pragma region ƒQƒbƒg
+		Vector3 GetPosition()const { return constData.position; }
+		Vector3 GetAngle()const { return constData.angle; }
+		Vector2 GetScale()const { return constData.scale; }
+#pragma endregion
 
 
 		static PipelineState GetDefaultPipeline() { return defaultPipeline; }

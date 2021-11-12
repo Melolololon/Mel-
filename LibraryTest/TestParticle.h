@@ -4,7 +4,7 @@ class TestParticle :
     public MelLib::Particle3D
 {
 private:
-
+    MelLib::Vector3 moveVector;
 public:
     TestParticle();
     ~TestParticle(){}

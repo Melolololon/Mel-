@@ -59,6 +59,9 @@ namespace MelLib
 
 #pragma region ƒQƒbƒg
 		Vector2 GetPosition()const { return Vector2(constData.position.x, constData.position.y); }
+
+		Vector2 GetAngle()const { return Vector2(constData.angle.x, constData.angle.y); }
+		Vector2 GetScale()const { return Vector2(constData.scale.x, constData.scale.y); }
 #pragma endregion
 
 

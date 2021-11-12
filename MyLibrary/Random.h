@@ -72,6 +72,9 @@ namespace MelLib
 	/// <param name="nums"></param>
 	/// <returns></returns>
 		static float GetRandomNumberSetFloatNumber(const std::vector<float>& nums);
+
+	
+
 	};
 
 }
