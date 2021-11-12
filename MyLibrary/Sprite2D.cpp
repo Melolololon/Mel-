@@ -7,6 +7,7 @@ std::unordered_map<std::string, std::unique_ptr<Sprite2D>> Sprite2D::pSprite2D;
 
 Sprite2D::Sprite2D()
 {
+	Create();
 }
 
 Sprite2D::Sprite2D(const Color& color)
@@ -23,6 +24,27 @@ Sprite2D::~Sprite2D()
 {
 }
 
+void MelLib::Sprite2D::Create()
+{
+	SpriteInitialize();
+
+	if(pTexture)
+	{
+		// テクスチャに合わせてサイズ変更
+		drawRightDownPosition = pTexture->GetTextureSize();
+
+		SetColor(Color(0, 0, 0, 0));
+
+		drawMode = DrawMode::DRAW_TEXTURE;
+	}
+	else 
+	{
+		SetOneColorSpriteColor(color);
+		drawMode = DrawMode::DRAW_COLOR;
+	}
+	pipeline = defaultPipeline.GetPipelineState();
+}
+
 void Sprite2D::Create(const Color& color)
 {
 	SpriteInitialize();
@@ -36,7 +58,7 @@ void Sprite2D::Create(Texture* pTexture)
 {
 	if (pTexture)
 	{
-		//テクスチャに合わせてサイズ変更
+		// テクスチャに合わせてサイズ変更
 		drawRightDownPosition = pTexture->GetTextureSize();
 	}
 	this->pTexture = pTexture;

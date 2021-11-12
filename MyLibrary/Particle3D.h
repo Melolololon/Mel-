@@ -28,6 +28,12 @@ namespace MelLib
 		/// </summary>
 		/// <param name="particle"></param>
 		Particle3D(const Particle3D& particle);
+
+		/// <summary>
+		/// エミッターにセットする用のコンストラクタ
+		/// </summary>
+		/// <param name="particle"></param>
+		Particle3D(const Particle3D& particle, const Vector3& pos);
 		~Particle3D() {}
 		
 		virtual void Initialize();

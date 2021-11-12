@@ -29,6 +29,7 @@ namespace MelLib
 		Sprite2D(Texture* pTexture);
 		~Sprite2D();
 
+		void Create();
 		void Create(const Color& color);
 		void Create(Texture* pTexture);
 

@@ -23,6 +23,7 @@ namespace MelLib
         // ï˙èoí‚é~ÉtÉâÉO
         bool isStop = false;
         
+        Vector3 position;
     private:
 
         void CheckChangeUpdateDrawFlag();
@@ -33,7 +34,7 @@ namespace MelLib
         void ParticleUpdate();
 
     public:
-        Emitter3D(const Particle3D& pParticle, unsigned int particleNum,unsigned int releaseTime);
+        Emitter3D(const Particle3D& pParticle,const Vector3& pos ,  unsigned int particleNum,unsigned int releaseTime);
         ~Emitter3D() {}
 
         void Update()override;

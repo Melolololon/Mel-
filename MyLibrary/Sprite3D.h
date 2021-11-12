@@ -28,7 +28,7 @@ namespace MelLib
 	protected:
 
 	public:
-		Sprite3D() {}
+		Sprite3D();
 		Sprite3D(const Color& color);
 		Sprite3D(Texture* pTexture);
 		Sprite3D(const Sprite3D& sprite);
@@ -39,6 +39,7 @@ namespace MelLib
 		static void Delete(const std::string& name);
 		static Sprite3D* Get(const std::string& name) { return pSprite3D[name].get(); }
 
+		void Create()override;
 		void Create(const Color& color)override;
 		void Create(Texture* pTexture)override;
 

@@ -100,7 +100,7 @@ namespace MelLib
 
 
 #pragma endregion
-
+		virtual void Create(){}
 
 		/// <summary>
 		/// 生成します。
@@ -145,6 +145,10 @@ namespace MelLib
 		void SetMulColor(const Color& color);
 #pragma endregion
 
+#pragma region Get
+		Color GetColor()const { return color; }
+		const Texture* GetTexture()const { return pTexture; }
+#pragma endregion
 
 
 #pragma region パイプライン

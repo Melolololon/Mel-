@@ -39,12 +39,15 @@ void MelLib::Emitter3D::ParticleUpdate()
 	}
 }
 
-MelLib::Emitter3D::Emitter3D(const Particle3D& pParticle, unsigned int particleNum,unsigned int releaseTime)
+MelLib::Emitter3D::Emitter3D(const Particle3D& pParticle, const Vector3& pos, unsigned int particleNum,unsigned int releaseTime)
 {
+
 	// pParticleを元にパーティクルを生成
-	particles.resize(particleNum, pParticle);
+	particles.resize(particleNum, Particle3D(pParticle, pos));
 	particleUpdateDrawFlag.resize(particleNum, false);
 	releaseTimer.SetMaxTime(releaseTime);
+
+	
 }
 
 void MelLib::Emitter3D::Update()

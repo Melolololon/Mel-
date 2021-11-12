@@ -27,6 +27,11 @@ void Sprite3D::Delete(const std::string& name)
 	pSprite3D.erase(name);
 }
 
+MelLib::Sprite3D::Sprite3D()
+{
+	Create();
+}
+
 Sprite3D::Sprite3D(const Color& color)
 {
 	Create(color);
@@ -47,13 +52,16 @@ MelLib::Sprite3D::Sprite3D(const Sprite3D& sprite)
 	color = sprite.color;
 	pTexture = sprite.pTexture;
 
-	if(pTexture)
+	if (sprite.vertexBufferSet.vertexBuffer)
 	{
-		Create(pTexture);
-	}
-	else
-	{
-		Create(color);
+		if (pTexture)
+		{
+			Create(pTexture);
+		}
+		else
+		{
+			Create(color);
+		}
 	}
 
 }
@@ -93,6 +101,17 @@ bool Sprite3D::Initialize()
 }
 
 
+void MelLib::Sprite3D::Create()
+{
+	if (!pTexture)
+	{
+		SetOneColorSpriteColor(color);
+	}
+	CreateBuffer();
+	InitializeVertices();
+	pipeline = defaultPipeline.GetPipelineState();
+}
+
 void Sprite3D::Create(const Color& color)
 {
 	CreateBuffer();
@@ -104,8 +123,6 @@ void Sprite3D::Create(const Color& color)
 void Sprite3D::Create(Texture* pTexture)
 {
 	this->pTexture = pTexture;
-	//テクスチャがあったら描画範囲変更
-	if (pTexture) drawRightDownPosition = pTexture->GetTextureSize();
 	CreateBuffer();
 	InitializeVertices();
 	pipeline = defaultPipeline.GetPipelineState();
@@ -122,15 +139,10 @@ void Sprite3D::Draw(const std::string& rtName)
 
 #pragma region UV座標
 
-	Vector2 textureSize = 1;
-	if(pTexture) textureSize = pTexture->GetTextureSize();
-	Vector2 uvLeftUp = { 1.0f / textureSize.x * drawLeftUpPosition.x ,1.0f / textureSize.y * drawLeftUpPosition.y };
-	Vector2 uvRightDown = { 1.0f / textureSize.x * drawRightDownPosition.x ,1.0f / textureSize.y * drawRightDownPosition.y };
-
-	vertices[0].uv = { uvLeftUp.x ,-uvRightDown.y };
-	vertices[1].uv = { uvLeftUp.x,-uvLeftUp.y };
-	vertices[2].uv = { uvRightDown.x ,-uvRightDown.y };
-	vertices[3].uv = { uvRightDown.x ,-uvLeftUp.y };
+	vertices[0].uv = { drawLeftUpPosition.x ,-drawRightDownPosition.y };
+	vertices[1].uv = { drawLeftUpPosition.x,-drawLeftUpPosition.y };
+	vertices[2].uv = { drawRightDownPosition.x ,-drawRightDownPosition.y };
+	vertices[3].uv = { drawRightDownPosition.x ,-drawLeftUpPosition.y };
 #pragma endregion
 	auto vertexNum = vertices.size();
 	for (int i = 0; i < vertexNum; i++)
