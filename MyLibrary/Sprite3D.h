@@ -12,15 +12,17 @@ namespace MelLib
 		static DirectX::XMMATRIX viewAndProjectionMatrix;
 		static PipelineState defaultPipeline;
 
-
-		bool billboardX = false;
-		bool billboardY = false;
-		bool billboardZ = false;
-		void Billboard(DirectX::XMMATRIX& worldMat);
 		static DirectX::XMFLOAT3 cameraPosition;
 		static DirectX::XMFLOAT3 cameraTargetPosition;
 		static DirectX::XMFLOAT3 cameraUpVector;
 
+		bool billboardX = false;
+		bool billboardY = false;
+		bool billboardZ = false;
+
+
+	private:
+		void Billboard(DirectX::XMMATRIX& worldMat);
 		void MatrixMap(const Camera* camera);
 
 	protected:
@@ -29,6 +31,7 @@ namespace MelLib
 		Sprite3D() {}
 		Sprite3D(const Color& color);
 		Sprite3D(Texture* pTexture);
+		Sprite3D(const Sprite3D& sprite);
 		~Sprite3D() {}
 
 		static void Create(const Color& color, const std::string& name);

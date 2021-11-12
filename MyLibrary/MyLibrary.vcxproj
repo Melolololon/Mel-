@@ -99,6 +99,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -121,6 +122,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -141,6 +143,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -166,6 +169,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -183,6 +187,7 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionType.cpp" />
     <ClCompile Include="Counter.cpp" />
+    <ClCompile Include="Emitter3D.cpp" />
     <ClCompile Include="ErrorProcess.cpp" />
     <ClCompile Include="GameObject2D.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
@@ -198,7 +203,9 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="ModelVertexData.cpp" />
     <ClCompile Include="Network.cpp" />
-    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Emitter2D.cpp" />
+    <ClCompile Include="Particle2D.cpp" />
+    <ClCompile Include="Particle3D.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="RouteSearch.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -467,6 +474,7 @@
     <ClInclude Include="ClothSimulator.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Counter.h" />
+    <ClInclude Include="Emitter3D.h" />
     <ClInclude Include="ErrorProcess.h" />
     <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="ImguiManager.h" />
@@ -484,7 +492,9 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="ModelVertexData.h" />
     <ClInclude Include="Network.h" />
-    <ClInclude Include="Particle.h" />
+    <ClInclude Include="Emitter2D.h" />
+    <ClInclude Include="Particle2D.h" />
+    <ClInclude Include="Particle3D.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="RouteSearch.h" />
     <ClInclude Include="Sound.h" />

@@ -40,6 +40,7 @@ namespace MelLib
 		//ƒŠƒZƒbƒg‚·‚é‚©‚Ç‚¤‚©
 		bool resetFlag = false;
 
+	private:
 		void Update();
 	public:
 

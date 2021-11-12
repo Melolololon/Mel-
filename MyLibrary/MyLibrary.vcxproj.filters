@@ -303,7 +303,7 @@
     <ClCompile Include="ErrorProcess.cpp">
       <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
-    <ClCompile Include="Particle.cpp">
+    <ClCompile Include="Emitter2D.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
     <ClCompile Include="Network.cpp">
@@ -314,6 +314,15 @@
     </ClCompile>
     <ClCompile Include="ClothSimulator.cpp">
       <Filter>ソース ファイル\Calculation</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle2D.cpp">
+      <Filter>ソース ファイル\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle3D.cpp">
+      <Filter>ソース ファイル\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Emitter3D.cpp">
+      <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -560,9 +569,6 @@
     <ClInclude Include="ErrorProcess.h">
       <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
-    <ClInclude Include="Particle.h">
-      <Filter>ヘッダー ファイル\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Network.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -571,6 +577,18 @@
     </ClInclude>
     <ClInclude Include="ClothSimulator.h">
       <Filter>ヘッダー ファイル\Calculation</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle2D.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Emitter3D.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle3D.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Emitter2D.h">
+      <Filter>ヘッダー ファイル\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
