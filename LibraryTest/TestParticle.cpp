@@ -16,5 +16,12 @@ void TestParticle::Initialize()
 
 void TestParticle::Update()
 {
-	particleSprite.SetPosition(particleSprite.GetPosition() + moveVector);
+	particleSprite.SetPosition(particleSprite.GetPosition() + moveVector * 0.05f);
+	t++;
+	if(t >= 200)
+	{
+		TrueIsDeadFlag();
+		t = 0;
+	}
+
 }

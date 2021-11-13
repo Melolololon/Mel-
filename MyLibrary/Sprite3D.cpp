@@ -29,7 +29,6 @@ void Sprite3D::Delete(const std::string& name)
 
 MelLib::Sprite3D::Sprite3D()
 {
-	Create();
 }
 
 Sprite3D::Sprite3D(const Color& color)
@@ -103,12 +102,12 @@ bool Sprite3D::Initialize()
 
 void MelLib::Sprite3D::Create()
 {
+	CreateBuffer();
+	InitializeVertices();
 	if (!pTexture)
 	{
 		SetOneColorSpriteColor(color);
 	}
-	CreateBuffer();
-	InitializeVertices();
 	pipeline = defaultPipeline.GetPipelineState();
 }
 

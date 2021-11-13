@@ -236,10 +236,17 @@ void Play::CatTestDraw()
 void Play::ParticleTestInitialize()
 {
 	// パーティクルの作成
-	TestParticle particle;
+	std::vector<std::shared_ptr<MelLib::Particle3D>> particle(100);
+	for(auto& p : particle)
+	{
+		p = std::make_shared<TestParticle>();
+	}
+
+	// エミッターの作成
+	std::shared_ptr <MelLib::Emitter3D >e = std::make_shared<MelLib::Emitter3D>(particle, 0, 1);
 
 	// エミッターの追加
-	//MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<MelLib::Emitter3D>());
+	MelLib::GameObjectManager::GetInstance()->AddObject(e);
 }
 
 void Play::ParticleTestUpdate()
@@ -259,15 +266,16 @@ Play::~Play(){}
 
 void Play::Initialize()
 {
-	CatInitialize();
-
+	//CatInitialize();
+	ParticleTestInitialize();
 }
 
 void Play::Update()
 {
 
 
-	CatTestUpdate();
+	//CatTestUpdate();
+	ParticleTestUpdate();
 
 	MelLib::GameObjectManager::GetInstance()->Update();
 	int z = 0;
@@ -275,7 +283,8 @@ void Play::Update()
 
 void Play::Draw()
 {
-	CatTestDraw();
+	//CatTestDraw();
+	ParticleTestDraw();
 
 	MelLib::GameObjectManager::GetInstance()->Draw();
 }

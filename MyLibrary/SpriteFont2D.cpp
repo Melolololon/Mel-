@@ -67,8 +67,10 @@ bool SpriteFont2D::Draw(const Vector2& position, const Vector2& scale, const Cha
 		}
 
 		Vector2 drawAreaLeftUp = Vector2(fontSize.x * drawArea.v1, fontSize.y * drawArea.v2);
-		spr->SetDrawArea(drawAreaLeftUp, drawAreaLeftUp + fontSize);
-		
+		//spr->SetDrawArea(drawAreaLeftUp, drawAreaLeftUp + fontSize);
+		spr->SetDrawLeftUpPosition(drawAreaLeftUp);
+		spr->SetDrawRigthDownPosition(drawAreaLeftUp + fontSize);
+
 		Vector2 movePos = 0;
 		switch (sequence)
 		{

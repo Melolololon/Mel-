@@ -5,6 +5,7 @@ class TestParticle :
 {
 private:
     MelLib::Vector3 moveVector;
+    int t = 0;
 public:
     TestParticle();
     ~TestParticle(){}

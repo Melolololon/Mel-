@@ -4,14 +4,14 @@
 
 MelLib::Particle3D::Particle3D(const Color& color)
 {
-	//particleSprite.Create(color);
-	particleSprite.SetColor(color);
+	particleSprite.Create(color);
+	//particleSprite.SetColor(color);
 }
 
 MelLib::Particle3D::Particle3D(Texture* pTexture)
 {
-	//particleSprite.Create(pTexture);
-	particleSprite.SetTexture(pTexture);
+	particleSprite.Create(pTexture);
+	//particleSprite.SetTexture(pTexture);
 }
 
 MelLib::Particle3D::Particle3D(const Particle3D& particle)

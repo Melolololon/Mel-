@@ -7,7 +7,6 @@ std::unordered_map<std::string, std::unique_ptr<Sprite2D>> Sprite2D::pSprite2D;
 
 Sprite2D::Sprite2D()
 {
-	Create();
 }
 
 Sprite2D::Sprite2D(const Color& color)
