@@ -243,8 +243,8 @@ void Play::ParticleTestInitialize()
 	}
 
 	// エミッターの作成
-	std::shared_ptr <MelLib::Emitter3D >e = std::make_shared<MelLib::Emitter3D>(particle, 0, 1);
-
+	std::shared_ptr <MelLib::Emitter3D>e = std::make_shared<MelLib::Emitter3D>(particle, 0, 1);
+	
 	// エミッターの追加
 	MelLib::GameObjectManager::GetInstance()->AddObject(e);
 }

@@ -209,6 +209,7 @@
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="RouteSearch.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Sound3D.cpp" />
     <ClCompile Include="Sound_Unused.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
@@ -498,6 +499,7 @@
     <ClInclude Include="Physics.h" />
     <ClInclude Include="RouteSearch.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="Sound3D.h" />
     <ClInclude Include="Sound_Unused.h" />
     <ClInclude Include="BufferData.h" />
     <ClInclude Include="Camera.h" />

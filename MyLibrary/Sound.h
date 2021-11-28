@@ -79,7 +79,7 @@ namespace MelLib
 		bool Play(SoundData* soundData, const UINT32 loopNum, const PlaySoundData& playSoundData);
 		void CheckPlayEnd();
 	public:
-		~Sound();
+		virtual ~Sound();
 
 		static const UINT32 LOOP_INFINITY = XAUDIO2_LOOP_INFINITE;
 		static const UINT32 LOOP_MAX = XAUDIO2_MAX_LOOP_COUNT;
