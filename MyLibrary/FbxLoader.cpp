@@ -77,7 +77,7 @@ bool FbxLoader::LoadFbxModel(const std::string& modelPath, ModelData* fbxModel)
 void FbxLoader::ParseNodeRecursive
 (
 	ModelData* fbxModel,
-	FbxNode* fbxNode, 
+	FbxNode* fbxNode,
 	Node* parentNode
 )
 {
@@ -108,6 +108,7 @@ void FbxLoader::ParseNodeRecursive
 		0.0f
 	};
 
+
 	node.translation =
 	{
 		(float)translation[0],
@@ -128,7 +129,7 @@ void FbxLoader::ParseNodeRecursive
 
 	node.globalTransform = node.transform;
 
-	if(parentNode)
+	if (parentNode)
 	{
 		//親ノード代入
 		node.parentNode = parentNode;
@@ -139,9 +140,9 @@ void FbxLoader::ParseNodeRecursive
 
 	//FbxNodeAttribute ノードの追加情報
 	FbxNodeAttribute* fbxNodeAttribute = fbxNode->GetNodeAttribute();
-	if(fbxNodeAttribute)
+	if (fbxNodeAttribute)
 	{
-		if(fbxNodeAttribute->GetAttributeType() == 
+		if (fbxNodeAttribute->GetAttributeType() ==
 			FbxNodeAttribute::eMesh)
 		{
 			fbxModel->fbxData.meshNode = &node;
@@ -149,8 +150,10 @@ void FbxLoader::ParseNodeRecursive
 		}
 	}
 
-	for (int i = 0; i < fbxNode->GetChildCount(); i++)
+	for (int i = 0; i < fbxNode->GetChildCount(); i++) {
 		ParseNodeRecursive(fbxModel, fbxNode->GetChild(i), &node);
+	}
+
 }
 
 
@@ -411,6 +414,32 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 
 void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 {
+	// ブレンダーで出力したスキニング情報付きfbxモデルが崩れる
+	// シェーダーでスキニング情報適応しなかったら崩れなかったので、この辺に問題がある可能性
+	// ボーンやアニメーションが多いと崩れる?テストモデルで試してみる
+	// スキニング情報の読み込む数を1つ1つ増やしていって確かめる?
+	
+	// ウェイト1にすると正常になるから、ウェイトか初期姿勢行列がおかしい?
+	// ウェイト0で原点に行ってしまう
+	// 全頂点のウェイトを0にしたら消えた(原点と重なった?)ので、強制的に単位行列掛けないといけない?
+	// ウェイト0だとシェーダーで行列に0掛けられて座標とか0になっちゃう?
+	// +=だから0にはならない
+
+	// 現状ボーンの行列が零行列だと頂点座標に0を掛けて計算されるため、スキニング情報ない場合は単位行列いれて反映させないといけない
+	// ということは、ウェイト0だと強制的に原点に移動してしまうのでは
+	
+	// pixで頂点情報見れない
+	// つまり、バグってる?だからちゃんと行列の結果が反映されない?
+	// バグってないモデルも見れなかった
+
+	// お腹の部分だけを出力してもバグった
+	// ボーンの行列を掛けなかったら普通に描画できた
+	// もしかして、出力設定が悪い?
+
+	// objだとバグらなかった
+	// fbxだと無理っぽい
+	// やっぱ設定?それとも読み込みのプログラム?
+
 	//スキニング情報取得
 	FbxSkin* fbxSkin = 
 		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
@@ -418,8 +447,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 	//スキニング情報がない場合return
 	if (!fbxSkin)
 	{
-		auto vertSize = fbxModel->vertices[0].size();
-		for(int i = 0; i < vertSize;i++)
+		for(int i = 0; i < fbxModel->vertices[0].size();i++)
 		{
 			//最初のボーンの影響度を100%にする(単位行列の結果を反映させるため)
 			fbxModel->vertices[0][i].boneIndex[0] = 0;
@@ -431,6 +459,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 
 	std::vector<ModelData::FbxBone>& bones = fbxModel->fbxData.bones;
 
+	// クラスターカウント = アーマチュア(ボーン)数
 	const int clusterCount = fbxSkin->GetClusterCount();
 	bones.reserve(clusterCount);
 
@@ -442,13 +471,17 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 	};
 	std::vector<std::list<WeightSet>>weightLists(fbxModel->vertices[0].size());
 
+
 	for(int i = 0; i < clusterCount;i++)
+	//for(int i = 0; i < 2;i++)
 	{
+
 		//ボーン情報(クラスターはSDKで定義されているボーン?)
 		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
 
 		//ボーンのノード名取得
 		const char* boneName = fbxCluster->GetLink()->GetName();
+
 
 		//ボーン追加
 		bones.emplace_back(ModelData::FbxBone(boneName));
@@ -466,6 +499,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 
 		//逆行列をボーンに渡す
 		bone.invInitialPose = DirectX::XMMatrixInverse(nullptr, initialPose);
+		//bone.invInitialPose = DirectX::XMMatrixInverse(nullptr,DirectX::XMMatrixIdentity());
 
 
 		const int controlPointIndicesCount = fbxCluster->GetControlPointIndicesCount();
@@ -499,13 +533,15 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 		{
 			vertices[0][i].boneIndex[weightArrayIndex] = weightSet.index;
 			vertices[0][i].boneWeight[weightArrayIndex] = weightSet.weight;
+			
 
 			if(++weightArrayIndex >= FbxVertex::MAX_BONE_INDICES)
 			{
 				float weight = 0.0f;
 
-				for(int j = 1; j < FbxVertex::MAX_BONE_INDICES;j++)
+				for (int j = 1; j < FbxVertex::MAX_BONE_INDICES; j++) {
 					weight += vertices[0][i].boneWeight[j];
+				}
 
 				vertices[0][i].boneWeight[0] = 1.0f - weight;
 				break;

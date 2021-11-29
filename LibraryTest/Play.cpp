@@ -258,6 +258,68 @@ void Play::ParticleTestDraw()
 
 }
 
+MelLib::ModelObject aniTest;
+void Play::AniTestInitialize(){
+
+	//MelLib::ModelData::Load("Resources/boneTest/boneTest.fbx", false, "test");
+	//MelLib::ModelData::Load("Resources/ani_test.fbx", false, "test");
+	//bool res = MelLib::ModelData::Load("Resources/Player_Test.fbx", false, "test");
+	//bool res = MelLib::ModelData::Load("Resources/Player_Test_Low.fbx", false, "test");
+	bool res = MelLib::ModelData::Load("Resources/test.obj", false, "test");
+	//MelLib::ModelData::Load("Resources/Player_Test_No_Ani.fbx", false, "test");
+	int c = 0;
+
+
+	aniTest.Create(MelLib::ModelData::Get("test"), nullptr);
+	//aniTest.SetScale(MelLib::Vector3(0.01,0.01,0.01));
+	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, -3));
+
+	aniTest.SetAnimationFlag(true);
+}
+
+void Play::AniTestUpdate(){
+
+	if (MelLib::Input::KeyState(DIK_A)) {
+
+		aniTest.SetAngle(MelLib::Vector3(aniTest.GetAngle().x, aniTest.GetAngle().y + 3, 0));
+
+	}
+	if (MelLib::Input::KeyState(DIK_D)) {
+
+		aniTest.SetAngle(MelLib::Vector3(aniTest.GetAngle().x, aniTest.GetAngle().y - 3, 0));
+
+	}
+
+
+	if (MelLib::Input::KeyState(DIK_W)) {
+
+		aniTest.SetAngle(MelLib::Vector3( aniTest.GetAngle().x + 3, aniTest.GetAngle().y,0));
+
+	}
+	if (MelLib::Input::KeyState(DIK_S)) {
+
+		aniTest.SetAngle(MelLib::Vector3(aniTest.GetAngle().x - 3, aniTest.GetAngle().y,0));
+
+	}
+
+
+	if (MelLib::Input::KeyState(DIK_UP)) {
+
+		aniTest.SetPosition(MelLib::Vector3(0, aniTest.GetPosition().y + 0.3, 0));
+
+	}
+	if (MelLib::Input::KeyState(DIK_DOWN)) {
+
+		aniTest.SetPosition(MelLib::Vector3(0, aniTest.GetPosition().y - 0.3, 0));
+
+	}
+}
+
+void Play::AniTestDraw(){
+	aniTest.Draw();
+
+}
+
 Play::Play(){}
 
 
@@ -267,7 +329,10 @@ Play::~Play(){}
 void Play::Initialize()
 {
 	//CatInitialize();
-	ParticleTestInitialize();
+	//ParticleTestInitialize();
+	AniTestInitialize();
+	
+
 }
 
 void Play::Update()
@@ -275,7 +340,8 @@ void Play::Update()
 
 
 	//CatTestUpdate();
-	ParticleTestUpdate();
+	//ParticleTestUpdate();
+	AniTestUpdate();
 
 	MelLib::GameObjectManager::GetInstance()->Update();
 	int z = 0;
@@ -284,7 +350,8 @@ void Play::Update()
 void Play::Draw()
 {
 	//CatTestDraw();
-	ParticleTestDraw();
+	//ParticleTestDraw();
+	AniTestDraw();
 
 	MelLib::GameObjectManager::GetInstance()->Draw();
 }

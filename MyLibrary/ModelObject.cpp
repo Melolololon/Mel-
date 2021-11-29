@@ -232,8 +232,11 @@ void ModelObject::MapConstData(const Camera* camera)
 		int boneNum = pModelData->GetBoneNumber();
 
 		if (boneNum == 0
-			|| pModelData->GetModelFormat() != ModelData::ModelFormat::MODEL_FORMAT_OBJ
-			&& i != 0)return;
+			/*|| pModelData->GetModelFormat() != ModelData::ModelFormat::MODEL_FORMAT_OBJ*/
+			/*&& i != 0*/)
+		{
+			continue;
+		}
 
 		SkinConstBufferData* skinConstData;
 

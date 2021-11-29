@@ -421,7 +421,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 	bool result = false;
 	
 	//読み込み結果がfalseだったときの終了処理
-	auto LoadFalseEndProcess = [&path]()
+	auto loadFalseEndProcess = [&path]()
 	{
 		OutputDebugStringA(path.data());
 		OutputDebugStringW(L"を読み込めませんでした。対応していないモデル形式、または、pathの入力ミスの可能性が考えられます。\n");
@@ -457,7 +457,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		boneNum = objBonePositions.size();
 		modelFileObjectNum = vertices.size();
 
-		if (!result)return LoadFalseEndProcess();
+		if (!result)return loadFalseEndProcess();
 
 
 		if (boneNum == 0)
@@ -607,18 +607,25 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 			mtlData,
 			&materialNum
 		);
-		if (!result)LoadFalseEndProcess();
+		if (!result)loadFalseEndProcess();
 
-		pTexture.resize(materialNum);
-		material.resize(materialNum);
-		for (int i = 0; i < materialNum; i++)
-		{
-			pTexture[i] = std::make_unique<Texture>();
-			pTexture[i]->LoadModelTexture(texPath[i]);
-			material[i] =std::make_unique<ADSAMaterial>();
-			material[i]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
-			material[i]->SetTexture(pTexture[i].get());
-			material[i]->SetMaterialData(mtlData[i]);
+
+		if (materialNum != 0) {
+			pTexture.resize(materialNum);
+			material.resize(materialNum);
+			for (int i = 0; i < materialNum; i++)
+			{
+				pTexture[i] = std::make_unique<Texture>();
+				pTexture[i]->LoadModelTexture(texPath[i]);
+				material[i] = std::make_unique<ADSAMaterial>();
+				material[i]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+				material[i]->SetTexture(pTexture[i].get());
+				material[i]->SetMaterialData(mtlData[i]);
+			}
+		}
+		else{
+
+
 		}
 #pragma endregion
 
@@ -631,9 +638,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 	else 
 	if (path.find(".fbx") != std::string::npos)
 	{	
-		result = FbxLoader::GetInstance()->LoadFbxModel(path, this);
-		if (!result)return LoadFalseEndProcess();
-
+		if (!FbxLoader::GetInstance()->LoadFbxModel(path, this))return loadFalseEndProcess();
 
 		boneNum = fbxData.bones.size();
 		modelFormat = ModelFormat::MODEL_FORMAT_FBX;
@@ -641,13 +646,15 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 #pragma region アニメーション関係準備
 		if (fbxData.bones.size() != 0)
 		{
-			
-			FbxAnimStack* animstack = fbxData.fbxScene->GetSrcObject<FbxAnimStack>(0);
-			const char* animstackname = animstack->GetName();
-			FbxTakeInfo* takeinfo = fbxData.fbxScene->GetTakeInfo(animstackname);
 
-			fbxData.animationTimes.startTime = takeinfo->mLocalTimeSpan.GetStart();
-			fbxData.animationTimes.endTime = takeinfo->mLocalTimeSpan.GetStop();
+			
+			FbxAnimStack* animStack = fbxData.fbxScene->GetSrcObject<FbxAnimStack>(0);
+			const char* animStackname = animStack->GetName();
+			std::string animStacknameS = animStack->GetName();
+			FbxTakeInfo* takeInfo = fbxData.fbxScene->GetTakeInfo(animStackname);
+
+			fbxData.animationTimes.startTime = takeInfo->mLocalTimeSpan.GetStart();
+			fbxData.animationTimes.endTime = takeInfo->mLocalTimeSpan.GetStop();
 
 			//1秒60フレームで設定されてるアニメーションの場合、eFream60って設定する?
 			fbxData.animationTimes.freamTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
@@ -659,7 +666,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 	}
 	else
 	{
-		LoadFalseEndProcess();
+		loadFalseEndProcess();
 	}
 
 
@@ -757,12 +764,20 @@ void ModelData::BufferPreparationSetColor
 std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 {
 	size_t size = material.size();
+	if (size == 0)
+	{
+		size++;
+		material.resize(size);
+	}
 	std::vector<ADSAMaterial*>pMtls(size);
 	for(int i = 0; i < size;i++)
 	{
 		if (!material[i]) pMtls[i] = defaultMaterial.get();
 		else pMtls[i] = material[i].get();
 	}
+
+	
+
 	return pMtls;
 
 }

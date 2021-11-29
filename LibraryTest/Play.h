@@ -38,6 +38,10 @@ private:
 	void ParticleTestInitialize();
 	void ParticleTestUpdate();
 	void ParticleTestDraw();
+
+	void AniTestInitialize();
+	void AniTestUpdate();
+	void AniTestDraw();
 #pragma endregion
 
 
