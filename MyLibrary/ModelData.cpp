@@ -415,9 +415,21 @@ void ModelData::Initialize(ID3D12Device* pDevice)
 	CreatePrimitiveModel();
 }
 
+void MelLib::ModelData::GetAnimationTimeData(int index, FbxTime& start, FbxTime& end)
+{
+	FbxAnimStack* animStack = fbxData.fbxScene->GetSrcObject<FbxAnimStack>(index);
+	if (!animStack)return;
+
+	FbxTakeInfo* takeInfo = fbxData.fbxScene->GetTakeInfo(animStack->GetName());
+
+	start = takeInfo->mLocalTimeSpan.GetStart();
+	end = takeInfo->mLocalTimeSpan.GetStop();
+}
+
 void MelLib::ModelData::GetAnimationTimeData(const std::string& name, FbxTime& start, FbxTime& end)
 {
 	FbxTakeInfo* takeInfo = fbxData.fbxScene->GetTakeInfo(fbxData.animationDataGetName[name].c_str());
+	if (!takeInfo)return;
 
 	start = takeInfo->mLocalTimeSpan.GetStart();
 	end = takeInfo->mLocalTimeSpan.GetStop();

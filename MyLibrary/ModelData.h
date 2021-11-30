@@ -341,6 +341,7 @@ namespace MelLib
 		/// <returns></returns>
 		ID3D12DescriptorHeap* GetTextureDesctiptorHeap()const { return textureDescHeap.Get(); }
 
+		void GetAnimationTimeData(int index, FbxTime& start, FbxTime& end);
 		void GetAnimationTimeData(const std::string& name, FbxTime& start, FbxTime& end);
 
 		DirectX::XMMATRIX GetMeshGlobalTransform(const size_t index)const { return meshGlobalTransform[index]; }

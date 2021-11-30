@@ -443,9 +443,9 @@ void ModelObject::MapConstData(const Camera* camera)
 				//skinConstData->bones[i] = bones[i].invInitialPose * matCurrentPose;
 				
 				DirectX::XMMATRIX meshGlobalTransform = pModelData->GetMeshGlobalTransform(i);
-				skinConstData->bones[i] =
+				skinConstData->bones[j] =
 					meshGlobalTransform *
-					bones[i].invInitialPose *
+					bones[j].invInitialPose *
 					matCurrentPose *
 					DirectX::XMMatrixInverse(nullptr, meshGlobalTransform);
 
@@ -1735,6 +1735,8 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 
 	fbxAnimationData.animationTimes.frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 
+	// 0番目のアニメーションの時間をセット
+	pModelData->GetAnimationTimeData(0, fbxAnimationData.animationTimes.startTime, fbxAnimationData.animationTimes.endTime);
 #pragma endregion
 
 
