@@ -440,6 +440,12 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 	// fbxだと無理っぽい
 	// やっぱ設定?それとも読み込みのプログラム?
 
+	// ブレンダー側のピポット(オブジェクトの中心)がおかしくて狂ってたっぽい?
+	// 動かしたらお腹だけのモデルは崩れなくなった
+
+	// まだおかしい。スキニング情報掛けるとおかしくなる
+	// 
+
 	//スキニング情報取得
 	FbxSkin* fbxSkin = 
 		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
@@ -502,7 +508,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 		//bone.invInitialPose = DirectX::XMMatrixInverse(nullptr,DirectX::XMMatrixIdentity());
 
 
-		const int controlPointIndicesCount = fbxCluster->GetControlPointIndicesCount();
+		int controlPointIndicesCount = fbxCluster->GetControlPointIndicesCount();
 		int* controlPointIndices = fbxCluster->GetControlPointIndices();
 		double* controlPointWeight = fbxCluster->GetControlPointWeights();
 		for(int j = 0; j < controlPointIndicesCount;j++)
@@ -516,8 +522,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 
 
 	auto& vertices = fbxModel->vertices;
-	auto verticesSize = vertices[0].size();
-	for(int i = 0; i < verticesSize;i++)
+	for(int i = 0; i < vertices[0].size();i++)
 	{
 		auto& weightList = weightLists[i];
 		weightList.sort

@@ -263,15 +263,16 @@ void Play::AniTestInitialize(){
 
 	//MelLib::ModelData::Load("Resources/boneTest/boneTest.fbx", false, "test");
 	//MelLib::ModelData::Load("Resources/ani_test.fbx", false, "test");
-	//bool res = MelLib::ModelData::Load("Resources/Player_Test.fbx", false, "test");
+	bool res = MelLib::ModelData::Load("Resources/Player_Test.fbx", false, "test");
 	//bool res = MelLib::ModelData::Load("Resources/Player_Test_Low.fbx", false, "test");
-	bool res = MelLib::ModelData::Load("Resources/test.obj", false, "test");
+	//bool res = MelLib::ModelData::Load("Resources/testBox.fbx", false, "test");
+	//bool res = MelLib::ModelData::Load("Resources/test.obj", false, "test");
 	//MelLib::ModelData::Load("Resources/Player_Test_No_Ani.fbx", false, "test");
 	int c = 0;
 
 
 	aniTest.Create(MelLib::ModelData::Get("test"), nullptr);
-	//aniTest.SetScale(MelLib::Vector3(0.01,0.01,0.01));
+	aniTest.SetScale(0.2);
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, -3));
 
 	aniTest.SetAnimationFlag(true);

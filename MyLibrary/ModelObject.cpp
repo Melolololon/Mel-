@@ -425,7 +425,6 @@ void ModelObject::MapConstData(const Camera* camera)
 		}
 		else if (pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_FBX)
 		{
-
 			std::vector<ModelData::FbxBone> bones = pModelData->GetFbxBone();
 
 			for (int i = 0; i < boneNum; i++)
