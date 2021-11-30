@@ -275,7 +275,8 @@ void Play::AniTestInitialize(){
 	aniTest.SetScale(0.2);
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, -3));
 
-	aniTest.SetAnimationFlag(true);
+	aniTest.SetAnimationPlayFlag(true);
+	aniTest.SetAnimation("Dash");
 }
 
 void Play::AniTestUpdate(){

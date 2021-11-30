@@ -415,6 +415,14 @@ void ModelData::Initialize(ID3D12Device* pDevice)
 	CreatePrimitiveModel();
 }
 
+void MelLib::ModelData::GetAnimationTimeData(const std::string& name, FbxTime& start, FbxTime& end)
+{
+	FbxTakeInfo* takeInfo = fbxData.fbxScene->GetTakeInfo(fbxData.animationDataGetName[name].c_str());
+
+	start = takeInfo->mLocalTimeSpan.GetStart();
+	end = takeInfo->mLocalTimeSpan.GetStop();
+}
+
 
 bool ModelData::LoadModel(const std::string& path, const std::string& name)
 {
@@ -648,16 +656,28 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		{
 			// これをModelObject側に移動させる
 			
-			FbxAnimStack* animStack = fbxData.fbxScene->GetSrcObject<FbxAnimStack>(10);
-			const char* animStackname = animStack->GetName();
-			std::string animStacknameS = animStack->GetName();
-			FbxTakeInfo* takeInfo = fbxData.fbxScene->GetTakeInfo(animStackname);
+			for (int i = 0; ; i++) 
+			{
+				FbxAnimStack* animStack = fbxData.fbxScene->GetSrcObject<FbxAnimStack>(i);
+
+				if (!animStack)break;
+
+				// アニメーション名を取得
+				std::string getAnimationName = animStack->GetName();
+				size_t nameStart = getAnimationName.find_first_of("|") + 1;
+				std::string animationName = getAnimationName.substr(nameStart, getAnimationName.size() - nameStart);
+
+				fbxData.animationDataGetName.emplace(animationName, getAnimationName);
+			}
+
+
+			/*FbxTakeInfo* takeInfo = fbxData.fbxScene->GetTakeInfo(animStackname);
 
 			fbxData.animationTimes.startTime = takeInfo->mLocalTimeSpan.GetStart();
-			fbxData.animationTimes.endTime = takeInfo->mLocalTimeSpan.GetStop();
+			fbxData.animationTimes.endTime = takeInfo->mLocalTimeSpan.GetStop();*/
 
 			//1秒60フレームで設定されてるアニメーションの場合、eFream60って設定する?
-			fbxData.animationTimes.freamTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+			//fbxData.animationTimes.freamTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 		}
 
 

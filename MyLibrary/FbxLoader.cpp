@@ -66,7 +66,7 @@ bool FbxLoader::LoadFbxModel(const std::string& modelPath, ModelData* fbxModel)
 	//ノード数取得
 	int nodeCount = fbxScene->GetNodeCount();
 	//parseNodeRecursive()で配列を参照してるので、メモリを確保しなおさないようにするためにreserveしてる
-	model->fbxData.bones.reserve(nodeCount);
+	model->fbxData.nodes.reserve(nodeCount);
 
 	ParseNodeRecursive(model, fbxScene->GetRootNode());
 
@@ -120,7 +120,7 @@ void FbxLoader::ParseNodeRecursive
 	XMMATRIX matScaling, matRotation, matTranslation;
 	matScaling = XMMatrixScalingFromVector(node.scaling);
 	matRotation = XMMatrixRotationRollPitchYawFromVector(node.rotation);
-	matTranslation = XMMatrixScalingFromVector(node.translation);
+	matTranslation = XMMatrixTranslationFromVector(node.translation);
 
 	node.transform = XMMatrixIdentity();
 	node.transform *= matScaling;
@@ -135,7 +135,7 @@ void FbxLoader::ParseNodeRecursive
 		node.parentNode = parentNode;
 
 		//親の行列を乗算
-		node.globalTransform = parentNode->globalTransform;
+		node.globalTransform *= parentNode->globalTransform;
 	}
 
 	//FbxNodeAttribute ノードの追加情報
@@ -146,7 +146,7 @@ void FbxLoader::ParseNodeRecursive
 			FbxNodeAttribute::eMesh)
 		{
 			fbxModel->fbxData.meshNode = &node;
-			ParseMesh(fbxModel, fbxNode);
+			ParseMesh(fbxModel, fbxNode, &node);
 		}
 	}
 
@@ -158,17 +158,17 @@ void FbxLoader::ParseNodeRecursive
 
 
 
-void FbxLoader::ParseMesh(ModelData* fbxModel, FbxNode* node)
+void FbxLoader::ParseMesh(ModelData* fbxModel, FbxNode* node, Node* meshNode)
 {
 	FbxMesh* fbxMesh = node->GetMesh();
 
-	ParseMeshVertices(fbxModel, fbxMesh);
+	ParseMeshVertices(fbxModel, fbxMesh, meshNode);
 	ParseMeshFaces(fbxModel, fbxMesh);
 	ParseMaterial(fbxModel, node);
 	ParseSkin(fbxModel, fbxMesh);
 }
 
-void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh)
+void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, Node* meshNode)
 {
 	//頂点数取得
 	const int vertexNum = fbxMesh->GetControlPointsCount();
@@ -180,13 +180,22 @@ void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh)
 	//座標取得
 	FbxVector4* pCount = fbxMesh->GetControlPoints();
 
-	//コピー
 	for(int i = 0; i < vertexNum;i++)
 	{
-		vertices[0][i].pos.x = (float)pCount[i][0];
-		vertices[0][i].pos.y = (float)pCount[i][1];
-		vertices[0][i].pos.z = (float)pCount[i][2];
+		// コピー
+		/*vertices[0][i].pos.x = (float)pCount[i][0];
+		  vertices[0][i].pos.y = (float)pCount[i][1];
+		  vertices[0][i].pos.z = (float)pCount[i][2];*/
+
+		// グローバルトランスフォームを掛ける
+		DirectX::XMMATRIX vertexMat = DirectX::XMMatrixTranslation((float)pCount[i][0], (float)pCount[i][1], (float)pCount[i][2]);
+		vertexMat *= meshNode->globalTransform;
+
+		vertices[0][i].pos.x = vertexMat.r[3].m128_f32[0];
+		vertices[0][i].pos.y = vertexMat.r[3].m128_f32[1];
+		vertices[0][i].pos.z = vertexMat.r[3].m128_f32[2];
 	}
+
 }
 
 void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh)
@@ -449,6 +458,9 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 	// なぜかジオメトリシェーダーで座標変換やってておかしかった
 
 	//まだおかしい。頂点シェーダーですでにおかしい
+
+	// メッシュノードに拡縮、回転、平行移動が含まれるとスキニングが正しく表示されなくなるらしい
+	// もしかしてこれ?
 
 	//スキニング情報取得
 	FbxSkin* fbxSkin = 

@@ -81,13 +81,8 @@ namespace MelLib
 		};
 
 		//fbxのアニメーションに必要なFbxTimeをまとめた構造体
-		struct FbxAnimationTimes
-		{
-			FbxTime startTime;
-			FbxTime endTime;
-			//1フレームの時間
-			FbxTime freamTime;
-		};
+		FbxTime freamTime;
+	
 
 #pragma endregion
 
@@ -120,8 +115,10 @@ namespace MelLib
 
 			std::vector<FbxBone>bones;
 
-			FbxAnimationTimes animationTimes;
+			//FbxAnimationTimes animationTimes;
 
+			// アニメーション情報を取得するための名前
+			std::unordered_map<std::string, std::string>animationDataGetName;
 		};
 
 
@@ -340,7 +337,7 @@ namespace MelLib
 		/// <returns></returns>
 		ID3D12DescriptorHeap* GetTextureDesctiptorHeap()const { return textureDescHeap.Get(); }
 
-
+		void GetAnimationTimeData(const std::string& name, FbxTime& start, FbxTime& end);
 #pragma region fbx関係
 
 
@@ -350,7 +347,7 @@ namespace MelLib
 		/// モデルのFbxAnimationTimesを返します。
 		/// </summary>
 		/// <returns></returns>
-		const FbxAnimationTimes& GetFbxAnimationTimes()const { return fbxData.animationTimes; }
+		//const FbxAnimationTimes& GetFbxAnimationTimes()const { return fbxData.animationTimes; }
 
 #pragma endregion
 

@@ -47,10 +47,18 @@ namespace MelLib
 			DirectX::XMMATRIX bones[BONE_MAX];
 		};
 
+		struct FbxAnimationTimes
+		{
+			FbxTime startTime;
+			FbxTime endTime;
+			//1フレームの時間
+			FbxTime frameTime;
+		};
+
 		//fbxモデルのアニメーション用の情報をまとめたもの
 		struct FbxAnimationData
 		{
-			ModelData::FbxAnimationTimes animationTimes;
+			FbxAnimationTimes animationTimes;
 			FbxTime currentTime;
 			int timeMag = 1;
 		};
@@ -180,7 +188,7 @@ namespace MelLib
 
 #pragma region アニメーション
 
-		void SetAnimationFlag(const bool flag) { isAnimation = flag; }
+		void SetAnimationPlayFlag(const bool flag) { isAnimation = flag; }
 
 		/// <summary>
 	/// アニメーションをリセットします。
@@ -196,6 +204,9 @@ namespace MelLib
 #pragma endregion
 
 		void SetMaterial(Material* mtl, const UINT index);
+
+
+		void SetAnimation(const std::string& name);
 #pragma endregion
 
 #pragma region ゲット

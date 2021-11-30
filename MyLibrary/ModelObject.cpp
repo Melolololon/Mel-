@@ -1651,14 +1651,19 @@ void ModelObject::FbxAnimation()
 {
 	if (!isAnimation)return;
 
-	//タイムを進める
-	fbxAnimationData.currentTime += fbxAnimationData.animationTimes.freamTime * fbxAnimationData.timeMag;
 
-	if (fbxAnimationData.currentTime > fbxAnimationData.animationTimes.endTime)
+	//タイムを進める
+	fbxAnimationData.currentTime += fbxAnimationData.animationTimes.frameTime * fbxAnimationData.timeMag;
+
+	if (fbxAnimationData.currentTime > fbxAnimationData.animationTimes.endTime) {
 		fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
-	if (fbxAnimationData.currentTime < fbxAnimationData.animationTimes.startTime)
+	}
+	else
+	if (fbxAnimationData.currentTime < fbxAnimationData.animationTimes.startTime) {
 		fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime;
+	}
 }
+
 
 bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData)
 {
@@ -1717,7 +1722,8 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	}
 	modelConstBuffer[0]->Unmap(0, nullptr);
 
-	fbxAnimationData.animationTimes = pModelData->GetFbxAnimationTimes();
+	fbxAnimationData.animationTimes.frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+
 #pragma endregion
 
 
@@ -1770,4 +1776,11 @@ std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData
 	}
 
 	return result;
+}
+
+
+void MelLib::ModelObject::SetAnimation(const std::string& name)
+{
+	pModelData->GetAnimationTimeData(name, fbxAnimationData.animationTimes.startTime, fbxAnimationData.animationTimes.endTime);
+	
 }
