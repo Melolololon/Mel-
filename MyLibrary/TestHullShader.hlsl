@@ -55,7 +55,8 @@ HS_CONTROL_POINT_OUTPUT main(
 {
 	HS_CONTROL_POINT_OUTPUT Output;
 
-	Output.pos = ip[i].pos;
+	Output.worldPos = ip[i].worldPos;
+	Output.svpos = ip[i].svpos;
 	Output.normal = ip[i].normal;
 	Output.uv = ip[i].uv;
 

@@ -23,7 +23,7 @@ DS_OUTPUT main(
 
 	//三角形の場合は、uvw全部が0になることはない?
 	//四角形だとある?あるから patch[0].pos * domain.x + patch[0].pos * domain.yの式で原点に頂点配置される?
-	float4 p = patch[0].pos * domain.x + patch[1].pos * domain.y + patch[2].pos * domain.z;
+	float4 p = patch[0].svpos * domain.x + patch[1].svpos * domain.y + patch[2].svpos * domain.z;
 	p.w = 1;
 	
 	//partitioningで頂点がどの頂点とつながるかが決まるから下の式では無理
@@ -48,9 +48,13 @@ DS_OUTPUT main(
 	//Output.worldPos = mul(worldMat, p);
 	//Output.svpos = mul(mat, p);
 
-	Output.worldPos = p;
 	Output.svpos = p;
 	Output.uv = patch[0].uv * domain.x + patch[1].uv * domain.y + patch[2].uv * domain.z;
+
+
+	p = patch[0].worldPos * domain.x + patch[1].worldPos * domain.y + patch[2].worldPos * domain.z;
+	p.w = 1;
+	Output.worldPos = p;
 
 	//折り曲げないから法線はそのまま
 	Output.normal = patch[0].normal;

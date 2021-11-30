@@ -25,9 +25,9 @@ SkinOutput ComputeSkin(VSInput input)
 	float weight;
 	matrix m;
 
+
 	//output.pos = input.pos;
 	//output.normal = input.normal;
-
 	//return output;
 
 	//ボーン0
@@ -36,8 +36,6 @@ SkinOutput ComputeSkin(VSInput input)
 	m = matSkinning[iBone];
 	output.pos += weight * mul(m, input.pos);
 	output.normal += weight * mul((float3x3)m, input.normal);
-
-	
 
 	//ボーン1
 	iBone = input.boneIndices.y;
@@ -68,16 +66,15 @@ SkinOutput ComputeSkin(VSInput input)
 VSOutput main(VSInput input)
 {
 	SkinOutput skinned = ComputeSkin(input);
-	float4 wnormal = normalize(mul(normalMat, float4(skinned.normal, 0)));
+	float4 wnormal = normalize(mul(worldMat, float4(skinned.normal, 0)));
 
 	VSOutput output;
-	//output.svpos = mul(mat, skinned.pos);
+	output.svpos = mul(mat, skinned.pos);
 	output.normal = wnormal.xyz;
-
-	//output.worldPos = mul(worldMat, skinned.pos);
 	output.uv = input.uv;
 
-	output.pos = skinned.pos;
+	output.worldPos = mul(worldMat, skinned.pos);
+
 
 	return output;
 }
