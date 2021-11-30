@@ -68,6 +68,7 @@ bool FbxLoader::LoadFbxModel(const std::string& modelPath, ModelData* fbxModel)
 	//parseNodeRecursive()で配列を参照してるので、メモリを確保しなおさないようにするためにreserveしてる
 	model->fbxData.nodes.reserve(nodeCount);
 
+
 	ParseNodeRecursive(model, fbxScene->GetRootNode());
 
 	return true;
@@ -189,13 +190,6 @@ void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh)
 		vertices[0][i].pos.y = (float)pCount[i][1];
 		vertices[0][i].pos.z = (float)pCount[i][2];
 
-		//// グローバルトランスフォームを掛ける
-		//DirectX::XMMATRIX vertexMat = DirectX::XMMatrixTranslation((float)pCount[i][0], (float)pCount[i][1], (float)pCount[i][2]);
-		//vertexMat *= meshNode->globalTransform;
-
-		//vertices[0][i].pos.x = vertexMat.r[3].m128_f32[0];
-		//vertices[0][i].pos.y = vertexMat.r[3].m128_f32[1];
-		//vertices[0][i].pos.z = vertexMat.r[3].m128_f32[2];
 	}
 
 }
@@ -464,9 +458,15 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 	// メッシュノードに拡縮、回転、平行移動が含まれるとスキニングが正しく表示されなくなるらしい
 	// もしかしてこれ?
 
+	// これだった。メッシュのグローバルトランスフォーム行列をボーン行列計算時に掛けたら直った
+
+	
+
+
 	//スキニング情報取得
 	FbxSkin* fbxSkin = 
 		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
+	
 
 	//スキニング情報がない場合return
 	if (!fbxSkin)
@@ -479,7 +479,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 		}
 		return;
 	}
-
+	
 
 	std::vector<ModelData::FbxBone>& bones = fbxModel->fbxData.bones;
 
@@ -497,7 +497,6 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 
 
 	for(int i = 0; i < clusterCount;i++)
-	//for(int i = 0; i < 2;i++)
 	{
 
 		//ボーン情報(クラスターはSDKで定義されているボーン?)
@@ -505,7 +504,6 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 
 		//ボーンのノード名取得
 		const char* boneName = fbxCluster->GetLink()->GetName();
-
 
 		//ボーン追加
 		bones.emplace_back(ModelData::FbxBone(boneName));

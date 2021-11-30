@@ -117,6 +117,8 @@ namespace MelLib
 
 			//FbxAnimationTimes animationTimes;
 
+			// FbxAnimStackを取得するための番号
+			std::unordered_map<std::string, int>animStackNum;
 			// アニメーション情報を取得するための名前
 			std::unordered_map<std::string, std::string>animationDataGetName;
 		};
@@ -352,6 +354,9 @@ namespace MelLib
 		/// </summary>
 		/// <returns></returns>
 		//const FbxAnimationTimes& GetFbxAnimationTimes()const { return fbxData.animationTimes; }
+
+
+		void SetFbxAnimStack(const std::string& name);
 
 #pragma endregion
 

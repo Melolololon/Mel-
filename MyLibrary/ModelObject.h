@@ -61,6 +61,7 @@ namespace MelLib
 			FbxAnimationTimes animationTimes;
 			FbxTime currentTime;
 			int timeMag = 1;
+			std::string currentAnimationName;
 		};
 
 

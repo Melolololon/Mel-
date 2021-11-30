@@ -423,6 +423,12 @@ void MelLib::ModelData::GetAnimationTimeData(const std::string& name, FbxTime& s
 	end = takeInfo->mLocalTimeSpan.GetStop();
 }
 
+void MelLib::ModelData::SetFbxAnimStack(const std::string& name)
+{
+	FbxAnimStack* stack = fbxData.fbxScene->GetSrcObject<FbxAnimStack>(fbxData.animStackNum[name]);
+	fbxData.fbxScene->SetCurrentAnimationStack(stack);
+}
+
 
 bool ModelData::LoadModel(const std::string& path, const std::string& name)
 {
@@ -667,6 +673,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 				size_t nameStart = getAnimationName.find_first_of("|") + 1;
 				std::string animationName = getAnimationName.substr(nameStart, getAnimationName.size() - nameStart);
 
+				fbxData.animStackNum.emplace(animationName, i);
 				fbxData.animationDataGetName.emplace(animationName, getAnimationName);
 			}
 

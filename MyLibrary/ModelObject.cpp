@@ -431,6 +431,8 @@ void ModelObject::MapConstData(const Camera* camera)
 
 			for (int j = 0; j < boneNum; j++)
 			{
+				//bones[j].fbxCluster.
+
 				//•ÏŠ·
 				DirectX::XMMATRIX matCurrentPose;
 				FbxAMatrix fbxCurrentPose =
@@ -1790,6 +1792,8 @@ std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData
 
 void MelLib::ModelObject::SetAnimation(const std::string& name)
 {
+	fbxAnimationData.currentAnimationName = name;
 	pModelData->GetAnimationTimeData(name, fbxAnimationData.animationTimes.startTime, fbxAnimationData.animationTimes.endTime);
-	
+
+	pModelData->SetFbxAnimStack(name);
 }
