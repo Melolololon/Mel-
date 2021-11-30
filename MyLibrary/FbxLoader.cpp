@@ -162,13 +162,15 @@ void FbxLoader::ParseMesh(ModelData* fbxModel, FbxNode* node, Node* meshNode)
 {
 	FbxMesh* fbxMesh = node->GetMesh();
 
-	ParseMeshVertices(fbxModel, fbxMesh, meshNode);
+	fbxModel->meshGlobalTransform.push_back(meshNode->globalTransform);
+
+	ParseMeshVertices(fbxModel, fbxMesh);
 	ParseMeshFaces(fbxModel, fbxMesh);
 	ParseMaterial(fbxModel, node);
 	ParseSkin(fbxModel, fbxMesh);
 }
 
-void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, Node* meshNode)
+void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh)
 {
 	//頂点数取得
 	const int vertexNum = fbxMesh->GetControlPointsCount();
@@ -183,17 +185,17 @@ void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, Node* m
 	for(int i = 0; i < vertexNum;i++)
 	{
 		// コピー
-		/*vertices[0][i].pos.x = (float)pCount[i][0];
-		  vertices[0][i].pos.y = (float)pCount[i][1];
-		  vertices[0][i].pos.z = (float)pCount[i][2];*/
+		vertices[0][i].pos.x = (float)pCount[i][0];
+		vertices[0][i].pos.y = (float)pCount[i][1];
+		vertices[0][i].pos.z = (float)pCount[i][2];
 
-		// グローバルトランスフォームを掛ける
-		DirectX::XMMATRIX vertexMat = DirectX::XMMatrixTranslation((float)pCount[i][0], (float)pCount[i][1], (float)pCount[i][2]);
-		vertexMat *= meshNode->globalTransform;
+		//// グローバルトランスフォームを掛ける
+		//DirectX::XMMATRIX vertexMat = DirectX::XMMatrixTranslation((float)pCount[i][0], (float)pCount[i][1], (float)pCount[i][2]);
+		//vertexMat *= meshNode->globalTransform;
 
-		vertices[0][i].pos.x = vertexMat.r[3].m128_f32[0];
-		vertices[0][i].pos.y = vertexMat.r[3].m128_f32[1];
-		vertices[0][i].pos.z = vertexMat.r[3].m128_f32[2];
+		//vertices[0][i].pos.x = vertexMat.r[3].m128_f32[0];
+		//vertices[0][i].pos.y = vertexMat.r[3].m128_f32[1];
+		//vertices[0][i].pos.z = vertexMat.r[3].m128_f32[2];
 	}
 
 }

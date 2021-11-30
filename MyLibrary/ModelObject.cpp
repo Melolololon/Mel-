@@ -154,6 +154,8 @@ void ModelObject::MapConstData(const Camera* camera)
 {
 	ModelConstBufferData* constBufferData;
 
+
+
 	for (int i = 0; i < modelFileObjectNum; i++)
 	{
 #pragma region 基本的な情報のマップ
@@ -427,16 +429,23 @@ void ModelObject::MapConstData(const Camera* camera)
 		{
 			std::vector<ModelData::FbxBone> bones = pModelData->GetFbxBone();
 
-			for (int i = 0; i < boneNum; i++)
+			for (int j = 0; j < boneNum; j++)
 			{
 				//変換
 				DirectX::XMMATRIX matCurrentPose;
 				FbxAMatrix fbxCurrentPose =
-					bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationData.currentTime);
+					bones[j].fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationData.currentTime);
 				FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 				//乗算
-				skinConstData->bones[i] = bones[i].invInitialPose * matCurrentPose;
+				//skinConstData->bones[i] = bones[i].invInitialPose * matCurrentPose;
+				
+				DirectX::XMMATRIX meshGlobalTransform = pModelData->GetMeshGlobalTransform(i);
+				skinConstData->bones[i] =
+					meshGlobalTransform *
+					bones[i].invInitialPose *
+					matCurrentPose *
+					DirectX::XMMatrixInverse(nullptr, meshGlobalTransform);
 
 			}
 		}

@@ -173,6 +173,8 @@ namespace MelLib
 
 		std::vector<std::vector<USHORT>> indices;
 
+		std::vector<DirectX::XMMATRIX>meshGlobalTransform;
+
 		UINT boneNum = 0;
 
 		ObjBone objData;
@@ -338,6 +340,8 @@ namespace MelLib
 		ID3D12DescriptorHeap* GetTextureDesctiptorHeap()const { return textureDescHeap.Get(); }
 
 		void GetAnimationTimeData(const std::string& name, FbxTime& start, FbxTime& end);
+
+		DirectX::XMMATRIX GetMeshGlobalTransform(const size_t index)const { return meshGlobalTransform[index]; }
 #pragma region fbxŠÖŒW
 
 
