@@ -646,9 +646,9 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 #pragma region アニメーション関係準備
 		if (fbxData.bones.size() != 0)
 		{
-
+			// これをModelObject側に移動させる
 			
-			FbxAnimStack* animStack = fbxData.fbxScene->GetSrcObject<FbxAnimStack>(0);
+			FbxAnimStack* animStack = fbxData.fbxScene->GetSrcObject<FbxAnimStack>(10);
 			const char* animStackname = animStack->GetName();
 			std::string animStacknameS = animStack->GetName();
 			FbxTakeInfo* takeInfo = fbxData.fbxScene->GetTakeInfo(animStackname);

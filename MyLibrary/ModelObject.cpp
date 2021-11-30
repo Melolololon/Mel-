@@ -1637,8 +1637,10 @@ void ModelObject::ResetAnimation()
 void ModelObject::SetCurrentFream(const UINT fream)
 {
 	FbxTime setTime = fbxAnimationData.animationTimes.startTime * fream;
-	if (setTime > fbxAnimationData.animationTimes.endTime)
+	
+	if (setTime > fbxAnimationData.animationTimes.endTime) {
 		setTime = fbxAnimationData.animationTimes.endTime;
+	}
 
 	fbxAnimationData.currentTime = setTime;
 }

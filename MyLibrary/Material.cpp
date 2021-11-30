@@ -266,8 +266,8 @@ void MelLib::PBRMaterial::Create(const DrawData& drawData)
 	ShaderDataSet set =
 	{
 		{ L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" },
-		{ L"LIB","","" },
-		{ L"LIB","","" },
+		{ L"NULL","","" },
+		{ L"NULL","","" },
 		{ L"../MyLibrary/FbxGeometryShader.hlsl","main","gs_5_0" },
 		{ L"../MyLibrary/PBRPixelShader.hlsl","main","ps_5_0" }
 	};
