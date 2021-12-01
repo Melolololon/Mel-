@@ -1735,10 +1735,13 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	}
 	modelConstBuffer[0]->Unmap(0, nullptr);
 
-	fbxAnimationData.animationTimes.frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 
-	// 0番目のアニメーションの時間をセット
-	pModelData->GetAnimationTimeData(0, fbxAnimationData.animationTimes.startTime, fbxAnimationData.animationTimes.endTime);
+	if (pModelData->GetBoneNumber() != 0 && pModelData->GetModelFormat() == MelLib::ModelData::ModelFormat::MODEL_FORMAT_FBX) {
+		fbxAnimationData.animationTimes.frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+
+		// 0番目のアニメーションの時間をセット
+		pModelData->GetAnimationTimeData(0, fbxAnimationData.animationTimes.startTime, fbxAnimationData.animationTimes.endTime);
+	}
 #pragma endregion
 
 
