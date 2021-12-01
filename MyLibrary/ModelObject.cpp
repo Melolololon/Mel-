@@ -440,14 +440,16 @@ void ModelObject::MapConstData(const Camera* camera)
 				FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 				//æŽZ
-				//skinConstData->bones[i] = bones[i].invInitialPose * matCurrentPose;
+				//skinConstData->bones[j] = bones[j].invInitialPose * matCurrentPose;
 				
 				DirectX::XMMATRIX meshGlobalTransform = pModelData->GetMeshGlobalTransform(i);
+				DirectX::XMMATRIX invMeshGlobalTransform = DirectX::XMMatrixInverse(nullptr, meshGlobalTransform);
+				
 				skinConstData->bones[j] =
 					meshGlobalTransform *
 					bones[j].invInitialPose *
 					matCurrentPose *
-					DirectX::XMMatrixInverse(nullptr, meshGlobalTransform);
+					invMeshGlobalTransform;
 
 			}
 		}

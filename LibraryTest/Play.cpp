@@ -261,9 +261,9 @@ void Play::ParticleTestDraw()
 MelLib::ModelObject aniTest;
 void Play::AniTestInitialize(){
 
-	MelLib::ModelData::Load("Resources/boneTest/boneTest.fbx", false, "test");
+	//MelLib::ModelData::Load("Resources/boneTest/boneTest.fbx", false, "test");
 	//MelLib::ModelData::Load("Resources/ani_test.fbx", false, "test");
-	//bool res = MelLib::ModelData::Load("Resources/Player_Test.fbx", false, "test");
+	bool res = MelLib::ModelData::Load("Resources/Player_Test.fbx", false, "test");
 	//bool res = MelLib::ModelData::Load("Resources/Player_Test_Low.fbx", false, "test");
 	//bool res = MelLib::ModelData::Load("Resources/testBox.fbx", false, "test");
 	//bool res = MelLib::ModelData::Load("Resources/test.obj", false, "test");
@@ -276,10 +276,14 @@ void Play::AniTestInitialize(){
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, -3));
 
 	aniTest.SetAnimationPlayFlag(true);
-	//aniTest.SetAnimation("Dash");
 }
 
 void Play::AniTestUpdate(){
+
+	if (MelLib::Input::KeyState(DIK_1))aniTest.SetAnimation("Yaki");
+	if (MelLib::Input::KeyState(DIK_2))aniTest.SetAnimation("No_Cont");
+	if (MelLib::Input::KeyState(DIK_3))aniTest.SetAnimation("Work");
+	if (MelLib::Input::KeyState(DIK_4))aniTest.SetAnimation("Dash");
 
 	if (MelLib::Input::KeyState(DIK_A)) {
 
