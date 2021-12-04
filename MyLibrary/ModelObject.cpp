@@ -229,6 +229,13 @@ void ModelObject::MapConstData(const Camera* camera)
 
 #pragma endregion
 
+
+	}
+
+
+	std::vector<DirectX::XMMATRIX>meshGlobalTransforms = pModelData->GetMeshGlobalTransforms();
+	for (int i = 0; i < modelFileObjectNum; i++)
+	{
 #pragma region ボーンのマップ
 
 		int boneNum = pModelData->GetBoneNumber();
@@ -441,10 +448,11 @@ void ModelObject::MapConstData(const Camera* camera)
 
 				//乗算
 				//skinConstData->bones[j] = bones[j].invInitialPose * matCurrentPose;
-				
-				DirectX::XMMATRIX meshGlobalTransform = pModelData->GetMeshGlobalTransform(i);
+
+				//DirectX::XMMATRIX meshGlobalTransform = pModelData->GetMeshGlobalTransform(i);
+				DirectX::XMMATRIX meshGlobalTransform = meshGlobalTransforms[i];
 				DirectX::XMMATRIX invMeshGlobalTransform = DirectX::XMMatrixInverse(nullptr, meshGlobalTransform);
-				
+
 				skinConstData->bones[j] =
 					meshGlobalTransform *
 					bones[j].invInitialPose *
@@ -458,7 +466,6 @@ void ModelObject::MapConstData(const Camera* camera)
 #pragma endregion
 
 	}
-
 
 }
 
@@ -1662,6 +1669,8 @@ void ModelObject::SetCurrentFream(const UINT fream)
 
 void ModelObject::FbxAnimation()
 {
+	// こいつDrawで呼ばないようにする
+
 	if (!isAnimation)return;
 
 
@@ -1807,6 +1816,32 @@ std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData
 	}
 
 	return result;
+}
+
+Vector3 MelLib::ModelObject::RotPositionBone(const Vector3& pos, const std::string& boneName, const std::string& meshName)
+{
+	DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+	ModelData::FbxBone bone = pModelData->GetFbxBone(boneName);
+
+	// 取得と変換
+	DirectX::XMMATRIX matCurrentPose;
+	FbxAMatrix fbxCurrentPose =
+		bone.fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationData.currentTime);
+	FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+
+	// 乗算
+	DirectX::XMMATRIX meshGlobalTransform = pModelData->GetMeshGlobalTransform(meshName);
+	DirectX::XMMATRIX invMeshGlobalTransform = DirectX::XMMatrixInverse(nullptr, meshGlobalTransform);
+
+	posMat *=
+		meshGlobalTransform *
+		bone.invInitialPose *
+		matCurrentPose *
+		invMeshGlobalTransform;
+
+
+	return MelLib::Vector3(posMat.r[3].m128_f32[0], posMat.r[3].m128_f32[1], posMat.r[3].m128_f32[2]);
+
 }
 
 

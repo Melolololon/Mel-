@@ -261,6 +261,14 @@ namespace MelLib
 		std::vector<std::vector<TriangleData>>GetModelTriangleData()const;
 #pragma endregion
 
+		/// <summary>
+		/// 指定したボーンとメッシュの行列を渡した座標に乗算して返します。
+		/// </summary>
+		/// <param name="pos">座標</param>
+		/// <param name="boneName">ボーン名</param>
+		/// <param name="meshName">メッシュ名</param>
+		/// <returns>行列乗算後の座標</returns>
+		Vector3 RotPositionBone(const Vector3& pos, const std::string& boneName,const std::string& meshName);
 
 	};
 }

@@ -435,6 +435,29 @@ void MelLib::ModelData::GetAnimationTimeData(const std::string& name, FbxTime& s
 	end = takeInfo->mLocalTimeSpan.GetStop();
 }
 
+std::vector<DirectX::XMMATRIX> MelLib::ModelData::GetMeshGlobalTransforms()
+{
+	std::vector<DirectX::XMMATRIX> mats(meshGlobalTransform.size());
+	
+	int i = 0;
+	for(auto& mat : meshGlobalTransform)
+	{
+		mats[i] = mat.second;
+	}
+	return mats;
+
+
+}
+
+const MelLib::ModelData::FbxBone& MelLib::ModelData::GetFbxBone(const std::string& name) const
+{
+	for (int i = 0; i < boneNum; i++)
+	{
+		if (fbxData.bones[i].boneName == name)return fbxData.bones[i];
+	}
+	return FbxBone(name);
+}
+
 void MelLib::ModelData::SetFbxAnimStack(const std::string& name)
 {
 	FbxAnimStack* stack = fbxData.fbxScene->GetSrcObject<FbxAnimStack>(fbxData.animStackNum[name]);

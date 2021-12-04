@@ -3,6 +3,7 @@
 #include<memory>
 #include<vector>
 #include<array>
+#include<map>
 
 #include<DirectXMath.h>
 #include<d3d12.h>
@@ -39,7 +40,10 @@ namespace MelLib
 		DirectX::XMVECTOR rotation = { 1,1,1,0 };
 		DirectX::XMVECTOR translation = { 1,1,1,0 };
 
+		// 上3つを組み安房得たやつ
 		DirectX::XMMATRIX transform;
+
+		// 親ノードの行列も乗算したやつ
 		DirectX::XMMATRIX globalTransform;
 
 		Node* parentNode;
@@ -71,6 +75,8 @@ namespace MelLib
 			std::string boneName;
 			//初期姿勢の逆行列
 			DirectX::XMMATRIX invInitialPose;
+
+
 			//ボーン情報
 			FbxCluster* fbxCluster;
 
@@ -113,7 +119,8 @@ namespace MelLib
 			//メッシュを持つノード
 			Node* meshNode = nullptr;
 
-			std::unordered_map<std::string, FbxBone>bones_u;
+			// mapなら順番保持されるからそっちにしてもいいかも
+			//std::unordered_map<std::string, FbxBone>bones_u;
 			std::vector<FbxBone>bones;
 
 			//FbxAnimationTimes animationTimes;
@@ -176,7 +183,9 @@ namespace MelLib
 
 		std::vector<std::vector<USHORT>> indices;
 
-		std::vector<DirectX::XMMATRIX>meshGlobalTransform;
+		// 複数メッシュに対応させる場合、これ順序保持できるmapにして、名前でこの行列とれるようにする(座標回転関数で名前指定して使用するため)
+		// メッシュのグローバルトランスフォーム行列の配列)
+		std::map<std::string, DirectX::XMMATRIX>meshGlobalTransform;
 
 		UINT boneNum = 0;
 
@@ -345,11 +354,20 @@ namespace MelLib
 		void GetAnimationTimeData(int index, FbxTime& start, FbxTime& end);
 		void GetAnimationTimeData(const std::string& name, FbxTime& start, FbxTime& end);
 
-		DirectX::XMMATRIX GetMeshGlobalTransform(const size_t index)const { return meshGlobalTransform[index]; }
+		DirectX::XMMATRIX GetMeshGlobalTransform(const std::string& name) { return meshGlobalTransform[name]; }
+		std::vector<DirectX::XMMATRIX>GetMeshGlobalTransforms();
+
 #pragma region fbx関係
 
 
 		const std::vector<FbxBone>& GetFbxBone() const { return fbxData.bones; }
+
+		/// <summary>
+		/// ボーンを取得します。
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		const FbxBone& GetFbxBone(const std::string& name)const;
 
 		/// <summary>
 		/// モデルのFbxAnimationTimesを返します。

@@ -163,7 +163,8 @@ void FbxLoader::ParseMesh(ModelData* fbxModel, FbxNode* node, Node* meshNode)
 {
 	FbxMesh* fbxMesh = node->GetMesh();
 
-	fbxModel->meshGlobalTransform.push_back(meshNode->globalTransform);
+	//fbxModel->meshGlobalTransform.push_back(meshNode->globalTransform);
+	fbxModel->meshGlobalTransform.emplace(meshNode->nodeName, meshNode->globalTransform);
 
 	ParseMeshVertices(fbxModel, fbxMesh);
 	ParseMeshFaces(fbxModel, fbxMesh);
@@ -522,7 +523,8 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 
 		//‹ts—ñ‚ðƒ{[ƒ“‚É“n‚·
 		bone.invInitialPose = DirectX::XMMatrixInverse(nullptr, initialPose);
-		//bone.invInitialPose = DirectX::XMMatrixInverse(nullptr,DirectX::XMMatrixIdentity());
+
+
 
 
 		int controlPointIndicesCount = fbxCluster->GetControlPointIndicesCount();
