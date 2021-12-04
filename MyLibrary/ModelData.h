@@ -113,6 +113,7 @@ namespace MelLib
 			//メッシュを持つノード
 			Node* meshNode = nullptr;
 
+			std::unordered_map<std::string, FbxBone>bones_u;
 			std::vector<FbxBone>bones;
 
 			//FbxAnimationTimes animationTimes;

@@ -71,6 +71,7 @@ namespace MelLib
 
 		FbxAnimationData fbxAnimationData;
 		bool isAnimation = false;
+		bool animationEndStop = false;
 #pragma endregion
 
 		//定数バッファ
@@ -199,6 +200,10 @@ namespace MelLib
 		void SetCurrentFream(const UINT fream);
 
 		void SetAnimationSpeedMagnification(const int magnification) { fbxAnimationData.timeMag = magnification; }
+
+		void SetAnimation(const std::string& name);
+
+		void SetAnimationEndStopFlag(const bool flag) { animationEndStop = flag; }
 #pragma endregion
 
 
@@ -207,7 +212,8 @@ namespace MelLib
 		void SetMaterial(Material* mtl, const UINT index);
 
 
-		void SetAnimation(const std::string& name);
+
+
 #pragma endregion
 
 #pragma region ゲット
@@ -229,7 +235,7 @@ namespace MelLib
 #pragma endregion
 #pragma endregion
 
-
+		std::string GetCurrentAnimationName()const { return fbxAnimationData.currentAnimationName; }
 
 		//コンピュートシェーダーで計算したほうがいい。
 		//できそうなら描画時に頂点シェーダーで計算した結果を持ってきたほうがいい?

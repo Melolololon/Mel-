@@ -506,6 +506,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 		const char* boneName = fbxCluster->GetLink()->GetName();
 
 		//ボーン追加
+
 		bones.emplace_back(ModelData::FbxBone(boneName));
 		ModelData::FbxBone& bone = bones.back();
 		//自作ボーンとfbxのボーンとの紐付け

@@ -1668,11 +1668,24 @@ void ModelObject::FbxAnimation()
 	//ƒ^ƒCƒ€‚ði‚ß‚é
 	fbxAnimationData.currentTime += fbxAnimationData.animationTimes.frameTime * fbxAnimationData.timeMag;
 
+	
 	if (fbxAnimationData.currentTime > fbxAnimationData.animationTimes.endTime) {
+		
+		if (animationEndStop) {
+			fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime;
+			return;
+		}
+
 		fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
 	}
 	else
 	if (fbxAnimationData.currentTime < fbxAnimationData.animationTimes.startTime) {
+		
+		if (animationEndStop) {
+			fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
+			return;
+		}
+
 		fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime;
 	}
 }
@@ -1799,8 +1812,11 @@ std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData
 
 void MelLib::ModelObject::SetAnimation(const std::string& name)
 {
+	if (fbxAnimationData.currentAnimationName == name)return;
+	fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
 	fbxAnimationData.currentAnimationName = name;
 	pModelData->GetAnimationTimeData(name, fbxAnimationData.animationTimes.startTime, fbxAnimationData.animationTimes.endTime);
+	
 
 	pModelData->SetFbxAnimStack(name);
 }
