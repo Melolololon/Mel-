@@ -166,20 +166,21 @@ void FbxLoader::ParseMesh(ModelData* fbxModel, FbxNode* node, Node* meshNode)
 	//fbxModel->meshGlobalTransform.push_back(meshNode->globalTransform);
 	fbxModel->meshGlobalTransform.emplace(meshNode->nodeName, meshNode->globalTransform);
 
-	ParseMeshVertices(fbxModel, fbxMesh);
-	ParseMeshFaces(fbxModel, fbxMesh);
-	ParseMaterial(fbxModel, node);
-	ParseSkin(fbxModel, fbxMesh);
+	std::string objectName = meshNode->nodeName;
+
+	ParseMeshVertices(fbxModel, fbxMesh, objectName);
+	ParseMeshFaces(fbxModel, fbxMesh, objectName);
+	ParseMaterial(fbxModel, node, objectName);
+	ParseSkin(fbxModel, fbxMesh, objectName);
 }
 
-void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh)
+void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, const std::string& name)
 {
 	//頂点数取得
 	const int vertexNum = fbxMesh->GetControlPointsCount();
 
 	auto& vertices = fbxModel->vertices;
-	vertices.resize(1);
-	vertices[0].resize(vertexNum);
+	vertices[name].resize(vertexNum);
 
 	//座標取得
 	FbxVector4* pCount = fbxMesh->GetControlPoints();
@@ -187,20 +188,19 @@ void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh)
 	for(int i = 0; i < vertexNum;i++)
 	{
 		// コピー
-		vertices[0][i].pos.x = (float)pCount[i][0];
-		vertices[0][i].pos.y = (float)pCount[i][1];
-		vertices[0][i].pos.z = (float)pCount[i][2];
+		vertices[name][i].pos.x = (float)pCount[i][0];
+		vertices[name][i].pos.y = (float)pCount[i][1];
+		vertices[name][i].pos.z = (float)pCount[i][2];
 
 	}
 
 }
 
-void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh)
+void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh, const std::string& name)
 {
 	auto& vertices = fbxModel->vertices;
 	auto& indicesVector = fbxModel->indices;
-	indicesVector.resize(1);
-	auto& indices = indicesVector[0];
+	auto& indices = indicesVector[name];
 
 	assert(indices.size() == 0);
 
@@ -232,9 +232,9 @@ void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh)
 			//GetPolygonVertexNormal(面番号,面の何個目の頂点か)
 			if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
 			{
-				vertices[0][index].normal.x = (float)normal[0];
-				vertices[0][index].normal.y = (float)normal[1];
-				vertices[0][index].normal.z = (float)normal[2];
+				vertices[name][index].normal.x = (float)normal[0];
+				vertices[name][index].normal.y = (float)normal[1];
+				vertices[name][index].normal.z = (float)normal[2];
 			}
 
 
@@ -246,8 +246,8 @@ void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh)
 
 				if (fbxMesh->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
 				{
-					vertices[0][index].uv.x = (float)uvs[0];
-					vertices[0][index].uv.y = (float)uvs[1];
+					vertices[name][index].uv.x = (float)uvs[0];
+					vertices[name][index].uv.y = (float)uvs[1];
 				}
 			}
 
@@ -267,16 +267,16 @@ void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh)
 	}
 }
 
-void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
+void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode, const std::string& name)
 {
 	//auto& materialVector = fbxModel->materials;
 	//materialVector.resize(1);
 	//MaterialData& modelMaterial = materialVector[0];
-	fbxModel->material.resize(1);
-	fbxModel->material[0] = std::make_unique<ADSAMaterial>();
-	fbxModel->material[0]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
-	fbxModel->pTexture.resize(1);
-	fbxModel->pTexture[0] = std::make_unique<Texture>();
+	fbxModel->material.reserve(1);
+	fbxModel->material[name] = std::make_unique<ADSAMaterial>();
+	fbxModel->material[name]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
+	fbxModel->pTexture.reserve(1);
+	fbxModel->pTexture[name] = std::make_unique<Texture>();
 
 	ADSAMaterialData mtl;
 
@@ -395,8 +395,8 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 					//ファイル名のみ記述されてた
 					
 					//fbxModel->material[0].SetLoadTexture(modelDirectryPath + name);
-					fbxModel->pTexture[0]->LoadModelTexture(modelDirectryPath + name);
-					fbxModel->material[0]->SetTexture(fbxModel->pTexture[0].get());
+					fbxModel->pTexture[name]->LoadModelTexture(modelDirectryPath + name);
+					fbxModel->material[name]->SetTexture(fbxModel->pTexture[0].get());
 
 
 					textureLoader = true;
@@ -418,50 +418,8 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode)
 	}
 }
 
-void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
+void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, const std::string& name)
 {
-	// ブレンダーで出力したスキニング情報付きfbxモデルが崩れる
-	// シェーダーでスキニング情報適応しなかったら崩れなかったので、この辺に問題がある可能性
-	// ボーンやアニメーションが多いと崩れる?テストモデルで試してみる
-	// スキニング情報の読み込む数を1つ1つ増やしていって確かめる?
-	
-	// ウェイト1にすると正常になるから、ウェイトか初期姿勢行列がおかしい?
-	// ウェイト0で原点に行ってしまう
-	// 全頂点のウェイトを0にしたら消えた(原点と重なった?)ので、強制的に単位行列掛けないといけない?
-	// ウェイト0だとシェーダーで行列に0掛けられて座標とか0になっちゃう?
-	// +=だから0にはならない
-
-	// 現状ボーンの行列が零行列だと頂点座標に0を掛けて計算されるため、スキニング情報ない場合は単位行列いれて反映させないといけない
-	// ということは、ウェイト0だと強制的に原点に移動してしまうのでは
-	
-	// pixで頂点情報見れない
-	// つまり、バグってる?だからちゃんと行列の結果が反映されない?
-	// バグってないモデルも見れなかった
-
-	// お腹の部分だけを出力してもバグった
-	// ボーンの行列を掛けなかったら普通に描画できた
-	// もしかして、出力設定が悪い?
-
-	// objだとバグらなかった
-	// fbxだと無理っぽい
-	// やっぱ設定?それとも読み込みのプログラム?
-
-	// ブレンダー側のピポット(オブジェクトの中心)がおかしくて狂ってたっぽい?
-	// 動かしたらお腹だけのモデルは崩れなくなった
-
-	// まだおかしい。スキニング情報掛けるとおかしくなる
-	// 変なところに座標変換の処理書いてたからそれの可能性あり
-
-	// なぜかジオメトリシェーダーで座標変換やってておかしかった
-
-	//まだおかしい。頂点シェーダーですでにおかしい
-
-	// メッシュノードに拡縮、回転、平行移動が含まれるとスキニングが正しく表示されなくなるらしい
-	// もしかしてこれ?
-
-	// これだった。メッシュのグローバルトランスフォーム行列をボーン行列計算時に掛けたら直った
-
-	
 
 
 	//スキニング情報取得
@@ -472,11 +430,11 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 	//スキニング情報がない場合return
 	if (!fbxSkin)
 	{
-		for(int i = 0; i < fbxModel->vertices[0].size();i++)
+		for(int i = 0; i < fbxModel->vertices[name].size();i++)
 		{
 			//最初のボーンの影響度を100%にする(単位行列の結果を反映させるため)
-			fbxModel->vertices[0][i].boneIndex[0] = 0;
-			fbxModel->vertices[0][i].boneWeight[0] = 1.0f;
+			fbxModel->vertices[name][i].boneIndex[0] = 0;
+			fbxModel->vertices[name][i].boneWeight[0] = 1.0f;
 		}
 		return;
 	}
@@ -541,7 +499,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 
 
 	auto& vertices = fbxModel->vertices;
-	for(int i = 0; i < vertices[0].size();i++)
+	for(int i = 0; i < vertices[name].size();i++)
 	{
 		auto& weightList = weightLists[i];
 		weightList.sort
@@ -555,8 +513,8 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 		int weightArrayIndex = 0;
 		for(auto& weightSet: weightList)
 		{
-			vertices[0][i].boneIndex[weightArrayIndex] = weightSet.index;
-			vertices[0][i].boneWeight[weightArrayIndex] = weightSet.weight;
+			vertices[name][i].boneIndex[weightArrayIndex] = weightSet.index;
+			vertices[name][i].boneWeight[weightArrayIndex] = weightSet.weight;
 			
 
 			if(++weightArrayIndex >= FbxVertex::MAX_BONE_INDICES)
@@ -564,10 +522,10 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh)
 				float weight = 0.0f;
 
 				for (int j = 1; j < FbxVertex::MAX_BONE_INDICES; j++) {
-					weight += vertices[0][i].boneWeight[j];
+					weight += vertices[name][i].boneWeight[j];
 				}
 
-				vertices[0][i].boneWeight[0] = 1.0f - weight;
+				vertices[name][i].boneWeight[0] = 1.0f - weight;
 				break;
 				
 			}

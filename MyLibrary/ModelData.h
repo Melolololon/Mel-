@@ -148,11 +148,11 @@ namespace MelLib
 #pragma region バッファ_ヒープ
 
 		//頂点
-		std::vector<VertexBufferSet> vertexBufferSet;
+		std::unordered_map<std::string, VertexBufferSet> vertexBufferSet;
 		//インデックス
-		std::vector <IndexBufferSet> indexBufferSet;
+		std::unordered_map <std::string, IndexBufferSet> indexBufferSet;
 		ComPtr<ID3D12DescriptorHeap>textureDescHeap;
-		std::vector<ComPtr<ID3D12Resource>> textureBuffers;
+		std::unordered_map<std::string, ComPtr<ID3D12Resource>> textureBuffers;
 
 #pragma endregion
 
@@ -162,26 +162,29 @@ namespace MelLib
 #pragma region モデル情報
 		ModelFormat modelFormat = ModelFormat::MODEL_FORMAT_NONE;
 
-		//モデル名
+		// モデル名
 		std::string modelName;
 
+		// モデルファイルのオブジェクト名一覧
+		std::vector<std::string>objectNames;
+
 		//マテリアルにセットするテクスチャ
-		std::vector<std::unique_ptr<Texture>>pTexture;
+		std::unordered_map<std::string, std::unique_ptr<Texture>>pTexture;
 		//マテリアル
-		std::vector<std::unique_ptr<ADSAMaterial>> material;
+		std::unordered_map<std::string, std::unique_ptr<ADSAMaterial>> material;
 
 		//テクスチャを使わない場合の色
 		Color color;
 
 		//モデルファイルに何個モデルがあるか
 		UINT modelFileObjectNum = 1;
-		std::vector<std::vector<FbxVertex>>vertices;
+		std::unordered_map<std::string, std::vector<FbxVertex>>vertices;
 		//スムーズシェーディング用法線
-		std::vector<std::vector<DirectX::XMFLOAT3>> smoothNormal;
+		std::unordered_map<std::string, std::vector<DirectX::XMFLOAT3>> smoothNormal;
 		//上下左右前後の最高(最低)座標の値(上下左右前後の順に格納)
-		std::vector<std::array<float, 6>>directionMaxPos;
+		std::unordered_map < std::string, std::array<float, 6>>directionMaxPos;
 
-		std::vector<std::vector<USHORT>> indices;
+		std::unordered_map<std::string, std::vector<USHORT>> indices;
 
 		// 複数メッシュに対応させる場合、これ順序保持できるmapにして、名前でこの行列とれるようにする(座標回転関数で名前指定して使用するため)
 		// メッシュのグローバルトランスフォーム行列の配列)
@@ -204,11 +207,11 @@ namespace MelLib
 		void CreateVertexBufferSet
 		(
 			const size_t vertexSize,
-			const  std::vector<size_t>& vertexNum
+			const std::unordered_map < std::string, size_t>& vertexNum
 		);
 
-		void MapVertices(void** data, const int bufferNum);
-		void UnmapVertices(const int bufferNum);
+		void MapVertices(void** data, const std::string& name);
+		void UnmapVertices(const std::string& name);
 #pragma endregion
 
 #pragma region インデックス
@@ -220,15 +223,17 @@ namespace MelLib
 		/// <param name="indices"></param>
 		void CreateIndexBufferSet
 		(
-			const std::vector<std::vector<USHORT>>& indices
+			const std::unordered_map<std::string, std::vector<USHORT>>& indices
 		);
 
-		void MapIndices(const std::vector<std::vector<USHORT>>& indices);
+		void MapIndices(const std::unordered_map<std::string, std::vector<USHORT>>& indices);
 #pragma endregion
 
 
 
 		static void CreatePrimitiveModel();
+
+		// ライブラリ実装のプリミティブモデルの法線計算関数
 		static void CalcPrimitiveModelNormal(std::vector<FbxVertex>& vertices,const std::vector<USHORT>& indices);
 		
 		void CreateModel();
@@ -251,21 +256,22 @@ namespace MelLib
 		void BufferPreparationSetTexture
 		(
 			const size_t vertexSize,
-			const std::vector<size_t>& vertexNum,
-			const std::vector<std::vector<USHORT>>& indices
+			const std::unordered_map < std::string, size_t>& vertexNum,
+			const std::unordered_map < std::string, std::vector<USHORT>>& indices
 		);
 
 		void BufferPreparationSetColor
 		(
 			const size_t vertexSize,
-			const  std::vector<size_t>& vertexNum,
-			const std::vector<std::vector<USHORT>>& indices
+			const std::unordered_map < std::string, size_t>& vertexNum,
+			const std::unordered_map < std::string, std::vector<USHORT>>& indices
 		);
 
 
-		static std::vector<std::array<float, 6>>CalcDirectionMaxPosition
+		static std::unordered_map < std::string, std::array<float, 6>>CalcDirectionMaxPosition
 		(
-			std::vector<std::vector<FbxVertex>>vertices
+			const std::unordered_map < std::string, std::vector<FbxVertex>>& vertices,
+			const std::vector<std::string>& objectNames
 		);
 	public:
 
@@ -284,9 +290,33 @@ namespace MelLib
 		/// <param name="batchDeletionFlag"></param>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		static bool Create(std::vector<std::vector<FbxVertex>>vertices, std::vector<std::vector<USHORT>>indices, const bool batchDeletionFlag, const std::string& name);
+		static bool Create
+		(
+			const std::unordered_map < std::string, std::vector<FbxVertex>>&vertices, 
+			const std::unordered_map < std::string, std::vector<USHORT>>& indices, 
+			const bool batchDeletionFlag, 
+			const std::string& name
+		);
+		
+		static bool Create
+		(
+			const std::vector< std::vector<FbxVertex>>& vertices, 
+			const std::vector< std::vector<USHORT>>&indices, 
+			const bool batchDeletionFlag, 
+			const std::string& name
+		);
 
-		void Create(std::vector<std::vector<FbxVertex>>vertices, std::vector<std::vector<USHORT>>indices);
+		void Create
+		(
+			const std::unordered_map < std::string, std::vector<FbxVertex>>& vertices,
+			const std::unordered_map < std::string, std::vector<USHORT>>& indices
+		);
+
+		void Create
+		(
+			const std::vector<std::vector<FbxVertex>>& vertices,
+			const std::vector<std::vector<USHORT>>& indices
+		);
 
 		/// <summary>
 		/// モデルを読み込みます。
@@ -393,6 +423,13 @@ namespace MelLib
 #pragma endregion
 
 #pragma region ゲット
+
+		/// <summary>
+		/// モデルに含まれているオブジェクト名を取得します。
+		/// </summary>
+		/// <returns></returns>
+		std::vector<std::string>GetObjectNames()const { return objectNames; }
+
 		/// <summary>
 		/// モデルのフォーマットを取得します。
 		/// </summary>

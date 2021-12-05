@@ -20,6 +20,9 @@ namespace MelLib
 {
 	class FbxLoader final
 	{
+		// インデックスでマテリアルとか取得するから、ロード数とかカウントするようにしたほうがいいかも
+
+
 	private:
 		FbxLoader();
 		~FbxLoader();
@@ -53,28 +56,28 @@ namespace MelLib
 		/// </summary>
 		/// <param name="model">モデル</param>
 		/// <param name="fbxMesh">メッシュ</param>
-		void ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh);
+		void ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh,const std::string& name);
 
 		/// <summary>
 		/// 面情報(インデックス、UV、法線)読み取り
 		/// </summary>
 		/// <param name="model">モデル</param>
 		/// <param name="fbxMesh">メッシュ</param>
-		void ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh);
+		void ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh, const std::string& name);
 
 		/// <summary>
 		/// マテリアル読み取り
 		/// </summary>
 		/// <param name="model">モデル</param>
 		/// <param name="fbxNode">ノード</param>
-		void ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode);
+		void ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode, const std::string& name);
 
 		/// <summary>
 		/// スキニング情報読み取り
 		/// </summary>
 		/// <param name="model"></param>
 		/// <param name="fbxMesh"></param>
-		void ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh);
+		void ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, const std::string& name);
 
 
 
