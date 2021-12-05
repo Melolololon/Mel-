@@ -50,7 +50,7 @@ void ModelObject::CreateConstBuffer()
 	{
 		userConstBuffer.resize(modelFileObjectNum);
 	}
-
+	
 #pragma endregion
 
 
