@@ -199,13 +199,16 @@ void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, Node* m
 		vertices[name][i].pos.y = (float)pCount[i][1];
 		vertices[name][i].pos.z = (float)pCount[i][2];
 
-		DirectX::XMFLOAT3 pos = vertices[name][i].pos;
+
+		// これはここじゃなくてMapするときに掛けること
+		// そうしないとスキンアニメーションバグる
+	/*	DirectX::XMFLOAT3 pos = vertices[name][i].pos;
 		DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 		posMat *= meshNode->transform;
-		
+
 		vertices[name][i].pos.x = posMat.r[3].m128_f32[0];
 		vertices[name][i].pos.y = posMat.r[3].m128_f32[1];
-		vertices[name][i].pos.z = posMat.r[3].m128_f32[2];
+		vertices[name][i].pos.z = posMat.r[3].m128_f32[2];*/
 	}
 
 }

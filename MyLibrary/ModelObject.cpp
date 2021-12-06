@@ -443,7 +443,7 @@ void ModelObject::MapConstData(const Camera* camera)
 				//•ÏŠ·
 				DirectX::XMMATRIX matCurrentPose;
 				FbxAMatrix fbxCurrentPose =
-					bones[j].fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationData.currentTime);
+					bones[j].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
 				FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 				//æZ

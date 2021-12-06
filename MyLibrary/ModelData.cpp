@@ -506,10 +506,10 @@ std::vector<DirectX::XMMATRIX> MelLib::ModelData::GetMeshGlobalTransforms()
 {
 	std::vector<DirectX::XMMATRIX> mats(meshGlobalTransform.size());
 	
-	int i = 0;
-	for(auto& mat : meshGlobalTransform)
+	for (int i = 0; i < objectNames.size(); i++)
 	{
-		mats[i] = mat.second;
+		mats[i] = meshGlobalTransform[objectNames[i]];
+	
 	}
 	return mats;
 
