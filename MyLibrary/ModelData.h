@@ -203,6 +203,7 @@ namespace MelLib
 		// 例 球「Collision_Sphere_Main」
 		// 例 カプセル「Collision_Capsule_Sword_01」「Collision_Capsule_Sword_02」これでカプセル1個分
 		
+		// ModelObjectで移動とかしたらこいつらも動かす
 		// 描画もできるようにする
 		
 		std::unordered_map<std::string, SphereData>sphereDatas;

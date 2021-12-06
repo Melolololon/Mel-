@@ -175,13 +175,13 @@ void FbxLoader::ParseMesh(ModelData* fbxModel, FbxNode* node, Node* meshNode)
 		fbxModel->AddLoadCollisionData(objectName);
 	}
 
-	ParseMeshVertices(fbxModel, fbxMesh, objectName);
+	ParseMeshVertices(fbxModel, fbxMesh, meshNode, objectName);
 	ParseMeshFaces(fbxModel, fbxMesh, objectName);
 	ParseMaterial(fbxModel, node, objectName);
 	ParseSkin(fbxModel, fbxMesh, objectName);
 }
 
-void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, const std::string& name)
+void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, Node* meshNode, const std::string& name)
 {
 	//’¸“_”Žæ“¾
 	const int vertexNum = fbxMesh->GetControlPointsCount();
@@ -199,6 +199,13 @@ void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, const s
 		vertices[name][i].pos.y = (float)pCount[i][1];
 		vertices[name][i].pos.z = (float)pCount[i][2];
 
+		DirectX::XMFLOAT3 pos = vertices[name][i].pos;
+		DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+		posMat *= meshNode->transform;
+		
+		vertices[name][i].pos.x = posMat.r[3].m128_f32[0];
+		vertices[name][i].pos.y = posMat.r[3].m128_f32[1];
+		vertices[name][i].pos.z = posMat.r[3].m128_f32[2];
 	}
 
 }

@@ -1047,7 +1047,6 @@ void MelLib::ModelData::AddLoadCollisionData(const std::string& modelName)
 		DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
 		posMat *= meshNode.parentNode->globalTransform;
 
-		// メッシュのノードあたりから持ってくる?
 		data.SetPosition(Vector3(posMat.r[3].m128_f32[0], posMat.r[3].m128_f32[1], posMat.r[3].m128_f32[2]));
 		data.SetRadius(meshNode.scaling.m128_f32[0]);
 
