@@ -361,19 +361,19 @@ namespace MelLib
 		/// インデックスを取得。
 		/// </summary>
 		/// <returns></returns>
-		const std::vector<std::vector<USHORT>>& GetIndices()const { return indices; }
+		std::vector<std::vector<USHORT>> GetIndices()const;
 
 		/// <summary>
 		/// 頂点バッファを取得。
 		/// </summary>
 		/// <returns></returns>
-		const std::vector<VertexBufferSet>& GetVertexBufferSet()const { return vertexBufferSet; }
+		std::vector<VertexBufferSet> GetVertexBufferSet()const;
 
 		/// <summary>
 		/// インデックスバッファの取得。
 		/// </summary>
 		/// <returns></returns>
-		const std::vector<IndexBufferSet>& GetIndexBufferSet()const { return indexBufferSet; }
+		std::vector<IndexBufferSet> GetIndexBufferSet()const;
 
 		/// <summary>
 		/// ディスクリプタヒープの取得。
@@ -461,13 +461,13 @@ namespace MelLib
 		/// 上下左右前後の最高値を取得します。
 		/// </summary>
 		/// <returns></returns>
-		std::vector<std::array<float, 6>>GetDirectionMaxPosition() const{ return directionMaxPos; }
+		std::vector<std::array<float, 6>>GetDirectionMaxPosition() const;
 
 		/// <summary>
 		/// 頂点を取得します。
 		/// </summary>
 		/// <returns></returns>
-		std::vector<std::vector<FbxVertex>>GetVertices()const { return vertices; }
+		std::vector<std::vector<FbxVertex>>GetVertices()const;
 
 		/// <summary>
 		/// 頂点座標を取得します。

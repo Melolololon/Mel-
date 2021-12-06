@@ -167,6 +167,7 @@ void FbxLoader::ParseMesh(ModelData* fbxModel, FbxNode* node, Node* meshNode)
 	fbxModel->meshGlobalTransform.emplace(meshNode->nodeName, meshNode->globalTransform);
 
 	std::string objectName = meshNode->nodeName;
+	fbxModel->objectNames.push_back(objectName);
 
 	ParseMeshVertices(fbxModel, fbxMesh, objectName);
 	ParseMeshFaces(fbxModel, fbxMesh, objectName);
@@ -452,7 +453,7 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, const std::stri
 		UINT index;
 		float weight;
 	};
-	std::vector<std::list<WeightSet>>weightLists(fbxModel->vertices[0].size());
+	std::vector<std::list<WeightSet>>weightLists(fbxModel->vertices[name].size());
 
 
 	for(int i = 0; i < clusterCount;i++)

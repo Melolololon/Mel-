@@ -516,6 +516,7 @@ std::vector<DirectX::XMMATRIX> MelLib::ModelData::GetMeshGlobalTransforms()
 
 }
 
+
 const MelLib::ModelData::FbxBone& MelLib::ModelData::GetFbxBone(const std::string& name) const
 {
 	for (int i = 0; i < boneNum; i++)
@@ -523,6 +524,38 @@ const MelLib::ModelData::FbxBone& MelLib::ModelData::GetFbxBone(const std::strin
 		if (fbxData.bones[i].boneName == name)return fbxData.bones[i];
 	}
 	return FbxBone(name);
+}
+
+std::vector<std::vector<USHORT>> MelLib::ModelData::GetIndices() const
+{
+	std::vector<std::vector<USHORT>>index(objectNames.size());
+	
+	for (int i = 0; i < objectNames.size(); i++)
+	{
+		index[i] = indices.at(objectNames[i]);
+	}
+	return index;
+}
+
+std::vector<VertexBufferSet> MelLib::ModelData::GetVertexBufferSet()const
+{
+	std::vector<VertexBufferSet> set(objectNames.size());
+	
+	for (int i = 0; i < objectNames.size(); i++)
+	{
+		set[i] = vertexBufferSet.at(objectNames[i]);
+	}
+	return set;
+}
+
+std::vector<IndexBufferSet> MelLib::ModelData::GetIndexBufferSet()const
+{
+	std::vector<IndexBufferSet>set(objectNames.size());
+	for (int i = 0; i < objectNames.size(); i++)
+	{
+		set[i] = indexBufferSet.at(objectNames[i]);
+	}
+	return set;
 }
 
 void MelLib::ModelData::SetFbxAnimStack(const std::string& name)
@@ -920,6 +953,26 @@ std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 
 	return pMtls;
 
+}
+
+std::vector<std::array<float, 6>> MelLib::ModelData::GetDirectionMaxPosition() const
+{
+	std::vector<std::array<float, 6>>pos(objectNames.size());
+	for (int i = 0; i < objectNames.size(); i++)
+	{
+		pos[i] = directionMaxPos.at(objectNames[i]);
+	}
+	return pos;
+}
+
+std::vector<std::vector<FbxVertex>>MelLib::ModelData::GetVertices()const
+{
+	std::vector<std::vector<FbxVertex>>pos(objectNames.size());
+	for (int i = 0; i < objectNames.size(); i++)
+	{
+		pos[i] = vertices.at(objectNames[i]);
+	}
+	return pos;
 }
 
 
