@@ -1023,6 +1023,44 @@ std::unordered_map < std::string, std::array<float, 6>> MelLib::ModelData::CalcD
 	return pos;
 }
 
+void MelLib::ModelData::AddLoadCollisionData(const std::string& modelName)
+{
+
+	auto copyKeyName = [&modelName](const int start,const int end)
+	{
+		std::string keyName;
+
+		// 10は、Collision_の文字数
+		keyName = modelName.substr(start + 10, modelName.size() - start - end);
+
+		return keyName;
+	};
+	
+
+	if(modelName.find("Sphere_") != std::string::npos)
+	{
+		SphereData data;
+
+		Node& meshNode = fbxData.nodes[modelName];
+
+		DirectX::XMVECTOR pos = meshNode.translation;
+		DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
+		posMat *= meshNode.parentNode->globalTransform;
+
+		// メッシュのノードあたりから持ってくる?
+		data.SetPosition(Vector3(posMat.r[3].m128_f32[0], posMat.r[3].m128_f32[1], posMat.r[3].m128_f32[2]));
+		data.SetRadius(meshNode.scaling.m128_f32[0]);
+
+		sphereDatas.emplace(copyKeyName(7, 0), data);
+	}
+	else
+		if(modelName.find("Box_") != std::string::npos)
+	{
+	}
+
+
+}
+
 MelLib::ModelData::ModelData(ModelData& data)
 {
 	Create(data.vertices, data.indices);

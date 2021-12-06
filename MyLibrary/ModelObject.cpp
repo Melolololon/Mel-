@@ -156,7 +156,7 @@ void ModelObject::MapConstData(const Camera* camera)
 
 
 
-	for (int i = 0; i < modelFileObjectNum; i++)
+	for (int i = 0; i < constBuffer.size(); i++)
 	{
 #pragma region 基本的な情報のマップ
 
@@ -234,7 +234,7 @@ void ModelObject::MapConstData(const Camera* camera)
 
 
 	std::vector<DirectX::XMMATRIX>meshGlobalTransforms = pModelData->GetMeshGlobalTransforms();
-	for (int i = 0; i < modelFileObjectNum; i++)
+	for (int i = 0; i < modelConstBuffer.size(); i++)
 	{
 #pragma region ボーンのマップ
 

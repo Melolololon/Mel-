@@ -84,8 +84,8 @@ void FbxLoader::ParseNodeRecursive
 {
 	using namespace DirectX;
 
-	fbxModel->fbxData.nodes.emplace_back();
-	Node& node = fbxModel->fbxData.nodes.back();
+	//fbxModel->fbxData.nodes.emplace(,);
+	Node& node = fbxModel->fbxData.nodes[fbxNode->GetName()];
 
 	node.nodeName = fbxNode->GetName();
 
@@ -168,6 +168,12 @@ void FbxLoader::ParseMesh(ModelData* fbxModel, FbxNode* node, Node* meshNode)
 
 	std::string objectName = meshNode->nodeName;
 	fbxModel->objectNames.push_back(objectName);
+
+	// ”»’èƒ‚ƒfƒ‹‚©Šm”F
+	if(objectName.find("Collision_") != std::string::npos)
+	{
+		fbxModel->AddLoadCollisionData(objectName);
+	}
 
 	ParseMeshVertices(fbxModel, fbxMesh, objectName);
 	ParseMeshFaces(fbxModel, fbxMesh, objectName);

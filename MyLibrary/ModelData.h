@@ -114,7 +114,7 @@ namespace MelLib
 			FbxScene* fbxScene = nullptr;
 
 			//モデルのノード
-			std::vector<Node>nodes;
+			std::unordered_map<std::string,Node>nodes;
 
 			//メッシュを持つノード
 			Node* meshNode = nullptr;
@@ -195,6 +195,25 @@ namespace MelLib
 		ObjBone objData;
 		FbxData fbxData;
 
+
+		// モデリングソフトから読み取った判定を格納
+#pragma region 読み取った判定情報
+		// オブジェクト名「Collision_形状名_判定名」だった場合、モデルを判定情報として読み取る
+		// 複数の座標を持つ判定(カプセルなど)は、上記の「」内の名前に加え、「_番号」を付ける
+		// 例 球「Collision_Sphere_Main」
+		// 例 カプセル「Collision_Capsule_Sword_01」「Collision_Capsule_Sword_02」これでカプセル1個分
+		
+		// 描画もできるようにする
+		
+		std::unordered_map<std::string, SphereData>sphereDatas;
+		std::unordered_map<std::string, BoxData>boxDatas;
+		std::unordered_map<std::string, Segment3DData>segmentDatas;
+		std::unordered_map<std::string, CapsuleData>capsuleDatas;
+		std::unordered_map<std::string, PlaneData>planeDatas;
+		std::unordered_map<std::string, BoardData>boardDatas;
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma region 頂点
@@ -230,6 +249,9 @@ namespace MelLib
 #pragma endregion
 
 
+
+
+		private:
 
 		static void CreatePrimitiveModel();
 
@@ -273,6 +295,12 @@ namespace MelLib
 			const std::unordered_map < std::string, std::vector<FbxVertex>>& vertices,
 			const std::vector<std::string>& objectNames
 		);
+
+		/// <summary>
+		/// モデルファイルから読み取った判定情報を追加する関数
+		/// </summary>
+		void AddLoadCollisionData(const std::string& objectName);
+
 	public:
 
 		ModelData() {}
