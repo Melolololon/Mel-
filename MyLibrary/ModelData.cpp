@@ -96,12 +96,13 @@ void MelLib::ModelData::CreatePrimitiveModel()
 	auto setData = [&pModelData, &vertices, &indices]()
 	{
 		const std::string PRIMITIVE_MODEL_NAME = "main";
+		pModelData->objectNames.resize(1, PRIMITIVE_MODEL_NAME);
 		pModelData->vertices.emplace(PRIMITIVE_MODEL_NAME,vertices);
 		pModelData->indices.emplace(PRIMITIVE_MODEL_NAME, indices);
 		pModelData->CreateModel();
 		pModelData->directionMaxPos = CalcDirectionMaxPosition(pModelData->vertices, std::vector<std::string>(1, PRIMITIVE_MODEL_NAME));
+		pModelData->meshGlobalTransform.emplace(PRIMITIVE_MODEL_NAME, DirectX::XMMatrixIdentity());
 		
-
 		/*pModelData->material.resize(1);
 		pModelData->material[0] = std::make_unique<ADSAMaterial>();
 		pModelData->material[0]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));*/
@@ -594,6 +595,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 			path,
 			true,
 			true,
+			objectNames,
 			vertices,
 			indices,
 			materialFileName,
@@ -791,7 +793,11 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 
 		modelFormat = ModelFormat::MODEL_FORMAT_OBJ;
 
-
+		// グローバルトランスフォーム行列は単位入れとく
+		for (const auto& objectName : objectNames)
+		{
+			meshGlobalTransform[objectName] = DirectX::XMMatrixIdentity();
+		}
 	}
 	else 
 	if (path.find(".fbx") != std::string::npos)

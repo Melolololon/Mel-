@@ -259,6 +259,7 @@ void Play::ParticleTestDraw()
 }
 
 MelLib::ModelObject aniTest;
+MelLib::ModelObject aniCollTest;
 void Play::AniTestInitialize(){
 
 	//MelLib::ModelData::Load("Resources/boneTest/boneTest.fbx", false, "test");
@@ -273,9 +274,18 @@ void Play::AniTestInitialize(){
 
 	aniTest.Create(MelLib::ModelData::Get("test"), nullptr);
 	aniTest.SetScale(0.2);
-	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, -3));
+	
 
 	aniTest.SetAnimationPlayFlag(true);
+
+	aniCollTest.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
+	aniCollTest.SetScale(0.3f);
+	aniCollTest.SetPosition(MelLib::Vector3(0.9, 2, 0.25));
+
+	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, 0));
+	MelLib::Camera::Get()->SetRotatePoint(MelLib::Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
+	MelLib::Camera::Get()->SetCameraToTargetDistance(5.0f);
+
 }
 
 void Play::AniTestUpdate(){
@@ -285,43 +295,51 @@ void Play::AniTestUpdate(){
 	if (MelLib::Input::KeyState(DIK_3))aniTest.SetAnimation("Work");
 	if (MelLib::Input::KeyState(DIK_4))aniTest.SetAnimation("Dash");
 
+	MelLib::Vector3 cameraAngle = MelLib::Camera::Get()->GetAngle();
 	if (MelLib::Input::KeyState(DIK_A)) {
-
-		aniTest.SetAngle(MelLib::Vector3(aniTest.GetAngle().x, aniTest.GetAngle().y + 3, 0));
-
+		cameraAngle.y += 3;
+		MelLib::Camera::Get()->SetAngle(cameraAngle);
 	}
 	if (MelLib::Input::KeyState(DIK_D)) {
 
-		aniTest.SetAngle(MelLib::Vector3(aniTest.GetAngle().x, aniTest.GetAngle().y - 3, 0));
+		cameraAngle.y -= 3;
+		MelLib::Camera::Get()->SetAngle(cameraAngle);
 
 	}
 
 
 	if (MelLib::Input::KeyState(DIK_W)) {
 
-		aniTest.SetAngle(MelLib::Vector3( aniTest.GetAngle().x + 3, aniTest.GetAngle().y,0));
+		cameraAngle.x += 3;
+		MelLib::Camera::Get()->SetAngle(cameraAngle);
 
 	}
 	if (MelLib::Input::KeyState(DIK_S)) {
 
-		aniTest.SetAngle(MelLib::Vector3(aniTest.GetAngle().x - 3, aniTest.GetAngle().y,0));
+		cameraAngle.x -= 3;
+		MelLib::Camera::Get()->SetAngle(cameraAngle);
 
 	}
 
-
+	MelLib::Vector3 cameraPos = MelLib::Camera::Get()->GetTargetPosition();
 	if (MelLib::Input::KeyState(DIK_UP)) {
 
-		aniTest.SetPosition(MelLib::Vector3(0, aniTest.GetPosition().y + 0.3, 0));
-
+		cameraPos.y += 0.1;
+		MelLib::Camera::Get()->SetRotateCriteriaPosition(cameraPos);
 	}
 	if (MelLib::Input::KeyState(DIK_DOWN)) {
 
-		aniTest.SetPosition(MelLib::Vector3(0, aniTest.GetPosition().y - 0.3, 0));
-
+		cameraPos.y -= 0.1;
+		MelLib::Camera::Get()->SetRotateCriteriaPosition(cameraPos);
 	}
+
+	MelLib::Vector3 calcPos = aniCollTest.GetPosition();
+	aniTest.CalcAnimationPosition(calcPos,"Bone_R.003","Body");
+	aniCollTest.SetPosition(calcPos);
 }
 
 void Play::AniTestDraw(){
+	aniCollTest.Draw();
 	aniTest.Draw();
 
 }

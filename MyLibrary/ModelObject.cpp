@@ -155,16 +155,19 @@ void ModelObject::MapConstData(const Camera* camera)
 	ModelConstBufferData* constBufferData;
 
 
+	std::vector<DirectX::XMMATRIX>meshGlobalTransforms = pModelData->GetMeshGlobalTransforms();
 
+	
 	for (int i = 0; i < constBuffer.size(); i++)
 	{
+		std::string objectName = objectNames[i];
 #pragma region 基本的な情報のマップ
 
 		constBuffer[i]->Map(0, nullptr, (void**)&constBufferData);
-		constBufferData->addColor = modelConstDatas[i].addColor;
-		constBufferData->subColor = modelConstDatas[i].subColor;
-		constBufferData->mulColor = modelConstDatas[i].mulColor;
-		constBufferData->ex = modelConstDatas[i].pushPolygonNum;
+		constBufferData->addColor = modelConstDatas[objectName].addColor;
+		constBufferData->subColor = modelConstDatas[objectName].subColor;
+		constBufferData->mulColor = modelConstDatas[objectName].mulColor;
+		constBufferData->ex = modelConstDatas[objectName].pushPolygonNum;
 
 		std::vector<DirectionalLight*> pLights = DirectionalLight::GetAll();
 		for (int i = 0, size = pLights.size(); i < size; i++)
@@ -189,23 +192,29 @@ void ModelObject::MapConstData(const Camera* camera)
 #pragma region 行列計算
 		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
 
+		// FBXモデルの場合、メッシュの行列を掛ける
+		if(pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_FBX)
+		{
+			matWorld *= meshGlobalTransforms[i];
+		}
+
 		matWorld *= DirectX::XMMatrixScaling
 		(
-			modelConstDatas[i].scale.x,
-			modelConstDatas[i].scale.y,
-			modelConstDatas[i].scale.z
+			modelConstDatas[objectName].scale.x,
+			modelConstDatas[objectName].scale.y,
+			modelConstDatas[objectName].scale.z
 		);
-		matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstDatas[i].angle.z));
-		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas[i].angle.x));
-		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas[i].angle.y));
+		matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstDatas[objectName].angle.z));
+		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas[objectName].angle.x));
+		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas[objectName].angle.y));
 
 		constBufferData->normalMat = matWorld;
 
 		matWorld *= DirectX::XMMatrixTranslation
 		(
-			modelConstDatas[i].position.x,
-			modelConstDatas[i].position.y,
-			modelConstDatas[i].position.z
+			modelConstDatas[objectName].position.x,
+			modelConstDatas[objectName].position.y,
+			modelConstDatas[objectName].position.z
 		);
 
 
@@ -233,9 +242,11 @@ void ModelObject::MapConstData(const Camera* camera)
 	}
 
 
-	std::vector<DirectX::XMMATRIX>meshGlobalTransforms = pModelData->GetMeshGlobalTransforms();
 	for (int i = 0; i < modelConstBuffer.size(); i++)
 	{
+
+		std::string objectName = objectNames[i];
+
 #pragma region ボーンのマップ
 
 		int boneNum = pModelData->GetBoneNumber();
@@ -290,9 +301,9 @@ void ModelObject::MapConstData(const Camera* camera)
 				//ボーン→行列の順番で掛けるからモデルの倍率が影響しちゃう
 				boneMat *= DirectX::XMMatrixTranslation
 				(
-					boneMoveVector.x / modelConstDatas[i].scale.x,
-					boneMoveVector.y / modelConstDatas[i].scale.y,
-					boneMoveVector.z / modelConstDatas[i].scale.z
+					boneMoveVector.x / modelConstDatas[objectName].scale.x,
+					boneMoveVector.y / modelConstDatas[objectName].scale.y,
+					boneMoveVector.z / modelConstDatas[objectName].scale.z
 				);
 
 				//回転させたら戻す
@@ -413,9 +424,9 @@ void ModelObject::MapConstData(const Camera* camera)
 					//modelConstDatas[i][0].scale に boneScale掛ける必要あるか要確認
 					mulMat *= DirectX::XMMatrixTranslation
 					(
-						pMoveVector.x / (modelConstDatas[i].scale.x * boneScale.x),
-						pMoveVector.y / (modelConstDatas[i].scale.y * boneScale.y),
-						pMoveVector.z / (modelConstDatas[i].scale.z * boneScale.z)
+						pMoveVector.x / (modelConstDatas[objectName].scale.x * boneScale.x),
+						pMoveVector.y / (modelConstDatas[objectName].scale.y * boneScale.y),
+						pMoveVector.z / (modelConstDatas[objectName].scale.z * boneScale.z)
 					);
 
 					//回転させたら戻す
@@ -492,12 +503,15 @@ void ModelObject::SetCmdList()
 	const std::vector<IndexBufferSet>& indexBufferSets = pModelData->GetIndexBufferSet();
 
 
+
 	//モデルのオブジェクトごとをセット
 	//頂点バッファ分ループ
 	for (int i = 0; i < modelFileObjectNum; i++)
 	{
+		std::string objectName = objectNames[i];
+
 		//cmdLists[0]->SetPipelineState(pPipeline[i]->GetPipelineState().Get());
-		cmdLists[0]->SetPipelineState(materials[i]->GetPPipelineState()->GetPipelineState().Get());
+		cmdLists[0]->SetPipelineState(materials[objectName]->GetPPipelineState()->GetPipelineState().Get());
 
 
 		cmdLists[0]->IASetVertexBuffers(0, 1, &vertexBufferSets[i].vertexBufferView);
@@ -505,7 +519,7 @@ void ModelObject::SetCmdList()
 
 #pragma region テクスチャ
 
-		ID3D12DescriptorHeap* textureDescHeap = materials[i]->GetPTextureHeap();
+		ID3D12DescriptorHeap* textureDescHeap = materials[objectName]->GetPTextureHeap();
 		std::vector<ID3D12DescriptorHeap*> ppHeaps;
 		ppHeaps.push_back(textureDescHeap);
 		cmdLists[0]->SetDescriptorHeaps(1, &ppHeaps[0]);
@@ -513,7 +527,7 @@ void ModelObject::SetCmdList()
 
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 		(
-			materials[i]->GetPTextureHeap()->GetGPUDescriptorHandleForHeapStart(),
+			materials[objectName]->GetPTextureHeap()->GetGPUDescriptorHandleForHeapStart(),
 			i,
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
@@ -529,11 +543,11 @@ void ModelObject::SetCmdList()
 
 		//マテリアルバッファ
 		cmdLists[0]->SetGraphicsRootConstantBufferView
-		(MATERIAL_BUFFER_REGISTER, materials[i]->GetPConstBuffer(Material::MaterialConstBufferType::MATERIAL_DATA)->GetGPUVirtualAddress());
+		(MATERIAL_BUFFER_REGISTER, materials[objectName]->GetPConstBuffer(Material::MaterialConstBufferType::MATERIAL_DATA)->GetGPUVirtualAddress());
 
 		//Colorマテリアル
 		cmdLists[0]->SetGraphicsRootConstantBufferView
-		(COLOR_MATERIAL_BUFFER_REGISTER, materials[i]->GetPConstBuffer(Material::MaterialConstBufferType::COLOR)->GetGPUVirtualAddress());
+		(COLOR_MATERIAL_BUFFER_REGISTER, materials[objectName]->GetPConstBuffer(Material::MaterialConstBufferType::COLOR)->GetGPUVirtualAddress());
 
 		//モデルバッファ
 		if (modelConstBufferData.bufferType == ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT)
@@ -1452,31 +1466,59 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 }
 
-void ModelObject::SetPosition(const Vector3& position)
+void ModelObject::SetPosition(const Vector3& position, const std::string& name)
 {
-	for (int i = 0; i < modelFileObjectNum; i++)
+	if(name == "")
 	{
-		modelConstDatas[i].position = position.ToXMFLOAT3();
+		for(auto& data: modelConstDatas)
+		{
+			data.second.position = position.ToXMFLOAT3();
+		}
+	}
+	else 
+	{
+		modelConstDatas[name].position = position.ToXMFLOAT3();
 	}
 }
 
-void ModelObject::SetScale(const Vector3& scale)
+void ModelObject::SetScale(const Vector3& scale, const std::string& name)
 {
-	for (int i = 0; i < modelFileObjectNum; i++)
+	if (name == "")
 	{
-		modelConstDatas[i].scale = scale.ToXMFLOAT3();
-		if (modelConstDatas[i].scale.x == 0.0f)modelConstDatas[i].scale.x = 0.0001f;
-		if (modelConstDatas[i].scale.y == 0.0f)modelConstDatas[i].scale.y = 0.0001f;
-		if (modelConstDatas[i].scale.z == 0.0f)modelConstDatas[i].scale.z = 0.0001f;
+		for (auto& data : modelConstDatas)
+		{
+			data.second.scale = scale.ToXMFLOAT3();
+			if (data.second.scale.x == 0.0f)data.second.scale.x = 0.0001f;
+			if (data.second.scale.y == 0.0f)data.second.scale.y = 0.0001f;
+			if (data.second.scale.z == 0.0f)data.second.scale.z = 0.0001f;
+		}
 	}
+	else
+	{
+		modelConstDatas[name].scale = scale.ToXMFLOAT3();
+		if (modelConstDatas[name].scale.x == 0.0f)modelConstDatas[name].scale.x = 0.0001f;
+		if (modelConstDatas[name].scale.y == 0.0f)modelConstDatas[name].scale.y = 0.0001f;
+		if (modelConstDatas[name].scale.z == 0.0f)modelConstDatas[name].scale.z = 0.0001f;
+	}
+
+
 }
 
-void ModelObject::SetAngle(const Vector3& angle)
+void ModelObject::SetAngle(const Vector3& angle, const std::string& name )
 {
-	for (int i = 0; i < modelFileObjectNum; i++)
+	if (name == "")
 	{
-		modelConstDatas[i].angle = angle.ToXMFLOAT3();
+		for (auto& data : modelConstDatas)
+		{
+			data.second.angle = angle.ToXMFLOAT3();
+		}
 	}
+	else
+	{
+		modelConstDatas[name].angle = angle.ToXMFLOAT3();
+	}
+
+
 }
 
 
@@ -1604,7 +1646,7 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 
 }
 
-void MelLib::ModelObject::SetMaterial(Material* mtl, const UINT index)
+void MelLib::ModelObject::SetMaterial(Material* mtl, const std::string& name)
 {
 	if (!mtl)
 	{
@@ -1613,15 +1655,42 @@ void MelLib::ModelObject::SetMaterial(Material* mtl, const UINT index)
 #endif // _DEBUG
 		return;
 	}
-	if (index >= materials.size())
+	if (name == "")
 	{
-#ifdef _DEBUG
-		OutputDebugString(L"マテリアルのセットに失敗しました。indexの値が大きくてセットできません。\n");
-#endif // _DEBUG
-		return;
+		materials[objectNames[0]] = mtl;
 	}
+	else 
+	{
+		materials[name] = mtl;
+	}
+}
 
-	materials[index] = mtl;
+Material* MelLib::ModelObject::GetPMaterial(const std::string& name)
+{
+	if(name == "")
+	{
+		return materials[objectNames[0]];
+	}
+	return materials[name];
+}
+
+Vector3 MelLib::ModelObject::GetPosition(const std::string& name) const
+{
+	if (name == "")
+	{
+		return modelConstDatas.at(objectNames[0]).position;
+	}
+	return modelConstDatas.at(name).position;
+}
+
+Vector3 MelLib::ModelObject::GetAngle(const std::string& name) const
+{
+	return Vector3();
+}
+
+Vector3 MelLib::ModelObject::GetScale(const std::string& name) const
+{
+	return Vector3();
 }
 
 
@@ -1671,7 +1740,7 @@ void ModelObject::FbxAnimation()
 {
 	// こいつDrawで呼ばないようにする
 
-	if (!isAnimation)return;
+	if (!isAnimation || pModelData->GetModelFormat() != ModelData::ModelFormat::MODEL_FORMAT_FBX)return;
 
 
 	//タイムを進める
@@ -1710,6 +1779,9 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 		return false;
 	}
 
+	// オブジェクト名取得
+	objectNames = pModelData->GetObjectNames();
+
 #pragma region データセット
 	if (userConstBufferData)this->userConstBufferData = *userConstBufferData;
 
@@ -1731,17 +1803,19 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 
 	CreateConstBuffer();
 
-	modelConstDatas.resize(modelFileObjectNum);
-
+	for (const auto& objectName : objectNames) 
+	{
+		modelConstDatas.try_emplace(objectName);
+	}
 
 	//マテリアル取得
 	std::vector<ADSAMaterial*>modelDataMtl = pModelData->GetPMaterial();
 
 	size_t size = modelDataMtl.size();
-	materials.resize(size);
+
 	for (int i = 0; i < size; i++)
 	{
-		materials[i] = modelDataMtl[i];
+		materials[objectNames[i]] = modelDataMtl[i];
 	}
 
 #pragma region アニメーション関係
@@ -1777,14 +1851,15 @@ std::vector<std::vector<Vector3>> MelLib::ModelObject::GetVerticesData(const boo
 {
 	std::vector<std::vector<Vector3>>verticesPos = pModelData->GetVerticesPosition();
 
-	for (int i = 0, size = verticesPos.size(); i < size; i++)
+	for (int i = 0, size = objectNames.size(); i < size; i++)
 	{
+		std::string objectName = objectNames[i];
 		for (auto& pos : verticesPos[i])
 		{
 			Matrix mat = Matrix::GetTranslationMatrix(pos);
-			if (scaleImpact) mat *= Matrix::GetScalingMatrix(modelConstDatas[i].scale);
-			if (angleImpact)mat *= Matrix::GetRotateZXYMatrix(modelConstDatas[i].angle);
-			if (transformImpact)mat *= Matrix::GetTranslationMatrix(modelConstDatas[i].position);
+			if (scaleImpact) mat *= Matrix::GetScalingMatrix(modelConstDatas[objectName].scale);
+			if (angleImpact)mat *= Matrix::GetRotateZXYMatrix(modelConstDatas[objectName].angle);
+			if (transformImpact)mat *= Matrix::GetTranslationMatrix(modelConstDatas[objectName].position);
 			pos = Vector3(mat[3][0], mat[3][1], mat[3][2]);
 		}
 	}
@@ -1796,29 +1871,30 @@ std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData
 {
 
 	std::vector<std::vector<Vector3>>vertPos = pModelData->GetVerticesPosition();
-	std::vector<std::vector<USHORT>>vertInd = pModelData->GetIndices();
+	std::vector<std::vector<USHORT>>vertIndex = pModelData->GetIndices();
 
-	std::vector<std::vector<TriangleData>> result(vertInd.size());
+	std::vector<std::vector<TriangleData>> result(vertIndex.size());
 	
 	
-	for (int i = 0; i < vertInd.size(); i++)
+	for (int i = 0; i < objectNames.size(); i++)
 	{
-		result[i].resize(vertInd[i].size() / 3);
+		std::string objectName = objectNames[i];
+		result[i].resize(vertIndex[i].size() / 3);
 
-		for (int j = 0, loopCount = 0; j < vertInd[i].size(); j += 3, loopCount++)
+		for (int j = 0, loopCount = 0; j < vertIndex[i].size(); j += 3, loopCount++)
 		{
-			Value3<Vector3>pos(vertPos[i][vertInd[i][j]], vertPos[i][vertInd[i][j + 1]], vertPos[i][vertInd[i][j + 2]]);
+			Value3<Vector3>pos(vertPos[i][vertIndex[i][j]], vertPos[i][vertIndex[i][j + 1]], vertPos[i][vertIndex[i][j + 2]]);
 
-			result[i][loopCount].SetPosition(pos * Vector3(modelConstDatas[i].scale));
-			result[i][loopCount].SetAngle(modelConstDatas[i].angle);
-			result[i][loopCount].SetTranslationPosition(modelConstDatas[i].position);
+			result[i][loopCount].SetPosition(pos * Vector3(modelConstDatas.at(objectName).scale));
+			result[i][loopCount].SetAngle(modelConstDatas.at(objectName).angle);
+			result[i][loopCount].SetTranslationPosition(modelConstDatas.at(objectName).position);
 		}
 	}
 
 	return result;
 }
 
-Vector3 MelLib::ModelObject::RotPositionBone(const Vector3& pos, const std::string& boneName, const std::string& meshName)
+Vector3 MelLib::ModelObject::CalcAnimationPosition(const Vector3& pos, const std::string& boneName, const std::string& meshName)
 {
 	DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 	ModelData::FbxBone bone = pModelData->GetFbxBone(boneName);
@@ -1855,3 +1931,4 @@ void MelLib::ModelObject::SetAnimation(const std::string& name)
 
 	pModelData->SetFbxAnimStack(name);
 }
+

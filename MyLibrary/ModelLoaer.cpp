@@ -52,7 +52,8 @@ bool  ModelLoader::LoadObjModel
 (
 	const std::string& path,
 	bool loadUV,
-	bool loadNormal,
+	bool loadNormal, 
+	std::vector<std::string>& objectNames,
 	std::unordered_map<std::string,std::vector<FbxVertex>>& vertices,
 	std::unordered_map<std::string,std::vector<USHORT>>& indices,
 	std::string& materialFileName,
@@ -143,6 +144,7 @@ bool  ModelLoader::LoadObjModel
 		if(topStr.find("o") != std::string::npos)
 		{
 			lineStream >> objectName;
+			objectNames.push_back(objectName);
 		}
 
 #pragma region 頂点データ取得

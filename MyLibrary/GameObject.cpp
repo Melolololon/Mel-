@@ -314,7 +314,7 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 			{
 				modelObjcts[i].Create(ModelData::Get(type), nullptr);
 
-				modelObjcts[i].SetMaterial(&material, 0);
+				modelObjcts[i].SetMaterial(&material);
 			}
 		}
 		else if (dataNum < objNum)

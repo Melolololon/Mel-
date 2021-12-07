@@ -38,6 +38,7 @@ namespace MelLib
 			const std::string& path,
 			bool loadUV,
 			bool loadNormal,
+			std::vector<std::string>&objectNames,
 			std::unordered_map<std::string,std::vector<FbxVertex>>& vertices,
 			std::unordered_map<std::string, std::vector<USHORT>>& indices,
 			std::string& materialFileName,

@@ -37,8 +37,10 @@ namespace MelLib
 		static std::vector<ID3D12GraphicsCommandList*>cmdLists;
 		static ComPtr<ID3D12RootSignature>rootSignature;
 	
+		std::vector<std::string>objectNames;
+
 		//[モデル内のオブジェクトごと]
-		std::vector<Material*>materials;
+		std::unordered_map < std::string, Material*>materials;
 
 #pragma region ボーンとアニメーションの情報
 		static const UINT BONE_MAX = 64;
@@ -94,7 +96,7 @@ namespace MelLib
 
 		//定数にセットする座標などの値
 		//[モデル内のオブジェクト数]
-		std::vector<ModelConstData> modelConstDatas;
+		std::unordered_map < std::string , ModelConstData > modelConstDatas;
 
 		//モデル(クリエイトしたら割り当てる)
 		ModelData* pModelData = nullptr;
@@ -181,9 +183,9 @@ namespace MelLib
 #pragma region 操作
 
 
-		void SetPosition(const Vector3& position);
-		void SetScale(const Vector3& scale);
-		void SetAngle(const Vector3& angle);
+		void SetPosition(const Vector3& position,const std::string& name = "");
+		void SetScale(const Vector3& scale, const std::string& name = "");
+		void SetAngle(const Vector3& angle, const std::string& name = "");
 
 
 #pragma endregion
@@ -209,7 +211,7 @@ namespace MelLib
 
 #pragma endregion
 
-		void SetMaterial(Material* mtl, const UINT index);
+		void SetMaterial(Material* mtl,const std::string& name = "");
 
 
 
@@ -221,17 +223,17 @@ namespace MelLib
 		//この辺constにする
 
 		ModelData* GetPModelData() { return pModelData; }
-		Material* GetPMaterial(const int num) { return materials[num]; }
+		Material* GetPMaterial(const std::string& name = "");
 
 #pragma region 操作見た目変更
 
 #pragma region 操作
 		
 		//今はとりあえず全部値が一緒なので、0のやつを返してる
-		Vector3 GetPosition()const { return Vector3(modelConstDatas[0].position); }
+		Vector3 GetPosition(const std::string& name = "")const;
 
-		Vector3 GetAngle()const { return Vector3(modelConstDatas[0].angle); }
-		Vector3 GetScale()const { return Vector3(modelConstDatas[0].scale); }
+		Vector3 GetAngle(const std::string& name = "")const;
+		Vector3 GetScale(const std::string& name = "")const;
 #pragma endregion
 #pragma endregion
 
@@ -239,6 +241,7 @@ namespace MelLib
 
 		//コンピュートシェーダーで計算したほうがいい。
 		//できそうなら描画時に頂点シェーダーで計算した結果を持ってきたほうがいい?
+		// 戻り値がumap版のやつ作ってもいいかも
 		/// <summary>
 		/// 頂点座標を取得します。
 		/// </summary>
@@ -268,7 +271,7 @@ namespace MelLib
 		/// <param name="boneName">ボーン名</param>
 		/// <param name="meshName">メッシュ名</param>
 		/// <returns>行列乗算後の座標</returns>
-		Vector3 RotPositionBone(const Vector3& pos, const std::string& boneName,const std::string& meshName);
+		Vector3 CalcAnimationPosition(const Vector3& pos, const std::string& boneName,const std::string& meshName);
 
 	};
 }
