@@ -89,6 +89,7 @@ namespace MelLib
 		ConstBufferData userConstBufferData;
 
 		static const int MODEL_BUFFER_REGISTER = 3;
+		// モデルのオブジェクトごとに生成するように変更すること 2021 12/8
 		std::vector<ComPtr<ID3D12Resource>> modelConstBuffer;//モデル特有(アニメーション関係の情報)
 		ConstBufferData modelConstBufferData;
 
@@ -271,7 +272,7 @@ namespace MelLib
 		/// <param name="boneName">ボーン名</param>
 		/// <param name="meshName">メッシュ名</param>
 		/// <returns>行列乗算後の座標</returns>
-		Vector3 CalcAnimationPosition(const Vector3& pos, const std::string& boneName,const std::string& meshName);
+		Vector3 CalcAnimationPosition(const Vector3& pos,float weigth, const std::string& boneName,const std::string& meshName);
 
 	};
 }

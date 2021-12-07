@@ -428,6 +428,8 @@ namespace MelLib
 		/// <returns></returns>
 		const FbxBone& GetFbxBone(const std::string& name)const;
 
+		Node GetNode(const std::string& name) {return fbxData.nodes[name]; }
+
 		/// <summary>
 		/// ƒ‚ƒfƒ‹‚ÌFbxAnimationTimes‚ğ•Ô‚µ‚Ü‚·B
 		/// </summary>

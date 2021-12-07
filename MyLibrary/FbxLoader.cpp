@@ -202,6 +202,7 @@ void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, Node* m
 
 		// これはここじゃなくてMapするときに掛けること
 		// そうしないとスキンアニメーションバグる
+		// もしかして最初から適応されてる?
 	/*	DirectX::XMFLOAT3 pos = vertices[name][i].pos;
 		DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 		posMat *= meshNode->transform;

@@ -260,6 +260,8 @@ void Play::ParticleTestDraw()
 
 MelLib::ModelObject aniTest;
 MelLib::ModelObject aniCollTest;
+MelLib::Vector3 aniCollInitPos = MelLib::Vector3(-0.9, 0.5, 0.25);
+//MelLib::Vector3 aniCollInitPos = MelLib::Vector3(-3 ,3,3);
 void Play::AniTestInitialize(){
 
 	//MelLib::ModelData::Load("Resources/boneTest/boneTest.fbx", false, "test");
@@ -276,23 +278,21 @@ void Play::AniTestInitialize(){
 	aniTest.SetScale(0.2);
 	
 
-	aniTest.SetAnimationPlayFlag(true);
-
 	aniCollTest.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
-	aniCollTest.SetScale(0.3f);
-	aniCollTest.SetPosition(MelLib::Vector3(0.9, 2, 0.25));
+	aniCollTest.SetScale(0.25);
+	aniCollTest.SetPosition(aniCollInitPos);
 
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, 0));
 	MelLib::Camera::Get()->SetRotatePoint(MelLib::Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
-	MelLib::Camera::Get()->SetCameraToTargetDistance(5.0f);
+	MelLib::Camera::Get()->SetCameraToTargetDistance(15.0f);
 
 }
 
-void Play::AniTestUpdate(){
+void Play::AniTestUpdate() {
 
 	if (MelLib::Input::KeyState(DIK_1))aniTest.SetAnimation("Yaki");
 	if (MelLib::Input::KeyState(DIK_2))aniTest.SetAnimation("No_Cont");
-	if (MelLib::Input::KeyState(DIK_3))aniTest.SetAnimation("Work");
+	if (MelLib::Input::KeyState(DIK_3))aniTest.SetAnimation("_T_02");
 	if (MelLib::Input::KeyState(DIK_4))aniTest.SetAnimation("Dash");
 
 	MelLib::Vector3 cameraAngle = MelLib::Camera::Get()->GetAngle();
@@ -333,9 +333,14 @@ void Play::AniTestUpdate(){
 		MelLib::Camera::Get()->SetRotateCriteriaPosition(cameraPos);
 	}
 
-	MelLib::Vector3 calcPos = aniCollTest.GetPosition();
-	aniTest.CalcAnimationPosition(calcPos,"Bone_R.003","Body");
+
+
+	MelLib::Vector3 calcPos = aniCollInitPos;
+	calcPos = aniTest.CalcAnimationPosition(calcPos,1, "Bone_R.003", "Body");
 	aniCollTest.SetPosition(calcPos);
+
+	aniTest.SetAnimationPlayFlag(true);
+
 }
 
 void Play::AniTestDraw(){

@@ -258,6 +258,8 @@ void ModelObject::MapConstData(const Camera* camera)
 			continue;
 		}
 
+
+		// モデルのオブジェクトごとに生成するようにする
 		SkinConstBufferData* skinConstData;
 
 		modelConstBuffer[i]->Map(0, nullptr, (void**)&skinConstData);
@@ -454,7 +456,7 @@ void ModelObject::MapConstData(const Camera* camera)
 				//変換
 				DirectX::XMMATRIX matCurrentPose;
 				FbxAMatrix fbxCurrentPose =
-					bones[j].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
+					bones[j].fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationData.currentTime);
 				FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 				//乗算
@@ -470,6 +472,16 @@ void ModelObject::MapConstData(const Camera* camera)
 					matCurrentPose *
 					invMeshGlobalTransform;
 
+
+				// テスト
+				ModelData::FbxBone bone = pModelData->GetFbxBone("Bone_R.003");
+				if(bone.invInitialPose.r[3].m128_f32[0] == bones[j].invInitialPose.r[3].m128_f32[0] &&
+					bone.invInitialPose.r[3].m128_f32[1] == bones[j].invInitialPose.r[3].m128_f32[1] &&
+					bone.invInitialPose.r[3].m128_f32[2] == bones[j].invInitialPose.r[3].m128_f32[2] &&
+					bone.invInitialPose.r[3].m128_f32[3] == bones[j].invInitialPose.r[3].m128_f32[3])
+				{
+					int z = 0;
+				}
 			}
 		}
 
@@ -1894,9 +1906,38 @@ std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData
 	return result;
 }
 
-Vector3 MelLib::ModelObject::CalcAnimationPosition(const Vector3& pos, const std::string& boneName, const std::string& meshName)
+Vector3 MelLib::ModelObject::CalcAnimationPosition(const Vector3& pos,const float weigth, const std::string& boneName, const std::string& meshName)
 {
+
+	// 一旦メッシュの移動量分動かして原点基準で回さないからバグる?
+	// 今メッシュの移動とか適応してないから関係ない
+	// モデルの拡縮とかが等倍の状態で計算しなかったせいだった
+
 	DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+	// 逆行列を掛けることにより、拡縮などしたモデルにそのまま座標を合わせてセットしても正常に動かせる
+	DirectX::XMMATRIX worldMat = DirectX::XMMatrixIdentity();
+	worldMat *= DirectX::XMMatrixScaling
+	(
+		modelConstDatas[meshName].scale.x,
+		modelConstDatas[meshName].scale.y,
+		modelConstDatas[meshName].scale.z
+	);
+	worldMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstDatas[meshName].angle.z));
+	worldMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas[meshName].angle.x));
+	worldMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas[meshName].angle.y));
+
+	worldMat *= DirectX::XMMatrixTranslation
+	(
+		modelConstDatas[meshName].position.x,
+		modelConstDatas[meshName].position.y,
+		modelConstDatas[meshName].position.z
+	);
+	posMat *= DirectX::XMMatrixInverse(nullptr,worldMat);
+	/*Vector3 nodeT = pModelData->GetNode(meshName).translation;
+	posMat *= DirectX::XMMatrixTranslation(nodeT.x, nodeT.y, nodeT.z);*/
+
+
 	ModelData::FbxBone bone = pModelData->GetFbxBone(boneName);
 
 	// 取得と変換
@@ -1909,12 +1950,19 @@ Vector3 MelLib::ModelObject::CalcAnimationPosition(const Vector3& pos, const std
 	DirectX::XMMATRIX meshGlobalTransform = pModelData->GetMeshGlobalTransform(meshName);
 	DirectX::XMMATRIX invMeshGlobalTransform = DirectX::XMMatrixInverse(nullptr, meshGlobalTransform);
 
-	posMat *=
+
+	// ウェイトセットできるようにする
+	DirectX::XMMATRIX boneMat = DirectX::XMMatrixIdentity();
+	boneMat *=
 		meshGlobalTransform *
 		bone.invInitialPose *
 		matCurrentPose *
 		invMeshGlobalTransform;
 
+	boneMat *= weigth;
+	posMat *= boneMat;
+
+	posMat *= worldMat;
 
 	return MelLib::Vector3(posMat.r[3].m128_f32[0], posMat.r[3].m128_f32[1], posMat.r[3].m128_f32[2]);
 
