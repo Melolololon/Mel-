@@ -580,11 +580,16 @@ void ModelObject::SetCmdList()
 
 }
 
+void MelLib::ModelObject::Update()
+{
+	FbxAnimation();
+}
+
 void ModelObject::Draw(const std::string& rtName)
 {
 	RenderTarget::ChangeCurrentRenderTarget(RenderTarget::Get(rtName));
 
-	FbxAnimation();
+	//FbxAnimation();
 
 	DrawCommonProcessing(rtName);
 }
@@ -1933,7 +1938,7 @@ Vector3 MelLib::ModelObject::CalcAnimationPosition(const Vector3& pos,const floa
 		modelConstDatas[meshName].position.y,
 		modelConstDatas[meshName].position.z
 	);
-	posMat *= DirectX::XMMatrixInverse(nullptr,worldMat);
+	posMat *= DirectX::XMMatrixInverse(nullptr, worldMat);
 	/*Vector3 nodeT = pModelData->GetNode(meshName).translation;
 	posMat *= DirectX::XMMatrixTranslation(nodeT.x, nodeT.y, nodeT.z);*/
 
@@ -1954,10 +1959,11 @@ Vector3 MelLib::ModelObject::CalcAnimationPosition(const Vector3& pos,const floa
 	// ウェイトセットできるようにする
 	DirectX::XMMATRIX boneMat = DirectX::XMMatrixIdentity();
 	boneMat *=
-		meshGlobalTransform *
+		//meshGlobalTransform *
 		bone.invInitialPose *
-		matCurrentPose *
-		invMeshGlobalTransform;
+		matCurrentPose //*
+		//invMeshGlobalTransform
+		;
 
 	boneMat *= weigth;
 	posMat *= boneMat;

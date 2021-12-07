@@ -260,7 +260,7 @@ void Play::ParticleTestDraw()
 
 MelLib::ModelObject aniTest;
 MelLib::ModelObject aniCollTest;
-MelLib::Vector3 aniCollInitPos = MelLib::Vector3(-0.9, 0.5, 0.25);
+MelLib::Vector3 aniCollInitPos = MelLib::Vector3(-1.0, 0.5, 0.25);
 //MelLib::Vector3 aniCollInitPos = MelLib::Vector3(-3 ,3,3);
 void Play::AniTestInitialize(){
 
@@ -284,13 +284,15 @@ void Play::AniTestInitialize(){
 
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, 0));
 	MelLib::Camera::Get()->SetRotatePoint(MelLib::Camera::RotatePoint::ROTATE_POINT_TARGET_POSITION);
-	MelLib::Camera::Get()->SetCameraToTargetDistance(15.0f);
+	MelLib::Camera::Get()->SetCameraToTargetDistance(7.0f);
 
 }
 
 void Play::AniTestUpdate() {
 
-	if (MelLib::Input::KeyState(DIK_1))aniTest.SetAnimation("Yaki");
+	aniTest.Update();
+
+	if (MelLib::Input::KeyState(DIK_1))aniTest.SetAnimation("Attack_Normal_1");
 	if (MelLib::Input::KeyState(DIK_2))aniTest.SetAnimation("No_Cont");
 	if (MelLib::Input::KeyState(DIK_3))aniTest.SetAnimation("_T_02");
 	if (MelLib::Input::KeyState(DIK_4))aniTest.SetAnimation("Dash");

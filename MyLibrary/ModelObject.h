@@ -145,6 +145,10 @@ namespace MelLib
 		static ModelObject* Get(const std::string& name) { return pModelObjects[name].get(); }
 		static void Delete(const std::string& name);
 
+		/// <summary>
+		/// アニメーションなどの更新処理を行います
+		/// </summary>
+		void Update();
 		void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
 #pragma region 生成
