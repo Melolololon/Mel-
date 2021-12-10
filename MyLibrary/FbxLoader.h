@@ -77,9 +77,9 @@ namespace MelLib
 		/// </summary>
 		/// <param name="model"></param>
 		/// <param name="fbxMesh"></param>
-		void ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, const std::string& name);
+		void ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, FbxNode* node, const std::string& name);
 
-
+		void SetParentBone(ModelData* fbxModel, FbxNode* node,FbxNode* parentNode);
 
 
 		std::string ExtractFileName

@@ -50,7 +50,7 @@ void ModelObject::CreateConstBuffer()
 	{
 		userConstBuffer.resize(modelFileObjectNum);
 	}
-	
+
 #pragma endregion
 
 
@@ -157,7 +157,7 @@ void ModelObject::MapConstData(const Camera* camera)
 
 	std::vector<DirectX::XMMATRIX>meshGlobalTransforms = pModelData->GetMeshGlobalTransforms();
 
-	
+
 	for (int i = 0; i < constBuffer.size(); i++)
 	{
 		std::string objectName = objectNames[i];
@@ -193,7 +193,7 @@ void ModelObject::MapConstData(const Camera* camera)
 		DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
 
 		// FBXモデルの場合、メッシュの行列を掛ける
-		if(pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_FBX)
+		if (pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_FBX)
 		{
 			matWorld *= meshGlobalTransforms[i];
 		}
@@ -473,15 +473,6 @@ void ModelObject::MapConstData(const Camera* camera)
 					invMeshGlobalTransform;
 
 
-				// テスト
-				ModelData::FbxBone bone = pModelData->GetFbxBone("Bone_R.003");
-				if(bone.invInitialPose.r[3].m128_f32[0] == bones[j].invInitialPose.r[3].m128_f32[0] &&
-					bone.invInitialPose.r[3].m128_f32[1] == bones[j].invInitialPose.r[3].m128_f32[1] &&
-					bone.invInitialPose.r[3].m128_f32[2] == bones[j].invInitialPose.r[3].m128_f32[2] &&
-					bone.invInitialPose.r[3].m128_f32[3] == bones[j].invInitialPose.r[3].m128_f32[3])
-				{
-					int z = 0;
-				}
 			}
 		}
 
@@ -807,10 +798,10 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 	for (const auto& tri : modelTri)
 	{
 		//ヒットしてるのに表裏に分かれてないということは頂点にかすってるだけなので、分割しない
-		if(tri.hitResult.v1 || tri.hitResult.v2 || tri.hitResult.v3)
+		if (tri.hitResult.v1 || tri.hitResult.v2 || tri.hitResult.v3)
 		{
-			
-			if(tri.vertFB.v1 != -1 && tri.vertFB.v2 != -1 && tri.vertFB.v3 != -1
+
+			if (tri.vertFB.v1 != -1 && tri.vertFB.v2 != -1 && tri.vertFB.v3 != -1
 				|| tri.vertFB.v1 != 1 && tri.vertFB.v2 != 1 && tri.vertFB.v3 != 1)
 			{
 				if (tri.vertFB.v1 == 1 || tri.vertFB.v2 == 1 || tri.vertFB.v3 == 1)
@@ -825,7 +816,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 					frontIndex += 3;
 				}
-				else if(tri.vertFB.v1 == -1 || tri.vertFB.v2 == -1 || tri.vertFB.v3 == -1)
+				else if (tri.vertFB.v1 == -1 || tri.vertFB.v2 == -1 || tri.vertFB.v3 == -1)
 				{
 					backVertices.push_back(tri.vertData.v1);
 					backVertices.push_back(tri.vertData.v2);
@@ -881,7 +872,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 		//順序決める
 
-		
+
 		//頂点のインデックス(frontInd、backIndに格納する値)
 		std::vector<USHORT>fVertInd;
 		std::vector<USHORT>bVertInd;
@@ -911,13 +902,13 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 		else if (tri.vertFB.v3 == -1)
 		{
 			bVert.push_back(tri.vertData.v3);
-			
+
 		}
-		
+
 
 		bool addVert = true;
 		//片方の場合(多角形の面形成いらない場合)
-		if(fVert.size() == 1)
+		if (fVert.size() == 1)
 		{
 			frontVertices.push_back(fVert[0]);
 
@@ -946,7 +937,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 					fVert.push_back(tri.hitPosVert.v2);
 				}
 			}
-			
+
 			addVert = true;
 			if (tri.hitResult.v3)
 			{
@@ -988,7 +979,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 			int fVertVNum = 0;
 			//fVert[0]が含まれててかつ線分が平面に当たってたら衝突点を格納
-			if (tri.hitResult.v1) 
+			if (tri.hitResult.v1)
 			{
 				if (tri.segmentData.v1.GetPosition().v1 == fVert[0].pos
 					|| tri.segmentData.v1.GetPosition().v2 == fVert[0].pos)
@@ -998,7 +989,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 					frontVertices.push_back(tri.hitPosVert.v1);
 				}
 			}
-			 if (tri.hitResult.v2)
+			if (tri.hitResult.v2)
 			{
 				if (tri.segmentData.v2.GetPosition().v1 == fVert[0].pos
 					|| tri.segmentData.v2.GetPosition().v2 == fVert[0].pos)
@@ -1007,7 +998,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 					frontVertices.push_back(tri.hitPosVert.v2);
 				}
 			}
-			 if (tri.hitResult.v3)
+			if (tri.hitResult.v3)
 			{
 				if (tri.segmentData.v3.GetPosition().v1 == fVert[0].pos
 					|| tri.segmentData.v3.GetPosition().v2 == fVert[0].pos)
@@ -1036,7 +1027,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 
 			//三角形を形成
-			
+
 			//fVertをクリアして、今回追加した三角形を追加
 			fVert.clear();
 			fVert.resize(4);
@@ -1044,7 +1035,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 			{
 				fVert[i - frontIndex] = frontVertices[i];
 			}
-			 
+
 			//n多角形の三角形分割を利用してインデックスを求める
 			//原点から一番遠い頂点
 			FbxVertex farVertex;
@@ -1087,15 +1078,15 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				//10/11 ここ書き換えないといけない(距離じゃなくて配列のインデックスから求める)
 				//隣の頂点を求める
 				int farAddIndex = farVertIndex + 1;
-			/*	if (farAddIndex >= fVert.size())farAddIndex = 0;
-				for (const auto& ind : skipVertIndices)
-				{
-					if (ind == farAddIndex)
+				/*	if (farAddIndex >= fVert.size())farAddIndex = 0;
+					for (const auto& ind : skipVertIndices)
 					{
-						farAddIndex++;
-						break;
-					}
-				}*/
+						if (ind == farAddIndex)
+						{
+							farAddIndex++;
+							break;
+						}
+					}*/
 
 				if (farAddIndex >= fVert.size())farAddIndex = 0;
 
@@ -1121,15 +1112,15 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 
 				int farSubIndex = farVertIndex - 1;
-			/*	if (farSubIndex <= 0)farSubIndex = fVert.size() - 1;
-				for (const auto& ind : skipVertIndices)
-				{
-					if (ind == farSubIndex)
+				/*	if (farSubIndex <= 0)farSubIndex = fVert.size() - 1;
+					for (const auto& ind : skipVertIndices)
 					{
-						farSubIndex--;
-						break;
-					}
-				}*/
+						if (ind == farSubIndex)
+						{
+							farSubIndex--;
+							break;
+						}
+					}*/
 				if (farSubIndex < 0)farSubIndex = 3;
 				whileEnd = false;
 				while (!whileEnd && skipVertIndices.size() != 0)
@@ -1155,7 +1146,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				Vector3 cross;
 
 				//sub,far,add
-				cross = LibMath::CalcNormal(fVert[farSubIndex].pos,farVertex.pos, fVert[farAddIndex].pos);
+				cross = LibMath::CalcNormal(fVert[farSubIndex].pos, farVertex.pos, fVert[farAddIndex].pos);
 				if (Vector3(farVertex.normal) == cross)
 				{
 					frontIndices.push_back(frontIndex + farSubIndex);
@@ -1209,13 +1200,13 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 						break;
 					}
 				}
-				if(addVert)
+				if (addVert)
 				{
 					backVertices.push_back(tri.hitPosVert.v2);
 					bVert.push_back(tri.hitPosVert.v2);
 				}
 			}
-			
+
 			addVert = true;
 			if (tri.hitResult.v3)
 			{
@@ -1227,7 +1218,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 						break;
 					}
 				}
-				if(addVert)
+				if (addVert)
 				{
 					backVertices.push_back(tri.hitPosVert.v3);
 					bVert.push_back(tri.hitPosVert.v3);
@@ -1267,7 +1258,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 					backVertices.push_back(tri.hitPosVert.v1);
 				}
 			}
-			 if (tri.hitResult.v2)
+			if (tri.hitResult.v2)
 			{
 				if (tri.segmentData.v2.GetPosition().v1 == bVert[0].pos
 					|| tri.segmentData.v2.GetPosition().v2 == bVert[0].pos)
@@ -1276,7 +1267,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 					backVertices.push_back(tri.hitPosVert.v2);
 				}
 			}
-			 if (tri.hitResult.v3)
+			if (tri.hitResult.v3)
 			{
 				if (tri.segmentData.v3.GetPosition().v1 == bVert[0].pos
 					|| tri.segmentData.v3.GetPosition().v2 == bVert[0].pos)
@@ -1336,7 +1327,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				for (int i = 0, size = bVert.size(); i < size; i++)
 				{
 					bool skip = false;
-					for(const auto& ind : skipVertIndices)
+					for (const auto& ind : skipVertIndices)
 					{
 						if (i == ind)skip = true;
 					}
@@ -1368,7 +1359,7 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 				}*/
 
 				bool whileEnd = false;
-				while(!whileEnd && skipVertIndices.size() != 0)
+				while (!whileEnd && skipVertIndices.size() != 0)
 				{
 					for (const auto& ind : skipVertIndices)
 					{
@@ -1485,14 +1476,14 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 void ModelObject::SetPosition(const Vector3& position, const std::string& name)
 {
-	if(name == "")
+	if (name == "")
 	{
-		for(auto& data: modelConstDatas)
+		for (auto& data : modelConstDatas)
 		{
 			data.second.position = position.ToXMFLOAT3();
 		}
 	}
-	else 
+	else
 	{
 		modelConstDatas[name].position = position.ToXMFLOAT3();
 	}
@@ -1521,7 +1512,7 @@ void ModelObject::SetScale(const Vector3& scale, const std::string& name)
 
 }
 
-void ModelObject::SetAngle(const Vector3& angle, const std::string& name )
+void ModelObject::SetAngle(const Vector3& angle, const std::string& name)
 {
 	if (name == "")
 	{
@@ -1539,12 +1530,12 @@ void ModelObject::SetAngle(const Vector3& angle, const std::string& name )
 }
 
 
-MelLib::ModelObject::ModelObject( ModelObject& obj)
+MelLib::ModelObject::ModelObject(ModelObject& obj)
 {
 	Create(obj.pModelData, nullptr);
 	modelConstDatas = obj.modelConstDatas;
 
-	if(obj.catFrontModelData)
+	if (obj.catFrontModelData)
 	{
 		catFrontModelData = std::make_unique<ModelData>();
 		*catFrontModelData = *obj.catFrontModelData;
@@ -1676,7 +1667,7 @@ void MelLib::ModelObject::SetMaterial(Material* mtl, const std::string& name)
 	{
 		materials[objectNames[0]] = mtl;
 	}
-	else 
+	else
 	{
 		materials[name] = mtl;
 	}
@@ -1684,7 +1675,7 @@ void MelLib::ModelObject::SetMaterial(Material* mtl, const std::string& name)
 
 Material* MelLib::ModelObject::GetPMaterial(const std::string& name)
 {
-	if(name == "")
+	if (name == "")
 	{
 		return materials[objectNames[0]];
 	}
@@ -1699,16 +1690,24 @@ Vector3 MelLib::ModelObject::GetPosition(const std::string& name) const
 	}
 	return modelConstDatas.at(name).position;
 }
-
 Vector3 MelLib::ModelObject::GetAngle(const std::string& name) const
 {
-	return Vector3();
+	if (name == "")
+	{
+		return modelConstDatas.at(objectNames[0]).angle;
+	}
+	return modelConstDatas.at(name).angle;
 }
 
 Vector3 MelLib::ModelObject::GetScale(const std::string& name) const
 {
-	return Vector3();
+	if (name == "")
+	{
+		return modelConstDatas.at(objectNames[0]).scale;
+	}
+	return modelConstDatas.at(name).scale;
 }
+
 
 
 
@@ -1743,7 +1742,7 @@ void ModelObject::ResetAnimation()
 void ModelObject::SetCurrentFream(const UINT fream)
 {
 	FbxTime setTime = fbxAnimationData.animationTimes.startTime * fream;
-	
+
 	if (setTime > fbxAnimationData.animationTimes.endTime) {
 		setTime = fbxAnimationData.animationTimes.endTime;
 	}
@@ -1763,9 +1762,9 @@ void ModelObject::FbxAnimation()
 	//タイムを進める
 	fbxAnimationData.currentTime += fbxAnimationData.animationTimes.frameTime * fbxAnimationData.timeMag;
 
-	
+
 	if (fbxAnimationData.currentTime > fbxAnimationData.animationTimes.endTime) {
-		
+
 		if (animationEndStop) {
 			fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime;
 			return;
@@ -1774,15 +1773,15 @@ void ModelObject::FbxAnimation()
 		fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
 	}
 	else
-	if (fbxAnimationData.currentTime < fbxAnimationData.animationTimes.startTime) {
-		
-		if (animationEndStop) {
-			fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
-			return;
-		}
+		if (fbxAnimationData.currentTime < fbxAnimationData.animationTimes.startTime) {
 
-		fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime;
-	}
+			if (animationEndStop) {
+				fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
+				return;
+			}
+
+			fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime;
+		}
 }
 
 
@@ -1820,7 +1819,7 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 
 	CreateConstBuffer();
 
-	for (const auto& objectName : objectNames) 
+	for (const auto& objectName : objectNames)
 	{
 		modelConstDatas.try_emplace(objectName);
 	}
@@ -1891,8 +1890,8 @@ std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData
 	std::vector<std::vector<USHORT>>vertIndex = pModelData->GetIndices();
 
 	std::vector<std::vector<TriangleData>> result(vertIndex.size());
-	
-	
+
+
 	for (int i = 0; i < objectNames.size(); i++)
 	{
 		std::string objectName = objectNames[i];
@@ -1911,52 +1910,64 @@ std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData
 	return result;
 }
 
-Vector3 MelLib::ModelObject::CalcAnimationPosition(const Vector3& pos,const float weigth, const std::string& boneName, const std::string& meshName)
+Vector3 MelLib::ModelObject::CalcAnimationPosition
+(
+	const Vector3& pos, const float weigth, const std::string& boneName, const std::string& meshName
+	, const MelLib::Vector3& startPos , const MelLib::Vector3& startAngle, const MelLib::Vector3& startScale
+)const
 {
 
 	// 一旦メッシュの移動量分動かして原点基準で回さないからバグる?
 	// 今メッシュの移動とか適応してないから関係ない
 	// モデルの拡縮とかが等倍の状態で計算しなかったせいだった
 
+	// モデルの移動量や拡縮が0のときにワールド行列掛けるのがベスト?
+	// それか、基準の座標を入れてもらうしかない
+
+	// 親のノードの行列を掛けないとダメ
+	//多分影響度100%で大丈夫?
+
 	DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 	// 逆行列を掛けることにより、拡縮などしたモデルにそのまま座標を合わせてセットしても正常に動かせる
-	DirectX::XMMATRIX worldMat = DirectX::XMMatrixIdentity();
-	worldMat *= DirectX::XMMatrixScaling
+	DirectX::XMMATRIX startWorldMat = DirectX::XMMatrixIdentity();
+	startWorldMat *= DirectX::XMMatrixScaling
 	(
-		modelConstDatas[meshName].scale.x,
-		modelConstDatas[meshName].scale.y,
-		modelConstDatas[meshName].scale.z
+		startScale.x,
+		startScale.y,
+		startScale.z
 	);
-	worldMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstDatas[meshName].angle.z));
-	worldMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas[meshName].angle.x));
-	worldMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas[meshName].angle.y));
+	startWorldMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(startAngle.z));
+	startWorldMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(startAngle.x));
+	startWorldMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(startAngle.y));
 
-	worldMat *= DirectX::XMMatrixTranslation
+	startWorldMat *= DirectX::XMMatrixTranslation
 	(
-		modelConstDatas[meshName].position.x,
-		modelConstDatas[meshName].position.y,
-		modelConstDatas[meshName].position.z
+		startPos.x,
+		startPos.y,
+		startPos.z
 	);
-	posMat *= DirectX::XMMatrixInverse(nullptr, worldMat);
+	posMat *= DirectX::XMMatrixInverse(nullptr, startWorldMat);
 	/*Vector3 nodeT = pModelData->GetNode(meshName).translation;
 	posMat *= DirectX::XMMatrixTranslation(nodeT.x, nodeT.y, nodeT.z);*/
 
 
-	ModelData::FbxBone bone = pModelData->GetFbxBone(boneName);
-
-	// 取得と変換
-	DirectX::XMMATRIX matCurrentPose;
-	FbxAMatrix fbxCurrentPose =
-		bone.fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationData.currentTime);
-	FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 	// 乗算
 	DirectX::XMMATRIX meshGlobalTransform = pModelData->GetMeshGlobalTransform(meshName);
 	DirectX::XMMATRIX invMeshGlobalTransform = DirectX::XMMatrixInverse(nullptr, meshGlobalTransform);
 
 
-	// ウェイトセットできるようにする
+	ModelData::FbxBone bone = pModelData->GetFbxBone(boneName);
+
+	// 取得と変換
+	DirectX::XMMATRIX matCurrentPose;
+
+	FbxAMatrix fbxCurrentPose =
+		bone.fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationData.currentTime);
+	FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+
+
 	DirectX::XMMATRIX boneMat = DirectX::XMMatrixIdentity();
 	boneMat *=
 		//meshGlobalTransform *
@@ -1965,9 +1976,55 @@ Vector3 MelLib::ModelObject::CalcAnimationPosition(const Vector3& pos,const floa
 		//invMeshGlobalTransform
 		;
 
-	boneMat *= weigth;
+	boneMat *= weigth; 
 	posMat *= boneMat;
 
+	// 親ボーンの行列を乗算
+	/*while (1)
+	{
+		if (bone.parentBone)
+		{
+			bone = pModelData->GetFbxBone(bone.parentBone->boneName);
+		}
+		else
+		{
+			break;
+		}
+
+		fbxCurrentPose =
+			bone.fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationData.currentTime);
+		FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+
+		boneMat = DirectX::XMMatrixIdentity();
+		boneMat *=
+			bone.invInitialPose *
+			matCurrentPose;
+
+		posMat *= boneMat;
+	}*/
+
+	posMat *= startWorldMat;
+
+
+	// 基準値を入れる場合、最後にそのままの値使ったワールド行列掛けちゃいけない
+	// 基準値との差分を入れないといけない
+	DirectX::XMMATRIX worldMat = DirectX::XMMatrixIdentity();
+	worldMat *= DirectX::XMMatrixScaling
+	(
+		modelConstDatas.at(meshName).scale.x / startScale.x,
+		modelConstDatas.at(meshName).scale.y / startScale.y,
+		modelConstDatas.at(meshName).scale.z / startScale.z
+	);
+	worldMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstDatas.at(meshName).angle.z - startAngle.z));
+	worldMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas.at(meshName).angle.x - startAngle.x));
+	worldMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas.at(meshName).angle.y - startAngle.y));
+
+	worldMat *= DirectX::XMMatrixTranslation
+	(
+		modelConstDatas.at(meshName).position.x - startPos.x,
+		modelConstDatas.at(meshName).position.y - startPos.y,
+		modelConstDatas.at(meshName).position.z - startPos.z
+	);
 	posMat *= worldMat;
 
 	return MelLib::Vector3(posMat.r[3].m128_f32[0], posMat.r[3].m128_f32[1], posMat.r[3].m128_f32[2]);
@@ -1981,7 +2038,7 @@ void MelLib::ModelObject::SetAnimation(const std::string& name)
 	fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
 	fbxAnimationData.currentAnimationName = name;
 	pModelData->GetAnimationTimeData(name, fbxAnimationData.animationTimes.startTime, fbxAnimationData.animationTimes.endTime);
-	
+
 
 	pModelData->SetFbxAnimStack(name);
 }

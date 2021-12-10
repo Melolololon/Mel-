@@ -52,7 +52,7 @@ private:
 
 	MelLib::ModelObject aniTest;
 	MelLib::ModelObject aniCollTest;
-	MelLib::Vector3 aniCollInitPos = MelLib::Vector3(-0.9, 2, 0.785);
+	MelLib::Vector3 aniCollInitPos = MelLib::Vector3(-0.07, 3, 1.785);
 #pragma endregion
 
 

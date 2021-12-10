@@ -276,7 +276,10 @@ namespace MelLib
 		/// <param name="boneName">ボーン名</param>
 		/// <param name="meshName">メッシュ名</param>
 		/// <returns>行列乗算後の座標</returns>
-		Vector3 CalcAnimationPosition(const Vector3& pos,float weigth, const std::string& boneName,const std::string& meshName);
+		Vector3 CalcAnimationPosition
+		(
+			const Vector3& pos,float weigth, const std::string& boneName,const std::string& meshName
+		, const MelLib::Vector3& startPos, const MelLib::Vector3& startAngle, const MelLib::Vector3& startScale)const;
 
 	};
 }

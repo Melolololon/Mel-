@@ -275,6 +275,7 @@ void Play::AniTestInitialize(){
 	aniTest.Create(MelLib::ModelData::Get("test"), nullptr);
 	aniTest.SetScale(0.2);
 	aniTest.SetAnimationEndStopFlag(true);
+	aniTest.SetPosition(1);
 
 	aniCollTest.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX), nullptr);
 	aniCollTest.SetScale(0.25);
@@ -336,7 +337,7 @@ void Play::AniTestUpdate() {
 
 
 	MelLib::Vector3 calcPos = aniCollInitPos;
-	calcPos = aniTest.CalcAnimationPosition(calcPos,1, "Bone_R.003", "Body");
+	calcPos = aniTest.CalcAnimationPosition(calcPos, 1, "Bone_R.003", "Body", 1, 0, 0.2);
 	aniCollTest.SetPosition(calcPos);
 
 	aniTest.SetAnimationPlayFlag(true);

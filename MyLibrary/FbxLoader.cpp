@@ -178,7 +178,7 @@ void FbxLoader::ParseMesh(ModelData* fbxModel, FbxNode* node, Node* meshNode)
 	ParseMeshVertices(fbxModel, fbxMesh, meshNode, objectName);
 	ParseMeshFaces(fbxModel, fbxMesh, objectName);
 	ParseMaterial(fbxModel, node, objectName);
-	ParseSkin(fbxModel, fbxMesh, objectName);
+	ParseSkin(fbxModel, fbxMesh, node,objectName);
 }
 
 void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, Node* meshNode, const std::string& name)
@@ -436,7 +436,7 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode, const std::
 	}
 }
 
-void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, const std::string& name)
+void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, FbxNode* node, const std::string& name)
 {
 
 
@@ -457,11 +457,11 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, const std::stri
 		return;
 	}
 	
-
 	std::vector<ModelData::FbxBone>& bones = fbxModel->fbxData.bones;
 
 	// クラスターカウント = アーマチュア(ボーン)数
 	const int clusterCount = fbxSkin->GetClusterCount();
+	if (clusterCount == 0)return;
 	bones.reserve(clusterCount);
 
 	//ボーン番号とスキンウェイト
@@ -475,7 +475,6 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, const std::stri
 
 	for(int i = 0; i < clusterCount;i++)
 	{
-
 		//ボーン情報(クラスターはSDKで定義されているボーン?)
 		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
 
@@ -488,6 +487,8 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, const std::stri
 		ModelData::FbxBone& bone = bones.back();
 		//自作ボーンとfbxのボーンとの紐付け
 		bone.fbxCluster = fbxCluster;
+
+		
 
 		//初期姿勢行列の取得
 		FbxAMatrix fbxMat;
@@ -550,6 +551,45 @@ void FbxLoader::ParseSkin(ModelData* fbxModel, FbxMesh* fbxMesh, const std::stri
 		}
 
 	}
+
+	// ボーンの先頭ノードをを頼りに親ボーンをセット
+	SetParentBone(fbxModel, fbxSkin->GetCluster(0)->GetLink() , nullptr);
+
+}
+
+void MelLib::FbxLoader::SetParentBone(ModelData* fbxModel, FbxNode* node, FbxNode* parentNode)
+{
+	std::string name = node->GetName();
+	for (int i = 0; i < node->GetChildCount(); i++)
+	{
+		SetParentBone(fbxModel,node->GetChild(i), node);
+	}
+
+	if (!parentNode)return;
+
+	// 送られてきたノードを元に親ボーンを設定
+
+	// ボーンの参照を取得
+	std::vector<ModelData::FbxBone>& bones = fbxModel->fbxData.bones;
+
+	for(auto& bone: bones)
+	{
+		if(bone.boneName == node->GetName())
+		{
+			for (auto& bone2 : bones) 
+			{
+				if (bone2.boneName == parentNode->GetName()) 
+				{
+					bone.parentBone = &bone2;
+					break;
+				}
+			}
+
+			break;
+		}
+	}
+	
+
 }
 
 

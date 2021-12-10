@@ -76,6 +76,7 @@ namespace MelLib
 			//‰Šúp¨‚Ì‹ts—ñ
 			DirectX::XMMATRIX invInitialPose;
 
+			FbxBone* parentBone = nullptr;
 
 			//ƒ{[ƒ“î•ñ
 			FbxCluster* fbxCluster;
