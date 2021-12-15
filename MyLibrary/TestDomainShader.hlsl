@@ -15,6 +15,10 @@ DS_OUTPUT main(
 	float3 domain : SV_DomainLocation,//UV座標のこと? tryだとfloat3(UVW) この座標は、ポリゴン上のどの辺にあるかを示す
 	const OutputPatch<HS_CONTROL_POINT_OUTPUT, NUM_CONTROL_POINTS> patch)
 {
+	//仮の平面
+	static const float3 PLANE_POS = float3(0, 1, 0);
+
+
 	//上手くやれば三角形でも四角形と同じようなきれいな分割ができるはず
 
 	DS_OUTPUT Output;
@@ -24,7 +28,10 @@ DS_OUTPUT main(
 	//三角形の場合は、uvw全部が0になることはない?
 	//四角形だとある?あるから patch[0].pos * domain.x + patch[0].pos * domain.yの式で原点に頂点配置される?
 	float4 p = patch[0].svpos * domain.x + patch[1].svpos * domain.y + patch[2].svpos * domain.z;
-	p.w = 1;
+	
+	//p.y = p.y >= PLANE_POS.y ? PLANE_POS.y : p.y;
+	
+	Output.svpos = p;
 	
 	//partitioningで頂点がどの頂点とつながるかが決まるから下の式では無理
 	/*float3 p0ToP1 = patch[1].pos.xyz - patch[0].pos.xyz;
@@ -48,16 +55,17 @@ DS_OUTPUT main(
 	//Output.worldPos = mul(worldMat, p);
 	//Output.svpos = mul(mat, p);
 
-	Output.svpos = p;
 	Output.uv = patch[0].uv * domain.x + patch[1].uv * domain.y + patch[2].uv * domain.z;
 
 
 	p = patch[0].worldPos * domain.x + patch[1].worldPos * domain.y + patch[2].worldPos * domain.z;
-	p.w = 1;
+	
 	Output.worldPos = p;
 
 	//折り曲げないから法線はそのまま
 	Output.normal = patch[0].normal;
+
+	
 
 	return Output;
 }

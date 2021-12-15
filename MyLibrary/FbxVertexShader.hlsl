@@ -69,11 +69,19 @@ VSOutput main(VSInput input)
 	float4 wnormal = normalize(mul(worldMat, float4(skinned.normal, 0)));
 
 	VSOutput output;
+
+
+	//static const float3 PLANE_POS = float3(0, 1, 0);
+
+	//skinned.pos.y = skinned.pos.y >= PLANE_POS.y ? 0 : skinned.pos.y;
+
 	output.svpos = mul(mat, skinned.pos);
 	output.normal = wnormal.xyz;
 	output.uv = input.uv;
 
 	output.worldPos = mul(worldMat, skinned.pos);
+
+
 
 
 	return output;
