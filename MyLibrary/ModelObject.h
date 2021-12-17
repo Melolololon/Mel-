@@ -242,7 +242,19 @@ namespace MelLib
 #pragma endregion
 #pragma endregion
 
+
+#pragma region アニメーション
+
+
 		std::string GetCurrentAnimationName()const { return fbxAnimationData.currentAnimationName; }
+
+		/// <summary>
+		/// アニメーションが終了しているかどうかを取得します。
+		/// </summary>
+		/// <returns></returns>
+		bool GetAnimationEndFlag()const { return fbxAnimationData.currentTime == fbxAnimationData.animationTimes.endTime; }
+
+#pragma endregion
 
 		//コンピュートシェーダーで計算したほうがいい。
 		//できそうなら描画時に頂点シェーダーで計算した結果を持ってきたほうがいい?

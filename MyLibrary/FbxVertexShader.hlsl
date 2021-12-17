@@ -71,15 +71,17 @@ VSOutput main(VSInput input)
 	VSOutput output;
 
 
-	//static const float3 PLANE_POS = float3(0, 1, 0);
 
-	//skinned.pos.y = skinned.pos.y >= PLANE_POS.y ? 0 : skinned.pos.y;
+	output.svpos = mul(worldMat, skinned.pos);
+	output.worldPos = output.svpos;
 
-	output.svpos = mul(mat, skinned.pos);
+	/*static const float3 PLANE_POS = float3(0, 1, 0);
+	output.svpos.y = output.svpos.y >= PLANE_POS.y ? PLANE_POS.y : output.svpos.y;*/
+
+	output.svpos = mul(mat, output.svpos);
 	output.normal = wnormal.xyz;
 	output.uv = input.uv;
 
-	output.worldPos = mul(worldMat, skinned.pos);
 
 
 

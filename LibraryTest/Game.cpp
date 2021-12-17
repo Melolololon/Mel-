@@ -36,14 +36,15 @@ void Game::Run()
 	{
 		MelLib::Library::LoopStartProcess();
 
+		Update();
+		Draw();
+
 		if (MelLib::Input::KeyTrigger(DIK_ESCAPE))MelLib::Library::EndFlagTrue();
 		if (MelLib::Library::GetIsEnd())break;
 		
 
-		Update();
-		Draw();
-		MelLib::Library::LoopEndProcess();
 
+		MelLib::Library::LoopEndProcess();
 	}
 
 	Finalize();
