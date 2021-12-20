@@ -18,6 +18,8 @@
 #include<Emitter3D.h>
 #include"TestParticle.h"
 
+#include<TextWrite.h>
+
 void Play::CollisionTestInitialize()
 {
 
@@ -346,6 +348,14 @@ void Play::AniTestUpdate() {
 	{
 		aniTest.ResetAnimation();
 	}
+
+	MelLib::TextWrite::Draw
+	(
+		0,
+		MelLib::Color(255,255,255,255),
+		L"ƒeƒXƒg!",
+		"test"
+	);
 }
 
 void Play::AniTestDraw(){
