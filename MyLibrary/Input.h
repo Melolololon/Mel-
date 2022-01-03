@@ -46,7 +46,7 @@ namespace MelLib
 
 	// Input リファレンス
 	// https://sites.google.com/view/melgames/%E8%87%AA%E4%BD%9C%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA/%E3%83%AA%E3%83%95%E3%82%A1%E3%83%AC%E3%83%B3%E3%82%B9/%E4%BD%BF%E7%94%A8%E4%BB%BB%E6%84%8F%E3%82%AF%E3%83%A9%E3%82%B9/%E5%85%A5%E5%8A%9B
-	
+
 	// メモエリア
 	// GetPressKeyChars使わずに、WinAPIのエディットボックスで文字取得するようにする?
 	// エディットボックスを透明にできるか試す
@@ -263,7 +263,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="nearPoint"></param>
 		/// <param name="farPoint"></param>
-		static void GetMouse3DLine( Vector3& nearPoint,   Vector3& farPoint);
+		static void GetMouse3DLine(Vector3& nearPoint, Vector3& farPoint);
 
 		/// <summary>
 		/// カメラの情報を元に、マウスカーソルを座標変換したときの最近点と最遠点を求めます。
@@ -327,7 +327,7 @@ namespace MelLib
 #pragma region アナログスティック
 
 #pragma region 左
-		
+
 #pragma region 状態
 
 		static bool LeftStickLeft(float lXPar, UCHAR padNum = 1);
@@ -340,19 +340,18 @@ namespace MelLib
 #pragma region トリガー
 
 		/// <summary>
-		/// 前フレームのスティックの傾きがpreLXPar以下、現在のスティックの傾きがlXPar以上だったらtrueを返します。
+		/// 前フレームのスティックの傾きの割合がlXPar以下、現在のフレームの傾きがlXPar以上だったらtrueを返します。
 		/// </summary>
-		/// <param name="lXPar">スティックが何%傾いていたらtrueにするか</param>
-		/// <param name="preLYPar">前フレームのスティックの傾きと比較する割合</param>
+		/// <param name="lXPar">trueを返す基準</param>
 		/// <param name="padNum">パッド番号</param>
 		/// <returns></returns>
-		static bool LeftStickLeftTrigger(float lXPar,float preLXPar,UCHAR padNum = 1);
+		static bool LeftStickLeftTrigger(float lXPar, UCHAR padNum = 1);
 
-		static bool LeftStickRightTrigger(float lXPar, float preLXPar, UCHAR padNum = 1);
+		static bool LeftStickRightTrigger(float lXPar, UCHAR padNum = 1);
 
-		static bool LeftStickUpTrigger(float lXPar, float preLYPar, UCHAR padNum = 1);
+		static bool LeftStickUpTrigger(float lXPar, UCHAR padNum = 1);
 
-		static bool LeftStickDownTrigger(float lXPar, float preLYPar, UCHAR padNum = 1);
+		static bool LeftStickDownTrigger(float lXPar, UCHAR padNum = 1);
 
 
 #pragma endregion
@@ -386,13 +385,13 @@ namespace MelLib
 #pragma endregion
 
 #pragma region トリガー
-		static bool RightStickLeftTrigger(float lXPar, float preLXPar, UCHAR padNum = 1);
+		static bool RightStickLeftTrigger(float lXPar, UCHAR padNum = 1);
 
-		static bool RightStickRightTrigger(float lXPar, float preLXPar, UCHAR padNum = 1);
+		static bool RightStickRightTrigger(float lXPar, UCHAR padNum = 1);
 
-		static bool RightStickUpTrigger(float lYPar, float preLYPar, UCHAR padNum = 1);
+		static bool RightStickUpTrigger(float lYPar, UCHAR padNum = 1);
 
-		static bool RightStickDownTrigger(float lYPar, float preLYPar, UCHAR padNum = 1);
+		static bool RightStickDownTrigger(float lYPar, UCHAR padNum = 1);
 #pragma endregion
 
 
