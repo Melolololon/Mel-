@@ -18,6 +18,7 @@
 Game::Game() {}
 
 Game::~Game() {}
+
 Game* Game::GetInstance()
 {
 	static Game game;
@@ -65,7 +66,8 @@ void Game::Initialize()
 
 	/*CollisionFlag initFlag;
 	initFlag.board = true;
-	initFlag.box = true;
+	initFlag.box = 
+	true;
 	initFlag.lineSegment = true;
 	initFlag.plane = true;
 	initFlag.ray = true;
@@ -77,7 +79,7 @@ void Game::Initialize()
 	MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
 
-	MelLib::TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial", "test");
+	MelLib::TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial", "test          ");
 
 	MelLib::TextureFont::Load("Resources/Font/font.png", MelLib::Value2<UINT>(14, 7), "testFont");
 

@@ -349,13 +349,14 @@ void Play::AniTestUpdate() {
 		aniTest.ResetAnimation();
 	}
 
-	MelLib::TextWrite::Draw
+	/*MelLib::TextWrite::Draw
 	(
 		0,
 		MelLib::Color(255,255,255,255),
 		L"ƒeƒXƒg!",
 		"test"
-	);
+	);*/
+
 }
 
 void Play::AniTestDraw(){
