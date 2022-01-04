@@ -383,7 +383,9 @@ void Play::Initialize()
 
 	sprite2DTest->SetPosition(MelLib::Vector2(1280 / 2, 720 / 2));
 	//sprite2DTest->SetScalingPoint(MelLib::Vector2(0,0));
-	sprite2DTest->SetScalingPoint(MelLib::Texture::Get("test")->GetTextureSize());
+	//sprite2DTest->SetScalingPoint(MelLib::Texture::Get("test")->GetTextureSize());
+	//sprite2DTest->SetRotationPoint(MelLib::Texture::Get("test")->GetTextureSize());
+	sprite2DTest->SetRotationPoint(MelLib::Texture::Get("test")->GetTextureSize() / 2);
 	sprite2DTest->SetScale(MelLib::Vector2(1,1));
 }
 
@@ -391,11 +393,13 @@ void Play::Update()
 {
 	if(MelLib::Input::KeyState(DIK_A))
 	{
-		sprite2DTest->SetScale(sprite2DTest->GetScale() - 0.1f);
+		//sprite2DTest->SetScale(sprite2DTest->GetScale() - 0.1f);
+		sprite2DTest->SetAngle(sprite2DTest->GetAngle() - 3.0f);
 	}
 	if (MelLib::Input::KeyState(DIK_D))
 	{
-		sprite2DTest->SetScale(sprite2DTest->GetScale() + 0.1f);
+		//sprite2DTest->SetScale(sprite2DTest->GetScale() + 0.1f);
+		sprite2DTest->SetAngle(sprite2DTest->GetAngle() + 3.0f);
 	}
 
 	//CatTestUpdate();

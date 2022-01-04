@@ -147,13 +147,25 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 		1
 	);
 
+	// ‰ñ“]‘O‚ÉˆÚ“®
+	Vector2 textureSize = 1.0f;
+	if (texture)textureSize = texture->GetTextureSize();
+	
+	// rotationPoint = 0‚ÌŽž‚É¶ã‰ñ“]‚É‚È‚é‚æ‚¤‚É“®‚©‚·
+	if (texture) 
+	{
+		matWorld *= DirectX::XMMatrixTranslation(-rotationPoint.x + textureSize.x / 2, -rotationPoint.y + textureSize.y / 2, 0.0f);
+	}
+	else
+	{
+		matWorld *= DirectX::XMMatrixTranslation(-rotationPoint.x + constData.scale.x / 2, -rotationPoint.y + constData.scale.y / 2, 0.0f);
+	}
+
 	// ‰ñ“]
 	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(constData.angle.z));
-	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
-	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));
+	/*matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
+	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));*/
 
-	Vector2 textureSize = 1.0f;
-	if(texture)textureSize = texture->GetTextureSize();
 	float width = textureSize.x;
 	float height = textureSize.y;
 	width /= 2;
@@ -175,6 +187,16 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 		constData.position.y + (vertices[0].pos.y - height) + height,
 		0.0f
 	);*/
+
+	// –ß‚·
+	if (texture)
+	{
+		matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - textureSize.x / 2, rotationPoint.y - textureSize.y / 2, 0.0f);
+	}
+	else
+	{
+		matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - constData.scale.x / 2, rotationPoint.y - constData.scale.y / 2, 0.0f);
+	}
 
 
 	constBufferData->mat = matWorld * cameraMatrix;

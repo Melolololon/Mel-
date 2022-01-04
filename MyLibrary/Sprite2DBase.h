@@ -15,6 +15,7 @@ namespace MelLib
 		static DirectX::XMMATRIX cameraMatrix;
 
 		DirectX::XMFLOAT2 scalingPoint = DirectX::XMFLOAT2(0,0);
+		DirectX::XMFLOAT2 rotationPoint = DirectX::XMFLOAT2(0,0);
 	protected:
 		static PipelineState defaultPipeline;
 
@@ -43,21 +44,28 @@ namespace MelLib
 
 #pragma region ‘€ì
 		void SetPosition(const Vector2& pos) { constData.position = { pos.x,pos.y,0 }; }
+
 		void SetAngle(const float& angle) { constData.angle = { 0,0,angle }; }
+
+		/// <summary>
+		/// ‰ñ“]‚·‚é‚Æ‚«‚ÌŠî€À•W‚ğİ’è‚µ‚Ü‚·B
+		/// </summary>
+		/// <param name="point">‰ñ“]Šî€(0,0‚Å¶ã‚ğŠî€‚É‰ñ“])</param>
+		void SetRotationPoint(const Vector2& point) { rotationPoint = point.ToXMFLOAT2(); }
 
 		void SetScale(const Vector2& scale) { constData.scale = scale.ToXMFLOAT2(); }
 		
 		/// <summary>
 		/// Šgk‚·‚é‚Æ‚«‚ÌŠî€À•W‚ğİ’è‚µ‚Ü‚·B
 		/// </summary>
-		/// <param name="point">‰ñ“]Šî€(0,0‚Å¶ã‚ğŠî€‚É‰ñ“])</param>
+		/// <param name="point">ŠgkŠî€(0,0‚Å¶ã‚ğŠî€‚ÉŠgk)</param>
 		void SetScalingPoint(const Vector2& point) { scalingPoint = point.ToXMFLOAT2(); }
 #pragma endregion
 
 #pragma region ƒQƒbƒg
 		Vector2 GetPosition()const { return Vector2(constData.position.x, constData.position.y); }
 
-		Vector2 GetAngle()const { return Vector2(constData.angle.x, constData.angle.y); }
+		float GetAngle()const { return constData.angle.z; }
 		Vector2 GetScale()const { return Vector2(constData.scale.x, constData.scale.y); }
 #pragma endregion
 
