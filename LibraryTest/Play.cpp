@@ -376,13 +376,27 @@ void Play::Initialize()
 	//CatInitialize();
 	//ParticleTestInitialize();
 	AniTestInitialize();
-	
 
+	MelLib::Texture::Load("Resources/Texture/testTexture.png", "test");
+	sprite2DTest = std::make_unique<MelLib::Sprite2D>(MelLib::Texture::Get("test"));
+	//sprite2DTest->CreateSetColor(Color(255, 255, 255, 255));
+
+	sprite2DTest->SetPosition(MelLib::Vector2(1280 / 2, 720 / 2));
+	//sprite2DTest->SetScalingPoint(MelLib::Vector2(0,0));
+	sprite2DTest->SetScalingPoint(MelLib::Texture::Get("test")->GetTextureSize());
+	sprite2DTest->SetScale(MelLib::Vector2(1,1));
 }
 
 void Play::Update()
 {
-
+	if(MelLib::Input::KeyState(DIK_A))
+	{
+		sprite2DTest->SetScale(sprite2DTest->GetScale() - 0.1f);
+	}
+	if (MelLib::Input::KeyState(DIK_D))
+	{
+		sprite2DTest->SetScale(sprite2DTest->GetScale() + 0.1f);
+	}
 
 	//CatTestUpdate();
 	//ParticleTestUpdate();
@@ -399,6 +413,8 @@ void Play::Draw()
 	AniTestDraw();
 
 	MelLib::GameObjectManager::GetInstance()->Draw();
+
+	sprite2DTest->Draw();
 }
 
 void Play::Finalize()

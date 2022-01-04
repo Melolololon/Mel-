@@ -138,6 +138,8 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
 
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
+	
+	// Šgk
 	matWorld *= DirectX::XMMatrixScaling
 	(
 		constData.scale.x,
@@ -145,7 +147,7 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 		1
 	);
 
-	
+	// ‰ñ“]
 	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(constData.angle.z));
 	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
 	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));
@@ -157,15 +159,14 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 	width /= 2;
 	height /= 2; 
 
-
-
-	//¶ãŠî€Šgk
+	// À•W‚Ì”’l‚Ì•”•ª‚É¶ã‚ª—ˆ‚é‚æ‚¤‚ÉƒZƒbƒg‚µAscalingPoint•ª‚¸‚ç‚µ‚Ä‹^—“I‚ÈŠgkˆÊ’u‚ğ‚¸‚ç‚·ˆ—‚ğs‚¤
 	matWorld *= DirectX::XMMatrixTranslation
 	(
-		constData.position.x + (width * constData.scale.x) + (vertices[2].pos.x - width),
-		constData.position.y + (height * constData.scale.y) + (vertices[0].pos.y - height),
+		constData.position.x + (width * constData.scale.x) + (vertices[2].pos.x - width) - (scalingPoint.x * (constData.scale.x - 1)),
+		constData.position.y + (height * constData.scale.y) + (vertices[0].pos.y - height) - (scalingPoint.y * (constData.scale.y - 1)),
 		0.0f
 	);
+
 
 	//’†SŠî€Šgk
 	/*matWorld *= DirectX::XMMatrixTranslation
