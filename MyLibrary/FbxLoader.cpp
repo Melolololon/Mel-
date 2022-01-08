@@ -287,13 +287,13 @@ void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh, const std:
 
 void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode, const std::string& name)
 {
-	//auto& materialVector = fbxModel->materials;
-	//materialVector.resize(1);
-	//MaterialData& modelMaterial = materialVector[0];
-	fbxModel->material.reserve(1);
+	const int materialCount = fbxNode->GetMaterialCount();
+
+	if (materialCount == 0)return;
+
 	fbxModel->material[name] = std::make_unique<ADSAMaterial>();
 	fbxModel->material[name]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL));
-	fbxModel->pTexture.reserve(1);
+
 	fbxModel->pTexture[name] = std::make_unique<Texture>();
 
 	ADSAMaterialData mtl;
@@ -303,7 +303,7 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode, const std::
 	pbrMaterialVector.resize(1);
 	PbrMaterial& pbrModelMaterial = pbrMaterialVector[0];*/
 
-	const int materialCount = fbxNode->GetMaterialCount();
+
 
 	if(materialCount > 0)
 	{
@@ -391,7 +391,7 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode, const std::
 			}
 
 
-			fbxModel->material[0]->SetMaterialData(mtl);
+			fbxModel->material[name]->SetMaterialData(mtl);
 
 			const FbxProperty diffuseProperty =
 				materials->FindProperty(FbxSurfaceMaterial::sDiffuse);

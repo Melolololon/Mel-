@@ -530,7 +530,7 @@ void ModelObject::SetCmdList()
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
 		(
 			materials[objectName]->GetPTextureHeap()->GetGPUDescriptorHandleForHeapStart(),
-			i,
+			0,
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 		);
 		cmdLists[0]->SetGraphicsRootDescriptorTable(TEXURE_ROOTPARAM_NUM, gpuDescHandle);

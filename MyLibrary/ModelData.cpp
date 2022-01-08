@@ -944,8 +944,11 @@ std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 	size_t size = material.size();
 	if (size == 0)
 	{
-		size++;
-		material["main"] = nullptr;
+		size = objectNames.size();
+		for (int i = 0; i < objectNames.size(); i++)
+		{
+			material[objectNames[i]] = nullptr;
+		}
 	}
 
 	std::vector<ADSAMaterial*>pMtls(size);
