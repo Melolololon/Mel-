@@ -275,8 +275,8 @@ void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
 	ShaderDataSet set =
 	{
 		{L"LIB","",""},
-		{L"NULL","",""},
-		{L"NULL","",""},
+		{L"LIB","",""},
+		{L"LIB","",""},
 		{L"LIB","",""},
 		{L"LIB","",""}
 	};
@@ -314,7 +314,7 @@ void MelLib::GameObject::CreateCollisionCheckModel()
 			{
 				modelObjcts[i].Create(ModelData::Get(type), nullptr);
 
-				modelObjcts[i].SetMaterial(&material, 0);
+				modelObjcts[i].SetMaterial(&material);
 			}
 		}
 		else if (dataNum < objNum)

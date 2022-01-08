@@ -8,23 +8,14 @@ namespace MelLib
 	//スプライト2D基底クラス
 	class Sprite2DBase :public Sprite
 	{
-	public:
-		//関数で選べるようにする
-		enum SpriteAnchorPoint
-		{
-			SPRITE_ANCHOR_POINT_LEFT_UP,
-			SPRITE_ANCHOR_POINT_LEFT_DOWN,
-			SPRITE_ANCHOR_POINT_RIGHT_UP,
-			SPRITE_ANCHOR_POINT_RIGHT_DOWN,
-			SPRITE_ANCHOR_POINT_CENTER,
-		};
-
+		
 	private:
 
 		//2Dのカメラは固定だから、行列生成関数このクラスに持たせてもいいかも
 		static DirectX::XMMATRIX cameraMatrix;
 
-
+		DirectX::XMFLOAT2 scalingPoint = DirectX::XMFLOAT2(0,0);
+		DirectX::XMFLOAT2 rotationPoint = DirectX::XMFLOAT2(0,0);
 	protected:
 		static PipelineState defaultPipeline;
 
@@ -53,14 +44,28 @@ namespace MelLib
 
 #pragma region 操作
 		void SetPosition(const Vector2& pos) { constData.position = { pos.x,pos.y,0 }; }
+
 		void SetAngle(const float& angle) { constData.angle = { 0,0,angle }; }
+
+		/// <summary>
+		/// 回転するときの基準座標を設定します。
+		/// </summary>
+		/// <param name="point">回転基準(0,0で左上を基準に回転)</param>
+		void SetRotationPoint(const Vector2& point) { rotationPoint = point.ToXMFLOAT2(); }
+
 		void SetScale(const Vector2& scale) { constData.scale = scale.ToXMFLOAT2(); }
+		
+		/// <summary>
+		/// 拡縮するときの基準座標を設定します。
+		/// </summary>
+		/// <param name="point">拡縮基準(0,0で左上を基準に拡縮)</param>
+		void SetScalingPoint(const Vector2& point) { scalingPoint = point.ToXMFLOAT2(); }
 #pragma endregion
 
 #pragma region ゲット
 		Vector2 GetPosition()const { return Vector2(constData.position.x, constData.position.y); }
 
-		Vector2 GetAngle()const { return Vector2(constData.angle.x, constData.angle.y); }
+		float GetAngle()const { return constData.angle.z; }
 		Vector2 GetScale()const { return Vector2(constData.scale.x, constData.scale.y); }
 #pragma endregion
 

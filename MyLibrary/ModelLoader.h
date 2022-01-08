@@ -38,22 +38,24 @@ namespace MelLib
 			const std::string& path,
 			bool loadUV,
 			bool loadNormal,
-			std::vector<std::vector<FbxVertex>>& vertices,
-			std::vector<std::vector<USHORT>>& indices,
+			std::vector<std::string>&objectNames,
+			std::unordered_map<std::string,std::vector<FbxVertex>>& vertices,
+			std::unordered_map<std::string, std::vector<USHORT>>& indices,
 			std::string& materialFileName,
-			std::vector<std::string>& materialName,
-			std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
+			std::unordered_map<std::string, std::string>& materialName,
+			std::unordered_map<std::string, std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
 			int* loadNum,
 			std::vector<Vector3>* bonePosVector,
-			std::vector<std::vector<int>>* boneNumVector
+			std::unordered_map<std::string, std::vector<int>>* boneNumVector
 		);
 
 		bool LoadObjMaterial
 		(
-			std::string materialDirectoryPath,
-			std::string materialFileName,
-			std::vector<std::string>& texPath,
-			std::vector<ADSAMaterialData>& materials,
+			const std::string& materialDirectoryPath,
+			const std::string& materialFileName,
+			const std::vector<std::string>& objectNames,
+			std::unordered_map<std::string, std::string>& texPath,
+			std::unordered_map<std::string, ADSAMaterialData>& materials,
 			int* loadCount
 		);
 	};

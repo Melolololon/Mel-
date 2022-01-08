@@ -52,15 +52,16 @@ bool  ModelLoader::LoadObjModel
 (
 	const std::string& path,
 	bool loadUV,
-	bool loadNormal,
-	std::vector<std::vector<FbxVertex>>& vertices,
-	std::vector<std::vector<USHORT>>& indices,
+	bool loadNormal, 
+	std::vector<std::string>& objectNames,
+	std::unordered_map<std::string,std::vector<FbxVertex>>& vertices,
+	std::unordered_map<std::string,std::vector<USHORT>>& indices,
 	std::string& materialFileName,
-	std::vector<std::string>& materialName,
-	std::vector<std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
+	std::unordered_map<std::string, std::string>& materialName,
+	std::unordered_map<std::string, std::unordered_map < USHORT, std::vector<USHORT>>>& smoothNormalCalcData,
 	int* loadNum,
 	std::vector<Vector3>* bonePosVector,
-	std::vector<std::vector<int>>* boneNumVector
+	std::unordered_map<std::string, std::vector<int>>* boneNumVector
 )
 {
 
@@ -92,8 +93,6 @@ bool  ModelLoader::LoadObjModel
 	//読み取ったテキストを格納する文字列
 	std::string objText = "";
 
-	//先頭文字
-	std::string topStr = "";
 
 	//ファイルストリーム
 	std::ifstream obj;
@@ -105,15 +104,12 @@ bool  ModelLoader::LoadObjModel
 		return false;
 	}
 
-	//bool loadVertex = false;
-	//bool loadUV = false;
-	//bool loadNormal = false;
 
 	//マテリアル読み込みでtrueにし、座標読み込み時にtrueだったら配列clear
 	bool loadPreparation = false;
 
 	//読み込んだ.obj内のモデル数
-	int LoadModel = 0;
+	int loadObjectNum = 0;
 
 	//ポリゴンの枚数
 	int polygonCount = 0;
@@ -122,7 +118,7 @@ bool  ModelLoader::LoadObjModel
 	bool loadMtlFile = false;
 
 	//スムースシェーディング用データ格納用
-	std::vector<std::unordered_map<int, DirectX::XMFLOAT3>>smoothVertexPos;
+	std::unordered_map<std::string,std::unordered_map<int, DirectX::XMFLOAT3>>smoothVertexPos;
 
 	//頂点読み込み数
 	int vertexLoadCount = 0;
@@ -133,16 +129,23 @@ bool  ModelLoader::LoadObjModel
 	int boneObjectNum = 0;//何個目のオブジェクトのデータかを入れる変数
 	int boneNum = 0;//ボーンの番号
 	bool loadBoneData = false;
-	std::vector< std::vector<int>>temporaryBoneNumVec;//temporary は　仮
+	std::unordered_map<std::string, std::vector<int>>temporaryBoneNumVec;//temporary は　仮
 
-
+	std::string objectName = "";
 	while (std::getline(obj, objText))
 	{
 		std::istringstream lineStream(objText);
 
 		//先頭文字取得
-		topStr.clear();
+		std::string topStr = "";
 		lineStream >> topStr;
+
+		// オブジェクト名取得
+		if(topStr.find("o") != std::string::npos)
+		{
+			lineStream >> objectName;
+			objectNames.push_back(objectName);
+		}
 
 #pragma region 頂点データ取得
 
@@ -184,22 +187,22 @@ bool  ModelLoader::LoadObjModel
 						loadNormalVector.clear();*/
 
 						//スムーズシェーディング用配列修正
-						smoothNormalCalcData.resize(smoothNormalCalcData.size() + 1);
-						smoothVertexPos.resize(smoothVertexPos.size() + 1);
+						smoothNormalCalcData.reserve(smoothNormalCalcData.size() + 1);
+						smoothVertexPos.reserve(smoothVertexPos.size() + 1);
 
 
 						//読み込み数カウントインクリメント
-						LoadModel++;
+						loadObjectNum++;
 
 						//カウント初期化
 						vertexLoadCount = 0;
 						polygonCount = 0;
 
 						//参照した配列のメモリ確保
-						vertices.resize(vertices.size() + 1);
-						vertices[vertices.size() - 1].reserve(1000);
-						indices.resize(indices.size() + 1);
-						indices[indices.size() - 1].reserve(1000);
+						vertices.reserve(vertices.size() + 1);
+						vertices[objectName].reserve(1000);
+						indices.reserve(indices.size() + 1);
+						indices[objectName].reserve(1000);
 
 					}
 
@@ -210,8 +213,8 @@ bool  ModelLoader::LoadObjModel
 
 
 					std::vector<USHORT>u;
-					smoothNormalCalcData[LoadModel - 1].emplace(vertexLoadCount, u);
-					smoothVertexPos[LoadModel - 1].emplace(vertexLoadCount, pos);
+					smoothNormalCalcData[objectName].emplace(vertexLoadCount, u);
+					smoothVertexPos[objectName].emplace(vertexLoadCount, pos);
 					vertexLoadCount++;
 				}
 
@@ -229,7 +232,7 @@ bool  ModelLoader::LoadObjModel
 		if (topStr.find("usemtl") != std::string::npos)
 		{
 			lineStream >> mtlNama;
-			materialName.push_back(mtlNama);
+			materialName.emplace(objectName,mtlNama);
 
 
 			loadPreparation = false;
@@ -276,8 +279,8 @@ bool  ModelLoader::LoadObjModel
 					vertex.uv = { 0,0 };
 
 				//格納
-				vertices[LoadModel - 1].push_back(vertex);
-				indices[LoadModel - 1].push_back(polygonCount);
+				vertices[objectName].push_back(vertex);
+				indices[objectName].push_back(polygonCount);
 				polygonCount++;
 			}
 
@@ -285,71 +288,61 @@ bool  ModelLoader::LoadObjModel
 		}
 #pragma endregion
 
+
+		// オブジェクト名で管理し始めたが、objのボーン情報が番号で出力されて読み込めないため、コメントアウト
 #pragma region ボーン読み込み
-		//読み込み準備
-		if (objText.find("BoneData") != std::string::npos)
-		{
-			loadBoneData = true;
 
-			if (bonePosVector)bonePosVector->reserve(99);
-			if (boneNumVector)temporaryBoneNumVec.resize(vertices.size());
+		////読み込み準備
+		//if (objText.find("BoneData") != std::string::npos)
+		//{
+		//	loadBoneData = true;
 
-			int loopCount = 0;
-			for (auto& num : temporaryBoneNumVec)
-			{
-				num.reserve(vertices[loopCount].size());
-				loopCount++;
-			}
-		}
+		//	if (bonePosVector)bonePosVector->reserve(99);
+		//	if (boneNumVector)temporaryBoneNumVec.reserve(vertices.size());
+
+		//	int loopCount = 0;
+		//	for (auto& num : temporaryBoneNumVec)
+		//	{
+		//		num[objectName].reserve(vertices[objectName].size());
+		//		loopCount++;
+		//	}
+		//}
 
 
-		//bpあったらボーン座標追加
-		if (objText.find("bp") != std::string::npos && bonePosVector)
-		{
-			lineStream >> bonePos.x;
-			lineStream >> bonePos.y;
-			lineStream >> bonePos.z;
-			bonePosVector->push_back(bonePos);
-		}
+		////bpあったらボーン座標追加
+		//if (objText.find("bp") != std::string::npos && bonePosVector)
+		//{
+		//	lineStream >> bonePos.x;
+		//	lineStream >> bonePos.y;
+		//	lineStream >> bonePos.z;
+		//	bonePosVector->push_back(bonePos);
+		//}
 
-		if (objText.find("bd") != std::string::npos && boneNumVector)
-		{
+		//if (objText.find("bd") != std::string::npos && boneNumVector)
+		//{
 
-			//何個目のオブジェクトのデータか確認
-			lineStream >> boneObjectNum;
+		//	//何個目のオブジェクトのデータか確認
+		//	lineStream >> boneObjectNum;
 
-			//番号取得
-			lineStream >> boneNum;
+		//	//番号取得
+		//	lineStream >> boneNum;
 
-			//仮配列にボーン番号追加
-			temporaryBoneNumVec[boneObjectNum].push_back(boneNum);
+		//	//仮配列にボーン番号追加
+		//	temporaryBoneNumVec[boneObjectNum].push_back(boneNum);
 
-		}
+		//}
 
 #pragma endregion
 
 	}
 
 	if (loadNum)
-		*loadNum = LoadModel;
+		*loadNum = loadObjectNum;
 
 	//仮配列から移動
 	if (boneNumVector)
 		*boneNumVector = temporaryBoneNumVec;
 
-
-	vertices.shrink_to_fit();
-	for (auto& v : vertices)
-		v.shrink_to_fit();
-
-	indices.shrink_to_fit();
-	for (auto& i : indices)
-		i.shrink_to_fit();
-
-	smoothNormalCalcData.shrink_to_fit();
-	for (auto& s : smoothNormalCalcData)
-		for (auto& s2 : s)
-			s2.second.shrink_to_fit();
 
 	obj.close();
 
@@ -359,21 +352,23 @@ bool  ModelLoader::LoadObjModel
 	//smoothNormalCalcData.resize(smoothVertexPos.size());
 	int v1Count = 0;
 
-	for (int i = 0; i < LoadModel; i++)
+	for(auto& v : vertices)
 	{
-		for (auto& v1 : vertices[i])
+		std::string name = v.first;
+
+		for (auto& v1 : vertices[name])
 		{
-			auto itr = smoothVertexPos[i].begin();
+			auto itr = smoothVertexPos[name].begin();
 			int itrNum = 0;
 			//smoothVertexPosと比較して、smoothNormalCalcDataに入れていく
-			for (; itr != smoothVertexPos[i].end(); ++itr)
+			for (; itr != smoothVertexPos[name].end(); ++itr)
 			{
 
 				if (v1.pos.x == itr->second.x &&
 					v1.pos.y == itr->second.y &&
 					v1.pos.z == itr->second.z)
 				{
-					smoothNormalCalcData[i][itrNum].push_back(v1Count);
+					smoothNormalCalcData[name][itrNum].push_back(v1Count);
 				}
 				itrNum++;
 			}
@@ -396,10 +391,11 @@ bool  ModelLoader::LoadObjModel
 
 bool ModelLoader::LoadObjMaterial
 (
-	std::string materialDirectoryPath,
-	std::string materialFileName,
-	std::vector<std::string>& texPath,
-	std::vector<ADSAMaterialData>& materials,
+	const std::string& materialDirectoryPath,
+	const std::string& materialFileName,
+	const std::vector<std::string>& objectNames,
+	std::unordered_map<std::string, std::string>& texPath,
+	std::unordered_map<std::string, ADSAMaterialData>& materials,
 	int* loadCount
 )
 {
@@ -423,6 +419,7 @@ bool ModelLoader::LoadObjMaterial
 	//int materialArrayNum = 0;//マテリアル情報を書き込む場所の番号
 	//std::string materialNameKari;//マテリアル名を一時的に入れるstring
 
+	std::string objectName;
 	while (std::getline(file, line))
 	{
 		std::istringstream lineStream(line);
@@ -433,8 +430,10 @@ bool ModelLoader::LoadObjMaterial
 		if (materialData == "newmtl")
 		{
 			loadNum++;
-			texPath.resize(loadNum);
-			materials.resize(loadNum);
+			texPath.reserve(loadNum);
+			materials.reserve(loadNum);
+
+			objectName = objectNames[loadNum - 1];
 
 			//名前取得
 			//lineStream >> materials[loadNum - 1].materialName;
@@ -456,28 +455,28 @@ bool ModelLoader::LoadObjMaterial
 		}
 		if (materialData == "Ka") //アンビエント
 		{
-			lineStream >> materials[loadNum - 1].ambient.v1;
-			lineStream >> materials[loadNum - 1].ambient.v2;
-			lineStream >> materials[loadNum - 1].ambient.v3;
+			lineStream >> materials[objectName].ambient.v1;
+			lineStream >> materials[objectName].ambient.v2;
+			lineStream >> materials[objectName].ambient.v3;
 			
 		}
 		if (materialData == "Kd")
 		{
-			lineStream >> materials[loadNum - 1].diffuse.v1;
-			lineStream >> materials[loadNum - 1].diffuse.v2;
-			lineStream >> materials[loadNum - 1].diffuse.v3;
+			lineStream >> materials[objectName].diffuse.v1;
+			lineStream >> materials[objectName].diffuse.v2;
+			lineStream >> materials[objectName].diffuse.v3;
 			
 		}
 		if (materialData == "Ks")
 		{
-			lineStream >> materials[loadNum - 1].specular.v1;
-			lineStream >> materials[loadNum - 1].specular.v2;
-			lineStream >> materials[loadNum - 1].specular.v3;
+			lineStream >> materials[objectName].specular.v1;
+			lineStream >> materials[objectName].specular.v2;
+			lineStream >> materials[objectName].specular.v3;
 			
 		}
 		if (materialData == "map_Kd")
 		{
-			lineStream >> texPath[loadNum - 1];
+			lineStream >> texPath[objectName];
 			
 		}
 	}

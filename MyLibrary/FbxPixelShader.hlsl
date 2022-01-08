@@ -45,5 +45,6 @@ float4 main(GSOutput input) : SV_TARGET
 	//べた塗テクスチャ使ってないけど、1オーバーするし、saturateより処理速い可能性あるから、/2
 	float alphaSum = (shaderColor.a + texColor.a) / 2;
 
+
 	return float4(shaderColor.rgb * texColor.rgb, alphaSum);
 }

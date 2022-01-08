@@ -219,22 +219,6 @@ XINPUT_STATE Input::padState[4];
 XINPUT_STATE Input::padPrevious[4];
 bool Input::padConnected[4];
 
-float Input::leftStickLeftPar;
-float Input::preLeftStickLeftPar;
-float Input::leftStickRightPar;
-float Input::preLeftStickRightPar;
-float Input::leftStickUpPar;
-float Input::preLeftStickUpPar;
-float Input::leftStickDownPar;
-float Input::preLeftStickDownPar;
-float Input::rightStickLeftPar;
-float Input::preRightStickLeftPar;
-float Input::rightStickRightPar;
-float Input::preRightStickRightPar;
-float Input::rightStickUpPar;
-float Input::preRightStickUpPar;
-float Input::rightStickDownPar;
-float Input::preRightStickDownPar;
 
 LRESULT Input::ParamChildWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -310,27 +294,16 @@ void Input::Update()
 #pragma endregion
 
 #pragma region パッド
-	preLeftStickLeftPar = leftStickLeftPar;
-	preLeftStickRightPar = leftStickRightPar;
-	preLeftStickUpPar = leftStickUpPar;
-	preLeftStickDownPar = leftStickDownPar;
-	preRightStickLeftPar = rightStickLeftPar;
-	preRightStickRightPar = rightStickRightPar;
-	preRightStickUpPar = rightStickUpPar;
-	preRightStickDownPar = rightStickDownPar;
 
-	leftStickLeftPar = 0.0f;
-	leftStickRightPar = 0.0f;
-	leftStickUpPar = 0.0f;
-	leftStickDownPar = 0.0f;
-	rightStickLeftPar = 0.0f;
-	rightStickRightPar = 0.0f;
-	rightStickUpPar = 0.0f;
-	rightStickDownPar = 0.0f;
+
+
 
 	for (int i = 0; i < XUSER_MAX_COUNT; i++)
 	{
+		// コントローラーの前フレームを保存
 		padPrevious[i] = padState[i];
+
+
 		if (XInputGetState(i, &padState[i]) != ERROR_SUCCESS)padConnected[i] = false;
 		else padConnected[i] = true;
 	}
@@ -845,7 +818,7 @@ float Input::DirectionalButtonAngle(const UCHAR padNum)
 bool Input::LeftStickLeft(const float lXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	leftStickLeftPar = lXPar;
+
 
 	if (-lXPar / 100.0f * MAX_AXIS_VALUE >= padState[padNum - 1].Gamepad.sThumbLX) return true;
 
@@ -855,7 +828,6 @@ bool Input::LeftStickLeft(const float lXPar, const UCHAR padNum)
 bool Input::LeftStickRight(const float lXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	leftStickRightPar = lXPar;
 	if (lXPar / 100.0f * MAX_AXIS_VALUE <= padState[padNum - 1].Gamepad.sThumbLX)
 		return true;
 
@@ -885,37 +857,39 @@ bool Input::LeftStickDown(const float lYPar, const UCHAR padNum)
 
 #pragma region トリガー
 
-bool Input::LeftStickLeftTrigger(const float lXPar, const float preLXPar, const UCHAR padNum)
+
+
+bool Input::LeftStickLeftTrigger(const float lXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	if (preLeftStickLeftPar <= preLXPar
+	if (-lXPar / 100.0f * MAX_AXIS_VALUE > padPrevious[padNum - 1].Gamepad.sThumbLX
 		&& LeftStickLeft(lXPar, padNum))return true;
 
 	return false;
 }
 
-bool Input::LeftStickRightTrigger(const float lXPar, const float preLXPar, const UCHAR padNum)
+bool Input::LeftStickRightTrigger(const float lXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	if (preLeftStickRightPar <= preLXPar
+	if (lXPar / 100.0f * MAX_AXIS_VALUE < padPrevious[padNum - 1].Gamepad.sThumbLX
 		&& LeftStickRight(lXPar, padNum))return true;
 
 	return false;
 }
 
-bool Input::LeftStickUpTrigger(const float lYPar, const float preLYPar, const UCHAR padNum)
+bool Input::LeftStickUpTrigger(const float lYPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	if (preLeftStickUpPar <= preLYPar
+	if (lYPar / 100.0f * MAX_AXIS_VALUE > padPrevious[padNum - 1].Gamepad.sThumbLY
 		&& LeftStickUp(lYPar, padNum))return true;
 
 	return false;
 }
 
-bool Input::LeftStickDownTrigger(const float lYPar, const float preLYPar, const UCHAR padNum)
+bool Input::LeftStickDownTrigger(const float lYPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	if (preLeftStickDownPar <= preLYPar
+	if (-lYPar / 100.0f * MAX_AXIS_VALUE < padPrevious[padNum - 1].Gamepad.sThumbLY
 		&& LeftStickDown(lYPar, padNum))return true;
 
 	return false;
@@ -1015,37 +989,37 @@ bool Input::RightStickDown(const float lYPar, const UCHAR padNum)
 
 #pragma region トリガー
 
-bool Input::RightStickLeftTrigger(const float lXPar, const float preLXPar, const UCHAR padNum)
+bool Input::RightStickLeftTrigger(const float lXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	if (preRightStickLeftPar <= preLXPar
+	if (-lXPar / 100.0f * MAX_AXIS_VALUE <= padPrevious[padNum - 1].Gamepad.sThumbRX
 		&& RightStickLeft(lXPar, padNum))return true;
 
 	return false;
 }
 
-bool Input::RightStickRightTrigger(const float lXPar, const float preLXPar, const UCHAR padNum)
+bool Input::RightStickRightTrigger(const float lXPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	if (preRightStickRightPar <= preLXPar
+	if (lXPar / 100.0f * MAX_AXIS_VALUE >= padPrevious[padNum - 1].Gamepad.sThumbRX
 		&& RightStickRight(lXPar, padNum))return true;
 
 	return false;
 }
 
-bool Input::RightStickUpTrigger(const float lYPar, const float preLYPar, const UCHAR padNum)
+bool Input::RightStickUpTrigger(const float lYPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	if (preRightStickUpPar <= preLYPar
+	if (lYPar / 100.0f * MAX_AXIS_VALUE <= padPrevious[padNum - 1].Gamepad.sThumbRY
 		&& RightStickUp(lYPar, padNum))return true;
 
 	return false;
 }
 
-bool Input::RightStickDownTrigger(const float lYPar, const float preLYPar, const UCHAR padNum)
+bool Input::RightStickDownTrigger(const float lYPar, const UCHAR padNum)
 {
 	if (!PadCheck(padNum))return false;
-	if (preRightStickDownPar <= preLYPar
+	if (-lYPar / 100.0f * MAX_AXIS_VALUE >= padPrevious[padNum - 1].Gamepad.sThumbRY
 		&& RightStickDown(lYPar, padNum))return true;
 
 	return false;

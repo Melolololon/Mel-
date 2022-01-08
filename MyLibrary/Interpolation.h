@@ -13,6 +13,9 @@ namespace MelLib
 			return start * (1.0f - t) + end * t;
 		}
 
+		
+
+
 	};
 
 }
