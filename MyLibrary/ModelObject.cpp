@@ -505,11 +505,15 @@ void ModelObject::SetCmdList()
 	const std::vector<IndexBufferSet>& indexBufferSets = pModelData->GetIndexBufferSet();
 
 
-
 	//モデルのオブジェクトごとをセット
 	//頂点バッファ分ループ
 	for (int i = 0; i < modelFileObjectNum; i++)
 	{
+		/*if(modelFileObjectNum >= 2)
+		{
+			i = modelFileObjectNum - 1;
+		}*/
+
 		std::string objectName = objectNames[i];
 
 		//cmdLists[0]->SetPipelineState(pPipeline[i]->GetPipelineState().Get());
@@ -1839,13 +1843,16 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 	boneDatas.resize(pModelData->GetBoneNumber());
 	parentBoneDatas.resize(pModelData->GetBoneNumber());
 	SkinConstBufferData* skinConstData = nullptr;
-	modelConstBuffer[0]->Map(0, nullptr, (void**)&skinConstData);
-	for (int i = 0; i < BONE_MAX; i++)
-	{
-		skinConstData->bones[i] = DirectX::XMMatrixIdentity();
-	}
-	modelConstBuffer[0]->Unmap(0, nullptr);
 
+	for (auto& buffer : modelConstBuffer)
+	{
+		buffer->Map(0, nullptr, (void**)&skinConstData);
+		for (int i = 0; i < BONE_MAX; i++)
+		{
+			skinConstData->bones[i] = DirectX::XMMatrixIdentity();
+		}
+		buffer->Unmap(0, nullptr);
+	}
 
 	if (pModelData->GetBoneNumber() != 0 && pModelData->GetModelFormat() == MelLib::ModelData::ModelFormat::MODEL_FORMAT_FBX) {
 		fbxAnimationData.animationTimes.frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);

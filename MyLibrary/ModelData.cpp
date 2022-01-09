@@ -767,10 +767,11 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 			mtlData,
 			&materialNum
 		);
-		if (!result)loadFalseEndProcess();
+		//if (!result)loadFalseEndProcess();
 
 
-		if (materialNum != 0) {
+		if (materialNum != 0) 
+		{
 			pTexture.reserve(materialNum);
 			material.reserve(materialNum);
 			for(const auto& objectName:objectNames)
@@ -783,7 +784,8 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 				material[objectName]->SetMaterialData(mtlData[objectName]);
 			}
 		}
-		else{
+		else
+		{
 
 
 		}
