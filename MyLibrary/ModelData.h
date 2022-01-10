@@ -166,6 +166,8 @@ namespace MelLib
 		// モデル名
 		std::string modelName;
 
+		std::string modelPath;
+
 		// モデルファイルのオブジェクト名一覧
 		std::vector<std::string>objectNames;
 
@@ -456,6 +458,7 @@ namespace MelLib
 
 #pragma region ゲット
 
+		std::string GetModelPath()const { return modelPath; }
 		/// <summary>
 		/// モデルに含まれているオブジェクト名を取得します。
 		/// </summary>

@@ -43,7 +43,7 @@ namespace MelLib
 		std::unordered_map < std::string, Material*>materials;
 
 #pragma region ボーンとアニメーションの情報
-		static const UINT BONE_MAX = 64;
+		static const UINT BONE_MAX = 128;
 		struct SkinConstBufferData
 		{
 			DirectX::XMMATRIX bones[BONE_MAX];

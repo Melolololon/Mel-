@@ -147,18 +147,23 @@ void ModelObject::DrawCommonProcessing(const std::string& rtName)
 {
 	if (!pModelData)return;
 	MapConstData(RenderTarget::Get(rtName)->GetCamera());
+
+	ModelConstBufferData* constBufferData;
+	constBuffer[0]->Map(0, nullptr, (void**)&constBufferData);
+	int z = 0;
+
 	SetCmdList();
 }
 
 void ModelObject::MapConstData(const Camera* camera)
 {
-	ModelConstBufferData* constBufferData;
+	
 
 
 	std::vector<DirectX::XMMATRIX>meshGlobalTransforms = pModelData->GetMeshGlobalTransforms();
 
-
-	for (int i = 0; i < constBuffer.size(); i++)
+	ModelConstBufferData* constBufferData;
+	for (int i = 0; i < objectNames.size(); i++)
 	{
 		std::string objectName = objectNames[i];
 #pragma region 基本的な情報のマップ
@@ -234,15 +239,19 @@ void ModelObject::MapConstData(const Camera* camera)
 
 
 		constBuffer[i]->Unmap(0, nullptr);
-
+	
 #pragma endregion
 
 
 	}
 
+	constBuffer[0]->Map(0, nullptr, (void**)&constBufferData);
+	constBuffer[0]->Unmap(0, nullptr);
 
 	for (int i = 0; i < modelConstBuffer.size(); i++)
 	{
+		constBuffer[0]->Map(0, nullptr, (void**)&constBufferData);
+		constBuffer[0]->Unmap(0, nullptr);
 
 		std::string objectName = objectNames[i];
 
@@ -450,6 +459,16 @@ void ModelObject::MapConstData(const Camera* camera)
 
 			for (int j = 0; j < boneNum; j++)
 			{
+				if (boneNum >= BONE_MAX)
+				{
+					std::string outputStr = pModelData->GetModelPath() + "のボーン数がボーン最大数" + std::to_string(BONE_MAX) + "を超えています。\n";
+					OutputDebugStringA(outputStr.c_str());
+
+					std::string outputStr = "モデルのボーン数 : " + std::to_string(boneNum) + "\n";
+					OutputDebugStringA(outputStr.c_str());
+					break;
+				}
+
 				//bones[j].fbxCluster.
 
 				//変換
@@ -479,7 +498,6 @@ void ModelObject::MapConstData(const Camera* camera)
 #pragma endregion
 
 	}
-
 }
 
 void ModelObject::SetCmdList()
@@ -543,9 +561,14 @@ void ModelObject::SetCmdList()
 #pragma region 定数
 
 
-
+		//if(modelFileObjectNum >= 2)//定数バッファ
+		//	cmdLists[0]->SetGraphicsRootConstantBufferView(CONST_BUFFER_REGISTER, constBuffer[1]->GetGPUVirtualAddress());
+		//else
 		//定数バッファ
 		cmdLists[0]->SetGraphicsRootConstantBufferView(CONST_BUFFER_REGISTER, constBuffer[i]->GetGPUVirtualAddress());
+
+		/*ModelConstBufferData* constBufferData;
+		constBuffer[0]->Map(0, nullptr, (void**)&constBufferData);*/
 
 		//マテリアルバッファ
 		cmdLists[0]->SetGraphicsRootConstantBufferView

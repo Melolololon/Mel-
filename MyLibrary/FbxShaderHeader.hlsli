@@ -50,6 +50,6 @@ cbuffer cbuff4 : register(b4)
 //スキニング
 cbuffer cbuff3 : register(b3)
 {
-	matrix matSkinning[64];
+	matrix matSkinning[128];
 }
 

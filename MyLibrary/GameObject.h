@@ -289,6 +289,7 @@ namespace MelLib
 		/// <param name="mass"></param>
 		void SetMass(const float mass) { this->mass = mass; }
 
+		void TrueEraseManager() { eraseManager = true; }
 #pragma endregion
 
 #pragma region ƒQƒbƒg

@@ -893,7 +893,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 	//	
 	//	//マテリアルの値読み込むときに読み込むからいらん
 	//	//material[i].SetTexture(pTextures[i].get());
-
+	modelPath = path;
 
 	return true;
 }
