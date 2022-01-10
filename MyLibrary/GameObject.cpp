@@ -275,8 +275,8 @@ void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
 	ShaderDataSet set =
 	{
 		{L"LIB","",""},
-		{L"LIB","",""},
-		{L"LIB","",""},
+		{L"NULL","",""},
+		{L"NULL","",""},
 		{L"LIB","",""},
 		{L"LIB","",""}
 	};
