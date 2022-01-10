@@ -29,9 +29,9 @@ void PipelineState::SetPipelineDesc
 		desc.pRootSignature = modelRootSignature;
 
 		//テッセレーションがある場合、これにする
-		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+		//desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
 
-		//desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		break;
 	case PipelineStateType::SPRITE:
 		desc.pRootSignature = spriteRootSignature;

@@ -8,7 +8,7 @@ void main
 (
 	//triangleはプリミティブのこと
 	//[3]は、トライアングルリスト、ストリップということ
-	triangle DS_OUTPUT/*VSOutput*/ input[3],
+	triangle /*DS_OUTPUT*/VSOutput input[3],
 	inout TriangleStream< GSOutput > output
 )
 {
