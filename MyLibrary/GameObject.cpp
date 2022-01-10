@@ -91,7 +91,7 @@ void MelLib::GameObject::SetDataScale(const Vector3& scale)
 		if (setRadius < scale.y)setRadius = scale.y;
 		if (setRadius < scale.z)setRadius = scale.z;
 
-		d.SetRadius(setRadius);
+		d.SetRadius(setRadius / 2);
 	}
 	for (auto& d : boxData)
 	{
