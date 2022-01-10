@@ -464,7 +464,7 @@ void ModelObject::MapConstData(const Camera* camera)
 					std::string outputStr = pModelData->GetModelPath() + "のボーン数がボーン最大数" + std::to_string(BONE_MAX) + "を超えています。\n";
 					OutputDebugStringA(outputStr.c_str());
 
-					std::string outputStr = "モデルのボーン数 : " + std::to_string(boneNum) + "\n";
+					outputStr = "モデルのボーン数 : " + std::to_string(boneNum) + "\n";
 					OutputDebugStringA(outputStr.c_str());
 					break;
 				}
