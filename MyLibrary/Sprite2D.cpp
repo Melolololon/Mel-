@@ -120,11 +120,18 @@ void Sprite2D::Draw(const std::string& rtName)
 
 #pragma region 頂点座標
 
-	vertices[0].pos = { -textureSize.x / 2 , textureSize.y / 2, 0 };
-	vertices[1].pos = { -textureSize.x / 2 ,-textureSize.y / 2,0 };
-	vertices[2].pos = { textureSize.x / 2  ,   textureSize.y / 2 ,0 };
-	vertices[3].pos = { textureSize.x / 2  , -textureSize.y / 2,0 };
+	MelLib::Vector2 areaSize = drawRightDownPosition - drawLeftUpPosition;
 
+	//vertices[0].pos = { -textureSize.x / 2 , textureSize.y / 2, 0 };
+	//vertices[1].pos = { -textureSize.x / 2 ,-textureSize.y / 2,0 };
+	//vertices[2].pos = { textureSize.x / 2  ,   textureSize.y / 2 ,0 };
+	//vertices[3].pos = { textureSize.x / 2  , -textureSize.y / 2,0 };
+
+	// 頂点座標に表示範囲を適応
+	vertices[0].pos = { -areaSize.x / 2 , areaSize.y / 2, 0 };
+	vertices[1].pos = { -areaSize.x / 2 ,-areaSize.y / 2,0 };
+	vertices[2].pos = { areaSize.x / 2  ,   areaSize.y / 2 ,0 };
+	vertices[3].pos = { areaSize.x / 2  , -areaSize.y / 2,0 };
 #pragma endregion
 
 #pragma region UV座標
