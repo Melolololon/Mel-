@@ -544,19 +544,20 @@ bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& ca
 	Value2<Vector3>capsuleLineSegmentPos = capsule.GetSegment3DData().GetRotatePosition();
 	Vector3 spherePos = sphere.GetPosition();
 
-	Vector3 capsulePos0ToSphere =
-		LibMath::OtherVector3(capsuleLineSegmentPos.v1, spherePos);
+	Vector3 capsulePos0ToSphere = spherePos - capsuleLineSegmentPos.v1;
+		//LibMath::OtherVector3(capsuleLineSegmentPos.v1, spherePos);
 
 	//éëóøÇÃn
-	Vector3 capsuleLineSegmentVector =
-		LibMath::OtherVector3(capsuleLineSegmentPos.v1, capsuleLineSegmentPos.v2);
+	Vector3 capsuleLineSegmentVector = capsuleLineSegmentPos.v2 - capsuleLineSegmentPos.v1;
+		//LibMath::OtherVector3(capsuleLineSegmentPos.v1, capsuleLineSegmentPos.v2);
 
-	float t = Vector3::Dot(capsulePos0ToSphere, capsuleLineSegmentVector);
+	float t = Vector3::Dot(capsulePos0ToSphere, capsuleLineSegmentVector.Normalize());
 
 	//ãÖÇ©ÇÁê¸ï™Ç…êÇíºÇ…â∫ÇµÇΩê¸è„ÇÃç¿ïW éëóøÇÃPsÅ®Pn
-	Vector3 onTheLinePos = capsuleLineSegmentVector * t;
+	Vector3 startToLineUpVector = capsuleLineSegmentVector.Normalize() * t;
+	Vector3 onTheLinePos = capsuleLineSegmentPos.v1 + startToLineUpVector;
 
-	float lenghtRate = t * onTheLinePos.Length();
+	float lenghtRate = t / capsuleLineSegmentVector.Length();
 	float sphereAndCupsuleDis = 0.0f;
 	if (lenghtRate < 0.0f)
 	{

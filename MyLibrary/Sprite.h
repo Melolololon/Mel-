@@ -140,8 +140,8 @@ namespace MelLib
 #pragma endregion
 
 #pragma region ƒQƒbƒg
-		Vector2 SetDrawLeftUpPosition()const { return drawLeftUpPosition; }
-		Vector2 SetDrawRigthDownPosition()const { return drawRightDownPosition; }
+		Vector2 GetDrawLeftUpPosition()const { return drawLeftUpPosition; }
+		Vector2 GetDrawRigthDownPosition()const { return drawRightDownPosition; }
 
 
 #pragma endregion
