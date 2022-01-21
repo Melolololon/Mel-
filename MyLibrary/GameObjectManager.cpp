@@ -701,6 +701,104 @@ void GameObjectManager::Update()
 			}
 #pragma endregion
 
+#pragma region Triangle & Segment
+			if (collisionFlags[objI].triangle
+				&& collisionFlags[objJ].segment)
+			{
+				std::vector<TriangleData>triangleData = obj1->GetTriangleData();
+				size_t treiangleDataSize = triangleData.size();
+				std::vector<Segment3DData>segmentData = obj2->GetSegmentData();
+				size_t segmentDataSize = segmentData.size();
+
+				for (int colI = 0; colI < treiangleDataSize; colI++)
+				{
+					for (int colJ = 0; colJ < segmentDataSize; colJ++)
+					{
+						TriangleCalcResult result1;
+						Segment3DCalcResult result2;
+
+						if (Collision::TriangleAndSegment3D(triangleData[colI], &result1, segmentData[colJ], &result2))
+						{
+							obj1->SetTriangleCalcResult(result1, colI);
+							obj2->SetSegmentCalcResult(result2, colJ);
+
+							obj1->SetHitSegment3DData(segmentData[colJ]);
+							obj2->SetHitTriangleData(triangleData[colI]);
+
+							//hit‚ðŒÄ‚Ño‚·
+							obj1->Hit
+							(
+								obj2,
+								ShapeType3D::TRIANGLE,
+								colI,
+								ShapeType3D::SEGMENT,
+								colJ
+							);
+							obj2->Hit
+							(
+								obj1,
+								ShapeType3D::SEGMENT,
+								colJ,
+								ShapeType3D::TRIANGLE,
+								colI
+							);
+
+						}
+					}
+				}
+
+			}
+
+			if (collisionFlags[objJ].triangle
+				&& collisionFlags[objI].segment)
+			{
+				std::vector<TriangleData>triangleData = obj2->GetTriangleData();
+				size_t triangleDataSize = triangleData.size();
+				std::vector<Segment3DData>segmentData = obj1->GetSegmentData();
+				size_t segmentDataSize = segmentData.size();
+
+				for (int colI = 0; colI < triangleDataSize; colI++)
+				{
+					for (int colJ = 0; colJ < segmentDataSize; colJ++)
+					{
+						TriangleCalcResult result1;
+						Segment3DCalcResult result2;
+
+						if (Collision::TriangleAndSegment3D(triangleData[colI], &result1, segmentData[colJ], &result2))
+						{
+							obj2->SetTriangleCalcResult(result1, colI);
+							obj1->SetSegmentCalcResult(result2, colJ);
+
+							obj1->SetHitTriangleData(triangleData[colI]);
+							obj2->SetHitSegment3DData(segmentData[colJ]);
+
+							//hit‚ðŒÄ‚Ño‚·
+							obj2->Hit
+							(
+								obj1,
+								ShapeType3D::TRIANGLE,
+								colI,
+								ShapeType3D::SEGMENT,
+								colJ
+							);
+							obj1->Hit
+							(
+								obj2,
+								ShapeType3D::SEGMENT,
+								colJ,
+								ShapeType3D::TRIANGLE,
+								colI
+							);
+
+						}
+					}
+				}
+
+			}
+
+#pragma endregion
+
+
 
 		}
 	}

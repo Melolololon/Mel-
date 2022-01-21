@@ -186,6 +186,14 @@ namespace MelLib
 			const Vector3& pointPos,
 			const Segment3DData& segment
 		);
+
+		static bool TriangleAndSegment3D
+		(
+			const TriangleData& triangle,
+			TriangleCalcResult* triangleCalcResult,
+			const Segment3DData& lineSegment,
+			Segment3DCalcResult* lineSegmentCalcResult
+		);
 #pragma endregion
 	};
 

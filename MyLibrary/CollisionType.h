@@ -26,6 +26,7 @@ namespace MelLib
 		bool plane = true;
 		bool board = true;
 		bool capsule = true;
+		bool triangle = true;
 	};
 
 	struct CollisionDetectionFlag2D
@@ -344,16 +345,38 @@ namespace MelLib
 
 		Vector3 normal;
 
+		TriangleCalcResult result;
 	private:
 		void CalcNormal();
 
 	public:
 		Value3<Vector3> GetPosition()const { return position; }
+		
+		/// <summary>
+		/// 開店後に平行移動する移動量を取得します。
+		/// </summary>
+		/// <returns></returns>
 		Value3<Vector3> GetTranslationPosition()const { return transPos; }
 		Vector3 GetAngle()const { return angle; }
 		Vector3 GetTransFormVector()const { return transVec; }
 		Vector3 GetNormal()const { return normal; }
 
+		/// <summary>
+		/// 三角形の中心座標を取得します。
+		/// </summary>
+		Vector3 GetCenter()const { return (position.v1 + position.v2 + position.v3) / 3; }
+
+		/// <summary>
+		/// 回転させた三角形の中心座標を取得します。
+		/// </summary>
+		Vector3 GetRotCenter()const { return (rotPos.v1 + rotPos.v2 + rotPos.v3) / 3; }
+
+		/// <summary>
+		/// 回転と平行移動した三角形の中心座標を取得します。
+		/// </summary>
+		Vector3 GetRotTranceFormCenter()const { return (transPos.v1 + transPos.v2 + transPos.v3) / 3; }
+
+		TriangleCalcResult GetCalcResult()const { return result; }
 
 		/// <summary>
 		/// 座標をセットします。頂点の順序で法線が変わります。
@@ -363,11 +386,12 @@ namespace MelLib
 		void SetAngle(const Vector3& angle);
 
 		/// <summary>
-		/// 座標を元に回転させた状態からどのくらい動かすのかを設定します。
+		/// 回転後にどのくらい平行移動させるかを指定します。
 		/// </summary>
 		/// <param name="vec"></param>
 		void SetTranslationPosition(const Vector3& vec);
 		
+		void SetCalcResult(const TriangleCalcResult& result) { this->result = result; }
 	};
 #pragma endregion
 
@@ -378,6 +402,7 @@ namespace MelLib
 	{
 		Vector3 lineSegment3DHitPos;
 		Vector3 boardHitPos;
+		Vector3 triangleHitPos;
 		Vector3 planeHitPos;
 	};
 

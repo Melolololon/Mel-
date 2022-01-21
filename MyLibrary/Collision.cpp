@@ -1077,3 +1077,90 @@ bool MelLib::Collision::PointAndSegment3D(const Vector3& pointPos, const Segment
 		&& segmentV1ToPoint.Length() <= segmentPosVector.Length();
 
 }
+
+bool MelLib::Collision::TriangleAndSegment3D(const TriangleData& triangle, TriangleCalcResult* triangleCalcResult, const Segment3DData& lineSegment, Segment3DCalcResult* lineSegmentCalcResult)
+{
+	Value2<Vector3> segmentPos = lineSegment.GetRotatePosition();
+
+	Value3<Vector3>triangleVertexPos = triangle.GetTranslationPosition();
+
+	// 回転と平行移動を適応させた三角形の中心座標を取得
+	Vector3 centerPos = triangle.GetRotTranceFormCenter();
+
+	Vector3 v1;
+	Vector3 v2;
+
+	v1 = segmentPos.v1 - centerPos;
+	v2 = segmentPos.v2 - centerPos;
+
+	//線が三角形と並行ではないかを調べる(平行だったらreturn)
+	if (Vector3Dot(v1, triangle.GetNormal()) * Vector3Dot(v2, triangle.GetNormal()) > 0) return false;
+
+	//線の端 - ポリゴンの角
+	v1 = segmentPos.v1 - triangleVertexPos.v1;
+	v2 = segmentPos.v2 - triangleVertexPos.v1;
+
+	Vector3 vec1 = segmentPos.v1 - centerPos;
+	Vector3 vec2 = segmentPos.v2 - centerPos;
+
+	//線分の両端と板ポリの距離を求める
+	//0で割るのを防止するためのif
+	float kyori1 = 0;
+	kyori1 = abs(Vector3Dot(triangle.GetNormal(), vec1)) / triangle.GetNormal().Length();
+	float kyori2 = 0;
+	kyori2 = abs(Vector3Dot(triangle.GetNormal(), vec2)) / triangle.GetNormal().Length();
+
+	//内分比
+	float a = kyori1 / (kyori1 + kyori2);
+
+
+
+	//線とポリゴンが当たっている場所を調べる
+	Vector3 crossVector;//ポリゴンの角から当たってる場所の座標へのベクトル
+	crossVector.x = (1 - a) * v1.x + a * v2.x;
+	crossVector.y = (1 - a) * v1.y + a * v2.y;
+	crossVector.z = (1 - a) * v1.z + a * v2.z;
+	Vector3 crossPos = triangleVertexPos.v1 + crossVector;
+
+
+
+
+	//三角形1個目の判定
+	Vector3 normal1;
+	normal1 = LibMath::CalcNormal(triangleVertexPos.v1, triangleVertexPos.v2, crossPos);
+	Vector3 normal2;
+	normal2 = LibMath::CalcNormal(triangleVertexPos.v2, triangleVertexPos.v3, crossPos);
+	Vector3 normal3;
+	normal3 = LibMath::CalcNormal(triangleVertexPos.v3, triangleVertexPos.v1, crossPos);
+
+	//板ポリと法線が同じか調べる
+	bool isHit = false;//板ポリと法線が同じかどうか
+
+	//ほぼ同じだったらtrue
+	if (LibMath::Difference(triangle.GetNormal().x, normal1.x, 0.0001f) &&
+		LibMath::Difference(triangle.GetNormal().y, normal1.y, 0.0001f) &&
+		LibMath::Difference(triangle.GetNormal().z, normal1.z, 0.0001f) &&
+		LibMath::Difference(triangle.GetNormal().x, normal2.x, 0.0001f) &&
+		LibMath::Difference(triangle.GetNormal().y, normal2.y, 0.0001f) &&
+		LibMath::Difference(triangle.GetNormal().z, normal2.z, 0.0001f) &&
+		LibMath::Difference(triangle.GetNormal().x, normal3.x, 0.0001f) &&
+		LibMath::Difference(triangle.GetNormal().y, normal3.y, 0.0001f) &&
+		LibMath::Difference(triangle.GetNormal().z, normal3.z, 0.0001f))
+	{
+		isHit = true;
+	}
+
+	//衝突位置と中心がほぼ同じだったらヒット
+	if (LibMath::Difference(crossPos.x, centerPos.x, 0.001f)
+		&& LibMath::Difference(crossPos.y, centerPos.y, 0.001f)
+		&& LibMath::Difference(crossPos.z, centerPos.z, 0.001f)
+		)
+	{
+		isHit = true;
+	}
+
+	if (lineSegmentCalcResult && isHit) lineSegmentCalcResult->triangleHitPos = crossPos;
+	if (triangleCalcResult && isHit)triangleCalcResult->lineSegment3DHitPos = crossPos;
+
+	return isHit;
+}

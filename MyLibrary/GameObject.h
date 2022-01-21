@@ -92,7 +92,7 @@ namespace MelLib
 		PlaneData hitPlaneData;
 		BoardData hitBoardData;
 		CapsuleData hitCapsuleData;
-
+		TriangleData hitTriangleData;
 	protected:
 
 #pragma region 判定データ
@@ -105,6 +105,7 @@ namespace MelLib
 		std::vector<PlaneData>planeData;
 		std::vector<BoardData>boardData;
 		std::vector<CapsuleData>capsuleData;
+		std::vector<TriangleData>triangleData;
 
 
 #pragma endregion
@@ -130,6 +131,7 @@ namespace MelLib
 		PlaneData GetHitPlaneData() const { return hitPlaneData; }
 		BoardData GetHitBoardData()const { return hitBoardData; }
 		CapsuleData GetHitCapsuleData() const { return hitCapsuleData; }
+		TriangleData GetHitTriangleDataData() const { return hitTriangleData; }
 
 
 
@@ -371,6 +373,7 @@ namespace MelLib
 		std::vector<PlaneData> GetPlaneData() const { return planeData; }
 		std::vector<BoardData> GetBoardData()const { return boardData; }
 		std::vector<CapsuleData>GetCapsuleData() const { return capsuleData; }
+		std::vector<TriangleData>GetTriangleData() const { return triangleData; }
 
 		// ここ参照取得じゃなくてSetにする?
 		// そもそも持たせない。Hit関数で渡す
@@ -380,6 +383,10 @@ namespace MelLib
 		void SetBoardCalcResult(const BoardCalcResult& result, const UINT index) { boardData[index].SetCalcResult(result); }
 		void SetCapsuleCalcResult(const Segment3DCalcResult& result, const UINT index)
 		{ capsuleData[index].GetRefSegment3DData().SetCalcResult(result); }
+		void SetTriangleCalcResult(const TriangleCalcResult& result, const UINT index)
+		{
+			triangleData[index].SetCalcResult(result);
+		}
 
 		//Vector3& GetLineSegmentHitPosition(const int num);
 		//Vector3& GetBoardHitPosition(const int num);
@@ -393,6 +400,7 @@ namespace MelLib
 		void SetHitPlaneData(const PlaneData& plane) { hitPlaneData = plane; }
 		void SetHitSegment3DData(const Segment3DData& segment) { hitSegment3DData = segment; }
 		void SetHitCapsuleData(const CapsuleData& capsule) { hitCapsuleData = capsule; }
+		void SetHitTriangleData(const TriangleData& tri) { hitTriangleData = tri; }
 
 #ifdef _DEBUG
 		static void CreateCollisionCheckModelPipelineState();

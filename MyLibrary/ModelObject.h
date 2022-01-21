@@ -74,6 +74,7 @@ namespace MelLib
 		FbxAnimationData fbxAnimationData;
 		bool isAnimation = false;
 		bool animationEndStop = false;
+		bool animationReverse = false;
 #pragma endregion
 
 		//定数バッファ
@@ -156,7 +157,7 @@ namespace MelLib
 #pragma region モデルで生成
 		ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
 		static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name);
-		bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData);
+		bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData = nullptr);
 #pragma endregion モデルで生成
 
 
@@ -200,17 +201,35 @@ namespace MelLib
 		void SetAnimationPlayFlag(const bool flag) { isAnimation = flag; }
 
 		/// <summary>
-	/// アニメーションをリセットします。
-	/// </summary>
-		void ResetAnimation();
+		/// アニメーションをリセットします。
+		/// </summary>
+		void SetAnimationFrameStart() {fbxAnimationData.currentTime = 0;}
+
+		/// <summary>
+		/// アニメーションの現在のフレームをアニメーション終了時のフレームにします。
+		/// </summary>
+		void SetAnimationFrameEnd() { fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime; }
 
 		void SetCurrentFream(const UINT fream);
 
-		void SetAnimationSpeedMagnification(const int magnification) { fbxAnimationData.timeMag = magnification; }
+		void SetAnimationSpeedMagnification(const unsigned int magnification) { fbxAnimationData.timeMag = magnification; }
+
+		/// <summary>
+		/// アニメーションを逆再生するかどうかを設定します。
+		/// </summary>
+		/// <param name="flag"></param>
+		void SetAnimationReversePlayBack(const bool flag) { animationReverse = flag; }
 
 		void SetAnimation(const std::string& name);
 
 		void SetAnimationEndStopFlag(const bool flag) { animationEndStop = flag; }
+
+		/// <summary>
+		/// アニメーションのフレームをセットします。
+		/// </summary>
+		/// <param name="frame"></param>
+		void SetAnimationFrame(const unsigned int frame) { fbxAnimationData.animationTimes.frameTime.SetFrame(frame, FbxTime::eFrames60); }
+
 #pragma endregion
 
 
@@ -249,10 +268,24 @@ namespace MelLib
 		std::string GetCurrentAnimationName()const { return fbxAnimationData.currentAnimationName; }
 
 		/// <summary>
+		/// アニメーションが逆生成中かどうかを取得します。
+		/// </summary>
+		/// <returns></returns>
+		bool GetAnimationReversePlayBack()const { return animationReverse; }
+
+		/// <summary>
 		/// アニメーションが終了しているかどうかを取得します。
 		/// </summary>
 		/// <returns></returns>
-		bool GetAnimationEndFlag()const { return fbxAnimationData.currentTime == fbxAnimationData.animationTimes.endTime; }
+		bool GetAnimationEndFlag()const;
+		//{ return fbxAnimationData.currentTime == fbxAnimationData.animationTimes.endTime; }
+
+
+		/// <summary>
+		///	アニメーションの現在のフレームを取得します。
+		/// </summary>
+		/// <returns></returns>
+		unsigned int GetAnimationFrame()const { return fbxAnimationData.animationTimes.frameTime.GetFrameCount(); }
 
 #pragma endregion
 

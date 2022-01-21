@@ -280,6 +280,22 @@ bool TextWrite::CreateFontData(const std::wstring& fontName,const std::string& n
         &pWriteTextFormat
     );
 
+    // フォントがなかったりして生成失敗したら、Arialで生成
+    if(result != S_OK)
+    {
+        result = dWriteFactory->CreateTextFormat
+        (
+            L"Arial",//フォントファミリーの名前を含む文字列
+            NULL,//フォントコレクションオブジェクトへのポインタ
+            DWRITE_FONT_WEIGHT_REGULAR,//太さ(enumで指定)
+            DWRITE_FONT_STYLE_NORMAL,//スタイル(enumで指定)。ここで文字を斜めにしたりできる
+            DWRITE_FONT_STRETCH_NORMAL,//ストレッチ(enumで指定)。文字の引き伸ばし具合
+            32.0f,//ピクセルが単位のフォントサイズ?
+            L"en_us",//ロケール名を含む文字列 ロケールとは、言語の書式ルール
+            &pWriteTextFormat
+        );
+    }
+
     //文字の揃え方設定。この場合、中央揃え
     //左右位置
     result = pWriteTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);

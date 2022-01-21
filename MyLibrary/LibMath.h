@@ -72,6 +72,7 @@ namespace MelLib
 			const MultipleClampType type
 		);
 
+		
 
 		/// <summary>
 		/// num1‚Ænum2‚Ì’l‚Ì·‚ğ‹‚ßA·‚ªŠî€‚Ì’lˆÈ“à‚¾‚Á‚½‚çtrue‚ğ•Ô‚µ‚Ü‚·
