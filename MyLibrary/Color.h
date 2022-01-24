@@ -29,6 +29,8 @@ namespace MelLib
 				);
 		}
 
+
+
 		//F
 		unsigned char r = 0;
 		unsigned char g = 0;
@@ -48,6 +50,7 @@ namespace MelLib
 		/// <returns></returns>
 		static unsigned char ParToUChar(const float par) { return (unsigned char)(par / 100 * 255); }
 		
+
 	private:
 
 

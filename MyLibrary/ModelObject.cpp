@@ -455,6 +455,8 @@ void ModelObject::MapConstData(const Camera* camera)
 		}
 		else if (pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_FBX)
 		{
+			pModelData->SetFbxAnimStack(fbxAnimationData.currentAnimationName);
+
 			std::vector<ModelData::FbxBone> bones = pModelData->GetFbxBone();
 
 			for (int j = 0; j < boneNum; j++)
@@ -1555,6 +1557,61 @@ void ModelObject::SetAngle(const Vector3& angle, const std::string& name)
 
 }
 
+void MelLib::ModelObject::SetAddColor(const Color& color, const std::string& name)
+{
+
+	Value4<float> colorValue4(color.ToFloat());
+	DirectX::XMFLOAT4 colorXMFLOAT4(colorValue4.v1, colorValue4.v2, colorValue4.v3, colorValue4.v4);
+
+	if (name == "")
+	{
+		for (auto& data : modelConstDatas)
+		{
+			data.second.addColor = colorXMFLOAT4;
+		}
+	}
+	else
+	{
+		modelConstDatas[name].addColor = colorXMFLOAT4;
+	}
+}
+
+void MelLib::ModelObject::SetSubColor(const Color& color, const std::string& name)
+{
+	Value4<float> colorValue4(color.ToFloat());
+	DirectX::XMFLOAT4 colorXMFLOAT4(colorValue4.v1, colorValue4.v2, colorValue4.v3, colorValue4.v4);
+
+	if (name == "")
+	{
+		for (auto& data : modelConstDatas)
+		{
+			data.second.subColor = colorXMFLOAT4;
+		}
+	}
+	else
+	{
+		modelConstDatas[name].subColor = colorXMFLOAT4;
+	}
+}
+
+void MelLib::ModelObject::SetMulColor(const Color& color, const std::string& name)
+{
+	Value4<float> colorValue4(color.ToFloat());
+	DirectX::XMFLOAT4 colorXMFLOAT4(colorValue4.v1, colorValue4.v2, colorValue4.v3, colorValue4.v4);
+
+	if (name == "")
+	{
+		for (auto& data : modelConstDatas)
+		{
+			data.second.mulColor = colorXMFLOAT4;
+		}
+	}
+	else
+	{
+		modelConstDatas[name].mulColor = colorXMFLOAT4;
+	}
+}
+
 
 MelLib::ModelObject::ModelObject(ModelObject& obj)
 {
@@ -1691,12 +1748,18 @@ void MelLib::ModelObject::SetMaterial(Material* mtl, const std::string& name)
 	}
 	if (name == "")
 	{
-		materials[objectNames[0]] = mtl;
+		for (auto& material : materials)
+		{
+			material.second = mtl;
+		}
 	}
 	else
 	{
 		materials[name] = mtl;
 	}
+
+
+
 }
 
 Material* MelLib::ModelObject::GetPMaterial(const std::string& name)
@@ -1738,6 +1801,7 @@ bool MelLib::ModelObject::GetAnimationEndFlag()const
 {
 	if (animationReverse)return fbxAnimationData.currentTime == fbxAnimationData.animationTimes.startTime;
 	return fbxAnimationData.currentTime == fbxAnimationData.animationTimes.endTime;
+
 }
 
 bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name)
@@ -1956,6 +2020,8 @@ Vector3 MelLib::ModelObject::CalcAnimationPosition
 	// e‚Ìƒm[ƒh‚Ìs—ñ‚ðŠ|‚¯‚È‚¢‚Æƒ_ƒ
 	//‘½•ª‰e‹¿“x100%‚Å‘åä•v?
 
+	pModelData->SetFbxAnimStack(fbxAnimationData.currentAnimationName);
+
 	DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 	// ‹ts—ñ‚ðŠ|‚¯‚é‚±‚Æ‚É‚æ‚èAŠgk‚È‚Ç‚µ‚½ƒ‚ƒfƒ‹‚É‚»‚Ì‚Ü‚ÜÀ•W‚ð‡‚í‚¹‚ÄƒZƒbƒg‚µ‚Ä‚à³í‚É“®‚©‚¹‚é
@@ -2069,6 +2135,6 @@ void MelLib::ModelObject::SetAnimation(const std::string& name)
 	pModelData->GetAnimationTimeData(name, fbxAnimationData.animationTimes.startTime, fbxAnimationData.animationTimes.endTime);
 
 
-	pModelData->SetFbxAnimStack(name);
+	//pModelData->SetFbxAnimStack(name);
 }
 

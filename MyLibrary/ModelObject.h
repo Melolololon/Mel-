@@ -194,7 +194,15 @@ namespace MelLib
 		void SetAngle(const Vector3& angle, const std::string& name = "");
 
 
+
 #pragma endregion
+
+#pragma region 色
+		void SetAddColor(const Color& color, const std::string& name = "");
+		void SetSubColor(const Color& color, const std::string& name = "");
+		void SetMulColor(const Color& color, const std::string& name = "");
+#pragma endregion
+
 
 #pragma region アニメーション
 
@@ -228,7 +236,7 @@ namespace MelLib
 		/// アニメーションのフレームをセットします。
 		/// </summary>
 		/// <param name="frame"></param>
-		void SetAnimationFrame(const unsigned int frame) { fbxAnimationData.animationTimes.frameTime.SetFrame(frame, FbxTime::eFrames60); }
+		void SetAnimationFrame(const unsigned int frame) { fbxAnimationData.currentTime.SetFrame(frame, FbxTime::eFrames60); }
 
 #pragma endregion
 
@@ -285,8 +293,9 @@ namespace MelLib
 		///	アニメーションの現在のフレームを取得します。
 		/// </summary>
 		/// <returns></returns>
-		unsigned int GetAnimationFrame()const { return fbxAnimationData.animationTimes.frameTime.GetFrameCount(); }
-
+		unsigned int GetAnimationFrame()const { return fbxAnimationData.currentTime.GetFrameCount(FbxTime::eFrames60); }
+		
+		unsigned int GetAnimationFrameMax()const { return fbxAnimationData.animationTimes.endTime.GetFrameCount(FbxTime::eFrames60); }
 #pragma endregion
 
 		//コンピュートシェーダーで計算したほうがいい。
