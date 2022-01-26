@@ -1882,10 +1882,12 @@ void ModelObject::FbxAnimation()
 			if (animationEndStop)
 			{
 				fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
-				return;
-			}
 
-			fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime;
+			}
+			else 
+			{
+				fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime;
+			}
 		}
 		else if (fbxAnimationData.currentTime > fbxAnimationData.animationTimes.endTime)
 		{
@@ -1901,10 +1903,12 @@ void ModelObject::FbxAnimation()
 			if (animationEndStop)
 			{
 				fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime;
-				return;
+				
 			}
-
-			fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
+			else
+			{
+				fbxAnimationData.currentTime = fbxAnimationData.animationTimes.startTime;
+			}
 		}
 		else if (fbxAnimationData.currentTime < fbxAnimationData.animationTimes.startTime)
 		{
