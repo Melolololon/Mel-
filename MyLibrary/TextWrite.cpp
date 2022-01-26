@@ -232,6 +232,21 @@ void TextWrite::LoopEndProcess(const UINT rtIndex)
 
         const std::wstring& text = std::get<2>(d);
         
+        if(!pFormat)
+        {
+            std::wstring outputWStr = L"テキスト「";
+            outputWStr += text.c_str();
+            outputWStr += L"」の描画に失敗しました。存在していないFontDataを指定している可能性があります。\n";
+            OutputDebugStringW(outputWStr.c_str());
+
+            std::string outputStr = "FontData名「";
+            outputStr += std::get<3>(d);
+            outputStr += "」\n";
+            OutputDebugStringA(outputStr.c_str());
+
+            continue;
+        }
+
         d2dContext->DrawTextW
         (
             text.c_str(),
