@@ -75,6 +75,7 @@ namespace MelLib
 		bool isAnimation = false;
 		bool animationEndStop = false;
 		bool animationReverse = false;
+		bool animationEnd = false;
 #pragma endregion
 
 		//定数バッファ
@@ -226,7 +227,7 @@ namespace MelLib
 		/// アニメーションを逆再生するかどうかを設定します。
 		/// </summary>
 		/// <param name="flag"></param>
-		void SetAnimationReversePlayBack(const bool flag) { animationReverse = flag; }
+		void SetAnimationReversePlayBack(const bool flag);
 
 		void SetAnimation(const std::string& name);
 
@@ -285,7 +286,7 @@ namespace MelLib
 		/// アニメーションが終了しているかどうかを取得します。
 		/// </summary>
 		/// <returns></returns>
-		bool GetAnimationEndFlag()const;
+		bool GetAnimationEndFlag()const { return animationEnd; }
 		//{ return fbxAnimationData.currentTime == fbxAnimationData.animationTimes.endTime; }
 
 

@@ -131,7 +131,7 @@ namespace MelLib
 		PlaneData GetHitPlaneData() const { return hitPlaneData; }
 		BoardData GetHitBoardData()const { return hitBoardData; }
 		CapsuleData GetHitCapsuleData() const { return hitCapsuleData; }
-		TriangleData GetHitTriangleDataData() const { return hitTriangleData; }
+		TriangleData GetHitTriangleData() const { return hitTriangleData; }
 
 
 
