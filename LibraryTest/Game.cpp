@@ -76,7 +76,7 @@ void Game::Initialize()
 	MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
 
-	MelLib::TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial", "test");
+	MelLib::TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial",2, "test");
 
 	MelLib::TextureFont::Load("Resources/Font/font.png", MelLib::Value2<UINT>(14, 7), "testFont");
 

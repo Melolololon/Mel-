@@ -14,15 +14,14 @@ MelLib::Particle3D::Particle3D(Texture* pTexture)
 	//particleSprite.SetTexture(pTexture);
 }
 
-MelLib::Particle3D::Particle3D(const Particle3D& particle)
+MelLib::Particle3D::Particle3D(const Particle3D& particle):
+	particleSprite(particle.particleSprite)
 {
-	particleSprite.Create();
 }
 
-MelLib::Particle3D::Particle3D(const Particle3D& particle, const Vector3& pos)
+MelLib::Particle3D::Particle3D(const Particle3D& particle, const Vector3& pos) :
+	particleSprite(particle.particleSprite)
 {
-	particleSprite = particle.particleSprite;
-
 	startPosition = pos;
 	particleSprite.SetPosition(pos);
 }

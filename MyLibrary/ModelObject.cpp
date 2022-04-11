@@ -1874,6 +1874,15 @@ void ModelObject::FbxAnimation()
 
 		}*/
 
+
+	if (fbxAnimationData.currentTime >= fbxAnimationData.animationTimes.endTime
+		&& !animationReverse
+		|| fbxAnimationData.currentTime <= fbxAnimationData.animationTimes.startTime
+		&& animationReverse)
+	{
+		animationEnd = true;
+	}
+
 	if(animationReverse)
 	{
 		if (fbxAnimationData.currentTime < fbxAnimationData.animationTimes.startTime)
@@ -1918,13 +1927,6 @@ void ModelObject::FbxAnimation()
 	}
 
 
-	if (fbxAnimationData.currentTime >= fbxAnimationData.animationTimes.endTime
-		&& !animationReverse
-		|| fbxAnimationData.currentTime <= fbxAnimationData.animationTimes.startTime
-		&& animationReverse)
-	{
-		animationEnd = true;
-	}
 }
 
 

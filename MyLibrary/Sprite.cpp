@@ -15,8 +15,52 @@ Sprite::Sprite(){}
 
 Sprite::~Sprite(){}
 
+MelLib::Sprite::Sprite(const Sprite& sprite)
+{
+	drawMode = sprite.drawMode;
+	pipeline = sprite.pipeline;
+	vertices = sprite.vertices;
+	drawLeftUpPosition = sprite.drawLeftUpPosition;
+	drawRightDownPosition = sprite.drawRightDownPosition;
+	constData = sprite.constData;
+	color = sprite.color;
+	pTexture = sprite.pTexture;
+}
+
 void Sprite::Draw(const std::string& rtName)
 {
+}
+
+void MelLib::Sprite::SetDrawMode(const SpriteDrawMode mode)
+{
+	drawMode = mode;
+
+	SpriteConstBufferData* constBufferData;
+	constBuffer->Map(0, nullptr, (void**)&constBufferData);
+
+	if (drawMode == SpriteDrawMode::DRAW_COLOR)
+	{
+		constBufferData->color = DirectX::XMFLOAT4
+		(
+			static_cast<float>(color.r) / 255.0f,
+			static_cast<float>(color.g) / 255.0f,
+			static_cast<float>(color.b) / 255.0f,
+			static_cast<float>(color.a) / 255.0f
+		);
+	}
+	else
+	{
+		constBufferData->color = DirectX::XMFLOAT4
+		(
+			0,
+			0,
+			0,
+			0
+		);
+	}
+	constBuffer->Unmap(0, nullptr);
+
+
 }
 
 
@@ -98,11 +142,14 @@ void Sprite::ConstDataMat()
 	constBufferData->subColor = constData.subColor;
 	constBufferData->mulColor = constData.mulColor;
 
+
 	constBuffer->Unmap(0, nullptr);
 }
 
-void Sprite::SetCmdList(Texture* texture)
+void Sprite::SetCmdList()
 {
+	Texture* pTex = nullptr;
+	if (drawMode == SpriteDrawMode::DRAW_TEXTURE)pTex = pTexture;
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
@@ -119,7 +166,7 @@ void Sprite::SetCmdList(Texture* texture)
 
 	//テクスチャ
 	UINT heapNum = 0;
-	if (pTexture)heapNum = texture->GetTextureNumber();
+	if (pTex)heapNum = pTex->GetTextureNumber();
 	
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 	gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE

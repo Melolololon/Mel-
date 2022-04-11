@@ -27,6 +27,7 @@ namespace MelLib
 		FbxLoader();
 		~FbxLoader();
 
+		bool initializeFlag = false;
 
 		ID3D12Device* device = nullptr;
 
@@ -116,6 +117,7 @@ namespace MelLib
 		/// <param name="src"></param>
 		static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
 
+		bool GetInitializeFlag()const { return initializeFlag; }
 	};
 
 }

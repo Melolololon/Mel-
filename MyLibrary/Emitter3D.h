@@ -13,7 +13,8 @@ namespace MelLib
     class Emitter3D :public GameObject
 	{
     private:
-        std::vector<std::shared_ptr<Particle3D>>particles;
+        //std::vector<std::shared_ptr<Particle3D>>particles;
+        std::vector<Particle3D>particles;
 
         // Update、Drawを行うかどうかのフラグ
         std::vector<bool>particleUpdateDrawFlag;
@@ -22,6 +23,7 @@ namespace MelLib
         FrameTimer releaseTimer;
         // 放出停止フラグ
         bool isStop = false;
+
         
         Vector3 position;
     private:
@@ -34,7 +36,8 @@ namespace MelLib
         void ParticleUpdate();
 
     public:
-        Emitter3D(const std::vector<std::shared_ptr<Particle3D>>& pParticle, const Vector3& pos, unsigned int releaseTime);
+       // Emitter3D(const std::vector<std::shared_ptr<Particle3D>>& pParticle, const Vector3& pos, unsigned int releaseTime);
+        Emitter3D(const Particle3D& pParticle, unsigned int particleNum, unsigned int releaseTime, const Vector3& pos = 0);
         ~Emitter3D() {}
 
         void Update()override;

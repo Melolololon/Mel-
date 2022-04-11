@@ -11,17 +11,12 @@ namespace MelLib
 		public Sprite2DBase
 	{
 	public:
-		enum class DrawMode
-		{
-			DRAW_TEXTURE,//テクスチャ描画
-			DRAW_COLOR,//色描画
-		};
+
 
 	private:
 
 		static std::unordered_map<std::string, std::unique_ptr<Sprite2D>> pSprite2D;
 
-		DrawMode drawMode = DrawMode::DRAW_TEXTURE;
 
 	public:
 		Sprite2D();
@@ -54,8 +49,7 @@ namespace MelLib
 		void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama())override;
 
 		void SetColor(const Color& color);
-		void SetTexture(Texture* pTexture) { this->pTexture = pTexture; }
-		void SetDrawType(const DrawMode mode) { drawMode = mode; }
+		void SetTexture(Texture* pTexture);
 	};
 
 }

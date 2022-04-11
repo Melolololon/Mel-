@@ -30,7 +30,7 @@
 //アドレスが同じポインタもらってパラメータ受け取ればいい
 //プレイヤーのポインタ渡してお金側でセットしてもいい
 
-namespace MelLib 
+namespace MelLib
 {
 	class GameObject
 	{
@@ -62,7 +62,7 @@ namespace MelLib
 		Vector3 scale = 0;
 
 #pragma region 物理関係
-		
+
 		//物体が動く力
 		Vector3 force = 0;
 		//重さ
@@ -109,7 +109,7 @@ namespace MelLib
 
 
 #pragma endregion
-		
+
 		//継承したクラスを格納し、判定時に使う用
 		std::vector<std::string>tags;
 
@@ -120,7 +120,7 @@ namespace MelLib
 
 		//生死フラグ(これがtrueになると、オブジェクトマネージャーから除外される)
 		bool eraseManager = false;
-		
+
 
 		bool drawCollisionModel = true;
 
@@ -253,7 +253,7 @@ namespace MelLib
 		/// 座標、モデルの座標、判定の座標に引数を加算します。
 		/// </summary>
 		/// <param name="vec"></param>
-	    virtual void AddPosition(const Vector3& vec);
+		virtual void AddPosition(const Vector3& vec);
 #pragma endregion
 
 
@@ -264,7 +264,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="acc"></param>
 		static void SetGravutationalAcceleration(const float acc) { gravutationalAcc = acc; };
-			
+
 		/// <summary>
 		/// 座標をセットします。モデルと衝突確認に使うデータは、セット前の座標との差だけ移動します。
 		/// </summary>
@@ -284,12 +284,16 @@ namespace MelLib
 		/// </summary>
 		/// <param name="force"></param>
 		void SetForce(const Vector3& force) { this->force = force; }
-		
+
 		/// <summary>
 		/// 重さをセットします。
 		/// </summary>
 		/// <param name="mass"></param>
 		void SetMass(const float mass) { this->mass = mass; }
+
+		void SetAddColor(const Color& color);
+		void SetSubColor(const Color& color);
+		void SetMulColor(const Color& color);
 
 		void TrueEraseManager() { eraseManager = true; }
 #pragma endregion
@@ -330,13 +334,13 @@ namespace MelLib
 		/// </summary>
 		/// <returns></returns>
 		float GetMass()const { return mass; }
-		
+
 		/// <summary>
 		/// 落下中または投げ上げ中かどうかを取得します。
 		/// </summary>
 		/// <returns></returns>
 		bool GetIsFall()const { return isFall; }
-		
+
 		short GetSortNumber() const { return sortNumber; }
 
 
@@ -353,7 +357,7 @@ namespace MelLib
 #pragma endregion
 
 #pragma region 判定関係
-		
+
 #pragma endregion
 
 
@@ -382,7 +386,9 @@ namespace MelLib
 		void SetSegmentCalcResult(const Segment3DCalcResult& result, const UINT index) { segment3DData[index].SetCalcResult(result); }
 		void SetBoardCalcResult(const BoardCalcResult& result, const UINT index) { boardData[index].SetCalcResult(result); }
 		void SetCapsuleCalcResult(const Segment3DCalcResult& result, const UINT index)
-		{ capsuleData[index].GetRefSegment3DData().SetCalcResult(result); }
+		{
+			capsuleData[index].GetRefSegment3DData().SetCalcResult(result);
+		}
 		void SetTriangleCalcResult(const TriangleCalcResult& result, const UINT index)
 		{
 			triangleData[index].SetCalcResult(result);

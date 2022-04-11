@@ -34,12 +34,12 @@ void MelLib::Sprite2D::Create()
 
 		SetColor(Color(0, 0, 0, 0));
 
-		drawMode = DrawMode::DRAW_TEXTURE;
+		drawMode = SpriteDrawMode::DRAW_TEXTURE;
 	}
 	else 
 	{
 		SetOneColorSpriteColor(color);
-		drawMode = DrawMode::DRAW_COLOR;
+		drawMode = SpriteDrawMode::DRAW_COLOR;
 	}
 	pipeline = defaultPipeline.GetPipelineState();
 }
@@ -48,7 +48,7 @@ void Sprite2D::Create(const Color& color)
 {
 	SpriteInitialize();
 	SetOneColorSpriteColor(color);
-	drawMode = DrawMode::DRAW_COLOR;
+	drawMode = SpriteDrawMode::DRAW_COLOR;
 
 	pipeline = defaultPipeline.GetPipelineState();
 }
@@ -66,7 +66,7 @@ void Sprite2D::Create(Texture* pTexture)
 	SpriteInitialize();
 	SetColor(Color(0, 0, 0, 0));
 
-	drawMode = DrawMode::DRAW_TEXTURE;
+	drawMode = SpriteDrawMode::DRAW_TEXTURE;
 	pipeline = defaultPipeline.GetPipelineState();
 }
 //
@@ -156,13 +156,24 @@ void Sprite2D::Draw(const std::string& rtName)
 	ConstDataMat();
 	
 	Texture* pTex = pTexture;
-	if (drawMode == DrawMode::DRAW_COLOR)pTex = nullptr;
+	if (drawMode == SpriteDrawMode::DRAW_COLOR)pTex = nullptr;
 	MatrixMap(pTex);
-	SetCmdList(pTex);
+	SetCmdList();
 }
 
 void Sprite2D::SetColor(const Color& color)
 {
 	this->color = color;
 	SetOneColorSpriteColor(color);
+}
+
+void Sprite2D::SetTexture(Texture* pTexture)
+{
+	this->pTexture = pTexture;
+	
+	if (pTexture) 
+	{
+		SetDrawRigthDownPosition(pTexture->GetTextureSize());
+		SetDrawMode(SpriteDrawMode::DRAW_TEXTURE);
+	}
 }

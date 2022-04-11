@@ -43,13 +43,12 @@ Sprite3D::Sprite3D(Texture* pTexture)
 }
 
 MelLib::Sprite3D::Sprite3D(const Sprite3D& sprite)
+	: Sprite(sprite)
 {
 	billboardX = sprite.billboardX;
 	billboardY = sprite.billboardY;
 	billboardZ = sprite.billboardZ;
 
-	color = sprite.color;
-	pTexture = sprite.pTexture;
 
 	if (sprite.vertexBufferSet.vertexBuffer)
 	{
@@ -125,6 +124,8 @@ void Sprite3D::Create(Texture* pTexture)
 	CreateBuffer();
 	InitializeVertices();
 	pipeline = defaultPipeline.GetPipelineState();
+
+	if (pTexture)drawMode = SpriteDrawMode::DRAW_TEXTURE;
 }
 
 void Sprite3D::Draw(const std::string& rtName)
@@ -157,12 +158,12 @@ void Sprite3D::Draw(const std::string& rtName)
 	if (rtName != "") 
 	{
 		MatrixMap(RenderTarget::Get(rtName)->GetCamera());
-		SetCmdList(pTexture);
+		SetCmdList();
 	}
 	else
 	{
 		MatrixMap(RenderTarget::Get()->GetCamera());
-		SetCmdList(pTexture);
+		SetCmdList();
 	}
 }
 

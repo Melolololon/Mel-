@@ -277,7 +277,7 @@ void TextWrite::LoopEndProcess(const UINT rtIndex)
 }
 
 
-bool TextWrite::CreateFontData(const std::wstring& fontName,const std::string& name)
+bool TextWrite::CreateFontData(const std::wstring& fontName,const float size,const std::string& name)
 {
     ComPtr<IDWriteTextFormat>pWriteTextFormat;
 
@@ -290,7 +290,7 @@ bool TextWrite::CreateFontData(const std::wstring& fontName,const std::string& n
         DWRITE_FONT_WEIGHT_REGULAR,//太さ(enumで指定)
         DWRITE_FONT_STYLE_NORMAL,//スタイル(enumで指定)。ここで文字を斜めにしたりできる
         DWRITE_FONT_STRETCH_NORMAL,//ストレッチ(enumで指定)。文字の引き伸ばし具合
-        32.0f,//ピクセルが単位のフォントサイズ?
+        size,//ピクセルが単位のフォントサイズ?
         L"en_us",//ロケール名を含む文字列 ロケールとは、言語の書式ルール
         &pWriteTextFormat
     );
@@ -305,7 +305,7 @@ bool TextWrite::CreateFontData(const std::wstring& fontName,const std::string& n
             DWRITE_FONT_WEIGHT_REGULAR,//太さ(enumで指定)
             DWRITE_FONT_STYLE_NORMAL,//スタイル(enumで指定)。ここで文字を斜めにしたりできる
             DWRITE_FONT_STRETCH_NORMAL,//ストレッチ(enumで指定)。文字の引き伸ばし具合
-            32.0f,//ピクセルが単位のフォントサイズ?
+            size,//ピクセルが単位のフォントサイズ?
             L"en_us",//ロケール名を含む文字列 ロケールとは、言語の書式ルール
             &pWriteTextFormat
         );

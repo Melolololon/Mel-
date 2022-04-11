@@ -108,7 +108,7 @@ namespace MelLib
 		static void LoopEndProcess(const UINT rtIndex);
 
 		//フォントのデータをセットする関数作る?
-		static bool CreateFontData(const std::wstring& fontName, const std::string& name);
+		static bool CreateFontData(const std::wstring& fontName,float size, const std::string& name);
 
 
 		//文字サイズは行列設定できるからそれで変えるようにする?

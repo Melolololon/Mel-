@@ -207,6 +207,30 @@ void MelLib::GameObject::SetScale(const Vector3& scale)
 	SetDataScale(scale);
 }
 
+void MelLib::GameObject::SetAddColor(const Color& color)
+{
+	for(auto& object:modelObjects)
+	{
+		object.second.SetAddColor(color);
+	}
+}
+
+void MelLib::GameObject::SetSubColor(const Color& color)
+{
+	for (auto& object : modelObjects)
+	{
+		object.second.SetSubColor(color);
+	}
+}
+
+void MelLib::GameObject::SetMulColor(const Color& color)
+{
+	for (auto& object : modelObjects)
+	{
+		object.second.SetMulColor(color);
+	}
+}
+
 void GameObject::CalcMovePhysics()
 {
 	Vector3 prePos = position;

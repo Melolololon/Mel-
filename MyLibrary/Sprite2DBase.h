@@ -17,6 +17,8 @@ namespace MelLib
 		DirectX::XMFLOAT2 scalingPoint = DirectX::XMFLOAT2(0,0);
 		DirectX::XMFLOAT2 rotationPoint = DirectX::XMFLOAT2(0,0);
 	protected:
+
+
 		static PipelineState defaultPipeline;
 
 

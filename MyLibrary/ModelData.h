@@ -311,7 +311,7 @@ namespace MelLib
 		ModelData(ModelData& data);
 		ModelData& operator=(ModelData& data);
 
-		~ModelData() {}
+		~ModelData();
 
 		/// <summary>
 		/// 頂点情報を元にモデルデータを生成します。

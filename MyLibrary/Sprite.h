@@ -34,20 +34,21 @@ namespace MelLib
 {
 	class Sprite
 	{
+	public:
+		enum class SpriteDrawMode
+		{
+			DRAW_TEXTURE,//テクスチャ描画
+			DRAW_COLOR,//色描画
+		};
 	private:
 
-#pragma region 変数
+	
+
 		static const UINT MAX_TEXTURE_LOAD_NUM = 256 * 20;
 
 
-#pragma endregion
-
-#pragma region 関数
-
-
-#pragma endregion
-
 	protected:
+		SpriteDrawMode drawMode = SpriteDrawMode::DRAW_COLOR;
 
 		static ID3D12GraphicsCommandList* cmdList;
 		static ID3D12Device* device;
@@ -76,30 +77,29 @@ namespace MelLib
 		SpriteConstData constData;
 
 
+		//ColorをAddColorとか分けずにまとめるためにMap関数でMapするので、変数用意した
+		Color color;
+		Texture* pTexture = nullptr;
+
+	protected:
+
+
 		void CreateBuffer();
 
 		//単色スプライト生成時に色をセットする関数
 		void SetOneColorSpriteColor(const Color& color);
 
-		//ColorをAddColorとか分けずにまとめるためにMap関数でMapするので、変数用意した
-		Color color;
-		Texture* pTexture = nullptr;
-
-#pragma region 関数
 		void ConstDataMat();
-		void SetCmdList(Texture* texture);
+		void SetCmdList();
 
-#pragma region マップ
 		void MapVertexBuffer(void** data);
 		void UnmapVertexBuffer();
-#pragma endregion
 
 
 		void InitializeVertices();
 
 
 
-#pragma endregion
 		virtual void Create(){}
 
 		/// <summary>
@@ -118,6 +118,8 @@ namespace MelLib
 		Sprite();
 		~Sprite();
 
+		Sprite(const Sprite& sprite);
+
 		//こいつここに定義しなくていい
 		//レンダーターゲットで使わない
 		//Drawからレンダーターゲットセットなくして、Sprite2Dと3Dにセット関数作る?
@@ -125,17 +127,27 @@ namespace MelLib
 
 #pragma region セット
 
-
+		/// <summary>
+		/// 表示範囲(UV座標)の左上をセットします。1,1で画像の一番右下を指定します。
+		/// </summary>
+		/// <param name="leftUpPos"></param>
 		void SetDrawLeftUpPosition(const Vector2& leftUpPos)
 		{
 			drawLeftUpPosition = leftUpPos;
-			//drawRightDownPosition = rightDownPos;
 		}
+
+		/// <summary>
+		/// 表示範囲(UV座標)の右下をセットします。1,1で一番右下を指定します。
+		/// </summary>
+		/// <param name="rightDownPos">右下の座標</param>
 		void SetDrawRigthDownPosition(const Vector2& rightDownPos)
 		{
 			drawRightDownPosition = rightDownPos;
 		}
 
+
+		void SetDrawMode(const SpriteDrawMode mode);
+		
 
 #pragma endregion
 

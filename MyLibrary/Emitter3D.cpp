@@ -14,7 +14,11 @@ void MelLib::Emitter3D::CheckChangeUpdateDrawFlag()
 			{
 				flag = true;
 				releaseTimer.ResetTimeZero();
-				return;
+
+				// 放出時間が0じゃなかったらreturn
+				// 0だったら全部出す
+				if(releaseTimer.GetMaxTime() != 0)return;
+				
 			}
 
 		}
@@ -29,12 +33,12 @@ void MelLib::Emitter3D::ParticleUpdate()
 	{
 		if (!particleUpdateDrawFlag[i])return;
 
-		particles[i]->Update();
+		particles[i].Update();
 
-		if (particles[i]->GetIsDead())
+		if (particles[i].GetIsDead())
 		{
-			particles[i]->ResetParametor();
-			particles[i]->Initialize();
+			particles[i].ResetParametor();
+			particles[i].Initialize();
 
 			if (isStop)
 			{
@@ -46,12 +50,11 @@ void MelLib::Emitter3D::ParticleUpdate()
 
 }
 
-MelLib::Emitter3D::Emitter3D(const std::vector<std::shared_ptr<Particle3D>>& pParticle, const Vector3& pos, unsigned int releaseTime)
+MelLib::Emitter3D::Emitter3D(const Particle3D& pParticle, const unsigned int particleNum,  unsigned int releaseTime, const Vector3& pos)
 {
-	// pParticleを元にパーティクルを生成
-	//particles.resize(particleNum, pParticle);
+	//pParticleを元にパーティクルを生成
+	particles.resize(particleNum, pParticle);
 
-	particles = pParticle;
 	particleUpdateDrawFlag.resize(particles.size(), false);
 	releaseTimer.SetMaxTime(releaseTime);
 
@@ -70,6 +73,6 @@ void MelLib::Emitter3D::Draw()
 	for (int i = 0;i < particles.size(); i++)
 	{
 		if (!particleUpdateDrawFlag[i])return;
-		particles[i]->Draw();
+		particles[i].Draw();
 	}
 }
