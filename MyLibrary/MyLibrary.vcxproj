@@ -549,13 +549,12 @@
     <ClInclude Include="TextureFont.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="TextWrite.h" />
-    <ClInclude Include="LibTime.h" />
-    <ClInclude Include="TimeCast.h" />
     <ClInclude Include="Values.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="XInputManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\X-MEN_Team_Project\X-MEN_Team_Project.vcxproj" />
     <None Include="ADSAHeader.hlsli" />
     <None Include="FbxMultiShaderHeader.hlsli" />
     <None Include="FbxShaderHeader.hlsli" />

@@ -596,12 +596,6 @@
     <ClInclude Include="Sound3D.h">
       <Filter>ヘッダー ファイル\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="TimeCast.h">
-      <Filter>ヘッダー ファイル\Calculation</Filter>
-    </ClInclude>
-    <ClInclude Include="LibTime.h">
-      <Filter>ヘッダー ファイル\Struct</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SpriteShaderHeader.hlsli" />
@@ -614,5 +608,6 @@
     <None Include="PBRHeader.hlsli" />
     <None Include="QuadTessellateHeader.hlsli" />
     <None Include="TriTessellateHeader.hlsli" />
+    <None Include="..\X-MEN_Team_Project\X-MEN_Team_Project.vcxproj" />
   </ItemGroup>
 </Project>
