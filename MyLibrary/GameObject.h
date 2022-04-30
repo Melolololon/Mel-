@@ -409,6 +409,12 @@ namespace MelLib
 
 #pragma endregion
 
+		/// <summary>
+		/// シーンエディタからオブジェクト管理クラスに追加するときにオブジェクト管理クラスに追加するポインタを返す関数です。
+		/// </summary>
+		/// <returns>オブジェクト管理クラスに追加するshared_ptr</returns>
+		virtual std::shared_ptr<GameObject> GetNewPtr();
+
 
 #pragma endregion
 

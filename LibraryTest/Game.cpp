@@ -2,7 +2,7 @@
 #include<Library.h>
 #include"SceneManager.h"
 #include"GameObjectManager.h"
-#include"Play.h"
+
 #include"Camera.h"
 #include"ModelData.h"
 #include"TextWrite.h"
@@ -14,6 +14,9 @@
 
 #include"ImguiManager.h"
 #include "ErrorProcess.h"
+
+#include"SceneEditer.h"
+#include"Player.h"
 
 Game::Game() {}
 
@@ -73,12 +76,16 @@ void Game::Initialize()
 	MelLib::GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
+	//MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
 
 	MelLib::TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial",2, "test");
 
 	MelLib::TextureFont::Load("Resources/Font/font.png", MelLib::Value2<UINT>(14, 7), "testFont");
+
+	// “o˜^
+	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"player");
+	int z = 0;
 
 }
 
@@ -89,10 +96,16 @@ void Game::Finalize()
 }
 void Game::Update()
 {
-	MelLib::SceneManager::GetInstance()->Update();
+	//MelLib::SceneManager::GetInstance()->Update();
+	MelLib::SceneEditer::GetInstance()->Update();
+
+	MelLib::GameObjectManager::GetInstance()->Update();
 }
 
 void Game::Draw()
 {
-	MelLib::SceneManager::GetInstance()->Draw();
+	//MelLib::SceneManager::GetInstance()->Draw();
+	MelLib::SceneEditer::GetInstance()->Draw();
+
+	MelLib::GameObjectManager::GetInstance()->Draw();
 }
