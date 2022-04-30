@@ -84,7 +84,8 @@ void Game::Initialize()
 	MelLib::TextureFont::Load("Resources/Font/font.png", MelLib::Value2<UINT>(14, 7), "testFont");
 
 	// “o˜^
-	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"player");
+	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
+	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Object");
 	int z = 0;
 
 }
