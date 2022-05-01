@@ -16,13 +16,15 @@ namespace MelLib
 		SceneEditer& operator=(SceneEditer& s) = delete;
 
 		void Save();
+
+		void SelectObjectUpdate();
 	private:
 		// 順序保持しとけばラジオボタンの値分forで回してデータにアクセスできる(intでアクセスできる)からmap
 		// 順序を他の配列に保存するのもいいかも。ループする必要なくなるから早い。けどメモリ使う
 		// forで取得すると参照に代入できないし、vectorのポインタは個人的に使いたくないし、forでしか参照できないから分ける
+		// ラジオボタンの順番めちゃくちゃになるからmapに変更
 		// オブジェクト
-		std::unordered_map< std::string,std::vector<std::shared_ptr<MelLib::GameObject>>>pObjects;
-		std::vector<std::shared_ptr<MelLib::GameObject>>test;
+		std::map< std::string,std::vector<std::shared_ptr<MelLib::GameObject>>>pObjects;
 		// ラジオボタンの戻り値で上のobjectsにアクセスするための配列
 		std::unordered_map<int ,std::string>objectOrderDatas;
 		 
@@ -44,5 +46,7 @@ namespace MelLib
 		void Update();
 
 		void Draw();
+
+
 	};
 }

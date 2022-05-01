@@ -53,7 +53,7 @@ namespace MelLib
 
 		Vector3 position = 0;
 		Vector3 angle = 0;
-		Vector3 scale = 0;
+		Vector3 scale = 1;
 
 #pragma region 物理関係
 
@@ -345,6 +345,7 @@ namespace MelLib
 		void SetMulColor(const Color& color);
 
 		void TrueEraseManager() { eraseManager = true; }
+
 #pragma endregion
 
 #pragma region ゲット
@@ -359,6 +360,9 @@ namespace MelLib
 		/// </summary>
 		/// <returns></returns>
 		Vector3 GetPosition()const { return position; }
+		
+		Vector3 GetAngle()const { return angle; }
+		Vector3 GetScale()const { return scale; }
 
 		/// <summary>
 		/// 速度を取得します。

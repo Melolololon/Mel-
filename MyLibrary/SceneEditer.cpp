@@ -9,6 +9,9 @@
 
 void MelLib::SceneEditer::Save()
 {
+	// 2022_05_01
+	// オブジェクトマネージャーに追加したオブジェクトをimguiでいじれるように
+
 	std::string name = SceneManager::GetInstance()->GetCurrentSceneName();
 	name += ".mlsce";
 	std::ofstream file(name);
@@ -19,6 +22,21 @@ void MelLib::SceneEditer::Save()
 	file.close();
 }
 
+void MelLib::SceneEditer::SelectObjectUpdate()
+{
+	MelLib::Vector3 pos = pSelectObject->GetPosition();
+	ImguiManager::GetInstance()->DrawSliderVector3("Position", pos, -1000, 1000);
+	pSelectObject->SetPosition(pos);
+
+	MelLib::Vector3 angle = pSelectObject->GetAngle();
+	ImguiManager::GetInstance()->DrawSliderVector3("Angle", angle, 0, 359);
+	pSelectObject->SetAngle(angle);
+
+	MelLib::Vector3 scale = pSelectObject->GetScale();
+	ImguiManager::GetInstance()->DrawSliderVector3("Scale", scale, 0, 359);
+	pSelectObject->SetScale(scale);
+}
+
 MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
 {
 	static SceneEditer s;
@@ -27,23 +45,56 @@ MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
 
 void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject , const std::string& objectType)
 {
+	
 	// C++20のcontainsに置き換えできる
-	//if (pObjects.find(objectType) == pObjects.end()) 
-	//{
-	//	std::string text = "シーンエディタには既に"+ objectType + "の名前で他のオブジェクトが登録されています。\n";
-	//	OutputDebugStringA(text.c_str());
-	//	return;
-	//}
+	if (pObjects.find(objectType) != pObjects.end()) 
+	{
+		std::string text = "シーンエディタには既に"+ objectType + "の名前で他のオブジェクトが登録されています。\n";
+		OutputDebugStringA(text.c_str());
+		return;
+	}
 
 	pObjects.try_emplace(objectType, std::vector<std::shared_ptr<MelLib::GameObject>>());
 	pObjects[objectType].push_back(pObject);
 	//test.push_back(pObject);
-	objectOrderDatas.try_emplace(pObjects.size(), objectType);
-	int z = 0;
+	objectOrderDatas.try_emplace(pObjects.size() - 1, objectType);
+
 }
 
 void MelLib::SceneEditer::Update()
 {
+	if (pObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
+
+#pragma region 選択
+
+
+	ImguiManager::GetInstance()->BeginDrawWindow("Edit");
+
+	// キーの数だけラジオボタン描画
+	int count = 0;
+	for (const auto& object : pObjects)
+	{
+		ImguiManager::GetInstance()->DrawRadioButton(object.first, selectType, count);
+		count++;
+	}
+
+	// ラジオボタンで選択したオブジェクト一覧の参照
+	std::vector < std::shared_ptr<MelLib::GameObject>>& refObjects = pObjects[objectOrderDatas[selectType]];
+
+	// ここにスライダー作成処理
+	int sliderNum = 0;
+	ImguiManager::GetInstance()->DrawSliderInt("Object", sliderNum, 0, refObjects.size() - 1);
+
+	// 選ばれたオブジェクトのポインタをpSelectObjectに代入
+	pSelectObject = refObjects[sliderNum].get();
+
+	
+
+#pragma endregion
+
+	SelectObjectUpdate();
+	ImguiManager::GetInstance()->EndDrawWindow();
+
 	// 追加
 	if (Input::KeyTrigger(DIK_SPACE)) 
 	{
@@ -52,6 +103,14 @@ void MelLib::SceneEditer::Update()
 
 		if (pObject) 
 		{
+			// 追加時に座標とかセットし直すのめんどいから
+			// pSelectObjectを管理クラスに追加して
+			// 戻り値のを新たにmapに入れてもいいかも
+			// どっちみちセットしないといけないから
+			pObject->SetPosition(pSelectObject->GetPosition());
+			pObject->SetAngle(pSelectObject->GetAngle());
+			pObject->SetScale(pSelectObject->GetScale());
+
 			// 追加
 			GameObjectManager::GetInstance()->AddObject(pObject);
 		}
@@ -63,30 +122,13 @@ void MelLib::SceneEditer::Update()
 		}
 	}
 
+	// 保存
+	if ((Input::KeyState(DIK_LCONTROL) || (Input::KeyState(DIK_RCONTROL)) && Input::KeyTrigger(DIK_S)))Save();
 }
 
 void MelLib::SceneEditer::Draw()
 {
-	ImguiManager::GetInstance()->BeginDrawWindow("Edit");
+	if (pObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
-
-	// キーの数だけラジオボタン描画
-	int count = 0;
-	for (const auto& object : pObjects) 
-	{
-		ImguiManager::GetInstance()->DrawRadioButton(object.first, selectType, count);
-		count++;
-	}
-
-	// ラジオボタンで選択したオブジェクト一覧の参照
-	std::vector < std::shared_ptr<MelLib::GameObject>>& refObjects = pObjects[objectOrderDatas[count]];
-
-	// ここにスライダー作成処理
-	int sliderNum = 0;
-	ImguiManager::GetInstance()->DrawSliderInt("Object", sliderNum, 0, refObjects.size() - 1);
-
-	// 選ばれたオブジェクトのポインタをpSelectObjectに代入
-	pSelectObject = refObjects[sliderNum].get();
-
-	ImguiManager::GetInstance()->EndDrawWindow();
+	pSelectObject->Draw();
 }

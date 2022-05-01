@@ -85,7 +85,6 @@ void Game::Initialize()
 
 	// “o˜^
 	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
-	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Object");
 	int z = 0;
 
 }
