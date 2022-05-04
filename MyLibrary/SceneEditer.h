@@ -33,6 +33,8 @@ namespace MelLib
 
 		GameObject* pSelectObject = nullptr;
 
+		bool isEdit = false;
+		bool releaseEdit = false;
 	public:
 		static SceneEditer* GetInstance();
 
@@ -47,6 +49,16 @@ namespace MelLib
 
 		void Draw();
 
-
+		/// <summary>
+		/// エディタのオンオフを設定します。リリースビルド時にエディタをオンにできるようにしてない場合はオンにできません。
+		/// </summary>
+		/// <param name="flag"></param>
+		void SetEditFlag(const bool flag);
+		
+		/// <summary>
+		/// リリースビルド時にエディタをオンにできるようにするかどうかを設定します。
+		/// </summary>
+		/// <param name="flag"></param>
+		void SetReleaseEditFlag(const bool flag) { releaseEdit = flag; }
 	};
 }

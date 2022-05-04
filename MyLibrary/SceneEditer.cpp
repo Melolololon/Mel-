@@ -9,6 +9,8 @@
 
 void MelLib::SceneEditer::Save()
 {
+	if (!isEdit)return;
+
 	// 2022_05_01
 	// オブジェクトマネージャーに追加したオブジェクトをimguiでいじれるように
 
@@ -24,6 +26,8 @@ void MelLib::SceneEditer::Save()
 
 void MelLib::SceneEditer::SelectObjectUpdate()
 {
+	if (!isEdit)return;
+	
 	MelLib::Vector3 pos = pSelectObject->GetPosition();
 	ImguiManager::GetInstance()->DrawSliderVector3("Position", pos, -1000, 1000);
 	pSelectObject->SetPosition(pos);
@@ -45,6 +49,7 @@ MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
 
 void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject , const std::string& objectType)
 {
+	if (!isEdit)return;
 	
 	// C++20のcontainsに置き換えできる
 	if (pObjects.find(objectType) != pObjects.end()) 
@@ -63,6 +68,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 
 void MelLib::SceneEditer::Update()
 {
+	if (!isEdit)return;
 	if (pObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
 #pragma region 選択
@@ -128,7 +134,14 @@ void MelLib::SceneEditer::Update()
 
 void MelLib::SceneEditer::Draw()
 {
+	if (!isEdit)return;
 	if (pObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
 	pSelectObject->Draw();
+}
+
+void MelLib::SceneEditer::SetEditFlag(const bool flag)
+{
+	if (!releaseEdit) return;
+	isEdit = flag;
 }

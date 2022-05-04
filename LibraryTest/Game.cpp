@@ -17,6 +17,7 @@
 
 #include"SceneEditer.h"
 #include"Player.h"
+#include<GuiValueManager.h>
 
 Game::Game() {}
 
@@ -52,9 +53,13 @@ void Game::Run()
 	Finalize();
 }
 
+MelLib::Sprite2D sprite;
+
+MelLib::GuiInt num(10, "Player", "HP", 1, 10);
+MelLib::GuiInt num2(3, "Player", "Power", 1, 10);
+MelLib::GuiFloat num3(3, "Player", "Otimpo", 1, 10);
 void Game::Initialize()
 {
-	
 
 	MelLib::Library::Initialize(1280, 720, MelLib::Color(30,30,160,255),L"MELLib");
 	MelLib::Library::SetFramesPerSecond60(true);
@@ -87,6 +92,11 @@ void Game::Initialize()
 	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
 	int z = 0;
 
+	sprite.Create(MelLib::Color(255,255,0,255));
+	sprite.SetScale(MelLib::Vector2(256, 512));
+
+
+	num = 1;
 }
 
 
@@ -100,6 +110,7 @@ void Game::Update()
 	MelLib::SceneEditer::GetInstance()->Update();
 
 	MelLib::GameObjectManager::GetInstance()->Update();
+	MelLib::GuiValueManager::GetInstance()->Update();
 }
 
 void Game::Draw()
@@ -108,4 +119,6 @@ void Game::Draw()
 	MelLib::SceneEditer::GetInstance()->Draw();
 
 	MelLib::GameObjectManager::GetInstance()->Draw();
+
+	sprite.Draw();
 }

@@ -190,6 +190,8 @@
     <ClCompile Include="Emitter3D.cpp" />
     <ClCompile Include="ErrorProcess.cpp" />
     <ClCompile Include="GameObject2D.cpp" />
+    <ClCompile Include="GuiValue.cpp" />
+    <ClCompile Include="GuiValueManager.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -479,6 +481,8 @@
     <ClInclude Include="Emitter3D.h" />
     <ClInclude Include="ErrorProcess.h" />
     <ClInclude Include="GameObject2D.h" />
+    <ClInclude Include="GuiValue.h" />
+    <ClInclude Include="GuiValueManager.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
