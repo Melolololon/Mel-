@@ -5,7 +5,6 @@
 #include<typeinfo>
 
 #include"GuiValue.h"
-
 namespace MelLib
 {
 	class GuiValueManager
@@ -21,6 +20,8 @@ namespace MelLib
 
 		std::unordered_map<std::string, std::unordered_map<std::string, GuiInt*>>intValues;
 		std::unordered_map<std::string, std::unordered_map<std::string, GuiFloat*>>floatValues;
+		std::unordered_map<std::string, std::unordered_map<std::string, GuiVector3*>>vector3Values;
+		std::unordered_map<std::string, std::unordered_map<std::string, GuiBool*>>boolValues;
 
 		std::vector<std::string>createWindowNames;
 
@@ -32,6 +33,8 @@ namespace MelLib
 
 		void AddGuiValue(GuiInt* pGuiValue, const std::string& windowName,const std::string& lavel);
 		void AddGuiValue(GuiFloat* pGuiValue, const std::string& windowName,const std::string& lavel);
+		void AddGuiValue(GuiVector3* pGuiValue, const std::string& windowName,const std::string& lavel);
+		void AddGuiValue(GuiBool* pGuiValue, const std::string& windowName,const std::string& lavel);
 
 		void EraseGuiValue(const type_info& type,const std::string& windowName, const std::string& lavel);
 
