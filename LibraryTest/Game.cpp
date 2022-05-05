@@ -106,6 +106,8 @@ void Game::Initialize()
 
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,10,0));
+
+	f.SetLoadData();
 }
 
 

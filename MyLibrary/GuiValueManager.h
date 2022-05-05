@@ -11,7 +11,7 @@ namespace MelLib
 	{
 	private:
 
-		GuiValueManager() {}
+		GuiValueManager();
 		~GuiValueManager() {}
 
 		// createWindowNames‚É“n‚³‚ê‚½–¼‘O‚ª‚È‚©‚Á‚½ê‡’Ç‰Á
@@ -62,6 +62,10 @@ namespace MelLib
 		void Update();
 
 		
+		int GetGuiIntData(const std::string& windowName, const std::string& lavel)const;
+		float GetGuiFloatData(const std::string& windowName, const std::string& lavel)const;
+		void GetGuiData(bool& refFlag, const std::string& windowName, const std::string& lavel)const;
+		Vector3 GetGuiVector3Data(const std::string& windowName, const std::string& lavel)const;
 	};
 
 }

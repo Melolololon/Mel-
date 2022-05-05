@@ -14,6 +14,12 @@ const std::unordered_map<std::string, char>MelLib::GuiValueManager::DATA_FORMAT_
 	{"float",'f'},
 };
 
+MelLib::GuiValueManager::GuiValueManager() 
+{
+	// Ç±Ç±Ç≈ì«Ç›çûÇﬁÇ∆äJÇ≠ÇÃé∏îsÇ∑ÇÈ
+	//Load();
+}
+
 void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 {
 	for (const auto& name : createWindowNames)
@@ -171,7 +177,10 @@ void MelLib::GuiValueManager::Load()
 
 			std::ifstream file(filePath);
 
-		
+			if (!file) 
+			{
+				int z = 0;
+			}
 
 			std::string lavel;
 			char c = 0;
@@ -363,3 +372,16 @@ void MelLib::GuiValueManager::Update()
 		ImguiManager::GetInstance()->EndDrawWindow();
 	}
 }
+
+void MelLib::GuiValueManager::GetGuiData(bool& refFlag, const std::string& windowName, const std::string& lavel) const
+{
+	// ë∂ç›Ç∑ÇÈÇ©ämîF
+	if (datas.find(windowName) == datas.end())return;
+	if (datas.at(windowName).find(lavel) == datas.at(windowName).end())return;
+
+	// Ç†Ç¡ÇΩÇÁäiî[
+	std::string param = datas.at(windowName).at(lavel);
+	char flag = param[param.size() - 1];
+	refFlag = static_cast<bool>(flag);
+}
+
