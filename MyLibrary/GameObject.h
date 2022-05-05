@@ -473,6 +473,14 @@ namespace MelLib
 			triangleCalcResult = result;
 		}
 
+		SphereCalcResult GetSphereCalcResult()const { return sphereCalcResult; }
+		BoxCalcResult GetBoxCalcResult()const { return boxCalcResult; }
+		Segment3DCalcResult GetSegmentCalcResult()const { return segmentCalcResult; }
+		BoardCalcResult GetBoardCalcResult()const { return boardCalcResult; }
+		Segment3DCalcResult GetCapsuleCalcResult()const { return capsuleCalcResult; }
+		TriangleCalcResult GetTriangleCalcResult()const { return triangleCalcResult; }
+
+
 		//Vector3& GetLineSegmentHitPosition(const int num);
 		//Vector3& GetBoardHitPosition(const int num);
 		//BoxHitDirection& GetSphereBoxHitDistance(const int num) { return sphereData[num].boxHitDistance; }

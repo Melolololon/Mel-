@@ -1,5 +1,5 @@
 #include "Player.h"
-
+#include"TestObject.h"
 #include<Input.h>
 
 
@@ -76,7 +76,12 @@ void Player::Hit
 	const std::string& hitShapeName
 )
 {
-
+	if (typeid(object) == typeid(TestObject)) 
+	{
+		modelObjects["main"].SetMulColor(MelLib::Color(111, 111, 111, 255));
+		MelLib::Vector3 vec = GetSphereCalcResult().GetBoxHitSurfaceNormal();
+		AddPosition(vec * 0.3f);
+	}
 }
 
 std::shared_ptr<MelLib::GameObject> Player::GetNewPtr()

@@ -17,6 +17,7 @@
 
 #include"SceneEditer.h"
 #include"Player.h"
+#include"TestObject.h"
 #include<GuiValueManager.h>
 
 Game::Game() {}
@@ -99,6 +100,12 @@ void Game::Initialize()
 
 
 	num = 1;
+
+	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
+	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
+
+	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
+	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,10,0));
 }
 
 
@@ -113,6 +120,7 @@ void Game::Update()
 
 	MelLib::GameObjectManager::GetInstance()->Update();
 	MelLib::GuiValueManager::GetInstance()->Update();
+
 }
 
 void Game::Draw()
