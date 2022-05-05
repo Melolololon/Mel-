@@ -15,14 +15,21 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 
 void MelLib::GuiValueManager::Save(const std::string& windowName, const std::string& lavel, const char*& data, size_t dataSize, bool& refFlag)
 {
-	const std::string EXPORT_PATH = GuiOption::GetInstance()->GetGuiDataExportPath() + windowName;
+	const std::string EXPORT_PATH = GuiOption::GetInstance()->GetGuiDataExportPath() + windowName + ".guid";
 
-	std::fstream file(EXPORT_PATH);
-	std::string dataName = "[" + windowName + "]";
-	
+	std::ifstream file(EXPORT_PATH,std::ios_base::binary);
+	if (!file) 
+	{
+		std::ofstream oFile(EXPORT_PATH);
+		oFile.close();
+		file.open(EXPORT_PATH, std::ios_base::binary);
+	}
 
+	std::string dataName = "[" + lavel + "]";
+
+	size_t fileSize = 0;
 	file.seekg(std::ios_base::end);
-	size_t fileSize = file.tellg();
+	fileSize = file.tellg();
 	file.seekg(std::ios_base::beg);
 
 	// 見つかった名前の末端位置(]の隣)
@@ -32,10 +39,11 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 	while (1) 
 	{
 		// 確認終了か末尾まで確認したら抜ける
-		if (matchName || file.tellg() == fileSize)break;
+		size_t currentPos = file.tellg();
+		if (matchName || currentPos == fileSize)break;
 
 		std::string str;
-		char c;
+		char c = '_';
 		file.read(&c, 1);
 
 		// [を読み込んだら入る
@@ -61,26 +69,27 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 			}
 		}
 	}
+	file.close();
 
-
+	std::fstream oFile(EXPORT_PATH);
 	// 存在したら上書き
 	if (matchName) 
 	{
 		// シークして書き込み
-		file.seekg(0, dataEndPos);
-		file.write(data,dataSize);
+		oFile.seekg(0, dataEndPos);
+		oFile.write(data,dataSize);
 	}
 	else // 名前が無かったら末尾に追加
 	{
 		// 末尾にシーク
-		file.seekg(std::ios_base::end);
+		oFile.seekg(std::ios_base::end);
 
 		// 名前とデータを書き込み
-		file.write(dataName.c_str(), dataName.size());
-		file.write(data, dataSize);
+		oFile.write(dataName.c_str(), dataName.size());
+		oFile.write(data, dataSize);
 	}
 
-	file.close();
+	oFile.close();
 
 	// Imguiの変更確認フラグをfalseに
 	refFlag = false;
