@@ -1,6 +1,6 @@
 #include "GuiValueManager.h"
 #include"ImguiManager.h"
-
+#include<fstream>
 
 void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 {
@@ -10,6 +10,82 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 	}
 	createWindowNames.push_back(windowName);
 }
+
+
+
+void MelLib::GuiValueManager::Save(const std::string& windowName, const std::string& lavel, const char*& data, size_t dataSize, bool& refFlag)
+{
+	const std::string EXPORT_PATH = GuiOption::GetInstance()->GetGuiDataExportPath() + windowName;
+
+	std::fstream file(EXPORT_PATH);
+	std::string dataName = "[" + windowName + "]";
+	
+
+	file.seekg(std::ios_base::end);
+	size_t fileSize = file.tellg();
+	file.seekg(std::ios_base::beg);
+
+	// 見つかった名前の末端位置(]の隣)
+	size_t dataEndPos = 0;
+
+	bool matchName = false;
+	while (1) 
+	{
+		// 確認終了か末尾まで確認したら抜ける
+		if (matchName || file.tellg() == fileSize)break;
+
+		std::string str;
+		char c;
+		file.read(&c, 1);
+
+		// [を読み込んだら入る
+		if (c == '[') 
+		{
+			
+
+			// ]まで取得する。
+			while (1) 
+			{
+				str += c;
+				file.read(&c, 1);
+				if (str[str.size() - 1] == ']')
+				{
+					// 名前が一致したら二重ループを抜ける。
+					if (str == dataName)
+					{
+						matchName = true;
+						dataEndPos = file.tellg();
+					}
+					break;
+				}
+			}
+		}
+	}
+
+
+	// 存在したら上書き
+	if (matchName) 
+	{
+		// シークして書き込み
+		file.seekg(0, dataEndPos);
+		file.write(data,dataSize);
+	}
+	else // 名前が無かったら末尾に追加
+	{
+		// 末尾にシーク
+		file.seekg(std::ios_base::end);
+
+		// 名前とデータを書き込み
+		file.write(dataName.c_str(), dataName.size());
+		file.write(data, dataSize);
+	}
+
+	file.close();
+
+	// Imguiの変更確認フラグをfalseに
+	refFlag = false;
+}
+
 
 MelLib::GuiValueManager* MelLib::GuiValueManager::GetInstance()
 {
@@ -72,6 +148,7 @@ void MelLib::GuiValueManager::Update()
 	for (const auto& name : createWindowNames)
 	{
 		ImguiManager::GetInstance()->BeginDrawWindow(name);
+		bool changeFlag = false;
 
 		// int
 		const std::unordered_map<std::string, GuiInt*>& refInts = intValues[name];
@@ -80,8 +157,14 @@ void MelLib::GuiValueManager::Update()
 			const std::string& LAVEL = value.first;
 			GuiInt& guiInt = *value.second;
 			int num = guiInt.GetValue();
-			ImguiManager::GetInstance()->DrawSliderInt(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
-			guiInt = num;
+			changeFlag = ImguiManager::GetInstance()->DrawSliderInt(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
+			
+			if (changeFlag) 
+			{
+				const char* data = reinterpret_cast<char*>(&num);
+				Save(name, LAVEL, data, sizeof(num), changeFlag);
+				guiInt = num;
+			}
 		}
 
 		// float 
@@ -91,8 +174,13 @@ void MelLib::GuiValueManager::Update()
 			const std::string& LAVEL = value.first;
 			GuiFloat& guiFloat = *value.second;
 			float num = guiFloat.GetValue();
-			ImguiManager::GetInstance()->DrawSliderFloat(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
-			guiFloat = num;
+			changeFlag = ImguiManager::GetInstance()->DrawSliderFloat(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
+			if (changeFlag)
+			{
+				const char* data = reinterpret_cast<char*>(&num);
+				Save(name, LAVEL, data, sizeof(num), changeFlag);
+				guiFloat = num;
+			}
 		}
 
 		// Vector3
@@ -102,8 +190,13 @@ void MelLib::GuiValueManager::Update()
 			const std::string& LAVEL = value.first;
 			GuiVector3& guiVector3 = *value.second;
 			MelLib::Vector3 num = guiVector3.GetValue();
-			ImguiManager::GetInstance()->DrawSliderVector3(LAVEL, num, guiVector3.GetMinValue(), guiVector3.GetMaxValue());
-			guiVector3 = num;
+			changeFlag = ImguiManager::GetInstance()->DrawSliderVector3(LAVEL, num, guiVector3.GetMinValue(), guiVector3.GetMaxValue());
+			if (changeFlag)
+			{
+				const char* data = reinterpret_cast<char*>(&num);
+				Save(name, LAVEL, data, sizeof(num), changeFlag);
+				guiVector3 = num;
+			}
 		}
 
 		// bool
@@ -113,8 +206,13 @@ void MelLib::GuiValueManager::Update()
 			const std::string& LAVEL = value.first;
 			GuiBool& guiBool = *value.second;
 			bool flag = guiBool.GetValue();
-			ImguiManager::GetInstance()->DrawCheckBox(LAVEL, flag);
-			guiBool = flag;
+			changeFlag = ImguiManager::GetInstance()->DrawCheckBox(LAVEL, flag);
+			if (changeFlag)
+			{
+				const char* data = reinterpret_cast<char*>(&flag);
+				Save(name, LAVEL, data, sizeof(flag), changeFlag);
+				guiBool = flag;
+			}
 		}
 
 		ImguiManager::GetInstance()->EndDrawWindow();

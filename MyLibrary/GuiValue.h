@@ -7,10 +7,35 @@
 
 // structでもいい?
 // 設定した値を書き出せるように、ファイルはウィンドウごとでいい?
-// テストプレイ中(実行中)は変数の値が変わっても影響受けないように
+// テストプレイ中は変数の値が変わっても影響受けないように
+// テストプレイ中は変数の値変えられるけど、エディットに戻ったらSET_VALUEに戻すようにする
+// 読み込んだ時に値一致しなかったら読み込んだほうを優先(Unityと同じにする)
+
+// コンストラクタでデータがあったら読み込むようにする
 
 namespace MelLib 
 {
+	class GuiOption
+	{
+	private:
+		std::string exportPath;
+
+		GuiOption(){}
+		~GuiOption() {}
+	public:
+		GuiOption(GuiOption& o) = delete;
+		GuiOption& operator=(GuiOption& o) = delete;
+		static GuiOption* GetInstance();
+
+		/// <summary>
+		/// Guiで設定した値の情報の出力先を設定します。
+		/// </summary>
+		/// <param name="path"></param>
+		void SetGuiDataExportPath(const std::string& path) { exportPath = path; }
+		std::string GetGuiDataExportPath() { return exportPath; }
+
+	};
+
 	// UnityのSerializeFieldみたいなやつ
 	class GuiInt
 	{
@@ -27,15 +52,20 @@ namespace MelLib
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="number"></param>
+		/// <param name="value"></param>
 		/// <param name="windowName"></param>
 		/// <param name="lavel"></param>
 		/// <param name="minNumber"></param>
 		/// <param name="maxNumber"></param>
-		GuiInt(int number, const std::string& windowName, const std::string& lavel,int minNumber,int maxNumber);
+		GuiInt(int value, const std::string& windowName, const std::string& lavel,int minNumber,int maxNumber);
 		~GuiInt();
+		
 		void operator=(const int num) { this->value = num; }
 
+		void operator++() { value++; }
+		void operator--() { value--; }
+
+		
 		int GetValue()const { return value; }
 		int GetMaxValue() const { return MAX_VALUE; }
 		int GetMinValue()const { return MIN_VALUE; }
@@ -57,14 +87,17 @@ namespace MelLib
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="number"></param>
+		/// <param name="value"></param>
 		/// <param name="windowName"></param>
 		/// <param name="lavel"></param>
 		/// <param name="minNumber"></param>
 		/// <param name="maxNumber"></param>
-		GuiFloat(float number, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber);
+		GuiFloat(float value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber);
 		~GuiFloat();
 		void operator=(const float num) { this->value = num; }
+
+		void operator++() { value++; }
+		void operator--() { value--; }
 
 		float GetValue()const { return value; }
 		float GetMaxValue() const { return MAX_VALUE; }
@@ -87,14 +120,17 @@ namespace MelLib
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="number"></param>
+		/// <param name="value"></param>
 		/// <param name="windowName"></param>
 		/// <param name="lavel"></param>
 		/// <param name="minNumber"></param>
 		/// <param name="maxNumber"></param>
-		GuiVector3(MelLib::Vector3 number, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber);
+		GuiVector3(MelLib::Vector3 value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber);
 		~GuiVector3();
 		void operator=(const MelLib::Vector3& num) { this->value = num; }
+
+	/*	void operator++() { value++; }
+		void operator--() { value--; }*/
 
 		MelLib::Vector3 GetValue()const { return value; }
 		float GetMaxValue() const { return MAX_VALUE; }
@@ -115,7 +151,7 @@ namespace MelLib
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="number"></param>
+		/// <param name="value"></param>
 		/// <param name="windowName"></param>
 		/// <param name="lavel"></param>
 		/// <param name="minNumber"></param>

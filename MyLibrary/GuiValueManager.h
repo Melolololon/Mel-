@@ -25,6 +25,17 @@ namespace MelLib
 
 		std::vector<std::string>createWindowNames;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="windowName">ウィンドウ名</param>
+		/// <param name="lavel">ラベル</param>
+		/// <param name="data">char*に変換したデータのポインタの参照</param>
+		/// <param name="dataSize">データサイズ</param>
+		/// <param name="refFlag">changeFlag(戻す用)</param>
+		void Save(const std::string& windowName, const std::string& lavel, const char*& data, size_t dataSize,bool& refFlag);
+
+		
 
 	public:
 		GuiValueManager(GuiValueManager& m) = delete;
@@ -40,6 +51,7 @@ namespace MelLib
 
 		void Update();
 
+		
 	};
 
 }

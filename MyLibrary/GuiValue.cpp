@@ -18,7 +18,7 @@ MelLib::GuiInt::~GuiInt()
 	GuiValueManager::GetInstance()->EraseGuiValue(typeid(int), WINDOW_NAME, LAVEL);
 }
 
-MelLib::GuiFloat::GuiFloat(float number, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
+MelLib::GuiFloat::GuiFloat(float value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
 	:value(value)
 	, MIN_VALUE(minNumber)
 	, MAX_VALUE(maxNumber)
@@ -34,7 +34,7 @@ MelLib::GuiFloat::~GuiFloat()
 	GuiValueManager::GetInstance()->EraseGuiValue(typeid(float), WINDOW_NAME, LAVEL);
 }
 
-MelLib::GuiVector3::GuiVector3(MelLib::Vector3 number, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
+MelLib::GuiVector3::GuiVector3(MelLib::Vector3 value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
 	:value(value)
 	, MIN_VALUE(minNumber)
 	, MAX_VALUE(maxNumber)
@@ -61,4 +61,10 @@ MelLib::GuiBool::GuiBool(bool value, const std::string& windowName, const std::s
 MelLib::GuiBool::~GuiBool()
 {
 	GuiValueManager::GetInstance()->EraseGuiValue(typeid(bool), WINDOW_NAME, LAVEL);
+}
+
+MelLib::GuiOption* MelLib::GuiOption::GetInstance()
+{
+	static GuiOption o;
+	return &o;
 }
