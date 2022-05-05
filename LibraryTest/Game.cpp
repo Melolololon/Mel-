@@ -100,7 +100,7 @@ void Game::Initialize()
 
 
 	num = 1;
-
+	MelLib::GuiValueManager::GetInstance()->Initialize();
 	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
 	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
 
