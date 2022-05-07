@@ -119,6 +119,8 @@ namespace MelLib
 		/// <returns>“–‚½‚Á‚Ä‚¢‚½‚çtrue</returns>
 		static bool SphereAndBox(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const BoxData& box, BoxCalcResult* boxCalcResult);
 
+		static bool SphereAndOBB(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const OBBData& obb);
+
 		static bool SphereAndSegmrnt3D(const SphereData& sphere, const Segment3DData& lineSegment);
 
 		static bool SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule);

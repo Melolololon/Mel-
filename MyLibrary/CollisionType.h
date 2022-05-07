@@ -21,6 +21,7 @@ namespace MelLib
 	{
 		bool sphere = true;
 		bool box = true;
+		bool obb = true;
 		bool ray = true;
 		bool segment = true;
 		bool plane = true;
@@ -49,6 +50,7 @@ namespace MelLib
 	{
 		SPHERE,
 		BOX,
+		OBB,
 		PLANE,
 		TRIANGLE,
 		BOARD,
@@ -293,6 +295,23 @@ namespace MelLib
 #pragma endregion
 
 #pragma region OBB
+	
+	class OBBData
+	{
+	private:
+		BoxData boxData;
+		Vector3 angle;
+	public:
+		
+		BoxData GetBoxData()const { return boxData; }
+		BoxData& GetRefBoxData() { return boxData; }
+		Vector3 GetAngle()const { return angle; }
+
+
+		void SetAngle(const Vector3& angle) { this->angle = angle; }
+
+
+	};
 
 #pragma endregion
 

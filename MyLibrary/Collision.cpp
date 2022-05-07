@@ -542,6 +542,47 @@ bool Collision::SphereAndBox
 	return isHit;
 }
 
+bool MelLib::Collision::SphereAndOBB(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const OBBData& obb)
+{
+
+	// L
+	Vector3 sizeHalf = obb.GetBoxData().GetSize() / 2;
+
+	// 回転した軸3本(XYZ)方向にはみ出ているか確認する
+	// XYZの軸にOBBの回転を適応させる
+	// v1,v2,v3
+	Vector3 angle = obb.GetAngle();
+	Vector3 axisX = LibMath::RotateZXYVector3(Vector3(1, 0, 0), angle);
+	Vector3 axisY = LibMath::RotateZXYVector3(Vector3(0, 1, 0), angle);
+	Vector3 axisZ = LibMath::RotateZXYVector3(Vector3(0, 0, 1), angle);
+
+	// GP
+	// 箱の中心から球の中心へのベクトル
+	Vector3 boxToSphere = sphere.GetPosition() - obb.GetBoxData().GetPosition();
+
+	float s1 = Vector3::Dot(boxToSphere, axisX) / sizeHalf.x;
+	s1 = abs(s1);
+	if (s1 < 1)s1 = 1;
+
+	float s2 = Vector3::Dot(boxToSphere, axisY) / sizeHalf.y;
+	s2 = abs(s2);
+	if (s2 < 1)s2 = 1;
+
+	float s3 = Vector3::Dot(boxToSphere, axisZ) / sizeHalf.z;
+	s3 = abs(s3);
+	if (s3 < 1)s3 = 1;
+
+	float dis = 0.0f;
+	dis = (
+		(1 - s1) * sizeHalf.x * axisX
+		+ (1 - s2)* sizeHalf.y * axisY
+		+ (1 - s3) * sizeHalf.z * axisZ
+		).Length();
+
+	bool result = dis <= sphere.GetRadius();
+	return result;
+}
+
 bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule)
 {
 	Value2<Vector3>capsuleLineSegmentPos = capsule.GetSegment3DData().GetRotatePosition();
