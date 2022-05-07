@@ -4,8 +4,39 @@
 
 using namespace MelLib;
 
+Vector3 MelLib::Collision::CalcHitBoxSurfaceNormal(BoxHitDirection dir)
+{
+	MelLib::Vector3 normal;
+	switch (dir)
+	{
+	case MelLib::BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT:
+		break;
+	case MelLib::BoxHitDirection::BOX_HIT_DIRECTION_UP:
+		normal = MelLib::Vector3(0, 1, 0);
+		break;
+	case MelLib::BoxHitDirection::BOX_HIT_DIRECTION_DOWN:
+		normal = MelLib::Vector3(0, -1, 0);
+		break;
+	case MelLib::BoxHitDirection::BOX_HIT_DIRECTION_LEFT:
+		normal = MelLib::Vector3(-1, 0, 0);
+		break;
+	case MelLib::BoxHitDirection::BOX_HIT_DIRECTION_RIGHT:
+		normal = MelLib::Vector3(1, 0, 0);
+		break;
+	case MelLib::BoxHitDirection::BOX_HIT_DIRECTION_FRONT:
+		normal = MelLib::Vector3(0, 0, -1);
+		break;
+	case MelLib::BoxHitDirection::BOX_HIT_DIRECTION_BACK:
+		normal = MelLib::Vector3(0, 0, 1);
+		break;
+	default:
+		break;
+	}
+	return normal;
+}
 
 #pragma region 2D
+
 
 
 
@@ -535,6 +566,7 @@ bool Collision::SphereAndBox
 		if (sphereCalcResult)
 		{
 			sphereCalcResult->SetBoxHitDirection(hitDirection);
+			sphereCalcResult->SetBoxHitSurfaceNormal(CalcHitBoxSurfaceNormal(hitDirection));
 		}
 		if (boxCalcResult)boxCalcResult->boxHitDistance = hitDirection;
 	}
@@ -580,6 +612,87 @@ bool MelLib::Collision::SphereAndOBB(const SphereData& sphere, SphereCalcResult*
 		).Length();
 
 	bool result = dis <= sphere.GetRadius();
+	
+
+	
+	if (!sphereCalcResult)return result;
+	
+	// 以下法線計算
+	
+	// 法線取得どうする
+	// 四角形の角度を0,0,0の時に戻し、球の位置も戻した分回転。(箱はGetBoxDataで取得すればいいので、回転させる必要はない)
+	// Boxと同じように求める
+	// 法線を回転
+	
+	BoxHitDirection hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+	
+	BoxData box = obb.GetBoxData();
+	//1 Xが多い
+	//2 Yが多い
+	//3 Zが多い
+	char top = 0;
+
+	// 角度のマイナス分回転
+	Vector3 rotSphere = LibMath::RotateZXYVector3(sphere.GetPosition(), -angle);
+
+	//ボックスへのベクトル
+	Vector3 sphereToVector = box.GetPosition() - rotSphere;
+
+	if (abs(sphereToVector.x) > abs(sphereToVector.y) &&
+		abs(sphereToVector.x) > box.GetSize().x / 2)
+	{
+		top = 1;
+		if (abs(sphereToVector.z) > abs(sphereToVector.x) &&
+			abs(sphereToVector.z) > box.GetSize().z / 2)
+			top = 3;
+	}
+	else
+	{
+		top = 2;
+		if (abs(sphereToVector.z) > abs(sphereToVector.y) &&
+			abs(sphereToVector.z) > box.GetSize().z / 2)
+			top = 3;
+	}
+
+	if (top == 1)
+	{
+		if (sphereToVector.x >= 0)
+		{
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
+		}
+		else
+		{
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_RIGHT;
+		}
+	}
+	else if (top == 2)
+	{
+		if (sphereToVector.y >= 0)
+		{
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
+		}
+		else
+		{
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_UP;
+		}
+	}
+	else if (top == 3)
+	{
+		if (sphereToVector.z >= 0)
+		{
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
+		}
+		else
+		{
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
+		}
+	}
+
+	
+	// 法線を求めてセット
+	Vector3 normal = CalcHitBoxSurfaceNormal(hitDirection);
+	sphereCalcResult->SetOBBHitSurfaceNormal(LibMath::RotateZXYVector3(normal, angle));
+	
 	return result;
 }
 

@@ -11,6 +11,9 @@ namespace MelLib
 	class Collision
 	{
 	private:
+
+		static Vector3 CalcHitBoxSurfaceNormal(BoxHitDirection dir);
+
 	public:
 
 #pragma region 2D

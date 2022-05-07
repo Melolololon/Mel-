@@ -79,7 +79,7 @@ void Player::Hit
 	if (typeid(object) == typeid(TestObject)) 
 	{
 		modelObjects["main"].SetMulColor(MelLib::Color(111, 111, 111, 255));
-		MelLib::Vector3 vec = GetSphereCalcResult().GetBoxHitSurfaceNormal();
+		MelLib::Vector3 vec = GetSphereCalcResult().GetOBBHitSurfaceNormal();
 		AddPosition(vec * 0.3f);
 	}
 }

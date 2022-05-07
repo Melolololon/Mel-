@@ -30,7 +30,7 @@ void TestObject::Update()
 	modelObjects["main"].SetMulColor(MelLib::Color(255, 255, 255, 255));
 
 	MelLib::Vector3 ang;
-	ang.y = GetAngle().y + 3;
+	ang.y = 52;
 	SetAngle(ang);
 }
 
