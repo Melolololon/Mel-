@@ -1,4 +1,4 @@
-#include"CollisionType.h"
+#include"CollisionDetectionData.h"
 #include"LibMath.h"
 #include"Interpolation.h"
 

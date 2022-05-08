@@ -3,7 +3,7 @@
 #include"FbxLoader.h"
 #include"DirectionalLight.h"
 #include"Matrix.h"
-#include"CollisionType.h"
+#include"CollisionDetectionData.h"
 #include"LibMath.h"
 #include"Values.h"
 #include"Collision.h"

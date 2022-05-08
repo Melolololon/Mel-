@@ -5,7 +5,7 @@ namespace MelLib
 {
 
 	//CalcResultをCollisionResultにする?
-	//CollisionType.hからPrimitiveTypeに変える?
+	//CollisionDetectionData.hからPrimitiveTypeに変える?
 	//衝突確認に使うデータだからこのままでいい?プリミティブじゃないデータ(線分)あるし
 	//ShapeTypeの名前変える?
 
