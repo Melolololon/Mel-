@@ -3,8 +3,10 @@
 #include<Input.h>
 
 
+
 void Player::Move()
 {
+
 	// 移動ベクトル
 	MelLib::Vector3 moveVector;
 	// 移動速度
@@ -82,6 +84,8 @@ void Player::Hit
 		MelLib::Vector3 vec = GetSphereCalcResult().GetOBBHitSurfaceNormal();
 		AddPosition(vec * 0.3f);
 	}
+
+
 }
 
 std::shared_ptr<MelLib::GameObject> Player::GetNewPtr()
