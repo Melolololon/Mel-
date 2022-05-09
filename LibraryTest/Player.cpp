@@ -12,7 +12,8 @@ void Player::Move()
 	// ˆÚ“®‘¬“x
 	static const float MOVE_SPEED = 0.3f;
 	
-	if (MelLib::Input::KeyState(DIK_LEFT))
+	if (MelLib::Input::KeyState(DIK_LEFT) 
+		|| MelLib::Input::LeftStickAngle(20))
 	{
 		moveVector.x -= MOVE_SPEED;
 	}
