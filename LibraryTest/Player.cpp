@@ -1,7 +1,7 @@
 #include "Player.h"
 #include"TestObject.h"
 #include<Input.h>
-
+#include<LibMath.h>
 
 
 void Player::Move()
@@ -10,10 +10,9 @@ void Player::Move()
 	// 移動ベクトル
 	MelLib::Vector3 moveVector;
 	// 移動速度
-	static const float MOVE_SPEED = 0.3f;
+	static const float MOVE_SPEED = 0.1f;
 	
-	if (MelLib::Input::KeyState(DIK_LEFT) 
-		|| MelLib::Input::LeftStickAngle(20))
+	if (MelLib::Input::KeyState(DIK_LEFT))
 	{
 		moveVector.x -= MOVE_SPEED;
 	}
@@ -28,6 +27,15 @@ void Player::Move()
 	else if (MelLib::Input::KeyState(DIK_DOWN))
 	{
 		moveVector.z -= MOVE_SPEED;
+	}
+
+
+	float angle = MelLib::Input::LeftStickAngle(30);
+	if (angle != -1.0f) 
+	{
+		MelLib::Vector2 v = MelLib::LibMath::AngleToVector2(angle, true);
+		moveVector.x = v.x * MOVE_SPEED;
+		moveVector.z = v.y * MOVE_SPEED;
 	}
 
 	// 加算
