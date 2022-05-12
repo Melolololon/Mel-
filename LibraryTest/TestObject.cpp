@@ -19,8 +19,8 @@ TestObject::TestObject()
 	// Playerの座標を取得し、それをセット
 	obbDatas["main"].resize(1);
 	obbDatas["main"][0].GetRefBoxData().SetPosition(GetPosition());
-	obbDatas["main"][0].GetRefBoxData().SetSize(MelLib::Vector3(5,1,1));
-	modelObjects["main"].SetScale(MelLib::Vector3(5, 1, 1));
+	obbDatas["main"][0].GetRefBoxData().SetSize(MelLib::Vector3(5,5,1));
+	modelObjects["main"].SetScale(MelLib::Vector3(5, 5, 1));
 }
 
 void TestObject::Update()
@@ -30,7 +30,7 @@ void TestObject::Update()
 	modelObjects["main"].SetMulColor(MelLib::Color(255, 255, 255, 255));
 
 	MelLib::Vector3 ang;
-	ang.y = 52;
+	ang.y = 45;
 	SetAngle(ang);
 }
 
