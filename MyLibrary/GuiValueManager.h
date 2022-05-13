@@ -62,10 +62,10 @@ namespace MelLib
 		void Update();
 
 		
-		int GetGuiIntData(const std::string& windowName, const std::string& lavel)const;
-		float GetGuiFloatData(const std::string& windowName, const std::string& lavel)const;
+		void GetGuiData(int& refInt, const std::string& windowName, const std::string& lavel)const;
+		void GetGuiData(float& refFloat,const std::string& windowName, const std::string& lavel)const;
 		void GetGuiData(bool& refFlag, const std::string& windowName, const std::string& lavel)const;
-		Vector3 GetGuiVector3Data(const std::string& windowName, const std::string& lavel)const;
+		void GetGuiData(Vector3& refVectior3,const std::string& windowName, const std::string& lavel)const;
 	};
 
 }

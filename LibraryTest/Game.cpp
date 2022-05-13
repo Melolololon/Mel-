@@ -58,9 +58,9 @@ MelLib::Sprite2D sprite;
 
 MelLib::GuiInt num(10, "Player", "HP", 1, 10);
 MelLib::GuiInt num2(3, "Player", "Power", 1, 10);
-MelLib::GuiFloat num3(3, "Player", "Otimpo", 1, 10);
+MelLib::GuiFloat num3(3, "Player", "Float", 1, 10);
 MelLib::GuiVector3 num4(3, "Player", "Pos", -10, 10);
-MelLib::GuiBool f(true, "Test", "Naon or Man");
+MelLib::GuiBool f(true, "Test", "Flag");
 void Game::Initialize()
 {
 
@@ -107,6 +107,7 @@ void Game::Initialize()
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,10,0));
 
+	num.SetLoadData();
 	f.SetLoadData();
 }
 

@@ -214,6 +214,7 @@ void MelLib::GuiValueManager::Load()
 				file.read(value, 4);
 
 				for (int i = 0; i < 4; i++)param += value[i];
+				int z = 0;
 			}
 			else if (formatChar == DATA_FORMAT_STR.at("bool"))
 			{
@@ -371,6 +372,22 @@ void MelLib::GuiValueManager::Update()
 
 		ImguiManager::GetInstance()->EndDrawWindow();
 	}
+}
+
+void MelLib::GuiValueManager::GetGuiData(int& refInt, const std::string& windowName, const std::string& lavel) const
+{
+	// ë∂ç›Ç∑ÇÈÇ©ämîF
+	if (datas.find(windowName) == datas.end())return;
+	if (datas.at(windowName).find(lavel) == datas.at(windowName).end())return;
+
+	// Ç†Ç¡ÇΩÇÁäiî[
+	std::string param = datas.at(windowName).at(lavel);
+	char data[4];
+	for (int i = 0; i < 4; i++)data[i] = param[param.size() - 4 + i];
+
+	int* iP = reinterpret_cast<int*>(data);
+	refInt = *iP;
+	int z = 0;
 }
 
 void MelLib::GuiValueManager::GetGuiData(bool& refFlag, const std::string& windowName, const std::string& lavel) const
