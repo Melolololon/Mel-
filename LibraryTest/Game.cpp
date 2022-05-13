@@ -32,6 +32,7 @@ Game* Game::GetInstance()
 
 void Game::Run()
 {
+	MelLib::GuiInt num(10, "Player", "HP", 1, 10);
 
 	MelLib::ImguiManager::GetInstance()->SetReleaseDrawFlag(true);
 
@@ -56,11 +57,7 @@ void Game::Run()
 
 MelLib::Sprite2D sprite;
 
-MelLib::GuiInt num(10, "Player", "HP", 1, 10);
-MelLib::GuiInt num2(3, "Player", "Power", 1, 10);
-MelLib::GuiFloat num3(3, "Player", "Float", 1, 10);
-MelLib::GuiVector3 num4(3, "Player", "Pos", -10, 10);
-MelLib::GuiBool f(true, "Test", "Flag");
+
 void Game::Initialize()
 {
 
@@ -99,7 +96,6 @@ void Game::Initialize()
 	sprite.SetScale(MelLib::Vector2(256, 512));
 
 
-	num = 1;
 	MelLib::GuiValueManager::GetInstance()->Initialize();
 	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
 	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
@@ -107,11 +103,6 @@ void Game::Initialize()
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,10,0));
 
-	num.SetLoadData();
-	num2.SetLoadData();
-	num3.SetLoadData();
-	num4.SetLoadData();
-	f.SetLoadData();
 }
 
 

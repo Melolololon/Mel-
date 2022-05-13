@@ -61,6 +61,11 @@ namespace MelLib
 		~GuiInt();
 		
 		void operator=(const int num) { this->value = num; }
+		GuiInt& operator=(GuiInt& value) 
+		{
+			*this = value;
+			return value;
+		}
 
 		void operator++() { value++; }
 		void operator--() { value--; }

@@ -33,6 +33,10 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 
 void MelLib::GuiValueManager::Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type,const size_t dataSize, bool& refFlag)
 {
+	// HPをいじる
+	// 読み込んでPowerをいじる
+	// 再度読み込むとなぜかHPがリセットされてしまう
+	// 直す
 
 	// 削除されたGuiのパラメータは書き出さないようにする
 
@@ -214,7 +218,7 @@ void MelLib::GuiValueManager::Load()
 					lavel += c;
 				}
 
-				std::string param;
+				std::string param = lavel;
 				param += -1;
 
 				// 設定した乱数を取得

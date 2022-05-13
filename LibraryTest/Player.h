@@ -1,9 +1,13 @@
 #pragma once
 #include<GameObject.h>
-
+#include<GuiValue.h>
 class Player :
     public MelLib::GameObject
 {
+
+	MelLib::GuiInt hp;
+	MelLib::GuiInt power;
+
 private:
 
 	void Move();

@@ -6,7 +6,6 @@
 
 void Player::Move()
 {
-
 	// 移動ベクトル
 	MelLib::Vector3 moveVector;
 	// 移動速度
@@ -44,6 +43,8 @@ void Player::Move()
 }
 
 Player::Player()
+	:hp(10, "Player", "HP", 0, 100)
+	,power(10, "Player", "Power", 1, 100)
 {
 	// MelLib;;ModelObjectの配列
 	// 四角形をセット
@@ -57,6 +58,7 @@ Player::Player()
 	sphereDatas["main"].resize(1);
 	sphereDatas["main"][0].SetPosition(GetPosition());
 	sphereDatas["main"][0].SetRadius(0.5f);
+
 }
 
 void Player::Update()
