@@ -7,6 +7,19 @@
 #include"GuiValue.h"
 namespace MelLib
 {
+	// .guid 仕様
+	// ファイル名　ウィンドウ名
+	// 
+	// 内部(ラベル分存在)
+	// ラベル
+	// 区切り-1
+	// 名前復元用乱数
+	// 値の型
+	// 値
+	// 終了判別値(-1がまだ続く。-2が末尾)
+	//
+
+
 	class GuiValueManager
 	{
 	private:

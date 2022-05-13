@@ -186,6 +186,9 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 
 void MelLib::GuiValueManager::Load()
 {
+
+
+
 	std::string importPath = GuiOption::GetInstance()->GetGuiDataPath();
 
 	if (importPath.size() == 0)importPath = std::filesystem::current_path().string();
