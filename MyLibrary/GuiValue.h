@@ -108,6 +108,11 @@ namespace MelLib
 		float GetMaxValue() const { return MAX_VALUE; }
 		float GetMinValue()const { return MIN_VALUE; }
 
+		/// <summary>
+		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
+		/// 初期化処理が始まる前にコンストラクタが呼び出されてしまう場合にお使いください。
+		/// </summary>
+		void SetLoadData();
 	};
 
 	class GuiVector3
@@ -140,7 +145,12 @@ namespace MelLib
 		MelLib::Vector3 GetValue()const { return value; }
 		float GetMaxValue() const { return MAX_VALUE; }
 		float GetMinValue()const { return MIN_VALUE; }
-
+		
+		/// <summary>
+		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
+		/// 初期化処理が始まる前にコンストラクタが呼び出されてしまう場合にお使いください。
+		/// </summary>
+		void SetLoadData();
 	};
 
 	class GuiBool

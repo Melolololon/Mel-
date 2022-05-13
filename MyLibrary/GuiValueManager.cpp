@@ -121,12 +121,21 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 	// 開き直すと消えるから
 	
 	// 一旦ウィンドウ内全部書き出しでもいいかも
+
+	// charは128MAXだから100足してオーバーフローさせても-1にはならないから-1を区切りとして使っている
+	// 終端は-2
 	
 	std::string param;
-	param += -1;
+	//param += -1;
 
 	// 特定対策用乱数
-	char ran = static_cast<char>(Random::GetRandomNumber(100));
+	char ran = static_cast<char>(Random::GetRandomNumber(100) + 1);
+
+	std::string addLavel = lavel;
+	for (auto& c : addLavel) c += ran;
+	param += addLavel;
+
+	param += -1;
 	param += ran;
 
 	if (type == typeid(int))param += DATA_FORMAT_STR.at("int");
@@ -145,14 +154,28 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 
 	// 書き出し
 	std::ofstream file(EXPORT_PATH);
-	
+
+	int loopNum = 0; 
 	for (const auto& d : datas[windowName])
 	{
-		std::string lavel = d.first;
-		for (auto& c : lavel) c += ran;
+	/*	std::string lavel = d.first;
+		for (auto& c : lavel) c += ran;*/
 
-		file.write(lavel.c_str(), lavel.size());
+		//file.write(lavel.c_str(), lavel.size());
 		file.write(d.second.c_str(), d.second.size());
+
+
+		if (loopNum != datas[windowName].size() - 1) 
+		{
+			char kugiri = -1;
+			file.write(&kugiri, 1);
+		}
+		else 
+		{
+			char kugiri = -2;
+			file.write(&kugiri, 1);
+		}
+		loopNum++;
 	}
 
 	file.close();
@@ -161,7 +184,9 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 }
 
 void MelLib::GuiValueManager::Load()
-{
+{// 8 6
+
+
 	std::string importPath = GuiOption::GetInstance()->GetGuiDataPath();
 
 	if (importPath.size() == 0)importPath = std::filesystem::current_path().string();
@@ -177,59 +202,63 @@ void MelLib::GuiValueManager::Load()
 
 			std::ifstream file(filePath);
 
-			if (!file) 
-			{
-				int z = 0;
-			}
-
-			std::string lavel;
-			char c = 0;
 			while (1) 
 			{
-				file.read(&c, 1);
-				if (c == -1)break;
-				lavel += c;
+
+				std::string lavel;
+				char c = 0;
+				while (1)
+				{
+					file.read(&c, 1);
+					if (c == -1)break;
+					lavel += c;
+				}
+
+				std::string param;
+				param += -1;
+
+				// 設定した乱数を取得
+				char randNum = 0;
+				file.read(&randNum, 1);
+				// 減算してちゃんとした名前に戻す
+				for (auto& c : lavel)c -= randNum;
+				param += randNum;
+
+
+				// 型の取得
+				char formatChar = 0;
+				file.read(&formatChar, 1);
+				param += formatChar;
+
+				if (formatChar == DATA_FORMAT_STR.at("int")
+					|| formatChar == DATA_FORMAT_STR.at("float"))
+				{
+					char value[4];
+					file.read(value, 4);
+
+					for (int i = 0; i < 4; i++)param += value[i];
+					int z = 0;
+				}
+				else if (formatChar == DATA_FORMAT_STR.at("bool"))
+				{
+					char value;
+					file.read(&value, 1);
+					param += value;
+				}
+				else if (formatChar == DATA_FORMAT_STR.at("Vector3"))
+				{
+					char value[sizeof(Vector3)];
+					file.read(value, sizeof(Vector3));
+					for (int i = 0; i < sizeof(Vector3); i++)param += value[i];
+				}
+
+				datas[fileName][lavel] = param;
+
+				// 区切りの-1がなかったら抜ける
+				char kugiri = 0;
+				file.read(&kugiri, 1);
+				if (kugiri == -2)break;
 			}
-
-			std::string param;
-			param += -1;
-
-			// 設定した乱数を取得
-			char randNum = 0;
-			file.read(&randNum, 1);
-			// 減算してちゃんとした名前に戻す
-			for (auto& c : lavel)c -= randNum;
-			param += randNum;
-			
-
-			// 型の取得
-			char formatChar = 0;
-			file.read(&formatChar, 1);
-			param += formatChar;
-
-			if (formatChar == DATA_FORMAT_STR.at("int")
-				|| formatChar == DATA_FORMAT_STR.at("float"))
-			{
-				char value[4];
-				file.read(value, 4);
-
-				for (int i = 0; i < 4; i++)param += value[i];
-				int z = 0;
-			}
-			else if (formatChar == DATA_FORMAT_STR.at("bool"))
-			{
-				char value;
-				file.read(&value, 1); 
-				param += value;
-			}
-			else if(formatChar == DATA_FORMAT_STR.at("Vector3"))
-			{
-				char value[sizeof(Vector3)];
-				file.read(value, sizeof(Vector3));
-				for (int i = 0; i < sizeof(Vector3); i++)param += value[i];
-			}
-
-			datas[fileName][lavel] = param;
 
 			file.close();
 		}
@@ -385,9 +414,25 @@ void MelLib::GuiValueManager::GetGuiData(int& refInt, const std::string& windowN
 	char data[4];
 	for (int i = 0; i < 4; i++)data[i] = param[param.size() - 4 + i];
 
-	int* iP = reinterpret_cast<int*>(data);
-	refInt = *iP;
-	int z = 0;
+	
+	int* pValue = reinterpret_cast<int*>(data);
+	refInt = *pValue;
+}
+
+void MelLib::GuiValueManager::GetGuiData(float& refFloat, const std::string& windowName, const std::string& lavel) const
+{
+	// 存在するか確認
+	if (datas.find(windowName) == datas.end())return;
+	if (datas.at(windowName).find(lavel) == datas.at(windowName).end())return;
+
+	// あったら格納
+	std::string param = datas.at(windowName).at(lavel);
+	char data[4];
+	for (int i = 0; i < 4; i++)data[i] = param[param.size() - 4 + i];
+
+
+	float* pValue = reinterpret_cast<float*>(data);
+	refFloat = *pValue;
 }
 
 void MelLib::GuiValueManager::GetGuiData(bool& refFlag, const std::string& windowName, const std::string& lavel) const
@@ -400,5 +445,20 @@ void MelLib::GuiValueManager::GetGuiData(bool& refFlag, const std::string& windo
 	std::string param = datas.at(windowName).at(lavel);
 	char flag = param[param.size() - 1];
 	refFlag = static_cast<bool>(flag);
+}
+
+void MelLib::GuiValueManager::GetGuiData(Vector3& refVectior3, const std::string& windowName, const std::string& lavel) const
+{
+	// 存在するか確認
+	if (datas.find(windowName) == datas.end())return;
+	if (datas.at(windowName).find(lavel) == datas.at(windowName).end())return;
+
+	// あったら格納
+	std::string param = datas.at(windowName).at(lavel);
+	char data[4];
+	for (int i = 0; i < 4; i++)data[i] = param[param.size() - 4 + i];
+
+	Vector3* pValue = reinterpret_cast<Vector3*>(data);
+	refVectior3 = *pValue;
 }
 
