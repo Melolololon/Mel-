@@ -32,7 +32,6 @@ Game* Game::GetInstance()
 
 void Game::Run()
 {
-	MelLib::GuiInt num(10, "Player", "HP", 1, 10);
 
 	MelLib::ImguiManager::GetInstance()->SetReleaseDrawFlag(true);
 

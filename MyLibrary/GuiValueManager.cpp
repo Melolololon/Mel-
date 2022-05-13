@@ -33,10 +33,7 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 
 void MelLib::GuiValueManager::Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type,const size_t dataSize, bool& refFlag)
 {
-	// HPをいじる
-	// 読み込んでPowerをいじる
-	// 再度読み込むとなぜかHPがリセットされてしまう
-	// 直す
+	
 
 	// 削除されたGuiのパラメータは書き出さないようにする
 
@@ -188,9 +185,7 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 }
 
 void MelLib::GuiValueManager::Load()
-{// 8 6
-
-
+{
 	std::string importPath = GuiOption::GetInstance()->GetGuiDataPath();
 
 	if (importPath.size() == 0)importPath = std::filesystem::current_path().string();
@@ -332,6 +327,9 @@ void MelLib::GuiValueManager::Initialize()
 
 void MelLib::GuiValueManager::Update()
 {
+	// リリース時に描画しない設定だったらreturn
+	if (!ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
+
 	// 三種類の配列見て、Window名が一緒だったら1つのウィンドウにまとめる
 	for (const auto& name : createWindowNames)
 	{
