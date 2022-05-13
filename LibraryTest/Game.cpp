@@ -109,6 +109,8 @@ void Game::Initialize()
 
 	num.SetLoadData();
 	num2.SetLoadData();
+	num3.SetLoadData();
+	num4.SetLoadData();
 	f.SetLoadData();
 }
 

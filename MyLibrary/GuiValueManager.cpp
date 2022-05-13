@@ -455,8 +455,8 @@ void MelLib::GuiValueManager::GetGuiData(Vector3& refVectior3, const std::string
 
 	// ‚ ‚Á‚½‚çŠi”[
 	std::string param = datas.at(windowName).at(lavel);
-	char data[4];
-	for (int i = 0; i < 4; i++)data[i] = param[param.size() - 4 + i];
+	char data[sizeof(Vector3)];
+	for (int i = 0; i < sizeof(Vector3); i++)data[i] = param[param.size() - sizeof(Vector3) + i];
 
 	Vector3* pValue = reinterpret_cast<Vector3*>(data);
 	refVectior3 = *pValue;
