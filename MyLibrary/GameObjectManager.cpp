@@ -4,6 +4,7 @@
 #include"Collision.h"
 #include"Physics.h"
 #include"Values.h"
+#include"Easing.h"
 
 
 using namespace MelLib;
@@ -38,6 +39,8 @@ void GameObjectManager::Initialize()
 
 void GameObjectManager::Update()
 {
+
+
 #pragma region オブジェクトのUpdate
 	//カーソルアップデート
 	if (cursor)
@@ -49,6 +52,7 @@ void GameObjectManager::Update()
 
 	for (auto& obj : objects)
 	{
+		obj->SetPreDataPositions();
 		obj->Update();
 
 	}
@@ -63,13 +67,12 @@ void GameObjectManager::Update()
 	{
 		for (auto& a : addObjects)
 		{
-
+			a.get()->SetPreDataPositions();
 			a.get()->Update();
 			objects.push_back(a);
 		}
 
-		if (addObjectSort != OBJECT_SORT_NONE)
-			ObjectSort(addObjectSort, addObjectSortOrderType);
+		if (addObjectSort != OBJECT_SORT_NONE)ObjectSort(addObjectSort, addObjectSortOrderType);
 
 		addObjects.clear();
 	}
@@ -109,9 +112,19 @@ void GameObjectManager::Update()
 			////自分と比較、比較済の組み合わせはcontinue
 			if (objI >= objJ)continue;
 
+			unsigned int checkNum = 1;
+			auto getCheckNum = [](const GameObject& obj1, ShapeType3D type1, const GameObject& obj2, ShapeType3D type2)
+			{
+				unsigned int num1 = obj1.GetFrameHitCheckNumber(type1);
+				unsigned int num2 = obj2.GetFrameHitCheckNumber(type2);
+				if (num1 > num2)return num1;
+				return num2;
+			};
+
+
 #pragma region Sphere & Sphere
 
-
+			
 			if (collisionFlags[objI].sphere
 				&& collisionFlags[objJ].sphere)
 			{
@@ -119,14 +132,19 @@ void GameObjectManager::Update()
 				std::unordered_map<std::string, std::vector<SphereData>> sphereDatas1 = obj1->GetSphereDatas();
 				std::unordered_map<std::string, std::vector<SphereData>> sphereDatas2 = obj2->GetSphereDatas();
 
+				std::unordered_map<std::string, std::vector<Vector3>>prePos1;
+				obj1->GetPreSpherePositions(prePos1);
+				std::unordered_map<std::string, std::vector<Vector3>>prePos2;
+				obj2->GetPreSpherePositions(prePos2);
+
 				// 名前分ループ
-				for (const auto& shapeDatas1 : sphereDatas1)
+				for (const auto& sphereData1 : sphereDatas1)
 				{
-					for (const auto& shapeDatas2 : sphereDatas1)
+					for (const auto& sphereData2 : sphereDatas2)
 					{
-						std::vector<SphereData>sphereDataVec1 = sphereDatas1[shapeDatas1.first];
+						std::vector<SphereData>sphereDataVec1 = sphereDatas1[sphereData1.first];
 						size_t sphereData1Size = sphereDataVec1.size();
-						std::vector<SphereData>sphereDataVec2 = sphereDatas2[shapeDatas1.first];
+						std::vector<SphereData>sphereDataVec2 = sphereDatas2[sphereData1.first];
 						size_t sphereData2Size = sphereDataVec2.size();
 
 
@@ -134,28 +152,56 @@ void GameObjectManager::Update()
 						{
 							for (int colJ = 0; colJ < sphereData2Size; colJ++)
 							{
-								if (Collision::SphereAndSphere(sphereDataVec1[colI], sphereDataVec2[colJ]))
-								{
-									//hitを呼び出す
-									obj1->SetHitSphereData(sphereDataVec2[colJ]);
-									obj2->SetHitSphereData(sphereDataVec1[colJ]);
+								
+								// 判定を行う回数を取得
+								checkNum = getCheckNum(*obj1, ShapeType3D::SPHERE, *obj2, ShapeType3D::SPHERE);
 
-									obj1->Hit
-									(
-										*obj2,
-										ShapeType3D::SPHERE,
-										shapeDatas1.first,
-										ShapeType3D::SPHERE,
-										shapeDatas2.first
-									);
-									obj2->Hit
-									(
-										*obj1,
-										ShapeType3D::SPHERE,
-										shapeDatas2.first,
-										ShapeType3D::SPHERE,
-										shapeDatas1.first
-									);
+								SphereData sphere1 = sphereDataVec1[colI];
+								SphereData sphere2 = sphereDataVec2[colJ];
+
+								// 座標を補完
+								Vector3 pos1 = prePos1[sphereData1.first][colI];
+								Vector3 prePos1 = sphere1.GetPosition();
+								Vector3 pos2 = prePos2[sphereData2.first][colJ];
+								Vector3 prePos2 = sphere2.GetPosition();
+								
+								if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
+								else 
+								{
+									int d = 0;
+								}
+								Easing<Vector3>easing1(prePos1, pos1, (100 / checkNum));
+								Easing<Vector3>easing2(prePos2, pos2, (100 / checkNum));
+
+								for (int c = 0; c < checkNum; c++)
+								{
+									sphere1.SetPosition(easing1.Lerp());
+									sphere2.SetPosition(easing2.Lerp());
+
+									if (Collision::SphereAndSphere(sphere1, sphere2))
+									{
+										//hitを呼び出す
+										obj1->SetHitSphereData(sphereDataVec2[colJ]);
+										obj2->SetHitSphereData(sphereDataVec1[colI]);
+
+										obj1->Hit
+										(
+											*obj2,
+											ShapeType3D::SPHERE,
+											sphereData1.first,
+											ShapeType3D::SPHERE,
+											sphereData2.first
+										);
+										obj2->Hit
+										(
+											*obj1,
+											ShapeType3D::SPHERE,
+											sphereData2.first,
+											ShapeType3D::SPHERE,
+											sphereData1.first
+										);
+									}
+
 								}
 							}
 						}

@@ -59,6 +59,7 @@ Player::Player()
 	sphereDatas["main"][0].SetPosition(GetPosition());
 	sphereDatas["main"][0].SetRadius(0.5f);
 
+	sphereFrameHitCheckNum = 2;
 }
 
 void Player::Update()
@@ -92,8 +93,8 @@ void Player::Hit
 	if (typeid(object) == typeid(TestObject)) 
 	{
 		modelObjects["main"].SetMulColor(MelLib::Color(111, 111, 111, 255));
-		MelLib::Vector3 vec = GetSphereCalcResult().GetOBBHitSurfaceNormal();
-		AddPosition(vec * 0.3f);
+		/*MelLib::Vector3 vec = GetSphereCalcResult().GetOBBHitSurfaceNormal();
+		AddPosition(vec * 0.3f);*/
 	}
 
 

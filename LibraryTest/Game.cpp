@@ -16,9 +16,10 @@
 #include "ErrorProcess.h"
 
 #include"SceneEditer.h"
+#include<GuiValueManager.h>
+
 #include"Player.h"
 #include"TestObject.h"
-#include<GuiValueManager.h>
 
 Game::Game() {}
 
@@ -80,24 +81,18 @@ void Game::Initialize()
 	MelLib::GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
+	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
+	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
 	//MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
 
-	MelLib::TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial",2, "test");
 
-	MelLib::TextureFont::Load("Resources/Font/font.png", MelLib::Value2<UINT>(14, 7), "testFont");
-
-	// “o˜^
-	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
-	int z = 0;
 
 	sprite.Create(MelLib::Color(255,255,0,255));
 	sprite.SetScale(MelLib::Vector2(256, 512));
 
 
 	MelLib::GuiValueManager::GetInstance()->Initialize();
-	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
-	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
 
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,10,0));
