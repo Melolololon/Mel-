@@ -17,9 +17,13 @@ TestObject::TestObject()
 
 	// 当たり判定の作成(球)
 	// Playerの座標を取得し、それをセット
-	sphereDatas["main"].resize(1);
+	/*sphereDatas["main"].resize(1);
 	sphereDatas["main"][0].SetPosition(GetPosition());
-	sphereDatas["main"][0].SetRadius(1.0f);
+	sphereDatas["main"][0].SetRadius(1.0f);*/
+
+	obbDatas["main"].resize(1);
+	obbDatas["main"][0].SetPosition(GetPosition());
+	obbDatas["main"][0].SetSize(1);
 	modelObjects["main"].SetScale(2);
 }
 

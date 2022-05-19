@@ -9,7 +9,7 @@ void Player::Move()
 	// 移動ベクトル
 	MelLib::Vector3 moveVector;
 	// 移動速度
-	static const float MOVE_SPEED = 0.1f;
+	static const float MOVE_SPEED = 10.0f;
 	
 	if (MelLib::Input::KeyState(DIK_LEFT))
 	{
@@ -51,7 +51,7 @@ Player::Player()
 	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX));
 
 	// 初期位置を0,0,5に
-	SetPosition(MelLib::Vector3(-4, 0, 0));
+	SetPosition(MelLib::Vector3(-5, 0, 0));
 
 	// 当たり判定の作成(球)
 	// Playerの座標を取得し、それをセット
@@ -59,7 +59,7 @@ Player::Player()
 	sphereDatas["main"][0].SetPosition(GetPosition());
 	sphereDatas["main"][0].SetRadius(0.5f);
 
-	sphereFrameHitCheckNum = 2;
+	sphereFrameHitCheckNum = 100;
 }
 
 void Player::Update()
