@@ -23,8 +23,8 @@ TestObject::TestObject()
 
 	obbDatas["main"].resize(1);
 	obbDatas["main"][0].SetPosition(GetPosition());
-	obbDatas["main"][0].SetSize(1);
-	modelObjects["main"].SetScale(2);
+	obbDatas["main"][0].SetSize(0.05f);
+	modelObjects["main"].SetScale(0.05f);
 }
 
 void TestObject::Update()
@@ -34,7 +34,7 @@ void TestObject::Update()
 	modelObjects["main"].SetMulColor(MelLib::Color(255, 255, 255, 255));
 
 	MelLib::Vector3 ang;
-	ang.y = 45;
+	ang.y = 0;
 	SetAngle(ang);
 }
 

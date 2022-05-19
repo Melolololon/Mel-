@@ -35,6 +35,7 @@ void MelLib::GameObject::SetDataPosition(const Vector3& vec)
 		}
 	}
 	for (auto& d : boxDatas)
+	for (auto& d : obbDatas)
 	{
 		for (auto& d2 : d.second)
 		{
@@ -62,6 +63,7 @@ void MelLib::GameObject::SetDataPosition(const Vector3& vec)
 			d2.GetRefSegment3DData().SetPosition(d2.GetSegment3DData().GetPosition() + vec);
 		}
 	}
+	
 }
 
 void MelLib::GameObject::SetModelAngle(const Vector3& angle)
@@ -128,6 +130,13 @@ void MelLib::GameObject::SetDataScale(const Vector3& scale)
 		}
 	}
 	for (auto& d : boxDatas)
+	{
+		for (auto& d2 : d.second)
+		{
+			d2.SetSize(scale);
+		}
+	}
+	for (auto& d : obbDatas)
 	{
 		for (auto& d2 : d.second)
 		{

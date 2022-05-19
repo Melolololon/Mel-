@@ -9,7 +9,7 @@ void Player::Move()
 	// 移動ベクトル
 	MelLib::Vector3 moveVector;
 	// 移動速度
-	static const float MOVE_SPEED = 10.0f;
+	static const float MOVE_SPEED = 4.0f;
 	
 	if (MelLib::Input::KeyState(DIK_LEFT))
 	{
@@ -28,7 +28,9 @@ void Player::Move()
 		moveVector.z -= MOVE_SPEED;
 	}
 
-
+	if (MelLib::Input::KeyTrigger(DIK_SPACE)) {
+		moveVector.x += MOVE_SPEED;
+	}
 	float angle = MelLib::Input::LeftStickAngle(30);
 	if (angle != -1.0f) 
 	{
@@ -58,8 +60,9 @@ Player::Player()
 	sphereDatas["main"].resize(1);
 	sphereDatas["main"][0].SetPosition(GetPosition());
 	sphereDatas["main"][0].SetRadius(0.5f);
+	modelObjects["main"].SetScale(1);
 
-	sphereFrameHitCheckNum = 100;
+	sphereFrameHitCheckNum = 1000;
 }
 
 void Player::Update()
@@ -95,6 +98,13 @@ void Player::Hit
 		modelObjects["main"].SetMulColor(MelLib::Color(111, 111, 111, 255));
 		/*MelLib::Vector3 vec = GetSphereCalcResult().GetOBBHitSurfaceNormal();
 		AddPosition(vec * 0.3f);*/
+
+		MelLib::Vector3 getPos = GetLerpPosition();
+		MelLib::Vector3 movePos = GetLerpMovePosition();
+		SetPosition(GetLerpExtrudePosition());
+
+		MelLib::Vector3 myPos = GetPosition();
+		int z = 90;
 	}
 
 

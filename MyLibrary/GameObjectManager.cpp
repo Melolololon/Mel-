@@ -167,19 +167,31 @@ void GameObjectManager::Update()
 
 								if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
 
-								Easing<Vector3>easing1(prePos1, pos1, (100 / checkNum));
-								Easing<Vector3>easing2(prePos2, pos2, (100 / checkNum));
+								Easing<Vector3>easing1(prePos1, pos1,100.0f / static_cast<float>(checkNum));
+								Easing<Vector3>easing2(prePos2, pos2,100.0f / static_cast<float>(checkNum));
+
+								Vector3 easingMovePos1 = easing1.GetFrameLarpValue();
+								Vector3 easingMovePos2 = easing2.GetFrameLarpValue();
 
 								for (int c = 0; c < checkNum; c++)
 								{
-									sphere1.SetPosition(easing1.Lerp());
-									sphere2.SetPosition(easing2.Lerp());
+									sphere1.SetPosition(easing1.PreLerp());
+									sphere2.SetPosition(easing2.PreLerp());
 
 									if (Collision::SphereAndSphere(sphere1, sphere2))
 									{
 										//hitを呼び出す
-										obj1->SetHitSphereData(sphereDataVec2[colJ]);
-										obj2->SetHitSphereData(sphereDataVec1[colI]);
+										obj1->SetHitSphereData(sphere2);
+										obj2->SetHitSphereData(sphere1);
+
+										// オブジェクトに補間した座標をセット
+										// セットしたくないのにセットされたらいやだから
+										// 各自取得するようにする
+										obj1->SetLerpPosition(sphere1.GetPosition());
+										obj2->SetLerpPosition(sphere2.GetPosition());
+										
+										obj1->SetLerpMovePosition(easingMovePos1);
+										obj2->SetLerpMovePosition(easingMovePos2);
 
 										obj1->Hit
 										(
@@ -197,6 +209,8 @@ void GameObjectManager::Update()
 											ShapeType3D::SPHERE,
 											sphereData1.first
 										);
+
+										break;
 									}
 
 								}
@@ -444,13 +458,15 @@ void GameObjectManager::Update()
 
 								if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
 
-								Easing<Vector3>easing1(prePos1, pos1, (100 / checkNum));
-								Easing<Vector3>easing2(prePos2, pos2, (100 / checkNum));
+								Easing<Vector3>easing1(prePos1, pos1,100.0f / static_cast<float>(checkNum));
+								Easing<Vector3>easing2(prePos2, pos2,100.0f / static_cast<float>(checkNum));
 
+								Vector3 easingMovePos1 = easing1.GetFrameLarpValue();
+								Vector3 easingMovePos2 = easing2.GetFrameLarpValue();
 								for (int c = 0; c < checkNum; c++)
 								{
-									sphere1.SetPosition(easing1.Lerp());
-									box.SetPosition(easing2.Lerp());
+									sphere1.SetPosition(easing1.PreLerp());
+									box.SetPosition(easing2.PreLerp());
 
 
 									if (Collision::SphereAndBox
@@ -464,8 +480,14 @@ void GameObjectManager::Update()
 										obj1->SetSphereCalcResult(result1);
 										obj2->SetBoxCalcResult(result2);
 
-										obj1->SetHitBoxData(boxDataVec[colJ]);
-										obj2->SetHitSphereData(sphereDataVec[colI]);
+										obj1->SetHitBoxData(box);
+										obj2->SetHitSphereData(sphere1);
+
+										obj1->SetLerpPosition(sphere1.GetPosition());
+										obj2->SetLerpPosition(box.GetPosition());
+
+										obj1->SetLerpMovePosition(easingMovePos1);
+										obj2->SetLerpMovePosition(easingMovePos2);
 
 										//hitを呼び出す
 										obj1->Hit
@@ -483,7 +505,8 @@ void GameObjectManager::Update()
 											boxData.first,
 											ShapeType3D::SPHERE,
 											sphereData.first
-										);
+										);	
+										break;
 									}
 								}
 							}
@@ -540,13 +563,14 @@ void GameObjectManager::Update()
 
 								if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
 
-								Easing<Vector3>easing1(prePos1, pos1, (100 / checkNum));
-								Easing<Vector3>easing2(prePos2, pos2, (100 / checkNum));
-
+								Easing<Vector3>easing1(prePos1, pos1,100.0f / static_cast<float>(checkNum));
+								Easing<Vector3>easing2(prePos2, pos2,100.0f / static_cast<float>(checkNum));
+								Vector3 easingMovePos1 = easing1.GetFrameLarpValue();
+								Vector3 easingMovePos2 = easing2.GetFrameLarpValue();
 								for (int c = 0; c < checkNum; c++)
 								{
-									sphere1.SetPosition(easing1.Lerp());
-									box.SetPosition(easing2.Lerp());
+									sphere1.SetPosition(easing1.PreLerp());
+									box.SetPosition(easing2.PreLerp());
 
 									if (Collision::SphereAndBox
 									(
@@ -559,9 +583,14 @@ void GameObjectManager::Update()
 										obj2->SetSphereCalcResult(result1);
 										obj1->SetBoxCalcResult(result2);
 
-										obj1->SetHitSphereData(sphereDataVec[colI]);
-										obj2->SetHitBoxData(boxDataVec[colJ]);
+										obj1->SetHitSphereData(sphere1);
+										obj2->SetHitBoxData(box);
 
+										obj2->SetLerpPosition(sphere1.GetPosition());
+										obj1->SetLerpPosition(box.GetPosition());
+
+										obj1->SetLerpMovePosition(easingMovePos1);
+										obj2->SetLerpMovePosition(easingMovePos2);
 										//hitを呼び出す
 										obj2->Hit
 										(
@@ -579,6 +608,7 @@ void GameObjectManager::Update()
 											ShapeType3D::SPHERE,
 											sphereData.first
 										);
+										break;
 									}
 								}
 							}
@@ -638,13 +668,14 @@ void GameObjectManager::Update()
 
 								if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
 
-								Easing<Vector3>easing1(prePos1, pos1, (100 / checkNum));
-								Easing<Vector3>easing2(prePos2, pos2, (100 / checkNum));
-
+								Easing<Vector3>easing1(prePos1, pos1,100.0f / static_cast<float>(checkNum));
+								Easing<Vector3>easing2(prePos2, pos2,100.0f / static_cast<float>(checkNum));
+								Vector3 easingMovePos1 = easing1.GetFrameLarpValue();
+								Vector3 easingMovePos2 = easing2.GetFrameLarpValue();
 								for (int c = 0; c < checkNum; c++)
 								{
-									sphere1.SetPosition(easing1.Lerp());
-									obb.SetPosition(easing2.Lerp());
+									sphere1.SetPosition(easing1.PreLerp());
+									obb.SetPosition(easing2.PreLerp());
 
 
 									if (Collision::SphereAndOBB
@@ -658,8 +689,14 @@ void GameObjectManager::Update()
 										obj1->SetSphereCalcResult(result1);
 										//obj2->SetBoxCalcResult(result2);
 
-										//obj1->SetHitBoxData(boxDataVec[colJ]);
-										obj2->SetHitSphereData(sphereDataVec[colI]);
+										//obj1->SetHitBoxData(obb);
+										obj2->SetHitSphereData(sphere1);
+										
+										obj1->SetLerpPosition(sphere1.GetPosition());
+										obj2->SetLerpPosition(obb.GetPosition());
+
+										obj1->SetLerpMovePosition(easingMovePos1);
+										obj2->SetLerpMovePosition(easingMovePos2);
 
 										//hitを呼び出す
 										obj1->Hit
@@ -678,6 +715,7 @@ void GameObjectManager::Update()
 											ShapeType3D::SPHERE,
 											sphereData.first
 										);
+										break;
 									}
 								}
 							}
@@ -732,13 +770,14 @@ void GameObjectManager::Update()
 
 								if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
 
-								Easing<Vector3>easing1(prePos1, pos1, (100 / checkNum));
-								Easing<Vector3>easing2(prePos2, pos2, (100 / checkNum));
-
+								Easing<Vector3>easing1(prePos1, pos1,100.0f / static_cast<float>(checkNum));
+								Easing<Vector3>easing2(prePos2, pos2,100.0f / static_cast<float>(checkNum));
+								Vector3 easingMovePos1 = easing1.GetFrameLarpValue();
+								Vector3 easingMovePos2 = easing2.GetFrameLarpValue();
 								for (int c = 0; c < checkNum; c++)
 								{
-									sphere1.SetPosition(easing1.Lerp());
-									obb.SetPosition(easing2.Lerp());
+									sphere1.SetPosition(easing1.PreLerp());
+									obb.SetPosition(easing2.PreLerp());
 
 									if (Collision::SphereAndOBB
 									(
@@ -751,9 +790,14 @@ void GameObjectManager::Update()
 										obj2->SetSphereCalcResult(result1);
 										//obj1->SetBoxCalcResult(result2);
 
-										obj1->SetHitSphereData(sphereDataVec[colI]);
-										//obj2->SetHitBoxData(obbDataVec[colJ]);
+										obj1->SetHitSphereData(sphere1);
+										//obj2->SetHitBoxData(obb);
 
+										obj2->SetLerpPosition(sphere1.GetPosition());
+										obj1->SetLerpPosition(obb.GetPosition());
+
+										obj1->SetLerpMovePosition(easingMovePos1);
+										obj2->SetLerpMovePosition(easingMovePos2);
 										//hitを呼び出す
 										obj2->Hit
 										(
@@ -771,6 +815,7 @@ void GameObjectManager::Update()
 											ShapeType3D::SPHERE,
 											sphereData.first
 										);
+										break;
 									}
 								}
 							}

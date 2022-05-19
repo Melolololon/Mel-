@@ -148,6 +148,12 @@ namespace MelLib
 		unsigned int capsuleFrameHitCheckNum = 1;
 		unsigned int triangleFrameHitCheckNum = 1;
 		unsigned int obbFrameHitCheckNum = 1;
+
+		// 衝突した時の補間した座標
+		Vector3 lerpPosition;
+
+		// 補間で動いた座標
+		Vector3 lerpMovePosition;
 #pragma endregion
 
 		//継承したクラスを格納し、判定時に使う用
@@ -542,6 +548,27 @@ namespace MelLib
 		void GetPreSegment3DPositions(std::unordered_map<std::string, std::vector<Value2<Vector3>>>& refPos) { refPos = segment3DDataPrePositions; }
 		void GetPreCapsule3DPositions(std::unordered_map<std::string, std::vector<Value2<Vector3>>>& refPos) { refPos = capsuleDataPrePositions; }
 
+
+		void SetLerpPosition(const Vector3& pos) { lerpPosition = pos; }
+		void SetLerpMovePosition(const Vector3& pos) { lerpMovePosition = pos; }
+
+		/// <summary>
+		/// 衝突確認を1フレームで複数回行ったときに補間して衝突した時の座標を返します。
+		/// </summary>
+		/// <returns></returns>
+		Vector3 GetLerpPosition()const { return lerpPosition; }
+		
+		/// <summary>
+		/// 衝突確認を1フレームで複数回行ったときに補間した時の移動量を返します。
+		/// </summary>
+		/// <returns></returns>
+		Vector3 GetLerpMovePosition()const { return lerpMovePosition; }
+
+		/// <summary>
+		/// 衝突確認を1フレームで複数回行って補完した時に、衝突したオブジェクトと重ならないように押し出した座標を返します。
+		/// </summary>
+		/// <returns>重ならないように押し出した座標(GetLerpPosition() - GetLerpMovePosition())</returns>
+		Vector3 GetLerpExtrudePosition()const { return lerpPosition - lerpMovePosition; }
 
 		// 開発者用
 #ifdef _DEBUG
