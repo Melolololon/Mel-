@@ -62,7 +62,7 @@ Player::Player()
 	sphereDatas["main"][0].SetRadius(0.5f);
 	modelObjects["main"].SetScale(1);
 
-	sphereFrameHitCheckNum = 1000;
+	sphereFrameHitCheckNum = 100;
 }
 
 void Player::Update()
