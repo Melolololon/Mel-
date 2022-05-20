@@ -569,8 +569,8 @@ void GameObjectManager::Update()
 								Vector3 easingMovePos2 = easing2.GetFrameLarpValue();
 								for (int c = 0; c < checkNum; c++)
 								{
-									sphere1.SetPosition(easing1.PreLerp());
-									box.SetPosition(easing2.PreLerp());
+									sphere1.SetPosition(easing2.PreLerp());
+									box.SetPosition(easing1.PreLerp());
 
 									if (Collision::SphereAndBox
 									(
