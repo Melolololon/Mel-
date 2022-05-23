@@ -9,7 +9,7 @@ void Player::Move()
 	// 移動ベクトル
 	MelLib::Vector3 moveVector;
 	// 移動速度
-	static const float MOVE_SPEED = 4.0f;
+	static const float MOVE_SPEED = 0.5f;
 	
 	if (MelLib::Input::KeyState(DIK_LEFT))
 	{
@@ -62,7 +62,7 @@ Player::Player()
 	sphereDatas["main"][0].SetRadius(0.5f);
 	modelObjects["main"].SetScale(1);
 
-	sphereFrameHitCheckNum = 1000;
+	sphereFrameHitCheckNum = 100;
 }
 
 void Player::Update()
