@@ -14,10 +14,11 @@
 #include"Texture.h"
 #include"Color.h"
 #include"BufferData.h"
-#include"CollisionType.h"
+#include"CollisionDetectionData.h"
 
 #include"Material.h"
 
+// これ読み込めないエラーが新規プロジェクト開発時に出たらx64になってるか確認しよう!
 #include<fbxsdk.h>
 
 #ifdef _DEBUG
@@ -46,7 +47,7 @@ namespace MelLib
 		// 親ノードの行列も乗算したやつ
 		DirectX::XMMATRIX globalTransform;
 
-		Node* parentNode;
+		Node* parentNode = nullptr;
 	};
 
 
