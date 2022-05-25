@@ -10,6 +10,8 @@
 
 using namespace MelLib;
 
+ModelData* ModelObject::preModelData;
+
 std::unordered_map<std::string, std::unique_ptr<ModelObject>>ModelObject::pModelObjects;
 
 
@@ -506,6 +508,8 @@ void ModelObject::SetCmdList()
 {
 
 	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
+
+
 	//cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

@@ -81,7 +81,7 @@ void Game::Initialize()
 	MelLib::GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
+	for (int i = 0; i < 100; i++)MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
 	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
 	//MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
