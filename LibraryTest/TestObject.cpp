@@ -1,6 +1,6 @@
 #include "TestObject.h"
 
-
+#include"Random.h"
 
 void TestObject::Move()
 {
@@ -13,7 +13,7 @@ TestObject::TestObject()
 	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX));
 
 	// 初期位置を0,0,5に
-	SetPosition(MelLib::Vector3(0, 0, 0));
+	SetPosition(MelLib::Vector3(MelLib::Random::GetRandomFloatNumberRangeSelect(-10.0f, 10.0f, 2),0, MelLib::Random::GetRandomFloatNumberRangeSelect(-10.0f, 10.0f, 2)));
 
 	// 当たり判定の作成(球)
 	// Playerの座標を取得し、それをセット
@@ -30,6 +30,10 @@ TestObject::TestObject()
 	boxDatas["main"][0].SetPosition(GetPosition());
 	boxDatas["main"][0].SetSize(0.05f);
 	modelObjects["main"].SetScale(0.05f);
+
+	//SetAllCollisionFlag(false);
+	//collisionFlag.box = true;
+	collisionCheckDistance = 1.0f;
 }
 
 void TestObject::Update()
