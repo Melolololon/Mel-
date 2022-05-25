@@ -1,7 +1,7 @@
 #pragma once
 #include"GameObject.h"
 #include"GameObject2D.h"
-#include"CollisionType.h"
+#include"CollisionDetectionData.h"
 #include"MouseCursor.h"
 
 #include<vector>
@@ -11,6 +11,15 @@
 //カーソル判定用配列に移してソート
 
 //判定を2回確認するの処理多い(objAとobjBの判定求めるとき、objAだけ、objBだけHitを呼び出すのがもったいない)からどうにかする。
+
+// shared_ptrにしてる理由
+// 生ポインタを渡す処理の場合、
+// インスタンスのポインタを渡す方式だと間違えてメモリ確保して渡してしまい(new 〇〇)メモリが解放されなくなってしまう可能性がある
+// (newで確保してないメモリをdeleteで開放すると問題があるため、解放処理をマネージャーで行えない)
+// new〇〇を渡す場合、削除時にメモリを開放しないといけないが、間違ってnewで確保してないメモリを開放してしまう可能性があるため
+// 引数でどちらか指定してもらうようにしても、ミスでエラーが出る可能性がある
+// エラーが出ない、メモリが解放されないという問題が起こらず、
+// かつ上2つのパターン(インスタンスのポインタを渡す方式、new〇〇を渡す方式)を両立できるためshared_ptrにしている
 
 namespace MelLib
 {
@@ -46,8 +55,8 @@ namespace MelLib
 
 
 		//追加したフレームごとにソートするか
-		ObjectSortType addObjectSort;
-		bool addObjectSortOrderType;
+		ObjectSortType addObjectSort = OBJECT_SORT_NONE;
+		bool addObjectSortOrderType = false;
 
 		//カーソル判定
 		bool checkMouseCollision = false;
@@ -57,6 +66,8 @@ namespace MelLib
 		//データ
 		Vector3 nearPos;
 		Vector3 farPos;
+
+
 
 	private:
 
@@ -93,6 +104,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="flag"></param>
 		void SetMouseCollisionFlag(const bool flag);
+
 
 #pragma region オブジェクトの配列関係
 

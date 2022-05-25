@@ -5,7 +5,7 @@ namespace MelLib
 {
 
 	//CalcResultをCollisionResultにする?
-	//CollisionType.hからPrimitiveTypeに変える?
+	//CollisionDetectionData.hからPrimitiveTypeに変える?
 	//衝突確認に使うデータだからこのままでいい?プリミティブじゃないデータ(線分)あるし
 	//ShapeTypeの名前変える?
 
@@ -16,11 +16,14 @@ namespace MelLib
 
 	//これヘッダーファイル分けたほうがいいかも
 
+	// 名前HitCheckDataとかにしてもいいかも
+
 	//衝突確認フラグ
 	struct CollisionDetectionFlag
 	{
 		bool sphere = true;
 		bool box = true;
+		bool obb = true;
 		bool ray = true;
 		bool segment = true;
 		bool plane = true;
@@ -49,6 +52,7 @@ namespace MelLib
 	{
 		SPHERE,
 		BOX,
+		OBB,
 		PLANE,
 		TRIANGLE,
 		BOARD,
@@ -195,10 +199,38 @@ namespace MelLib
 #pragma region 球
 
 
-	struct SphereCalcResult
+	class SphereCalcResult
 	{
 		//箱のどの部分にぶつかったかという情報
-		BoxHitDirection boxHitDistance = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+		BoxHitDirection boxHitDirection = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+		
+
+		Vector3 boxHitSurfaceNormal;
+		Vector3 obbHitSurfaceNormal;
+
+
+	public:
+		/// <summary>
+		/// 当たったBOXのどこに当たったかを取得します。
+		/// </summary>
+		/// <returns></returns>
+		BoxHitDirection GetBoxHitDirection()const { return boxHitDirection; }
+		
+		/// <summary>
+		/// 当たったBOXの面の法線を取得します。
+		/// </summary>
+		/// <returns></returns>
+		Vector3 GetBoxHitSurfaceNormal()const { return boxHitSurfaceNormal; }
+		
+		/// <summary>
+		/// 当たったOBBの面の法線を取得します。
+		/// </summary>
+		/// <returns></returns>
+		Vector3 GetOBBHitSurfaceNormal()const { return obbHitSurfaceNormal; }
+
+		void SetBoxHitDirection(BoxHitDirection dir) { boxHitDirection = dir; }
+		void SetBoxHitSurfaceNormal(const Vector3& normal) { boxHitSurfaceNormal = normal; }
+		void SetOBBHitSurfaceNormal(const Vector3& normal) { obbHitSurfaceNormal = normal; }
 	};
 
 	//球
@@ -257,6 +289,28 @@ namespace MelLib
 #pragma endregion
 
 #pragma region OBB
+	
+	class OBBData
+	{
+	private:
+		BoxData boxData;
+		Vector3 angle;
+	public:
+		
+		BoxData GetBoxData()const { return boxData; }
+		BoxData& GetRefBoxData() { return boxData; }
+
+		Vector3 GetPosition()const { return boxData.GetPosition(); }
+		Vector3 GetSize()const { return boxData.GetSize(); }
+		Vector3 GetAngle()const { return angle; }
+
+
+		void SetPosition(const Vector3& pos) { boxData.SetPosition(pos); }
+		void SetSize(const Vector3& size) { boxData.SetSize(size); }
+		void SetAngle(const Vector3& angle) { this->angle = angle; }
+
+
+	};
 
 #pragma endregion
 
@@ -333,18 +387,23 @@ namespace MelLib
 	class TriangleData
 	{
 	private:
+		// 座標を3つまとめている
 		Value3<Vector3>position;
 
+		// 角度
 		Vector3 angle;
+		// 回転の座標
 		Value3<Vector3>rotPos;
 
 		//平行移動する量
-		Vector3 transVec;
+		Vector3 translationVec;
 		//平行移動後の座標
-		Value3<Vector3>transPos;
+		Value3<Vector3>translationPos;
 
+		// 法線
 		Vector3 normal;
 
+		// 現在未使用
 		TriangleCalcResult result;
 	private:
 		void CalcNormal();
@@ -356,9 +415,9 @@ namespace MelLib
 		/// 開店後に平行移動する移動量を取得します。
 		/// </summary>
 		/// <returns></returns>
-		Value3<Vector3> GetTranslationPosition()const { return transPos; }
+		Value3<Vector3> GetTranslationPosition()const { return translationPos; }
 		Vector3 GetAngle()const { return angle; }
-		Vector3 GetTransFormVector()const { return transVec; }
+		Vector3 GetTransFormVector()const { return translationVec; }
 		Vector3 GetNormal()const { return normal; }
 
 		/// <summary>
@@ -374,7 +433,7 @@ namespace MelLib
 		/// <summary>
 		/// 回転と平行移動した三角形の中心座標を取得します。
 		/// </summary>
-		Vector3 GetRotTranceFormCenter()const { return (transPos.v1 + transPos.v2 + transPos.v3) / 3; }
+		Vector3 GetRotTranceFormCenter()const { return (translationPos.v1 + translationPos.v2 + translationPos.v3) / 3; }
 
 		TriangleCalcResult GetCalcResult()const { return result; }
 
@@ -494,6 +553,11 @@ namespace MelLib
 	//カプセル
 	class CapsuleData
 	{
+		// 線分の参照取得しなくてもいじれるようにする
+		// 継承はしなくていい
+		// 別にカプセルを線分の配列に入れたいわけじゃないし
+		// GameObjectみたいに配列にまとめるたりオーバーライドするつもりがないなら継承しないほうがよかったはず
+
 	private:
 		Segment3DData segmentData;
 		float r = 0.0f;

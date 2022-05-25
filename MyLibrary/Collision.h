@@ -1,5 +1,5 @@
 #pragma once
-#include"CollisionType.h"
+#include"CollisionDetectionData.h"
 #include"Values.h"
 
 //計算に使う式と、計算によって得られた情報の構造体分ける?
@@ -10,7 +10,9 @@ namespace MelLib
 	//当たり判定(の計算)クラス
 	class Collision
 	{
+	private:
 
+		static Vector3 CalcHitBoxSurfaceNormal(BoxHitDirection dir);
 
 	public:
 
@@ -120,6 +122,8 @@ namespace MelLib
 		/// <returns>当たっていたらtrue</returns>
 		static bool SphereAndBox(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const BoxData& box, BoxCalcResult* boxCalcResult);
 
+		static bool SphereAndOBB(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const OBBData& obb);
+
 		static bool SphereAndSegmrnt3D(const SphereData& sphere, const Segment3DData& lineSegment);
 
 		static bool SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule);
@@ -193,6 +197,13 @@ namespace MelLib
 			TriangleCalcResult* triangleCalcResult,
 			const Segment3DData& lineSegment,
 			Segment3DCalcResult* lineSegmentCalcResult
+		);
+
+		static bool OBBAndRay
+		(
+			const OBBData& obb,
+			const RayData& ray,
+			RayCalcResult* rayResult
 		);
 #pragma endregion
 	};

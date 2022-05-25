@@ -2,7 +2,7 @@
 #include<Library.h>
 #include"SceneManager.h"
 #include"GameObjectManager.h"
-#include"Play.h"
+
 #include"Camera.h"
 #include"ModelData.h"
 #include"TextWrite.h"
@@ -14,6 +14,12 @@
 
 #include"ImguiManager.h"
 #include "ErrorProcess.h"
+
+#include"SceneEditer.h"
+#include<GuiValueManager.h>
+
+#include"Player.h"
+#include"TestObject.h"
 
 Game::Game() {}
 
@@ -49,9 +55,11 @@ void Game::Run()
 	Finalize();
 }
 
+MelLib::Sprite2D sprite;
+
+
 void Game::Initialize()
 {
-	
 
 	MelLib::Library::Initialize(1280, 720, MelLib::Color(30,30,160,255),L"MELLib");
 	MelLib::Library::SetFramesPerSecond60(true);
@@ -73,12 +81,21 @@ void Game::Initialize()
 	MelLib::GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
-	MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
+	for (int i = 0; i < 100; i++)MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
+	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
+	//MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
 
-	MelLib::TextWrite::CreateFontData(/*L"HGPºÞ¼¯¸E"*/L"Arial",2, "test");
 
-	MelLib::TextureFont::Load("Resources/Font/font.png", MelLib::Value2<UINT>(14, 7), "testFont");
+
+	sprite.Create(MelLib::Color(255,255,0,255));
+	sprite.SetScale(MelLib::Vector2(256, 512));
+
+
+	MelLib::GuiValueManager::GetInstance()->Initialize();
+
+	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
+	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,10,0));
 
 }
 
@@ -89,10 +106,20 @@ void Game::Finalize()
 }
 void Game::Update()
 {
-	MelLib::SceneManager::GetInstance()->Update();
+	//MelLib::SceneManager::GetInstance()->Update();
+	MelLib::SceneEditer::GetInstance()->Update();
+
+	MelLib::GameObjectManager::GetInstance()->Update();
+	MelLib::GuiValueManager::GetInstance()->Update();
+
 }
 
 void Game::Draw()
 {
-	MelLib::SceneManager::GetInstance()->Draw();
+	//MelLib::SceneManager::GetInstance()->Draw();
+	MelLib::SceneEditer::GetInstance()->Draw();
+
+	MelLib::GameObjectManager::GetInstance()->Draw();
+
+	sprite.Draw();
 }

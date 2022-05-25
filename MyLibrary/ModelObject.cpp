@@ -3,12 +3,14 @@
 #include"FbxLoader.h"
 #include"DirectionalLight.h"
 #include"Matrix.h"
-#include"CollisionType.h"
+#include"CollisionDetectionData.h"
 #include"LibMath.h"
 #include"Values.h"
 #include"Collision.h"
 
 using namespace MelLib;
+
+ModelData* ModelObject::preModelData;
 
 std::unordered_map<std::string, std::unique_ptr<ModelObject>>ModelObject::pModelObjects;
 
@@ -126,7 +128,7 @@ void ModelObject::CreateConstBuffer()
 
 #pragma region 初期化
 
-		ModelConstBufferData* constBufferData;
+		ModelConstBufferData* constBufferData = nullptr;
 		constBuffer[i]->Map(0, nullptr, (void**)&constBufferData);
 
 		//ライト
@@ -148,7 +150,7 @@ void ModelObject::DrawCommonProcessing(const std::string& rtName)
 	if (!pModelData)return;
 	MapConstData(RenderTarget::Get(rtName)->GetCamera());
 
-	ModelConstBufferData* constBufferData;
+	ModelConstBufferData* constBufferData = nullptr;
 	constBuffer[0]->Map(0, nullptr, (void**)&constBufferData);
 	int z = 0;
 
@@ -162,7 +164,7 @@ void ModelObject::MapConstData(const Camera* camera)
 
 	std::vector<DirectX::XMMATRIX>meshGlobalTransforms = pModelData->GetMeshGlobalTransforms();
 
-	ModelConstBufferData* constBufferData;
+	ModelConstBufferData* constBufferData = nullptr;
 	for (int i = 0; i < objectNames.size(); i++)
 	{
 		std::string objectName = objectNames[i];
@@ -268,7 +270,7 @@ void ModelObject::MapConstData(const Camera* camera)
 
 
 		// モデルのオブジェクトごとに生成するようにする
-		SkinConstBufferData* skinConstData;
+		SkinConstBufferData* skinConstData = nullptr;
 
 		modelConstBuffer[i]->Map(0, nullptr, (void**)&skinConstData);
 
@@ -506,6 +508,8 @@ void ModelObject::SetCmdList()
 {
 
 	cmdLists[0]->SetGraphicsRootSignature(rootSignature.Get());
+
+
 	//cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 	cmdLists[0]->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -696,6 +700,11 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 	//それでも無理だから、辺ごとに衝突点格納して、
 	//三角形の座標どっちか、その座標が使われてる辺の衝突点、もう一個の衝突点、残りの座標という順序を使えばよい
 
+	// 2022 5 9 
+	//　例外出るのmessageの
+	// 重大度レベル	コード	説明	プロジェクト	ファイル	行	抑制状態
+	// メッセージ	LNT - arithmetic - overflow	サブ式は、より広い型に割り当てる前にオーバーフローする可能性があります。	MyLibrary	C : \Users\ichik\Desktop\プロジェクト\Library改造前新規プロジェクト\MyLibrary\ModelObject.cpp	753
+	// の問題解決すれば治るかも
 
 	if (catFrontModelData || catBackModelData)return false;
 
