@@ -735,12 +735,13 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 
 	//法線0だったら切断できないため、false
 	if (plane.GetNormal() == 0.0f)return false;
-
+	
 	// 平面情報(回転適応のため、作り直し)
 	PlaneData rotPlane;
 	rotPlane.SetPosition(plane.GetPosition());
-	rotPlane.SetNormal(LibMath::RotateZXYVector3(plane.GetNormal(),
-		DirectX::XMFLOAT3(-modelConstDatas[0].angle.x, -modelConstDatas[0].angle.y, -modelConstDatas[0].angle.z)).Normalize());
+	DirectX::XMFLOAT3 xmAngle = DirectX::XMFLOAT3(-modelConstDatas[objectNames[0]].angle.x, -modelConstDatas[objectNames[0]].angle.y, -modelConstDatas[objectNames[0]].angle.z);
+	Vector3 normal = LibMath::RotateZXYVector3(plane.GetNormal(), xmAngle);
+	rotPlane.SetNormal(normal);
 
 	//モデルの頂点を三角形ごとにまとめたもの
 	struct ModelTri
