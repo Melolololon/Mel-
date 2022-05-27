@@ -1039,9 +1039,24 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 
 	// https://el-ement.com/blog/2017/08/16/primitives-ray-intersection/
 
+
+	//Vector3 boxMax = Vector3(box.GetPosition() + box.GetSize() / 2);
+	//Vector3 boxMin = Vector3(box.GetPosition() - box.GetSize() / 2);
+
+	//if()
+
+
 	// p 始点座標
 	// d 方向ベクトル
 	// hw hh hd boxSizeHの x y z
+
+	//各面が軸に平行な直方体に関する衝突判定では、直方体を各軸方向に分解して考える方法が度々有用となります。レイとの交差判定でも、X, Y, Z軸それぞれについてレイが直方体と交差する tt の範囲を求め、それらの共通部分を取ることで最終的な tt を求めます。
+	//直方体のX, Y, Z軸方向の長さの半分をそれぞれ hw, hh, hd とおきます。
+
+	// 交差条件
+	// -h <= (p + td) <= h
+
+	// 
 
 	Vector3 boxSizeH = box.GetSize() / 2;
 	Vector3 tMin = -FLT_MAX;
@@ -1049,7 +1064,10 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	Vector3 t;
 
 	// boxを原点にある場合でしか求められない方法なので、rayを動かして四角形が原点にあるときと同じ状況にする
+	//Vector3 rayMovePos = ray.GetPosition() - box.GetPosition();
 	Vector3 rayMovePos = ray.GetPosition() - box.GetPosition();
+
+
 
 	// 法線ベクトルが0の場合、レイの点が四角形に入っているかを確認する
 	if (ray.GetDirection().x == 0)
@@ -1157,57 +1175,70 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	//// 条件を満たさなかったらfalse
 	//if (min == FLT_MAX)return false;
 
-	// 新案
-	Vector3 minVector3 = FLT_MAX;
-	if (0 <= tMax.x)minVector3.x = tMax.x;
-	if (0 <= tMin.x && minVector3.x > tMin.x)minVector3.x = tMin.x;
-	if (0 <= tMax.y && minVector3.y > tMax.y)minVector3.y = tMax.y;
-	if (0 <= tMin.y && minVector3.y > tMin.y)minVector3.y = tMin.y;
-	if (0 <= tMax.z && minVector3.z > tMax.z)minVector3.z = tMax.z;
-	if (0 <= tMin.z && minVector3.z > tMin.z)minVector3.z = tMin.z;
+	
+
+	// Vector3のtのXYZの中の最小値が求めるべきtかもしれない
+	// 最小のT
+	float mineT = FLT_MAX;
 
 
-	Vector3 n = rayMovePos + minVector3 * ray.GetDirection();
-	if (-boxSizeH.x <= n.x && n.x <= boxSizeH.x
-		&& -boxSizeH.y <= n.y && n.y <= boxSizeH.y
-		&& -boxSizeH.z <= n.z && n.z <= boxSizeH.z)
-	{
-		if (rayResult)
-		{
-			/*Vector3 hitPos;
-			if (abs(tMin.x - rayMovePos.x) < abs(tMax.x - rayMovePos.x))hitPos.x = tMin.x - rayMovePos.x;
-			else hitPos.x = tMax.x + rayMovePos.x;
-			if (hitPos.x == FLT_MAX)hitPos.x = ray.GetPosition().x;
-
-			if (abs(tMin.y - rayMovePos.y) < abs(tMax.y - rayMovePos.y))hitPos.y = tMin.y - rayMovePos.y;
-			else hitPos.y = tMax.y + rayMovePos.y;
-			if (hitPos.y == FLT_MAX)hitPos.y = ray.GetPosition().y;
-
-			if (abs(tMin.z - rayMovePos.z) < abs(tMax.z - rayMovePos.z))hitPos.z = tMin.z - rayMovePos.z;
-			else hitPos.z = tMax.z + rayMovePos.z;
-			if (hitPos.z == FLT_MAX)hitPos.z = ray.GetPosition().z;
-
-			rayResult->hitPosition = hitPos;*/
-			//rayResult->hitPosition = hitPos - box.GetPosition();
-			//rayResult->hitPosition = hitPos + ray.GetPosition();
-
-			//rayResult->hitPosition = n + box.GetPosition();
-		
+	
+	//// 新案
+	//Vector3 minVector3 = FLT_MAX;
+	//if (0 <= tMax.x)minVector3.x = tMax.x;
+	//if (0 <= tMin.x && minVector3.x > tMin.x)minVector3.x = tMin.x;
+	//if (0 <= tMax.y && minVector3.y > tMax.y)minVector3.y = tMax.y;
+	//if (0 <= tMin.y && minVector3.y > tMin.y)minVector3.y = tMin.y;
+	//if (0 <= tMax.z && minVector3.z > tMax.z)minVector3.z = tMax.z;
+	//if (0 <= tMin.z && minVector3.z > tMin.z)minVector3.z = tMin.z;
 
 
-			float minT = minVector3.x;
-			if (minT > minVector3.y)minT = minVector3.y;
-			if (minT > minVector3.z)minT = minVector3.z;
+	//Vector3 n = rayMovePos + minVector3 * ray.GetDirection();
+	//bool x = (-boxSizeH.x <= n.x && n.x <= boxSizeH.x || LibMath::Difference(boxSizeH.x, n.x, 0.0001f) || LibMath::Difference(-boxSizeH.x, n.x, 0.0001f));
+	//bool y = (-boxSizeH.y <= n.y && n.y <= boxSizeH.y || LibMath::Difference(boxSizeH.y, n.y, 0.0001f) || LibMath::Difference(-boxSizeH.y, n.y, 0.0001f));
+	//bool z = (-boxSizeH.z <= n.z && n.z <= boxSizeH.z || LibMath::Difference(boxSizeH.z, n.z, 0.0001f) || LibMath::Difference(-boxSizeH.z, n.z, 0.0001f));
+	//if (x && y && z)
+	//{
+	//	if (rayResult)
+	//	{
+	//		/*Vector3 hitPos;
+	//		if (abs(tMin.x - rayMovePos.x) < abs(tMax.x - rayMovePos.x))hitPos.x = tMin.x - rayMovePos.x;
+	//		else hitPos.x = tMax.x + rayMovePos.x;
+	//		if (hitPos.x == FLT_MAX)hitPos.x = ray.GetPosition().x;
 
-			rayResult->hitPosition = ray.GetPosition() + minT * ray.GetDirection();
+	//		if (abs(tMin.y - rayMovePos.y) < abs(tMax.y - rayMovePos.y))hitPos.y = tMin.y - rayMovePos.y;
+	//		else hitPos.y = tMax.y + rayMovePos.y;
+	//		if (hitPos.y == FLT_MAX)hitPos.y = ray.GetPosition().y;
 
-		}
+	//		if (abs(tMin.z - rayMovePos.z) < abs(tMax.z - rayMovePos.z))hitPos.z = tMin.z - rayMovePos.z;
+	//		else hitPos.z = tMax.z + rayMovePos.z;
+	//		if (hitPos.z == FLT_MAX)hitPos.z = ray.GetPosition().z;
 
-		return true;
-	}
-	return false;
+	//		rayResult->hitPosition = hitPos;*/
+	//		//rayResult->hitPosition = hitPos - box.GetPosition();
+	//		//rayResult->hitPosition = hitPos + ray.GetPosition();
 
-	//return true;
+	//		//rayResult->hitPosition = n + box.GetPosition();
+	//	
+
+
+	//		float minT = minVector3.x;
+	//		if (minT > minVector3.y)minT = minVector3.y;
+	//		if (minT > minVector3.z)minT = minVector3.z;
+
+	//		rayResult->hitPosition = ray.GetPosition() + minT * ray.GetDirection();
+
+	//	}
+
+	//	return true;
+	//}
+	//return false;
+
+	////return true;
+
+
+
+
 }
 
 bool MelLib::Collision::BoxAndSegment3D(const BoxData& box, const Segment3DData& segment)
@@ -1331,5 +1362,19 @@ bool MelLib::Collision::OBBAndRay(const OBBData& obb, const RayData& ray, RayCal
 	// そんなことないわやっぱ
 	// やっぱいける?
 	// OBBを中心にレイの点を回転させればいけそう
-	return false;
+	// レイのベクトルも回転させないといけない
+
+	RayData rotRay;
+
+	// ベクトルを回転
+	rotRay.SetDirection(LibMath::RotateZXYVector3(ray.GetDirection(), obb.GetAngle() * -1));
+	
+	// 座標も回転
+	Vector3 rotRayPos = ray.GetPosition();
+	rotRayPos -= obb.GetPosition();
+	rotRayPos = LibMath::RotateZXYVector3(rotRayPos, obb.GetAngle() * -1);
+	rotRayPos += obb.GetPosition();
+	rotRay.SetPosition(rotRayPos);
+
+	return BoxAndRay(obb.GetBoxData(), rotRay, rayResult);
 }

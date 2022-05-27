@@ -13,7 +13,8 @@ TestObject::TestObject()
 	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX));
 
 	// 初期位置を0,0,5に
-	SetPosition(MelLib::Vector3(MelLib::Random::GetRandomFloatNumberRangeSelect(-10.0f, 10.0f, 2),0, MelLib::Random::GetRandomFloatNumberRangeSelect(-10.0f, 10.0f, 2)));
+	//SetPosition(MelLib::Vector3(MelLib::Random::GetRandomFloatNumberRangeSelect(-10.0f, 10.0f, 2),0, MelLib::Random::GetRandomFloatNumberRangeSelect(-10.0f, 10.0f, 2)));
+	SetPosition(MelLib::Vector3(5, 0, 0));
 
 	// 当たり判定の作成(球)
 	// Playerの座標を取得し、それをセット
@@ -21,15 +22,15 @@ TestObject::TestObject()
 	sphereDatas["main"][0].SetPosition(GetPosition());
 	sphereDatas["main"][0].SetRadius(1.0f);*/
 
-	/*obbDatas["main"].resize(1);
+	obbDatas["main"].resize(1);
 	obbDatas["main"][0].SetPosition(GetPosition());
 	obbDatas["main"][0].SetSize(0.05f);
-	modelObjects["main"].SetScale(0.05f);*/
+	modelObjects["main"].SetScale(0.05f);
 
-	boxDatas["main"].resize(1);
+	/*boxDatas["main"].resize(1);
 	boxDatas["main"][0].SetPosition(GetPosition());
 	boxDatas["main"][0].SetSize(0.05f);
-	modelObjects["main"].SetScale(0.05f);
+	modelObjects["main"].SetScale(0.05f);*/
 
 	//SetAllCollisionFlag(false);
 	//collisionFlag.box = true;
