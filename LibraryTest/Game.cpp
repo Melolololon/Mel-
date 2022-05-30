@@ -104,12 +104,12 @@ void Game::Initialize()
 
 
 	
-	ray.SetPosition(MelLib::Vector3(0, 0, -0));
-	ray.SetDirection(MelLib::Vector3(0, 0, 1));
+	ray.SetPosition(MelLib::Vector3(-5, 0, -5));
+	ray.SetDirection(MelLib::Vector3(1, 0, 1).Normalize());
 
-	obb.SetPosition(MelLib::Vector3(0, 0, 5));
-	obb.SetSize(MelLib::Vector3(15, 1,1));
-	obb.SetAngle(MelLib::Vector3(0, 45, 0));
+	obb.SetPosition(MelLib::Vector3(0, 0, 0));
+	obb.SetSize(MelLib::Vector3(5, 3,5));
+	obb.SetAngle(MelLib::Vector3(0, 0, 0));
 
 
 	obj.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX));
@@ -137,9 +137,25 @@ MelLib::Vector3 rayAngle = 0;
 
 void Game::Update()
 {
-
+	if (MelLib::Input::KeyState(DIK_W))
+	{
+		obb.SetPosition({ obb.GetPosition().x,0, obb.GetPosition().z + 0.3f });
+	}
+	if (MelLib::Input::KeyState(DIK_S))obb.SetPosition({ obb.GetPosition().x,0, obb.GetPosition().z - 0.3f });
+	if (MelLib::Input::KeyState(DIK_A))obb.SetPosition({ obb.GetPosition().x - 0.3f,0, obb.GetPosition().z });
+	if (MelLib::Input::KeyState(DIK_D))obb.SetPosition({obb.GetPosition().x + 0.3f, 0,  obb.GetPosition().z });
+	obj.SetPosition(obb.GetPosition());
 
 	MelLib::RayData rotRay = ray;
+
+	if (MelLib::Input::KeyState(DIK_T))
+	{
+		ray.SetPosition({ ray.GetPosition().x,0, ray.GetPosition().z + 0.3f });
+	}
+	if (MelLib::Input::KeyState(DIK_G))ray.SetPosition({ ray.GetPosition().x,0, ray.GetPosition().z - 0.3f });
+	if (MelLib::Input::KeyState(DIK_F))ray.SetPosition({ ray.GetPosition().x - 0.3f,0, ray.GetPosition().z });
+	if (MelLib::Input::KeyState(DIK_H))ray.SetPosition({ ray.GetPosition().x + 0.3f, 0,  ray.GetPosition().z });
+
 
 	MelLib::Vector3 rotRayPos = ray.GetPosition();
 	rotRayPos -= obb.GetPosition();

@@ -1039,146 +1039,66 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 
 	// https://el-ement.com/blog/2017/08/16/primitives-ray-intersection/
 
-
-	//Vector3 boxMax = Vector3(box.GetPosition() + box.GetSize() / 2);
-	//Vector3 boxMin = Vector3(box.GetPosition() - box.GetSize() / 2);
-
-	//if()
-
-
-	// p 始点座標
-	// d 方向ベクトル
-	// hw hh hd boxSizeHの x y z
-
-	//各面が軸に平行な直方体に関する衝突判定では、直方体を各軸方向に分解して考える方法が度々有用となります。レイとの交差判定でも、X, Y, Z軸それぞれについてレイが直方体と交差する tt の範囲を求め、それらの共通部分を取ることで最終的な tt を求めます。
-	//直方体のX, Y, Z軸方向の長さの半分をそれぞれ hw, hh, hd とおきます。
-
-	// 交差条件
-	// -h <= (p + td) <= h
-	//  (p + td) = 衝突点
-
-	// 
-
-	Vector3 boxSizeH = box.GetSize() / 2;
-	Vector3 minTVec3 = -FLT_MAX;
-
-	bool hitX = false;
-	bool hitY = false;
-	bool hitZ = false;
-
-	// boxを原点にある場合でしか求められない方法なので、rayを動かして四角形が原点にあるときと同じ状況にする
-	//Vector3 rayMovePos = ray.GetPosition() - box.GetPosition();
-	Vector3 rayMovePos = ray.GetPosition() - box.GetPosition();
-
-
-
-	// 法線ベクトルが0の場合、レイの点が四角形に入っているかを確認する
-	if (ray.GetDirection().x == 0)
-	{
-
-		if (-boxSizeH.x <= rayMovePos.x && rayMovePos.x <= boxSizeH.x)
-		{
-
-			minTVec3.x = FLT_MAX;
-		}
-		else
-		{
-			minTVec3.x = 0;
-
-			hitX = true;
-		}
-	}
-	else
-	{
-		float num1 = (boxSizeH.x - rayMovePos.x) / ray.GetDirection().x;
-		float num2 = (-boxSizeH.x - rayMovePos.x) / ray.GetDirection().x;
-		if (num1 > num2)
-		{
-			minTVec3.x = num2;
-		}
-		else
-		{
-			minTVec3.x = num1;
-		}
-	}
-
-	if (ray.GetDirection().y == 0)
-	{
-		if (-boxSizeH.y <= rayMovePos.y && rayMovePos.y <= boxSizeH.y)
-		{
-			minTVec3.y = FLT_MAX;
-		}
-		else
-		{
-			minTVec3.y = 0;
-			hitY = true;
-		}
-	}
-	else
-	{
-		float num1 = (boxSizeH.y - rayMovePos.y) / ray.GetDirection().y;
-		float num2 = (-boxSizeH.y - rayMovePos.y) / ray.GetDirection().y;
-		if (num1 > num2)
-		{
-			minTVec3.y = num2;
-		}
-		else
-		{
-			minTVec3.y = num1;
-		}
-
-	}
-
-	if (ray.GetDirection().z == 0)
-	{
-		if (-boxSizeH.z <= rayMovePos.z && rayMovePos.z <= boxSizeH.z)
-		{
-			minTVec3.z = FLT_MAX;
-		}
-		else
-		{
-			minTVec3.z = 0;
-			hitZ = true;
-		}
-	}
-	else
-	{
-		float num1 = (boxSizeH.z - rayMovePos.z) / ray.GetDirection().z;
-		float num2 = (-boxSizeH.z - rayMovePos.z) / ray.GetDirection().z;
-		if (num1 > num2)
-		{
-			minTVec3.z = num2;
-		}
-		else
-		{
-			minTVec3.z = num1;
-		}
-
-	}
-
-
-	// Vector3のtのXYZの中の最小値が求めるべきtかもしれない
-	// 最小のT
-	float minT = FLT_MAX;
-	if (0 <= minTVec3.x)minT = minTVec3.x;
-	if (0 <= minTVec3.y && minT > minTVec3.y)minT = minTVec3.y;
-	if (0 <= minTVec3.z && minT > minTVec3.z)minT = minTVec3.z;
-
-	if (minT == FLT_MAX)return false;
-
-	// -h <= (p + td) <= h
-	//  (p + td) = 衝突点
+	// http://marupeke296.com/COL_3D_No18_LineAndAABB.html
 	
-	Vector3 ptd = rayMovePos + minT * ray.GetDirection();
-	if (!hitX) hitX = -boxSizeH.x <= ptd.x && ptd.x <= boxSizeH.x || LibMath::Difference(-boxSizeH.x, ptd.x, 0.0001f) || LibMath::Difference(boxSizeH.x, ptd.x, 0.0001f);
-	if (!hitY) hitY = -boxSizeH.y <= ptd.y && ptd.y <= boxSizeH.y || LibMath::Difference(-boxSizeH.y, ptd.y, 0.0001f) || LibMath::Difference(boxSizeH.y, ptd.y, 0.0001f);
-	if (!hitZ) hitZ = -boxSizeH.z <= ptd.z && ptd.z <= boxSizeH.z || LibMath::Difference(-boxSizeH.z, ptd.z, 0.0001f) || LibMath::Difference(boxSizeH.z, ptd.z, 0.0001f);
+	// いいサイト
+	// https://tavianator.com/2011/ray_box.html
+
+
+	Vector3 rayPos = ray.GetPosition();
+	Vector3 rayDir = ray.GetDirection();
+
+	MelLib::Vector3 minPos, maxPos;
+	minPos = box.GetPosition() - box.GetSize() / 2;
+	maxPos = box.GetPosition() + box.GetSize() / 2;
+
+	float t = -FLT_MAX;
+
+	// floatで表現できる値の最小値と最大値を取得
+	// x軸の判定をする際(一番はじめの軸との判定時に使う)
+	// それ以降は一つ前の軸との距離と判定して各軸のスラブ内で交差しているか判定
+	float minT = -FLT_MAX;
+	float maxT = FLT_MAX;
+
+	for (int i = 0; i < 3; i++) 
+	{
+		if (LibMath::Difference(rayDir[i], 0.0f, 0.0001f))
+		{
+			// 明らかに出てたら当たってない判定
+			if (rayPos[i] < minPos[i] || rayPos[i] > maxPos[i])return false;
+			
+			// 上のfalseに引っかからなかったら当たってるため、次へ
+			continue;
+		}
+
+		// 掛け算のほうが早いため、逆数(invNum)を求めて掛け算で計算する
+		// 逆数
+		float invNum = 1.0f / rayDir[i];
+
+		// スラブとの距離を算出
+		// nearTが近スラブ、farTが遠スラブとの距離
+		float nearT = (minPos[i] - rayPos[i]) * invNum;
+		float farT = (maxPos[i] - rayPos[i]) * invNum;
+
+		float tMin = min(nearT, farT);
+		float tMax = max(nearT, farT);
+		nearT = tMin;
+		farT = tMax;
+
+		if (nearT > minT) minT = nearT;
+		if (farT < maxT) maxT = farT;
+
+		// スラブ交差チェック
+		if (minT >= maxT)return false;
+	}
 	
-	if (rayResult)rayResult->hitPosition = ptd;
-	
-	if (hitX && hitY && hitZ)return true;
+	// 間違えてここで0以上か判断しちゃってるけど問題なさそう?
+	if (minT >= 0 && maxT >= 0) 
+	{
+		if (rayResult)rayResult->hitPosition = rayPos + minT * rayDir;
+		return true;
+	}
 	return false;
-
 }
 
 bool MelLib::Collision::BoxAndSegment3D(const BoxData& box, const Segment3DData& segment)
@@ -1297,12 +1217,16 @@ bool MelLib::Collision::TriangleAndSegment3D(const TriangleData& triangle, Trian
 
 bool MelLib::Collision::OBBAndRay(const OBBData& obb, const RayData& ray, RayCalcResult* rayResult)
 {
+
 	// BoxとRayの判定があるので、
 	// OBBの角度 * -1の角度分レイを回転させてあげればいい?
 	// そんなことないわやっぱ
 	// やっぱいける?
 	// OBBを中心にレイの点を回転させればいけそう
 	// レイのベクトルも回転させないといけない
+
+
+	// なんか回転がミスってる?
 
 	RayData rotRay;
 
