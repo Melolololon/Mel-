@@ -1055,13 +1055,16 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 
 	// 交差条件
 	// -h <= (p + td) <= h
+	//  (p + td) = 衝突点
 
 	// 
 
 	Vector3 boxSizeH = box.GetSize() / 2;
-	Vector3 tMin = -FLT_MAX;
-	Vector3 tMax = FLT_MAX;
-	Vector3 t;
+	Vector3 minTVec3 = -FLT_MAX;
+
+	bool hitX = false;
+	bool hitY = false;
+	bool hitZ = false;
 
 	// boxを原点にある場合でしか求められない方法なので、rayを動かして四角形が原点にあるときと同じ状況にする
 	//Vector3 rayMovePos = ray.GetPosition() - box.GetPosition();
@@ -1075,13 +1078,14 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 
 		if (-boxSizeH.x <= rayMovePos.x && rayMovePos.x <= boxSizeH.x)
 		{
-			t.x = FLT_MAX;
+
+			minTVec3.x = FLT_MAX;
 		}
 		else
 		{
-			t.x = -1;
-			tMin.x = 0;
-			tMax.x = 0;
+			minTVec3.x = 0;
+
+			hitX = true;
 		}
 	}
 	else
@@ -1090,28 +1094,24 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 		float num2 = (-boxSizeH.x - rayMovePos.x) / ray.GetDirection().x;
 		if (num1 > num2)
 		{
-			tMin.x = num2;
-			tMax.x = num1;
+			minTVec3.x = num2;
 		}
 		else
 		{
-			tMin.x = num1;
-			tMax.x = num2;
+			minTVec3.x = num1;
 		}
-		t.x = tMax.x - tMin.x;
 	}
 
 	if (ray.GetDirection().y == 0)
 	{
 		if (-boxSizeH.y <= rayMovePos.y && rayMovePos.y <= boxSizeH.y)
 		{
-			t.y = FLT_MAX;
+			minTVec3.y = FLT_MAX;
 		}
 		else
 		{
-			t.y = -1;
-			tMin.y = 0;
-			tMax.y = 0;
+			minTVec3.y = 0;
+			hitY = true;
 		}
 	}
 	else
@@ -1120,15 +1120,12 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 		float num2 = (-boxSizeH.y - rayMovePos.y) / ray.GetDirection().y;
 		if (num1 > num2)
 		{
-			tMin.y = num2;
-			tMax.y = num1;
+			minTVec3.y = num2;
 		}
 		else
 		{
-			tMin.y = num1;
-			tMax.y = num2;
+			minTVec3.y = num1;
 		}
-		t.y = tMax.y - tMin.y;
 
 	}
 
@@ -1136,13 +1133,12 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	{
 		if (-boxSizeH.z <= rayMovePos.z && rayMovePos.z <= boxSizeH.z)
 		{
-			t.z = FLT_MAX;
+			minTVec3.z = FLT_MAX;
 		}
 		else
 		{
-			t.z = -1;
-			tMin.z = 0;
-			tMax.z = 0;
+			minTVec3.z = 0;
+			hitZ = true;
 		}
 	}
 	else
@@ -1151,93 +1147,37 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 		float num2 = (-boxSizeH.z - rayMovePos.z) / ray.GetDirection().z;
 		if (num1 > num2)
 		{
-			tMin.z = num2;
-			tMax.z = num1;
+			minTVec3.z = num2;
 		}
 		else
 		{
-			tMin.z = num1;
-			tMax.z = num2;
+			minTVec3.z = num1;
 		}
 
-		t.z = tMax.z - tMin.z;
 	}
 
-	//float min = FLT_MAX;
-	//
-	//if (0 <= tMax.x)min = tMax.x;
-	//if (0 <= tMin.x && min > tMin.x)min = tMin.x;
-	//if (0 <= tMax.y && min > tMax.y)min = tMax.y;
-	//if (0 <= tMin.y && min > tMin.y)min = tMin.y;
-	//if (0 <= tMax.z && min > tMax.z)min = tMax.z;
-	//if (0 <= tMin.z && min > tMin.z)min = tMin.z;
-	//
-	//// 条件を満たさなかったらfalse
-	//if (min == FLT_MAX)return false;
-
-	
 
 	// Vector3のtのXYZの中の最小値が求めるべきtかもしれない
 	// 最小のT
-	float mineT = FLT_MAX;
+	float minT = FLT_MAX;
+	if (0 <= minTVec3.x)minT = minTVec3.x;
+	if (0 <= minTVec3.y && minT > minTVec3.y)minT = minTVec3.y;
+	if (0 <= minTVec3.z && minT > minTVec3.z)minT = minTVec3.z;
 
+	if (minT == FLT_MAX)return false;
 
+	// -h <= (p + td) <= h
+	//  (p + td) = 衝突点
 	
-	//// 新案
-	//Vector3 minVector3 = FLT_MAX;
-	//if (0 <= tMax.x)minVector3.x = tMax.x;
-	//if (0 <= tMin.x && minVector3.x > tMin.x)minVector3.x = tMin.x;
-	//if (0 <= tMax.y && minVector3.y > tMax.y)minVector3.y = tMax.y;
-	//if (0 <= tMin.y && minVector3.y > tMin.y)minVector3.y = tMin.y;
-	//if (0 <= tMax.z && minVector3.z > tMax.z)minVector3.z = tMax.z;
-	//if (0 <= tMin.z && minVector3.z > tMin.z)minVector3.z = tMin.z;
-
-
-	//Vector3 n = rayMovePos + minVector3 * ray.GetDirection();
-	//bool x = (-boxSizeH.x <= n.x && n.x <= boxSizeH.x || LibMath::Difference(boxSizeH.x, n.x, 0.0001f) || LibMath::Difference(-boxSizeH.x, n.x, 0.0001f));
-	//bool y = (-boxSizeH.y <= n.y && n.y <= boxSizeH.y || LibMath::Difference(boxSizeH.y, n.y, 0.0001f) || LibMath::Difference(-boxSizeH.y, n.y, 0.0001f));
-	//bool z = (-boxSizeH.z <= n.z && n.z <= boxSizeH.z || LibMath::Difference(boxSizeH.z, n.z, 0.0001f) || LibMath::Difference(-boxSizeH.z, n.z, 0.0001f));
-	//if (x && y && z)
-	//{
-	//	if (rayResult)
-	//	{
-	//		/*Vector3 hitPos;
-	//		if (abs(tMin.x - rayMovePos.x) < abs(tMax.x - rayMovePos.x))hitPos.x = tMin.x - rayMovePos.x;
-	//		else hitPos.x = tMax.x + rayMovePos.x;
-	//		if (hitPos.x == FLT_MAX)hitPos.x = ray.GetPosition().x;
-
-	//		if (abs(tMin.y - rayMovePos.y) < abs(tMax.y - rayMovePos.y))hitPos.y = tMin.y - rayMovePos.y;
-	//		else hitPos.y = tMax.y + rayMovePos.y;
-	//		if (hitPos.y == FLT_MAX)hitPos.y = ray.GetPosition().y;
-
-	//		if (abs(tMin.z - rayMovePos.z) < abs(tMax.z - rayMovePos.z))hitPos.z = tMin.z - rayMovePos.z;
-	//		else hitPos.z = tMax.z + rayMovePos.z;
-	//		if (hitPos.z == FLT_MAX)hitPos.z = ray.GetPosition().z;
-
-	//		rayResult->hitPosition = hitPos;*/
-	//		//rayResult->hitPosition = hitPos - box.GetPosition();
-	//		//rayResult->hitPosition = hitPos + ray.GetPosition();
-
-	//		//rayResult->hitPosition = n + box.GetPosition();
-	//	
-
-
-	//		float minT = minVector3.x;
-	//		if (minT > minVector3.y)minT = minVector3.y;
-	//		if (minT > minVector3.z)minT = minVector3.z;
-
-	//		rayResult->hitPosition = ray.GetPosition() + minT * ray.GetDirection();
-
-	//	}
-
-	//	return true;
-	//}
-	//return false;
-
-	////return true;
-
-
-
+	Vector3 ptd = rayMovePos + minT * ray.GetDirection();
+	if (!hitX) hitX = -boxSizeH.x <= ptd.x && ptd.x <= boxSizeH.x || LibMath::Difference(-boxSizeH.x, ptd.x, 0.0001f) || LibMath::Difference(boxSizeH.x, ptd.x, 0.0001f);
+	if (!hitY) hitY = -boxSizeH.y <= ptd.y && ptd.y <= boxSizeH.y || LibMath::Difference(-boxSizeH.y, ptd.y, 0.0001f) || LibMath::Difference(boxSizeH.y, ptd.y, 0.0001f);
+	if (!hitZ) hitZ = -boxSizeH.z <= ptd.z && ptd.z <= boxSizeH.z || LibMath::Difference(-boxSizeH.z, ptd.z, 0.0001f) || LibMath::Difference(boxSizeH.z, ptd.z, 0.0001f);
+	
+	if (rayResult)rayResult->hitPosition = ptd;
+	
+	if (hitX && hitY && hitZ)return true;
+	return false;
 
 }
 

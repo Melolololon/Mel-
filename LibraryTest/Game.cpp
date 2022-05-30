@@ -104,12 +104,12 @@ void Game::Initialize()
 
 
 	
-	ray.SetPosition(MelLib::Vector3(0, 0, 0));
+	ray.SetPosition(MelLib::Vector3(0, 0, -0));
 	ray.SetDirection(MelLib::Vector3(0, 0, 1));
 
-	obb.SetPosition(MelLib::Vector3(5, 0, 5));
+	obb.SetPosition(MelLib::Vector3(0, 0, 5));
 	obb.SetSize(MelLib::Vector3(15, 1,1));
-	obb.SetAngle(MelLib::Vector3(0, 0, 0));
+	obb.SetAngle(MelLib::Vector3(0, 45, 0));
 
 
 	obj.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX));
@@ -169,7 +169,7 @@ void Game::Update()
 
 		rayAngle -= ADD_ANGLE;
 	}
-	bool flag = MelLib::Collision::BoxAndRay(obb.GetBoxData(), rotRay, nullptr);
+	bool flag = MelLib::Collision::OBBAndRay(obb, rotRay, nullptr);
 	if (flag) 
 	{
 		obj.SetMulColor(MelLib::Color(0, 0, 255, 255));
