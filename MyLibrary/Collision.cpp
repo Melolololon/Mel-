@@ -698,6 +698,34 @@ bool MelLib::Collision::SphereAndOBB(const SphereData& sphere, SphereCalcResult*
 	return result;
 }
 
+bool MelLib::Collision::SphereAndRay(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const RayData& ray, RayCalcResult* rayResult)
+{
+	Vector3 spherePos = sphere.GetPosition();
+	float sphereR = sphere.GetRadius();
+
+	Vector3 rayPos = ray.GetPosition();
+	Vector3 rayDir = ray.GetDirection();
+
+	Vector3 sphereToRay = rayPos - spherePos;
+	
+	float b = Vector3::Dot(sphereToRay, rayDir);
+	float c = Vector3::Dot(sphereToRay, sphereToRay) - (sphereR * sphereR);
+
+	float d = (b * b) - c;
+
+	if (d < 0)return false;
+
+	float t = -b - sqrt((b * b) - c);
+	if (t < 0)return false;
+	
+	if (d > 0) 
+	{
+		if (rayResult)rayResult->hitPosition = rayPos + t * rayDir;
+	}
+
+	return true;
+}
+
 bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule)
 {
 	Value2<Vector3>capsuleLineSegmentPos = capsule.GetSegment3DData().GetRotatePosition();
@@ -1093,6 +1121,7 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	}
 	
 	// ŠÔˆá‚¦‚Ä‚±‚±‚Å0ˆÈã‚©”»’f‚µ‚¿‚á‚Á‚Ä‚é‚¯‚Ç–â‘è‚È‚³‚»‚¤?
+	// ƒxƒNƒgƒ‹‚Ì‹t‚ÉOBB‚ª‚ ‚é‚Æ‚«Aâ‘ÎT‚ª‹t‚É‚È‚é‚©‚ç‚±‚ê‚Å–â‘è‚È‚³‚»‚¤
 	if (minT >= 0 && maxT >= 0) 
 	{
 		if (rayResult)rayResult->hitPosition = rayPos + minT * rayDir;

@@ -833,7 +833,6 @@ void GameObjectManager::Update()
 
 #pragma endregion
 
-
 #pragma region Sphere & Capsule
 			if (collisionFlags[objI].sphere
 				&& collisionFlags[objJ].capsule)
@@ -1292,6 +1291,423 @@ void GameObjectManager::Update()
 
 #pragma endregion
 
+#pragma region Ray & Sphere
+			if (collisionFlags[objI].sphere
+				&& collisionFlags[objJ].ray)
+			{
+
+				std::unordered_map < std::string, std::vector<SphereData>>sphereDatas = obj1->GetSphereDatas();
+				std::unordered_map < std::string, std::vector<RayData>>rayDatas = obj2->GetRayDatas();
+
+				std::unordered_map<std::string, std::vector<Vector3>>prePositions1;
+				obj1->GetPreSpherePositions(prePositions1);
+				std::unordered_map<std::string, std::vector<Vector3>>prePositions2;
+				obj2->GetPreRayPositions(prePositions2);
+
+
+				// 名前分ループ
+				for (const auto& sphereData : sphereDatas)
+				{
+					for (const auto& rayData : rayDatas)
+					{
+						std::vector<SphereData>sphereDataVec = sphereData.second;
+						size_t sphereDataSize = sphereDataVec.size();
+						std::vector<RayData>rayDataVec = rayData.second;
+						size_t rayDataSize = rayDataVec.size();
+
+						for (int colI = 0; colI < sphereDataSize; colI++)
+						{
+							for (int colJ = 0; colJ < rayDataSize; colJ++)
+							{
+								SphereCalcResult result1;
+								RayCalcResult result2;
+
+
+
+								// 判定を行う回数を取得
+								checkNum = getCheckNum(*obj1, ShapeType3D::SPHERE, *obj2, ShapeType3D::RAY);
+
+								SphereData sphere1 = sphereDataVec[colI];
+								RayData ray = rayDataVec[colJ];
+
+								// 座標を補完
+								Vector3 pos1 = sphere1.GetPosition();
+								Vector3 prePos1 = prePositions1[sphereData.first][colI];
+								Vector3 pos2 = ray.GetPosition();
+								Vector3 prePos2 = prePositions2[rayData.first][colJ];
+
+								if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
+
+								Easing<Vector3>easing1(prePos1, pos1, 100.0f / static_cast<float>(checkNum));
+								Easing<Vector3>easing2(prePos2, pos2, 100.0f / static_cast<float>(checkNum));
+
+								Vector3 easingMovePos1 = easing1.GetFrameLarpValue();
+								Vector3 easingMovePos2 = easing2.GetFrameLarpValue();
+								for (int c = 0; c < checkNum; c++)
+								{
+									sphere1.SetPosition(easing1.PreLerp());
+									ray.SetPosition(easing2.PreLerp());
+
+
+									if (Collision::SphereAndRay
+									(
+										sphere1,
+										&result1,
+										ray,
+										&result2
+									))
+									{
+										obj1->SetSphereCalcResult(result1);
+										obj2->SetRayCalcResult(result2);
+
+										obj1->SetHitRayData(ray);
+										obj2->SetHitSphereData(sphere1);
+
+										obj1->SetLerpPosition(sphere1.GetPosition());
+										obj2->SetLerpPosition(ray.GetPosition());
+
+										obj1->SetLerpMovePosition(easingMovePos1);
+										obj2->SetLerpMovePosition(easingMovePos2);
+
+										//hitを呼び出す
+										obj1->Hit
+										(
+											*obj2,
+											ShapeType3D::SPHERE,
+											sphereData.first,
+											ShapeType3D::RAY,
+											rayData.first
+										);
+										obj2->Hit
+										(
+											*obj1,
+											ShapeType3D::RAY,
+											rayData.first,
+											ShapeType3D::SPHERE,
+											sphereData.first
+										);
+										break;
+									}
+								}
+							}
+
+						}
+					}
+
+
+				}
+			}
+
+
+			if (collisionFlags[objJ].sphere
+				&& collisionFlags[objI].ray)
+			{
+				std::unordered_map < std::string, std::vector<SphereData>>sphereDatas = obj2->GetSphereDatas();
+				std::unordered_map < std::string, std::vector<RayData>>rayDatas = obj1->GetRayDatas();
+
+				std::unordered_map<std::string, std::vector<Vector3>>prePositions1;
+				obj1->GetPreRayPositions(prePositions1);
+				std::unordered_map<std::string, std::vector<Vector3>>prePositions2;
+				obj2->GetPreSpherePositions(prePositions2);
+
+
+				// 名前分ループ
+				for (const auto& sphereData : sphereDatas)
+				{
+					for (const auto& rayData : rayDatas)
+					{
+
+						std::vector<SphereData>sphereDataVec = sphereData.second;
+						size_t sphereDataSize = sphereDataVec.size();
+						std::vector<RayData>rayDataVec = rayData.second;
+						size_t boxDataSize = rayDataVec.size();
+
+						for (int colI = 0; colI < sphereDataSize; colI++)
+						{
+							for (int colJ = 0; colJ < boxDataSize; colJ++)
+							{
+								SphereCalcResult result1;
+								RayCalcResult result2;
+
+								// 判定を行う回数を取得
+								checkNum = getCheckNum(*obj2, ShapeType3D::SPHERE, *obj1, ShapeType3D::RAY);
+
+								SphereData sphere = sphereDataVec[colI];
+								RayData ray = rayDataVec[colJ];
+
+								// 座標を補完
+								Vector3 pos1 = ray.GetPosition();
+								Vector3 prePos1 = prePositions1[rayData.first][colI];
+								Vector3 pos2 = sphere.GetPosition();
+								Vector3 prePos2 = prePositions2[sphereData.first][colJ];
+
+								if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
+
+								Easing<Vector3>easing1(prePos1, pos1, 100.0f / static_cast<float>(checkNum));
+								Easing<Vector3>easing2(prePos2, pos2, 100.0f / static_cast<float>(checkNum));
+								Vector3 easingMovePos1 = easing1.GetFrameLarpValue();
+								Vector3 easingMovePos2 = easing2.GetFrameLarpValue();
+								for (int c = 0; c < checkNum; c++)
+								{
+									sphere.SetPosition(easing2.PreLerp());
+									ray.SetPosition(easing1.PreLerp());
+
+									if (Collision::SphereAndRay
+									(
+										sphere,
+										&result1,
+										ray,
+										&result2
+									))
+									{
+										obj2->SetSphereCalcResult(result1);
+										obj1->SetRayCalcResult(result2);
+
+										obj2->SetHitSphereData(sphere);
+										obj1->SetHitRayData(ray);
+
+										obj2->SetLerpPosition(sphere.GetPosition());
+										obj1->SetLerpPosition(ray.GetPosition());
+
+										obj2->SetLerpMovePosition(easingMovePos2);
+										obj1->SetLerpMovePosition(easingMovePos1);
+										//hitを呼び出す
+										obj2->Hit
+										(
+											*obj1,
+											ShapeType3D::SPHERE,
+											sphereData.first,
+											ShapeType3D::RAY,
+											rayData.first
+										);
+										obj1->Hit
+										(
+											*obj2,
+											ShapeType3D::RAY,
+											rayData.first,
+											ShapeType3D::SPHERE,
+											sphereData.first
+										);
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+
+			}
+
+#pragma endregion
+
+#pragma region Ray & Box
+			//if (collisionFlags[objI].sphere
+			//	&& collisionFlags[objJ].ray)
+			//{
+
+			//	std::unordered_map < std::string, std::vector<SphereData>>sphereDatas = obj1->GetSphereDatas();
+			//	std::unordered_map < std::string, std::vector<RayData>>rayDatas = obj2->GetRayDatas();
+
+			//	std::unordered_map<std::string, std::vector<Vector3>>prePositions1;
+			//	obj1->GetPreSpherePositions(prePositions1);
+			//	std::unordered_map<std::string, std::vector<Vector3>>prePositions2;
+			//	obj2->GetPreRayPositions(prePositions2);
+
+
+			//	// 名前分ループ
+			//	for (const auto& sphereData : sphereDatas)
+			//	{
+			//		for (const auto& rayData : rayDatas)
+			//		{
+			//			std::vector<SphereData>sphereDataVec = sphereData.second;
+			//			size_t sphereDataSize = sphereDataVec.size();
+			//			std::vector<RayData>rayDataVec = rayData.second;
+			//			size_t rayDataSize = rayDataVec.size();
+
+			//			for (int colI = 0; colI < sphereDataSize; colI++)
+			//			{
+			//				for (int colJ = 0; colJ < rayDataSize; colJ++)
+			//				{
+			//					SphereCalcResult result1;
+			//					RayCalcResult result2;
+
+
+
+			//					// 判定を行う回数を取得
+			//					checkNum = getCheckNum(*obj1, ShapeType3D::SPHERE, *obj2, ShapeType3D::RAY);
+
+			//					SphereData sphere1 = sphereDataVec[colI];
+			//					RayData ray = rayDataVec[colJ];
+
+			//					// 座標を補完
+			//					Vector3 pos1 = sphere1.GetPosition();
+			//					Vector3 prePos1 = prePositions1[sphereData.first][colI];
+			//					Vector3 pos2 = ray.GetPosition();
+			//					Vector3 prePos2 = prePositions2[rayData.first][colJ];
+
+			//					if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
+
+			//					Easing<Vector3>easing1(prePos1, pos1, 100.0f / static_cast<float>(checkNum));
+			//					Easing<Vector3>easing2(prePos2, pos2, 100.0f / static_cast<float>(checkNum));
+
+			//					Vector3 easingMovePos1 = easing1.GetFrameLarpValue();
+			//					Vector3 easingMovePos2 = easing2.GetFrameLarpValue();
+			//					for (int c = 0; c < checkNum; c++)
+			//					{
+			//						sphere1.SetPosition(easing1.PreLerp());
+			//						ray.SetPosition(easing2.PreLerp());
+
+
+			//						if (Collision::SphereAndRay
+			//						(
+			//							sphere1,
+			//							&result1,
+			//							ray,
+			//							&result2
+			//						))
+			//						{
+			//							obj1->SetSphereCalcResult(result1);
+			//							obj2->SetRayCalcResult(result2);
+
+			//							obj1->SetHitRayData(ray);
+			//							obj2->SetHitSphereData(sphere1);
+
+			//							obj1->SetLerpPosition(sphere1.GetPosition());
+			//							obj2->SetLerpPosition(ray.GetPosition());
+
+			//							obj1->SetLerpMovePosition(easingMovePos1);
+			//							obj2->SetLerpMovePosition(easingMovePos2);
+
+			//							//hitを呼び出す
+			//							obj1->Hit
+			//							(
+			//								*obj2,
+			//								ShapeType3D::SPHERE,
+			//								sphereData.first,
+			//								ShapeType3D::RAY,
+			//								rayData.first
+			//							);
+			//							obj2->Hit
+			//							(
+			//								*obj1,
+			//								ShapeType3D::RAY,
+			//								rayData.first,
+			//								ShapeType3D::SPHERE,
+			//								sphereData.first
+			//							);
+			//							break;
+			//						}
+			//					}
+			//				}
+
+			//			}
+			//		}
+
+
+			//	}
+			//}
+
+
+			//if (collisionFlags[objJ].sphere
+			//	&& collisionFlags[objI].ray)
+			//{
+			//	std::unordered_map < std::string, std::vector<SphereData>>sphereDatas = obj2->GetSphereDatas();
+			//	std::unordered_map < std::string, std::vector<RayData>>rayDatas = obj1->GetRayDatas();
+
+			//	std::unordered_map<std::string, std::vector<Vector3>>prePositions1;
+			//	obj1->GetPreRayPositions(prePositions1);
+			//	std::unordered_map<std::string, std::vector<Vector3>>prePositions2;
+			//	obj2->GetPreSpherePositions(prePositions2);
+
+
+			//	// 名前分ループ
+			//	for (const auto& sphereData : sphereDatas)
+			//	{
+			//		for (const auto& rayData : rayDatas)
+			//		{
+
+			//			std::vector<SphereData>sphereDataVec = sphereData.second;
+			//			size_t sphereDataSize = sphereDataVec.size();
+			//			std::vector<RayData>rayDataVec = rayData.second;
+			//			size_t boxDataSize = rayDataVec.size();
+
+			//			for (int colI = 0; colI < sphereDataSize; colI++)
+			//			{
+			//				for (int colJ = 0; colJ < boxDataSize; colJ++)
+			//				{
+			//					SphereCalcResult result1;
+			//					RayCalcResult result2;
+
+			//					// 判定を行う回数を取得
+			//					checkNum = getCheckNum(*obj2, ShapeType3D::SPHERE, *obj1, ShapeType3D::RAY);
+
+			//					SphereData sphere = sphereDataVec[colI];
+			//					RayData ray = rayDataVec[colJ];
+
+			//					// 座標を補完
+			//					Vector3 pos1 = ray.GetPosition();
+			//					Vector3 prePos1 = prePositions1[rayData.first][colI];
+			//					Vector3 pos2 = sphere.GetPosition();
+			//					Vector3 prePos2 = prePositions2[sphereData.first][colJ];
+
+			//					if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
+
+			//					Easing<Vector3>easing1(prePos1, pos1, 100.0f / static_cast<float>(checkNum));
+			//					Easing<Vector3>easing2(prePos2, pos2, 100.0f / static_cast<float>(checkNum));
+			//					Vector3 easingMovePos1 = easing1.GetFrameLarpValue();
+			//					Vector3 easingMovePos2 = easing2.GetFrameLarpValue();
+			//					for (int c = 0; c < checkNum; c++)
+			//					{
+			//						sphere.SetPosition(easing2.PreLerp());
+			//						ray.SetPosition(easing1.PreLerp());
+
+			//						if (Collision::SphereAndRay
+			//						(
+			//							sphere,
+			//							&result1,
+			//							ray,
+			//							&result2
+			//						))
+			//						{
+			//							obj2->SetSphereCalcResult(result1);
+			//							obj1->SetRayCalcResult(result2);
+
+			//							obj2->SetHitSphereData(sphere);
+			//							obj1->SetHitRayData(ray);
+
+			//							obj2->SetLerpPosition(sphere.GetPosition());
+			//							obj1->SetLerpPosition(ray.GetPosition());
+
+			//							obj2->SetLerpMovePosition(easingMovePos2);
+			//							obj1->SetLerpMovePosition(easingMovePos1);
+			//							//hitを呼び出す
+			//							obj2->Hit
+			//							(
+			//								*obj1,
+			//								ShapeType3D::SPHERE,
+			//								sphereData.first,
+			//								ShapeType3D::RAY,
+			//								rayData.first
+			//							);
+			//							obj1->Hit
+			//							(
+			//								*obj2,
+			//								ShapeType3D::RAY,
+			//								rayData.first,
+			//								ShapeType3D::SPHERE,
+			//								sphereData.first
+			//							);
+			//							break;
+			//						}
+			//					}
+			//				}
+			//			}
+			//		}
+			//	}
+
+			//}
+
+#pragma endregion
 
 
 		}

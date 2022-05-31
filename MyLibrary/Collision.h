@@ -124,6 +124,8 @@ namespace MelLib
 
 		static bool SphereAndOBB(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const OBBData& obb);
 
+		static bool SphereAndRay(const SphereData& sphere, SphereCalcResult* sphereCalcResult, const RayData& ray , RayCalcResult* rayResult);
+
 		static bool SphereAndSegmrnt3D(const SphereData& sphere, const Segment3DData& lineSegment);
 
 		static bool SphereAndCapsule(const SphereData& sphere, const CapsuleData& capsule);

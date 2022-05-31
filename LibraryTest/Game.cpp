@@ -63,6 +63,7 @@ MelLib::ModelObject obj;
 MelLib::ModelObject rayObj[10];
 MelLib::RayData ray;
 MelLib::OBBData obb;
+MelLib::SphereData sphere;
 void Game::Initialize()
 {
 
@@ -111,6 +112,8 @@ void Game::Initialize()
 	obb.SetSize(MelLib::Vector3(5, 3,5));
 	obb.SetAngle(MelLib::Vector3(0, 0, 0));
 
+	sphere.SetPosition(0);
+	sphere.SetRadius(1.0f);
 
 	obj.Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX));
 	for (int i = 0; i < _countof(rayObj); i++) {
@@ -119,9 +122,9 @@ void Game::Initialize()
 		rayObj[i].SetScale(0.25);
 	}
 
-	obj.SetScale(obb.GetSize()); 
-	obj.SetAngle(obb.GetAngle());
-	obj.SetPosition(obb.GetPosition());
+	obj.SetScale(sphere.GetRadius() * 2);
+	obj.SetAngle(0);
+	obj.SetPosition(sphere.GetPosition());
 
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 20, 0));
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
@@ -139,12 +142,12 @@ void Game::Update()
 {
 	if (MelLib::Input::KeyState(DIK_W))
 	{
-		obb.SetPosition({ obb.GetPosition().x,0, obb.GetPosition().z + 0.3f });
+		sphere.SetPosition({ sphere.GetPosition().x,0, sphere.GetPosition().z + 0.3f });
 	}
-	if (MelLib::Input::KeyState(DIK_S))obb.SetPosition({ obb.GetPosition().x,0, obb.GetPosition().z - 0.3f });
-	if (MelLib::Input::KeyState(DIK_A))obb.SetPosition({ obb.GetPosition().x - 0.3f,0, obb.GetPosition().z });
-	if (MelLib::Input::KeyState(DIK_D))obb.SetPosition({obb.GetPosition().x + 0.3f, 0,  obb.GetPosition().z });
-	obj.SetPosition(obb.GetPosition());
+	if (MelLib::Input::KeyState(DIK_S))sphere.SetPosition({ sphere.GetPosition().x,0, sphere.GetPosition().z - 0.3f });
+	if (MelLib::Input::KeyState(DIK_A))sphere.SetPosition({ sphere.GetPosition().x - 0.3f,0, sphere.GetPosition().z });
+	if (MelLib::Input::KeyState(DIK_D))sphere.SetPosition({sphere.GetPosition().x + 0.3f, 0,  sphere.GetPosition().z });
+	obj.SetPosition(sphere.GetPosition());
 
 	MelLib::RayData rotRay = ray;
 
@@ -185,7 +188,9 @@ void Game::Update()
 
 		rayAngle -= ADD_ANGLE;
 	}
-	bool flag = MelLib::Collision::OBBAndRay(obb, rotRay, nullptr);
+
+	MelLib::RayCalcResult re;
+	bool flag = MelLib::Collision::SphereAndRay(sphere,nullptr, rotRay, &re);
 	if (flag) 
 	{
 		obj.SetMulColor(MelLib::Color(0, 0, 255, 255));
