@@ -53,7 +53,7 @@ Player::Player()
 	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX));
 
 	// 初期位置を0,0,5に
-	SetPosition(MelLib::Vector3(-5, 0, 0));
+	SetPosition(MelLib::Vector3(0, 0, 0));
 
 	// 当たり判定の作成(球)
 	// Playerの座標を取得し、それをセット
@@ -79,7 +79,7 @@ void Player::Update()
 
 
 
-	collisionCheckDistance = 1.5f;
+	collisionCheckDistance = 40.0f;
 }
 
 void Player::Draw()
@@ -103,12 +103,12 @@ void Player::Hit
 		/*MelLib::Vector3 vec = GetSphereCalcResult().GetOBBHitSurfaceNormal();
 		AddPosition(vec * 0.3f);*/
 
-		MelLib::Vector3 getPos = GetLerpPosition();
-		MelLib::Vector3 movePos = GetLerpMovePosition();
-		SetPosition(GetLerpExtrudePosition());
+		//MelLib::Vector3 getPos = GetLerpPosition();
+		//MelLib::Vector3 movePos = GetLerpMovePosition();
+		//SetPosition(GetLerpExtrudePosition());
 
-		MelLib::Vector3 myPos = GetPosition();
-		int z = 90;
+		//MelLib::Vector3 myPos = GetPosition();
+		//int z = 90;
 	}
 
 

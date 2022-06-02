@@ -35,6 +35,120 @@ Vector3 MelLib::Collision::CalcHitBoxSurfaceNormal(BoxHitDirection dir)
 	return normal;
 }
 
+Vector3 MelLib::Collision::CalcSphereArea(const Vector3& spherePos, const Value3<Vector3>& triPos)
+{
+	Vector3 nearPos;
+
+	Vector3 p1ToSphere = spherePos - triPos.v1;
+	Vector3 p2ToSphere = spherePos - triPos.v2;
+	Vector3 p3ToSphere = spherePos - triPos.v3;
+
+	// 1
+	Vector3 p1ToP2 = triPos.v2 - triPos.v1;
+	Vector3 p1ToP3 = triPos.v3 - triPos.v1;
+
+	float p1P2DotP1Sphere = Vector3::Dot(p1ToP2, p1ToSphere);
+	float p1P3DotP1Sphere = Vector3::Dot(p1ToP3, p1ToSphere);
+	float p1P2DotP2Sphere = Vector3::Dot(p1ToP2, p2ToSphere);
+	float p1P3DotP2Sphere = Vector3::Dot(p1ToP3, p2ToSphere);
+	float p1P2DotP3Sphere = Vector3::Dot(p1ToP2, p3ToSphere);
+	float p1P3DotP3Sphere = Vector3::Dot(p1ToP3, p3ToSphere);
+
+
+	if (p1P2DotP1Sphere < 0 && p1P3DotP1Sphere < 0)
+	{
+		nearPos = triPos.v1;
+		return nearPos;
+	}
+
+	// 2
+	Vector3 p2ToP1 = triPos.v1 - triPos.v2;
+	Vector3 p2ToP3 = triPos.v3 - triPos.v2;
+	if (p1P2DotP2Sphere >= 0 && p1P3DotP2Sphere < p1P2DotP2Sphere)
+	{
+		nearPos = triPos.v2;
+		return nearPos;
+	}
+
+	// 4
+	Vector3 p3ToP1 = triPos.v1 - triPos.v3;
+	Vector3 p3ToP2 = triPos.v2 - triPos.v3;
+	if (p1P2DotP3Sphere >= 0 && p1P3DotP3Sphere < p1P2DotP3Sphere)
+	{
+		nearPos = triPos.v3;
+		return nearPos;
+	}
+
+	// 3
+	float check3 =
+		p1P2DotP1Sphere
+		* p1P3DotP2Sphere
+		- p1P2DotP2Sphere
+		* p1P3DotP1Sphere;
+
+	if (p1P2DotP1Sphere >= 0 && p1P2DotP2Sphere < 0)
+	{
+		if (check3 <= 0.0f)
+		{
+			nearPos =
+				triPos.v1;
+			+p1P2DotP1Sphere
+				/ (p1P2DotP1Sphere
+					- p1P2DotP2Sphere)
+				* p1ToP2;
+
+			return nearPos;
+		}
+	}
+
+	// 5
+	float check5 =
+		p1P2DotP3Sphere
+		* p1P3DotP1Sphere
+		- p1P2DotP1Sphere
+		* p1P3DotP3Sphere;
+	if (p1P3DotP1Sphere >= 0 && p1P3DotP3Sphere < 0)
+	{
+		if (check5 <= 0.0f)
+		{
+			nearPos =
+				triPos.v1
+				+ p1P3DotP1Sphere
+				/ (p1P3DotP1Sphere
+					- p1P3DotP3Sphere)
+				* p1ToP3;
+			return nearPos;
+		}
+	}
+
+	// 6
+	float check6 =
+		p1P2DotP2Sphere
+		* p1P3DotP3Sphere
+		- p1P2DotP3Sphere
+		* p1P3DotP2Sphere;
+	if (p1P3DotP2Sphere - p1P2DotP2Sphere >= 0 && p1P2DotP3Sphere - p1P3DotP3Sphere >= 0)
+	{
+		if (check6 <= 0.0f)
+		{
+			nearPos =
+				triPos.v2
+				+ (p1P3DotP2Sphere - p1P2DotP2Sphere)
+				/ ((p1P3DotP2Sphere - p1P2DotP2Sphere)
+					- (p1P2DotP3Sphere - p1P3DotP3Sphere));
+			return nearPos;
+		}
+	}
+
+	// 7
+	float denom = 1.0f / (check3 + check5 + check6);
+	float v = check5 * denom;
+	float w = check6 * denom;
+	nearPos = triPos.v1 + p1ToP2 * v + p1ToP3 * w;
+	return nearPos;
+}
+
+
 #pragma region 2D
 
 
@@ -760,6 +874,17 @@ bool Collision::SphereAndCapsule(const SphereData& sphere, const CapsuleData& ca
 	}
 
 	return sphereAndCupsuleDis < sphere.GetRadius();
+}
+
+bool MelLib::Collision::SphereAndTriangle(const SphereData& sphere, const TriangleData& triangle)
+{
+	Vector3 nearPos;
+	nearPos = CalcSphereArea(sphere.GetPosition(), triangle.GetTranslationPosition());
+
+	float dis = LibMath::CalcDistance3D(nearPos, sphere.GetPosition());
+	dis *= dis;
+	float radius = sphere.GetRadius() * sphere.GetRadius();
+	return dis <= radius;
 }
 
 bool MelLib::Collision::PlaneAndSegment3D(const PlaneData& plane, const Segment3DData& segment, Segment3DCalcResult* segmentResult)
