@@ -36,9 +36,9 @@ TestObject::TestObject()
 	triangleDatas["main"].resize(1);
 	triangleDatas["main"][0].SetPosition(MelLib::Value3<MelLib::Vector3>
 		(
-			MelLib::Vector3(0,0,3),
-			MelLib::Vector3(3,0,-3),
-			MelLib::Vector3(-3,0,-3)
+			MelLib::Vector3(-3,0,-3),
+			MelLib::Vector3(0, 0, 3),
+			MelLib::Vector3(3,0,-3)
 			));
 
 	//SetAllCollisionFlag(false);
