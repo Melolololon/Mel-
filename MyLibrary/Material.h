@@ -72,6 +72,9 @@ namespace MelLib
 		ComPtr<ID3D12Resource>colorBuffer = nullptr;
 		ComPtr<ID3D12Resource>materialBuffer = nullptr;
 
+		std::vector<ComPtr<ID3D12Resource>>colorBuffers;
+		std::vector<ComPtr<ID3D12Resource>>materialBuffers;
+
 		//(マテリアルのカラー + AddColor + SubColor)*MulColor = 追加色
 		Color color = Color(255, 255, 255, 255);
 		
@@ -81,6 +84,7 @@ namespace MelLib
 		//テクスチャ
 		static const UINT TEXTURE_HANDLE_NUM = 0;
 		Texture* pTexture = nullptr;
+		std::vector<Texture*>pTextures;
 		
 		static const UINT NORMAL_MAP_HANDLE_NUM = 1;
 		Texture* pNormalMapTexture = nullptr;
@@ -102,11 +106,30 @@ namespace MelLib
 
 		//テクスチャ未セット時にセットするテクスチャバッファ
 		static ComPtr<ID3D12Resource> textureNoneTextureBuffer;
+
+		// マテリアルのバイト数
+		size_t materialByte = 0;
+
 	private:
-		void MapColorBuffer(const Color& color);
+		void MapColorBuffer(const Color& color, size_t index);
 
 		//メインのテクスチャをセットまたは読み込んだときに必ず呼び出す処理
 		void SetOrLoadTextureProcess();
+
+		/// <summary>
+		/// テクスチャをセットしたときにMapを行う処理
+		/// </summary>
+		void SetTextureMapBuffer(Texture* pTexture,size_t index);
+
+		/// <summary>
+		/// 定数バッファの作成
+		/// </summary>
+		void CreateConstBuffer();
+
+		/// <summary>
+		/// バッファのサイズを変える
+		/// </summary>
+		void ResizeBuffer();
 	protected:
 		std::unique_ptr<PipelineState> pipelineState;
 		DrawData drawData;
@@ -131,8 +154,10 @@ namespace MelLib
 		virtual void Create(const DrawData& drawData){}
 
 		ID3D12DescriptorHeap* GetPTextureHeap() { return textureHeap.Get(); }
-		ID3D12Resource* GetPConstBuffer(const MaterialConstBufferType type)const;
+		ID3D12Resource* GetPConstBuffer(const MaterialConstBufferType type,size_t index = 0)const;
+		void GetPConstBuffer(std::vector<ID3D12Resource*>& buffers, const MaterialConstBufferType type)const;
 		Texture* GetPTexture() { return pTexture; }
+		void GetPTexture(std::vector<Texture*>& pTex) { pTex = pTextures; }
 		Texture* GetPNormalTexture() { return pNormalMapTexture; }
 		//Texture3D* GetPTexture3D() { return pTexture3D; }
 		PipelineState* GetPPipelineState() { return pipelineState.get(); }
@@ -141,6 +166,8 @@ namespace MelLib
 
 		void SetColor(const Color& color);
 		void SetTexture(Texture* pTex);
+		void SetTextures(Texture* pTex, size_t index);
+		void SetTextures(const std::vector<Texture*>& pTex);
 		void SetNormalMapTexture(Texture* pNormalMapTex);
 		//void SetTexture3D(Texture3D* pTex);
 
