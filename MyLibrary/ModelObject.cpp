@@ -575,14 +575,16 @@ void ModelObject::SetCmdList()
 			ppHeaps.push_back(textureDescHeap);
 			cmdLists[0]->SetDescriptorHeaps(1, &ppHeaps[0]);
 
-
-			D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
-			(
-				materials[objectName]->GetPTextureHeap()->GetGPUDescriptorHandleForHeapStart(),
-				0,
-				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-			);
-			cmdLists[0]->SetGraphicsRootDescriptorTable(TEXURE_ROOTPARAM_NUM, gpuDescHandle);
+			for (int i = 0; i < materials[objectName]->GetTextureNum(); i++) 
+			{
+				D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE
+				(
+					materials[objectName]->GetPTextureHeap()->GetGPUDescriptorHandleForHeapStart(),
+					i,
+					device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+				);
+				cmdLists[0]->SetGraphicsRootDescriptorTable(TEXURE_ROOTPARAM_NUM, gpuDescHandle);
+			}
 		}
 #pragma endregion
 
@@ -1689,7 +1691,7 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 
 #pragma region ディスクリプタレンジ_ルートパラメーター
 	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
-	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, Material::GetTextureNumMax(), 0);
 
 	CD3DX12_ROOT_PARAMETER rootparam[6] = {};
 
@@ -1706,7 +1708,6 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 
 	//テクスチャ
 	rootparam[TEXURE_ROOTPARAM_NUM].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_PIXEL);
-
 #pragma endregion
 
 #pragma region ルートシグネチャ
@@ -1785,6 +1786,7 @@ void MelLib::ModelObject::SetMaterial(Material* mtl, const std::string& name)
 		{
 			material.second = mtl;
 		}
+
 	}
 	else
 	{

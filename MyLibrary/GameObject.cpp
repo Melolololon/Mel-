@@ -562,7 +562,7 @@ void MelLib::GameObject::CreateCollisionCheckModelPipelineState()
 	data.cullMode = CullMode::NONE;
 	data.drawMode = DrawMode::WIREFRAME;
 
-	material.Create(data);
+	material.Create(data,1);
 
 }
 
