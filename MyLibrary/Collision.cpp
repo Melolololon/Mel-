@@ -1401,5 +1401,18 @@ bool MelLib::Collision::OBBAndRay(const OBBData& obb, const RayData& ray, RayCal
 	rotRayPos += obb.GetPosition();
 	rotRay.SetPosition(rotRayPos);
 
-	return BoxAndRay(obb.GetBoxData(), rotRay, rayResult);
+	bool result = BoxAndRay(obb.GetBoxData(), rotRay, rayResult);
+
+	if (rayResult) 
+	{
+		// Šp“x•ª‰ñ“]
+		Vector3 rotRayPos = rayResult->hitPosition;
+		rotRayPos -= obb.GetPosition();
+		rotRayPos = LibMath::RotateZXYVector3(rotRayPos, obb.GetAngle());
+		rotRayPos += obb.GetPosition();
+		rayResult->hitPosition = rotRayPos;
+
+	}
+
+	return result;
 }

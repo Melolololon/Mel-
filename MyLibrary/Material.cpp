@@ -231,7 +231,7 @@ MelLib::ADSAMaterial& MelLib::ADSAMaterial::operator=(ADSAMaterial& mtl)
 	return * this;
 }
 
-void MelLib::ADSAMaterial::Create(const DrawData& drawData, const unsigned int textureNum)
+void MelLib::ADSAMaterial::Create(const DrawOption& drawData, const unsigned int textureNum)
 {
 	CreateInitialize(sizeof(ADSAMaterialData), textureNum);
 	Map();
@@ -288,7 +288,7 @@ void MelLib::PBRMaterial::Map()
 	UnmapMaterialData();
 }
 
-void MelLib::PBRMaterial::Create(const DrawData& drawData, const unsigned int textureNum)
+void MelLib::PBRMaterial::Create(const DrawOption& drawData, const unsigned int textureNum)
 {
 	CreateInitialize(sizeof(PBRMaterial), textureNum);
 	Map();

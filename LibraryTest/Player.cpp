@@ -72,11 +72,19 @@ Player::Player()
 	sphereFrameHitCheckNum = 1;
 
 
-	MelLib::DrawData data;
+	// 描画設定
+	MelLib::DrawOption data;
+	// モデルの初期設定をセット
 	data.SetModelDefData();
+
+	// (設定構造体,テクスチャ数(ディスクリプタヒープのサイズ))
 	testMtl.Create(data, 2);
+
+	// (テクスチャ,名前(後々変更したりするときにこの名前で呼び出す))
+	// セットした順にレジスター0から使える
 	testMtl.SetTexture(MelLib::Texture::Get("test"),"main");
-	testMtl.SetTexture(MelLib::Texture::Get("test2"),"Map");
+	testMtl.SetTexture(MelLib::Texture::Get("test2"),"NormalMap");
+
 	modelObjects["main"].SetMaterial(&testMtl);
 }
 

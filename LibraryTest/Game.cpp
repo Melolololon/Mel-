@@ -98,7 +98,18 @@ void Game::Initialize()
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 20, 0));
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 
+	MelLib::OBBData obb;
+	obb.SetPosition({1,0,0});
+	obb.SetSize({ 4,2,2 });
+	obb.SetAngle({ 0,0,0 });
 
+	MelLib::RayData ray;
+	ray.SetPosition({ 5,0,0 });
+	ray.SetDirection({ -1,0,0 });
+
+	MelLib::RayCalcResult res;
+	bool result = MelLib::Collision::OBBAndRay(obb, ray,&res);
+	int a = 0;
 }
 
 

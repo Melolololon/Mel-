@@ -115,7 +115,7 @@ namespace MelLib
 		void SetOrLoadTextureProcess();
 	protected:
 		std::unique_ptr<PipelineState> pipelineState;
-		DrawData drawData;
+		DrawOption drawData;
 		unsigned int textureNumMax = 0;
 
 	protected:
@@ -141,7 +141,7 @@ namespace MelLib
 
 		static void Initialize(ID3D12Device* dev);
 		
-		virtual void Create(const DrawData& drawData, const unsigned int textureNum){}
+		virtual void Create(const DrawOption& drawData, const unsigned int textureNum){}
 
 		ID3D12DescriptorHeap* GetPTextureHeap() { return textureHeap.Get(); }
 		ID3D12Resource* GetPConstBuffer(const MaterialConstBufferType type)const;
@@ -204,7 +204,7 @@ namespace MelLib
 		ADSAMaterial(ADSAMaterial& mtl);
 		ADSAMaterial& operator=(ADSAMaterial& mtl);
 
-		void Create(const DrawData& drawData, const unsigned int textureNum)override;
+		void Create(const DrawOption& drawData, const unsigned int textureNum)override;
 
 #pragma region セット
 		void SetMaterialData(const ADSAMaterialData& data);
@@ -244,7 +244,7 @@ namespace MelLib
 		PBRMaterial(PBRMaterial& mtl);
 		PBRMaterial operator=(PBRMaterial& mtl);
 
-		void Create(const DrawData& drawData, const unsigned int textureNum)override;
+		void Create(const DrawOption& drawData, const unsigned int textureNum)override;
 
 #pragma region セット
 		void SetMaterialData(const PBRMaterialData& data);
