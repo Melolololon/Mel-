@@ -66,6 +66,7 @@ void Game::Initialize()
 	
 	//カメラは各シーンに移動しました
 
+	Player::LoadRes();
 
 
 #pragma region マネージャー初期化
@@ -96,6 +97,8 @@ void Game::Initialize()
 
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 20, 0));
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
+
+
 }
 
 

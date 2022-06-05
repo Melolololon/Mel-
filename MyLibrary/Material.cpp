@@ -125,16 +125,18 @@ bool MelLib::Material::SetTexture(Texture* pTex, const std::string& name)
 		return false;
 	}
 
-	pTextures[pTex->GetTextureName()] = pTex;
+
+	
 
 	if (pTex)
 	{
+		pTextures[name] = pTex;
 		CreateBuffer::GetInstance()->CreateShaderResourceView
 		(
 			CD3DX12_CPU_DESCRIPTOR_HANDLE
 			(
 				textureHeap->GetCPUDescriptorHandleForHeapStart(),
-				TEXTURE_HANDLE_NUM,
+				pTextures.size() - 1,
 				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			),
 			pTex->GetTextureBuffer()
@@ -149,14 +151,13 @@ bool MelLib::Material::SetTexture(Texture* pTex, const std::string& name)
 			CD3DX12_CPU_DESCRIPTOR_HANDLE
 			(
 				textureHeap->GetCPUDescriptorHandleForHeapStart(),
-				TEXTURE_HANDLE_NUM ,
+				0 ,
 				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			),
 			textureNoneTextureBuffer.Get()
 		);
 
 		MapColorBuffer(color);
-
 	}
 
 

@@ -8,6 +8,7 @@ class Player :
 	MelLib::GuiInt hp;
 	MelLib::GuiInt power;
 
+	MelLib::ADSAMaterial testMtl;
 private:
 
 	void Move();
@@ -39,5 +40,8 @@ public:
 	)override;
 
 	std::shared_ptr<MelLib::GameObject> GetNewPtr()override;
+
+
+	static void LoadRes();
 };
 

@@ -67,7 +67,7 @@ void TestObject::Update()
 void TestObject::Draw()
 {
 	// ModelObjects‚É’Ç‰Á‚³‚ê‚Ä‚¢‚éModelObject‚ð‚·‚×‚Ä•`‰æ
-	AllDraw();
+	//AllDraw();
 }
 
 void TestObject::Hit

@@ -44,6 +44,13 @@ void Player::Move()
 	AddPosition(moveVector);
 }
 
+void Player::LoadRes()
+{
+	bool res = MelLib::Texture::Load("Resources/Texture/testTexture.png","test");
+	bool res2 = MelLib::Texture::Load("Resources/Texture/testTexture2.png","test2");
+	int x = 0;
+}
+
 Player::Player()
 	:hp(10, "Player", "HP", 0, 100)
 	,power(10, "Player", "Power", 1, 100)
@@ -63,6 +70,14 @@ Player::Player()
 	modelObjects["main"].SetScale(1);
 
 	sphereFrameHitCheckNum = 1;
+
+
+	MelLib::DrawData data;
+	data.SetModelDefData();
+	testMtl.Create(data, 2);
+	testMtl.SetTexture(MelLib::Texture::Get("test"),"main");
+	testMtl.SetTexture(MelLib::Texture::Get("test2"),"Map");
+	modelObjects["main"].SetMaterial(&testMtl);
 }
 
 void Player::Update()
