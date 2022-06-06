@@ -86,6 +86,7 @@ Player::Player()
 	testMtl.SetTexture(MelLib::Texture::Get("test2"),"NormalMap");
 
 	modelObjects["main"].SetMaterial(&testMtl);
+	modelObjects["main"].SetPar(100.0f);
 }
 
 void Player::Update()

@@ -129,6 +129,9 @@ namespace MelLib
 		DirectX::XMFLOAT4 addColor = { 0,0,0,0 };
 		DirectX::XMFLOAT4 subColor = { 0,0,0,0 };
 		DirectX::XMFLOAT4 mulColor = { 1,1,1,1 };
+		
+		// 汎用パーセント
+		float par = 0.0f;
 		float pushPolygonNum = 0.0f;
 
 	};
@@ -173,6 +176,8 @@ namespace MelLib
 		DirectX::XMFLOAT4 mulColor;
 		DirectX::XMFLOAT4 addColor;
 		DirectX::XMFLOAT4 subColor;
+		// 汎用パーセント
+		float par = 0.0f;
 		float tex3DStart;
 		float tex3DEnd;
 		float ex;

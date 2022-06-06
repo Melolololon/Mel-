@@ -174,6 +174,7 @@ void ModelObject::MapConstData(const Camera* camera)
 		constBufferData->addColor = modelConstDatas[objectName].addColor;
 		constBufferData->subColor = modelConstDatas[objectName].subColor;
 		constBufferData->mulColor = modelConstDatas[objectName].mulColor;
+		constBufferData->par = modelConstDatas[objectName].par;
 		constBufferData->ex = modelConstDatas[objectName].pushPolygonNum;
 
 		std::vector<DirectionalLight*> pLights = DirectionalLight::GetAll();
@@ -247,8 +248,8 @@ void ModelObject::MapConstData(const Camera* camera)
 
 	}
 
-	constBuffer[0]->Map(0, nullptr, (void**)&constBufferData);
-	constBuffer[0]->Unmap(0, nullptr);
+	//constBuffer[0]->Map(0, nullptr, (void**)&constBufferData);
+	//constBuffer[0]->Unmap(0, nullptr);
 
 	for (int i = 0; i < modelConstBuffer.size(); i++)
 	{
@@ -1778,6 +1779,23 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 
 
 
+
+}
+
+void MelLib::ModelObject::SetPar(const float par, const std::string& name)
+{
+	if (name == "")
+	{
+		for (auto& data : modelConstDatas)
+		{
+			data.second.par = par / 100.0f;
+		}
+
+	}
+	else
+	{
+		modelConstDatas[name].par = par / 100.0f;
+	}
 
 }
 

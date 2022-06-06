@@ -250,6 +250,11 @@ namespace MelLib
 
 #pragma endregion
 
+		/// <summary>
+		/// シェーダーで汎用的に使えるパーセントの値を変更します。
+		/// </summary>
+		void SetPar(float par, const std::string& name = "");
+
 		void SetMaterial(Material* mtl,const std::string& name = "");
 
 
