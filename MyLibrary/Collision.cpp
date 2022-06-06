@@ -839,11 +839,16 @@ bool MelLib::Collision::SphereAndRay(const SphereData& sphere, SphereCalcResult*
 	float t = -b - sqrt((b * b) - c);
 	if (t < 0)return false;
 	
-	if (d > 0) 
+	if (d > 0)
 	{
-		if (rayResult)rayResult->hitPosition = rayPos + t * rayDir;
-	}
+		if (rayResult)
+		{
+			Vector3 hitPosition = rayPos + t * rayDir;
+			rayResult->hitPosition = hitPosition;
 
+			rayResult->hitObjectNormal = (hitPosition) / Vector3::Normalize(hitPosition);
+		}
+	}
 	return true;
 }
 
@@ -1256,7 +1261,71 @@ bool MelLib::Collision::BoxAndRay(const BoxData& box, const RayData& ray, RayCal
 	// ベクトルの逆にOBBがあるとき、絶対Tが逆になるからこれで問題なさそう
 	if (minT >= 0 && maxT >= 0) 
 	{
-		if (rayResult)rayResult->hitPosition = rayPos + minT * rayDir;
+		if (rayResult)
+		{
+			Vector3 hitPos = rayPos + minT * rayDir;
+			rayResult->hitPosition = hitPos;
+
+
+			BoxHitDirection hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
+
+			char top = 0;
+			//ボックスへのベクトル
+			Vector3 hitPosVector = box.GetPosition() - hitPos;
+
+			if (abs(hitPosVector.x) > abs(hitPosVector.y) &&
+				abs(hitPosVector.x) > box.GetSize().x / 2)
+			{
+				top = 1;
+				if (abs(hitPosVector.z) > abs(hitPosVector.x) &&
+					abs(hitPosVector.z) > box.GetSize().z / 2)
+					top = 3;
+			}
+			else
+			{
+				top = 2;
+				if (abs(hitPosVector.z) > abs(hitPosVector.y) &&
+					abs(hitPosVector.z) > box.GetSize().z / 2)
+					top = 3;
+			}
+
+			if (top == 1)
+			{
+				if (hitPosVector.x >= 0)
+				{
+					hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
+				}
+				else
+				{
+					hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_RIGHT;
+				}
+			}
+			else if (top == 2)
+			{
+				if (hitPosVector.y >= 0)
+				{
+					hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
+				}
+				else
+				{
+					hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_UP;
+				}
+			}
+			else if (top == 3)
+			{
+				if (hitPosVector.z >= 0)
+				{
+					hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
+				}
+				else
+				{
+					hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
+				}
+			}
+
+
+			rayResult->hitObjectNormal = CalcHitBoxSurfaceNormal(hitDirection);
+		}
 		return true;
 	}
 	return false;
@@ -1412,6 +1481,7 @@ bool MelLib::Collision::OBBAndRay(const OBBData& obb, const RayData& ray, RayCal
 		rotRayPos += obb.GetPosition();
 		rayResult->hitPosition = rotRayPos;
 
+		rayResult->hitObjectNormal = MelLib::LibMath::RotateZXYVector3(rayResult->hitObjectNormal, obb.GetAngle());
 	}
 
 	return result;

@@ -87,6 +87,7 @@ namespace MelLib
 		BoardData hitBoardData;
 		CapsuleData hitCapsuleData;
 		TriangleData hitTriangleData;
+		OBBData hitOBBData;
 
 		// 衝突確認時に計算された数値
 		SphereCalcResult sphereCalcResult;
@@ -234,6 +235,7 @@ namespace MelLib
 		BoardData GetHitBoardData()const { return hitBoardData; }
 		CapsuleData GetHitCapsuleData() const { return hitCapsuleData; }
 		TriangleData GetHitTriangleData() const { return hitTriangleData; }
+		OBBData GetHitOBBData() const { return hitOBBData; }
 
 #pragma region 物理演算
 		//反発とかもHit関数で自分で呼ぶようにする?
@@ -551,6 +553,7 @@ namespace MelLib
 		void SetHitCapsuleData(const CapsuleData& capsule) { hitCapsuleData = capsule; }
 		void SetHitTriangleData(const TriangleData& tri) { hitTriangleData = tri; }
 		void SetHitRayData(const RayData& ray) { hitRayData = ray; }
+		void SetHitOBBData(const OBBData& obb) { hitOBBData = obb; }
 
 		unsigned int GetFrameHitCheckNumber(ShapeType3D type)const;
 

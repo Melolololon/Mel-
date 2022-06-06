@@ -700,7 +700,7 @@ void GameObjectManager::Update()
 										obj1->SetSphereCalcResult(result1);
 										//obj2->SetBoxCalcResult(result2);
 
-										//obj1->SetHitBoxData(obb);
+										obj1->SetHitOBBData(obb);
 										obj2->SetHitSphereData(sphere1);
 
 										obj1->SetLerpPosition(sphere1.GetPosition());
@@ -802,7 +802,7 @@ void GameObjectManager::Update()
 										//obj1->SetBoxCalcResult(result2);
 
 										obj1->SetHitSphereData(sphere1);
-										//obj2->SetHitBoxData(obb);
+										obj2->SetHitOBBData(obb);
 
 										obj2->SetLerpPosition(sphere1.GetPosition());
 										obj1->SetLerpPosition(obb.GetPosition());
@@ -2006,7 +2006,7 @@ void GameObjectManager::Update()
 										obj2->SetRayCalcResult(result2);
 
 										obj1->SetHitRayData(ray);
-										//obj2->SetHitOBBData(obb1);
+										obj2->SetHitOBBData(obb1);
 
 										obj1->SetLerpPosition(obb1.GetPosition());
 										obj2->SetLerpPosition(ray.GetPosition());
@@ -2108,7 +2108,7 @@ void GameObjectManager::Update()
 										//obj2->SetOBBCalcResult(result1);
 										obj1->SetRayCalcResult(result2);
 
-										//	obj2->SetHitOBBData(obb);
+										obj2->SetHitOBBData(obb);
 										obj1->SetHitRayData(ray);
 
 										obj2->SetLerpPosition(obb.GetPosition());
@@ -2120,9 +2120,9 @@ void GameObjectManager::Update()
 										obj2->Hit
 										(
 											*obj1,
-											ShapeType3D::SPHERE,
-											obbData.first,
 											ShapeType3D::OBB,
+											obbData.first,
+											ShapeType3D::RAY,
 											rayData.first
 										);
 										obj1->Hit
