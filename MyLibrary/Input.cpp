@@ -725,19 +725,19 @@ bool Input::PadCheck(const UCHAR padNum)
 {
 	if (padNum > 3)
 	{
-#ifdef _DEBUG
-
-		OutputDebugString(L"パッド番号が4を超えています。\n");
-#endif // _DEBUG
+		//#ifdef _DEBUG
+		//
+		//		OutputDebugString(L"パッド番号が4を超えています。\n");
+		//#endif // _DEBUG
 		return false;
 	}
 	if (!GetPadConnectedFlag(padNum))
 	{
-#ifdef _DEBUG
-		std::wstring padNumWStr = std::to_wstring(padNum);
-		padNumWStr += L"Pコントローラーが接続されていません。\n";
-		OutputDebugString(padNumWStr.c_str());
-#endif // _DEBUG
+		//#ifdef _DEBUG
+		//		std::wstring padNumWStr = std::to_wstring(padNum);
+		//		padNumWStr += L"Pコントローラーが接続されていません。\n";
+		//		OutputDebugString(padNumWStr.c_str());
+		//#endif // _DEBUG
 		return false;
 	}
 
@@ -917,7 +917,7 @@ float Input::LeftStickAngle(const float par, const UCHAR padNum)
 
 Vector2 Input::LeftStickVector2(const float par, const bool dimention3D, const UCHAR padNum)
 {
-	float angle = LeftStickAngle(par,padNum);
+	float angle = LeftStickAngle(par, padNum);
 	if (angle < 0)return 0;
 
 
@@ -1034,7 +1034,7 @@ bool Input::RightStickDownTrigger(const float lYPar, const UCHAR padNum)
 
 Vector2 Input::RightStickVector2(const  float par, const bool dimention3D, const UCHAR padNum)
 {
-	float angle = RightStickAngle(par,padNum);
+	float angle = RightStickAngle(par, padNum);
 	if (angle < 0)return 0;
 	return LibMath::AngleToVector2(angle, dimention3D);
 }

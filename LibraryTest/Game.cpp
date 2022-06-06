@@ -101,12 +101,12 @@ void Game::Initialize()
 	MelLib::SphereData sphere;
 	MelLib::SphereCalcResult r;
 	sphere.SetRadius(10.5f);
-	sphere.SetPosition({ 0,-5,0 });
+	sphere.SetPosition({ 5,0,0 });
 
 	MelLib::OBBData obb;
 	obb.SetPosition({0,0,0});
-	obb.SetSize({ 4,2,2 });
-	obb.SetAngle({ 0,0,0 });
+	obb.SetSize({ 4,4,4 });
+	obb.SetAngle({ 0,180,0 });
 
 	MelLib::RayData ray;
 	ray.SetPosition({ 5,0,0 });

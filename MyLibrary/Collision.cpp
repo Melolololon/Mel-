@@ -627,26 +627,27 @@ bool Collision::SphereAndBox
 			return false;
 		}
 
+
 		//1 Xが多い
 		//2 Yが多い
 		//3 Zが多い
 		char top = 0;
 		//ボックスへのベクトル
-		Vector3 sphereToVector = sphere.GetPosition();
+		Vector3 sphereToVector = box.GetPosition() - sphere.GetPosition();
 
-		if (abs(sphereToVector.x) >= abs(sphereToVector.y) &&
-			abs(sphereToVector.x) >= box.GetSize().x / 2)
+		if (abs(sphereToVector.x) > abs(sphereToVector.y) &&
+			abs(sphereToVector.x) > box.GetSize().x / 2)
 		{
 			top = 1;
-			if (abs(sphereToVector.z) >= abs(sphereToVector.x) &&
-				abs(sphereToVector.z) >= box.GetSize().z / 2)
+			if (abs(sphereToVector.z) > abs(sphereToVector.x) &&
+				abs(sphereToVector.z) > box.GetSize().z / 2)
 				top = 3;
 		}
 		else
 		{
 			top = 2;
-			if (abs(sphereToVector.z) >= abs(sphereToVector.y) &&
-				abs(sphereToVector.z) >= box.GetSize().z / 2)
+			if (abs(sphereToVector.z) > abs(sphereToVector.y) &&
+				abs(sphereToVector.z) > box.GetSize().z / 2)
 				top = 3;
 		}
 
@@ -654,35 +655,36 @@ bool Collision::SphereAndBox
 		{
 			if (sphereToVector.x >= 0)
 			{
-				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_RIGHT;
+				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
 			}
 			else
 			{
-				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
+				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_RIGHT;
 			}
 		}
 		else if (top == 2)
 		{
 			if (sphereToVector.y >= 0)
 			{
-				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_UP;
+				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
 			}
 			else
 			{
-				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
+				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_UP;
 			}
 		}
 		else if (top == 3)
 		{
 			if (sphereToVector.z >= 0)
 			{
-				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
+				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
 			}
 			else
 			{
-				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
+				hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
 			}
 		}
+
 
 
 
@@ -761,21 +763,21 @@ bool MelLib::Collision::SphereAndOBB(const SphereData& sphere, SphereCalcResult*
 	rotSphere += box.GetPosition();
 
 	//ボックスへのベクトル
-	Vector3 sphereToVector = rotSphere;
+	Vector3 sphereToVector = box.GetPosition() - rotSphere;
 
-	if (abs(sphereToVector.x) >= abs(sphereToVector.y) &&
-		abs(sphereToVector.x) >= box.GetSize().x / 2)
+	if (abs(sphereToVector.x) > abs(sphereToVector.y) &&
+		abs(sphereToVector.x) > box.GetSize().x / 2)
 	{
 		top = 1;
-		if (abs(sphereToVector.z) >= abs(sphereToVector.x) &&
-			abs(sphereToVector.z) >= box.GetSize().z / 2)
+		if (abs(sphereToVector.z) > abs(sphereToVector.x) &&
+			abs(sphereToVector.z) > box.GetSize().z / 2)
 			top = 3;
 	}
 	else
 	{
 		top = 2;
-		if (abs(sphereToVector.z) >= abs(sphereToVector.y) &&
-			abs(sphereToVector.z) >= box.GetSize().z / 2)
+		if (abs(sphereToVector.z) > abs(sphereToVector.y) &&
+			abs(sphereToVector.z) > box.GetSize().z / 2)
 			top = 3;
 	}
 
@@ -783,33 +785,33 @@ bool MelLib::Collision::SphereAndOBB(const SphereData& sphere, SphereCalcResult*
 	{
 		if (sphereToVector.x >= 0)
 		{
-			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_RIGHT;
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
 		}
 		else
 		{
-			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_LEFT;
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_RIGHT;
 		}
 	}
 	else if (top == 2)
 	{
 		if (sphereToVector.y >= 0)
 		{
-			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_UP;
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
 		}
 		else
 		{
-			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_DOWN;
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_UP;
 		}
 	}
 	else if (top == 3)
 	{
 		if (sphereToVector.z >= 0)
 		{
-			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
 		}
 		else
 		{
-			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_FRONT;
+			hitDirection = BoxHitDirection::BOX_HIT_DIRECTION_BACK;
 		}
 	}
 

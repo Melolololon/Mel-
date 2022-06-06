@@ -54,7 +54,7 @@ namespace MelLib
 		/// ¬”‚Ì—”‚ğæ“¾‚µ‚Ü‚·B
 		/// </summary>
 		/// <param name="num"></param>
-		/// <param name="digits">Œ…”(1‚©‚ç4)</param>
+		/// <param name="digits">Œ…”</param>
 		/// <returns></returns>
 		static float GetRandomFloatNumber(const float num, const int digits);
 
@@ -62,7 +62,7 @@ namespace MelLib
 		/// w’è‚µ‚½”ÍˆÍ“à‚Ì”‚Ì‚Ç‚ê‚©‚ğæ“¾‚µ‚Ü‚·B
 		/// </summary>
 		/// <param name="num"></param>
-		/// <param name="digits">Œ…”(1‚©‚ç4)</param>
+		/// <param name="digits">Œ…”</param>
 		/// <returns></returns>
 		static float GetRandomFloatNumberRangeSelect(const float start, const float end, const int digits);
 
