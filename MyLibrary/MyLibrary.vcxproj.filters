@@ -94,6 +94,18 @@
     <Filter Include="ソース ファイル\Input">
       <UniqueIdentifier>{70949721-ab70-469a-a147-b415eb763808}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\GUI">
+      <UniqueIdentifier>{124340ba-d216-476f-a6ec-c700f00173ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GUI">
+      <UniqueIdentifier>{1b4c97c1-4a9e-4dfc-ae5e-7adb0f15624c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Editer">
+      <UniqueIdentifier>{6d4d982c-8565-4f32-9aa4-75605b0c1e1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Editer">
+      <UniqueIdentifier>{91d5c204-c10a-4830-9769-d90aeb856d53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CreateBuffer.cpp">
@@ -327,15 +339,6 @@
     <ClCompile Include="Sound3D.cpp">
       <Filter>ソース ファイル\Sound</Filter>
     </ClCompile>
-    <ClCompile Include="SceneEditer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiValue.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiValueManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="StringSupport.cpp">
       <Filter>ソース ファイル\Support</Filter>
     </ClCompile>
@@ -344,6 +347,15 @@
     </ClCompile>
     <ClCompile Include="DrawManager.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiValueManager.cpp">
+      <Filter>ソース ファイル\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiValue.cpp">
+      <Filter>ソース ファイル\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneEditer.cpp">
+      <Filter>ソース ファイル\Editer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -557,9 +569,6 @@
     <ClInclude Include="RouteSearch.h">
       <Filter>ヘッダー ファイル\Calculation</Filter>
     </ClInclude>
-    <ClInclude Include="ImguiManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
       <Filter>ヘッダー ファイル\ImGui</Filter>
     </ClInclude>
@@ -614,15 +623,6 @@
     <ClInclude Include="Sound3D.h">
       <Filter>ヘッダー ファイル\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="SceneEditer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GuiValue.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GuiValueManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="StringSupport.h">
       <Filter>ヘッダー ファイル\Support</Filter>
     </ClInclude>
@@ -631,6 +631,18 @@
     </ClInclude>
     <ClInclude Include="DrawManager.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiValue.h">
+      <Filter>ヘッダー ファイル\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiValueManager.h">
+      <Filter>ヘッダー ファイル\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImguiManager.h">
+      <Filter>ヘッダー ファイル\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneEditer.h">
+      <Filter>ヘッダー ファイル\Editer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

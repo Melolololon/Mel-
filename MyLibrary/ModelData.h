@@ -31,6 +31,13 @@
 #pragma comment(lib,"zlib-mt.lib")
 #endif // _DEBUG
 
+
+// メモエリア
+// 2022 08 08
+// ボーンの構造体またはクラスを新たに作りたい
+// 当たり判定を持たせたり、位置を変えられるようにしたい
+// ModelBoneをそれにしてもいいかも
+
 namespace MelLib
 {
 	struct Node
@@ -69,7 +76,9 @@ namespace MelLib
 
 
 #pragma region fbx構造体
-		//fbxのボーン情報をまとめたもの
+		
+		
+		// fbxのボーン情報をまとめたもの
 		struct FbxBone
 		{
 			//ボーン名
@@ -79,7 +88,7 @@ namespace MelLib
 
 			FbxBone* parentBone = nullptr;
 
-			//ボーン情報
+			//ボーン情報をまとめたもの
 			FbxCluster* fbxCluster;
 
 			FbxBone(const std::string& name)

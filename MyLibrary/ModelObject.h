@@ -69,6 +69,7 @@ namespace MelLib
 
 
 		//[ボーンごと]
+		// これおそらくobj用
 		std::vector<BoneData>boneDatas;
 		std::vector<ParentBoneData> parentBoneDatas;//親ボーンと影響度
 
@@ -225,8 +226,16 @@ namespace MelLib
 		/// </summary>
 		void SetAnimationFrameEnd() { fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime; }
 
+		/// <summary>
+		/// アニメーションのフレームをセットします。
+		/// </summary>
+		/// <param name="fream"></param>
 		void SetCurrentFream(const UINT fream);
 
+		/// <summary>
+		/// アニメーションの再生速度をセットします。
+		/// </summary>
+		/// <param name="magnification"></param>
 		void SetAnimationSpeedMagnification(const unsigned int magnification) { fbxAnimationData.timeMag = magnification; }
 
 		/// <summary>
@@ -235,8 +244,16 @@ namespace MelLib
 		/// <param name="flag"></param>
 		void SetAnimationReversePlayBack(const bool flag);
 
+		/// <summary>
+		/// アニメーションを指定します。
+		/// </summary>
+		/// <param name="name"></param>
 		void SetAnimation(const std::string& name);
 
+		/// <summary>
+		/// アニメーション終了時に再生を終了するかを指定します。
+		/// </summary>
+		/// <param name="flag"></param>
 		void SetAnimationEndStopFlag(const bool flag) { animationEndStop = flag; }
 
 		/// <summary>
@@ -255,6 +272,11 @@ namespace MelLib
 		/// </summary>
 		void SetPar(float par, const std::string& name = "");
 
+		/// <summary>
+		/// マテリアルをセットします。
+		/// </summary>
+		/// <param name="mtl"></param>
+		/// <param name="name"></param>
 		void SetMaterial(Material* mtl,const std::string& name = "");
 
 
@@ -307,7 +329,11 @@ namespace MelLib
 		/// <returns></returns>
 		unsigned int GetAnimationFrame()const { return static_cast<unsigned int>(fbxAnimationData.currentTime.GetFrameCount(FbxTime::eFrames60)); }
 		
-		unsigned int GetAnimationFrameMax()const { return static_cast<unsigned int>(fbxAnimationData.animationTimes.endTime.GetFrameCount(FbxTime::eFrames60)); }
+		/// <summary>
+		/// アニメーションのフレーム数を取得します。
+		/// </summary>
+		/// <returns></returns>
+		unsigned int GetAnimationFrameCount()const { return static_cast<unsigned int>(fbxAnimationData.animationTimes.endTime.GetFrameCount(FbxTime::eFrames60)); }
 #pragma endregion
 
 		//コンピュートシェーダーで計算したほうがいい。

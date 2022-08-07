@@ -54,7 +54,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	// C++20のcontainsに置き換えできる
 	if (pObjects.find(objectType) != pObjects.end()) 
 	{
-		std::string text = "シーンエディタには既に"+ objectType + "の名前で他のオブジェクトが登録されています。\n";
+		std::string text = "シーンエディタには既に"+ objectType + "という名前のオブジェクトが登録されています。\n";
 		OutputDebugStringA(text.c_str());
 		return;
 	}

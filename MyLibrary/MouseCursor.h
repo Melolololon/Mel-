@@ -4,6 +4,7 @@
 
 namespace MelLib
 {
+	// マウスカーソル
 	class MouseCursor :
 		public GameObject
 	{
