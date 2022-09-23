@@ -4,8 +4,8 @@
 
 MelLib::GuiInt::GuiInt(const int value,const std::string& windowName, const std::string& lavel, int minNumber, int maxNumber)
 	:value(value)
-	, MIN_VALUE(minNumber)
-	, MAX_VALUE(maxNumber)
+	, VALUE_MIN(minNumber)
+	, VALUE_MAX(maxNumber)
 	, SET_VALUE(value)
 	, WINDOW_NAME(windowName)
 	, LAVEL(lavel)

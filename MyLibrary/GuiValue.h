@@ -41,8 +41,8 @@ namespace MelLib
 	{
 	private:
 		int value = 0;
-		const int MIN_VALUE = 0;
-		const int MAX_VALUE = 0;
+		const int VALUE_MIN = 0;
+		const int VALUE_MAX = 0;
 		const int SET_VALUE = 0;
 		const std::string WINDOW_NAME;
 		const std::string LAVEL;
@@ -72,8 +72,8 @@ namespace MelLib
 
 		
 		int GetValue()const { return value; }
-		int GetMaxValue() const { return MAX_VALUE; }
-		int GetMinValue()const { return MIN_VALUE; }
+		int GetMaxValue() const { return VALUE_MAX; }
+		int GetMinValue()const { return VALUE_MIN; }
 
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や

@@ -6,6 +6,7 @@
 #pragma comment(lib,"winmm.lib")//timeGetTime‚Æ
 #include"GameObjectManager.h"
 #include"SceneManager.h"
+#include"GuiValueManager.h"
 
 #include"Audio.h"
 #include"Sound.h"
@@ -132,6 +133,9 @@ void Library::Initialize(int windowWidth, int windowHeight, const Color& screenC
 	Audio::GetInstance()->Initialize();
 	SpriteFont2D::GetInstance()->Initialize();
 
+
+	MelLib::GuiValueManager::GetInstance()->Initialize();
+
 #ifdef _DEBUG
 
 
@@ -165,6 +169,8 @@ void Library::LoopStartProcess()
 	Sound::Update();
 	SpriteFont2D::GetInstance()->Update();
 	FrameTimer::AllUpdate();
+
+
 }
 
 void Library::LoopEndProcess()

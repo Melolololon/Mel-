@@ -9,19 +9,28 @@
 
 void MelLib::SceneEditer::Save()
 {
-	if (!isEdit)return;
 
 	// 2022_05_01
 	// オブジェクトマネージャーに追加したオブジェクトをimguiでいじれるように
 
 	std::string name = SceneManager::GetInstance()->GetCurrentSceneName();
-	name += ".mlsce";
+	name += ".melsce";
 	std::ofstream file(name);
 
 	// 書き出し
 
 
 	file.close();
+}
+
+void MelLib::SceneEditer::Load()
+{
+
+	// 保存せずに読み込んでいいか聞く
+
+	std::string name = SceneManager::GetInstance()->GetCurrentSceneName();
+	name += ".melsce";
+	std::ofstream file(name);
 }
 
 void MelLib::SceneEditer::SelectObjectUpdate()
@@ -128,8 +137,11 @@ void MelLib::SceneEditer::Update()
 		}
 	}
 
+	bool pushControl = Input::KeyState(DIK_LCONTROL) || Input::KeyState(DIK_RCONTROL);
 	// 保存
-	if ((Input::KeyState(DIK_LCONTROL) || (Input::KeyState(DIK_RCONTROL)) && Input::KeyTrigger(DIK_S)))Save();
+	if (pushControl  && Input::KeyTrigger(DIK_S))Save();
+	// 読込
+	if (pushControl && Input::KeyTrigger(DIK_L))Load();
 }
 
 void MelLib::SceneEditer::Draw()

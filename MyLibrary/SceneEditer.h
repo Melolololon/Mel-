@@ -6,6 +6,8 @@ namespace MelLib
 {
 	// objectsのオブジェクトをどうマネージャーに追加する?
 
+	// 保存するごとに自動バックアップとるようにしたり、
+	// 履歴保存してCtrl+Zで戻れるようにした方が良いかも
 	class SceneEditer
 	{
 	private:
@@ -15,7 +17,9 @@ namespace MelLib
 		SceneEditer(SceneEditer& s) = delete;
 		SceneEditer& operator=(SceneEditer& s) = delete;
 
+
 		void Save();
+		void Load();
 
 		void SelectObjectUpdate();
 	private:
@@ -38,6 +42,7 @@ namespace MelLib
 	public:
 		static SceneEditer* GetInstance();
 
+
 		/// <summary>
 		/// オブジェクトをエディタに登録します。
 		/// </summary>
@@ -46,7 +51,6 @@ namespace MelLib
 		void RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject,const std::string& objectType);
 		
 		void Update();
-
 		void Draw();
 
 		/// <summary>

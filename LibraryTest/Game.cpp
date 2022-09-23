@@ -60,10 +60,9 @@ void Game::Run()
 
 void Game::Initialize()
 {
-
 	MelLib::Library::Initialize(1280, 720, MelLib::Color(30,30,160,255),L"MELLib");
 	MelLib::Library::SetFramesPerSecond60(true);
-	
+
 	//カメラは各シーンに移動しました
 
 	Player::LoadRes();
@@ -88,8 +87,6 @@ void Game::Initialize()
 #pragma endregion
 
 
-	MelLib::GuiValueManager::GetInstance()->Initialize();
-
 	//MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	//MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,10,0));
 
@@ -98,24 +95,7 @@ void Game::Initialize()
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 20, 0));
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	
-	MelLib::SphereData sphere;
-	MelLib::SphereCalcResult r;
-	sphere.SetRadius(10.5f);
-	sphere.SetPosition({ 5,0,0 });
 
-	MelLib::OBBData obb;
-	obb.SetPosition({0,0,0});
-	obb.SetSize({ 4,4,4 });
-	obb.SetAngle({ 0,180,0 });
-
-	MelLib::RayData ray;
-	ray.SetPosition({ 5,0,0 });
-	ray.SetDirection({ -1,0,0 });
-
-	MelLib::RayCalcResult res;
-	bool result = MelLib::Collision::SphereAndOBB(sphere, &r, obb);
-	 result = MelLib::Collision::OBBAndRay(obb, ray,&res);
-	int a = 0;
 }
 
 
