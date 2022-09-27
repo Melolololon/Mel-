@@ -309,6 +309,13 @@ Vector3::Vector3(const DirectX::XMVECTOR& v)
 
 }
 
+//MelLib::Vector3::Vector3(const GuiVector3& value)
+//{
+//	x = value.GetValue().x;
+//	x = value.GetValue().y;
+//	x = value.GetValue().z;
+//}
+
 Vector2 Vector3::ToVector2()const { return Vector2(x, y); }
 Quaternion Vector3::ToQuaternion()const { return Quaternion(1, x, y, z); }
 

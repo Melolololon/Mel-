@@ -52,7 +52,8 @@ void Player::LoadRes()
 }
 
 Player::Player()
-	:hp(10, "Player", "HP", 0, 100)
+	:GameObject("Player")
+	,hp(10, "Player", "HP", 0, 100)
 	,power(10, "Player", "Power", 1, 100)
 {
 	// MelLib;;ModelObject‚Ì”z—ñ

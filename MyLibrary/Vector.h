@@ -4,10 +4,14 @@
 #include"Quaternion.h"
 #include"LibraryEnum.h"
 
+//#include"GuiValue.h"
+
 namespace MelLib
 {
 	struct Vector3;
 	struct Quaternion;
+
+	class GuiVector3;
 
 	struct Vector2
 	{
@@ -112,6 +116,7 @@ namespace MelLib
 		Vector3(const float x, const float y, const float z);
 		Vector3(const DirectX::XMFLOAT3& f);
 		Vector3(const DirectX::XMVECTOR& v);
+		//Vector3(const GuiVector3& value);
 
 		Vector2 ToVector2() const;
 		Quaternion ToQuaternion()const;

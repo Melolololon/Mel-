@@ -25,7 +25,6 @@ namespace MelLib
         bool isStop = false;
 
         
-        Vector3 position;
     private:
 
         void CheckChangeUpdateDrawFlag();
@@ -37,7 +36,7 @@ namespace MelLib
 
     public:
        // Emitter3D(const std::vector<std::shared_ptr<Particle3D>>& pParticle, const Vector3& pos, unsigned int releaseTime);
-        Emitter3D(const Particle3D& pParticle, unsigned int particleNum, unsigned int releaseTime, const Vector3& pos = 0);
+        Emitter3D(const Particle3D& pParticle, unsigned int particleNum, unsigned int releaseTime, const Vector3& pos,const std::string& name);
         ~Emitter3D() {}
 
         void Update()override;
@@ -49,9 +48,9 @@ namespace MelLib
             releaseTimer.SetStopFlag(flag);
         }
         
-        void SetPosition(const Vector3& pos) { position = pos; }
+       /* void SetPosition(const Vector3& pos) { SetPosition(pos); }
 
-        Vector3 GetPosition()const { return position; }
+        Vector3 GetPosition()const { return GetPosition(); }*/
 	};
 }
 

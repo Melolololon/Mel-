@@ -9,12 +9,13 @@
 // 設定した値を書き出せるように、ファイルはウィンドウごとでいい?
 // テストプレイ中は変数の値が変わっても影響受けないように
 // テストプレイ中は変数の値変えられるけど、エディットに戻ったらSET_VALUEに戻すようにする
-// 読み込んだ時に値一致しなかったら読み込んだほうを優先(Unityと同じにする)
+// 読み込んだ時にソースコードと値が一致しなかったら読み込んだファイルの値を優先(Unityと同じにする)
 
 // コンストラクタでデータがあったら読み込むようにする
 
 namespace MelLib 
 {
+
 	class GuiOption
 	{
 	private:
@@ -61,10 +62,16 @@ namespace MelLib
 		~GuiInt();
 		
 		void operator=(const int num) { this->value = num; }
-		GuiInt& operator=(GuiInt& value) 
+		GuiInt& operator=(const GuiInt& value)
 		{
 			*this = value;
-			return value;
+			return *this;
+		}
+
+		GuiInt& operator+=(const GuiInt& value)
+		{
+			this->value += value.GetValue();
+			return *this;
 		}
 
 		void operator++() { value++; }
@@ -104,7 +111,17 @@ namespace MelLib
 		/// <param name="maxNumber"></param>
 		GuiFloat(float value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber);
 		~GuiFloat();
-		void operator=(const float num) { this->value = num; }
+		GuiFloat& operator=(const float num) 
+		{
+			this->value = num; 
+			return *this; 
+		}
+
+		GuiFloat& operator+=(const GuiFloat& value)
+		{
+			this->value += value.GetValue();
+			return *this;
+		}
 
 		void operator++() { value++; }
 		void operator--() { value--; }
@@ -119,6 +136,8 @@ namespace MelLib
 		/// </summary>
 		void SetLoadData();
 	};
+
+	
 
 	class GuiVector3
 	{
@@ -142,12 +161,32 @@ namespace MelLib
 		/// <param name="maxNumber"></param>
 		GuiVector3(const MelLib::Vector3& value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber);
 		~GuiVector3();
-		void operator=(const MelLib::Vector3& num) { this->value = num; }
+		GuiVector3& operator=(const GuiVector3& value)
+		{
+			this->value = value.GetValue();
+			return *this;
+		}
+
+		GuiVector3& operator=(const Vector3& value)
+		{
+			this->value = value;
+			return *this;
+		}
+
+	
+		GuiVector3& operator+=(const GuiVector3& value)
+		{
+			this->value += value.GetValue();
+			return *this;
+		}
+
+		
 
 	/*	void operator++() { value++; }
 		void operator--() { value--; }*/
 
 		MelLib::Vector3 GetValue()const { return value; }
+		MelLib::Vector3& GetRefValue() { return value; }
 		float GetMaxValue() const { return MAX_VALUE; }
 		float GetMinValue()const { return MIN_VALUE; }
 		
@@ -157,6 +196,15 @@ namespace MelLib
 		/// </summary>
 		void SetLoadData();
 	};
+
+	/*Vector3 operator+(const GuiVector3& value, const GuiVector3& value2) { return value + value2; }
+	Vector3 operator-(const GuiVector3& value, const GuiVector3& value2) { return value - value2; }
+	Vector3 operator*(const GuiVector3& value, const GuiVector3& value2) { return value * value2; }
+	Vector3 operator/(const GuiVector3& value, const GuiVector3& value2) { return value / value2; }
+	Vector3 operator+(const Vector3& value, const GuiVector3& value2) { return value + value2; }
+	Vector3 operator-(const Vector3& value, const GuiVector3& value2) { return value - value2; }
+	Vector3 operator*(const Vector3& value, const GuiVector3& value2) { return value * value2; }
+	Vector3 operator/(const Vector3& value, const GuiVector3& value2) { return value / value2; }*/
 
 	class GuiBool
 	{
@@ -178,7 +226,23 @@ namespace MelLib
 		/// <param name="maxNumber"></param>
 		GuiBool(bool value, const std::string& windowName, const std::string& lavel);
 		~GuiBool();
-		void operator=(const bool value) { this->value = value; }
+		GuiBool& operator=(const GuiBool& value)
+		{
+			this->value = value.GetValue();
+			return *this;
+		}
+
+		GuiBool& operator=(const bool& value)
+		{
+			this->value = value;
+			return *this;
+		}
+
+		GuiBool& operator+=(const GuiBool& value)
+		{
+			this->value += value.GetValue();
+			return *this;
+		}
 
 		bool GetValue()const { return value; }
 

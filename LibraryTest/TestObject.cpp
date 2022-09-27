@@ -6,7 +6,7 @@ void TestObject::Move()
 {
 }
 
-TestObject::TestObject()
+TestObject::TestObject() :GameObject("Test")
 {
 	// MelLib;;ModelObjectの配列
 	// 四角形をセット

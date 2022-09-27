@@ -1,13 +1,23 @@
 #pragma once
 #include<string>
+#include<map>
 #include<unordered_map>
 #include<vector>
 #include<typeinfo>
 
 #include"GuiValue.h"
+
+// 起きたらやること 2022/09/28
+// 登録、読み込みした順番にWindowで表示されるようにする。valueDatasを使って確認。
+// GetGUIValueのキャスト処理をcastIntDataなどの関数に移動させてそれを呼び出すようにする。
+// guidがあったらAddValueDataを呼び出さないまたは行わないようにする。
+// 呼び出さなくすると現状AddValueDataに書かれているAddCreateWindowNameが呼び出されないため、
+// AddCreateWindowNameの処理をguidがあった場合のみGetGUIDataでも行うようにする。
+
+
 namespace MelLib
 {
-	// .guid 仕様
+	// .guid(GUI Data) 仕様
 	// ファイル名　ウィンドウ名
 	// 
 	// 内部(ラベル分存在)
@@ -48,6 +58,7 @@ namespace MelLib
 		static const std::string DATA_FORMAT;
 		static const std::unordered_map<std::string, char>DATA_FORMAT_STR;
 
+		//[オブジェクト名][ラベル名]
 		std::unordered_map<std::string, std::unordered_map<std::string, GuiInt*>>intValues;
 		std::unordered_map<std::string, std::unordered_map<std::string, GuiFloat*>>floatValues;
 		std::unordered_map<std::string, std::unordered_map<std::string, GuiVector3*>>vector3Values;
@@ -55,9 +66,16 @@ namespace MelLib
 
 		std::vector<std::string>createWindowNames;
 
-		// std::unordered_map < Window名, std::unordered_map<ラベル名, データ>>
-		//　読み込んだデータ
-		std::unordered_map < std::string, std::unordered_map<std::string, std::string>>datas;
+		
+		// std::map < Window名, std::map<ラベル名, データ>>
+		// 読み込んだデータ
+		// 描画の際に読み込んだ
+		std::map < std::string, std::map<std::string, std::string>>valueDatas;
+
+		int* castIntData(const std::string& data);
+		float* castFloatData(const std::string& data);
+		Vector3* castVector3Data(const std::string& data);
+		bool* castBoolData(const std::string& data);
 
 	public:
 		GuiValueManager(GuiValueManager& m) = delete;

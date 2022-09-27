@@ -5,8 +5,7 @@
 namespace MelLib
 {
 	// マウスカーソル
-	class MouseCursor :
-		public GameObject
+	class MouseCursor
 	{
 	private:
 		Vector2 position2D;
@@ -19,7 +18,7 @@ namespace MelLib
 		~MouseCursor();
 
 		//void Initialize()override;
-		void Update()override;
+		void Update();
 
 		Vector2 GetPosition2D() { return position2D; }
 		Vector3 GetNearPos() { return nearPos; }

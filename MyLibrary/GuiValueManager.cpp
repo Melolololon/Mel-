@@ -149,7 +149,7 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 		param += data[i];
 	}
 
-	datas[windowName][lavel] = param;
+	valueDatas[windowName][lavel] = param;
 
 	const std::string EXPORT_PATH = GuiOption::GetInstance()->GetGuiDataPath() + windowName + DATA_FORMAT;
 
@@ -157,7 +157,7 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 	std::ofstream file(EXPORT_PATH);
 
 	int loopNum = 0; 
-	for (const auto& d : datas[windowName])
+	for (const auto& d : valueDatas[windowName])
 	{
 	/*	std::string lavel = d.first;
 		for (auto& c : lavel) c += ran;*/
@@ -166,7 +166,7 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 		file.write(d.second.c_str(), d.second.size());
 
 
-		if (loopNum != datas[windowName].size() - 1) 
+		if (loopNum != valueDatas[windowName].size() - 1) 
 		{
 			char kugiri = -1;
 			file.write(&kugiri, 1);
@@ -186,8 +186,6 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 
 void MelLib::GuiValueManager::Load()
 {
-
-
 
 	std::string importPath = GuiOption::GetInstance()->GetGuiDataPath();
 
@@ -254,7 +252,7 @@ void MelLib::GuiValueManager::Load()
 					for (int i = 0; i < sizeof(Vector3); i++)param += value[i];
 				}
 
-				datas[fileName][lavel] = param;
+				valueDatas[fileName][lavel] = param;
 
 				// ãÊêÿÇËÇÃ-1Ç™Ç»Ç©Ç¡ÇΩÇÁî≤ÇØÇÈ
 				char kugiri = 0;
@@ -278,7 +276,7 @@ void MelLib::GuiValueManager::AddGuiValue(GuiInt* pGuiValue, const std::string& 
 {
 	intValues[windowName].try_emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
-	
+	valueDatas[windowName].try_emplace(lavel);
 }
 
 void MelLib::GuiValueManager::AddGuiValue(GuiFloat* pGuiValue, const std::string& windowName, const std::string& lavel)
@@ -411,15 +409,14 @@ void MelLib::GuiValueManager::Update()
 void MelLib::GuiValueManager::GetGuiData(int& refInt, const std::string& windowName, const std::string& lavel) const
 {
 	// ë∂ç›Ç∑ÇÈÇ©ämîF
-	if (datas.find(windowName) == datas.end())return;
-	if (datas.at(windowName).find(lavel) == datas.at(windowName).end())return;
+	if (valueDatas.find(windowName) == valueDatas.end())return;
+	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return;
 
 	// Ç†Ç¡ÇΩÇÁäiî[
-	std::string param = datas.at(windowName).at(lavel);
+	std::string param = valueDatas.at(windowName).at(lavel);
 	char data[4];
 	for (int i = 0; i < 4; i++)data[i] = param[param.size() - 4 + i];
 
-	
 	int* pValue = reinterpret_cast<int*>(data);
 	refInt = *pValue;
 }
@@ -427,11 +424,11 @@ void MelLib::GuiValueManager::GetGuiData(int& refInt, const std::string& windowN
 void MelLib::GuiValueManager::GetGuiData(float& refFloat, const std::string& windowName, const std::string& lavel) const
 {
 	// ë∂ç›Ç∑ÇÈÇ©ämîF
-	if (datas.find(windowName) == datas.end())return;
-	if (datas.at(windowName).find(lavel) == datas.at(windowName).end())return;
+	if (valueDatas.find(windowName) == valueDatas.end())return;
+	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return;
 
 	// Ç†Ç¡ÇΩÇÁäiî[
-	std::string param = datas.at(windowName).at(lavel);
+	std::string param = valueDatas.at(windowName).at(lavel);
 	char data[4];
 	for (int i = 0; i < 4; i++)data[i] = param[param.size() - 4 + i];
 
@@ -443,11 +440,11 @@ void MelLib::GuiValueManager::GetGuiData(float& refFloat, const std::string& win
 void MelLib::GuiValueManager::GetGuiData(bool& refFlag, const std::string& windowName, const std::string& lavel) const
 {
 	// ë∂ç›Ç∑ÇÈÇ©ämîF
-	if (datas.find(windowName) == datas.end())return;
-	if (datas.at(windowName).find(lavel) == datas.at(windowName).end())return;
+	if (valueDatas.find(windowName) == valueDatas.end())return;
+	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return;
 
 	// Ç†Ç¡ÇΩÇÁäiî[
-	std::string param = datas.at(windowName).at(lavel);
+	std::string param = valueDatas.at(windowName).at(lavel);
 	char flag = param[param.size() - 1];
 	refFlag = static_cast<bool>(flag);
 }
@@ -455,11 +452,11 @@ void MelLib::GuiValueManager::GetGuiData(bool& refFlag, const std::string& windo
 void MelLib::GuiValueManager::GetGuiData(Vector3& refVectior3, const std::string& windowName, const std::string& lavel) const
 {
 	// ë∂ç›Ç∑ÇÈÇ©ämîF
-	if (datas.find(windowName) == datas.end())return;
-	if (datas.at(windowName).find(lavel) == datas.at(windowName).end())return;
+	if (valueDatas.find(windowName) == valueDatas.end())return;
+	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return;
 
 	// Ç†Ç¡ÇΩÇÁäiî[
-	std::string param = datas.at(windowName).at(lavel);
+	std::string param = valueDatas.at(windowName).at(lavel);
 	char data[sizeof(Vector3)];
 	for (int i = 0; i < sizeof(Vector3); i++)data[i] = param[param.size() - sizeof(Vector3) + i];
 

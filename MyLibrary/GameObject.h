@@ -5,6 +5,7 @@
 #include"Vector.h"
 #include"CollisionDetectionData.h"
 #include"Physics.h"
+#include"GuiValue.h"
 
 #include"ModelObject.h"
 
@@ -20,6 +21,17 @@ namespace MelLib
 	class GameObject
 	{
 	private:
+
+		// GameObjectは座標などを動かさない可能性があるオブジェクトのクラスに継承する可能性があり、
+		// そういう書き換えちゃいけないクラスでうっかり書き換えるのを防ぐためにprivate
+
+		Vector3& position;
+		Vector3& angle;
+		Vector3& scale;
+
+		MelLib::GuiVector3 guiPosition;
+		MelLib::GuiVector3 guiAngle;
+		MelLib::GuiVector3 guiScale;
 
 		// 開発者用
 #ifdef _DEBUG
@@ -51,9 +63,13 @@ namespace MelLib
 
 #endif // _DEBUG
 
-		Vector3 position = 0;
+		const std::string OBJECT_NAME;
+
+		/*Vector3 position = 0;
 		Vector3 angle = 0;
-		Vector3 scale = 1;
+		Vector3 scale = 1;*/
+
+		
 
 #pragma region 物理関係
 
@@ -289,7 +305,7 @@ namespace MelLib
 	public:
 
 		//コンストラクタ
-		GameObject();
+		GameObject(const std::string& objectName);
 		//デストラクタ
 		virtual ~GameObject();
 
