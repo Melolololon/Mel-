@@ -14,20 +14,21 @@
 // 呼び出さなくすると現状AddValueDataに書かれているAddCreateWindowNameが呼び出されないため、
 // AddCreateWindowNameの処理をguidがあった場合のみGetGUIDataでも行うようにする。
 
+// valueDatasか各データのmapどちらかだけでいい
+// valueDatasと各データの中身は別物だから消すな
 
 namespace MelLib
 {
 	// .guid(GUI Data) 仕様
-	// ファイル名　ウィンドウ名
+	// ファイル名はウィンドウ名
 	// 
 	// 内部(ラベル分存在)
-	// ラベル
+	// ラベル(HPなどのパラメーター名)
 	// 区切り-1
 	// 名前復元用乱数
 	// 値の型
 	// 値
 	// 終了判別値(-1がまだ続く。-2が末尾)
-	//
 
 
 	class GuiValueManager
@@ -58,6 +59,13 @@ namespace MelLib
 		static const std::string DATA_FORMAT;
 		static const std::unordered_map<std::string, char>DATA_FORMAT_STR;
 
+
+
+		// std::map < Window名, std::map<ラベル名, データ(.guidの中身全部)>>
+		// 読み込んだデータ
+		std::unordered_map < std::string, std::unordered_map<std::string, std::string>>valueDatas;
+		// 追加した順序
+		std::unordered_map < std::string, std::vector<std::string>>addOrders;
 		//[オブジェクト名][ラベル名]
 		std::unordered_map<std::string, std::unordered_map<std::string, GuiInt*>>intValues;
 		std::unordered_map<std::string, std::unordered_map<std::string, GuiFloat*>>floatValues;
@@ -67,15 +75,13 @@ namespace MelLib
 		std::vector<std::string>createWindowNames;
 
 		
-		// std::map < Window名, std::map<ラベル名, データ>>
-		// 読み込んだデータ
-		// 描画の際に読み込んだ
-		std::map < std::string, std::map<std::string, std::string>>valueDatas;
 
 		int* castIntData(const std::string& data);
 		float* castFloatData(const std::string& data);
 		Vector3* castVector3Data(const std::string& data);
 		bool* castBoolData(const std::string& data);
+
+
 
 	public:
 		GuiValueManager(GuiValueManager& m) = delete;
@@ -93,10 +99,10 @@ namespace MelLib
 		void Update();
 
 		
-		void GetGuiData(int& refInt, const std::string& windowName, const std::string& lavel)const;
-		void GetGuiData(float& refFloat,const std::string& windowName, const std::string& lavel)const;
-		void GetGuiData(bool& refFlag, const std::string& windowName, const std::string& lavel)const;
-		void GetGuiData(Vector3& refVectior3,const std::string& windowName, const std::string& lavel)const;
+		bool GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel);
+		bool GetGuiData(GuiFloat* pGuiValue, float& refFloat,const std::string& windowName, const std::string& lavel);
+		bool GetGuiData(GuiBool* pGuiValue, bool& refFlag, const std::string& windowName, const std::string& lavel);
+		bool GetGuiData(GuiVector3* pGuiValue, Vector3& refVectior3,const std::string& windowName, const std::string& lavel);
 	};
 
 }

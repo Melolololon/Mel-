@@ -27,6 +27,7 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 		if (name == windowName)return;
 	}
 	createWindowNames.push_back(windowName);
+
 }
 
 
@@ -276,25 +277,29 @@ void MelLib::GuiValueManager::AddGuiValue(GuiInt* pGuiValue, const std::string& 
 {
 	intValues[windowName].try_emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
-	valueDatas[windowName].try_emplace(lavel);
+
+	addOrders[windowName].push_back(lavel);
 }
 
 void MelLib::GuiValueManager::AddGuiValue(GuiFloat* pGuiValue, const std::string& windowName, const std::string& lavel)
 {
 	floatValues[windowName].try_emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
+	addOrders[windowName].push_back(lavel);
 }
 
 void MelLib::GuiValueManager::AddGuiValue(GuiVector3* pGuiValue, const std::string& windowName, const std::string& lavel)
 {
 	vector3Values[windowName].try_emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
+	addOrders[windowName].push_back(lavel);
 }
 
 void MelLib::GuiValueManager::AddGuiValue(GuiBool* pGuiValue, const std::string& windowName, const std::string& lavel)
 {
 	boolValues[windowName].try_emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
+	addOrders[windowName].push_back(lavel);
 }
 
 void MelLib::GuiValueManager::EraseGuiValue(const type_info& type, const std::string& windowName, const std::string& lavel)
@@ -331,86 +336,217 @@ void MelLib::GuiValueManager::Update()
 	// リリース時に描画しない設定だったらreturn
 	if (!ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
+
+	// mapをforで回して順番通りに表示する
+	
+
 	// 三種類の配列見て、Window名が一緒だったら1つのウィンドウにまとめる
-	for (const auto& name : createWindowNames)
+	for (const auto& windowName : createWindowNames)
 	{
-		ImguiManager::GetInstance()->BeginDrawWindow(name);
+		ImguiManager::GetInstance()->BeginDrawWindow(windowName);
+		
+		// 切り替わったかどうか
 		bool changeFlag = false;
 
-		// int
-		const std::unordered_map<std::string, GuiInt*>& refInts = intValues[name];
-		for (auto& value : refInts) 
-		{
-			const std::string& LAVEL = value.first;
-			GuiInt& guiInt = *value.second;
-			int num = guiInt.GetValue();
-			changeFlag = ImguiManager::GetInstance()->DrawSliderInt(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
-			
-			if (changeFlag) 
-			{
-				const char* data = reinterpret_cast<char*>(&num);
-				Save(name, LAVEL, data, typeid(num),sizeof(num), changeFlag);
-				guiInt = num;
-			}
-		}
+		// lavel一覧
+		// この配列順にウィンドウに追加していく
+		std::vector<std::string>lavels(valueDatas[windowName].size());
 
-		// float 
-		const std::unordered_map<std::string, GuiFloat*>& refFloats = floatValues[name];
-		for (auto& value : refFloats)
+		bool lavelCheckEnd = false;
+		
+		
+		for (const auto& lavel : addOrders[windowName])
 		{
-			const std::string& LAVEL = value.first;
-			GuiFloat& guiFloat = *value.second;
-			float num = guiFloat.GetValue();
-			changeFlag = ImguiManager::GetInstance()->DrawSliderFloat(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
-			if (changeFlag)
-			{
-				const char* data = reinterpret_cast<char*>(&num);
-				Save(name, LAVEL, data, typeid(num), sizeof(num), changeFlag);
-				guiFloat = num;
-			}
-		}
+			// データの配列から探し出し、見つけたら追加と保存処理
 
-		// Vector3
-		const std::unordered_map<std::string, GuiVector3*>& refVector3 = vector3Values[name];
-		for (auto& value : refVector3)
-		{
-			const std::string& LAVEL = value.first;
-			GuiVector3& guiVector3 = *value.second;
-			MelLib::Vector3 num = guiVector3.GetValue();
-			changeFlag = ImguiManager::GetInstance()->DrawSliderVector3(LAVEL, num, guiVector3.GetMinValue(), guiVector3.GetMaxValue());
-			if (changeFlag)
+			// int
+			const std::unordered_map<std::string, GuiInt*>& refInts = intValues[windowName];
+			for (auto& value : refInts)
 			{
-				const char* data = reinterpret_cast<char*>(&num);
-				Save(name, LAVEL, data, typeid(num), sizeof(num), changeFlag);
-				guiVector3 = num;
-			}
-		}
+				const std::string& LAVEL = value.first;
+				
+				// ラベル名が同じだったら処理
+				if (lavel == LAVEL)
+				{
+					lavelCheckEnd = true;
 
-		// bool
-		const std::unordered_map<std::string, GuiBool*>& refBool = boolValues[name];
-		for (auto& value : refBool)
-		{
-			const std::string& LAVEL = value.first;
-			GuiBool& guiBool = *value.second;
-			bool flag = guiBool.GetValue();
-			changeFlag = ImguiManager::GetInstance()->DrawCheckBox(LAVEL, flag);
-			if (changeFlag)
+					GuiInt& guiInt = *value.second;
+					int num = guiInt.GetValue();
+					changeFlag = ImguiManager::GetInstance()->DrawSliderInt(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
+
+					if (changeFlag)
+					{
+						const char* data = reinterpret_cast<char*>(&num);
+						Save(windowName, LAVEL, data, typeid(num), sizeof(num), changeFlag);
+						guiInt = num;
+					}
+				}
+
+			}
+
+			if (lavelCheckEnd)continue;
+
+			// float 
+			const std::unordered_map<std::string, GuiFloat*>& refFloats = floatValues[windowName];
+			for (auto& value : refFloats)
 			{
-				const char* data = reinterpret_cast<char*>(&flag);
-				Save(name, LAVEL, data, typeid(flag), sizeof(flag), changeFlag);
-				guiBool = flag;
+				const std::string& LAVEL = value.first;
+
+				// ラベル名が同じだったら処理
+				if (lavel == LAVEL)
+				{
+					lavelCheckEnd = true;
+
+					GuiFloat& guiFloat = *value.second;
+					float num = guiFloat.GetValue();
+					changeFlag = ImguiManager::GetInstance()->DrawSliderFloat(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
+
+					if (changeFlag)
+					{
+						const char* data = reinterpret_cast<char*>(&num);
+						Save(windowName, LAVEL, data, typeid(num), sizeof(num), changeFlag);
+						guiFloat = num;
+					}
+				}
+
+			}
+
+
+			if (lavelCheckEnd)continue;
+
+			// Vector3 
+			const std::unordered_map<std::string, GuiVector3*>& refVector3s = vector3Values[windowName];
+			for (auto& value : refVector3s)
+			{
+				const std::string& LAVEL = value.first;
+
+				// ラベル名が同じだったら処理
+				if (lavel == LAVEL)
+				{
+					lavelCheckEnd = true;
+
+					GuiVector3& guiVector3 = *value.second;
+					Vector3 num = guiVector3.GetValue();
+					changeFlag = ImguiManager::GetInstance()->DrawSliderVector3(LAVEL, num, guiVector3.GetMinValue(), guiVector3.GetMaxValue());
+
+					if (changeFlag)
+					{
+						const char* data = reinterpret_cast<char*>(&num);
+						Save(windowName, LAVEL, data, typeid(num), sizeof(num), changeFlag);
+						guiVector3 = num;
+					}
+				}
+
+			}
+
+			if (lavelCheckEnd)continue;
+
+			// bool 
+			const std::unordered_map<std::string, GuiBool*>& refBools = boolValues[windowName];
+			for (auto& value : refBools)
+			{
+				const std::string& LAVEL = value.first;
+
+				// ラベル名が同じだったら処理
+				if (lavel == LAVEL)
+				{
+					lavelCheckEnd = true;
+
+					GuiBool& guiBool = *value.second;
+					bool flag = guiBool.GetValue();
+					changeFlag = ImguiManager::GetInstance()->DrawCheckBox(LAVEL, flag);
+
+					if (changeFlag)
+					{
+						const char* data = reinterpret_cast<char*>(&flag);
+						Save(windowName, LAVEL, data, typeid(flag), sizeof(flag), changeFlag);
+						guiBool = flag;
+					}
+				}
+
 			}
 		}
 
 		ImguiManager::GetInstance()->EndDrawWindow();
 	}
+
+
+	
+
+	//// int
+	//const std::unordered_map<std::string, GuiInt*>& refInts = intValues[windowName];
+	//for (auto& value : refInts) 
+	//{
+	//	const std::string& LAVEL = value.first;
+	//	GuiInt& guiInt = *value.second;
+	//	int num = guiInt.GetValue();
+	//	changeFlag = ImguiManager::GetInstance()->DrawSliderInt(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
+	//	
+	//	if (changeFlag) 
+	//	{
+	//		const char* data = reinterpret_cast<char*>(&num);
+	//		Save(windowName, LAVEL, data, typeid(num),sizeof(num), changeFlag);
+	//		guiInt = num;
+	//	}
+	//}
+
+	//// float 
+	//const std::unordered_map<std::string, GuiFloat*>& refFloats = floatValues[windowName];
+	//for (auto& value : refFloats)
+	//{
+	//	const std::string& LAVEL = value.first;
+	//	GuiFloat& guiFloat = *value.second;
+	//	float num = guiFloat.GetValue();
+	//	changeFlag = ImguiManager::GetInstance()->DrawSliderFloat(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
+	//	if (changeFlag)
+	//	{
+	//		const char* data = reinterpret_cast<char*>(&num);
+	//		Save(windowName, LAVEL, data, typeid(num), sizeof(num), changeFlag);
+	//		guiFloat = num;
+	//	}
+	//}
+
+	//// Vector3
+	//const std::unordered_map<std::string, GuiVector3*>& refVector3 = vector3Values[windowName];
+	//for (auto& value : refVector3)
+	//{
+	//	const std::string& LAVEL = value.first;
+	//	GuiVector3& guiVector3 = *value.second;
+	//	MelLib::Vector3 num = guiVector3.GetValue();
+	//	changeFlag = ImguiManager::GetInstance()->DrawSliderVector3(LAVEL, num, guiVector3.GetMinValue(), guiVector3.GetMaxValue());
+	//	if (changeFlag)
+	//	{
+	//		const char* data = reinterpret_cast<char*>(&num);
+	//		Save(windowName, LAVEL, data, typeid(num), sizeof(num), changeFlag);
+	//		guiVector3 = num;
+	//	}
+	//}
+
+	//// bool
+	//const std::unordered_map<std::string, GuiBool*>& refBool = boolValues[windowName];
+	//for (auto& value : refBool)
+	//{
+	//	const std::string& LAVEL = value.first;
+	//	GuiBool& guiBool = *value.second;
+	//	bool flag = guiBool.GetValue();
+	//	changeFlag = ImguiManager::GetInstance()->DrawCheckBox(LAVEL, flag);
+	//	if (changeFlag)
+	//	{
+	//		const char* data = reinterpret_cast<char*>(&flag);
+	//		Save(windowName, LAVEL, data, typeid(flag), sizeof(flag), changeFlag);
+	//		guiBool = flag;
+	//	}
+	//}
+
+	//ImguiManager::GetInstance()->EndDrawWindow();
+
 }
 
-void MelLib::GuiValueManager::GetGuiData(int& refInt, const std::string& windowName, const std::string& lavel) const
+bool MelLib::GuiValueManager::GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel) 
 {
 	// 存在するか確認
-	if (valueDatas.find(windowName) == valueDatas.end())return;
-	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return;
+	if (valueDatas.find(windowName) == valueDatas.end())return false;
+	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return false;
 
 	// あったら格納
 	std::string param = valueDatas.at(windowName).at(lavel);
@@ -419,13 +555,19 @@ void MelLib::GuiValueManager::GetGuiData(int& refInt, const std::string& windowN
 
 	int* pValue = reinterpret_cast<int*>(data);
 	refInt = *pValue;
+
+	intValues[windowName].try_emplace(lavel, pGuiValue);
+	AddCreateWindowName(windowName);
+	addOrders[windowName].push_back(lavel);
+
+	return true;
 }
 
-void MelLib::GuiValueManager::GetGuiData(float& refFloat, const std::string& windowName, const std::string& lavel) const
+bool MelLib::GuiValueManager::GetGuiData(GuiFloat* pGuiValue, float& refFloat, const std::string& windowName, const std::string& lavel)
 {
 	// 存在するか確認
-	if (valueDatas.find(windowName) == valueDatas.end())return;
-	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return;
+	if (valueDatas.find(windowName) == valueDatas.end())return false;
+	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return false;
 
 	// あったら格納
 	std::string param = valueDatas.at(windowName).at(lavel);
@@ -435,25 +577,35 @@ void MelLib::GuiValueManager::GetGuiData(float& refFloat, const std::string& win
 
 	float* pValue = reinterpret_cast<float*>(data);
 	refFloat = *pValue;
+
+	floatValues[windowName].try_emplace(lavel, pGuiValue);
+	AddCreateWindowName(windowName);
+	addOrders[windowName].push_back(lavel);
+	return true;
 }
 
-void MelLib::GuiValueManager::GetGuiData(bool& refFlag, const std::string& windowName, const std::string& lavel) const
+bool MelLib::GuiValueManager::GetGuiData(GuiBool* pGuiValue, bool& refFlag, const std::string& windowName, const std::string& lavel)
 {
 	// 存在するか確認
-	if (valueDatas.find(windowName) == valueDatas.end())return;
-	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return;
+	if (valueDatas.find(windowName) == valueDatas.end())return false;
+	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return false;
 
 	// あったら格納
 	std::string param = valueDatas.at(windowName).at(lavel);
 	char flag = param[param.size() - 1];
 	refFlag = static_cast<bool>(flag);
+
+	boolValues[windowName].try_emplace(lavel, pGuiValue);
+	AddCreateWindowName(windowName);
+	addOrders[windowName].push_back(lavel);
+	return true;
 }
 
-void MelLib::GuiValueManager::GetGuiData(Vector3& refVectior3, const std::string& windowName, const std::string& lavel) const
+bool MelLib::GuiValueManager::GetGuiData(GuiVector3* pGuiValue, Vector3& refVectior3, const std::string& windowName, const std::string& lavel)
 {
 	// 存在するか確認
-	if (valueDatas.find(windowName) == valueDatas.end())return;
-	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return;
+	if (valueDatas.find(windowName) == valueDatas.end())return false;
+	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return false;
 
 	// あったら格納
 	std::string param = valueDatas.at(windowName).at(lavel);
@@ -462,5 +614,10 @@ void MelLib::GuiValueManager::GetGuiData(Vector3& refVectior3, const std::string
 
 	Vector3* pValue = reinterpret_cast<Vector3*>(data);
 	refVectior3 = *pValue;
+
+	vector3Values[windowName].try_emplace(lavel, pGuiValue);
+	AddCreateWindowName(windowName);
+	addOrders[windowName].push_back(lavel);
+	return true;
 }
 

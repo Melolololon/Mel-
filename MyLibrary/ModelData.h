@@ -201,7 +201,9 @@ namespace MelLib
 
 		// 複数メッシュに対応させる場合、これ順序保持できるmapにして、名前でこの行列とれるようにする(座標回転関数で名前指定して使用するため)
 		// メッシュのグローバルトランスフォーム行列の配列)
-		std::map<std::string, DirectX::XMMATRIX>meshGlobalTransform;
+		//std::map<std::string, DirectX::XMMATRIX>meshGlobalTransform;
+		// 名前で取るなら順序意味ないしそもそも追加順じゃないから意味ない
+		std::unordered_map<std::string, DirectX::XMMATRIX>meshGlobalTransform;
 
 		UINT boneNum = 0;
 

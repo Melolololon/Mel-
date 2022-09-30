@@ -10,8 +10,8 @@ MelLib::GuiInt::GuiInt(const int value,const std::string& windowName, const std:
 	, WINDOW_NAME(windowName)
 	, LAVEL(lavel)
 {
-	GuiValueManager::GetInstance()->GetGuiData(this->value, windowName, lavel);
-	GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
+	bool result = GuiValueManager::GetInstance()->GetGuiData(this,this->value, windowName, lavel);
+	if(!result) GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
 }
 
 MelLib::GuiInt::~GuiInt() 
@@ -21,7 +21,7 @@ MelLib::GuiInt::~GuiInt()
 
 void MelLib::GuiInt::SetLoadData()
 {
-	GuiValueManager::GetInstance()->GetGuiData(value, WINDOW_NAME, LAVEL);
+	GuiValueManager::GetInstance()->GetGuiData(this, value, WINDOW_NAME, LAVEL);
 }
 
 MelLib::GuiFloat::GuiFloat(const float value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
@@ -32,8 +32,8 @@ MelLib::GuiFloat::GuiFloat(const float value, const std::string& windowName, con
 	, WINDOW_NAME(windowName)
 	, LAVEL(lavel)
 {
-	GuiValueManager::GetInstance()->GetGuiData(this->value, windowName, lavel);
-	GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
+	bool result = GuiValueManager::GetInstance()->GetGuiData(this, this->value, windowName, lavel);
+	if (!result) GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
 }
 
 MelLib::GuiFloat::~GuiFloat()
@@ -43,7 +43,7 @@ MelLib::GuiFloat::~GuiFloat()
 
 void MelLib::GuiFloat::SetLoadData()
 {
-	GuiValueManager::GetInstance()->GetGuiData(this->value, WINDOW_NAME, LAVEL);
+	GuiValueManager::GetInstance()->GetGuiData(this, this->value, WINDOW_NAME, LAVEL);
 }
 
 MelLib::GuiVector3::GuiVector3(const MelLib::Vector3& value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
@@ -54,8 +54,8 @@ MelLib::GuiVector3::GuiVector3(const MelLib::Vector3& value, const std::string& 
 	, WINDOW_NAME(windowName)
 	, LAVEL(lavel) 
 {
-	GuiValueManager::GetInstance()->GetGuiData(this->value, windowName, lavel);
-	GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
+	bool result = GuiValueManager::GetInstance()->GetGuiData(this, this->value, windowName, lavel);
+	if (!result) GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
 }
 
 MelLib::GuiVector3::~GuiVector3()
@@ -65,7 +65,7 @@ MelLib::GuiVector3::~GuiVector3()
 
 void MelLib::GuiVector3::SetLoadData()
 {
-	GuiValueManager::GetInstance()->GetGuiData(this->value, WINDOW_NAME, LAVEL);
+	GuiValueManager::GetInstance()->GetGuiData(this, this->value, WINDOW_NAME, LAVEL);
 }
 
 MelLib::GuiBool::GuiBool(const bool value, const std::string& windowName, const std::string& lavel)
@@ -73,8 +73,8 @@ MelLib::GuiBool::GuiBool(const bool value, const std::string& windowName, const 
 	, WINDOW_NAME(windowName)
 	, LAVEL(lavel)
 {
-	GuiValueManager::GetInstance()->GetGuiData(this->value, windowName, lavel);
-	GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
+	bool result = GuiValueManager::GetInstance()->GetGuiData(this, this->value, windowName, lavel);
+	if (!result) GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
 }
 
 MelLib::GuiBool::~GuiBool()
@@ -84,7 +84,7 @@ MelLib::GuiBool::~GuiBool()
 
 void MelLib::GuiBool::SetLoadData()
 {
-	GuiValueManager::GetInstance()->GetGuiData(value, WINDOW_NAME, LAVEL);
+	GuiValueManager::GetInstance()->GetGuiData(this, value, WINDOW_NAME, LAVEL);
 }
 
 MelLib::GuiOption* MelLib::GuiOption::GetInstance()

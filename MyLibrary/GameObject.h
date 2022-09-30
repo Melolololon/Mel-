@@ -18,12 +18,15 @@
 
 namespace MelLib
 {
+	// モデルオブジェクトや当たり判定をまとめたもの。
 	class GameObject
 	{
 	private:
 
 		// GameObjectは座標などを動かさない可能性があるオブジェクトのクラスに継承する可能性があり、
 		// そういう書き換えちゃいけないクラスでうっかり書き換えるのを防ぐためにprivate
+
+		// GameObjectのpositionなどはモデルのボーンでいうマスター(全体を動かすためのボーン)
 
 		Vector3& position;
 		Vector3& angle;
@@ -378,7 +381,7 @@ namespace MelLib
 		static void SetGravutationalAcceleration(const float acc) { gravutationalAcc = acc; };
 
 		/// <summary>
-		/// 座標をセットします。モデルと衝突確認に使うデータは、セット前の座標との差だけ移動します。
+		/// 座標をセットします。モデルオブジェクトと当たり判定はセット前の座標との差だけ移動します。
 		/// </summary>
 		/// <param name="pos"></param>
 		virtual void SetPosition(const Vector3& pos);

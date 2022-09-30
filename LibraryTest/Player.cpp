@@ -56,10 +56,14 @@ Player::Player()
 	,hp(10, "Player", "HP", 0, 100)
 	,power(10, "Player", "Power", 1, 100)
 {
+	// 読み込んだパラメーターを自動的にモデルにも適応させる
+	// modelObjectや当たり判定もGUIでいじれるようにする
+
 	// MelLib;;ModelObjectの配列
 	// 四角形をセット
 	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX));
 
+	// 今読み込んだ値をモデルオブジェクトに反映できてないから
 	// 初期位置を0,0,5に
 	SetPosition(MelLib::Vector3(0, 0, 0));
 
@@ -68,6 +72,7 @@ Player::Player()
 	sphereDatas["main"].resize(1);
 	sphereDatas["main"][0].SetPosition(GetPosition());
 	sphereDatas["main"][0].SetRadius(0.5f);
+	modelObjects["main"].SetPosition(GetPosition());
 	modelObjects["main"].SetScale(1);
 
 	sphereFrameHitCheckNum = 1;
