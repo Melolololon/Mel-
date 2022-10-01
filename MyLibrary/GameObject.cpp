@@ -237,6 +237,8 @@ void MelLib::GameObject::Hit
 {
 }
 
+
+
 void GameObject::FalseEraseManager()
 {
 	eraseManager = false;

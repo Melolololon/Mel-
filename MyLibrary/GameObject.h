@@ -355,7 +355,6 @@ namespace MelLib
 		);
 
 
-
 		//void CalcHitPhysics(GameObject* hitObject,const Vector3& hutPreVelocity,const CollisionType& collisionType);
 
 		//virtual const void* GetPtr()const;

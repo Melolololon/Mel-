@@ -127,10 +127,12 @@ namespace MelLib
 		//ModelData* catFrontModelData;
 		//ModelData* catBackModelData;
 
+		std::string objectName;
 
 		GuiVector3 guiPosition;
 		GuiVector3 guiAngle;
 		GuiVector3 guiScale;
+
 
 	private:
 
@@ -144,7 +146,10 @@ namespace MelLib
 	public:
 
 		//nullptr“n‚³‚ê‚é‰Â”\«‚ğl‚¦‚é‚ÆAbool‚ğreturn‚Å‚«‚é‚æ‚¤‚É‚µ‚½‚Ù‚¤‚ª‚¢‚¢?
-		ModelObject() {}
+		ModelObject() 
+		{
+		}
+
 		ModelObject(ModelObject& obj);
 		ModelObject& operator= (ModelObject& obj);
 		~ModelObject() {}

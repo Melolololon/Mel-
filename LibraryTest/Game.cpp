@@ -110,9 +110,8 @@ void Game::Update()
 
 	//MelLib::SceneManager::GetInstance()->Update();
 	MelLib::SceneEditer::GetInstance()->Update();
-
-	MelLib::GameObjectManager::GetInstance()->Update();
 	MelLib::GuiValueManager::GetInstance()->Update();
+	MelLib::GameObjectManager::GetInstance()->Update();
 
 
 }

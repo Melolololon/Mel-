@@ -16,9 +16,12 @@ MelLib::GuiInt::~GuiInt()
 void MelLib::GuiInt::SetData(int value, const std::string& windowName, const std::string& lavel, int minNumber, int maxNumber)
 {
 	bool result = GuiValueManager::GetInstance()->GetGuiData(this, this->value, windowName, lavel);
-	if (!result) GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
+	if (!result)
+	{
+		GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
 
-	this->value = value;
+		this->value = value;
+	}
 	valueMin = minNumber;
 	valueMax = maxNumber;
 	this->windowName = windowName;
@@ -43,9 +46,12 @@ MelLib::GuiFloat::~GuiFloat()
 void MelLib::GuiFloat::SetData(float value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
 {
 	bool result = GuiValueManager::GetInstance()->GetGuiData(this, this->value, windowName, lavel);
-	if (!result) GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
+	if (!result)
+	{
+		GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
 
-	this->value = value;
+		this->value = value;
+	}
 	valueMin = minNumber;
 	valueMax = maxNumber;
 	this->windowName = windowName;
@@ -70,9 +76,12 @@ MelLib::GuiVector3::~GuiVector3()
 void MelLib::GuiVector3::SetData(const MelLib::Vector3& value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
 {
 	bool result = GuiValueManager::GetInstance()->GetGuiData(this, this->value, windowName, lavel);
-	if (!result) GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
+	if (!result)
+	{
+		GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
 
-	this->value = value;
+		this->value = value;
+	}
 	valueMin = minNumber;
 	valueMax = maxNumber;
 	this->windowName = windowName;
@@ -97,9 +106,12 @@ MelLib::GuiBool::~GuiBool()
 void MelLib::GuiBool::SetData(bool value, const std::string& windowName, const std::string& lavel)
 {
 	bool result = GuiValueManager::GetInstance()->GetGuiData(this, this->value, windowName, lavel);
-	if (!result) GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
+	if (!result)
+	{
+		GuiValueManager::GetInstance()->AddGuiValue(this, windowName, lavel);
 
-	this->value = value;
+		this->value = value;
+	}
 	this->windowName = windowName;
 	this->lavel = lavel;
 }

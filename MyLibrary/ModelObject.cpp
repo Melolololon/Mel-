@@ -152,7 +152,7 @@ void ModelObject::DrawCommonProcessing(const std::string& rtName)
 
 	ModelConstBufferData* constBufferData = nullptr;
 	constBuffer[0]->Map(0, nullptr, (void**)&constBufferData);
-	int z = 0;
+	
 
 	SetCmdList();
 }
@@ -206,23 +206,27 @@ void ModelObject::MapConstData(const Camera* camera)
 			matWorld *= meshGlobalTransforms[i];
 		}
 
+		Vector3 scale = modelConstDatas[objectName].scale.GetValue();
 		matWorld *= DirectX::XMMatrixScaling
 		(
-			modelConstDatas[objectName].scale.x,
-			modelConstDatas[objectName].scale.y,
-			modelConstDatas[objectName].scale.z
+			scale.x,
+			scale.y,
+			scale.z
 		);
-		matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstDatas[objectName].angle.z));
-		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas[objectName].angle.x));
-		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas[objectName].angle.y));
+
+		Vector3 angle = modelConstDatas[objectName].angle.GetValue();
+		matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(angle.z));
+		matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(angle.x));
+		matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(angle.y));
 
 		constBufferData->normalMat = matWorld;
 
+		Vector3 position = modelConstDatas[objectName].position.GetValue();
 		matWorld *= DirectX::XMMatrixTranslation
 		(
-			modelConstDatas[objectName].position.x,
-			modelConstDatas[objectName].position.y,
-			modelConstDatas[objectName].position.z
+			position.x,
+			position.y,
+			position.z
 		);
 
 		constBufferData->worldMat = matWorld;
@@ -312,11 +316,12 @@ void ModelObject::MapConstData(const Camera* camera)
 				//モデル自体のスケールの乗算により、ボーンの平行移動の値にスケールが乗算されるため、
 				//割って増減を抑えている
 				//ボーン→行列の順番で掛けるからモデルの倍率が影響しちゃう
+				Vector3 scale = modelConstDatas[objectName].scale.GetValue();
 				boneMat *= DirectX::XMMatrixTranslation
 				(
-					boneMoveVector.x / modelConstDatas[objectName].scale.x,
-					boneMoveVector.y / modelConstDatas[objectName].scale.y,
-					boneMoveVector.z / modelConstDatas[objectName].scale.z
+					boneMoveVector.x / scale.x,
+					boneMoveVector.y / scale.y,
+					boneMoveVector.z / scale.z
 				);
 
 				//回転させたら戻す
@@ -437,9 +442,9 @@ void ModelObject::MapConstData(const Camera* camera)
 					//modelConstDatas[i][0].scale に boneScale掛ける必要あるか要確認
 					mulMat *= DirectX::XMMatrixTranslation
 					(
-						pMoveVector.x / (modelConstDatas[objectName].scale.x * boneScale.x),
-						pMoveVector.y / (modelConstDatas[objectName].scale.y * boneScale.y),
-						pMoveVector.z / (modelConstDatas[objectName].scale.z * boneScale.z)
+						pMoveVector.x / (scale.x * boneScale.x),
+						pMoveVector.y / (scale.y * boneScale.y),
+						pMoveVector.z / (scale.z * boneScale.z)
 					);
 
 					//回転させたら戻す
@@ -749,7 +754,9 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 	// 平面情報(回転適応のため、作り直し)
 	PlaneData rotPlane;
 	rotPlane.SetPosition(plane.GetPosition());
-	DirectX::XMFLOAT3 xmAngle = DirectX::XMFLOAT3(-modelConstDatas[objectNames[0]].angle.x, -modelConstDatas[objectNames[0]].angle.y, -modelConstDatas[objectNames[0]].angle.z);
+
+	Vector3 angle = -modelConstDatas[objectNames[0]].angle.GetValue();
+	DirectX::XMFLOAT3 xmAngle = DirectX::XMFLOAT3(angle.x, angle.y, angle.z);
 	Vector3 normal = LibMath::RotateZXYVector3(plane.GetNormal(), xmAngle);
 	rotPlane.SetNormal(normal);
 
@@ -793,27 +800,29 @@ bool MelLib::ModelObject::MeshCat(const PlaneData& plane, ModelData*& pFront, Mo
 		modelTri[triIndex].vertData.v2 = vertPos[0][indices[0][i + 1]];
 		modelTri[triIndex].vertData.v3 = vertPos[0][indices[0][i + 2]];
 
+		Vector3 scale = modelConstDatas[0].scale.GetValue();
 		//拡縮、平行移動適応
 		//このままだとモデルデータの頂点も倍率かかった状態になるので、注意
-		modelTri[triIndex].vertData.v1.pos.x *= modelConstDatas[0].scale.x;
-		modelTri[triIndex].vertData.v1.pos.y *= modelConstDatas[0].scale.y;
-		modelTri[triIndex].vertData.v1.pos.z *= modelConstDatas[0].scale.z;
-		modelTri[triIndex].vertData.v2.pos.x *= modelConstDatas[0].scale.x;
-		modelTri[triIndex].vertData.v2.pos.y *= modelConstDatas[0].scale.y;
-		modelTri[triIndex].vertData.v2.pos.z *= modelConstDatas[0].scale.z;
-		modelTri[triIndex].vertData.v3.pos.x *= modelConstDatas[0].scale.x;
-		modelTri[triIndex].vertData.v3.pos.y *= modelConstDatas[0].scale.y;
-		modelTri[triIndex].vertData.v3.pos.z *= modelConstDatas[0].scale.z;
+		modelTri[triIndex].vertData.v1.pos.x *= scale.x;
+		modelTri[triIndex].vertData.v1.pos.y *= scale.y;
+		modelTri[triIndex].vertData.v1.pos.z *= scale.z;
+		modelTri[triIndex].vertData.v2.pos.x *= scale.x;
+		modelTri[triIndex].vertData.v2.pos.y *= scale.y;
+		modelTri[triIndex].vertData.v2.pos.z *= scale.z;
+		modelTri[triIndex].vertData.v3.pos.x *= scale.x;
+		modelTri[triIndex].vertData.v3.pos.y *= scale.y;
+		modelTri[triIndex].vertData.v3.pos.z *= scale.z;
 
-		modelTri[triIndex].vertData.v1.pos.x += modelConstDatas[0].position.x;
-		modelTri[triIndex].vertData.v1.pos.y += modelConstDatas[0].position.y;
-		modelTri[triIndex].vertData.v1.pos.z += modelConstDatas[0].position.z;
-		modelTri[triIndex].vertData.v2.pos.x += modelConstDatas[0].position.x;
-		modelTri[triIndex].vertData.v2.pos.y += modelConstDatas[0].position.y;
-		modelTri[triIndex].vertData.v2.pos.z += modelConstDatas[0].position.z;
-		modelTri[triIndex].vertData.v3.pos.x += modelConstDatas[0].position.x;
-		modelTri[triIndex].vertData.v3.pos.y += modelConstDatas[0].position.y;
-		modelTri[triIndex].vertData.v3.pos.z += modelConstDatas[0].position.z;
+		Vector3 position = modelConstDatas[0].position.GetValue();
+		modelTri[triIndex].vertData.v1.pos.x += position.x;
+		modelTri[triIndex].vertData.v1.pos.y += position.y;
+		modelTri[triIndex].vertData.v1.pos.z += position.z;
+		modelTri[triIndex].vertData.v2.pos.x += position.x;
+		modelTri[triIndex].vertData.v2.pos.y += position.y;
+		modelTri[triIndex].vertData.v2.pos.z += position.z;
+		modelTri[triIndex].vertData.v3.pos.x += position.x;
+		modelTri[triIndex].vertData.v3.pos.y += position.y;
+		modelTri[triIndex].vertData.v3.pos.z += position.z;
 
 		//辺情報
 		modelTri[triIndex].segmentData.v1.SetPosition
@@ -1551,33 +1560,38 @@ void ModelObject::SetPosition(const Vector3& position, const std::string& name)
 	{
 		for (auto& data : modelConstDatas)
 		{
-			data.second.position = position.ToXMFLOAT3();
+			data.second.position = position;
 		}
 	}
 	else
 	{
-		modelConstDatas[name].position = position.ToXMFLOAT3();
+		modelConstDatas[name].position = position;
 	}
 }
 
 void ModelObject::SetScale(const Vector3& scale, const std::string& name)
 {
+	Vector3 modelScale;
 	if (name == "")
 	{
 		for (auto& data : modelConstDatas)
 		{
-			data.second.scale = scale.ToXMFLOAT3();
-			if (data.second.scale.x == 0.0f)data.second.scale.x = 0.0001f;
-			if (data.second.scale.y == 0.0f)data.second.scale.y = 0.0001f;
-			if (data.second.scale.z == 0.0f)data.second.scale.z = 0.0001f;
+			data.second.scale = scale;
+
+			modelScale = data.second.scale.GetValue();
+			if (scale.x == 0.0f)data.second.scale.GetRefValue().x = 0.0001f;
+			if (scale.y == 0.0f)data.second.scale.GetRefValue().y = 0.0001f;
+			if (scale.z == 0.0f)data.second.scale.GetRefValue().z = 0.0001f;
 		}
 	}
 	else
 	{
 		modelConstDatas[name].scale = scale.ToXMFLOAT3();
-		if (modelConstDatas[name].scale.x == 0.0f)modelConstDatas[name].scale.x = 0.0001f;
-		if (modelConstDatas[name].scale.y == 0.0f)modelConstDatas[name].scale.y = 0.0001f;
-		if (modelConstDatas[name].scale.z == 0.0f)modelConstDatas[name].scale.z = 0.0001f;
+		modelScale = modelConstDatas[name].scale.GetValue();
+
+		if (modelScale.x == 0.0f)modelConstDatas[name].scale.GetRefValue().x = 0.0001f;
+		if (modelScale.y == 0.0f)modelConstDatas[name].scale.GetRefValue().y = 0.0001f;
+		if (modelScale.z == 0.0f)modelConstDatas[name].scale.GetRefValue().z = 0.0001f;
 	}
 
 
@@ -1589,12 +1603,12 @@ void ModelObject::SetAngle(const Vector3& angle, const std::string& name)
 	{
 		for (auto& data : modelConstDatas)
 		{
-			data.second.angle = angle.ToXMFLOAT3();
+			data.second.angle = angle;
 		}
 	}
 	else
 	{
-		modelConstDatas[name].angle = angle.ToXMFLOAT3();
+		modelConstDatas[name].angle = angle;
 	}
 
 
@@ -1658,7 +1672,7 @@ void MelLib::ModelObject::SetMulColor(const Color& color, const std::string& nam
 
 MelLib::ModelObject::ModelObject(ModelObject& obj)
 {
-	Create(obj.pModelData, nullptr);
+	Create(obj.pModelData, obj.objectName,nullptr);
 	modelConstDatas = obj.modelConstDatas;
 
 	if (obj.catFrontModelData)
@@ -1777,9 +1791,6 @@ bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12Graphics
 
 	PipelineState::SetModelRootSignature(rootSignature.Get());
 
-
-
-
 }
 
 void MelLib::ModelObject::SetPar(const float par, const std::string& name)
@@ -1838,26 +1849,26 @@ Vector3 MelLib::ModelObject::GetPosition(const std::string& name) const
 {
 	if (name == "")
 	{
-		return modelConstDatas.at(objectNames[0]).position;
+		return modelConstDatas.at(objectNames[0]).position.GetValue();
 	}
-	return modelConstDatas.at(name).position;
+	return modelConstDatas.at(name).position.GetValue();
 }
 Vector3 MelLib::ModelObject::GetAngle(const std::string& name) const
 {
 	if (name == "")
 	{
-		return modelConstDatas.at(objectNames[0]).angle;
+		return modelConstDatas.at(objectNames[0]).angle.GetValue();
 	}
-	return modelConstDatas.at(name).angle;
+	return modelConstDatas.at(name).angle.GetValue();
 }
 
 Vector3 MelLib::ModelObject::GetScale(const std::string& name) const
 {
 	if (name == "")
 	{
-		return modelConstDatas.at(objectNames[0]).scale;
+		return modelConstDatas.at(objectNames[0]).scale.GetValue();
 	}
-	return modelConstDatas.at(name).scale;
+	return modelConstDatas.at(name).scale.GetValue();
 }
 
 
@@ -1997,9 +2008,11 @@ void ModelObject::FbxAnimation()
 
 bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, ConstBufferData* userConstBufferData)
 {
-	guiPosition.SetData(0, objectName,"ModelPosition",-10000,10000);
+	this->objectName = objectName;
+	/*guiPosition.SetData(0, objectName,"ModelPosition",-10000,10000);
 	guiAngle.SetData(0, objectName,"ModelAngle",-10000,10000);
-	guiScale.SetData(0, objectName,"ModelScale",-10000,10000);
+	guiScale.SetData(1, objectName,"ModelScale",-10000,10000);*/
+	
 
 	if (!pModelData)
 	{
@@ -2033,9 +2046,13 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 
 	CreateConstBuffer();
 
-	for (const auto& objectName : objectNames)
+	for (const auto& objName : objectNames)
 	{
-		modelConstDatas.try_emplace(objectName);
+		modelConstDatas.try_emplace(objName);
+
+		modelConstDatas[objName].position.SetData(0, objectName, objName +"_Position", -10000, 10000);
+		modelConstDatas[objName].angle.SetData(0, objectName, objName +"_Angle", -10000, 10000);
+		modelConstDatas[objName].scale.SetData(1, objectName, objName +"_Scale", -10000, 10000);
 	}
 
 	//マテリアル取得
@@ -2090,9 +2107,9 @@ std::vector<std::vector<Vector3>> MelLib::ModelObject::GetVerticesData(const boo
 		for (auto& pos : verticesPos[i])
 		{
 			Matrix mat = Matrix::GetTranslationMatrix(pos);
-			if (scaleImpact) mat *= Matrix::GetScalingMatrix(modelConstDatas[objectName].scale);
-			if (angleImpact)mat *= Matrix::GetRotateZXYMatrix(modelConstDatas[objectName].angle);
-			if (transformImpact)mat *= Matrix::GetTranslationMatrix(modelConstDatas[objectName].position);
+			if (scaleImpact) mat *= Matrix::GetScalingMatrix(modelConstDatas[objectName].scale.GetValue());
+			if (angleImpact)mat *= Matrix::GetRotateZXYMatrix(modelConstDatas[objectName].angle.GetValue());
+			if (transformImpact)mat *= Matrix::GetTranslationMatrix(modelConstDatas[objectName].position.GetValue());
 			pos = Vector3(mat[3][0], mat[3][1], mat[3][2]);
 		}
 	}
@@ -2119,9 +2136,9 @@ std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData
 		{
 			Value3<Vector3>pos(vertPos[i][vertIndex[i][j]], vertPos[i][vertIndex[i][j + 1]], vertPos[i][vertIndex[i][j + 2]]);
 
-			result[i][loopCount].SetPosition(pos * Vector3(modelConstDatas.at(objectName).scale));
-			result[i][loopCount].SetAngle(modelConstDatas.at(objectName).angle);
-			result[i][loopCount].SetTranslationPosition(modelConstDatas.at(objectName).position);
+			result[i][loopCount].SetPosition(pos * Vector3(modelConstDatas.at(objectName).scale.GetValue()));
+			result[i][loopCount].SetAngle(modelConstDatas.at(objectName).angle.GetValue());
+			result[i][loopCount].SetTranslationPosition(modelConstDatas.at(objectName).position.GetValue());
 		}
 	}
 
@@ -2229,27 +2246,32 @@ Vector3 MelLib::ModelObject::CalcAnimationPosition
 	// 基準値を入れる場合、最後にそのままの値使ったワールド行列掛けちゃいけない
 	// 基準値との差分を入れないといけない
 	DirectX::XMMATRIX worldMat = DirectX::XMMatrixIdentity();
+	Vector3 scale = modelConstDatas.at(meshName).scale.GetValue();
 	worldMat *= DirectX::XMMatrixScaling
 	(
-		modelConstDatas.at(meshName).scale.x / startScale.x,
-		modelConstDatas.at(meshName).scale.y / startScale.y,
-		modelConstDatas.at(meshName).scale.z / startScale.z
+		scale.x / startScale.x,
+		scale.y / startScale.y,
+		scale.z / startScale.z
 	);
-	worldMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(modelConstDatas.at(meshName).angle.z - startAngle.z));
-	worldMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(modelConstDatas.at(meshName).angle.x - startAngle.x));
-	worldMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(modelConstDatas.at(meshName).angle.y - startAngle.y));
 
+	Vector3 angle = modelConstDatas.at(meshName).angle.GetValue();
+	worldMat *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(angle.z - startAngle.z));
+	worldMat *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(angle.x - startAngle.x));
+	worldMat *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(angle.y - startAngle.y));
+
+	Vector3 position = modelConstDatas.at(meshName).position.GetValue();
 	worldMat *= DirectX::XMMatrixTranslation
 	(
-		modelConstDatas.at(meshName).position.x - startPos.x,
-		modelConstDatas.at(meshName).position.y - startPos.y,
-		modelConstDatas.at(meshName).position.z - startPos.z
+		position.x - startPos.x,
+		position.y - startPos.y,
+		position.z - startPos.z
 	);
 	posMat *= worldMat;
 
 	return MelLib::Vector3(posMat.r[3].m128_f32[0], posMat.r[3].m128_f32[1], posMat.r[3].m128_f32[2]);
 
 }
+
 void MelLib::ModelObject::SetAnimationReversePlayBack(const bool flag)
 {
 	animationReverse = flag;

@@ -4,6 +4,8 @@
 #include<DirectXMath.h>
 #include<wrl.h>
 #include<string>
+
+#include"GuiValue.h"
 using namespace Microsoft::WRL;
 
 namespace MelLib
@@ -123,9 +125,9 @@ namespace MelLib
 
 	struct ModelConstData
 	{
-		DirectX::XMFLOAT3 position = { 0,0,0 };
-		DirectX::XMFLOAT3 scale = { 1,1,1 };
-		DirectX::XMFLOAT3 angle = { 0,0,0 };
+		GuiVector3 position;
+		GuiVector3 scale;
+		GuiVector3 angle;
 		DirectX::XMFLOAT4 addColor = { 0,0,0,0 };
 		DirectX::XMFLOAT4 subColor = { 0,0,0,0 };
 		DirectX::XMFLOAT4 mulColor = { 1,1,1,1 };
