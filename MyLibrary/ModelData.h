@@ -266,7 +266,6 @@ namespace MelLib
 
 
 
-
 		private:
 
 		static void CreatePrimitiveModel();

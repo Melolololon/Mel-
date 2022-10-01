@@ -36,6 +36,12 @@ namespace MelLib
 		MelLib::GuiVector3 guiAngle;
 		MelLib::GuiVector3 guiScale;
 
+
+		GuiVector3 guiModelPosition;
+		GuiVector3 guiModelAngle;
+		GuiVector3 guiModelScale;
+
+
 		// 開発者用
 #ifdef _DEBUG
 		//判定確認用モデルのパイプライン

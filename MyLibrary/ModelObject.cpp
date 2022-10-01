@@ -19,9 +19,9 @@ ID3D12Device* ModelObject::device;
 std::vector<ID3D12GraphicsCommandList*>ModelObject::cmdLists;
 ComPtr<ID3D12RootSignature> ModelObject::rootSignature;
 
-ModelObject::ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData)
+ModelObject::ModelObject(ModelData* pModelData, const std::string& objectName, ConstBufferData* userConstBufferData)
 {
-	Create(pModelData, userConstBufferData);
+	Create(pModelData, objectName, userConstBufferData);
 }
 
 void ModelObject::CreateConstBuffer()
@@ -1862,8 +1862,10 @@ Vector3 MelLib::ModelObject::GetScale(const std::string& name) const
 
 
 
-bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name)
+bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, ConstBufferData* userConstBufferData, const std::string& name)
 {
+
+
 	if (!pModelData)
 	{
 #ifdef _DEBUG
@@ -1874,7 +1876,7 @@ bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBuffer
 		return false;
 	}
 
-	pModelObjects.emplace(name, std::make_unique<ModelObject>(pModelData, userConstBufferData));
+	pModelObjects.emplace(name, std::make_unique<ModelObject>(pModelData, objectName, userConstBufferData));
 
 
 	return true;
@@ -1993,8 +1995,12 @@ void ModelObject::FbxAnimation()
 }
 
 
-bool ModelObject::Create(ModelData* pModelData, ConstBufferData* userConstBufferData)
+bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, ConstBufferData* userConstBufferData)
 {
+	guiPosition.SetData(0, objectName,"ModelPosition",-10000,10000);
+	guiAngle.SetData(0, objectName,"ModelAngle",-10000,10000);
+	guiScale.SetData(0, objectName,"ModelScale",-10000,10000);
+
 	if (!pModelData)
 	{
 #ifdef _DEBUG

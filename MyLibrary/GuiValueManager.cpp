@@ -14,7 +14,7 @@ const std::unordered_map<std::string, char>MelLib::GuiValueManager::DATA_FORMAT_
 	{"float",'f'},
 };
 
-MelLib::GuiValueManager::GuiValueManager() 
+MelLib::GuiValueManager::GuiValueManager()
 {
 	// ここで読み込むと開くの失敗する
 	//Load();
@@ -32,9 +32,9 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 
 
 
-void MelLib::GuiValueManager::Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type,const size_t dataSize, bool& refFlag)
+void MelLib::GuiValueManager::Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type, const size_t dataSize, bool& refFlag)
 {
-	
+
 
 	// 削除されたGuiのパラメータは書き出さないようにする
 
@@ -121,12 +121,12 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 
 	// シークして一部だけ書き換えるには、常にファイルを開いておくしかない
 	// 開き直すと消えるから
-	
+
 	// 一旦ウィンドウ内全部書き出しでもいいかも
 
-	// charは128MAXだから100足してオーバーフローさせても-1にはならないから-1を区切りとして使っている
-	// 終端は-2
-	
+	// -1は区切り、終端は-2
+	// 基本的に0～127に収まる文字しか使わないだろうから100以内の乱数加算しても-1-2にならないと思うから-1-2を区切りにしてる
+
 	std::string param;
 	//param += -1;
 
@@ -157,22 +157,22 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 	// 書き出し
 	std::ofstream file(EXPORT_PATH);
 
-	int loopNum = 0; 
+	int loopNum = 0;
 	for (const auto& d : valueDatas[windowName])
 	{
-	/*	std::string lavel = d.first;
-		for (auto& c : lavel) c += ran;*/
+		/*	std::string lavel = d.first;
+			for (auto& c : lavel) c += ran;*/
 
-		//file.write(lavel.c_str(), lavel.size());
+			//file.write(lavel.c_str(), lavel.size());
 		file.write(d.second.c_str(), d.second.size());
 
 
-		if (loopNum != valueDatas[windowName].size() - 1) 
+		if (loopNum != valueDatas[windowName].size() - 1)
 		{
 			char kugiri = -1;
 			file.write(&kugiri, 1);
 		}
-		else 
+		else
 		{
 			char kugiri = -2;
 			file.write(&kugiri, 1);
@@ -195,15 +195,15 @@ void MelLib::GuiValueManager::Load()
 	for (const auto& p : std::filesystem::directory_iterator(importPath))
 	{
 		std::string filePath = p.path().string();
-		if (filePath.find(DATA_FORMAT) != std::string::npos) 
+		if (filePath.find(DATA_FORMAT) != std::string::npos)
 		{
 			std::string fileName = StringSupport::ExtractionFileName(filePath);
-			
+
 			fileName.erase(fileName.begin() + (fileName.size() - DATA_FORMAT.size()), fileName.end());
 
 			std::ifstream file(filePath);
 
-			while (1) 
+			while (1)
 			{
 
 				std::string lavel;
@@ -304,7 +304,7 @@ void MelLib::GuiValueManager::AddGuiValue(GuiBool* pGuiValue, const std::string&
 
 void MelLib::GuiValueManager::EraseGuiValue(const type_info& type, const std::string& windowName, const std::string& lavel)
 {
-	if (type == typeid(int)) 
+	if (type == typeid(int))
 	{
 		intValues[windowName].erase(lavel);
 		if (intValues[windowName].size() == 0)intValues.erase(windowName);
@@ -336,27 +336,25 @@ void MelLib::GuiValueManager::Update()
 	// リリース時に描画しない設定だったらreturn
 	if (!ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
-
-	// mapをforで回して順番通りに表示する
-	
-
-	// 三種類の配列見て、Window名が一緒だったら1つのウィンドウにまとめる
+	// 配列見て、Window名が一緒だったら1つのウィンドウにまとめる
 	for (const auto& windowName : createWindowNames)
 	{
 		ImguiManager::GetInstance()->BeginDrawWindow(windowName);
-		
+
 		// 切り替わったかどうか
 		bool changeFlag = false;
 
 		// lavel一覧
 		// この配列順にウィンドウに追加していく
-		std::vector<std::string>lavels(valueDatas[windowName].size());
+		std::vector<std::string>lavels(addOrders[windowName].size());
 
 		bool lavelCheckEnd = false;
-		
-		
+
+
 		for (const auto& lavel : addOrders[windowName])
 		{
+			lavelCheckEnd = false;
+
 			// データの配列から探し出し、見つけたら追加と保存処理
 
 			// int
@@ -364,7 +362,7 @@ void MelLib::GuiValueManager::Update()
 			for (auto& value : refInts)
 			{
 				const std::string& LAVEL = value.first;
-				
+
 				// ラベル名が同じだったら処理
 				if (lavel == LAVEL)
 				{
@@ -471,7 +469,8 @@ void MelLib::GuiValueManager::Update()
 	}
 
 
-	
+#pragma region 旧
+
 
 	//// int
 	//const std::unordered_map<std::string, GuiInt*>& refInts = intValues[windowName];
@@ -540,9 +539,10 @@ void MelLib::GuiValueManager::Update()
 
 	//ImguiManager::GetInstance()->EndDrawWindow();
 
+#pragma endregion
 }
 
-bool MelLib::GuiValueManager::GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel) 
+bool MelLib::GuiValueManager::GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel)
 {
 	// 存在するか確認
 	if (valueDatas.find(windowName) == valueDatas.end())return false;

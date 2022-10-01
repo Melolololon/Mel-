@@ -19,11 +19,12 @@
 #include"BufferData.h"
 #include"CollisionDetectionData.h"
 #include"Material.h"
+
+#include"GuiValue.h"
 //AddColorとかまとめよう!
 
 namespace MelLib
 {
-	
 	//モデルの座標などをまとめたもの
 	class ModelObject
 	{
@@ -126,6 +127,11 @@ namespace MelLib
 		//ModelData* catFrontModelData;
 		//ModelData* catBackModelData;
 
+
+		GuiVector3 guiPosition;
+		GuiVector3 guiAngle;
+		GuiVector3 guiScale;
+
 	private:
 
 		void CreateConstBuffer();
@@ -139,7 +145,7 @@ namespace MelLib
 
 		//nullptr渡される可能性を考えると、boolをreturnできるようにしたほうがいい?
 		ModelObject() {}
-		ModelObject( ModelObject& obj);
+		ModelObject(ModelObject& obj);
 		ModelObject& operator= (ModelObject& obj);
 		~ModelObject() {}
 
@@ -158,9 +164,9 @@ namespace MelLib
 #pragma region 生成
 
 #pragma region モデルで生成
-		ModelObject(ModelData* pModelData, ConstBufferData* userConstBufferData);
-		static bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData, const std::string& name);
-		bool Create(ModelData* pModelData, ConstBufferData* userConstBufferData = nullptr);
+		ModelObject(ModelData* pModelData, const std::string& objectName, ConstBufferData* userConstBufferData = nullptr);
+		static bool Create(ModelData* pModelData, const std::string& objectName, ConstBufferData* userConstBufferData, const std::string& name);
+		bool Create(ModelData* pModelData,const std::string& objectName, ConstBufferData* userConstBufferData = nullptr);
 #pragma endregion モデルで生成
 
 

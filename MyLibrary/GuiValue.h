@@ -42,14 +42,14 @@ namespace MelLib
 	{
 	private:
 		int value = 0;
-		const int VALUE_MIN = 0;
-		const int VALUE_MAX = 0;
-		const int SET_VALUE = 0;
-		const std::string WINDOW_NAME;
-		const std::string LAVEL;
+		int valueMin = 0;
+		int valueMax = 0;
+		int setValue = 0;
+		std::string windowName;
+		std::string lavel;
 		
 	public:
-		
+		GuiInt() {}
 		/// <summary>
 		/// 
 		/// </summary>
@@ -57,9 +57,11 @@ namespace MelLib
 		/// <param name="windowName"></param>
 		/// <param name="lavel"></param>
 		/// <param name="minNumber"></param>
-		/// <param name="maxNumber"></param>
-		GuiInt(int value, const std::string& windowName, const std::string& lavel,int minNumber,int maxNumber);
+		/// <param name="maxNumber"></param>GuiInt(int value, const std::string& windowName, const std::string& lavel,int minNumber,int maxNumber);
+		GuiInt(const int value, const std::string& windowName, const std::string& lavel, int minNumber, int maxNumber);
 		~GuiInt();
+
+		void SetData(int value, const std::string& windowName, const std::string& lavel, int minNumber, int maxNumber);
 		
 		void operator=(const int num) { this->value = num; }
 		GuiInt& operator=(const GuiInt& value)
@@ -79,8 +81,8 @@ namespace MelLib
 
 		
 		int GetValue()const { return value; }
-		int GetMaxValue() const { return VALUE_MAX; }
-		int GetMinValue()const { return VALUE_MIN; }
+		int GetMaxValue() const { return valueMax; }
+		int GetMinValue()const { return valueMin; }
 
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
@@ -94,14 +96,14 @@ namespace MelLib
 	{
 	private:
 		float value = 0.0f;
-		const float MIN_VALUE = 0.0f;
-		const float MAX_VALUE = 0.0f;
-		const float SET_VALUE = 0.0f;
-		const std::string WINDOW_NAME;
-		const std::string LAVEL;
+		float valueMin = 0.0f;
+		float valueMax = 0.0f;
+		float setValue = 0.0f;
+		std::string windowName;
+		std::string lavel;
 
 	public:
-
+		GuiFloat(){}
 		/// <summary>
 		/// 
 		/// </summary>
@@ -112,6 +114,9 @@ namespace MelLib
 		/// <param name="maxNumber"></param>
 		GuiFloat(float value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber);
 		~GuiFloat();
+
+		void SetData(float value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber);
+
 		GuiFloat& operator=(const float num) 
 		{
 			this->value = num; 
@@ -128,12 +133,13 @@ namespace MelLib
 		void operator--() { value--; }
 
 		float GetValue()const { return value; }
-		float GetMaxValue() const { return MAX_VALUE; }
-		float GetMinValue()const { return MIN_VALUE; }
+		float GetMaxValue() const { return valueMax; }
+		float GetMinValue()const { return valueMin; }
 
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
-		/// 初期化処理が始まる前にコンストラクタが呼び出されてしまう場合にお使いください。
+		/// ライブラリの初期化処理が始まる前にコンストラクタが呼び出されてしまい、
+		/// データをセットできなかった場合にお使いください。
 		/// </summary>
 		void SetLoadData();
 	};
@@ -144,14 +150,14 @@ namespace MelLib
 	{
 	private:
 		MelLib::Vector3 value = 0.0f;
-		const float MIN_VALUE = 0.0f;
-		const float MAX_VALUE = 0.0f;
-		const MelLib::Vector3 SET_VALUE = 0.0f;
-		const std::string WINDOW_NAME;
-		const std::string LAVEL;
+		float valueMin = 0.0f;
+		float valueMax = 0.0f;
+		MelLib::Vector3 setValue = 0.0f;
+		std::string windowName;
+		std::string lavel;
 
 	public:
-
+		GuiVector3(){}
 		/// <summary>
 		/// 
 		/// </summary>
@@ -162,6 +168,9 @@ namespace MelLib
 		/// <param name="maxNumber"></param>
 		GuiVector3(const MelLib::Vector3& value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber);
 		~GuiVector3();
+
+		void SetData(const MelLib::Vector3& value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber);
+
 		GuiVector3& operator=(const GuiVector3& value)
 		{
 			this->value = value.GetValue();
@@ -188,12 +197,13 @@ namespace MelLib
 
 		MelLib::Vector3 GetValue()const { return value; }
 		MelLib::Vector3& GetRefValue() { return value; }
-		float GetMaxValue() const { return MAX_VALUE; }
-		float GetMinValue()const { return MIN_VALUE; }
+		float GetMaxValue() const { return valueMax; }
+		float GetMinValue()const { return valueMin; }
 		
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
-		/// 初期化処理が始まる前にコンストラクタが呼び出されてしまう場合にお使いください。
+		/// ライブラリの初期化処理が始まる前にコンストラクタが呼び出されてしまい、
+		/// データをセットできなかった場合にお使いください。
 		/// </summary>
 		void SetLoadData();
 	};
@@ -211,12 +221,12 @@ namespace MelLib
 	{
 	private:
 		bool value = false;
-		const bool SET_VALUE = false;
-		const std::string WINDOW_NAME;
-		const std::string LAVEL;
+		bool setValue = false;
+		std::string windowName;
+		std::string lavel;
 
 	public:
-
+		GuiBool(){}
 		/// <summary>
 		/// 
 		/// </summary>
@@ -227,6 +237,9 @@ namespace MelLib
 		/// <param name="maxNumber"></param>
 		GuiBool(bool value, const std::string& windowName, const std::string& lavel);
 		~GuiBool();
+
+		void SetData(bool value, const std::string& windowName, const std::string& lavel);
+
 		GuiBool& operator=(const GuiBool& value)
 		{
 			this->value = value.GetValue();
@@ -249,7 +262,8 @@ namespace MelLib
 
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
-		/// 初期化処理が始まる前にコンストラクタが呼び出されてしまう場合にお使いください。
+		/// ライブラリの初期化処理が始まる前にコンストラクタが呼び出されてしまい、
+		/// データをセットできなかった場合にお使いください。
 		/// </summary>
 		void SetLoadData();
 	};

@@ -53,15 +53,13 @@ void Player::LoadRes()
 
 Player::Player()
 	:GameObject("Player")
-	,hp(10, "Player", "HP", 0, 100)
-	,power(10, "Player", "Power", 1, 100)
 {
 	// 読み込んだパラメーターを自動的にモデルにも適応させる
 	// modelObjectや当たり判定もGUIでいじれるようにする
 
 	// MelLib;;ModelObjectの配列
 	// 四角形をセット
-	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX));
+	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX),"Player");
 
 	// 今読み込んだ値をモデルオブジェクトに反映できてないから
 	// 初期位置を0,0,5に
@@ -93,6 +91,10 @@ Player::Player()
 
 	modelObjects["main"].SetMaterial(&testMtl);
 	modelObjects["main"].SetPar(100.0f);
+
+
+	hp.SetData(10, "Player", "HP", 0, 100);
+	power.SetData(10, "Player", "Power", 1, 100);
 }
 
 void Player::Update()

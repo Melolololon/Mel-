@@ -11,7 +11,6 @@ namespace MelLib
 	struct Vector3;
 	struct Quaternion;
 
-	class GuiVector3;
 
 	struct Vector2
 	{
