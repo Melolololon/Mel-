@@ -26,6 +26,7 @@ void MelLib::GuiInt::SetData(int value, const std::string& windowName, const std
 	valueMax = maxNumber;
 	this->windowName = windowName;
 	this->lavel = lavel;
+
 }
 
 void MelLib::GuiInt::SetLoadData()

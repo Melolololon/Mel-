@@ -32,14 +32,15 @@ namespace MelLib
 		Vector3& angle;
 		Vector3& scale;
 
+
+		// 2022_10_02
+		// これの値もモデルオブジェクトと当たり判定に反映されるようにする
+
 		MelLib::GuiVector3 guiPosition;
 		MelLib::GuiVector3 guiAngle;
 		MelLib::GuiVector3 guiScale;
 
 
-		GuiVector3 guiModelPosition;
-		GuiVector3 guiModelAngle;
-		GuiVector3 guiModelScale;
 
 
 		// 開発者用

@@ -2,6 +2,7 @@
 #include"ImguiManager.h"
 #include"Random.h"
 #include"StringSupport.h"
+#include"Input.h"
 #include<fstream>
 #include<filesystem>
 
@@ -31,11 +32,12 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 }
 
 
+// 2022_10_03
+// なぜか読み込みが無限に続いた時があった
+// 要確認
 
 void MelLib::GuiValueManager::Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type, const size_t dataSize, bool& refFlag)
 {
-
-
 	// 削除されたGuiのパラメータは書き出さないようにする
 
 #pragma region 旧
@@ -150,39 +152,44 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 		param += data[i];
 	}
 
+	// 書き換え
 	valueDatas[windowName][lavel] = param;
 
-	const std::string EXPORT_PATH = GuiOption::GetInstance()->GetGuiDataPath() + windowName + DATA_FORMAT;
-
-	// 書き出し
-	std::ofstream file(EXPORT_PATH);
-
-	int loopNum = 0;
-	for (const auto& d : valueDatas[windowName])
-	{
-		/*	std::string lavel = d.first;
-			for (auto& c : lavel) c += ran;*/
-
-			//file.write(lavel.c_str(), lavel.size());
-		file.write(d.second.c_str(), d.second.size());
-
-
-		if (loopNum != valueDatas[windowName].size() - 1)
-		{
-			char kugiri = -1;
-			file.write(&kugiri, 1);
-		}
-		else
-		{
-			char kugiri = -2;
-			file.write(&kugiri, 1);
-		}
-		loopNum++;
-	}
-
-	file.close();
 	// Imguiの変更確認フラグをfalseに
 	refFlag = false;
+}
+
+void MelLib::GuiValueManager::Export()
+{
+	for (const auto& datas : valueDatas) 
+	{
+		const std::string WINDOW_NAME = datas.first;
+		const std::string EXPORT_PATH = GuiOption::GetInstance()->GetGuiDataPath() + WINDOW_NAME + DATA_FORMAT;
+
+		// 書き出し
+		std::ofstream file(EXPORT_PATH);
+
+		int loopNum = 0;
+		for (const auto& d : datas.second)
+		{
+			file.write(d.second.c_str(), d.second.size());
+
+
+			if (loopNum != datas.second.size() - 1)
+			{
+				char kugiri = -1;
+				file.write(&kugiri, 1);
+			}
+			else
+			{
+				char kugiri = -2;
+				file.write(&kugiri, 1);
+			}
+			loopNum++;
+		}
+
+		file.close();
+	}
 }
 
 void MelLib::GuiValueManager::Load()
@@ -262,6 +269,42 @@ void MelLib::GuiValueManager::Load()
 			}
 
 			file.close();
+		}
+	}
+}
+
+void MelLib::GuiValueManager::AllSetLoadData()
+{
+	//int
+	for (auto& data : intValues) 
+	{
+		for (auto& value : data.second) 
+		{
+			value.second->SetLoadData();
+		}
+	}
+
+	for (auto& data : floatValues)
+	{
+		for (auto& value : data.second)
+		{
+			value.second->SetLoadData();
+		}
+	}
+
+	for (auto& data : vector3Values)
+	{
+		for (auto& value : data.second)
+		{
+			value.second->SetLoadData();
+		}
+	}
+
+	for (auto& data : boolValues)
+	{
+		for (auto& value : data.second)
+		{
+			value.second->SetLoadData();
 		}
 	}
 }
@@ -469,6 +512,16 @@ void MelLib::GuiValueManager::Update()
 	}
 
 
+	bool pushCtrl = Input::KeyState(DIK_LCONTROL) || Input::KeyState(DIK_RCONTROL);
+	// 保存
+	if (pushCtrl && Input::KeyTrigger(DIK_S))Export();
+
+	// 読込
+	if (pushCtrl && Input::KeyTrigger(DIK_L))
+	{
+		Load();
+		AllSetLoadData();
+	}
 #pragma region 旧
 
 
@@ -544,7 +597,7 @@ void MelLib::GuiValueManager::Update()
 
 bool MelLib::GuiValueManager::GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel)
 {
-	// 存在するか確認
+	// 存在するか確認。なかったらreturn
 	if (valueDatas.find(windowName) == valueDatas.end())return false;
 	if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())return false;
 
@@ -556,8 +609,18 @@ bool MelLib::GuiValueManager::GetGuiData(GuiInt* pGuiValue, int& refInt, const s
 	int* pValue = reinterpret_cast<int*>(data);
 	refInt = *pValue;
 
-	intValues[windowName].try_emplace(lavel, pGuiValue);
+	// 既に追加されてたら値を書き換えて終了
+	// 上で書き換えてるからこのままreturn
+	if (intValues.size() != 0)
+	{
+		if (intValues.at(windowName).find(lavel) != intValues.at(windowName).end())
+		{
+			return false;
+		}
+	}
+	intValues[windowName].emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
+
 	addOrders[windowName].push_back(lavel);
 
 	return true;
@@ -577,8 +640,14 @@ bool MelLib::GuiValueManager::GetGuiData(GuiFloat* pGuiValue, float& refFloat, c
 
 	float* pValue = reinterpret_cast<float*>(data);
 	refFloat = *pValue;
-
-	floatValues[windowName].try_emplace(lavel, pGuiValue);
+	if (floatValues.size() != 0)
+	{
+		if (floatValues.at(windowName).find(lavel) != floatValues.at(windowName).end())
+		{
+			return false;
+		}
+	}
+	floatValues[windowName].emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
 	addOrders[windowName].push_back(lavel);
 	return true;
@@ -594,8 +663,14 @@ bool MelLib::GuiValueManager::GetGuiData(GuiBool* pGuiValue, bool& refFlag, cons
 	std::string param = valueDatas.at(windowName).at(lavel);
 	char flag = param[param.size() - 1];
 	refFlag = static_cast<bool>(flag);
-
-	boolValues[windowName].try_emplace(lavel, pGuiValue);
+	if (boolValues.size() != 0)
+	{
+		if (boolValues.at(windowName).find(lavel) != boolValues.at(windowName).end())
+		{
+			return false;
+		}
+	}
+	boolValues[windowName].emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
 	addOrders[windowName].push_back(lavel);
 	return true;
@@ -615,7 +690,15 @@ bool MelLib::GuiValueManager::GetGuiData(GuiVector3* pGuiValue, Vector3& refVect
 	Vector3* pValue = reinterpret_cast<Vector3*>(data);
 	refVectior3 = *pValue;
 
-	vector3Values[windowName].try_emplace(lavel, pGuiValue);
+	if (vector3Values.size() != 0) 
+	{
+		if (vector3Values.at(windowName).find(lavel) != vector3Values.at(windowName).end())
+		{
+			return false;
+		}
+	}
+
+	vector3Values[windowName].emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
 	addOrders[windowName].push_back(lavel);
 	return true;

@@ -17,6 +17,9 @@
 // valueDatasか各データのmapどちらかだけでいい
 // valueDatasと各データの中身は別物だから消すな
 
+// valueDataいらない
+// 各データから値取り出して書き込めばいい
+
 namespace MelLib
 {
 	// .guid(GUI Data) 仕様
@@ -51,9 +54,10 @@ namespace MelLib
 		/// <param name="dataSize">データサイズ</param>
 		/// <param name="refFlag">changeFlag(戻す用)</param>
 		void Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type,size_t dataSize,bool& refFlag);
+		void Export();
 
 		void Load();
-
+		void AllSetLoadData();
 	private:
 
 		static const std::string DATA_FORMAT;

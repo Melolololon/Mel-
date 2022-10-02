@@ -83,13 +83,15 @@ namespace MelLib
 		int GetValue()const { return value; }
 		int GetMaxValue() const { return valueMax; }
 		int GetMinValue()const { return valueMin; }
-
+		int& GetRefValue() { return value; }
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
 		/// ライブラリの初期化処理が始まる前にコンストラクタが呼び出されてしまい、
 		/// データをセットできなかった場合にお使いください。
 		/// </summary>
 		void SetLoadData();
+
+		void SetValue(int value) { this->value = value; }
 	};
 
 	class GuiFloat
@@ -136,12 +138,14 @@ namespace MelLib
 		float GetMaxValue() const { return valueMax; }
 		float GetMinValue()const { return valueMin; }
 
+		float& GetRefValue() { return value; }
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
 		/// ライブラリの初期化処理が始まる前にコンストラクタが呼び出されてしまい、
 		/// データをセットできなかった場合にお使いください。
 		/// </summary>
 		void SetLoadData();
+		void SetValue(float value) { this->value = value; }
 	};
 
 	
@@ -206,6 +210,8 @@ namespace MelLib
 		/// データをセットできなかった場合にお使いください。
 		/// </summary>
 		void SetLoadData();
+
+		void SetValue(const Vector3& value) { this->value = value; }
 	};
 
 	/*Vector3 operator+(const GuiVector3& value, const GuiVector3& value2) { return value + value2; }
@@ -259,6 +265,7 @@ namespace MelLib
 		}
 
 		bool GetValue()const { return value; }
+		bool& GetRefValue() { return value; }
 
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
@@ -266,5 +273,6 @@ namespace MelLib
 		/// データをセットできなかった場合にお使いください。
 		/// </summary>
 		void SetLoadData();
+		void SetValue(bool value) { this->value = value; }
 	};
 }
