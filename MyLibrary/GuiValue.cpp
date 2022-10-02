@@ -27,11 +27,14 @@ void MelLib::GuiInt::SetData(int value, const std::string& windowName, const std
 	this->windowName = windowName;
 	this->lavel = lavel;
 
+	setValue = value;
 }
 
 void MelLib::GuiInt::SetLoadData()
 {
-	GuiValueManager::GetInstance()->GetGuiData(this, value, windowName, lavel);
+	// 読み込み
+	// 読み込めなかったら初期値をセット
+	if (!GuiValueManager::GetInstance()->GetGuiData(this, value, windowName, lavel))value = setValue;
 }
 
 MelLib::GuiFloat::GuiFloat(const float value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
@@ -57,11 +60,14 @@ void MelLib::GuiFloat::SetData(float value, const std::string& windowName, const
 	valueMax = maxNumber;
 	this->windowName = windowName;
 	this->lavel = lavel;
+	setValue = value;
 }
 
 void MelLib::GuiFloat::SetLoadData()
 {
-	GuiValueManager::GetInstance()->GetGuiData(this, this->value, windowName, lavel);
+	// 読み込み
+	// 読み込めなかったら初期値をセット
+	if (!GuiValueManager::GetInstance()->GetGuiData(this, value, windowName, lavel))value = setValue;
 }
 
 MelLib::GuiVector3::GuiVector3(const MelLib::Vector3& value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
@@ -87,11 +93,14 @@ void MelLib::GuiVector3::SetData(const MelLib::Vector3& value, const std::string
 	valueMax = maxNumber;
 	this->windowName = windowName;
 	this->lavel = lavel;
+	setValue = value;
 }
 
 void MelLib::GuiVector3::SetLoadData()
 {
-	GuiValueManager::GetInstance()->GetGuiData(this, this->value, windowName, lavel);
+	// 読み込み
+	// 読み込めなかったら初期値をセット
+	if (!GuiValueManager::GetInstance()->GetGuiData(this, value, windowName, lavel))value = setValue;
 }
 
 MelLib::GuiBool::GuiBool(const bool value, const std::string& windowName, const std::string& lavel)
@@ -115,11 +124,14 @@ void MelLib::GuiBool::SetData(bool value, const std::string& windowName, const s
 	}
 	this->windowName = windowName;
 	this->lavel = lavel;
+	setValue = value;
 }
 
 void MelLib::GuiBool::SetLoadData()
 {
-	GuiValueManager::GetInstance()->GetGuiData(this, value, windowName, lavel);
+	// 読み込み
+	// 読み込めなかったら初期値をセット
+	if (!GuiValueManager::GetInstance()->GetGuiData(this, value, windowName, lavel))value = setValue;
 }
 
 MelLib::GuiOption* MelLib::GuiOption::GetInstance()

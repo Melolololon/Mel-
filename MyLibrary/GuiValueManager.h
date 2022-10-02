@@ -66,7 +66,7 @@ namespace MelLib
 
 
 		// std::map < Window名, std::map<ラベル名, データ(.guidの中身全部)>>
-		// 読み込んだデータ
+		// データ
 		std::unordered_map < std::string, std::unordered_map<std::string, std::string>>valueDatas;
 		// 追加した順序
 		std::unordered_map < std::string, std::vector<std::string>>addOrders;

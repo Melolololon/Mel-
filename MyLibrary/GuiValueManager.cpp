@@ -271,6 +271,7 @@ void MelLib::GuiValueManager::Load()
 			file.close();
 		}
 	}
+
 }
 
 void MelLib::GuiValueManager::AllSetLoadData()
@@ -613,9 +614,15 @@ bool MelLib::GuiValueManager::GetGuiData(GuiInt* pGuiValue, int& refInt, const s
 	// 上で書き換えてるからこのままreturn
 	if (intValues.size() != 0)
 	{
+		// intValueに追加されていているか確認
 		if (intValues.at(windowName).find(lavel) != intValues.at(windowName).end())
 		{
-			return false;
+			// 追加されてないかを確認
+			if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 	intValues[windowName].emplace(lavel, pGuiValue);
@@ -644,7 +651,12 @@ bool MelLib::GuiValueManager::GetGuiData(GuiFloat* pGuiValue, float& refFloat, c
 	{
 		if (floatValues.at(windowName).find(lavel) != floatValues.at(windowName).end())
 		{
-			return false;
+			// 追加されてないかを確認
+			if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 	floatValues[windowName].emplace(lavel, pGuiValue);
@@ -665,9 +677,14 @@ bool MelLib::GuiValueManager::GetGuiData(GuiBool* pGuiValue, bool& refFlag, cons
 	refFlag = static_cast<bool>(flag);
 	if (boolValues.size() != 0)
 	{
-		if (boolValues.at(windowName).find(lavel) != boolValues.at(windowName).end())
+		if (boolValues.at(windowName).find(lavel) != boolValues.at(windowName).end() )
 		{
-			return false;
+			// 追加されてないかを確認
+			if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 	boolValues[windowName].emplace(lavel, pGuiValue);
@@ -694,7 +711,12 @@ bool MelLib::GuiValueManager::GetGuiData(GuiVector3* pGuiValue, Vector3& refVect
 	{
 		if (vector3Values.at(windowName).find(lavel) != vector3Values.at(windowName).end())
 		{
-			return false;
+			// 追加されてないかを確認
+			if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 
