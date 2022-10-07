@@ -7,7 +7,15 @@ namespace MelLib
 	// objectsのオブジェクトをどうマネージャーに追加する?
 
 	// 保存するごとに自動バックアップとるようにしたり、
-	// 履歴保存してCtrl+Zで戻れるようにした方が良いかも
+	// 履歴保存してCtrl+Zで戻れるようにした方が良いか
+
+	// オブジェクト一覧はエディターの機能なのでこちらに実装していい
+	// オブジェクトマネージャーに実装すると向こうにもオンオフフラグ用意しないといけないし利用者もややこしくなる(こっちのフラグ参照してもいいけど)
+	// オブジェクトマネージャーにオブジェクト取得する関数作って、選ばれたオブジェクトを取得してそれに応じて描画するパラメーターのウィンドウを変える
+	// GUIValueManagerにウィンドウの表示フラグをセットする関数作る
+	// GameObjectクラスでそのフラグをセットできるようにする
+	// それにより、シーンエディターで選ばれたもののみ表示することができす
+
 	class SceneEditer
 	{
 	private:
@@ -48,7 +56,7 @@ namespace MelLib
 		/// オブジェクトをエディタに登録します。
 		/// </summary>
 		/// <param name="object">オブジェクト</param>
-		/// <param name="objectType">オブジェクトの種類</param>
+		/// <param name="objectType">オブジェクトの種類(ActorやStageObjectなど)</param>
 		void RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject,const std::string& objectType);
 		
 		void Update();

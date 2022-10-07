@@ -175,6 +175,11 @@ GameObject::GameObject(const std::string& objectName)
 	,angle(guiAngle.GetRefValue())
 	,scale(guiScale.GetRefValue())
 {
+	// このままだと登録しただけでGUIに追加される
+	// オブジェクトマネージャーに追加した時に追加する(SetDataを呼び出す)ようにすれば問題ない
+	// SetDataを呼び出す関数作る
+	// GameObjectを使うけどオブジェクトマネージャーを使わない時はその関数を自分で呼び出してもらう
+
 }
 
 

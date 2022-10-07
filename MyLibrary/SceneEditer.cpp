@@ -12,6 +12,7 @@ void MelLib::SceneEditer::Save()
 
 	// 2022_05_01
 	// オブジェクトマネージャーに追加したオブジェクトをimguiでいじれるように
+	
 
 	std::string name = SceneManager::GetInstance()->GetCurrentSceneName();
 	name += ".melsce";
@@ -154,6 +155,13 @@ void MelLib::SceneEditer::Draw()
 
 void MelLib::SceneEditer::SetEditFlag(const bool flag)
 {
+	// Debug時はリリースビルドのフラグ確認無視
+#ifdef _DEBUG
+
+#else
 	if (!releaseEdit) return;
+
+#endif // _DEBUG
+
 	isEdit = flag;
 }

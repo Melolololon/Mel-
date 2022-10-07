@@ -93,10 +93,7 @@ void MelLib::ImguiManager::Draw()
 }
 
 
-void MelLib::ImguiManager::BeginDrawWindow
-(
-    const std::string& name
-)
+void MelLib::ImguiManager::BeginDrawWindow(const std::string& name)
 {
     if (CheckReleaseDrawFlag())return;
 

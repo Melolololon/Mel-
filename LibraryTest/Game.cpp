@@ -40,7 +40,7 @@ void Game::Run()
 	MelLib::ImguiManager::GetInstance()->SetReleaseDrawFlag(true);
 
 	Initialize();
-
+	int items = 0;
 	while (1)
 	{
 		MelLib::Library::LoopStartProcess();
@@ -48,6 +48,14 @@ void Game::Run()
 		if (MelLib::Input::KeyTrigger(DIK_ESCAPE))MelLib::Library::EndFlagTrue();
 		if (MelLib::Library::GetIsEnd())break;
 		
+		//ImGui::ShowDemoWindow();
+		MelLib::ImguiManager::GetInstance()->BeginDrawWindow("List");
+		int item = 0;
+		const char* names[] = { "Player","Enemy","Item" };
+		
+		// (リストの右に表示される謎文字,どれが選ばれているかを表す番号を格納する変数のポインタ,リストの名前一覧,名前数)
+		ImGui::ListBox("Test", &items, names, _countof(names));
+		MelLib::ImguiManager::GetInstance()->EndDrawWindow();
 
 		Update();
 		Draw();
@@ -82,7 +90,7 @@ void Game::Initialize()
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
 	//for (int i = 0; i < 1; i++)MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
-	MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
+   // MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
 	//MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
 
@@ -95,6 +103,12 @@ void Game::Initialize()
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 20, 0));
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	
+
+	//// エディターオン
+	MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
+
+	//// エディターに追加(Unityでいうプレハブ作成)
+	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
 
 }
 
