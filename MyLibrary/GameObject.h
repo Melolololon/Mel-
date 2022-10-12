@@ -41,6 +41,7 @@ namespace MelLib
 		MelLib::GuiVector3 guiScale;
 
 
+		std::string objectName;
 
 
 		// 開発者用
@@ -73,7 +74,6 @@ namespace MelLib
 
 #endif // _DEBUG
 
-		const std::string OBJECT_NAME;
 
 		/*Vector3 position = 0;
 		Vector3 angle = 0;
@@ -379,6 +379,8 @@ namespace MelLib
 
 
 #pragma region セット
+		
+		void SetObjectName(const  std::string& name) { objectName = name; }
 
 		/// <summary>
 		/// GameObject共通の重力加速度をセットします。
@@ -415,6 +417,7 @@ namespace MelLib
 		void SetAddColor(const Color& color);
 		void SetSubColor(const Color& color);
 		void SetMulColor(const Color& color);
+
 
 		void TrueEraseManager() { eraseManager = true; }
 
@@ -491,6 +494,7 @@ namespace MelLib
 		/// <returns>オブジェクト管理クラスに追加するshared_ptr</returns>
 		virtual std::shared_ptr<GameObject> GetNewPtr();
 
+		std::string GetObjectName()const { return objectName; }
 
 #pragma endregion
 

@@ -167,7 +167,7 @@ void MelLib::GameObject::SetDataScale(const Vector3& scale)
 }
 
 GameObject::GameObject(const std::string& objectName)
-	:OBJECT_NAME(objectName)
+	:objectName(objectName)
 	, guiPosition(0, objectName, "Position", -10000, 10000)
 	, guiAngle(0, objectName, "Angle", -10000, 10000)
 	, guiScale(1, objectName, "Scale", -10000, 10000)

@@ -34,7 +34,7 @@ void MelLib::SceneEditer::Load()
 	std::ofstream file(name);
 }
 
-void MelLib::SceneEditer::SelectObjectUpdate()
+void MelLib::SceneEditer::UpdateSelectObject()
 {
 	if (!isEdit)return;
 	
@@ -49,6 +49,26 @@ void MelLib::SceneEditer::SelectObjectUpdate()
 	MelLib::Vector3 scale = pSelectObject->GetScale();
 	ImguiManager::GetInstance()->DrawSliderVector3("Scale", scale, 0, 359);
 	pSelectObject->SetScale(scale);
+}
+
+void MelLib::SceneEditer::DrawObjectList()
+{
+	ImguiManager::GetInstance()->BeginDrawWindow("ObjectList");
+
+	// オブジェクトマネージャーに名前だけ取得する関数作ってもいいかも
+	// 毎回stringの配列に入れると処理遅くなるからオブジェクト追加時に名前追加していいかも
+	// 名前変更した時に変更する処理入れないとそれ出来ない
+	// ゲーム中には使わないだろうからある程度遅くてもって感じはする
+	// umapにしてキーをGameObjectにすればアクセス楽かも
+	// 
+	// 同じ名前のオブジェクトがあったら名前に番号付け足す
+	// OBJECT_NAMEを定数から変数に変えないといけない
+	// 変数にしたらあとから名前変えたりできるから変数にしちゃっていい
+	const std::vector<std::shared_ptr<GameObject>>GAME_OBJECTS = GameObjectManager::GetInstance()->GetRefGameObject();
+
+
+
+	ImguiManager::GetInstance()->EndDrawWindow();
 }
 
 MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
@@ -108,7 +128,7 @@ void MelLib::SceneEditer::Update()
 
 #pragma endregion
 
-	SelectObjectUpdate();
+	UpdateSelectObject();
 	ImguiManager::GetInstance()->EndDrawWindow();
 
 	// 追加

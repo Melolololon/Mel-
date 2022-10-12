@@ -36,7 +36,10 @@ namespace MelLib
 		void Save();
 		void Load();
 
-		void SelectObjectUpdate();
+		void UpdateSelectObject();
+
+		void DrawObjectList();
+
 	private:
 		// 順序保持しとけばラジオボタンの値分forで回してデータにアクセスできる(intでアクセスできる)からmap
 		// 順序を他の配列に保存するのもいいかも。ループする必要なくなるから早い。けどメモリ使う
@@ -55,6 +58,8 @@ namespace MelLib
 
 		bool isEdit = false;
 		bool releaseEdit = false;
+
+
 	public:
 		static SceneEditer* GetInstance();
 
