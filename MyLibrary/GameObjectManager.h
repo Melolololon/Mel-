@@ -53,6 +53,12 @@ namespace MelLib
 		std::vector<std::shared_ptr<GameObject2D>>addObject2Ds;
 		//CollisionFlag checkCollision;
 
+		// 追加したオブジェクトの配列
+		// shared_ptrよりポインタの方がバイト数少ないから比較少なくて処理早いからポインタ
+		// 変更した時の書き直し処理実装面倒だからこれで実装するの後回し
+		//std::unordered_map<GameObject*, std::string>objectNames;
+
+
 
 		//追加したフレームごとにソートするか
 		ObjectSortType addObjectSort = OBJECT_SORT_NONE;
@@ -66,8 +72,6 @@ namespace MelLib
 		//データ
 		Vector3 nearPos;
 		Vector3 farPos;
-
-
 
 	private:
 
@@ -153,6 +157,8 @@ namespace MelLib
 		/// </summary>
 		/// <returns></returns>
 		const std::vector<std::shared_ptr<GameObject2D>>& GetRefGameObject2D() { return object2Ds; };
+
+		void GetObjectNames(std::vector<std::string>& refVector);
 
 #pragma endregion
 

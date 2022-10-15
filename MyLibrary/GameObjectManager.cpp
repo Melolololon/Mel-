@@ -65,16 +65,13 @@ void GameObjectManager::Update()
 
 	}
 
+	// これここに書く必要ある?
+	// これこう書かないとUpdate呼び出す時拡張for使えない
 	if (addObjects.size() != 0)
 	{
 		for (auto& a : addObjects)
 		{
-			a.get()->SetPreDataPositions();
-			a.get()->Update();
 			objects.push_back(a);
-
-			// 仮にここに書いてる
-			a->SetPreDataPositions();
 		}
 
 		if (addObjectSort != OBJECT_SORT_NONE)ObjectSort(addObjectSort, addObjectSortOrderType);
@@ -87,8 +84,6 @@ void GameObjectManager::Update()
 	{
 		for (auto& a : addObject2Ds)
 		{
-
-			a.get()->Update();
 			object2Ds.push_back(a);
 		}
 
@@ -2340,9 +2335,14 @@ void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 {
 	if (object)
 	{
-		object.get()->FalseEraseManager();
-		addObjects.push_back(object);
+		object->FalseEraseManager();
+		object->SetPreDataPositions();
+		object->Update();
+		// 仮にここに書いてる
+		object->SetPreDataPositions();
 
+		addObjects.push_back(object);
+		//objectNames.emplace(object.get(),object->GetObjectName());
 	}
 }
 
@@ -2350,7 +2350,8 @@ void GameObjectManager::AddObject(const std::shared_ptr<GameObject2D>& object)
 {
 	if (object)
 	{
-		object.get()->FalseEraseManager();
+		object->FalseEraseManager();
+		object->Update();
 		addObject2Ds.push_back(object);
 	}
 }
@@ -2514,6 +2515,10 @@ void GameObjectManager::SetMouseCollisionFlag(const bool flag)
 }
 
 
+
+void MelLib::GameObjectManager::GetObjectNames(std::vector<std::string>& refVector)
+{
+}
 
 void GameObjectManager::AllEraseObject()
 {
