@@ -64,9 +64,22 @@ void MelLib::SceneEditer::DrawObjectList()
 	// 同じ名前のオブジェクトがあったら名前に番号付け足す
 	// OBJECT_NAMEを定数から変数に変えないといけない
 	// 変数にしたらあとから名前変えたりできるから変数にしちゃっていい
-	const std::vector<std::shared_ptr<GameObject>>GAME_OBJECTS = GameObjectManager::GetInstance()->GetRefGameObject();
+	
 
-
+	// ここソートしてもいいかも
+	// ここconstにしたい
+	// GameObjectManagerで名前の配列作って管理出来るようにしてからconstに変更末う
+	std::vector<std::string>objectNames;
+	GameObjectManager::GetInstance()->GetObjectNames(objectNames);
+	
+	// ImguiManagerにvector私てリスト表示できるようにするから、GetObjectNameにcharの配列渡して受け取る処理作る必要ない
+	const size_t OBJECT_SIZE = objectNames.size();
+	const char** names = new char*[OBJECT_SIZE];
+	for (int i = 0; i < OBJECT_SIZE; i++) 
+	{
+		names[i] = objectNames[i].c_str();
+	}
+	ImGui::ListBox("", &selectNum, names, objectNames.size());
 
 	ImguiManager::GetInstance()->EndDrawWindow();
 }

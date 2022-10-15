@@ -2521,7 +2521,7 @@ void GameObjectManager::SetMouseCollisionFlag(const bool flag)
 
 
 
-void MelLib::GameObjectManager::GetObjectNames(std::vector<std::string>& refVector)
+void MelLib::GameObjectManager::GetObjectNames(std::vector<std::string>& refVector)const
 {
 	size_t objectSize = objects.size();
 	refVector.resize(objectSize);

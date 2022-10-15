@@ -159,8 +159,7 @@ namespace MelLib
 		/// <returns></returns>
 		const std::vector<std::shared_ptr<GameObject2D>>& GetRefGameObject2D() { return object2Ds; };
 
-		void GetObjectNames(std::vector<std::string>& refVector);
-
+		void GetObjectNames(std::vector<std::string>& refVector)const;
 #pragma endregion
 
 

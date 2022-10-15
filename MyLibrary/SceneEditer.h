@@ -25,6 +25,7 @@ namespace MelLib
 
 	class SceneEditer
 	{
+
 	private:
 		SceneEditer(){}
 		~SceneEditer(){}
@@ -59,6 +60,7 @@ namespace MelLib
 		bool isEdit = false;
 		bool releaseEdit = false;
 
+		int selectNum = 0;
 
 	public:
 		static SceneEditer* GetInstance();
