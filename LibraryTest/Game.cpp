@@ -90,7 +90,7 @@ void Game::Initialize()
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
 	//for (int i = 0; i < 1; i++)MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
-   // MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
+   MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
 	//MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
 
@@ -104,11 +104,11 @@ void Game::Initialize()
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	
 
-	//// エディターオン
-	MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
+	////// エディターオン
+	//MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
 
-	//// エディターに追加(Unityでいうプレハブ作成)
-	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
+	////// エディターに追加(Unityでいうプレハブ作成)
+	//MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
 
 }
 

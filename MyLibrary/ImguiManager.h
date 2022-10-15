@@ -92,6 +92,16 @@ namespace MelLib
 		/// <returns></returns>
 		bool DrawCheckBox(const std::string& label, bool& refBool);
 
+
+		
+		/// <summary>
+		/// リストを表示します。
+		/// </summary>
+		/// <param name="num">どれが選ばれているかを表す数値を代入する変数の参照</param>
+		/// <param name="texts">表示するテキストの配列</param>
+		void DrawList(int& num,const std::vector<std::string>& texts);
+
+
 #pragma region スライダー
 
 

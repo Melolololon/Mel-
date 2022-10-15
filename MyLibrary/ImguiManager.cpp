@@ -144,6 +144,19 @@ bool MelLib::ImguiManager::DrawCheckBox(const std::string& label, bool& refBool)
     return ImGui::Checkbox(label.c_str(), &refBool);
 }
 
+void MelLib::ImguiManager::DrawList(int& num, const std::vector<std::string>& texts)
+{
+    const size_t TEXTS_SIZE = texts.size();
+    const char** pTexts = new const char* [TEXTS_SIZE];
+    for (int i = 0; i < TEXTS_SIZE; i++)
+    {
+        pTexts[i] = texts[i].c_str();
+    }
+    ImGui::ListBox("", &num, pTexts, texts.size());
+    delete[] pTexts;
+}
+
+
 bool MelLib::ImguiManager::DrawSliderInt(const std::string& label, int& refInt, const int numMin, const int numMax)
 {
     if (CheckReleaseDrawFlag())return false;

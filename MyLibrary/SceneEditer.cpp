@@ -53,8 +53,6 @@ void MelLib::SceneEditer::UpdateSelectObject()
 
 void MelLib::SceneEditer::DrawObjectList()
 {
-	ImguiManager::GetInstance()->BeginDrawWindow("ObjectList");
-
 	// オブジェクトマネージャーに名前だけ取得する関数作ってもいいかも
 	// 毎回stringの配列に入れると処理遅くなるからオブジェクト追加時に名前追加していいかも
 	// 名前変更した時に変更する処理入れないとそれ出来ない
@@ -74,12 +72,19 @@ void MelLib::SceneEditer::DrawObjectList()
 	
 	// ImguiManagerにvector私てリスト表示できるようにするから、GetObjectNameにcharの配列渡して受け取る処理作る必要ない
 	const size_t OBJECT_SIZE = objectNames.size();
-	const char** names = new char*[OBJECT_SIZE];
+	
+	if (OBJECT_SIZE == 0)return;
+	
+	ImguiManager::GetInstance()->BeginDrawWindow("ObjectList");
+
+	const char** names = new const char*[OBJECT_SIZE];
 	for (int i = 0; i < OBJECT_SIZE; i++) 
 	{
 		names[i] = objectNames[i].c_str();
 	}
 	ImGui::ListBox("", &selectNum, names, objectNames.size());
+	delete[] names;
+
 
 	ImguiManager::GetInstance()->EndDrawWindow();
 }
@@ -180,10 +185,12 @@ void MelLib::SceneEditer::Update()
 
 void MelLib::SceneEditer::Draw()
 {
+	DrawObjectList();
 	if (!isEdit)return;
 	if (pObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
 	pSelectObject->Draw();
+
 }
 
 void MelLib::SceneEditer::SetEditFlag(const bool flag)
