@@ -50,6 +50,11 @@ void GameObjectManager::Update()
 		farPos = cursor->GetFarPos();
 	}
 
+	// 拡張forの方が遅い可能性あるけど
+	// オブジェクト多いのに毎フレームオブジェクトの数だけif文の処理行うと重くなるだろうから(Updateで追加されたか確認するために毎ループ確認する必要あり)
+	// これでもいいかも
+	// オブジェクト多いことあるだろうしここ遅くするのはゲームに影響出る
+	// 既にある分だけ確認してあとから追加分処理を行えばいいのでは。今拡張forでやってるように
 	for (auto& obj : objects)
 	{
 		obj->SetPreDataPositions();
