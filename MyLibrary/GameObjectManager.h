@@ -56,6 +56,7 @@ namespace MelLib
 		// 追加したオブジェクトの配列
 		// shared_ptrよりポインタの方がバイト数少ないから比較少なくて処理早いからポインタ
 		// 変更した時の書き直し処理実装面倒だからこれで実装するの後回し
+		// これから取得するなら名前変更あったか確認するフラグ用意する
 		//std::unordered_map<GameObject*, std::string>objectNames;
 
 

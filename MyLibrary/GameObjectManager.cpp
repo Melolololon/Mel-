@@ -2518,6 +2518,18 @@ void GameObjectManager::SetMouseCollisionFlag(const bool flag)
 
 void MelLib::GameObjectManager::GetObjectNames(std::vector<std::string>& refVector)
 {
+	size_t objectSize = objects.size();
+	refVector.resize(objectSize);
+
+	// Releaseだと拡張forにして{}内でiをインクリメントするよりこっちのほうが速かった
+	// 拡張for自体通常より遅かったなぜ
+	// 見やすいだけで速度は遅い?
+	// 見やすさ考慮する場合でもこれが文字数少なくていい
+	for (int i = 0; i < objectSize; i++)
+	{
+		refVector[i] = objects[i]->GetObjectName();
+	}
+
 }
 
 void GameObjectManager::AllEraseObject()
