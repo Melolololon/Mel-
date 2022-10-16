@@ -54,6 +54,8 @@ void Player::LoadRes()
 // 名前を指定するときにobjectNameを渡さないと番号が反映されない
 // あと名前変更した後にGUIの変数初期化しないといけない
 // 追加関数じゃなくてGameObjectのコンストラクタで番号付けないといけない
+// ObjectManagerに存在するか確認して番号付けると追加せずにEnemy5つ作ったら全部同じになっちゃう
+// GameObjectにstaticのumap持たせて番号管理したほうがよさそう
 Player::Player()
 	:GameObject("Player")
 {
