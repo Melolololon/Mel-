@@ -51,6 +51,9 @@ void Player::LoadRes()
 	int x = 0;
 }
 
+// 名前を指定するときにobjectNameを渡さないと番号が反映されない
+// あと名前変更した後にGUIの変数初期化しないといけない
+// 追加関数じゃなくてGameObjectのコンストラクタで番号付けないといけない
 Player::Player()
 	:GameObject("Player")
 {
