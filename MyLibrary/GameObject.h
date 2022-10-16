@@ -136,6 +136,8 @@ namespace MelLib
 		std::unordered_map<std::string, std::vector<Value3<Vector3>>>triangleDataPrePositions;
 		std::unordered_map<std::string, std::vector<Vector3>>obbDataPrePositions;
 
+		static std::unordered_map<std::string, int>objectCreateNumber;
+
 	protected:
 
 #pragma region 判定データ
@@ -214,6 +216,9 @@ namespace MelLib
 
 			float collisionCheckDistance = 15.0f;
 	private:
+
+		
+
 		/// <summary>
 		/// 当たり判定数に応じてモデルの生成、削除を行う関数
 		/// </summary>
@@ -315,7 +320,7 @@ namespace MelLib
 	public:
 
 		//コンストラクタ
-		GameObject(const std::string& objectName);
+		GameObject(const std::string& name);
 		//デストラクタ
 		virtual ~GameObject();
 
@@ -380,7 +385,7 @@ namespace MelLib
 
 #pragma region セット
 		
-		void SetObjectName(const  std::string& name) { objectName = name; }
+		//void SetObjectName(const  std::string& name) { objectName = name; }
 
 		/// <summary>
 		/// GameObject共通の重力加速度をセットします。

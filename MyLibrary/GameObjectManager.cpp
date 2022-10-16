@@ -2373,18 +2373,18 @@ void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 
 	// この辺エディターに使う処理だから最終的にはオフにできるようにしたほうが良いかも
 	// 何番まで登録してあるか確認しないといけない
-	const std::string OBJECT_NAME = object->GetObjectName();
-	objectAddNumber.try_emplace(OBJECT_NAME, 1);
+	//const std::string OBJECT_NAME = object->GetObjectName();
+	//objectAddNumber.try_emplace(OBJECT_NAME, 1);
 
-	// 既に登録されている名前だったら番号を付ける
-	if (CheckObjectName(OBJECT_NAME))
-	{
-		// 名前の後に番号追加
-		object->SetObjectName(OBJECT_NAME + "_" + std::to_string(objectAddNumber.at(OBJECT_NAME)));
-		
-		// オブジェクトが増えたため加算
-		objectAddNumber[OBJECT_NAME]++;
-	}
+	//// 既に登録されている名前だったら番号を付ける
+	//if (CheckObjectName(OBJECT_NAME))
+	//{
+	//	// 名前の後に番号追加
+	//	object->SetObjectName(OBJECT_NAME + "_" + std::to_string(objectAddNumber.at(OBJECT_NAME)));
+	//	
+	//	// オブジェクトが増えたため加算
+	//	objectAddNumber[OBJECT_NAME]++;
+	//}
 	
 	
 	//objectNames.emplace(object.get(),object->GetObjectName());

@@ -7,6 +7,8 @@ using namespace MelLib;
 
 float GameObject::gravutationalAcc = Physics::GRAVITATIONAL_ACCELERATION_EARTH / 30;
 
+std::unordered_map<std::string, int>GameObject::objectCreateNumber;
+
 #ifdef _DEBUG
 
 
@@ -166,11 +168,8 @@ void MelLib::GameObject::SetDataScale(const Vector3& scale)
 	}
 }
 
-GameObject::GameObject(const std::string& objectName)
-	:objectName(objectName)
-	, guiPosition(0, objectName, "Position", -10000, 10000)
-	, guiAngle(0, objectName, "Angle", -10000, 10000)
-	, guiScale(1, objectName, "Scale", -10000, 10000)
+GameObject::GameObject(const std::string& name)
+	:objectName(name)
 	,position(guiPosition.GetRefValue())
 	,angle(guiAngle.GetRefValue())
 	,scale(guiScale.GetRefValue())
@@ -179,6 +178,21 @@ GameObject::GameObject(const std::string& objectName)
 	// オブジェクトマネージャーに追加した時に追加する(SetDataを呼び出す)ようにすれば問題ない
 	// SetDataを呼び出す関数作る
 	// GameObjectを使うけどオブジェクトマネージャーを使わない時はその関数を自分で呼び出してもらう
+
+	// 0以外は番号付ける
+	if (objectCreateNumber[objectName] != 0) 
+	{
+		objectName += "_" + std::to_string(objectCreateNumber[objectName]);
+	}
+
+	// 加算
+	objectCreateNumber[objectName]++;
+
+
+
+	guiPosition.SetData(0, objectName, "Position", -10000, 10000);
+	guiAngle.SetData(0, objectName, "Angle", -10000, 10000);
+	guiScale.SetData(1, objectName, "Scale", -10000, 10000);
 
 }
 

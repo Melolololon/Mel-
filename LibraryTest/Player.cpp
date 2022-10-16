@@ -64,7 +64,7 @@ Player::Player()
 
 	// MelLib;;ModelObjectの配列
 	// 四角形をセット
-	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX),"Player");
+	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX),GetObjectName());
 
 	// 今読み込んだ値をモデルオブジェクトに反映できてないから
 	// 初期位置を0,0,5に
@@ -98,8 +98,8 @@ Player::Player()
 	modelObjects["main"].SetPar(100.0f);
 
 
-	hp.SetData(10, "Player", "HP", 0, 100);
-	power.SetData(10, "Player", "Power", 1, 100);
+	hp.SetData(10, GetObjectName(), "HP", 0, 100);
+	power.SetData(10, GetObjectName(), "Power", 1, 100);
 }
 
 void Player::Update()
