@@ -76,16 +76,8 @@ void MelLib::SceneEditer::DrawObjectList()
 	if (OBJECT_SIZE == 0)return;
 	
 	ImguiManager::GetInstance()->BeginDrawWindow("ObjectList");
-
-	const char** names = new const char*[OBJECT_SIZE];
-	for (int i = 0; i < OBJECT_SIZE; i++) 
-	{
-		names[i] = objectNames[i].c_str();
-	}
-	ImGui::ListBox("", &selectNum, names, objectNames.size());
-	delete[] names;
-
-
+	ImguiManager::GetInstance()->DrawList(selectObjectNum, objectNames);
+	selectObjectName = objectNames[selectObjectNum];
 	ImguiManager::GetInstance()->EndDrawWindow();
 }
 

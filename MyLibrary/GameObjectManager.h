@@ -48,6 +48,8 @@ namespace MelLib
 		std::vector<std::shared_ptr<GameObject>>objects;
 		//追加されたものを一時的に入れておく配列
 		std::vector<std::shared_ptr<GameObject>>addObjects;
+		// 何個登録されているか確認するための番号を格納する配列
+		std::unordered_map<std::string, int>objectAddNumber;
 
 		std::vector<std::shared_ptr<GameObject2D>>object2Ds;
 		std::vector<std::shared_ptr<GameObject2D>>addObject2Ds;
@@ -83,7 +85,11 @@ namespace MelLib
 		/// </summary>
 		void EraseObjectCheck();
 
-
+		/// <summary>
+		/// 同じ名前のオブジェクトが既に登録されているかを確認します。
+		/// </summary>
+		/// <returns></returns>
+		bool CheckObjectName(const std::string& name)const;
 	public:
 		GameObjectManager(const GameObjectManager& obj) = delete;
 		GameObjectManager& operator=(const GameObjectManager& obj) = delete;

@@ -60,8 +60,8 @@ namespace MelLib
 		bool isEdit = false;
 		bool releaseEdit = false;
 
-		int selectNum = 0;
-
+		int selectObjectNum = 0;
+		std::string selectObjectName;
 	public:
 		static SceneEditer* GetInstance();
 

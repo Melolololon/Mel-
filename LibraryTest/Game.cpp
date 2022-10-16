@@ -49,13 +49,6 @@ void Game::Run()
 		if (MelLib::Library::GetIsEnd())break;
 		
 		//ImGui::ShowDemoWindow();
-		MelLib::ImguiManager::GetInstance()->BeginDrawWindow("List");
-		int item = 0;
-		const char* names[] = { "Player","Enemy","Item" };
-		
-		// (リストの右に表示される謎文字,どれが選ばれているかを表す番号を格納する変数のポインタ,リストの名前一覧,名前数)
-		ImGui::ListBox("Test", &items, names, _countof(names));
-		MelLib::ImguiManager::GetInstance()->EndDrawWindow();
 
 		Update();
 		Draw();
@@ -90,7 +83,8 @@ void Game::Initialize()
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
 	//for (int i = 0; i < 1; i++)MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
-   MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
+    MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
+    MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
 	//MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
 
