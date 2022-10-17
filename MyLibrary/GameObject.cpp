@@ -179,14 +179,16 @@ GameObject::GameObject(const std::string& name)
 	// SetDataを呼び出す関数作る
 	// GameObjectを使うけどオブジェクトマネージャーを使わない時はその関数を自分で呼び出してもらう
 
-	// 0以外は番号付ける
-	if (objectCreateNumber[objectName] != 0) 
-	{
-		objectName += "_" + std::to_string(objectCreateNumber[objectName]);
-	}
 
 	// 加算
 	objectCreateNumber[objectName]++;
+
+	// 0以外は番号付ける
+	if (objectCreateNumber[objectName] != 0) 
+	{
+		objectName += "_" + std::to_string(objectCreateNumber[objectName] - 1);
+	}
+
 
 
 
