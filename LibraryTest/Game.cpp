@@ -40,7 +40,7 @@ void Game::Run()
 	MelLib::ImguiManager::GetInstance()->SetReleaseDrawFlag(true);
 
 	Initialize();
-	int items = 0;
+
 	while (1)
 	{
 		MelLib::Library::LoopStartProcess();
@@ -99,10 +99,10 @@ void Game::Initialize()
 	
 
 	////// エディターオン
-	//MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
+	MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
 
 	////// エディターに追加(Unityでいうプレハブ作成)
-	//MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
+	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
 
 }
 

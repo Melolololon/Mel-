@@ -23,12 +23,11 @@ MelLib::GuiValueManager::GuiValueManager()
 
 void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 {
-	for (const auto& name : createWindowNames)
+	for (const auto& d : drawWindowFlag)
 	{
-		if (name == windowName)return;
+		if (d.first == windowName)return;
 	}
-	createWindowNames.push_back(windowName);
-
+	drawWindowFlag.emplace(windowName, true);
 }
 
 
@@ -373,6 +372,9 @@ void MelLib::GuiValueManager::EraseGuiValue(const type_info& type, const std::st
 void MelLib::GuiValueManager::Initialize()
 {
 	Load();
+
+	
+
 }
 
 void MelLib::GuiValueManager::Update()
@@ -381,28 +383,33 @@ void MelLib::GuiValueManager::Update()
 	if (!ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
 	// 配列見て、Window名が一緒だったら1つのウィンドウにまとめる
-	for (const auto& windowName : createWindowNames)
+	for (const auto& d : drawWindowFlag)
 	{
-		ImguiManager::GetInstance()->BeginDrawWindow(windowName);
+		const std::string WINDOW_NAME = d.first;
+
+		// 描画フラグがfalseだったら次へ
+		if (!drawWindowFlag[WINDOW_NAME])continue;
+
+		ImguiManager::GetInstance()->BeginDrawWindow(WINDOW_NAME);
 
 		// 切り替わったかどうか
 		bool changeFlag = false;
 
 		// lavel一覧
 		// この配列順にウィンドウに追加していく
-		std::vector<std::string>lavels(addOrders[windowName].size());
+		std::vector<std::string>lavels(addOrders[WINDOW_NAME].size());
 
 		bool lavelCheckEnd = false;
 
 
-		for (const auto& lavel : addOrders[windowName])
+		for (const auto& lavel : addOrders[WINDOW_NAME])
 		{
 			lavelCheckEnd = false;
 
 			// データの配列から探し出し、見つけたら追加と保存処理
 
 			// int
-			const std::unordered_map<std::string, GuiInt*>& refInts = intValues[windowName];
+			const std::unordered_map<std::string, GuiInt*>& refInts = intValues[WINDOW_NAME];
 			for (auto& value : refInts)
 			{
 				const std::string& LAVEL = value.first;
@@ -419,7 +426,7 @@ void MelLib::GuiValueManager::Update()
 					if (changeFlag)
 					{
 						const char* data = reinterpret_cast<char*>(&num);
-						Save(windowName, LAVEL, data, typeid(num), sizeof(num), changeFlag);
+						Save(WINDOW_NAME, LAVEL, data, typeid(num), sizeof(num), changeFlag);
 						guiInt = num;
 					}
 				}
@@ -429,7 +436,7 @@ void MelLib::GuiValueManager::Update()
 			if (lavelCheckEnd)continue;
 
 			// float 
-			const std::unordered_map<std::string, GuiFloat*>& refFloats = floatValues[windowName];
+			const std::unordered_map<std::string, GuiFloat*>& refFloats = floatValues[WINDOW_NAME];
 			for (auto& value : refFloats)
 			{
 				const std::string& LAVEL = value.first;
@@ -446,7 +453,7 @@ void MelLib::GuiValueManager::Update()
 					if (changeFlag)
 					{
 						const char* data = reinterpret_cast<char*>(&num);
-						Save(windowName, LAVEL, data, typeid(num), sizeof(num), changeFlag);
+						Save(WINDOW_NAME, LAVEL, data, typeid(num), sizeof(num), changeFlag);
 						guiFloat = num;
 					}
 				}
@@ -457,7 +464,7 @@ void MelLib::GuiValueManager::Update()
 			if (lavelCheckEnd)continue;
 
 			// Vector3 
-			const std::unordered_map<std::string, GuiVector3*>& refVector3s = vector3Values[windowName];
+			const std::unordered_map<std::string, GuiVector3*>& refVector3s = vector3Values[WINDOW_NAME];
 			for (auto& value : refVector3s)
 			{
 				const std::string& LAVEL = value.first;
@@ -474,7 +481,7 @@ void MelLib::GuiValueManager::Update()
 					if (changeFlag)
 					{
 						const char* data = reinterpret_cast<char*>(&num);
-						Save(windowName, LAVEL, data, typeid(num), sizeof(num), changeFlag);
+						Save(WINDOW_NAME, LAVEL, data, typeid(num), sizeof(num), changeFlag);
 						guiVector3 = num;
 					}
 				}
@@ -484,7 +491,7 @@ void MelLib::GuiValueManager::Update()
 			if (lavelCheckEnd)continue;
 
 			// bool 
-			const std::unordered_map<std::string, GuiBool*>& refBools = boolValues[windowName];
+			const std::unordered_map<std::string, GuiBool*>& refBools = boolValues[WINDOW_NAME];
 			for (auto& value : refBools)
 			{
 				const std::string& LAVEL = value.first;
@@ -501,7 +508,7 @@ void MelLib::GuiValueManager::Update()
 					if (changeFlag)
 					{
 						const char* data = reinterpret_cast<char*>(&flag);
-						Save(windowName, LAVEL, data, typeid(flag), sizeof(flag), changeFlag);
+						Save(WINDOW_NAME, LAVEL, data, typeid(flag), sizeof(flag), changeFlag);
 						guiBool = flag;
 					}
 				}

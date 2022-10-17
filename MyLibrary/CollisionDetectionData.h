@@ -263,7 +263,7 @@ namespace MelLib
 	{
 
 		//‘ŠŽè‚ª‚Ç‚±‚É‚Ô‚Â‚©‚Á‚½‚©
-		BoxHitDirection boxHitDistance;
+		BoxHitDirection boxHitDistance = BoxHitDirection::BOX_HIT_DIRECTION_NO_HIT;
 	};
 
 	//” 

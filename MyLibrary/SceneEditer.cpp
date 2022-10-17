@@ -3,6 +3,7 @@
 #include"ImguiManager.h"
 #include"GameObjectManager.h"
 #include"SceneManager.h"
+#include"GuiValueManager.h"
 #include"Input.h"
 
 #include<fstream>
@@ -79,6 +80,19 @@ void MelLib::SceneEditer::DrawObjectList()
 	ImguiManager::GetInstance()->DrawList(selectObjectNum, objectNames);
 	selectObjectName = objectNames[selectObjectNum];
 	ImguiManager::GetInstance()->EndDrawWindow();
+
+	SetDrawWindowFlag(objectNames);
+
+}
+
+void MelLib::SceneEditer::SetDrawWindowFlag(const std::vector<std::string>& objectNames)
+{
+	for (const auto& name : objectNames) 
+	{
+		bool drawFlag = false;
+		if (name == selectObjectName) drawFlag = true;
+		GuiValueManager::GetInstance()->SetDrawWindowFlag(name, drawFlag);
+	}
 }
 
 MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
@@ -173,11 +187,13 @@ void MelLib::SceneEditer::Update()
 	if (pushControl  && Input::KeyTrigger(DIK_S))Save();
 	// “Çž
 	if (pushControl && Input::KeyTrigger(DIK_L))Load();
+
+	DrawObjectList();
+
 }
 
 void MelLib::SceneEditer::Draw()
 {
-	DrawObjectList();
 	if (!isEdit)return;
 	if (pObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 

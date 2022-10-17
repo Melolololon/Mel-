@@ -41,6 +41,7 @@ namespace MelLib
 
 		void DrawObjectList();
 
+		void SetDrawWindowFlag(const std::vector<std::string>& objectNames);
 	private:
 		// 順序保持しとけばラジオボタンの値分forで回してデータにアクセスできる(intでアクセスできる)からmap
 		// 順序を他の配列に保存するのもいいかも。ループする必要なくなるから早い。けどメモリ使う

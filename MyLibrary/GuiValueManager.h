@@ -76,9 +76,8 @@ namespace MelLib
 		std::unordered_map<std::string, std::unordered_map<std::string, GuiVector3*>>vector3Values;
 		std::unordered_map<std::string, std::unordered_map<std::string, GuiBool*>>boolValues;
 
-		std::vector<std::string>createWindowNames;
-
-		
+		// 生成したウィンドウと描画フラグを確認するためのフラグ
+		std::unordered_map < std::string, bool >drawWindowFlag;
 
 		int* castIntData(const std::string& data);
 		float* castFloatData(const std::string& data);
@@ -107,6 +106,12 @@ namespace MelLib
 		bool GetGuiData(GuiFloat* pGuiValue, float& refFloat,const std::string& windowName, const std::string& lavel);
 		bool GetGuiData(GuiBool* pGuiValue, bool& refFlag, const std::string& windowName, const std::string& lavel);
 		bool GetGuiData(GuiVector3* pGuiValue, Vector3& refVectior3,const std::string& windowName, const std::string& lavel);
+
+		void SetDrawWindowFlag(const std::string& windowName, bool flag) 
+		{
+			drawWindowFlag[windowName] = flag;
+		}
+
 	};
 
 }
