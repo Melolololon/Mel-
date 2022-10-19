@@ -116,6 +116,7 @@ namespace MelLib
 		/// <param name="flag"></param>
 		void SetMouseCollisionFlag(const bool flag);
 
+		void CheckHit();
 
 #pragma region オブジェクトの配列関係
 

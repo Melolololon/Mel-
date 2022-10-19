@@ -51,7 +51,6 @@ void GameObjectManager::Initialize()
 void GameObjectManager::Update()
 {
 
-
 #pragma region オブジェクトのUpdate
 	//カーソルアップデート
 	if (cursor)
@@ -125,13 +124,15 @@ void GameObjectManager::Update()
 
 #pragma region 新判定処理
 
-
-
 	std::vector<CollisionDetectionFlag>collisionFlags(OBJECT_SIZE);
 	for (int i = 0; i < OBJECT_SIZE; i++)
 	{
 		collisionFlags[i] = objects[i]->GetCollisionFlag();
 	}
+
+	// チェック回数多くてもデータごとに処理するようにすればマルチスレッドで処理できそう
+	// データの数が均等になるように配列で分けて判定する関数に渡す
+	// 全部の判定を確認した後に、Hit関数を呼び出す
 
 	for (int objI = 0; objI < OBJECT_SIZE; objI++)
 	{
@@ -156,6 +157,7 @@ void GameObjectManager::Update()
 			float checkDistance = obj1->GetCollisionCheckDistance();
 			if (checkDistance < obj2->GetCollisionCheckDistance())checkDistance = obj2->GetCollisionCheckDistance();
 
+			// こういう距離の計算とかマルチスレッドで処理してよさそう
 			float distance = LibMath::CalcDistance3D(obj1->GetPosition(), obj2->GetPosition());
 			if (distance > checkDistance)continue;
 
@@ -2300,7 +2302,6 @@ void GameObjectManager::Update()
 #pragma endregion
 
 	EraseObjectCheck();
-
 }
 
 void GameObjectManager::Draw()
@@ -2562,6 +2563,7 @@ void GameObjectManager::SetMouseCollisionFlag(const bool flag)
 {
 	checkMouseCollision = flag;
 }
+
 
 
 
