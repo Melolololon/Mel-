@@ -321,6 +321,8 @@ namespace MelLib
 
 		//コンストラクタ
 		GameObject(const std::string& name);
+
+
 		//デストラクタ
 		virtual ~GameObject();
 
@@ -484,6 +486,19 @@ namespace MelLib
 		/// </summary>
 		/// <returns></returns>
 		bool GetEraseManager()const { return eraseManager; }
+
+		enum class CopyGameObjectContent
+		{
+			ALL,
+			EDIT,
+
+		};
+		/// <summary>
+		/// 引数で指定下オブジェクトにデータをコピーします。
+		/// </summary>
+		/// <param name="object">コピー先のGameObjectの参照</param>
+		/// <param name="content">コピー内容</param>
+		void CopyObjectData(GameObject& object, CopyGameObjectContent content);
 
 #pragma region モデル関係
 		const std::unordered_map<std::string, ModelObject>& GetRefModelObjects()const { return modelObjects; }

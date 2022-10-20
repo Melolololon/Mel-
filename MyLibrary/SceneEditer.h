@@ -25,8 +25,6 @@ namespace MelLib
 
 	class SceneEditer
 	{
-	private:
-
 
 	private:
 		SceneEditer(){}
@@ -37,6 +35,9 @@ namespace MelLib
 
 
 		void Save();
+		void SaveEditData();
+		void SaveRegisterObject();
+
 		void Load();
 
 		void UpdateSelectObject();
@@ -46,7 +47,10 @@ namespace MelLib
 		void SetDrawWindowFlag(const std::vector<std::string>& objectNames);
 
 		void RegisterSelectObject();
+		std::string GetObjectType(const GameObject& object)const;
 	private:
+		static const std::string EDIT_DATA_FORMAT;
+
 		// 順序保持しとけばラジオボタンの値分forで回してデータにアクセスできる(intでアクセスできる)からmap
 		// 順序を他の配列に保存するのもいいかも。ループする必要なくなるから早い。けどメモリ使う
 		// forで取得すると参照に代入できないし、vectorのポインタは個人的に使いたくないし、forでしか参照できないから分ける
@@ -55,18 +59,19 @@ namespace MelLib
 		// オブジェクト
 		std::map< std::string,std::vector<std::shared_ptr<MelLib::GameObject>>>pObjects;
 		// ラジオボタンの戻り値で上のobjectsにアクセスするための配列
+		// ラジオボタンの戻り値でこの配列からpObjectsのキーを取り出したり、pObjectsのvectorにアクセスする
 		std::unordered_map<int ,std::string>objectOrderDatas;
 		 
 		// 選択されているタイプ
 		int selectType = 0;
 
-		GameObject* pSelectObject = nullptr;
+		GameObject* pEditSelectObject = nullptr;
 
 		bool isEdit = false;
 		bool releaseEdit = false;
 
-		int selectObjectNum = 0;
-		std::string selectObjectName;
+		int selectListObjectNum = 0;
+		std::string selectListObjectName;
 	public:
 		static SceneEditer* GetInstance();
 

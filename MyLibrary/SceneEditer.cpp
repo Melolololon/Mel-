@@ -8,6 +8,8 @@
 
 #include<fstream>
 
+const std::string MelLib::SceneEditer::EDIT_DATA_FORMAT = ".melsce";
+
 void MelLib::SceneEditer::Save()
 {
 
@@ -16,7 +18,7 @@ void MelLib::SceneEditer::Save()
 	
 
 	std::string name = SceneManager::GetInstance()->GetCurrentSceneName();
-	name += ".melsce";
+	name += EDIT_DATA_FORMAT;
 	std::ofstream file(name);
 
 	// 書き出し
@@ -30,26 +32,30 @@ void MelLib::SceneEditer::Load()
 
 	// 保存せずに読み込んでいいか聞く
 
-	std::string name = SceneManager::GetInstance()->GetCurrentSceneName();
-	name += ".melsce";
-	std::ofstream file(name);
+	// ここに指定したシーン名を入れる
+	std::string name = "";
+	name += EDIT_DATA_FORMAT;
+	std::ofstream file;
+	file.open(name);
+
+	file.close();
 }
 
 void MelLib::SceneEditer::UpdateSelectObject()
 {
 	if (!isEdit)return;
 	
-	MelLib::Vector3 pos = pSelectObject->GetPosition();
+	MelLib::Vector3 pos = pEditSelectObject->GetPosition();
 	ImguiManager::GetInstance()->DrawSliderVector3("Position", pos, -1000, 1000);
-	pSelectObject->SetPosition(pos);
+	pEditSelectObject->SetPosition(pos);
 
-	MelLib::Vector3 angle = pSelectObject->GetAngle();
+	MelLib::Vector3 angle = pEditSelectObject->GetAngle();
 	ImguiManager::GetInstance()->DrawSliderVector3("Angle", angle, 0, 359);
-	pSelectObject->SetAngle(angle);
+	pEditSelectObject->SetAngle(angle);
 
-	MelLib::Vector3 scale = pSelectObject->GetScale();
+	MelLib::Vector3 scale = pEditSelectObject->GetScale();
 	ImguiManager::GetInstance()->DrawSliderVector3("Scale", scale, 0, 359);
-	pSelectObject->SetScale(scale);
+	pEditSelectObject->SetScale(scale);
 }
 
 void MelLib::SceneEditer::DrawObjectList()
@@ -77,8 +83,8 @@ void MelLib::SceneEditer::DrawObjectList()
 	if (OBJECT_SIZE == 0)return;
 	
 	ImguiManager::GetInstance()->BeginDrawWindow("ObjectList");
-	ImguiManager::GetInstance()->DrawList(selectObjectNum, objectNames);
-	selectObjectName = objectNames[selectObjectNum];
+	ImguiManager::GetInstance()->DrawList(selectListObjectNum, objectNames);
+	selectListObjectName = objectNames[selectListObjectNum];
 	ImguiManager::GetInstance()->EndDrawWindow();
 
 	SetDrawWindowFlag(objectNames);
@@ -90,7 +96,7 @@ void MelLib::SceneEditer::SetDrawWindowFlag(const std::vector<std::string>& obje
 	for (const auto& name : objectNames) 
 	{
 		bool drawFlag = false;
-		if (name == selectObjectName) drawFlag = true;
+		if (name == selectListObjectName) drawFlag = true;
 		GuiValueManager::GetInstance()->SetDrawWindowFlag(name, drawFlag);
 	}
 }
@@ -101,6 +107,23 @@ void MelLib::SceneEditer::RegisterSelectObject()
 	// そもそも書き出せない?
 	// クラス名だけ書き出して、RegisterObjectで登録したオブジェクトのGetNewPtrを呼び出せばOK
 
+	// コピーを生成
+	std::shared_ptr<GameObject> object = pEditSelectObject->GetNewPtr();
+	pEditSelectObject->CopyObjectData(*object, GameObject::CopyGameObjectContent::EDIT);
+
+	// 登録
+	RegisterObject(object, GetObjectType(*object));
+}
+
+std::string MelLib::SceneEditer::GetObjectType(const GameObject& object)const
+{
+	std::string objectType = typeid(object).name();
+
+	for (const auto& pObject : pObjects) 
+	{
+		if (pObject.first == objectType)return pObject.first;
+	}
+	return objectType;
 }
 
 MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
@@ -159,7 +182,7 @@ void MelLib::SceneEditer::Update()
 	ImguiManager::GetInstance()->DrawSliderInt("Object", sliderNum, 0, refObjects.size() - 1);
 
 	// 選ばれたオブジェクトのポインタをpSelectObjectに代入
-	pSelectObject = refObjects[sliderNum].get();
+	pEditSelectObject = refObjects[sliderNum].get();
 
 	
 
@@ -172,7 +195,7 @@ void MelLib::SceneEditer::Update()
 	if (Input::KeyTrigger(DIK_SPACE)) 
 	{
 		// GetNewPtr関数でメモリ確保
-		std::shared_ptr<GameObject>pObject = pSelectObject->GetNewPtr();
+		std::shared_ptr<GameObject>pObject = pEditSelectObject->GetNewPtr();
 
 		if (pObject) 
 		{
@@ -180,9 +203,9 @@ void MelLib::SceneEditer::Update()
 			// pSelectObjectを管理クラスに追加して
 			// 戻り値のを新たにmapに入れてもいいかも
 			// どっちみちセットしないといけないから
-			pObject->SetPosition(pSelectObject->GetPosition());
-			pObject->SetAngle(pSelectObject->GetAngle());
-			pObject->SetScale(pSelectObject->GetScale());
+			pObject->SetPosition(pEditSelectObject->GetPosition());
+			pObject->SetAngle(pEditSelectObject->GetAngle());
+			pObject->SetScale(pEditSelectObject->GetScale());
 
 			// 追加
 			GameObjectManager::GetInstance()->AddObject(pObject);
@@ -210,7 +233,7 @@ void MelLib::SceneEditer::Draw()
 	if (!isEdit)return;
 	if (pObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
-	pSelectObject->Draw();
+	pEditSelectObject->Draw();
 
 }
 

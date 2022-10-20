@@ -326,6 +326,15 @@ void MelLib::GameObject::SetMulColor(const Color& color)
 }
 
 
+void MelLib::GameObject::CopyObjectData(GameObject& object, CopyGameObjectContent content)
+{
+	object.position = position;
+	object.angle = angle;
+	object.scale = scale;
+
+	object.modelObjects = modelObjects;
+}
+
 std::shared_ptr<GameObject> MelLib::GameObject::GetNewPtr()
 {
 	return nullptr;
