@@ -74,7 +74,10 @@ namespace MelLib
 
 		void SameLine();
 
-#pragma region 生成
+#pragma region 描画
+
+		bool DrawButton(const std::string& lavel,const Vector2& size = 0);
+
 		/// <summary>
 		/// ラジオボタンをウィンドウに表示します。
 		/// </summary>

@@ -61,7 +61,7 @@ void Game::Run()
 
 void Game::Initialize()
 {
-	MelLib::Library::Initialize(1280, 720, MelLib::Color(30,30,160,255),L"MELLib");
+	MelLib::Library::Initialize(1920, 1080, MelLib::Color(30,30,160,255),L"MELLib");
 	MelLib::Library::SetFramesPerSecond60(true);
 
 	//カメラは各シーンに移動しました
@@ -98,10 +98,10 @@ void Game::Initialize()
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	
 
-	////// エディターオン
+	// エディターオン
 	MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
 
-	////// エディターに追加(Unityでいうプレハブ作成)
+	// エディターに追加(Unityでいうプレハブ作成)
 	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
 
 }

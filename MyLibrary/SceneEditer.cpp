@@ -95,6 +95,14 @@ void MelLib::SceneEditer::SetDrawWindowFlag(const std::vector<std::string>& obje
 	}
 }
 
+void MelLib::SceneEditer::RegisterSelectObject()
+{
+	// 読み込むときは、GetNewPtr関数を使ってNewすればいい
+	// そもそも書き出せない?
+	// クラス名だけ書き出して、RegisterObjectで登録したオブジェクトのGetNewPtrを呼び出せばOK
+
+}
+
 MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
 {
 	static SceneEditer s;
@@ -129,6 +137,11 @@ void MelLib::SceneEditer::Update()
 
 
 	ImguiManager::GetInstance()->BeginDrawWindow("Edit");
+
+	// 登録ボタン追加
+	bool push = false;
+	push = ImguiManager::GetInstance()->DrawButton("RegisterSelectObject");
+	if (push)RegisterSelectObject();
 
 	// キーの数だけラジオボタン描画
 	int count = 0;

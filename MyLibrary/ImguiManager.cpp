@@ -129,9 +129,15 @@ void MelLib::ImguiManager::SameLine()
     ImGui::SameLine();
 }
 
+bool MelLib::ImguiManager::DrawButton(const std::string& lavel, const Vector2& size)
+{
+    return ImGui::Button(lavel.c_str(), ImVec2(size.x, size.y));
+}
+
 
 bool MelLib::ImguiManager::DrawRadioButton(const std::string& label, int& refInt, const int num)
 {
+
     if (CheckReleaseDrawFlag())return false;
 
     return ImGui::RadioButton(label.c_str(), &refInt, num);
