@@ -332,7 +332,13 @@ void MelLib::GameObject::CopyObjectData(GameObject& object, CopyGameObjectConten
 	object.angle = angle;
 	object.scale = scale;
 
-	object.modelObjects = modelObjects;
+	// 当たり判定もコピーを行うようにする
+	// ここエラー出る
+	object.modelObjects.clear();
+	for (const auto& modelObj : modelObjects) 
+	{
+		object.modelObjects[modelObj.first] = modelObjects[modelObj.first];
+	}
 }
 
 std::shared_ptr<GameObject> MelLib::GameObject::GetNewPtr()
