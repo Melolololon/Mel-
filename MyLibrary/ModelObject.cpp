@@ -1689,8 +1689,9 @@ MelLib::ModelObject::ModelObject(ModelObject& obj)
 
 ModelObject& MelLib::ModelObject::operator=(ModelObject& obj)
 {
-	Create(obj.pModelData, nullptr);
+	Create(obj.pModelData, obj.objectName, nullptr);
 	modelConstDatas = obj.modelConstDatas;
+	materials = obj.materials;
 
 	if (obj.catFrontModelData)
 	{
