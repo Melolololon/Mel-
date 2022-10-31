@@ -305,6 +305,8 @@ bool MelLib::ImguiManager::DrawTextBox(const std::string& label, std::string& te
     // - InputText()をstd::stringやカスタムの動的文字列型で使用したい場合は、misc/cpp/imgui_stdlib.hやimgui_demo.cppのコメントを参照してください。
     // - ImGuiInputTextFlagsフラグのほとんどはInputText()にのみ有効で、InputFloatX, InputIntX, InputDoubleなどには使えません。
 
+    // なぜか可変長配列を使うと文字の下で何かが点滅する
+
     if (CheckReleaseDrawFlag())return false;
    
 
