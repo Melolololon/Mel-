@@ -386,9 +386,6 @@ namespace MelLib
 
 
 #pragma region セット
-		
-		//void SetObjectName(const  std::string& name) { objectName = name; }
-
 		/// <summary>
 		/// GameObject共通の重力加速度をセットします。
 		/// </summary>
@@ -425,8 +422,10 @@ namespace MelLib
 		void SetSubColor(const Color& color);
 		void SetMulColor(const Color& color);
 
+		void SetObjectName(const std::string& name) { objectName = name; }
 
 		void TrueEraseManager() { eraseManager = true; }
+
 
 #pragma endregion
 

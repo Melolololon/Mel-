@@ -299,27 +299,36 @@ bool MelLib::ImguiManager::DrawColorPicker(const std::string& label, Color& refC
     return result;
 }
 
-bool MelLib::ImguiManager::DrawInputText(const std::string& label, std::string& text, const size_t maxChar,const ImGuiInputTextFlags flag)
+bool MelLib::ImguiManager::DrawTextBox(const std::string& label, std::string& text,const  size_t maxCharNum,const ImGuiInputTextFlags flag)
 {
     // ウィジェットです。キーボードによる入力
     // - InputText()をstd::stringやカスタムの動的文字列型で使用したい場合は、misc/cpp/imgui_stdlib.hやimgui_demo.cppのコメントを参照してください。
     // - ImGuiInputTextFlagsフラグのほとんどはInputText()にのみ有効で、InputFloatX, InputIntX, InputDoubleなどには使えません。
 
-    //if (CheckReleaseDrawFlag())return false;
+    if (CheckReleaseDrawFlag())return false;
    
-    //size_t size = text.size();
-    //char* str = new char[size + 1];
-    //for (int i = 0; i < size; i++)
-    //{
-    //    str[i] = text[i];
-    //}
-    //str[size] = '\0';
 
-    //bool result = ImGui::InputText(label.c_str(), str, maxChar,flag);
-    //text = str;
-    //delete[] str;
-    //return result;
+    size_t textSize = text.size();
+    if (maxCharNum <= text.size())
+    {
+        text.resize(maxCharNum);
+    }
+
+    char* str = new char[maxCharNum + 1];
+
+    for (int i = 0; i < maxCharNum; i++)
+    {
+        if(i < textSize)str[i] = text[i];
+        else str[i] = ' ';
+    }
+    str[maxCharNum] = '\n';
+
+    bool result = ImGui::InputText(label.c_str(), str, maxCharNum + 1, flag);
+
+    text = str;
+
+    text.resize(maxCharNum);
 
 
-    return false;
+    return result;
 }

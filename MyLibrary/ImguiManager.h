@@ -130,7 +130,7 @@ namespace MelLib
 #pragma endregion
 
 #pragma region “ü—Í
-		bool DrawInputText(const std::string& label, std::string& text,const size_t maxChar,const ImGuiInputTextFlags flag = 0);
+		bool DrawTextBox(const std::string& label, std::string& text, const size_t maxCharNum,const ImGuiInputTextFlags flag = 0);
 #pragma endregion
 
 

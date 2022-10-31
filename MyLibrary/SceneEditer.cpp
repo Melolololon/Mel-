@@ -107,12 +107,58 @@ void MelLib::SceneEditer::RegisterSelectObject()
 	// そもそも書き出せない?
 	// クラス名だけ書き出して、RegisterObjectで登録したオブジェクトのGetNewPtrを呼び出せばOK
 
+	// 登録するオブジェクトの種類と名前を入力させる
+	std::string inputObjectName;
+
+
 	// コピーを生成
 	std::shared_ptr<GameObject> object = pEditSelectObject->GetNewPtr();
 	pEditSelectObject->CopyObjectData(*object, GameObject::CopyGameObjectContent::EDIT);
 
+	// 入力された名前を設定
+	object->SetObjectName(inputObjectName);
+
 	// 登録
-	RegisterObject(object, GetObjectType(*object));
+	RegisterObject(object, inputObjectType);
+}
+
+void MelLib::SceneEditer::InputObjectName()
+{
+	//ImguiManager::GetInstance()->DrawTextBox("Input Object Name", inputObjectName, 20);
+	std::string s = "Object";
+	char c[21];
+	for (int i = 0; i < 21; i++) 
+	{
+		if (i < s.size())c[i] = s[i];
+		else c[i] = ' ';
+	}
+	c[20] = '\n';
+	
+	ImGui::InputText("Input Object Name",c, 21);
+
+	inputObjectName = c;
+
+	if (Input::KeyTrigger(DIK_RETURN)) inpttingObjectName = false;
+}
+
+void MelLib::SceneEditer::InputObjectType()
+{
+	//ImguiManager::GetInstance()->DrawTextBox("Input Object Type", inputObjectType, 20);
+
+	std::string s = "Object";
+	char c[21];
+	for (int i = 0; i < 21; i++)
+	{
+		if (i < s.size())c[i] = s[i];
+		else c[i] = ' ';
+	}
+	c[20] = '\n';
+
+	ImGui::InputText("Input Object Type", c, 21);
+
+	inputObjectType = c;
+
+	if (Input::KeyTrigger(DIK_RETURN)) inpttingObjectType = false;
 }
 
 std::string MelLib::SceneEditer::GetObjectType(const GameObject& object)const
@@ -164,7 +210,33 @@ void MelLib::SceneEditer::Update()
 	// 登録ボタン追加
 	bool push = false;
 	push = ImguiManager::GetInstance()->DrawButton("RegisterSelectObject");
-	if (push)RegisterSelectObject();
+	//if (push)RegisterSelectObject();
+	if (push && !inpttingObjectName && !inpttingObjectType)
+	{
+		inpttingObjectName = true;
+		inputObjectName = "Object";
+		inputObjectType = "Object";
+	}
+
+	if (inpttingObjectType)
+	{
+		InputObjectType();
+		if (!inpttingObjectType)
+		{
+			inpttingObjectType = false;
+			RegisterSelectObject();
+		}
+	}
+	if (inpttingObjectName)
+	{
+		InputObjectName();
+		if (!inpttingObjectName)
+		{
+			inpttingObjectName = false;
+			inpttingObjectType = true;
+		}
+	}
+
 
 	// キーの数だけラジオボタン描画
 	int count = 0;

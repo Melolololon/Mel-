@@ -47,6 +47,9 @@ namespace MelLib
 		void SetDrawWindowFlag(const std::vector<std::string>& objectNames);
 
 		void RegisterSelectObject();
+		void InputObjectName();
+		void InputObjectType();
+
 		std::string GetObjectType(const GameObject& object)const;
 	private:
 		static const std::string EDIT_DATA_FORMAT;
@@ -72,6 +75,11 @@ namespace MelLib
 
 		int selectListObjectNum = 0;
 		std::string selectListObjectName;
+
+		bool inpttingObjectName = false;
+		bool inpttingObjectType = false;
+		std::string inputObjectName;
+		std::string inputObjectType;
 	public:
 		static SceneEditer* GetInstance();
 

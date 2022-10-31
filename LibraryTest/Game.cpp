@@ -61,7 +61,7 @@ void Game::Run()
 
 void Game::Initialize()
 {
-	MelLib::Library::Initialize(1920, 1080, MelLib::Color(30,30,160,255),L"MELLib");
+	MelLib::Library::Initialize(1280, 720, MelLib::Color(30,30,160,255),L"MELLib");
 	MelLib::Library::SetFramesPerSecond60(true);
 
 	//カメラは各シーンに移動しました
