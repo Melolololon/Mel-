@@ -44,7 +44,7 @@ namespace MelLib
 
 		void DrawObjectList();
 
-		void SetDrawWindowFlag(const std::vector<std::string>& objectNames);
+		void SetDrawWindowFlag(const std::vector<std::string>& objNames);
 
 		void RegisterSelectObject();
 		void InputObjectName();
@@ -60,10 +60,12 @@ namespace MelLib
 		// ラジオボタンの順番めちゃくちゃになるからmapに変更
 		// mapはstringだと名前順に並べてくれる
 		// オブジェクト
-		std::map< std::string,std::vector<std::shared_ptr<MelLib::GameObject>>>pObjects;
+		std::map< std::string,std::map<std::string,std::shared_ptr<MelLib::GameObject>>>pRegisterObjects;
 		// ラジオボタンの戻り値で上のobjectsにアクセスするための配列
 		// ラジオボタンの戻り値でこの配列からpObjectsのキーを取り出したり、pObjectsのvectorにアクセスする
-		std::unordered_map<int ,std::string>objectOrderDatas;
+		std::unordered_map<int ,std::string>registerObjectOrderDatas;
+		std::vector<std::string>registerObjectTypes;
+		std::vector<std::string>registerObjectNames;
 		 
 		// 選択されているタイプ
 		int selectType = 0;
