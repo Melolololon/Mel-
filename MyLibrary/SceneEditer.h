@@ -53,6 +53,7 @@ namespace MelLib
 		std::string GetObjectType(const GameObject& object)const;
 	private:
 		static const std::string EDIT_DATA_FORMAT;
+		static const std::string REGISTER_OBJECT_DATA_FORMAT;
 
 		// 順序保持しとけばラジオボタンの値分forで回してデータにアクセスできる(intでアクセスできる)からmap
 		// 順序を他の配列に保存するのもいいかも。ループする必要なくなるから早い。けどメモリ使う
@@ -63,7 +64,7 @@ namespace MelLib
 		std::map< std::string,std::map<std::string,std::shared_ptr<MelLib::GameObject>>>pRegisterObjects;
 		// ラジオボタンの戻り値で上のobjectsにアクセスするための配列
 		// ラジオボタンの戻り値でこの配列からpObjectsのキーを取り出したり、pObjectsのvectorにアクセスする
-		std::unordered_map<int ,std::string>registerObjectOrderDatas;
+		std::unordered_map<std::string,std::unordered_map<int ,std::string>>registerObjectOrderDatas;
 		std::vector<std::string>registerObjectTypes;
 		std::vector<std::string>registerObjectNames;
 		 

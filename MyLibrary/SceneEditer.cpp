@@ -9,9 +9,12 @@
 #include<fstream>
 
 const std::string MelLib::SceneEditer::EDIT_DATA_FORMAT = ".melsce";
+const std::string MelLib::SceneEditer::REGISTER_OBJECT_DATA_FORMAT = ".rod";
 
 void MelLib::SceneEditer::Save()
 {
+
+	SaveRegisterObject();
 
 	// 2022_05_01
 	// オブジェクトマネージャーに追加したオブジェクトをimguiでいじれるように
@@ -25,6 +28,40 @@ void MelLib::SceneEditer::Save()
 
 
 	file.close();
+}
+
+void MelLib::SceneEditer::SaveRegisterObject()
+{
+	// 書き出すもの
+	// オブジェクト名(ファイル名)
+	// クラス名
+	// パラメーター
+
+
+	for (const auto& o : pRegisterObjects) 
+	{
+		for (const auto& o2 : o.second) 
+		{
+			GameObject* pObject = o2.second.get();
+			
+			std::string objectName = pObject->GetObjectName();
+
+			std::ofstream registerObjectFile(objectName + REGISTER_OBJECT_DATA_FORMAT);
+			
+			std::string className = typeid(*pObject).name();
+			registerObjectFile.write(className.c_str(), className.size());
+
+			// 座標は書き出す必要なし
+			Vector3 angle = pObject->GetAngle();
+			registerObjectFile.write(reinterpret_cast<char*>(&angle), sizeof(Vector3));
+			Vector3 scale = pObject->GetScale();
+			registerObjectFile.write(reinterpret_cast<char*>(&scale), sizeof(Vector3));
+
+
+			registerObjectFile.close();
+		}
+	}
+
 }
 
 void MelLib::SceneEditer::Load()
@@ -107,8 +144,6 @@ void MelLib::SceneEditer::RegisterSelectObject()
 	// そもそも書き出せない?
 	// クラス名だけ書き出して、RegisterObjectで登録したオブジェクトのGetNewPtrを呼び出せばOK
 
-	// 登録するオブジェクトの種類と名前を入力させる
-	std::string inputObjectName;
 
 
 	// コピーを生成
@@ -205,10 +240,13 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	{
 		registerObjectTypes.push_back(m.first);
 		int i = 0;
+
+		std::unordered_map<int, std::string> umap;
+		registerObjectOrderDatas.emplace(m.first, std::unordered_map<int, std::string>());
 		for (const auto& object : m.second)
 		{
 			registerObjectNames.push_back(object.first);
-			registerObjectOrderDatas.emplace(i, object.first);
+			registerObjectOrderDatas[m.first].emplace(i, object.first);
 
 			i++;
 		}
@@ -277,7 +315,7 @@ void MelLib::SceneEditer::Update()
 	//ImguiManager::GetInstance()->DrawSliderInt("Object", sliderNum, 0, refObjects.size() - 1);
 
 	//// 選ばれたオブジェクトのポインタをpSelectObjectに代入
-	pEditSelectObject = refObjects[registerObjectOrderDatas[listNum]].get();
+	pEditSelectObject = refObjects[registerObjectOrderDatas[registerObjectTypes[selectType]][listNum]].get();
 
 	
 
