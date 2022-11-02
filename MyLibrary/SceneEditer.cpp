@@ -15,19 +15,52 @@ void MelLib::SceneEditer::Save()
 {
 
 	SaveRegisterObject();
-
+	inpttingEditDataName = true;
 	// 2022_05_01
 	// オブジェクトマネージャーに追加したオブジェクトをimguiでいじれるように
 	
 
-	std::string name = SceneManager::GetInstance()->GetCurrentSceneName();
-	name += EDIT_DATA_FORMAT;
-	std::ofstream file(name);
+	//std::string name = SceneManager::GetInstance()->GetCurrentSceneName();
+	//name += EDIT_DATA_FORMAT;
+	//std::ofstream file(name);
+
+	//// 書き出し
+
+
+	//file.close();
+}
+
+void MelLib::SceneEditer::SaveEditData()
+{
+	std::ofstream file(inputEditDataName + EDIT_DATA_FORMAT);
 
 	// 書き出し
 
 
 	file.close();
+}
+
+void MelLib::SceneEditer::InputEditDataName()
+{
+	//ImguiManager::GetInstance()->DrawTextBox("Input Object Name", inputObjectName, 20);
+	std::string s = "EditData";
+	char c[21];
+	for (int i = 0; i < 21; i++)
+	{
+		if (i < s.size())c[i] = s[i];
+		else c[i] = ' ';
+	}
+	c[20] = '\n';
+
+	ImGui::InputText("Input Edit Data Name", c, 21);
+
+	inputEditDataName = c;
+
+	if (Input::KeyTrigger(DIK_RETURN))
+	{
+		inpttingEditDataName = false;
+		SaveEditData();
+	}
 }
 
 void MelLib::SceneEditer::SaveRegisterObject()
@@ -258,6 +291,7 @@ void MelLib::SceneEditer::Update()
 	if (!isEdit)return;
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
+
 #pragma region 選択
 
 
@@ -267,7 +301,7 @@ void MelLib::SceneEditer::Update()
 	bool push = false;
 	push = ImguiManager::GetInstance()->DrawButton("RegisterSelectObject");
 	//if (push)RegisterSelectObject();
-	if (push && !inpttingObjectName && !inpttingObjectType)
+	if (push && !inpttingObjectName && !inpttingObjectType&& !inpttingEditDataName)
 	{
 		inpttingObjectName = true;
 		inputObjectName = "Object";
@@ -354,9 +388,10 @@ void MelLib::SceneEditer::Update()
 
 	bool pushControl = Input::KeyState(DIK_LCONTROL) || Input::KeyState(DIK_RCONTROL);
 	// 保存
-	if (pushControl  && Input::KeyTrigger(DIK_S))Save();
+	if (pushControl  && Input::KeyTrigger(DIK_S) && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName)Save();
+	if (inpttingEditDataName)InputEditDataName();
 	// 読込
-	if (pushControl && Input::KeyTrigger(DIK_L))Load();
+	if (pushControl && Input::KeyTrigger(DIK_L) && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName)Load();
 
 	DrawObjectList();
 
@@ -364,6 +399,7 @@ void MelLib::SceneEditer::Update()
 
 void MelLib::SceneEditer::Draw()
 {
+
 	if (!isEdit)return;
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 

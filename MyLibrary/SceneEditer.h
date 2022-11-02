@@ -36,6 +36,7 @@ namespace MelLib
 
 		void Save();
 		void SaveEditData();
+		void InputEditDataName();
 		void SaveRegisterObject();
 
 		void Load();
@@ -81,8 +82,11 @@ namespace MelLib
 
 		bool inpttingObjectName = false;
 		bool inpttingObjectType = false;
+		bool inpttingEditDataName = false;
+
 		std::string inputObjectName;
 		std::string inputObjectType;
+		std::string inputEditDataName;
 	public:
 		static SceneEditer* GetInstance();
 
