@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include"SceneEditer.h"
 #include<assert.h>
 #include<typeinfo>
 
@@ -15,6 +16,37 @@ SceneManager::~SceneManager()
 
 }
 
+void MelLib::SceneManager::Change()
+{
+
+	//シーン取得
+	Scene* newScene = currentScene->GetNextScene();
+
+
+	//終了処理
+	currentScene->Finalize();
+
+	// 違うシーンに切り替える場合、リソースを消す
+	if (typeid(currentScene) != typeid(newScene))
+	{
+		//一括削除対象リソースを削除
+		currentScene->ResourceBatchDeletion();
+	}
+
+	//シーン切り替え
+
+	//同じポインタセット防止
+	if (newScene == currentScene)assert(0);
+	//シーンを削除
+	delete currentScene;
+	//入れ替え
+	currentScene = newScene;
+
+	//初期化
+	currentScene->FalseIsEnd();
+	currentScene->Initialize();
+}
+
 SceneManager* SceneManager::GetInstance()
 {
 	static SceneManager inst;
@@ -26,6 +58,8 @@ void SceneManager::SetStartScene(Scene* startScene)
 
 	if (!startScene) assert(0);
 
+	//SceneEditer::GetInstance().
+
 	currentScene = startScene;
 	currentScene->Initialize();
 }
@@ -33,30 +67,9 @@ void SceneManager::SetStartScene(Scene* startScene)
 void SceneManager::Update()
 {
 
-	if (!currentScene)return;
+	if (!currentScene || stopUpdate)return;
 	
-	if (currentScene->GetIsEnd())
-	{
-		//終了処理
-		currentScene->Finalize();
-		//一括削除対象リソースを削除
-		currentScene->ResourceBatchDeletion();
-
-		//シーン切り替え
-
-		//シーン取得
-		Scene* newScene = currentScene->GetNextScene();
-		//同じポインタセット防止
-		if (newScene == currentScene)assert(0);
-		//シーンを削除
-		delete currentScene;
-	    //入れ替え
-		currentScene = newScene;
-
-		//初期化
-		currentScene->FalseIsEnd();
-		currentScene->Initialize();
-	}
+	if (currentScene->GetIsEnd())Change();
 
 	currentScene->Update();
 

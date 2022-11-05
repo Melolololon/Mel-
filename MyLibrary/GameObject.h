@@ -138,6 +138,9 @@ namespace MelLib
 
 		static std::unordered_map<std::string, int>objectCreateNumber;
 
+		// シーン切替に使う判定
+		bool sceneEndFlag = false;
+
 	protected:
 
 #pragma region 判定データ
@@ -430,6 +433,12 @@ namespace MelLib
 #pragma endregion
 
 #pragma region ゲット
+		/// <summary>
+		/// シーンを終了するために使用するフラグを取得します。
+		/// </summary>
+		/// <returns></returns>
+		bool GetSceneEndFlag()const { return sceneEndFlag; }
+
 		/// <summary>
 		/// GameObject共通の重力加速度を取得します。
 		/// </summary>

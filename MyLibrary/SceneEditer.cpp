@@ -7,6 +7,7 @@
 #include"Input.h"
 
 #include<fstream>
+#include<filesystem>
 
 const std::string MelLib::SceneEditer::EDIT_DATA_FORMAT = ".melsce";
 const std::string MelLib::SceneEditer::REGISTER_OBJECT_DATA_FORMAT = ".rod";
@@ -100,21 +101,41 @@ void MelLib::SceneEditer::SaveRegisterObject()
 void MelLib::SceneEditer::Load()
 {
 
+}
+
+void MelLib::SceneEditer::SelectEditData()
+{
+}
+
+void MelLib::SceneEditer::Load(const std::string& sceneName)
+{
+
 	// 保存せずに読み込んでいいか聞く
 
 	// ここに指定したシーン名を入れる
-	std::string name = "";
+	std::string name = sceneName;
 	name += EDIT_DATA_FORMAT;
 	std::ofstream file;
 	file.open(name);
 
 	file.close();
+
+	
+
 }
 
 void MelLib::SceneEditer::UpdateSelectObject()
 {
 	if (!isEdit)return;
 	
+
+#ifdef _DEBUG
+
+#else
+	if (!releaseEdit)return;
+#endif // _DEBUG
+
+
 	MelLib::Vector3 pos = pEditSelectObject->GetPosition();
 	ImguiManager::GetInstance()->DrawSliderVector3("Position", pos, -1000, 1000);
 	pEditSelectObject->SetPosition(pos);
@@ -250,6 +271,14 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 {
 	if (!isEdit)return;
 	
+
+#ifdef _DEBUG
+
+#else
+	if (!releaseEdit)return;
+#endif // _DEBUG
+
+
 	// C++20のcontainsに置き換えできる
 	if (pRegisterObjects.find(objectType) != pRegisterObjects.end()) 
 	{
@@ -264,8 +293,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	//registerObjectOrderDatas.try_emplace(pRegisterObjects.size() - 1, objectType);
 
 	registerObjectNames.clear();
-	registerObjectNames.reserve(pRegisterObjects.size());
-
+	
 	registerObjectTypes.clear();
 	registerObjectOrderDatas.clear();
 
@@ -274,21 +302,31 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 		registerObjectTypes.push_back(m.first);
 		int i = 0;
 
-		std::unordered_map<int, std::string> umap;
 		registerObjectOrderDatas.emplace(m.first, std::unordered_map<int, std::string>());
+		registerObjectNames.emplace(m.first, std::vector<std::string>());
+
 		for (const auto& object : m.second)
 		{
-			registerObjectNames.push_back(object.first);
 			registerObjectOrderDatas[m.first].emplace(i, object.first);
+			registerObjectNames[m.first].push_back(object.first);
 
 			i++;
 		}
 	}
+
 }
 
 void MelLib::SceneEditer::Update()
 {
 	if (!isEdit)return;
+
+#ifdef _DEBUG
+
+#else
+	if (!releaseEdit)return;
+#endif // _DEBUG
+
+
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
 
@@ -301,7 +339,7 @@ void MelLib::SceneEditer::Update()
 	bool push = false;
 	push = ImguiManager::GetInstance()->DrawButton("RegisterSelectObject");
 	//if (push)RegisterSelectObject();
-	if (push && !inpttingObjectName && !inpttingObjectType&& !inpttingEditDataName)
+	if (push && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName)
 	{
 		inpttingObjectName = true;
 		inputObjectName = "Object";
@@ -336,35 +374,37 @@ void MelLib::SceneEditer::Update()
 		count++;
 	}
 
+
 	// ラジオボタンで選択したオブジェクト一覧の参照
 	std::map <std::string, std::shared_ptr<MelLib::GameObject>>& refObjects = pRegisterObjects[registerObjectTypes[selectType]];
-	
+
 
 	// リスト処理
 	int listNum = 0;
-	ImguiManager::GetInstance()->DrawList(listNum, registerObjectNames);
-	
+	ImguiManager::GetInstance()->DrawList(listNum, registerObjectNames[registerObjectTypes[selectType]]);
+
 	//// ここにスライダー作成処理
 	//int sliderNum = 0;
 	//ImguiManager::GetInstance()->DrawSliderInt("Object", sliderNum, 0, refObjects.size() - 1);
 
 	//// 選ばれたオブジェクトのポインタをpSelectObjectに代入
-	pEditSelectObject = refObjects[registerObjectOrderDatas[registerObjectTypes[selectType]][listNum]].get();
+	const std::string OBJECT_NAME = registerObjectOrderDatas[registerObjectTypes[selectType]][listNum];
 
-	
+	pEditSelectObject = refObjects[OBJECT_NAME].get();
+
+
 
 #pragma endregion
 
 	UpdateSelectObject();
-	ImguiManager::GetInstance()->EndDrawWindow();
 
 	// 追加
-	if (Input::KeyTrigger(DIK_SPACE)) 
+	if (Input::KeyTrigger(DIK_SPACE))
 	{
 		// GetNewPtr関数でメモリ確保
 		std::shared_ptr<GameObject>pObject = pEditSelectObject->GetNewPtr();
 
-		if (pObject) 
+		if (pObject)
 		{
 			// 追加時に座標とかセットし直すのめんどいから
 			// pSelectObjectを管理クラスに追加して
@@ -378,7 +418,7 @@ void MelLib::SceneEditer::Update()
 			GameObjectManager::GetInstance()->AddObject(pObject);
 
 		}
-		else 
+		else
 		{
 			std::string text = typeid(*pObject).name();
 			text += "のGetNewPtrがnullptrを返しました。オブジェクトが追加できません。\n";
@@ -388,19 +428,36 @@ void MelLib::SceneEditer::Update()
 
 	bool pushControl = Input::KeyState(DIK_LCONTROL) || Input::KeyState(DIK_RCONTROL);
 	// 保存
-	if (pushControl  && Input::KeyTrigger(DIK_S) && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName)Save();
+	if (pushControl && Input::KeyTrigger(DIK_S) && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName)Save();
 	if (inpttingEditDataName)InputEditDataName();
 	// 読込
 	if (pushControl && Input::KeyTrigger(DIK_L) && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName)Load();
 
 	DrawObjectList();
 
+	// シーンの更新オンオフ処理
+	if (Input::KeyTrigger(DIK_F5))
+	{
+		isEdit = !isEdit;
+		SceneManager::GetInstance()->ChangeStopFlag();
+	}
+
+
+
+	ImguiManager::GetInstance()->EndDrawWindow();
 }
 
 void MelLib::SceneEditer::Draw()
 {
 
 	if (!isEdit)return;
+
+#ifdef _DEBUG
+
+#else
+	if (!releaseEdit)return;
+#endif // _DEBUG
+
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
 	pEditSelectObject->Draw();
@@ -413,8 +470,10 @@ void MelLib::SceneEditer::SetEditFlag(const bool flag)
 #ifdef _DEBUG
 
 #else
-	if (!releaseEdit) return;
-
+	if (!releaseEdit)
+	{
+		return;
+	}
 #endif // _DEBUG
 
 	isEdit = flag;
