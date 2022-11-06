@@ -169,7 +169,7 @@ namespace MelLib
 		void GetObjectNames(std::vector<std::string>& refVector)const;
 #pragma endregion
 
-
+		void EraseObject(GameObject* p);
 
 		/// <summary>
 		/// 全てのオブジェクトを配列から削除します

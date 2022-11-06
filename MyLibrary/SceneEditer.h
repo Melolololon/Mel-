@@ -114,6 +114,7 @@ namespace MelLib
 
 		int selectListObjectNum = 0;
 		std::string selectListObjectName;
+		GameObject* pSelectListObject = nullptr;
 
 		bool inpttingObjectName = false;
 		bool inpttingObjectType = false;

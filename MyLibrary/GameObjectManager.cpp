@@ -2587,6 +2587,19 @@ void MelLib::GameObjectManager::GetObjectNames(std::vector<std::string>& refVect
 
 }
 
+void MelLib::GameObjectManager::EraseObject(GameObject* p)
+{
+	const size_t SIZE = objects.size();
+	for (size_t i = 0; i < SIZE; i++) 
+	{
+		if (p == objects[i].get()) 
+		{
+			objects.erase(objects.begin() + i);
+			return;
+		}
+	}
+}
+
 void GameObjectManager::AllEraseObject()
 {
 	objects.clear();

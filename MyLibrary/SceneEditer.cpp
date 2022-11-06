@@ -355,6 +355,13 @@ void MelLib::SceneEditer::DrawObjectList()
 
 	SetDrawWindowFlag(objectNames);
 
+	for (const auto& p : addObjects)
+	{
+		if (p->GetObjectName() == selectListObjectName)
+		{
+			pSelectListObject = p;
+		}
+	}
 }
 
 void MelLib::SceneEditer::SetDrawWindowFlag(const std::vector<std::string>& objNames)
@@ -655,9 +662,14 @@ void MelLib::SceneEditer::Update()
 			OutputDebugStringA(text.c_str());
 		}
 	}
+
 	ImguiManager::GetInstance()->EndDrawWindow();
 
 	bool pushControl = Input::KeyState(DIK_LCONTROL) || Input::KeyState(DIK_RCONTROL);
+
+	
+
+
 	// 保存
 	if (pushControl && Input::KeyTrigger(DIK_S) && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName && !selectingEditData)StartSave();
 	if (inpttingEditDataName)InputEditDataName();
@@ -668,6 +680,22 @@ void MelLib::SceneEditer::Update()
 	// オブジェクト一覧の描画
 	DrawObjectList();
 
+	// 削除
+	if (pushControl && Input::KeyTrigger(DIK_D) && pSelectListObject)
+	{
+		pSelectListObject->TrueEraseManager();
+
+		const size_t SIZE = addObjects.size();
+		for (size_t i = 0; i < SIZE; i++)
+		{
+			if (pSelectListObject == addObjects[i])
+			{
+				addObjects.erase(addObjects.begin() + i);
+				GameObjectManager::GetInstance()->EraseObject(pSelectListObject);
+				pSelectListObject = nullptr;
+			}
+		}
+	}
 
 	// リセット
 	if (Input::KeyTrigger(DIK_ESCAPE)) 
