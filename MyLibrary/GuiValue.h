@@ -258,11 +258,7 @@ namespace MelLib
 			return *this;
 		}
 
-		GuiBool& operator+=(const GuiBool& value)
-		{
-			this->value += value.GetValue();
-			return *this;
-		}
+		
 
 		bool GetValue()const { return value; }
 		bool& GetRefValue() { return value; }

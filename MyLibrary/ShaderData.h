@@ -70,9 +70,9 @@ namespace MelLib
 	//シェーダーの情報をまとめた構造体
 	struct ShaderData
 	{
-		const wchar_t* shaderPath;
-		const char* entryPoint;
-		const char* ver;
+		const wchar_t* shaderPath = nullptr;
+		const char* entryPoint = nullptr;;
+		const char* ver = nullptr;;
 	};
 
 	struct ShaderDataSet

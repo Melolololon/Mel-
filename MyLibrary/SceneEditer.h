@@ -52,7 +52,6 @@ namespace MelLib
 		/// データの呼び出し。エディット用。
 		/// </summary>
 		void Load();
-		void LoadEditData();
 		void LoadRegisterSelectObject();
 		void LoadFileName(std::ifstream& stream, std::string& str);
 
@@ -116,7 +115,10 @@ namespace MelLib
 		std::string inputObjectType;
 		std::string inputEditDataName;
 
-		std::string selectEditFileName;
+
+		std::vector<std::string>sceneFileNames;
+		int selectEditDataNum = 0;
+		bool selectingEditData = false;
 	public:
 		static SceneEditer* GetInstance();
 
@@ -124,7 +126,7 @@ namespace MelLib
 		/// ファイルに記録されているデータを読み込みます。
 		/// </summary>
 		/// <param name="sceneName"></param>
-		void Load(const std::string& sceneName);
+		void LoadEditData(const std::string& sceneName);
 
 		/// <summary>
 		/// オブジェクトをエディタに登録します。
