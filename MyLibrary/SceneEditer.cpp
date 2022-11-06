@@ -199,7 +199,6 @@ void MelLib::SceneEditer::LoadEditData()
 		if (c == -2)break;
 	}
 
-
 	file.close();
 }
 

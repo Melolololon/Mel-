@@ -184,7 +184,7 @@ GameObject::GameObject(const std::string& name)
 	objectCreateNumber[objectName]++;
 
 	// 0ˆÈŠO‚Í”Ô†•t‚¯‚é
-	if (objectCreateNumber[objectName] != 0) 
+	if (objectCreateNumber[objectName] != 1) 
 	{
 		objectName += "_" + std::to_string(objectCreateNumber[objectName] - 1);
 	}
