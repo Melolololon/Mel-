@@ -12,7 +12,7 @@
 const std::string MelLib::SceneEditer::EDIT_DATA_FORMAT = ".melsce";
 const std::string MelLib::SceneEditer::REGISTER_OBJECT_DATA_FORMAT = ".rod";
 
-void MelLib::SceneEditer::Save()
+void MelLib::SceneEditer::StartSave()
 {
 
 	SaveRegisterObject();
@@ -36,7 +36,32 @@ void MelLib::SceneEditer::SaveEditData()
 	std::ofstream file(inputEditDataName + EDIT_DATA_FORMAT, std::ios_base::binary);
 
 	// 書き出し
+	for (const auto& pObject : addObjects) 
+	{
+		// クラス名
+		const std::string CLASS_NAME = typeid(*pObject).name();
+		file.write(CLASS_NAME.c_str(), CLASS_NAME.size());
+		file.write("\0", 1);
 
+		// オブジェクト名
+		const std::string OBJECT_NAME = pObject->GetObjectName();
+		file.write(OBJECT_NAME.c_str(), OBJECT_NAME.size());
+		file.write("\0", 1);
+
+
+
+		//座標とか
+		Vector3 position = pObject->GetPosition();
+		file.write(reinterpret_cast<char*>(&position), sizeof(Vector3));
+		Vector3 angle = pObject->GetAngle();
+		file.write(reinterpret_cast<char*>(&angle), sizeof(Vector3));
+		Vector3 scale = pObject->GetScale();
+		file.write(reinterpret_cast<char*>(&scale), sizeof(Vector3));
+
+		file.write("-1", 1);
+	}
+
+	file.write("-2", 1);
 
 	file.close();
 }
@@ -51,7 +76,7 @@ void MelLib::SceneEditer::InputEditDataName()
 		if (i < s.size())c[i] = s[i];
 		else c[i] = ' ';
 	}
-	c[20] = '\n';
+	c[20] = '\0';
 
 	ImGui::InputText("Input Edit Data Name", c, 21);
 
@@ -96,11 +121,11 @@ void MelLib::SceneEditer::SaveRegisterObject()
 			std::ofstream registerObjectFile(OBJECT_NAME + REGISTER_OBJECT_DATA_FORMAT,std::ios_base::binary);
 			
 			registerObjectFile.write(o.first.c_str() , o.first.size());
-			registerObjectFile.write("\n" , 1);
+			registerObjectFile.write("\0" , 1);
 
 			std::string className = typeid(*pObject).name();
 			registerObjectFile.write(className.c_str(), className.size());
-			registerObjectFile.write("\n", 1);
+			registerObjectFile.write("\0", 1);
 
 			// 座標は書き出す必要なし
 			Vector3 angle = pObject->GetAngle();
@@ -116,7 +141,66 @@ void MelLib::SceneEditer::SaveRegisterObject()
 
 void MelLib::SceneEditer::Load()
 {
+	
+}
 
+void MelLib::SceneEditer::LoadEditData()
+{
+	std::ifstream file(selectEditFileName + EDIT_DATA_FORMAT, std::ios_base::binary);
+
+	// オブジェクトの削除
+	addObjects.clear();
+	GameObjectManager::GetInstance()->AllEraseObject();
+
+	// 読み込み
+	while(1)
+	{
+		// クラス名
+		std::string className;
+		LoadFileName(file, className);
+
+		// オブジェクト名
+		std::string objectName;
+		LoadFileName(file, objectName);
+
+		// 同じクラスを探し、make_sharedを返してもらう
+		std::shared_ptr<GameObject> pObject;
+		for (const auto& m : pRegisterObjects) 
+		{
+			for (const auto& pRegisterObject : m.second) 
+			{
+				GameObject* p = pRegisterObject.second.get();
+
+				if (typeid(*pObject) == typeid(*p)) 
+				{
+					pObject = p->GetNewPtr();
+					break;
+				}
+			}
+			if (pObject)break;
+		}
+		// 管理クラスに追加
+		GameObjectManager::GetInstance()->AddObject(pObject);
+
+
+		//座標とか
+		Vector3 position;
+		file.read(reinterpret_cast<char*>(&position), sizeof(Vector3));
+		pObject->SetPosition(position);
+		Vector3 angle;
+		file.read(reinterpret_cast<char*>(&angle), sizeof(Vector3));
+		pObject->SetAngle(angle);
+		Vector3 scale;
+		file.read(reinterpret_cast<char*>(&scale), sizeof(Vector3));
+		pObject->SetScale(scale);
+
+		char c;
+		file.read(&c, 1);
+		if (c == -2)break;
+	}
+
+
+	file.close();
 }
 
 void MelLib::SceneEditer::LoadRegisterSelectObject()
@@ -136,19 +220,8 @@ void MelLib::SceneEditer::LoadRegisterSelectObject()
 
 		//for(size_t i = objectName.size() - 1 ;;)
 
-		auto loadName = [&file](std::string& str)
-		{
-			while (1)
-			{
-				char c;
-				file.read(&c, 1);
-				if (c == '\n')break;
-				str += c;
-			}
-		};
-
-		loadName(data.typeName);
-		loadName(data.className);
+		LoadFileName(file, data.typeName);
+		LoadFileName(file, data.className);
 		
 		// 座標とか読み込み
 		file.read(reinterpret_cast<char*>(&data.angle), sizeof(Vector3));
@@ -165,6 +238,17 @@ void MelLib::SceneEditer::LoadRegisterSelectObject()
 		file.close();
 	}
 
+}
+
+void MelLib::SceneEditer::LoadFileName(std::ifstream& stream, std::string& str)
+{
+	while (1)
+	{
+		char c;
+		stream.read(&c, 1);
+		if (c == '\0')break;
+		str += c;
+	}
 }
 
 void MelLib::SceneEditer::SelectEditData()
@@ -291,7 +375,7 @@ void MelLib::SceneEditer::InputObjectName()
 		if (i < s.size())c[i] = s[i];
 		else c[i] = ' ';
 	}
-	c[20] = '\n';
+	c[20] = '\0';
 	
 	ImGui::InputText("Input Object Name",c, 21);
 
@@ -319,7 +403,7 @@ void MelLib::SceneEditer::InputObjectType()
 		if (i < s.size())c[i] = s[i];
 		else c[i] = ' ';
 	}
-	c[20] = '\n';
+	c[20] = '\0';
 
 	ImGui::InputText("Input Object Type", c, 21);
 
@@ -364,7 +448,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	// C++20のcontainsに置き換えできる
 	if (pRegisterObjects[objectType].find(OBJECT_NAME) != pRegisterObjects[objectType].end())
 	{
-		std::string text = "シーンエディタには既に"+ OBJECT_NAME + "という名前のオブジェクトが登録されています。\n";
+		std::string text = "シーンエディタには既に"+ OBJECT_NAME + "という名前のオブジェクトが登録されています。\0";
 		OutputDebugStringA(text.c_str());
 		return;
 	}
@@ -522,19 +606,19 @@ void MelLib::SceneEditer::Update()
 
 			// 追加
 			GameObjectManager::GetInstance()->AddObject(pObject);
-
+			addObjects.push_back(pObject.get());
 		}
 		else
 		{
 			std::string text = typeid(*pObject).name();
-			text += "のGetNewPtrがnullptrを返しました。オブジェクトが追加できません。\n";
+			text += "のGetNewPtrがnullptrを返しました。オブジェクトが追加できません。\0";
 			OutputDebugStringA(text.c_str());
 		}
 	}
 
 	bool pushControl = Input::KeyState(DIK_LCONTROL) || Input::KeyState(DIK_RCONTROL);
 	// 保存
-	if (pushControl && Input::KeyTrigger(DIK_S) && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName)Save();
+	if (pushControl && Input::KeyTrigger(DIK_S) && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName)StartSave();
 	if (inpttingEditDataName)InputEditDataName();
 	// 読込
 	if (pushControl && Input::KeyTrigger(DIK_L) && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName)Load();

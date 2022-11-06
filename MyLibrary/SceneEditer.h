@@ -43,7 +43,7 @@ namespace MelLib
 		SceneEditer& operator=(SceneEditer& s) = delete;
 
 
-		void Save();
+		void StartSave();
 		void SaveEditData();
 		void InputEditDataName();
 		void SaveRegisterObject();
@@ -52,7 +52,9 @@ namespace MelLib
 		/// データの呼び出し。エディット用。
 		/// </summary>
 		void Load();
+		void LoadEditData();
 		void LoadRegisterSelectObject();
+		void LoadFileName(std::ifstream& stream, std::string& str);
 
 		void SelectEditData();
 
@@ -90,8 +92,9 @@ namespace MelLib
 		 
 		std::vector<std::string>registerSelectObjectNames;
 
-		// キー
 		std::vector<ObjectData>loadSelectRegisterObjectDatas;
+
+		std::vector<GameObject*>addObjects;
 
 		// 選択されているタイプ
 		int selectType = 0;
@@ -113,6 +116,7 @@ namespace MelLib
 		std::string inputObjectType;
 		std::string inputEditDataName;
 
+		std::string selectEditFileName;
 	public:
 		static SceneEditer* GetInstance();
 
