@@ -132,7 +132,8 @@ namespace MelLib
 		GuiVector3 guiPosition;
 		GuiVector3 guiAngle;
 		GuiVector3 guiScale;
-
+		// 自動でGUIにデータをセットするかどうか(コピーコンストラクタやコピー代入演算子を使う場合コピー先の名前を使いたいため、falseにする)
+		bool autoSetGuiData = true;
 
 	private:
 
@@ -143,6 +144,7 @@ namespace MelLib
 		void SetCmdList();
 
 		void FbxAnimation();
+
 	public:
 
 		//nullptr渡される可能性を考えると、boolをreturnできるようにしたほうがいい?
@@ -150,9 +152,18 @@ namespace MelLib
 		{
 		}
 
+		ModelObject(ModelObject& obj,const std::string& name);
 		ModelObject(ModelObject& obj);
-		ModelObject& operator= (ModelObject& obj);
+		//ModelObject& operator= (ModelObject& obj);
 		~ModelObject() {}
+
+		enum class CopyModelObjectContent 
+		{
+			ALL,
+			NUMBER_FLAG,
+		};
+		bool CopyModelObject(const ModelObject& obj, const std::string& name, CopyModelObjectContent copyContent);
+
 
 		static bool Initialize(ID3D12Device* dev, const std::vector<ID3D12GraphicsCommandList*>& cmdList);
 

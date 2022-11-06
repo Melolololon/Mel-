@@ -429,7 +429,11 @@ namespace MelLib
 
 		void TrueEraseManager() { eraseManager = true; }
 
-
+		/// <summary>
+		/// GUIを描画するかどうかを設定します。
+		/// </summary>
+		/// <param name="flag"></param>
+		void SetDrawGUIFlag(bool flag);
 #pragma endregion
 
 #pragma region ゲット
@@ -495,6 +499,7 @@ namespace MelLib
 		/// <returns></returns>
 		bool GetEraseManager()const { return eraseManager; }
 
+		// どうせエディターで全部いじれるようにするから分ける必要ないかも
 		enum class CopyGameObjectContent
 		{
 			ALL,
@@ -502,7 +507,7 @@ namespace MelLib
 
 		};
 		/// <summary>
-		/// 引数で指定下オブジェクトにデータをコピーします。
+		/// 引数で指定したオブジェクトにデータをコピーします。
 		/// </summary>
 		/// <param name="object">コピー先のGameObjectの参照</param>
 		/// <param name="content">コピー内容</param>

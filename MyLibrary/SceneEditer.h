@@ -67,6 +67,11 @@ namespace MelLib
 		void InputObjectName();
 		void InputObjectType();
 
+		/// <summary>
+		/// テストプレイ開始前に戻す。
+		/// </summary>
+		void Reset();
+
 		std::string GetObjectType(const GameObject& object)const;
 
 
@@ -94,6 +99,8 @@ namespace MelLib
 		std::vector<ObjectData>loadSelectRegisterObjectDatas;
 
 		std::vector<GameObject*>addObjects;
+		// 配置時のオブジェクトのデータ
+		std::vector<std::shared_ptr<GameObject>>objectSetData;
 
 		// 選択されているタイプ
 		int selectType = 0;

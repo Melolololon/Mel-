@@ -1670,40 +1670,57 @@ void MelLib::ModelObject::SetMulColor(const Color& color, const std::string& nam
 }
 
 
+MelLib::ModelObject::ModelObject(ModelObject& obj, const std::string& name)
+{
+	CopyModelObject(obj, name,CopyModelObjectContent::ALL);
+}
 MelLib::ModelObject::ModelObject(ModelObject& obj)
 {
-	Create(obj.pModelData, obj.objectName,nullptr);
-	modelConstDatas = obj.modelConstDatas;
-
-	if (obj.catFrontModelData)
-	{
-		catFrontModelData = std::make_unique<ModelData>();
-		*catFrontModelData = *obj.catFrontModelData;
-	}
-	if (obj.catBackModelData)
-	{
-		catBackModelData = std::make_unique<ModelData>();
-		*catBackModelData = *obj.catBackModelData;
-	}
+	CopyModelObject(obj, obj.objectName, CopyModelObjectContent::NUMBER_FLAG);
 }
+//
+//ModelObject& MelLib::ModelObject::operator=(ModelObject& obj)
+//{
+//	Create(obj.pModelData, obj.objectName, nullptr);
+//	modelConstDatas = obj.modelConstDatas;
+//	materials = obj.materials;
+//
+//	if (obj.catFrontModelData)
+//	{
+//		catFrontModelData = std::make_unique<ModelData>();
+//		*catFrontModelData = *obj.catFrontModelData;
+//	}
+//	if (obj.catBackModelData)
+//	{
+//		catBackModelData = std::make_unique<ModelData>();
+//		*catBackModelData = *obj.catBackModelData;
+//	}
+//	return *this;
+//}
 
-ModelObject& MelLib::ModelObject::operator=(ModelObject& obj)
+bool MelLib::ModelObject::CopyModelObject(const ModelObject& obj, const std::string& name, CopyModelObjectContent copyContent)
 {
-	Create(obj.pModelData, obj.objectName, nullptr);
-	modelConstDatas = obj.modelConstDatas;
-	materials = obj.materials;
+	if (name == obj.objectName)return false;
 
-	if (obj.catFrontModelData)
+	if (copyContent == CopyModelObjectContent::ALL)
 	{
-		catFrontModelData = std::make_unique<ModelData>();
-		*catFrontModelData = *obj.catFrontModelData;
+		Create(obj.pModelData, name, nullptr);
+		materials = obj.materials;
+		if (obj.catFrontModelData)
+		{
+			catFrontModelData = std::make_unique<ModelData>();
+			*catFrontModelData = *obj.catFrontModelData;
+		}
+		if (obj.catBackModelData)
+		{
+			catBackModelData = std::make_unique<ModelData>();
+			*catBackModelData = *obj.catBackModelData;
+		}
 	}
-	if (obj.catBackModelData)
-	{
-		catBackModelData = std::make_unique<ModelData>();
-		*catBackModelData = *obj.catBackModelData;
-	}
-	return *this;
+
+	modelConstDatas = obj.modelConstDatas;
+
+	return true;
 }
 
 bool ModelObject::Initialize(ID3D12Device* dev, const std::vector<ID3D12GraphicsCommandList*>& cmdList)
@@ -2047,6 +2064,9 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 
 	CreateConstBuffer();
 
+#pragma region GUI
+
+
 	for (const auto& objName : objectNames)
 	{
 		modelConstDatas.try_emplace(objName);
@@ -2055,6 +2075,10 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 		modelConstDatas[objName].angle.SetData(0, objectName, objName +"_Angle", -10000, 10000);
 		modelConstDatas[objName].scale.SetData(1, objectName, objName +"_Scale", -10000, 10000);
 	}
+#pragma endregion
+
+#pragma region マテリアル
+
 
 	//マテリアル取得
 	std::vector<ADSAMaterial*>modelDataMtl = pModelData->GetPMaterial();
@@ -2065,6 +2089,8 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 	{
 		materials[objectNames[i]] = modelDataMtl[i];
 	}
+
+#pragma endregion
 
 #pragma region アニメーション関係
 

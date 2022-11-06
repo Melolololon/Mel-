@@ -1,5 +1,7 @@
 #include "GameObject.h"
 
+#include"GuiValueManager.h"
+
 #include"LibMath.h"
 #include"Physics.h"
 
@@ -325,6 +327,11 @@ void MelLib::GameObject::SetMulColor(const Color& color)
 	}
 }
 
+void MelLib::GameObject::SetDrawGUIFlag(bool flag)
+{
+	GuiValueManager::GetInstance()->SetDrawWindowFlag(objectName, flag);
+}
+
 
 void MelLib::GameObject::CopyObjectData(GameObject& object, CopyGameObjectContent content)
 {
@@ -334,13 +341,31 @@ void MelLib::GameObject::CopyObjectData(GameObject& object, CopyGameObjectConten
 
 	// 当たり判定もコピーを行うようにする
 	
-	object.modelObjects.clear();
-	for (const auto& modelObj : modelObjects) 
+	// これだとCreateが呼び出されちゃうから合計で2回呼び出される可能性がある
+	// 一回消して作り直さないといけない
+	// 上手くパラメーターやモデルだけ差し替える
+	// 数値をコピーするか全部コピーするか選べるようにした
+	// 2つCreateせずコピーする処理はまだ書いてない2022_11_06
+	// clear()呼び出してるからCreateしたやつ消されるのでは
+
+	ModelObject::CopyModelObjectContent modelObjectC = ModelObject::CopyModelObjectContent::NUMBER_FLAG;
+	
+	// 全部コピーする場合は消す
+	if (content == CopyGameObjectContent::ALL)
 	{
-		object.modelObjects[modelObj.first] = modelObjects[modelObj.first];
+		object.modelObjects.clear();
+		modelObjectC = ModelObject::CopyModelObjectContent::ALL;
 	}
 
-	object.objectName = objectName;
+	for (const auto& modelObj : modelObjects)
+	{
+		//object.modelObjects[modelObj.first] = modelObjects[modelObj.first];
+		// 数値、フラグだけコピー
+		object.modelObjects[modelObj.first].CopyModelObject
+		(modelObjects[modelObj.first], object.objectName, modelObjectC);
+	}
+
+	//object.objectName = objectName;
 }
 
 std::shared_ptr<GameObject> MelLib::GameObject::GetNewPtr()
@@ -636,7 +661,7 @@ void MelLib::GameObject::CollisionCheckModelCreateOrDelete
 			//不足分生成
 			for (int i = objNum; i < dataNum; i++)
 			{
-				modelObjects[data.first][i].Create(ModelData::Get(type), nullptr);
+				modelObjects[data.first][i].Create(ModelData::Get(type),objectName, nullptr);
 
 				modelObjects[data.first][i].SetMaterial(&material);
 			}

@@ -273,6 +273,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 			}
 			if (pObject)break;
 		}
+
 		// 管理クラスに追加
 		GameObjectManager::GetInstance()->AddObject(pObject);
 
@@ -308,7 +309,7 @@ void MelLib::SceneEditer::UpdateSelectObject()
 #endif // _DEBUG
 
 
-	MelLib::Vector3 pos = pEditSelectObject->GetPosition();
+	/*MelLib::Vector3 pos = pEditSelectObject->GetPosition();
 	ImguiManager::GetInstance()->DrawSliderVector3("Position", pos, -1000, 1000);
 	pEditSelectObject->SetPosition(pos);
 
@@ -318,7 +319,7 @@ void MelLib::SceneEditer::UpdateSelectObject()
 
 	MelLib::Vector3 scale = pEditSelectObject->GetScale();
 	ImguiManager::GetInstance()->DrawSliderVector3("Scale", scale, 0, 359);
-	pEditSelectObject->SetScale(scale);
+	pEditSelectObject->SetScale(scale);*/
 }
 
 void MelLib::SceneEditer::DrawObjectList()
@@ -434,6 +435,10 @@ void MelLib::SceneEditer::InputObjectType()
 	{
 		inpttingObjectType = false;
 	}
+}
+
+void MelLib::SceneEditer::Reset()
+{
 }
 
 std::string MelLib::SceneEditer::GetObjectType(const GameObject& object)const
@@ -623,13 +628,19 @@ void MelLib::SceneEditer::Update()
 			// pSelectObjectを管理クラスに追加して
 			// 戻り値のを新たにmapに入れてもいいかも
 			// どっちみちセットしないといけないから
-			pObject->SetPosition(pEditSelectObject->GetPosition());
+			/*pObject->SetPosition(pEditSelectObject->GetPosition());
 			pObject->SetAngle(pEditSelectObject->GetAngle());
-			pObject->SetScale(pEditSelectObject->GetScale());
+			pObject->SetScale(pEditSelectObject->GetScale());*/
+
+			// コピー
+			pEditSelectObject->CopyObjectData(*pObject, GameObject::CopyGameObjectContent::EDIT);
 
 			// 追加
 			GameObjectManager::GetInstance()->AddObject(pObject);
 			addObjects.push_back(pObject.get());
+
+			// 配置時のデータを保存しておく
+
 		}
 		else
 		{
@@ -658,8 +669,18 @@ void MelLib::SceneEditer::Update()
 		SceneManager::GetInstance()->ChangeStopFlag();
 	}
 
+	// リセット
+	if (Input::KeyTrigger(DIK_ESCAPE)) 
+	{
 
+	}
 
+	//// 描画設定
+	//for (auto& obj : addObjects) 
+	//{
+	//	if (pEditSelectObject == obj)pEditSelectObject->SetDrawGUIFlag(true);
+	//	else obj->SetDrawGUIFlag(false);
+	//}
 }
 
 void MelLib::SceneEditer::Draw()
