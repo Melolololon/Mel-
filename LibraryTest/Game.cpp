@@ -100,6 +100,7 @@ void Game::Initialize()
 
 	// エディターオン
 	MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
+	MelLib::SceneEditer::GetInstance()->Initialize();
 
 	// エディターに追加(Unityでいうプレハブ作成)
 	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");

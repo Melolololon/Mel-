@@ -33,7 +33,7 @@ void MelLib::SceneEditer::Save()
 
 void MelLib::SceneEditer::SaveEditData()
 {
-	std::ofstream file(inputEditDataName + EDIT_DATA_FORMAT);
+	std::ofstream file(inputEditDataName + EDIT_DATA_FORMAT, std::ios_base::binary);
 
 	// 書き出し
 
@@ -78,19 +78,35 @@ void MelLib::SceneEditer::SaveRegisterObject()
 		{
 			GameObject* pObject = o2.second.get();
 			
-			std::string objectName = pObject->GetObjectName();
+			const std::string OBJECT_NAME = pObject->GetObjectName();
 
-			std::ofstream registerObjectFile(objectName + REGISTER_OBJECT_DATA_FORMAT);
+			// 選択したオブジェクトじゃなかったら保存しない
+			bool selectObject = false;
+			for (const auto& name : registerSelectObjectNames) 
+			{
+				if (name == OBJECT_NAME) 
+				{
+					selectObject = true;
+					break;
+				}
+			}
+			if (!selectObject)break;
+
+
+			std::ofstream registerObjectFile(OBJECT_NAME + REGISTER_OBJECT_DATA_FORMAT,std::ios_base::binary);
 			
+			registerObjectFile.write(o.first.c_str() , o.first.size());
+			registerObjectFile.write("\n" , 1);
+
 			std::string className = typeid(*pObject).name();
 			registerObjectFile.write(className.c_str(), className.size());
+			registerObjectFile.write("\n", 1);
 
 			// 座標は書き出す必要なし
 			Vector3 angle = pObject->GetAngle();
 			registerObjectFile.write(reinterpret_cast<char*>(&angle), sizeof(Vector3));
 			Vector3 scale = pObject->GetScale();
 			registerObjectFile.write(reinterpret_cast<char*>(&scale), sizeof(Vector3));
-
 
 			registerObjectFile.close();
 		}
@@ -100,6 +116,54 @@ void MelLib::SceneEditer::SaveRegisterObject()
 
 void MelLib::SceneEditer::Load()
 {
+
+}
+
+void MelLib::SceneEditer::LoadRegisterSelectObject()
+{
+	
+	for (const auto& dirEntry : std::filesystem::directory_iterator("."))
+	{
+		const std::string FILE_NAME = dirEntry.path().string();
+		if (FILE_NAME.find(REGISTER_OBJECT_DATA_FORMAT) == std::string::npos)continue;
+
+		std::ifstream file(FILE_NAME, std::ios_base::binary);
+
+		ObjectData data;
+		data.objectName = FILE_NAME;
+		data.objectName.erase(data.objectName.begin(), data.objectName.begin() + 2);
+		data.objectName.erase(data.objectName.end() - 4, data.objectName.end());
+
+		//for(size_t i = objectName.size() - 1 ;;)
+
+		auto loadName = [&file](std::string& str)
+		{
+			while (1)
+			{
+				char c;
+				file.read(&c, 1);
+				if (c == '\n')break;
+				str += c;
+			}
+		};
+
+		loadName(data.typeName);
+		loadName(data.className);
+		
+		// 座標とか読み込み
+		file.read(reinterpret_cast<char*>(&data.angle), sizeof(Vector3));
+		file.read(reinterpret_cast<char*>(&data.scale), sizeof(Vector3));
+
+
+		//// データを追加
+		loadSelectRegisterObjectDatas.push_back(data);
+
+		// 一旦nullptr入れて後で確保
+		pRegisterObjects[data.typeName].emplace(data.objectName, nullptr);
+
+
+		file.close();
+	}
 
 }
 
@@ -115,8 +179,11 @@ void MelLib::SceneEditer::Load(const std::string& sceneName)
 	// ここに指定したシーン名を入れる
 	std::string name = sceneName;
 	name += EDIT_DATA_FORMAT;
-	std::ofstream file;
-	file.open(name);
+	std::ifstream file;
+	file.open(name, std::ios_base::binary);
+
+	
+
 
 	file.close();
 
@@ -207,6 +274,9 @@ void MelLib::SceneEditer::RegisterSelectObject()
 	// 入力された名前を設定
 	object->SetObjectName(inputObjectName);
 
+	// 名前の登録
+	registerSelectObjectNames.push_back(inputObjectName);
+
 	// 登録
 	RegisterObject(object, inputObjectType);
 }
@@ -227,7 +297,15 @@ void MelLib::SceneEditer::InputObjectName()
 
 	inputObjectName = c;
 
-	if (Input::KeyTrigger(DIK_RETURN)) inpttingObjectName = false;
+	if (Input::KeyTrigger(DIK_RETURN))
+	{
+		// 名前が既に登録されているかチェック
+		for (const auto& m : pRegisterObjects) 
+		{
+			if (m.second.find(inputObjectName) == m.second.end())inpttingObjectName = false;
+		}
+
+	}
 }
 
 void MelLib::SceneEditer::InputObjectType()
@@ -247,7 +325,10 @@ void MelLib::SceneEditer::InputObjectType()
 
 	inputObjectType = c;
 
-	if (Input::KeyTrigger(DIK_RETURN)) inpttingObjectType = false;
+	if (Input::KeyTrigger(DIK_RETURN))
+	{
+		inpttingObjectType = false;
+	}
 }
 
 std::string MelLib::SceneEditer::GetObjectType(const GameObject& object)const
@@ -260,6 +341,7 @@ std::string MelLib::SceneEditer::GetObjectType(const GameObject& object)const
 	}
 	return objectType;
 }
+
 
 MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
 {
@@ -278,17 +360,17 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	if (!releaseEdit)return;
 #endif // _DEBUG
 
-
+	const std::string OBJECT_NAME = pObject->GetObjectName();
 	// C++20のcontainsに置き換えできる
-	if (pRegisterObjects.find(objectType) != pRegisterObjects.end()) 
+	if (pRegisterObjects[objectType].find(OBJECT_NAME) != pRegisterObjects[objectType].end())
 	{
-		std::string text = "シーンエディタには既に"+ objectType + "という名前のオブジェクトが登録されています。\n";
+		std::string text = "シーンエディタには既に"+ OBJECT_NAME + "という名前のオブジェクトが登録されています。\n";
 		OutputDebugStringA(text.c_str());
 		return;
 	}
 
 	pRegisterObjects.try_emplace(objectType, std::map<std::string,std::shared_ptr<MelLib::GameObject>>());
-	pRegisterObjects[objectType].emplace(pObject->GetObjectName(),pObject);
+	pRegisterObjects[objectType].emplace(OBJECT_NAME,pObject);
 	//test.push_back(pObject);
 	//registerObjectOrderDatas.try_emplace(pRegisterObjects.size() - 1, objectType);
 
@@ -314,6 +396,31 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 		}
 	}
 
+
+	for (const auto& data : loadSelectRegisterObjectDatas) 
+	{
+		// 一致しないまたは既にメモリを確保していたら次へ
+		if (data.className != typeid(*pObject).name() 
+			|| pRegisterObjects.at(data.typeName).at(data.objectName))continue;
+
+		// 参照する
+		std::shared_ptr<GameObject>&pRefObject = pRegisterObjects[data.typeName][data.objectName];
+
+		// メモリ確保して格納
+		pRefObject = pObject->GetNewPtr();
+
+		// データをセット
+		pRefObject->SetObjectName(data.objectName);
+		pRefObject->SetAngle(data.angle);
+		pRefObject->SetScale(data.scale);
+
+	}
+
+}
+
+void MelLib::SceneEditer::Initialize()
+{
+	LoadRegisterSelectObject();
 }
 
 void MelLib::SceneEditer::Update()
@@ -380,15 +487,14 @@ void MelLib::SceneEditer::Update()
 
 
 	// リスト処理
-	int listNum = 0;
-	ImguiManager::GetInstance()->DrawList(listNum, registerObjectNames[registerObjectTypes[selectType]]);
+	ImguiManager::GetInstance()->DrawList(registerObjectListNum, registerObjectNames[registerObjectTypes[selectType]]);
 
 	//// ここにスライダー作成処理
 	//int sliderNum = 0;
 	//ImguiManager::GetInstance()->DrawSliderInt("Object", sliderNum, 0, refObjects.size() - 1);
 
 	//// 選ばれたオブジェクトのポインタをpSelectObjectに代入
-	const std::string OBJECT_NAME = registerObjectOrderDatas[registerObjectTypes[selectType]][listNum];
+	const std::string OBJECT_NAME = registerObjectOrderDatas[registerObjectTypes[selectType]][registerObjectListNum];
 
 	pEditSelectObject = refObjects[OBJECT_NAME].get();
 

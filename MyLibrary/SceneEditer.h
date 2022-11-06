@@ -27,6 +27,15 @@ namespace MelLib
 	{
 
 	private:
+		struct ObjectData 
+		{
+			std::string className;
+			std::string typeName;
+			std::string objectName;
+			Vector3 angle;
+			Vector3 scale;
+		};
+
 		SceneEditer(){}
 		~SceneEditer(){}
 
@@ -43,8 +52,9 @@ namespace MelLib
 		/// データの呼び出し。エディット用。
 		/// </summary>
 		void Load();
+		void LoadRegisterSelectObject();
+
 		void SelectEditData();
-		void GetEditDataName();
 
 		void UpdateSelectObject();
 
@@ -57,7 +67,6 @@ namespace MelLib
 		void InputObjectType();
 
 		std::string GetObjectType(const GameObject& object)const;
-
 
 
 	private:
@@ -79,8 +88,14 @@ namespace MelLib
 		std::vector<std::string>registerObjectTypes;
 		std::map<std::string,std::vector<std::string>>registerObjectNames;
 		 
+		std::vector<std::string>registerSelectObjectNames;
+
+		// キー
+		std::vector<ObjectData>loadSelectRegisterObjectDatas;
+
 		// 選択されているタイプ
 		int selectType = 0;
+		int registerObjectListNum = 0;
 
 		GameObject* pEditSelectObject = nullptr;
 
@@ -114,6 +129,7 @@ namespace MelLib
 		/// <param name="objectType">オブジェクトの種類(ActorやStageObjectなど)</param>
 		void RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject,const std::string& objectType);
 		
+		void Initialize();
 		void Update();
 		void Draw();
 
