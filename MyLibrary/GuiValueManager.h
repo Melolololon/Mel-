@@ -97,6 +97,7 @@ namespace MelLib
 		void AddGuiValue(GuiBool* pGuiValue, const std::string& windowName,const std::string& lavel);
 
 		void EraseGuiValue(const type_info& type,const std::string& windowName, const std::string& lavel);
+		void DeleteWindow(const std::string& windowName);
 
 		void Initialize();
 		void Update();

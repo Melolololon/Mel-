@@ -368,12 +368,20 @@ void MelLib::GuiValueManager::EraseGuiValue(const type_info& type, const std::st
 	}
 }
 
+void MelLib::GuiValueManager::DeleteWindow(const std::string& windowName)
+{
+	intValues.erase(windowName);
+	floatValues.erase(windowName);
+	vector3Values.erase(windowName);
+	boolValues.erase(windowName);
+
+	drawWindowFlag.erase(windowName);
+	addOrders.erase(windowName);
+}
+
 void MelLib::GuiValueManager::Initialize()
 {
 	Load();
-
-	
-
 }
 
 void MelLib::GuiValueManager::Update()

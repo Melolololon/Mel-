@@ -203,6 +203,7 @@ GameObject::GameObject(const std::string& name)
 
 GameObject::~GameObject()
 {
+	GuiValueManager::GetInstance()->DeleteWindow(objectName);
 }
 
 //void GameObject::Initialize()
