@@ -170,6 +170,7 @@ void Library::LoopStartProcess()
 	SpriteFont2D::GetInstance()->Update();
 	FrameTimer::AllUpdate();
 
+	GuiValueManager::GetInstance()->Update();
 
 }
 

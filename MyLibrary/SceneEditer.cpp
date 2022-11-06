@@ -609,7 +609,7 @@ void MelLib::SceneEditer::Update()
 	const std::string OBJECT_NAME = registerObjectOrderDatas[registerObjectTypes[selectType]][registerObjectListNum];
 
 	pEditSelectObject = refObjects[OBJECT_NAME].get();
-
+	pEditSelectObject->SetGUIData();
 
 
 #pragma endregion
@@ -645,7 +645,7 @@ void MelLib::SceneEditer::Update()
 		else
 		{
 			std::string text = typeid(*pObject).name();
-			text += "のGetNewPtrがnullptrを返しました。オブジェクトが追加できません。\0";
+			text += "のGetNewPtrがnullptrを返しました。オブジェクトが追加できません。\n";
 			OutputDebugStringA(text.c_str());
 		}
 	}
@@ -681,6 +681,8 @@ void MelLib::SceneEditer::Update()
 	//	if (pEditSelectObject == obj)pEditSelectObject->SetDrawGUIFlag(true);
 	//	else obj->SetDrawGUIFlag(false);
 	//}
+
+	pEditSelectObject->SetPrePosition();
 }
 
 void MelLib::SceneEditer::Draw()

@@ -194,9 +194,9 @@ GameObject::GameObject(const std::string& name)
 
 
 
-	guiPosition.SetData(0, objectName, "Position", -10000, 10000);
-	guiAngle.SetData(0, objectName, "Angle", -10000, 10000);
-	guiScale.SetData(1, objectName, "Scale", -10000, 10000);
+	guiPosition.SetData(0, objectName, "Position", -1000, 1000);
+	guiAngle.SetData(0, objectName, "Angle", -359, 359);
+	guiScale.SetData(1, objectName, "Scale", -10, 10);
 
 }
 
@@ -285,7 +285,7 @@ void MelLib::GameObject::SetPosition(const Vector3& pos)
 
 void MelLib::GameObject::SetAngle(const Vector3& angle)
 {
-	if (this->angle == angle)return;
+	//if (this->angle == angle)return;
 
 	this->angle = angle;
 
@@ -295,7 +295,7 @@ void MelLib::GameObject::SetAngle(const Vector3& angle)
 
 void MelLib::GameObject::SetScale(const Vector3& scale)
 {
-	if (this->scale == scale)return;
+	//if (this->scale == scale)return;
 
 	this->scale = scale;
 
@@ -330,6 +330,20 @@ void MelLib::GameObject::SetMulColor(const Color& color)
 void MelLib::GameObject::SetDrawGUIFlag(bool flag)
 {
 	GuiValueManager::GetInstance()->SetDrawWindowFlag(objectName, flag);
+}
+
+void MelLib::GameObject::SetPrePosition()
+{
+	prePosition = position;
+}
+
+void MelLib::GameObject::SetGUIData()
+{
+	SetModelPosition(position - prePosition);
+	SetDataPosition(position - prePosition);
+
+	SetAngle(angle);
+	SetScale(scale);
 }
 
 

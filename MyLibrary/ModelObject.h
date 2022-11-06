@@ -129,11 +129,11 @@ namespace MelLib
 
 		std::string objectName;
 
-		GuiVector3 guiPosition;
+		/*GuiVector3 guiPosition;
 		GuiVector3 guiAngle;
-		GuiVector3 guiScale;
+		GuiVector3 guiScale;*/
 		// 自動でGUIにデータをセットするかどうか(コピーコンストラクタやコピー代入演算子を使う場合コピー先の名前を使いたいため、falseにする)
-		bool autoSetGuiData = true;
+		//bool autoSetGuiData = true;
 
 	private:
 

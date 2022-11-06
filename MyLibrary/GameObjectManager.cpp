@@ -71,8 +71,10 @@ void GameObjectManager::Update()
 	const size_t PRE_OBJECT_SIZE = objects.size();
 	for (int i = 0; i < PRE_OBJECT_SIZE;i++)
 	{
+		objects[i]->SetGUIData();
 		objects[i]->SetPreDataPositions();
 		objects[i]->Update();
+		objects[i]->SetPrePosition();
 
 		// ‰¼‚É‚±‚±‚É‘‚¢‚Ä‚é
 		objects[i]->SetPreDataPositions();

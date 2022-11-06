@@ -2071,9 +2071,9 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 	{
 		modelConstDatas.try_emplace(objName);
 
-		modelConstDatas[objName].position.SetData(0, objectName, objName +"_Position", -10000, 10000);
-		modelConstDatas[objName].angle.SetData(0, objectName, objName +"_Angle", -10000, 10000);
-		modelConstDatas[objName].scale.SetData(1, objectName, objName +"_Scale", -10000, 10000);
+		modelConstDatas[objName].position.SetData(0, objectName, objName +"_Position", -1000, 1000);
+		modelConstDatas[objName].angle.SetData(0, objectName, objName +"_Angle", -359, 359);
+		modelConstDatas[objName].scale.SetData(1, objectName, objName +"_Scale", -10, 10);
 	}
 #pragma endregion
 

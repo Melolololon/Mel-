@@ -29,6 +29,8 @@ namespace MelLib
 		// GameObjectのpositionなどはモデルのボーンでいうマスター(全体を動かすためのボーン)
 
 		Vector3& position;
+		// 前フレームの座標
+		Vector3 prePosition;
 		Vector3& angle;
 		Vector3& scale;
 
@@ -434,6 +436,13 @@ namespace MelLib
 		/// </summary>
 		/// <param name="flag"></param>
 		void SetDrawGUIFlag(bool flag);
+
+		/// <summary>
+		/// 開発者用。
+		/// </summary>
+		void SetPrePosition();
+
+		void SetGUIData();
 #pragma endregion
 
 #pragma region ゲット
