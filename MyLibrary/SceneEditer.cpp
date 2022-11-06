@@ -537,13 +537,17 @@ void MelLib::SceneEditer::Initialize()
 
 void MelLib::SceneEditer::Update()
 {
-	if (!isEdit)return;
-
 #ifdef _DEBUG
 
 #else
 	if (!releaseEdit)return;
 #endif // _DEBUG
+
+	// シーンの更新オンオフ処理
+	if (Input::KeyTrigger(DIK_F5))isEdit = !isEdit;
+
+	if (!isEdit)return;
+
 
 
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
@@ -664,12 +668,6 @@ void MelLib::SceneEditer::Update()
 	// オブジェクト一覧の描画
 	DrawObjectList();
 
-	// シーンの更新オンオフ処理
-	if (Input::KeyTrigger(DIK_F5))
-	{
-		isEdit = !isEdit;
-		SceneManager::GetInstance()->ChangeStopFlag();
-	}
 
 	// リセット
 	if (Input::KeyTrigger(DIK_ESCAPE)) 
@@ -704,17 +702,23 @@ void MelLib::SceneEditer::Draw()
 
 }
 
-void MelLib::SceneEditer::SetEditFlag(const bool flag)
+void MelLib::SceneEditer::SetReleaseEditFlag(const bool flag)
 {
-	// Debug時はリリースビルドのフラグ確認無視
-#ifdef _DEBUG
-
-#else
-	if (!releaseEdit)
-	{
-		return;
-	}
-#endif // _DEBUG
-
-	isEdit = flag;
+	releaseEdit = flag;
+	if (!flag)isEdit = false;
 }
+//
+//void MelLib::SceneEditer::SetEditFlag(const bool flag)
+//{
+//	// Debug時はリリースビルドのフラグ確認無視
+//#ifdef _DEBUG
+//
+//#else
+//	if (!releaseEdit)
+//	{
+//		return;
+//	}
+//#endif // _DEBUG
+//
+//	isEdit = flag;
+//}

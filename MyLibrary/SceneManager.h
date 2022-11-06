@@ -15,7 +15,7 @@ namespace MelLib
 
 		Scene* currentScene = nullptr;
 
-		bool stopUpdate = false;
+		//bool stopUpdate = false;
 
 		/// <summary>
 		/// シーンの切り替え処理を行う
@@ -37,12 +37,12 @@ namespace MelLib
 		/// シーンを切り替える処理を行います
 		/// </summary>
 		/// <param name="nextScene"></param>
-		void ChengeScene(Scene* nextScene);
+		//void ChengeScene(Scene* nextScene);
 
 		//void SetStopFlag(bool flag) { stopUpdate = flag; }
-		void ChangeStopFlag() { stopUpdate = !stopUpdate; }
+		//void ChangeStopFlag() { stopUpdate = !stopUpdate; }
 
-		void ResetScene();
+		//void ResetScene();
 
 		Scene* GetCurrentScene();
 		std::string GetCurrentSceneName();

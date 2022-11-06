@@ -108,6 +108,7 @@ namespace MelLib
 
 		GameObject* pEditSelectObject = nullptr;
 
+		
 		bool isEdit = true;
 		bool releaseEdit = false;
 
@@ -146,16 +147,18 @@ namespace MelLib
 		void Update();
 		void Draw();
 
+		bool GetIsEdit()const { return isEdit; }
+
 		/// <summary>
 		/// エディタのオンオフを設定します。リリースビルド時にエディタをオンにできるようにしてない場合はオンにできません。
 		/// </summary>
 		/// <param name="flag"></param>
-		void SetEditFlag(const bool flag);
+		//void SetEditFlag(const bool flag);
 		
 		/// <summary>
 		/// リリースビルド時にエディタをオンにできるようにするかどうかを設定します。
 		/// </summary>
 		/// <param name="flag"></param>
-		void SetReleaseEditFlag(const bool flag) { releaseEdit = flag; }
+		void SetReleaseEditFlag(const bool flag);
 	};
 }

@@ -99,7 +99,7 @@ void Game::Initialize()
 	
 
 	// エディターオン
-	MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
+	//MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
 	MelLib::SceneEditer::GetInstance()->Initialize();
 
 	// エディターに追加(Unityでいうプレハブ作成)

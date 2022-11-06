@@ -6,6 +6,7 @@
 #include"Values.h"
 #include"Easing.h"
 
+#include"SceneEditer.h"
 
 using namespace MelLib;
 
@@ -50,6 +51,7 @@ void GameObjectManager::Initialize()
 
 void GameObjectManager::Update()
 {
+	if (SceneEditer::GetInstance()->GetIsEdit())return;
 
 #pragma region オブジェクトのUpdate
 	//カーソルアップデート
