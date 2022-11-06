@@ -244,7 +244,6 @@ void MelLib::GuiValueManager::Load()
 					file.read(value, 4);
 
 					for (int i = 0; i < 4; i++)param += value[i];
-					int z = 0;
 				}
 				else if (formatChar == DATA_FORMAT_STR.at("bool"))
 				{
@@ -619,19 +618,18 @@ bool MelLib::GuiValueManager::GetGuiData(GuiInt* pGuiValue, int& refInt, const s
 
 	// 既に追加されてたら値を書き換えて終了
 	// 上で書き換えてるからこのままreturn
-	if (intValues.size() != 0)
-	{
+	
 		// intValueに追加されていているか確認
-		if (intValues.at(windowName).find(lavel) != intValues.at(windowName).end())
+	if (intValues[windowName].find(lavel) != intValues[windowName].end())
+	{
+		// 追加されてないかを確認
+		if (valueDatas[windowName].find(lavel) == valueDatas[windowName].end())
 		{
-			// 追加されてないかを確認
-			if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
+		return true;
 	}
+	
 	intValues[windowName].emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
 
@@ -654,18 +652,17 @@ bool MelLib::GuiValueManager::GetGuiData(GuiFloat* pGuiValue, float& refFloat, c
 
 	float* pValue = reinterpret_cast<float*>(data);
 	refFloat = *pValue;
-	if (floatValues.size() != 0)
+	
+	if (floatValues[windowName].find(lavel) != floatValues[windowName].end())
 	{
-		if (floatValues.at(windowName).find(lavel) != floatValues.at(windowName).end())
+		// 追加されてないかを確認
+		if (valueDatas[windowName].find(lavel) == valueDatas[windowName].end())
 		{
-			// 追加されてないかを確認
-			if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
+		return true;
 	}
+	
 	floatValues[windowName].emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
 	addOrders[windowName].push_back(lavel);
@@ -682,18 +679,17 @@ bool MelLib::GuiValueManager::GetGuiData(GuiBool* pGuiValue, bool& refFlag, cons
 	std::string param = valueDatas.at(windowName).at(lavel);
 	char flag = param[param.size() - 1];
 	refFlag = static_cast<bool>(flag);
-	if (boolValues.size() != 0)
+	
+	if (boolValues[windowName].find(lavel) != boolValues[windowName].end())
 	{
-		if (boolValues.at(windowName).find(lavel) != boolValues.at(windowName).end() )
+		// 追加されてないかを確認
+		if (valueDatas[windowName].find(lavel) == valueDatas[windowName].end())
 		{
-			// 追加されてないかを確認
-			if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
+		return true;
 	}
+	
 	boolValues[windowName].emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);
 	addOrders[windowName].push_back(lavel);
@@ -714,18 +710,19 @@ bool MelLib::GuiValueManager::GetGuiData(GuiVector3* pGuiValue, Vector3& refVect
 	Vector3* pValue = reinterpret_cast<Vector3*>(data);
 	refVectior3 = *pValue;
 
-	if (vector3Values.size() != 0) 
+	
+
+
+	if (vector3Values[windowName].find(lavel) != vector3Values[windowName].end())
 	{
-		if (vector3Values.at(windowName).find(lavel) != vector3Values.at(windowName).end())
+		// 追加されてないかを確認
+		if (valueDatas[windowName].find(lavel) == valueDatas[windowName].end())
 		{
-			// 追加されてないかを確認
-			if (valueDatas.at(windowName).find(lavel) == valueDatas.at(windowName).end())
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
+		return true;
 	}
+	
 
 	vector3Values[windowName].emplace(lavel, pGuiValue);
 	AddCreateWindowName(windowName);

@@ -157,6 +157,8 @@ void MelLib::SceneEditer::Load()
 		sceneFileNames.push_back(name);
 	}
 
+	if (sceneFileNames.size() == 0)return;
+
 	selectingEditData = true;
 }
 
