@@ -387,9 +387,14 @@ void MelLib::SceneEditer::RegisterSelectObject()
 	// コピーを生成
 	std::shared_ptr<GameObject> object = pEditSelectObject->GetNewPtr();
 	pEditSelectObject->CopyObjectData(*object, GameObject::CopyGameObjectContent::EDIT);
-
+	
+	// ウィンドウ名変更
+	GuiValueManager::GetInstance()->ChangeWindowName(object->GetObjectName(), inputObjectName);
 	// 入力された名前を設定
 	object->SetObjectName(inputObjectName);
+	// GUIの値のコピー
+	GuiValueManager::GetInstance()->CopyGuiValue(pEditSelectObject->GetObjectName(), object->GetObjectName());
+
 
 	// 名前の登録
 	registerSelectObjectNames.push_back(inputObjectName);

@@ -685,6 +685,101 @@ void MelLib::GuiValueManager::CopyGuiValue(const std::string& windowName1, const
 	}
 }
 
+void MelLib::GuiValueManager::ChangeWindowName(const std::string& windowName, const std::string& newWindowName)
+{
+	for (const auto& window : valueDatas) 
+	{
+		const std::string WINDOW_NAME = window.first;
+		if (windowName != WINDOW_NAME)continue;
+
+		std::unordered_map<std::string, std::string> newMap = valueDatas.at(WINDOW_NAME);
+
+		valueDatas.erase(WINDOW_NAME);
+		valueDatas.emplace(newWindowName, newMap);
+
+		break;
+	}
+
+	for (const auto& window : addOrders)
+	{
+		const std::string WINDOW_NAME = window.first;
+		if (windowName != WINDOW_NAME)continue;
+
+		std::vector<std::string> newVector = addOrders.at(WINDOW_NAME);
+
+		addOrders.erase(WINDOW_NAME);
+		addOrders.emplace(newWindowName, newVector);
+
+		break;
+	}
+
+	for (const auto& window : drawWindowFlag)
+	{
+		const std::string WINDOW_NAME = window.first;
+		if (windowName != WINDOW_NAME)continue;
+
+		bool newFlag = drawWindowFlag.at(WINDOW_NAME);
+
+		drawWindowFlag.erase(WINDOW_NAME);
+		drawWindowFlag.emplace(newWindowName, newFlag);
+
+		break;
+	}
+	
+
+	// int
+	for (const auto& window : intValues)
+	{
+		const std::string WINDOW_NAME = window.first;
+		if (windowName != WINDOW_NAME)continue;
+
+		std::unordered_map<std::string, GuiInt*> newMap = intValues.at(WINDOW_NAME);
+
+		intValues.erase(WINDOW_NAME);
+		intValues.emplace(newWindowName, newMap);
+
+		break;
+	}
+
+	for (const auto& window : floatValues)
+	{
+		const std::string WINDOW_NAME = window.first;
+		if (windowName != WINDOW_NAME)continue;
+
+		std::unordered_map<std::string, GuiFloat*> newMap = floatValues.at(WINDOW_NAME);
+
+		floatValues.erase(WINDOW_NAME);
+		floatValues.emplace(newWindowName, newMap);
+		break;
+	}
+
+	// Vector3
+	for (const auto& window : vector3Values)
+	{
+		const std::string WINDOW_NAME = window.first;
+		if (windowName != WINDOW_NAME)continue;
+
+		std::unordered_map<std::string, GuiVector3*> newMap = vector3Values.at(WINDOW_NAME);
+
+		vector3Values.erase(WINDOW_NAME);
+		vector3Values.emplace(newWindowName, newMap);
+		break;
+	}
+
+	// bool
+	for (const auto& window : boolValues)
+	{
+		const std::string WINDOW_NAME = window.first;
+		if (windowName != WINDOW_NAME)continue;
+
+		std::unordered_map<std::string, GuiBool*> newMap = boolValues.at(WINDOW_NAME);
+
+		boolValues.erase(WINDOW_NAME);
+		boolValues.emplace(newWindowName, newMap);
+		break;
+	}
+}
+
 bool MelLib::GuiValueManager::GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel)
 {
 	// ë∂ç›Ç∑ÇÈÇ©ämîFÅBÇ»Ç©Ç¡ÇΩÇÁreturn

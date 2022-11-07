@@ -116,6 +116,12 @@ namespace MelLib
 		/// <param name="windowName2"></param>
 		void CopyGuiValue(const std::string& windowName1, const std::string& windowName2);
 
+		/// <summary>
+		/// ウィンドウ名を変更します。
+		/// </summary>
+		/// <param name="windowName"></param>
+		void ChangeWindowName(const std::string& windowName,const std::string& newWindowName);
+
 		bool GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel);
 		bool GetGuiData(GuiFloat* pGuiValue, float& refFloat,const std::string& windowName, const std::string& lavel);
 		bool GetGuiData(GuiBool* pGuiValue, bool& refFlag, const std::string& windowName, const std::string& lavel);
