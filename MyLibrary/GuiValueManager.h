@@ -4,6 +4,7 @@
 #include<unordered_map>
 #include<vector>
 #include<typeinfo>
+#include"GameObject.h"
 
 #include"GuiValue.h"
 
@@ -102,7 +103,19 @@ namespace MelLib
 		void Initialize();
 		void Update();
 
+		/// <summary>
+		/// Guiの値objectからobject2にコピーします。
+		/// </summary>
+		/// <param name="object"></param>
+		//void CopyGuiValue(const GameObject& object,const GameObject& object2);
 		
+		/// <summary>
+		/// ウィンドウ1の値をウィンドウ2のラベルが一致する値にコピーします。
+		/// </summary>
+		/// <param name="windowName1"></param>
+		/// <param name="windowName2"></param>
+		void CopyGuiValue(const std::string& windowName1, const std::string& windowName2);
+
 		bool GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel);
 		bool GetGuiData(GuiFloat* pGuiValue, float& refFloat,const std::string& windowName, const std::string& lavel);
 		bool GetGuiData(GuiBool* pGuiValue, bool& refFlag, const std::string& windowName, const std::string& lavel);

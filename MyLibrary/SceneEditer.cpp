@@ -84,7 +84,9 @@ void MelLib::SceneEditer::InputEditDataName()
 	}
 	c[20] = '\0';
 
-	ImGui::InputText("Input Edit Data Name", c, 21);
+
+	ImGui::Text("Input Edit Data Name");
+	ImGui::InputText("", c, 21);
 
 	inputEditDataName = c;
 
@@ -408,7 +410,8 @@ void MelLib::SceneEditer::InputObjectName()
 	}
 	c[20] = '\0';
 	
-	ImGui::InputText("Input Object Name",c, 21);
+	ImGui::Text("Input Object Name");
+	ImGui::InputText("",c, 21);
 
 	inputObjectName = c;
 
@@ -436,7 +439,8 @@ void MelLib::SceneEditer::InputObjectType()
 	}
 	c[20] = '\0';
 
-	ImGui::InputText("Input Object Type", c, 21);
+	ImGui::Text("Input Object Type");
+	ImGui::InputText("", c, 21);
 
 	inputObjectType = c;
 
@@ -647,6 +651,10 @@ void MelLib::SceneEditer::Update()
 
 			// コピー
 			pEditSelectObject->CopyObjectData(*pObject, GameObject::CopyGameObjectContent::EDIT);
+
+			// GUIのコピー
+			// これやるなら上のコピーいらないかも
+			GuiValueManager::GetInstance()->CopyGuiValue(pEditSelectObject->GetObjectName(), pObject->GetObjectName());
 
 			// 追加
 			GameObjectManager::GetInstance()->AddObject(pObject);

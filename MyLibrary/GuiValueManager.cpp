@@ -610,6 +610,81 @@ void MelLib::GuiValueManager::Update()
 #pragma endregion
 }
 
+//void MelLib::GuiValueManager::CopyGuiValue(const GameObject& object, const GameObject& object2)
+//{
+//	 登録するときにGameObjectとGuiValueの値のポインタとウィンドウとラベル名を保存する
+//	 上の情報を参考に2にコピーする
+//
+//
+//}
+
+void MelLib::GuiValueManager::CopyGuiValue(const std::string& windowName1, const std::string& windowName2)
+{
+	// int
+	for (const auto& gui1 : intValues[windowName1])
+	{
+		const std::string LAVEL1 = gui1.first;
+
+		for (auto& gui2 : intValues[windowName2]) 
+		{
+			const std::string LAVEL2 = gui2.first;
+
+			if (LAVEL1 == LAVEL2) 
+			{
+				gui2.second->SetValue(gui1.second->GetValue());
+			}
+		}
+	}
+
+	// float
+	for (const auto& gui1 : floatValues[windowName1])
+	{
+		const std::string LAVEL1 = gui1.first;
+
+		for (auto& gui2 : floatValues[windowName2])
+		{
+			const std::string LAVEL2 = gui2.first;
+
+			if (LAVEL1 == LAVEL2)
+			{
+				gui2.second->SetValue(gui1.second->GetValue());
+			}
+		}
+	}
+
+	// Vector3
+	for (const auto& gui1 : vector3Values[windowName1])
+	{
+		const std::string LAVEL1 = gui1.first;
+
+		for (auto& gui2 : vector3Values[windowName2])
+		{
+			const std::string LAVEL2 = gui2.first;
+
+			if (LAVEL1 == LAVEL2)
+			{
+				gui2.second->SetValue(gui1.second->GetValue());
+			}
+		}
+	}
+
+	// bool
+	for (const auto& gui1 : boolValues[windowName1])
+	{
+		const std::string LAVEL1 = gui1.first;
+
+		for (auto& gui2 : boolValues[windowName2])
+		{
+			const std::string LAVEL2 = gui2.first;
+
+			if (LAVEL1 == LAVEL2)
+			{
+				gui2.second->SetValue(gui1.second->GetValue());
+			}
+		}
+	}
+}
+
 bool MelLib::GuiValueManager::GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel)
 {
 	// 存在するか確認。なかったらreturn
