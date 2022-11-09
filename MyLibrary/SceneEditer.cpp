@@ -599,6 +599,8 @@ void MelLib::SceneEditer::Update()
 		}
 		else 
 		{
+			// オブジェクト全部消したのに追加したら0番とかにならない不具合修正する
+			// 前回の番号の状態を実行時に反映させるようにする
 
 			// 開始時点のデータを書き出す
 			SaveEditData(TEST_START_EDIT_DATA_NAME);
