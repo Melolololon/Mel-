@@ -283,7 +283,8 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 
 		// 管理クラスに追加
 		GameObjectManager::GetInstance()->AddObject(pObject);
-
+		// 追加オブジェクト一覧に追加
+		addObjects.push_back(pObject.get());
 
 		//座標とか
 		Vector3 position;
@@ -598,7 +599,6 @@ void MelLib::SceneEditer::Update()
 		}
 		else 
 		{
-			// 2022_11_09 なぜか2回目実行した時にオブジェクトのデータが書き出されない
 
 			// 開始時点のデータを書き出す
 			SaveEditData(TEST_START_EDIT_DATA_NAME);
