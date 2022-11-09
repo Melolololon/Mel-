@@ -340,13 +340,17 @@ void MelLib::SceneEditer::UpdateCamera()
 
 	ImguiManager::GetInstance()->BeginDrawWindow("Camera");
 
-	Vector3 cameraPosition;
+	Vector3 cameraPosition = pCamera->GetCameraPosition();
 	ImguiManager::GetInstance()->DrawSliderVector3("CameraPosition", cameraPosition, -1000, 1000);
 
-	Vector3 cameraAngle;
+	Vector3 cameraAngle = pCamera->GetAngle();
 	ImguiManager::GetInstance()->DrawSliderVector3("CameraAngle", cameraAngle, -359, 359);
 
 	ImguiManager::GetInstance()->EndDrawWindow();
+
+	pCamera->SetRotateCriteriaPosition(cameraPosition);
+	pCamera->SetAngle(cameraAngle);
+
 }
 
 void MelLib::SceneEditer::DrawObjectList()
@@ -575,8 +579,9 @@ void MelLib::SceneEditer::Initialize()
 
 	SaveEditData(TEST_START_EDIT_DATA_NAME);
 
-	//Camera::Create("EditCamera");
-	//RenderTarget::Get()->SetCamera(Camera::Get("EditCamera"));
+	Camera::Create("EditCamera");
+	pCamera = Camera::Get("EditCamera");
+	RenderTarget::Get()->SetCamera(pCamera);
 }
 
 void MelLib::SceneEditer::Update()
@@ -595,19 +600,23 @@ void MelLib::SceneEditer::Update()
 		if (isEdit) 
 		{
 			LoadEditData(TEST_START_EDIT_DATA_NAME);
-			//RenderTarget::Get()->SetCamera(Camera::Get("EditCamera"));
+			RenderTarget::Get()->SetCamera(pCamera);
 		}
 		else 
 		{
 			// オブジェクト全部消したのに追加したら0番とかにならない不具合修正する
 			// 前回の番号の状態を実行時に反映させるようにする
+			// エディット中は利用者が作ったレンダーターゲットを使用しないようにする
 
 			// 開始時点のデータを書き出す
 			SaveEditData(TEST_START_EDIT_DATA_NAME);
 
 
 			// 切り替えた瞬間のカメラの名前を保存しておき、エディットオフにしたときにそれに切り替えるようにする
-			//RenderTarget::Get()->SetCamera();
+			// 切り替えた瞬間のカメラが最初に使われるカメラとは限らないのでよくない
+			// エディターで開始時のカメラをセットできるようにすればよさそう
+			RenderTarget::Get()->SetCamera(Camera::Get());
+			
 		}
 
 	}
@@ -773,6 +782,9 @@ void MelLib::SceneEditer::Update()
 	//}
 
 	pEditSelectObject->SetPrePosition();
+
+
+	UpdateCamera();
 }
 
 void MelLib::SceneEditer::Draw()

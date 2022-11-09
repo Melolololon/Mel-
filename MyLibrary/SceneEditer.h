@@ -75,7 +75,7 @@ namespace MelLib
 
 		std::string GetObjectType(const GameObject& object)const;
 
-
+		Camera* pCamera = nullptr;
 	private:
 		static const std::string EDIT_DATA_FORMAT;
 		static const std::string TEST_START_EDIT_DATA_NAME;
