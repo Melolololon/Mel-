@@ -44,7 +44,7 @@ namespace MelLib
 
 
 		void StartSave();
-		void SaveEditData();
+		void SaveEditData(const std::string& dataName);
 		void InputEditDataName();
 		void SaveRegisterObject();
 
@@ -58,6 +58,7 @@ namespace MelLib
 		void SelectEditData();
 
 		void UpdateSelectObject();
+		void UpdateCamera();
 
 		void DrawObjectList();
 
@@ -77,6 +78,7 @@ namespace MelLib
 
 	private:
 		static const std::string EDIT_DATA_FORMAT;
+		static const std::string TEST_START_EDIT_DATA_NAME;
 		static const std::string REGISTER_OBJECT_DATA_FORMAT;
 
 		std::vector<std::string>editDataName;
@@ -122,7 +124,6 @@ namespace MelLib
 
 		std::string inputObjectName;
 		std::string inputObjectType;
-		std::string inputEditDataName;
 
 
 		std::vector<std::string>sceneFileNames;
@@ -161,5 +162,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="flag"></param>
 		void SetReleaseEditFlag(const bool flag);
+
+	
 	};
 }

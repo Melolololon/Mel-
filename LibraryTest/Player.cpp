@@ -106,14 +106,8 @@ void Player::Update()
 {
 	Move();
 
-	// SPACE‰Ÿ‚µ‚½‚çƒ‚ƒfƒ‹ŠÇ—ƒNƒ‰ƒX‚©‚çíœ(ƒƒ‚ƒŠ‰ğ•ú)
-	if(MelLib::Input::KeyTrigger(DIK_SPACE))
-	{
-		//eraseManager = true;
-	}
 
 	modelObjects["main"].SetMulColor(MelLib::Color(255, 255, 255, 255));
-
 
 
 	collisionCheckDistance = 40.0f;

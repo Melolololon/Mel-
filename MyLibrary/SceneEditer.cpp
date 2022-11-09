@@ -10,6 +10,7 @@
 #include<filesystem>
 
 const std::string MelLib::SceneEditer::EDIT_DATA_FORMAT = ".melsce";
+const std::string MelLib::SceneEditer::TEST_START_EDIT_DATA_NAME = "TestStartEditData" + EDIT_DATA_FORMAT;
 const std::string MelLib::SceneEditer::REGISTER_OBJECT_DATA_FORMAT = ".rod";
 
 void MelLib::SceneEditer::StartSave()
@@ -31,9 +32,9 @@ void MelLib::SceneEditer::StartSave()
 	//file.close();
 }
 
-void MelLib::SceneEditer::SaveEditData()
+void MelLib::SceneEditer::SaveEditData(const std::string& dataName)
 {
-	std::ofstream file(inputEditDataName + EDIT_DATA_FORMAT, std::ios_base::binary);
+	std::ofstream file(dataName + EDIT_DATA_FORMAT, std::ios_base::binary);
 
 	const size_t ADD_OBJECT_SIZE = addObjects.size();
 	if(ADD_OBJECT_SIZE == 0)file.write("0", 1);
@@ -88,12 +89,13 @@ void MelLib::SceneEditer::InputEditDataName()
 	ImGui::Text("Input Edit Data Name");
 	ImGui::InputText("", c, 21);
 
-	inputEditDataName = c;
+
 
 	if (Input::KeyTrigger(DIK_RETURN))
 	{
+		std::string inputEditDataName = c;
 		inpttingEditDataName = false;
-		SaveEditData();
+		SaveEditData(inputEditDataName);
 	}
 }
 
@@ -146,6 +148,7 @@ void MelLib::SceneEditer::SaveRegisterObject()
 	}
 
 }
+
 
 void MelLib::SceneEditer::Load()
 {
@@ -244,7 +247,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 	file.read(&c,1);
 
 	// 無かったら閉じて終了
-	if (c == 0)
+	if (c == '0')
 	{
 		file.close();
 		return;
@@ -324,6 +327,25 @@ void MelLib::SceneEditer::UpdateSelectObject()
 	MelLib::Vector3 scale = pEditSelectObject->GetScale();
 	ImguiManager::GetInstance()->DrawSliderVector3("Scale", scale, 0, 359);
 	pEditSelectObject->SetScale(scale);*/
+}
+
+void MelLib::SceneEditer::UpdateCamera()
+{
+	// エディター用のカメラを作る
+	// メインカメラ使うと設定とか変数の切替がいちいちめんどくさそう
+	// あと変数減る
+
+
+
+	ImguiManager::GetInstance()->BeginDrawWindow("Camera");
+
+	Vector3 cameraPosition;
+	ImguiManager::GetInstance()->DrawSliderVector3("CameraPosition", cameraPosition, -1000, 1000);
+
+	Vector3 cameraAngle;
+	ImguiManager::GetInstance()->DrawSliderVector3("CameraAngle", cameraAngle, -359, 359);
+
+	ImguiManager::GetInstance()->EndDrawWindow();
 }
 
 void MelLib::SceneEditer::DrawObjectList()
@@ -549,6 +571,11 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 void MelLib::SceneEditer::Initialize()
 {
 	LoadRegisterSelectObject();
+
+	SaveEditData(TEST_START_EDIT_DATA_NAME);
+
+	//Camera::Create("EditCamera");
+	//RenderTarget::Get()->SetCamera(Camera::Get("EditCamera"));
 }
 
 void MelLib::SceneEditer::Update()
@@ -560,17 +587,35 @@ void MelLib::SceneEditer::Update()
 #endif // _DEBUG
 
 	// シーンの更新オンオフ処理
-	if (Input::KeyTrigger(DIK_F5))isEdit = !isEdit;
+	if (Input::KeyTrigger(DIK_F5))
+	{
+		isEdit = !isEdit;
 
+		if (isEdit) 
+		{
+			LoadEditData(TEST_START_EDIT_DATA_NAME);
+			//RenderTarget::Get()->SetCamera(Camera::Get("EditCamera"));
+		}
+		else 
+		{
+			// 2022_11_09 なぜか2回目実行した時にオブジェクトのデータが書き出されない
+
+			// 開始時点のデータを書き出す
+			SaveEditData(TEST_START_EDIT_DATA_NAME);
+
+
+			// 切り替えた瞬間のカメラの名前を保存しておき、エディットオフにしたときにそれに切り替えるようにする
+			//RenderTarget::Get()->SetCamera();
+		}
+
+	}
 	if (!isEdit)return;
 
 
 
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
-
 #pragma region 選択
-
 
 	ImguiManager::GetInstance()->BeginDrawWindow("Edit");
 
@@ -713,7 +758,9 @@ void MelLib::SceneEditer::Update()
 	// リセット
 	if (Input::KeyTrigger(DIK_ESCAPE)) 
 	{
-
+		// 開始時のオブジェクトのデータと途中追加したオブジェクトのデータ分ける
+		// それかファイルひらきっぱにしておく
+		// 開きっぱなしの方がテストプレイ中にファイル消して止まるとかそういうことなくなるかも
 	}
 
 	//// 描画設定
@@ -748,6 +795,7 @@ void MelLib::SceneEditer::SetReleaseEditFlag(const bool flag)
 	releaseEdit = flag;
 	if (!flag)isEdit = false;
 }
+
 //
 //void MelLib::SceneEditer::SetEditFlag(const bool flag)
 //{
