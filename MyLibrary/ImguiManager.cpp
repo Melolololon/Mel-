@@ -355,11 +355,11 @@ bool MelLib::ImguiManager::DrawInputVector3Box(const std::string& label, Vector3
     if (CheckReleaseDrawFlag())return false;
 
     float f[3] = { num.x,num.y,num.z };
-    bool flag = ImGui::InputFloat2(label.c_str(), f,  format.c_str(), flag);
+    bool change = ImGui::InputFloat2(label.c_str(), f,  format.c_str(), flag);
 
     num.x = f[0];
     num.y = f[1];
     num.z = f[2];
 
-    return flag;
+    return change;
 }

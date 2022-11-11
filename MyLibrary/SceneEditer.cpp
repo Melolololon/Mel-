@@ -12,6 +12,7 @@
 const std::string MelLib::SceneEditer::EDIT_DATA_FORMAT = ".melsce";
 const std::string MelLib::SceneEditer::TEST_START_EDIT_DATA_NAME = "TestStartEditData" + EDIT_DATA_FORMAT;
 const std::string MelLib::SceneEditer::REGISTER_OBJECT_DATA_FORMAT = ".rod";
+const std::string MelLib::SceneEditer::EDIT_WINDOW_NAME = "Edit";
 
 void MelLib::SceneEditer::StartSave()
 {
@@ -639,9 +640,11 @@ void MelLib::SceneEditer::Update()
 
 #pragma region 選択
 
-	ImguiManager::GetInstance()->BeginDrawWindow("Edit");
+	ImguiManager::GetInstance()->BeginDrawWindow(EDIT_WINDOW_NAME);
 
 	// スライダーとボックス切り替えられるようにする
+	bool pushChangeButton = ImguiManager::GetInstance()->DrawButton("ChangeSlider Box");
+	
 
 	// 登録ボタン追加
 	bool push = false;
@@ -702,6 +705,11 @@ void MelLib::SceneEditer::Update()
 	pEditSelectObject = refObjects[OBJECT_NAME].get();
 	pEditSelectObject->SetGUIData();
 
+
+	if (pushChangeButton && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName && !selectingEditData)
+	{
+		GuiValueManager::GetInstance()->ChangeTypingInputFlag(pEditSelectObject->GetObjectName());
+	}
 
 #pragma endregion
 

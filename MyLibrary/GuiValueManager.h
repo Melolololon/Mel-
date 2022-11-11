@@ -123,18 +123,19 @@ namespace MelLib
 		/// <param name="windowName"></param>
 		void ChangeWindowName(const std::string& windowName,const std::string& newWindowName);
 
-		void SetValueChangeFlag(const std::string& windowName,bool flag);
-		bool GettValueChangeFlag(const std::string& windowName)const;
+		void SetTypingInputFlag(const std::string& windowName,bool flag);
+		void ChangeTypingInputFlag(const std::string& windowName);
+		bool GetTypingInputFlag(const std::string& windowName)const;
 
 		bool GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel);
 		bool GetGuiData(GuiFloat* pGuiValue, float& refFloat,const std::string& windowName, const std::string& lavel);
 		bool GetGuiData(GuiBool* pGuiValue, bool& refFlag, const std::string& windowName, const std::string& lavel);
 		bool GetGuiData(GuiVector3* pGuiValue, Vector3& refVectior3,const std::string& windowName, const std::string& lavel);
 
-		void SetDrawWindowFlag(const std::string& windowName, bool flag) 
-		{
-			drawWindowFlag[windowName] = flag;
-		}
+		void SetDrawWindowFlag(const std::string& windowName, bool flag) { drawWindowFlag[windowName] = flag; }
+		void ChangeDrawWindowFlag(const std::string& windowName) { drawWindowFlag[windowName] = !drawWindowFlag[windowName]; }
+
+		
 
 	};
 

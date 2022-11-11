@@ -80,6 +80,7 @@ namespace MelLib
 		static const std::string EDIT_DATA_FORMAT;
 		static const std::string TEST_START_EDIT_DATA_NAME;
 		static const std::string REGISTER_OBJECT_DATA_FORMAT;
+		static const std::string EDIT_WINDOW_NAME;
 
 		std::vector<std::string>editDataName;
 
