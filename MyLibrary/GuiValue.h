@@ -48,6 +48,8 @@ namespace MelLib
 		std::string windowName;
 		std::string lavel;
 		
+	
+		bool typingInput = false;
 	public:
 		GuiInt() {}
 		/// <summary>
@@ -84,6 +86,9 @@ namespace MelLib
 		int GetMaxValue() const { return valueMax; }
 		int GetMinValue()const { return valueMin; }
 		int& GetRefValue() { return value; }
+
+		bool GetTypingInputValueFlag()const { return typingInput; }
+
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
 		/// ライブラリの初期化処理が始まる前にコンストラクタが呼び出されてしまい、
@@ -92,6 +97,9 @@ namespace MelLib
 		void SetLoadData();
 
 		void SetValue(int value) { this->value = value; }
+
+		void SetTypingInputFlag(const bool flag) { typingInput = flag; }
+
 	};
 
 	class GuiFloat
@@ -104,6 +112,7 @@ namespace MelLib
 		std::string windowName;
 		std::string lavel;
 
+		bool typingInput = false;
 	public:
 		GuiFloat(){}
 		/// <summary>
@@ -139,6 +148,7 @@ namespace MelLib
 		float GetMinValue()const { return valueMin; }
 
 		float& GetRefValue() { return value; }
+		bool GetTypingInputValueFlag()const { return typingInput; }
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
 		/// ライブラリの初期化処理が始まる前にコンストラクタが呼び出されてしまい、
@@ -146,6 +156,7 @@ namespace MelLib
 		/// </summary>
 		void SetLoadData();
 		void SetValue(float value) { this->value = value; }
+		void SetTypingInputFlag(const bool flag) { typingInput = flag; }
 	};
 
 	
@@ -160,6 +171,7 @@ namespace MelLib
 		std::string windowName;
 		std::string lavel;
 
+		bool typingInput = false;
 	public:
 		GuiVector3(){}
 		/// <summary>
@@ -203,6 +215,7 @@ namespace MelLib
 		MelLib::Vector3& GetRefValue() { return value; }
 		float GetMaxValue() const { return valueMax; }
 		float GetMinValue()const { return valueMin; }
+		bool GetTypingInputValueFlag()const { return typingInput; }
 		
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
@@ -212,6 +225,7 @@ namespace MelLib
 		void SetLoadData();
 
 		void SetValue(const Vector3& value) { this->value = value; }
+		void SetTypingInputFlag(const bool flag) { typingInput = flag; }
 	};
 
 	/*Vector3 operator+(const GuiVector3& value, const GuiVector3& value2) { return value + value2; }

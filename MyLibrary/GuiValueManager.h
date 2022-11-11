@@ -79,6 +79,7 @@ namespace MelLib
 
 		// 生成したウィンドウと描画フラグを確認するためのフラグ
 		std::unordered_map < std::string, bool >drawWindowFlag;
+		std::unordered_map < std::string, bool >typingInputFlag;
 
 		int* castIntData(const std::string& data);
 		float* castFloatData(const std::string& data);
@@ -121,6 +122,9 @@ namespace MelLib
 		/// </summary>
 		/// <param name="windowName"></param>
 		void ChangeWindowName(const std::string& windowName,const std::string& newWindowName);
+
+		void SetValueChangeFlag(const std::string& windowName,bool flag);
+		bool GettValueChangeFlag(const std::string& windowName)const;
 
 		bool GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel);
 		bool GetGuiData(GuiFloat* pGuiValue, float& refFloat,const std::string& windowName, const std::string& lavel);

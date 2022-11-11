@@ -75,7 +75,7 @@ Player::Player()
 	sphereDatas["main"].resize(1);
 	sphereDatas["main"][0].SetPosition(GetPosition());
 	sphereDatas["main"][0].SetRadius(0.5f);
-	modelObjects["main"].SetPosition(GetPosition());
+	//modelObjects["main"].SetPosition(GetPosition());
 	modelObjects["main"].SetScale(1);
 
 	sphereFrameHitCheckNum = 1;

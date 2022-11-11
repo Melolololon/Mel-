@@ -334,3 +334,32 @@ bool MelLib::ImguiManager::DrawTextBox(const std::string& label, std::string& te
 
     return result;
 }
+
+bool MelLib::ImguiManager::DrawInputIntBox(const std::string& label, int& num, const int min, const int max, const ImGuiInputTextFlags flag)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    return ImGui::InputInt(label.c_str(), &num, min, max, flag);
+}
+
+bool MelLib::ImguiManager::DrawInputFloatBox(const std::string& label,  float& num, float min, float max,const std::string& format, ImGuiInputTextFlags flag)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    // Step‚Á‚Ä‚à‚µ‚©‚µ‚Ä”ÍˆÍ‚¶‚á‚È‚¢?
+    return ImGui::InputFloat(label.c_str(), &num, min, max, format.c_str(), flag);
+}
+
+bool MelLib::ImguiManager::DrawInputVector3Box(const std::string& label, Vector3& num, const std::string& format , const ImGuiInputTextFlags flag)
+{
+    if (CheckReleaseDrawFlag())return false;
+
+    float f[3] = { num.x,num.y,num.z };
+    bool flag = ImGui::InputFloat2(label.c_str(), f,  format.c_str(), flag);
+
+    num.x = f[0];
+    num.y = f[1];
+    num.z = f[2];
+
+    return flag;
+}

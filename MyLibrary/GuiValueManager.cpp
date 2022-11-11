@@ -28,6 +28,7 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 		if (d.first == windowName)return;
 	}
 	drawWindowFlag.emplace(windowName, true);
+	typingInputFlag.emplace(windowName, false);
 }
 
 
@@ -376,6 +377,7 @@ void MelLib::GuiValueManager::DeleteWindow(const std::string& windowName)
 	boolValues.erase(windowName);
 
 	drawWindowFlag.erase(windowName);
+	typingInputFlag.erase(windowName);
 	addOrders.erase(windowName);
 }
 
@@ -428,7 +430,9 @@ void MelLib::GuiValueManager::Update()
 
 					GuiInt& guiInt = *value.second;
 					int num = guiInt.GetValue();
-					changeFlag = ImguiManager::GetInstance()->DrawSliderInt(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
+					//ImGuiInputTextFlags_CharsDecimal
+					if (guiInt.GetTypingInputValueFlag()) changeFlag = ImguiManager::GetInstance()->DrawInputIntBox(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
+					else changeFlag = ImguiManager::GetInstance()->DrawSliderInt(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
 
 					if (changeFlag)
 					{
@@ -436,6 +440,8 @@ void MelLib::GuiValueManager::Update()
 						Save(WINDOW_NAME, LAVEL, data, typeid(num), sizeof(num), changeFlag);
 						guiInt = num;
 					}
+
+
 				}
 
 			}
@@ -455,7 +461,11 @@ void MelLib::GuiValueManager::Update()
 
 					GuiFloat& guiFloat = *value.second;
 					float num = guiFloat.GetValue();
-					changeFlag = ImguiManager::GetInstance()->DrawSliderFloat(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
+					
+					
+					if (guiFloat.GetTypingInputValueFlag()) changeFlag = ImguiManager::GetInstance()->DrawInputFloatBox(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
+					else changeFlag = changeFlag = ImguiManager::GetInstance()->DrawSliderFloat(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
+					
 
 					if (changeFlag)
 					{
@@ -483,7 +493,11 @@ void MelLib::GuiValueManager::Update()
 
 					GuiVector3& guiVector3 = *value.second;
 					Vector3 num = guiVector3.GetValue();
-					changeFlag = ImguiManager::GetInstance()->DrawSliderVector3(LAVEL, num, guiVector3.GetMinValue(), guiVector3.GetMaxValue());
+					
+
+					if (guiVector3.GetTypingInputValueFlag()) changeFlag = ImguiManager::GetInstance()->DrawInputVector3Box(LAVEL, num);
+					else changeFlag = ImguiManager::GetInstance()->DrawSliderVector3(LAVEL, num, guiVector3.GetMinValue(), guiVector3.GetMaxValue());
+
 
 					if (changeFlag)
 					{
@@ -725,6 +739,19 @@ void MelLib::GuiValueManager::ChangeWindowName(const std::string& windowName, co
 
 		break;
 	}
+	for (const auto& window : typingInputFlag)
+	{
+		const std::string WINDOW_NAME = window.first;
+		if (windowName != WINDOW_NAME)continue;
+
+		bool newFlag = typingInputFlag.at(WINDOW_NAME);
+
+		typingInputFlag.erase(WINDOW_NAME);
+		typingInputFlag.emplace(newWindowName, newFlag);
+
+		break;
+	}
+
 	
 
 	// int
@@ -779,6 +806,30 @@ void MelLib::GuiValueManager::ChangeWindowName(const std::string& windowName, co
 		break;
 	}
 }
+
+void MelLib::GuiValueManager::SetValueChangeFlag(const std::string& windowName, bool flag)
+{
+	for(const auto& value : intValues[windowName])
+	{
+		value.second->SetTypingInputFlag(flag);
+	}
+	for (const auto& value : floatValues[windowName])
+	{
+		value.second->SetTypingInputFlag(flag);
+	}
+	for (const auto& value : vector3Values[windowName])
+	{
+		value.second->SetTypingInputFlag(flag);
+	}
+	typingInputFlag[windowName] = flag;
+}
+
+bool MelLib::GuiValueManager::GettValueChangeFlag(const std::string& windowName) const
+{
+	return typingInputFlag.at(windowName);
+}
+
+
 
 bool MelLib::GuiValueManager::GetGuiData(GuiInt* pGuiValue, int& refInt, const std::string& windowName, const std::string& lavel)
 {

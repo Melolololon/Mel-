@@ -15,6 +15,12 @@ namespace MelLib
 {
 
 	//Imguiを管理するクラス
+	// このクラスいらないのでは
+	// フラグはライブラリ側で管理すればいいし
+	// テキストボックスとかあった方がいいから一応残しとく?
+	// 描画準備とかの処理もあるから残しといていいかも
+	// Vectorも使うの楽だし
+	// ImGuiって初期化してない状態で関数呼び出すとどうなるんだっけ。例外出る?
 	class ImguiManager
 	{
 	public:
@@ -29,6 +35,8 @@ namespace MelLib
 
 		ID3D12Device* pDevice = nullptr;
 		ID3D12GraphicsCommandList* pCmdList = nullptr;
+
+		
 	private:
 		ImguiManager() {}
 		~ImguiManager() {}
@@ -131,6 +139,34 @@ namespace MelLib
 
 #pragma region 入力
 		bool DrawTextBox(const std::string& label, std::string& text, const size_t maxCharNum,const ImGuiInputTextFlags flag = 0);
+
+		bool DrawInputIntBox
+		(
+			const std::string& label,
+			int& num,
+			const int min = 0.0f,
+			const int max = 0.0f,
+			const ImGuiInputTextFlags flag = 0
+		);
+
+		bool DrawInputFloatBox
+		(
+			const std::string& label ,
+			float& num, 
+			const float min = 0.0f,
+			const float max = 0.0f,
+			const std::string& format = "%.3f",
+			const ImGuiInputTextFlags flag = 0
+		);
+
+		bool DrawInputVector3Box
+		(
+			const std::string& label,
+			Vector3& num,
+			const std::string& format = "%.3f",
+			const ImGuiInputTextFlags flag = 0
+		);
+
 #pragma endregion
 
 

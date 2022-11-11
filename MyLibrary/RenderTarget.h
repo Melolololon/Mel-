@@ -35,7 +35,7 @@ namespace MelLib
 		{
 			//レンダーターゲット
 			RenderTarget* rt = nullptr;
-			//レンダーターゲットをレンダリングするレンダーターゲット
+			//レンダーターゲットを描画するレンダーターゲット
 			RenderTarget* renderingRT = nullptr;
 		};
 

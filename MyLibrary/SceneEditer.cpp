@@ -340,16 +340,16 @@ void MelLib::SceneEditer::UpdateCamera()
 
 	ImguiManager::GetInstance()->BeginDrawWindow("Camera");
 
-	Vector3 cameraPosition = pCamera->GetCameraPosition();
+	Vector3 cameraPosition = pEditerCamera->GetCameraPosition();
 	ImguiManager::GetInstance()->DrawSliderVector3("CameraPosition", cameraPosition, -1000, 1000);
 
-	Vector3 cameraAngle = pCamera->GetAngle();
+	Vector3 cameraAngle = pEditerCamera->GetAngle();
 	ImguiManager::GetInstance()->DrawSliderVector3("CameraAngle", cameraAngle, -359, 359);
 
 	ImguiManager::GetInstance()->EndDrawWindow();
 
-	pCamera->SetRotateCriteriaPosition(cameraPosition);
-	pCamera->SetAngle(cameraAngle);
+	pEditerCamera->SetRotateCriteriaPosition(cameraPosition);
+	pEditerCamera->SetAngle(cameraAngle);
 
 }
 
@@ -580,8 +580,8 @@ void MelLib::SceneEditer::Initialize()
 	SaveEditData(TEST_START_EDIT_DATA_NAME);
 
 	Camera::Create("EditCamera");
-	pCamera = Camera::Get("EditCamera");
-	RenderTarget::Get()->SetCamera(pCamera);
+	pEditerCamera = Camera::Get("EditCamera");
+	RenderTarget::Get()->SetCamera(pEditerCamera);
 }
 
 void MelLib::SceneEditer::Update()
@@ -600,7 +600,14 @@ void MelLib::SceneEditer::Update()
 		if (isEdit) 
 		{
 			LoadEditData(TEST_START_EDIT_DATA_NAME);
-			RenderTarget::Get()->SetCamera(pCamera);
+			
+
+			RenderTarget::RenderTargetDrawData data;
+			data.rt = RenderTarget::Get();
+			std::vector<RenderTarget::RenderTargetDrawData>datas;
+			datas.push_back(data);
+
+			data.rt->SetCamera(pEditerCamera);
 		}
 		else 
 		{
@@ -614,7 +621,11 @@ void MelLib::SceneEditer::Update()
 
 			// 切り替えた瞬間のカメラの名前を保存しておき、エディットオフにしたときにそれに切り替えるようにする
 			// 切り替えた瞬間のカメラが最初に使われるカメラとは限らないのでよくない
+			// 
 			// エディターで開始時のカメラをセットできるようにすればよさそう
+			
+			// スライダーだけじゃなくて直接入力もできるようにした方がよさそう
+
 			RenderTarget::Get()->SetCamera(Camera::Get());
 			
 		}
@@ -629,6 +640,8 @@ void MelLib::SceneEditer::Update()
 #pragma region 選択
 
 	ImguiManager::GetInstance()->BeginDrawWindow("Edit");
+
+	// スライダーとボックス切り替えられるようにする
 
 	// 登録ボタン追加
 	bool push = false;
