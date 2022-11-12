@@ -1,5 +1,7 @@
 #pragma once
 #include"Vector.h"
+#include"GuiValue.h"
+
 #include<vector>
 #include<string>
 #include<memory>
@@ -9,6 +11,10 @@
 
 namespace MelLib
 {
+	// カメラと壁が当たったか確認するためにはGameObjectクラスを継承しないといけない
+	// カメラ持たせたGameObjectクラスを作れば継承しなくても大丈夫
+	// そうしたら座標とか2つになるけど調性しやすいしそれでモデルとかもそうしてるしいいんじゃないか
+
 	class Camera
 	{
 	public:
@@ -33,7 +39,6 @@ namespace MelLib
 
 		//画角
 		float fovY = 60.0f;
-
 		//最近点
 		float nearNum = 0.01f;
 		//最遠点
@@ -43,17 +48,27 @@ namespace MelLib
 		float cameraToTargetDistance = 1.0f;
 
 		//回転させるときの基準位置
-		Vector3 rotatePointPosition = Vector3(0, 0, -10);
-		Vector3 angle = 0;
+		Vector3& rotatePointPosition;
+		Vector3& angle;
+
+		GuiVector3 guiRotatePointPosition;
+		GuiVector3 guiAngle;
+
 
 		Vector3 cameraPosition = rotatePointPosition;
 		Vector3 targetPosition = rotatePointPosition + Vector3(0, 0, cameraToTargetDistance);
 		Vector3 upVector = Vector3(0, 1, 0);
 
+		std::string cameraName;
+
 		void CalcCameraData();
+
 	public:
-		Camera() {}
-		~Camera() {}
+		Camera();
+		Camera(const std::string& name);
+		~Camera();
+
+		static void Finalize();
 
 		/// <summary>
 		/// カメラを生成します。
@@ -68,11 +83,14 @@ namespace MelLib
 		static void Delete(const std::string& name);
 
 		/// <summary>
-	/// カメラのポインタを取得します。
-	/// </summary>
-	/// <param name="name">カメラの名前(見入)</param>
-	/// <returns></returns>
+		/// カメラのポインタを取得します。
+		/// </summary>
+		/// <param name="name">カメラの名前</param>
+		/// <returns></returns>
 		static Camera* Get(const std::string& name = mainCameraName) { return pCameras[name].get(); }
+
+		static void GetCameraNames(std::vector<std::string>& names);
+	
 
 
 #pragma region セット
@@ -168,6 +186,7 @@ namespace MelLib
 
 		Vector3 GetAngle()const { return angle; }
 
+		std::string GetCameraName()const { return cameraName; }
 #pragma endregion
 	};
 }

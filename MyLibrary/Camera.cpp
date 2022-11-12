@@ -2,6 +2,7 @@
 #include"Library.h"
 #include"LibMath.h"
 #include"Input.h"
+#include"GuiValueManager.h"
 
 using namespace MelLib;
 std::unordered_map<std::string, std::unique_ptr<Camera>>Camera::pCameras;
@@ -43,13 +44,40 @@ void Camera::CalcCameraData()
 
 }
 
+
+MelLib::Camera::Camera()
+	:rotatePointPosition(guiRotatePointPosition.GetRefValue())
+	, angle(guiAngle.GetRefValue())
+{
+}
+
+MelLib::Camera::~Camera()
+{
+	GuiValueManager* g = GuiValueManager::GetInstance();
+	g->DeleteWindow(cameraName);
+}
+
+MelLib::Camera::Camera(const std::string& name)
+	:cameraName(name) 
+	, rotatePointPosition(guiRotatePointPosition.GetRefValue())
+	, angle(guiAngle.GetRefValue())
+{
+	guiRotatePointPosition.SetData(Vector3(0, 0, -10), name, "Position", -1000, 1000);
+	guiAngle.SetData(Vector3(0, 0, 0), name, "Angle", -359, 359);
+}
+
+void MelLib::Camera::Finalize()
+{
+	pCameras.clear();
+}
+
 void Camera::Create(const std::string& name)
 {
 	std::string key = name;
 	if (key == "")key = "Camera_" + std::to_string(createCount);
 	createCount++;
 
-	pCameras.emplace(key, std::make_unique<Camera>());
+	pCameras.emplace(key, std::make_unique<Camera>(key));
 
 	if (mainCameraName == "")mainCameraName = name;
 
@@ -59,6 +87,18 @@ void Camera::Delete(const std::string& name)
 {
 	pCameras.erase(name);
 }
+
+void MelLib::Camera::GetCameraNames(std::vector<std::string>& names)
+{
+	names.clear();
+	names.reserve(pCameras.size());
+
+	for (const auto& pCamera : pCameras) 
+	{
+		names.push_back(pCamera.first);
+	}
+}
+
 
 void Camera::SetRotateCriteriaPosition(const Vector3& position)
 {

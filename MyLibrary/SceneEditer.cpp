@@ -13,6 +13,7 @@ const std::string MelLib::SceneEditer::EDIT_DATA_FORMAT = ".melsce";
 const std::string MelLib::SceneEditer::TEST_START_EDIT_DATA_NAME = "TestStartEditData" + EDIT_DATA_FORMAT;
 const std::string MelLib::SceneEditer::REGISTER_OBJECT_DATA_FORMAT = ".rod";
 const std::string MelLib::SceneEditer::EDIT_WINDOW_NAME = "Edit";
+const std::string MelLib::SceneEditer::CAMERA_WINDOW_NAME = "EditCamera";
 
 void MelLib::SceneEditer::StartSave()
 {
@@ -339,7 +340,7 @@ void MelLib::SceneEditer::UpdateCamera()
 
 
 
-	ImguiManager::GetInstance()->BeginDrawWindow("Camera");
+	/*ImguiManager::GetInstance()->BeginDrawWindow(CAMERA_WINDOW_NAME);
 
 	Vector3 cameraPosition = pEditerCamera->GetCameraPosition();
 	ImguiManager::GetInstance()->DrawSliderVector3("CameraPosition", cameraPosition, -1000, 1000);
@@ -350,7 +351,7 @@ void MelLib::SceneEditer::UpdateCamera()
 	ImguiManager::GetInstance()->EndDrawWindow();
 
 	pEditerCamera->SetRotateCriteriaPosition(cameraPosition);
-	pEditerCamera->SetAngle(cameraAngle);
+	pEditerCamera->SetAngle(cameraAngle);*/
 
 }
 
@@ -580,13 +581,15 @@ void MelLib::SceneEditer::Initialize()
 
 	SaveEditData(TEST_START_EDIT_DATA_NAME);
 
-	Camera::Create("EditCamera");
-	pEditerCamera = Camera::Get("EditCamera");
+	Camera::Create(CAMERA_WINDOW_NAME);
+	pEditerCamera = Camera::Get(CAMERA_WINDOW_NAME);
 	RenderTarget::Get()->SetCamera(pEditerCamera);
+
 }
 
 void MelLib::SceneEditer::Update()
 {
+
 #ifdef _DEBUG
 
 #else
@@ -709,6 +712,10 @@ void MelLib::SceneEditer::Update()
 	if (pushChangeButton && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName && !selectingEditData)
 	{
 		GuiValueManager::GetInstance()->ChangeTypingInputFlag(pEditSelectObject->GetObjectName());
+		GuiValueManager::GetInstance()->ChangeTypingInputFlag(CAMERA_WINDOW_NAME);
+
+
+
 	}
 
 #pragma endregion

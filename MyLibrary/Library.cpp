@@ -232,6 +232,8 @@ void Library::Finalize()
 	Sound::Finalize();
 	SoundData::Finalize();
 
+	Camera::Finalize();
+
 	UnregisterClass(w.lpszClassName, w.hInstance);
 
 	CoUninitialize();
