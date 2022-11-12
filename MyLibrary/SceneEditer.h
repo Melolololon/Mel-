@@ -68,6 +68,8 @@ namespace MelLib
 		void InputObjectName();
 		void InputObjectType();
 
+		void OtherCameraGuiDrawFlagFalse();
+
 		/// <summary>
 		/// テストプレイ開始前に戻す。
 		/// </summary>
