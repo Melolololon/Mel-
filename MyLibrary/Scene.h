@@ -33,5 +33,6 @@ namespace MelLib
 		/// 一括削除の対象になっているリソースを削除します。この関数は自動で呼び出されるため、利用者が呼び出す必要はありません。
 		/// </summary>
 		void ResourceBatchDeletion();
+
 	};
 }

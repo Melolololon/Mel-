@@ -51,8 +51,24 @@ void GameObjectManager::Initialize()
 
 void GameObjectManager::Update()
 {
-	if (SceneEditer::GetInstance()->GetIsEdit())return;
+	const size_t PRE_OBJECT_SIZE = objects.size();
 
+
+	if (SceneEditer::GetInstance()->GetIsEdit())
+	{
+		for (int i = 0; i < PRE_OBJECT_SIZE; i++)
+		{
+
+			objects[i]->SetGUIData();
+
+			objects[i]->SetPreDataPositions();
+			objects[i]->SetPrePosition();
+			// 仮にここに書いてる
+			objects[i]->SetPreDataPositions();
+
+		}
+		return;
+	}
 #pragma region オブジェクトのUpdate
 	//カーソルアップデート
 	if (cursor)
@@ -70,10 +86,9 @@ void GameObjectManager::Update()
 	// Releaseだと拡張の方が遅い可能性あり
 	// 存在してるかチェックするときに2つ見ないといけなくてごちゃごちゃするから1つで済むようにする
 	
-	const size_t PRE_OBJECT_SIZE = objects.size();
+	
 	for (int i = 0; i < PRE_OBJECT_SIZE;i++)
 	{
-		objects[i]->SetGUIData();
 		objects[i]->SetPreDataPositions();
 		objects[i]->Update();
 		objects[i]->SetPrePosition();

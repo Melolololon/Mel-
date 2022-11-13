@@ -617,8 +617,10 @@ void MelLib::SceneEditer::Update()
 
 		if (isEdit) 
 		{
+			// スコアなどをリセットするために読み込みなおす
+			SceneManager::GetInstance()->ReLoadScene();
 			LoadEditData(TEST_START_EDIT_DATA_NAME);
-			
+
 
 			RenderTarget::RenderTargetDrawData data;
 			data.rt = RenderTarget::Get();
@@ -727,6 +729,7 @@ void MelLib::SceneEditer::Update()
 	{
 		GuiValueManager::GetInstance()->ChangeTypingInputFlag(pEditSelectObject->GetObjectName());
 		GuiValueManager::GetInstance()->ChangeTypingInputFlag(CAMERA_WINDOW_NAME);
+		GuiValueManager::GetInstance()->ChangeTypingInputFlag(pSelectListObject->GetObjectName());
 
 
 

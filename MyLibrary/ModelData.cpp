@@ -341,7 +341,8 @@ bool MelLib::ModelData::Create
 	const std::string& name
 )
 {
-	if(vertices.size() != indices.size())
+	if(vertices.size() != indices.size()
+		&& pModelDatas.find(name) != pModelDatas.end())
 	{
 		
 		return false;
@@ -376,7 +377,7 @@ bool MelLib::ModelData::Create
 {
 
 
-	if (vertices.size() != indices.size())
+	if (vertices.size() != indices.size() && pModelDatas.find(name) != pModelDatas.end())
 	{
 
 		return false;
@@ -437,6 +438,8 @@ void MelLib::ModelData::Create
 
 bool ModelData::Load(const std::string& path, const bool batchDeletionFlag, const std::string& name)
 {
+	if (pModelDatas.find(name) != pModelDatas.end())return false;
+
 	pModelDatas.emplace(name, std::make_unique<ModelData>());
 	bool result = pModelDatas[name]->LoadModel(path, name);
 
@@ -569,6 +572,8 @@ void MelLib::ModelData::SetFbxAnimStack(const std::string& name)
 
 bool ModelData::LoadModel(const std::string& path, const std::string& name)
 {
+	if (pModelDatas.find(name) != pModelDatas.end())return false;
+
 	bool result = false;
 	
 	//“Ç‚İ‚İŒ‹‰Ê‚ªfalse‚¾‚Á‚½‚Æ‚«‚ÌI—¹ˆ—

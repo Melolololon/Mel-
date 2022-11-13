@@ -46,6 +46,11 @@ namespace MelLib
 
 		Scene* GetCurrentScene();
 		std::string GetCurrentSceneName();
+
+		/// <summary>
+		/// ƒV[ƒ“‚ğÄ“Ç‚İ‚İ‚µ‚Ü‚·B
+		/// </summary>
+		void ReLoadScene();
 	};
 
 }

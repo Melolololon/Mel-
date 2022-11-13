@@ -2,7 +2,7 @@
 #include"SceneEditer.h"
 #include<assert.h>
 #include<typeinfo>
-
+#include"GameObjectManager.h"
 
 using namespace MelLib;
 
@@ -18,6 +18,10 @@ SceneManager::~SceneManager()
 
 void MelLib::SceneManager::Change()
 {
+	// 強制削除
+	// エディターでのシーンの読み込み直し時に現在のシーンに生成などの処理がないと消えてしまうため、
+	// 一旦強制的に消して毎回読み込ませるようにする
+	GameObjectManager::GetInstance()->AllEraseObject();
 
 	//シーン取得
 	Scene* newScene = currentScene->GetNextScene();
@@ -104,4 +108,11 @@ std::string MelLib::SceneManager::GetCurrentSceneName()
 	name.erase(name.begin(), name.begin() + 6);
 
 	return name;
+}
+
+void MelLib::SceneManager::ReLoadScene()
+{
+	GameObjectManager::GetInstance()->AllEraseObject();
+	if (!currentScene)return;
+	currentScene->Initialize();
 }

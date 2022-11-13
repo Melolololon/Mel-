@@ -11,6 +11,7 @@ UINT Texture::loadTextureNumber = 1;
 
 bool Texture::LoadTexture(const std::vector<std::string>& path)
 {
+
 	size_t pathStrNum = path.size();
 
 
@@ -65,6 +66,12 @@ void MelLib::Texture::GetImage(const size_t textureNum)
 
 bool Texture::Load(const std::string& path, const std::string& name)
 {
+
+	if (pTextures.find(name) != pTextures.end())
+	{
+		return false;
+	}
+
 	pTextures.emplace(name, std::make_unique<Texture>());
 	return pTextures[name]->LoadSpriteTexture(path);
 
