@@ -71,6 +71,14 @@ void MelLib::Camera::Finalize()
 	pCameras.clear();
 }
 
+void MelLib::Camera::AllCalcCameraData()
+{
+	for (auto& camera : pCameras) 
+	{
+		camera.second->CalcCameraData();
+	}
+}
+
 void Camera::Create(const std::string& name)
 {
 	std::string key = name;

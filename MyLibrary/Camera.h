@@ -68,6 +68,8 @@ namespace MelLib
 		Camera(const std::string& name);
 		~Camera();
 
+		static void AllCalcCameraData();
+
 		static void Finalize();
 
 		/// <summary>

@@ -68,7 +68,6 @@ void Game::Initialize()
 
 	Player::LoadRes();
 
-
 #pragma region マネージャー初期化
 
 	/*CollisionFlag initFlag;

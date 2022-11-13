@@ -169,6 +169,7 @@ void Library::LoopStartProcess()
 	Sound::Update();
 	SpriteFont2D::GetInstance()->Update();
 	FrameTimer::AllUpdate();
+	Camera::AllCalcCameraData();
 
 	GuiValueManager::GetInstance()->Update();
 
