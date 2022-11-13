@@ -2412,6 +2412,9 @@ void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 	// ここで追加しないと1回目の追加でも上のチェックに引っかかるためここで追加している
 	objects.push_back(object);
 	//addObjects.push_back(object);
+
+	object->SetPrePosition();
+	object->SetPreDataPositions();
 	
 }
 

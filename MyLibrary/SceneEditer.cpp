@@ -729,7 +729,8 @@ void MelLib::SceneEditer::Update()
 	{
 		GuiValueManager::GetInstance()->ChangeTypingInputFlag(pEditSelectObject->GetObjectName());
 		GuiValueManager::GetInstance()->ChangeTypingInputFlag(CAMERA_WINDOW_NAME);
-		GuiValueManager::GetInstance()->ChangeTypingInputFlag(pSelectListObject->GetObjectName());
+
+		if (pSelectListObject)GuiValueManager::GetInstance()->ChangeTypingInputFlag(pSelectListObject->GetObjectName());
 
 
 
