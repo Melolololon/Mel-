@@ -134,7 +134,9 @@ namespace MelLib
 		int selectEditDataNum = 0;
 		bool selectingEditData = false;
 
+		bool typingInputFlag = false;
 	public:
+
 		static SceneEditer* GetInstance();
 
 		/// <summary>

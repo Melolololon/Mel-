@@ -442,6 +442,9 @@ namespace MelLib
 		/// </summary>
 		void SetPrePosition();
 
+		/// <summary>
+		/// 開発者用。モデルと判定にGUIの数値を適応させる。
+		/// </summary>
 		void SetGUIData();
 #pragma endregion
 

@@ -198,6 +198,13 @@ GameObject::GameObject(const std::string& name)
 	guiAngle.SetData(0, objectName, "Angle", -359, 359);
 	guiScale.SetData(1, objectName, "Scale", -10, 10);
 
+
+
+
+
+	SetPrePosition();
+	//SetGUIData();
+	//SetPreDataPositions();
 }
 
 

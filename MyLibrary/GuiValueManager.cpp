@@ -36,7 +36,7 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 // なぜか読み込みが無限に続いた時があった
 // 要確認
 
-void MelLib::GuiValueManager::Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type, const size_t dataSize, bool& refFlag)
+void MelLib::GuiValueManager::Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type, const size_t dataSize)
 {
 	// 削除されたGuiのパラメータは書き出さないようにする
 
@@ -155,12 +155,61 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 	// 書き換え
 	valueDatas[windowName][lavel] = param;
 
-	// Imguiの変更確認フラグをfalseに
-	refFlag = false;
 }
 
 void MelLib::GuiValueManager::Export()
 {
+	// 値を保存
+	for (const auto& window : intValues) 
+	{
+		const std::string WINDOW_NAME = window.first;
+		for (const auto& value : window.second) 
+		{
+			GuiInt& guiInt = *value.second;
+			int num = guiInt.GetValue();
+			
+			const char* data = reinterpret_cast<char*>(&num);
+			Save(WINDOW_NAME, value.first, data, typeid(num), sizeof(num));
+		}
+	}
+	for (const auto& window : floatValues)
+	{
+		const std::string WINDOW_NAME = window.first;
+		for (const auto& value : window.second)
+		{
+			GuiFloat& guiFloat = *value.second;
+			float num = guiFloat.GetValue();
+
+			const char* data = reinterpret_cast<char*>(&num);
+			Save(WINDOW_NAME, value.first, data, typeid(num), sizeof(num));
+		}
+	}
+	for (const auto& window : vector3Values)
+	{
+		const std::string WINDOW_NAME = window.first;
+		for (const auto& value : window.second)
+		{
+			GuiVector3& guiVector3 = *value.second;
+			Vector3 num = guiVector3.GetValue();
+
+			const char* data = reinterpret_cast<char*>(&num);
+			Save(WINDOW_NAME, value.first, data, typeid(num), sizeof(num));
+		}
+	}	
+	for (const auto& window : boolValues)
+	{
+		const std::string WINDOW_NAME = window.first;
+		for (const auto& value : window.second)
+		{
+			GuiBool& guiBool = *value.second;
+			bool num = guiBool.GetValue();
+
+			const char* data = reinterpret_cast<char*>(&num);
+			Save(WINDOW_NAME, value.first, data, typeid(num), sizeof(num));
+		}
+	}
+
+
 	for (const auto& datas : valueDatas) 
 	{
 		const std::string WINDOW_NAME = datas.first;
@@ -436,13 +485,13 @@ void MelLib::GuiValueManager::Update()
 						changeFlag = ImguiManager::GetInstance()->DrawInputIntBox(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
 					}
 					else changeFlag = ImguiManager::GetInstance()->DrawSliderInt(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
-
-					if (changeFlag)
+					guiInt = num;
+				/*	if (changeFlag)
 					{
 						const char* data = reinterpret_cast<char*>(&num);
 						Save(WINDOW_NAME, LAVEL, data, typeid(num), sizeof(num), changeFlag);
 						guiInt = num;
-					}
+					}*/
 
 
 				}
@@ -469,13 +518,13 @@ void MelLib::GuiValueManager::Update()
 					if (guiFloat.GetTypingInputValueFlag()) changeFlag = ImguiManager::GetInstance()->DrawInputFloatBox(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
 					else changeFlag = changeFlag = ImguiManager::GetInstance()->DrawSliderFloat(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
 					
-
-					if (changeFlag)
+					guiFloat = num;
+					/*if (changeFlag)
 					{
 						const char* data = reinterpret_cast<char*>(&num);
 						Save(WINDOW_NAME, LAVEL, data, typeid(num), sizeof(num), changeFlag);
 						guiFloat = num;
-					}
+					}*/
 				}
 
 			}
@@ -500,14 +549,14 @@ void MelLib::GuiValueManager::Update()
 
 					if (guiVector3.GetTypingInputValueFlag()) changeFlag = ImguiManager::GetInstance()->DrawInputVector3Box(LAVEL, num);
 					else changeFlag = ImguiManager::GetInstance()->DrawSliderVector3(LAVEL, num, guiVector3.GetMinValue(), guiVector3.GetMaxValue());
+					guiVector3 = num;
 
-
-					if (changeFlag)
+					/*if (changeFlag)
 					{
 						const char* data = reinterpret_cast<char*>(&num);
 						Save(WINDOW_NAME, LAVEL, data, typeid(num), sizeof(num), changeFlag);
 						guiVector3 = num;
-					}
+					}*/
 				}
 
 			}
@@ -528,13 +577,13 @@ void MelLib::GuiValueManager::Update()
 					GuiBool& guiBool = *value.second;
 					bool flag = guiBool.GetValue();
 					changeFlag = ImguiManager::GetInstance()->DrawCheckBox(LAVEL, flag);
-
-					if (changeFlag)
+					guiBool = flag;
+					/*if (changeFlag)
 					{
 						const char* data = reinterpret_cast<char*>(&flag);
 						Save(WINDOW_NAME, LAVEL, data, typeid(flag), sizeof(flag), changeFlag);
 						guiBool = flag;
-					}
+					}*/
 				}
 
 			}
@@ -548,12 +597,12 @@ void MelLib::GuiValueManager::Update()
 	// 保存
 	if (pushCtrl && Input::KeyTrigger(DIK_S))Export();
 
-	// 読込
-	if (pushCtrl && Input::KeyTrigger(DIK_L))
-	{
-		Load();
-		AllSetLoadData();
-	}
+	//// 読込
+	//if (pushCtrl && Input::KeyTrigger(DIK_L))
+	//{
+	//	Load();
+	//	AllSetLoadData();
+	//}
 #pragma region 旧
 
 
@@ -807,6 +856,36 @@ void MelLib::GuiValueManager::ChangeWindowName(const std::string& windowName, co
 		boolValues.erase(WINDOW_NAME);
 		boolValues.emplace(newWindowName, newMap);
 		break;
+	}
+}
+
+void MelLib::GuiValueManager::LoadGUIFileData(const std::string& windowName)
+{
+
+	for (auto& guiValue : intValues[windowName])
+	{
+		int value = 0;
+		GetGuiData(guiValue.second,value,windowName,guiValue.first);
+		guiValue.second->SetValue(value);
+	}
+
+	for (auto& guiValue : floatValues[windowName])
+	{
+		float value = 0;
+		GetGuiData(guiValue.second, value, windowName, guiValue.first);
+		guiValue.second->SetValue(value);
+	}
+	for (auto& guiValue : vector3Values[windowName])
+	{
+		Vector3 value = 0;
+		GetGuiData(guiValue.second, value, windowName, guiValue.first);
+		guiValue.second->SetValue(value);
+	}
+	for (auto& guiValue : boolValues[windowName])
+	{
+		bool value = false;
+		GetGuiData(guiValue.second, value, windowName, guiValue.first);
+		guiValue.second->SetValue(value);
 	}
 }
 

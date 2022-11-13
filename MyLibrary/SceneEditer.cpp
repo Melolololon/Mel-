@@ -10,7 +10,7 @@
 #include<filesystem>
 
 const std::string MelLib::SceneEditer::EDIT_DATA_FORMAT = ".melsce";
-const std::string MelLib::SceneEditer::TEST_START_EDIT_DATA_NAME = "TestStartEditData" + EDIT_DATA_FORMAT;
+const std::string MelLib::SceneEditer::TEST_START_EDIT_DATA_NAME = "TestStartEditData";
 const std::string MelLib::SceneEditer::REGISTER_OBJECT_DATA_FORMAT = ".rod";
 const std::string MelLib::SceneEditer::EDIT_WINDOW_NAME = "Edit";
 const std::string MelLib::SceneEditer::CAMERA_WINDOW_NAME = "EditCamera";
@@ -161,6 +161,8 @@ void MelLib::SceneEditer::Load()
 		if (name.find(EDIT_DATA_FORMAT) == std::string::npos)continue;
 		name.erase(name.begin(), name.begin() + 2);
 		name.erase(name.end() - EDIT_DATA_FORMAT.size(), name.end());
+		
+		if (name == TEST_START_EDIT_DATA_NAME)continue;
 		sceneFileNames.push_back(name);
 	}
 
@@ -200,6 +202,8 @@ void MelLib::SceneEditer::LoadRegisterSelectObject()
 
 		// 一旦nullptr入れて後で確保
 		pRegisterObjects[data.typeName].emplace(data.objectName, nullptr);
+
+		
 
 
 		file.close();
@@ -298,6 +302,10 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 		Vector3 scale;
 		file.read(reinterpret_cast<char*>(&scale), sizeof(Vector3));
 		pObject->SetScale(scale);
+
+		pObject->SetPrePosition();
+		pObject->SetGUIData();
+		pObject->SetPreDataPositions();
 
 		char c;
 		file.read(&c, 1);
@@ -428,6 +436,8 @@ void MelLib::SceneEditer::RegisterSelectObject()
 	// 名前の登録
 	registerSelectObjectNames.push_back(inputObjectName);
 
+
+	object->SetPrePosition();
 	// 登録
 	RegisterObject(object, inputObjectType);
 }
@@ -543,6 +553,8 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	//test.push_back(pObject);
 	//registerObjectOrderDatas.try_emplace(pRegisterObjects.size() - 1, objectType);
 
+	pObject->SetPrePosition();
+
 	registerObjectNames.clear();
 	
 	registerObjectTypes.clear();
@@ -578,11 +590,18 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 		// メモリ確保して格納
 		pRefObject = pObject->GetNewPtr();
 
+		const std::string PRE_NAME = pRefObject->GetObjectName();
+
 		// データをセット
 		pRefObject->SetObjectName(data.objectName);
 		pRefObject->SetAngle(data.angle);
 		pRefObject->SetScale(data.scale);
 
+		GuiValueManager::GetInstance()->ChangeWindowName(PRE_NAME, data.objectName);
+		GuiValueManager::GetInstance()->LoadGUIFileData(data.objectName);
+
+		pRefObject->SetPrePosition();
+		
 	}
 
 }
@@ -724,9 +743,21 @@ void MelLib::SceneEditer::Update()
 	pEditSelectObject = refObjects[OBJECT_NAME].get();
 	pEditSelectObject->SetGUIData();
 
+	// pEditSelectObjectのウィンドウ描画設定
+	for (const auto& p : pRegisterObjects) 
+	{
+		for (const auto& object : p.second)
+		{
+			if(object.first == OBJECT_NAME)GuiValueManager::GetInstance()->SetDrawWindowFlag(object.first, true);
+			else GuiValueManager::GetInstance()->SetDrawWindowFlag(object.first, false);
+		}
+	}
+
 
 	if (pushChangeButton && !inpttingObjectName && !inpttingObjectType && !inpttingEditDataName && !selectingEditData)
 	{
+		typingInputFlag = !typingInputFlag;
+
 		GuiValueManager::GetInstance()->ChangeTypingInputFlag(pEditSelectObject->GetObjectName());
 		GuiValueManager::GetInstance()->ChangeTypingInputFlag(CAMERA_WINDOW_NAME);
 
@@ -767,8 +798,8 @@ void MelLib::SceneEditer::Update()
 			GameObjectManager::GetInstance()->AddObject(pObject);
 			addObjects.push_back(pObject.get());
 
-			// 配置時のデータを保存しておく
-
+			// フラグセット
+			GuiValueManager::GetInstance()->SetTypingInputFlag(pObject->GetObjectName(),typingInputFlag);
 		}
 		else
 		{

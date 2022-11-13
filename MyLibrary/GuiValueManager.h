@@ -53,8 +53,7 @@ namespace MelLib
 		/// <param name="lavel">ラベル</param>
 		/// <param name="data">char*に変換したデータのポインタの参照</param>
 		/// <param name="dataSize">データサイズ</param>
-		/// <param name="refFlag">changeFlag(戻す用)</param>
-		void Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type,size_t dataSize,bool& refFlag);
+		void Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type,size_t dataSize);
 		void Export();
 
 		void Load();
@@ -122,6 +121,12 @@ namespace MelLib
 		/// </summary>
 		/// <param name="windowName"></param>
 		void ChangeWindowName(const std::string& windowName,const std::string& newWindowName);
+
+		/// <summary>
+		/// 保存されているGUIのデータを読み込みます。
+		/// </summary>
+		/// <param name="windowName"></param>
+		void LoadGUIFileData(const std::string& windowName);
 
 		void SetTypingInputFlag(const std::string& windowName,bool flag);
 		void ChangeTypingInputFlag(const std::string& windowName);

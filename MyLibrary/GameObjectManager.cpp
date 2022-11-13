@@ -59,11 +59,9 @@ void GameObjectManager::Update()
 		for (int i = 0; i < PRE_OBJECT_SIZE; i++)
 		{
 
-			objects[i]->SetGUIData();
 
-			objects[i]->SetPreDataPositions();
 			objects[i]->SetPrePosition();
-			// ‰¼‚É‚±‚±‚É‘‚¢‚Ä‚é
+			objects[i]->SetGUIData();
 			objects[i]->SetPreDataPositions();
 
 		}
@@ -92,7 +90,7 @@ void GameObjectManager::Update()
 		objects[i]->SetPreDataPositions();
 		objects[i]->Update();
 		objects[i]->SetPrePosition();
-
+		objects[i]->SetGUIData();
 		// ‰¼‚É‚±‚±‚É‘‚¢‚Ä‚é
 		objects[i]->SetPreDataPositions();
 	}

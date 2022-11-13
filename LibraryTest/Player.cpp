@@ -68,7 +68,9 @@ Player::Player()
 
 	// 今読み込んだ値をモデルオブジェクトに反映できてないから
 	// 初期位置を0,0,5に
-	SetPosition(MelLib::Vector3(0, 0, 0));
+	//SetPosition(GetPosition());
+
+	modelObjects["main"].SetPosition(GetPosition());
 
 	// 当たり判定の作成(球)
 	// Playerの座標を取得し、それをセット
