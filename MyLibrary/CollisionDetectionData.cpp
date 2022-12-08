@@ -365,9 +365,9 @@ void MelLib::FrustumData::SetFar(const float farNum)
 void MelLib::TriangleData::CalcNormal()
 {
 	//‰ñ“]“K‰ž
-	rotPos.v1 = MelLib::Quaternion::GetZXYRotateQuaternion(position.v1, angle).ToVector3();
-	rotPos.v2 = MelLib::Quaternion::GetZXYRotateQuaternion(position.v2, angle).ToVector3();
-	rotPos.v3 = MelLib::Quaternion::GetZXYRotateQuaternion(position.v3, angle).ToVector3();
+	rotPos.v1 = MelLib::Quaternion::GetZXYRotateQuaternion(scalingPos.v1, angle).ToVector3();
+	rotPos.v2 = MelLib::Quaternion::GetZXYRotateQuaternion(scalingPos.v2, angle).ToVector3();
+	rotPos.v3 = MelLib::Quaternion::GetZXYRotateQuaternion(scalingPos.v3, angle).ToVector3();
 
 	normal = LibMath::CalcNormal(rotPos.v1, rotPos.v2, rotPos.v3);
 
@@ -379,6 +379,7 @@ void MelLib::TriangleData::SetPosition(const Value3<Vector3>& pos)
 	if (position == pos)return;
 
 	position = pos;
+	scalingPos = position * scale;
 	CalcNormal();
 
 	translationPos = rotPos + translationVec;
@@ -389,6 +390,17 @@ void MelLib::TriangleData::SetAngle(const Vector3& angle)
 	if (this->angle == angle || angle == 0)return;
 
 	this->angle = angle;
+	CalcNormal();
+
+	translationPos = rotPos + translationVec;
+}
+
+void MelLib::TriangleData::SetScale(const Vector3& scale)
+{
+	if (this->scale == scale)return;
+
+	this->scale = scale;
+	scalingPos = position * scale;
 	CalcNormal();
 
 	translationPos = rotPos + translationVec;

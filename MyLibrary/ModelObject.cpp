@@ -2163,7 +2163,8 @@ std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData
 		{
 			Value3<Vector3>pos(vertPos[i][vertIndex[i][j]], vertPos[i][vertIndex[i][j + 1]], vertPos[i][vertIndex[i][j + 2]]);
 
-			result[i][loopCount].SetPosition(pos * Vector3(modelConstDatas.at(objectName).scale.GetValue()));
+			result[i][loopCount].SetPosition(pos);
+			result[i][loopCount].SetScale(Vector3(modelConstDatas.at(objectName).scale.GetValue()));
 			result[i][loopCount].SetAngle(modelConstDatas.at(objectName).angle.GetValue());
 			result[i][loopCount].SetTranslationPosition(modelConstDatas.at(objectName).position.GetValue());
 		}

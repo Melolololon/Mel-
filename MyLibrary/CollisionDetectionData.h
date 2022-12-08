@@ -390,6 +390,10 @@ namespace MelLib
 		// 座標を3つまとめている
 		Value3<Vector3>position;
 
+		Vector3 scale;
+		Value3<Vector3> scalingPos;
+
+
 		// 角度
 		Vector3 angle;
 		// 回転の座標
@@ -449,7 +453,7 @@ namespace MelLib
 		/// <param name="pos"></param>
 		void SetPosition(const Value3<Vector3>& pos);
 		void SetAngle(const Vector3& angle);
-
+		void SetScale(const Vector3& scale);
 		/// <summary>
 		/// 回転後にどのくらい平行移動させるかを指定します。
 		/// </summary>

@@ -219,7 +219,7 @@ namespace MelLib
 				collisionFlag.triangle = flag;
 			}
 
-			float collisionCheckDistance = 15.0f;
+			float collisionCheckDistance = 30.0f;
 	private:
 
 		

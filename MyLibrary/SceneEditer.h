@@ -104,9 +104,7 @@ namespace MelLib
 
 		std::vector<ObjectData>loadSelectRegisterObjectDatas;
 
-		std::vector<GameObject*>addObjects;
-		// 配置時のオブジェクトのデータ
-		std::vector<std::shared_ptr<GameObject>>objectSetData;
+		std::vector<std::shared_ptr<GameObject>>addObjects;
 
 		// 選択されているタイプ
 		int selectType = 0;
@@ -135,6 +133,7 @@ namespace MelLib
 		bool selectingEditData = false;
 
 		bool typingInputFlag = false;
+
 	public:
 
 		static SceneEditer* GetInstance();

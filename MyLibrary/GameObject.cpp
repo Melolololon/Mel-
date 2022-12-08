@@ -38,7 +38,13 @@ void MelLib::GameObject::SetDataPosition(const Vector3& vec)
 			d2.SetPosition(d2.GetPosition() + vec);
 		}
 	}
-	for (auto& d : boxDatas)
+	for (auto& d : boxDatas) 
+	{
+		for (auto& d2 : d.second)
+		{
+			d2.SetPosition(d2.GetPosition() + vec);
+		}
+	}
 	for (auto& d : obbDatas)
 	{
 		for (auto& d2 : d.second)
@@ -46,6 +52,21 @@ void MelLib::GameObject::SetDataPosition(const Vector3& vec)
 			d2.SetPosition(d2.GetPosition() + vec);
 		}
 	}
+	for (auto& d : triangleDatas)
+	{
+		for (auto& d2 : d.second)
+		{
+			d2.SetPosition(d2.GetPosition() + vec);
+		}
+	}
+	for (auto& d : rayDatas)
+	{
+		for (auto& d2 : d.second)
+		{
+			d2.SetPosition(d2.GetPosition() + vec);
+		}
+	}
+
 	for (auto& d : boardDatas)
 	{
 		for (auto& d2 : d.second)
@@ -82,6 +103,13 @@ void MelLib::GameObject::SetModelAngle(const Vector3& angle)
 void MelLib::GameObject::SetDataAngle(const Vector3& angle)
 {
 	for (auto& d : obbDatas)
+	{
+		for (auto& d2 : d.second)
+		{
+			d2.SetAngle(angle);
+		}
+	}
+	for (auto& d : triangleDatas)
 	{
 		for (auto& d2 : d.second)
 		{
@@ -166,6 +194,14 @@ void MelLib::GameObject::SetDataScale(const Vector3& scale)
 		for (auto& d2 : d.second)
 		{
 			d2.GetRefSegment3DData().SetPosition(d2.GetSegment3DData().GetPosition() * scale);
+		}
+	}
+
+	for (auto& d : triangleDatas)
+	{
+		for (auto& d2 : d.second)
+		{
+			d2.SetScale(scale);
 		}
 	}
 }
@@ -362,6 +398,16 @@ void MelLib::GameObject::CopyObjectData(GameObject& object, CopyGameObjectConten
 	object.scale = scale;
 
 	// 当たり判定もコピーを行うようにする
+	object.sphereDatas = sphereDatas;
+	object.boxDatas = boxDatas;
+	object.segment3DDatas = segment3DDatas;
+	object.rayDatas = rayDatas;
+	object.boardDatas = boardDatas;
+	object.capsuleDatas = capsuleDatas;
+	object.obbDatas = obbDatas;
+	object.triangleDatas = triangleDatas;
+	object.collisionFlag = collisionFlag;
+
 	
 	// これだとCreateが呼び出されちゃうから合計で2回呼び出される可能性がある
 	// 一回消して作り直さないといけない

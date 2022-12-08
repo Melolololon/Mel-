@@ -45,7 +45,7 @@ void MelLib::SceneEditer::SaveEditData(const std::string& dataName)
 	// 書き出し
 	for (size_t i = 0; i < ADD_OBJECT_SIZE ; i++)
 	{
-		GameObject* pObject = addObjects[i];
+		GameObject* pObject = addObjects[i].get();
 
 		// クラス名
 		const std::string CLASS_NAME = typeid(*pObject).name();
@@ -290,7 +290,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 		// 管理クラスに追加
 		GameObjectManager::GetInstance()->AddObject(pObject);
 		// 追加オブジェクト一覧に追加
-		addObjects.push_back(pObject.get());
+		addObjects.push_back(pObject);
 
 		//座標とか
 		Vector3 position;
@@ -398,7 +398,7 @@ void MelLib::SceneEditer::DrawObjectList()
 	{
 		if (p->GetObjectName() == selectListObjectName)
 		{
-			pSelectListObject = p;
+			pSelectListObject = p.get();
 		}
 	}
 }
@@ -666,6 +666,12 @@ void MelLib::SceneEditer::Update()
 			// スライダーだけじゃなくて直接入力もできるようにした方がよさそう
 
 			RenderTarget::Get()->SetCamera(Camera::Get());
+
+			// 敵追加
+			for (auto& object : addObjects) 
+			{
+				GameObjectManager::GetInstance()->AddObject(object);
+			}
 			
 		}
 
@@ -795,8 +801,12 @@ void MelLib::SceneEditer::Update()
 			GuiValueManager::GetInstance()->CopyGuiValue(pEditSelectObject->GetObjectName(), pObject->GetObjectName());
 
 			// 追加
-			GameObjectManager::GetInstance()->AddObject(pObject);
-			addObjects.push_back(pObject.get());
+			//GameObjectManager::GetInstance()->AddObject(pObject);
+
+			// 全て削除
+			// (登録したオブジェクトのコンストラクタにオブジェクトを追加する処理がある場合、追加されたオブジェクトが表示されるため)
+			GameObjectManager::GetInstance()->AllEraseObject();
+			addObjects.push_back(pObject);
 
 			// フラグセット
 			GuiValueManager::GetInstance()->SetTypingInputFlag(pObject->GetObjectName(),typingInputFlag);
@@ -834,10 +844,10 @@ void MelLib::SceneEditer::Update()
 		const size_t SIZE = addObjects.size();
 		for (size_t i = 0; i < SIZE; i++)
 		{
-			if (pSelectListObject == addObjects[i])
+			if (pSelectListObject == addObjects[i].get())
 			{
 				addObjects.erase(addObjects.begin() + i);
-				GameObjectManager::GetInstance()->EraseObject(pSelectListObject);
+				//GameObjectManager::GetInstance()->EraseObject(pSelectListObject);
 				pSelectListObject = nullptr;
 			}
 		}

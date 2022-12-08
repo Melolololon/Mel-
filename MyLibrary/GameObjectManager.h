@@ -167,6 +167,15 @@ namespace MelLib
 		const std::vector<std::shared_ptr<GameObject2D>>& GetRefGameObject2D() { return object2Ds; };
 
 		void GetObjectNames(std::vector<std::string>& refVector)const;
+
+		// shared_ptr•Ô‚·‚ÆŒxo‚é
+		// ŠÖ”‚ÅQÆ‚ğ“n‚µ‚½‚ço‚È‚¢?
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		GameObject* GetPGameObject(const std::string& name)const;
 #pragma endregion
 
 		void EraseObject(GameObject* p);
@@ -178,6 +187,8 @@ namespace MelLib
 
 		void AllEraseObject2D();
 		void AllEraseObject3D();
+
+
 	};
 
 }

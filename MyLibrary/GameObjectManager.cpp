@@ -2603,6 +2603,15 @@ void MelLib::GameObjectManager::GetObjectNames(std::vector<std::string>& refVect
 
 }
 
+GameObject* MelLib::GameObjectManager::GetPGameObject(const std::string& name)const
+{
+	for (const auto& p : objects) 
+	{
+		if (p->GetObjectName() == name)return p;
+	}
+	return nullptr;
+}
+
 void MelLib::GameObjectManager::EraseObject(GameObject* p)
 {
 	const size_t SIZE = objects.size();
