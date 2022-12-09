@@ -2607,7 +2607,7 @@ GameObject* MelLib::GameObjectManager::GetPGameObject(const std::string& name)co
 {
 	for (const auto& p : objects) 
 	{
-		if (p->GetObjectName() == name)return p;
+		if (p->GetObjectName() == name)return p.get();
 	}
 	return nullptr;
 }
