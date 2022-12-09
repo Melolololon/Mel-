@@ -380,7 +380,11 @@ void MelLib::SceneEditer::DrawObjectList()
 	// ここconstにしたい
 	// GameObjectManagerで名前の配列作って管理出来るようにしてからconstに変更末う
 	std::vector<std::string>objectNames;
-	GameObjectManager::GetInstance()->GetObjectNames(objectNames);
+	objectNames.reserve(addObjects.size());
+	for (auto& object : addObjects) 
+	{
+		objectNames.push_back(object->GetObjectName());
+	}
 	
 	// ImguiManagerにvector私てリスト表示できるようにするから、GetObjectNameにcharの配列渡して受け取る処理作る必要ない
 	const size_t OBJECT_SIZE = objectNames.size();
@@ -667,7 +671,7 @@ void MelLib::SceneEditer::Update()
 
 			RenderTarget::Get()->SetCamera(Camera::Get());
 
-			// 敵追加
+			// オブジェクト追加
 			for (auto& object : addObjects) 
 			{
 				GameObjectManager::GetInstance()->AddObject(object);
@@ -889,6 +893,10 @@ void MelLib::SceneEditer::Draw()
 
 	pEditSelectObject->Draw();
 
+	for (auto& addObject : addObjects) 
+	{
+		addObject->Draw();
+	}
 }
 
 void MelLib::SceneEditer::SetReleaseEditFlag(const bool flag)

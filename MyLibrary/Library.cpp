@@ -177,7 +177,7 @@ void Library::LoopStartProcess()
 
 void Library::LoopEndProcess()
 {
-	dx12->LoopEndProcess();
+ 	dx12->LoopEndProcess();
 	
 	if (isSetFPS60)
 	{
