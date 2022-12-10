@@ -98,7 +98,7 @@ namespace MelLib
 
 		void Initialize();
 
-		void ObjectInitialize();
+		void InitializeObject();
 
 		void Update();
 

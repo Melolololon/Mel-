@@ -49,7 +49,7 @@ void GameObjectManager::Initialize()
 	addObjects.reserve(100);
 }
 
-void MelLib::GameObjectManager::ObjectInitialize()
+void MelLib::GameObjectManager::InitializeObject()
 {
 	for (auto& object : objects) 
 	{
