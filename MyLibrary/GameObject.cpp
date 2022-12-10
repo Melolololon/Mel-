@@ -249,6 +249,10 @@ GameObject::~GameObject()
 	GuiValueManager::GetInstance()->DeleteWindow(objectName);
 }
 
+void MelLib::GameObject::Initialize()
+{
+}
+
 //void GameObject::Initialize()
 //{
 //}

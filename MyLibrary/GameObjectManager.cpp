@@ -49,6 +49,14 @@ void GameObjectManager::Initialize()
 	addObjects.reserve(100);
 }
 
+void MelLib::GameObjectManager::ObjectInitialize()
+{
+	for (auto& object : objects) 
+	{
+		object->Initialize();
+	}
+}
+
 void GameObjectManager::Update()
 {
 	const size_t PRE_OBJECT_SIZE = objects.size();
@@ -2384,9 +2392,9 @@ void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 {
 	if (!object)return;
 	
-	object->FalseEraseManager();
+	object->Initialize();
 
-	
+	object->FalseEraseManager();
 
 
 	// この辺エディターに使う処理だから最終的にはオフにできるようにしたほうが良いかも

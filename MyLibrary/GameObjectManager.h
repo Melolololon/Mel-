@@ -98,6 +98,8 @@ namespace MelLib
 
 		void Initialize();
 
+		void ObjectInitialize();
+
 		void Update();
 
 		void Draw();

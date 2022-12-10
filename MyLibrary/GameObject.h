@@ -331,6 +331,8 @@ namespace MelLib
 		//デストラクタ
 		virtual ~GameObject();
 
+		virtual void Initialize();
+
 		//更新
 		virtual void Update();
 		//描画

@@ -654,6 +654,7 @@ void MelLib::SceneEditer::Update()
 		}
 		else 
 		{
+			SceneManager::GetInstance()->ReLoadScene();
 			// オブジェクト全部消したのに追加したら0番とかにならない不具合修正する
 			// 前回の番号の状態を実行時に反映させるようにする
 			// エディット中は利用者が作ったレンダーターゲットを使用しないようにする
