@@ -68,7 +68,7 @@ void GameObjectManager::Update()
 		{
 
 
-			objects[i]->SetPrePosition();
+			objects[i]->SetPreData();
 			objects[i]->SetGUIData();
 			objects[i]->SetPreDataPositions();
 
@@ -97,7 +97,7 @@ void GameObjectManager::Update()
 	{
 		objects[i]->SetPreDataPositions();
 		objects[i]->Update();
-		objects[i]->SetPrePosition();
+		objects[i]->SetPreData();
 		objects[i]->SetGUIData();
 		// ‰¼‚É‚±‚±‚É‘‚¢‚Ä‚é
 		objects[i]->SetPreDataPositions();
@@ -2419,7 +2419,7 @@ void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 	objects.push_back(object);
 	//addObjects.push_back(object);
 
-	object->SetPrePosition();
+	object->SetPreData();
 	object->SetPreDataPositions();
 	
 }

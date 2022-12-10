@@ -303,7 +303,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 		file.read(reinterpret_cast<char*>(&scale), sizeof(Vector3));
 		pObject->SetScale(scale);
 
-		pObject->SetPrePosition();
+		pObject->SetPreData();
 		pObject->SetGUIData();
 		pObject->SetPreDataPositions();
 
@@ -441,7 +441,7 @@ void MelLib::SceneEditer::RegisterSelectObject()
 	registerSelectObjectNames.push_back(inputObjectName);
 
 
-	object->SetPrePosition();
+	object->SetPreData();
 	// “o˜^
 	RegisterObject(object, inputObjectType);
 }
@@ -557,7 +557,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	//test.push_back(pObject);
 	//registerObjectOrderDatas.try_emplace(pRegisterObjects.size() - 1, objectType);
 
-	pObject->SetPrePosition();
+	pObject->SetPreData();
 
 	registerObjectNames.clear();
 	
@@ -604,7 +604,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 		GuiValueManager::GetInstance()->ChangeWindowName(PRE_NAME, data.objectName);
 		GuiValueManager::GetInstance()->LoadGUIFileData(data.objectName);
 
-		pRefObject->SetPrePosition();
+		pRefObject->SetPreData();
 		
 	}
 
@@ -873,7 +873,7 @@ void MelLib::SceneEditer::Update()
 	//	else obj->SetDrawGUIFlag(false);
 	//}
 
-	pEditSelectObject->SetPrePosition();
+	pEditSelectObject->SetPreData();
 
 
 	UpdateCamera();

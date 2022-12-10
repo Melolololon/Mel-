@@ -32,7 +32,9 @@ namespace MelLib
 		// 前フレームの座標
 		Vector3 prePosition;
 		Vector3& angle;
+		Vector3 preAngle;
 		Vector3& scale;
+		Vector3 preScale;
 
 
 		// 2022_10_02
@@ -442,7 +444,7 @@ namespace MelLib
 		/// <summary>
 		/// 開発者用。
 		/// </summary>
-		void SetPrePosition();
+		void SetPreData();
 
 		/// <summary>
 		/// 開発者用。モデルと判定にGUIの数値を適応させる。

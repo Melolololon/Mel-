@@ -238,7 +238,7 @@ GameObject::GameObject(const std::string& name)
 
 
 
-	SetPrePosition();
+	SetPreData();
 	//SetGUIData();
 	//SetPreDataPositions();
 }
@@ -380,18 +380,21 @@ void MelLib::GameObject::SetDrawGUIFlag(bool flag)
 	GuiValueManager::GetInstance()->SetDrawWindowFlag(objectName, flag);
 }
 
-void MelLib::GameObject::SetPrePosition()
+void MelLib::GameObject::SetPreData()
 {
 	prePosition = position;
+	preAngle = angle;
+	preScale = scale;
 }
+
 
 void MelLib::GameObject::SetGUIData()
 {
 	SetModelPosition(position - prePosition);
 	SetDataPosition(position - prePosition);
 
-	SetAngle(angle);
-	SetScale(scale);
+	SetAngle(angle - preAngle);
+	SetScale(scale - preScale + 1);
 }
 
 

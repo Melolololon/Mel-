@@ -110,7 +110,7 @@ void Player::Update()
 
 
 	modelObjects["main"].SetMulColor(MelLib::Color(255, 255, 255, 255));
-
+	modelObjects["main"].SetAngle(45);
 
 	collisionCheckDistance = 40.0f;
 }
