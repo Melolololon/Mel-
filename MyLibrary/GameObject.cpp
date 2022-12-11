@@ -393,8 +393,8 @@ void MelLib::GameObject::SetGUIData()
 	SetModelPosition(position - prePosition);
 	SetDataPosition(position - prePosition);
 
-	SetAngle(angle - preAngle);
-	SetScale(scale - preScale + 1);
+	SetAngle(angle);
+	SetScale(scale);
 }
 
 
