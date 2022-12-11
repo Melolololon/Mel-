@@ -443,7 +443,7 @@ void MelLib::SceneEditer::RegisterSelectObject()
 
 	object->SetPreData();
 	// “o˜^
-	RegisterObject(object, inputObjectType);
+	RegisterObject(object, inputObjectType, inputObjectName);
 }
 
 void MelLib::SceneEditer::InputObjectName()
@@ -532,7 +532,7 @@ MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
 	return &s;
 }
 
-void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject , const std::string& objectType)
+void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject , const std::string& objectType, const std::string& objectName)
 {
 	if (!isEdit)return;
 	
@@ -543,7 +543,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	if (!releaseEdit)return;
 #endif // _DEBUG
 
-	const std::string OBJECT_NAME = pObject->GetObjectName();
+	const std::string OBJECT_NAME = objectName;
 	// C++20‚Ìcontains‚É’u‚«Š·‚¦‚Å‚«‚é
 	if (pRegisterObjects[objectType].find(OBJECT_NAME) != pRegisterObjects[objectType].end())
 	{
@@ -607,7 +607,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 		pRefObject->SetPreData();
 		
 	}
-
+	GuiValueManager::GetInstance()->ChangeWindowName(pObject->GetObjectName(),OBJECT_NAME);
 }
 
 void MelLib::SceneEditer::Initialize()

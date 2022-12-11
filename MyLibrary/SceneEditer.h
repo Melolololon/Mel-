@@ -149,7 +149,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="object">オブジェクト</param>
 		/// <param name="objectType">オブジェクトの種類(ActorやStageObjectなど)</param>
-		void RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject,const std::string& objectType);
+		void RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject,const std::string& objectType, const std::string& objectName);
 		
 		void Initialize();
 		void Update();
