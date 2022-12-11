@@ -57,7 +57,10 @@ void MelLib::SceneEditer::SaveEditData(const std::string& dataName)
 		file.write(OBJECT_NAME.c_str(), OBJECT_NAME.size());
 		file.write("\0", 1);
 
-
+		// 登録名
+		file.write(addObjectNames[i].c_str(), addObjectNames[i].size());
+		file.write("\0", 1);
+		
 
 		//座標とか
 		Vector3 position = pObject->GetPosition();
@@ -270,7 +273,11 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 		std::string objectName;
 		LoadFileName(file, objectName);
 
-		// 同じクラスを探し、make_sharedを返してもらう
+		// 登録名
+		std::string regName;
+		LoadFileName(file, regName);
+
+		// 同じクラス、同じオブジェクト名を探し、make_sharedを返してもらう
 		std::shared_ptr<GameObject> pObject;
 		for (const auto& m : pRegisterObjects)
 		{
@@ -278,7 +285,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 			{
 				GameObject* p = pRegisterObject.second.get();
 
-				if (className == typeid(*p).name())
+				if (regName == p->GetObjectName())
 				{
 					pObject = p->GetNewPtr();
 					break;
@@ -443,7 +450,7 @@ void MelLib::SceneEditer::RegisterSelectObject()
 
 	object->SetPreData();
 	// 登録
-	RegisterObject(object, inputObjectType, inputObjectName);
+	RegisterObject(object, inputObjectType);
 }
 
 void MelLib::SceneEditer::InputObjectName()
@@ -532,7 +539,7 @@ MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
 	return &s;
 }
 
-void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject , const std::string& objectType, const std::string& objectName)
+void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject , const std::string& objectType)
 {
 	if (!isEdit)return;
 	
@@ -543,7 +550,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	if (!releaseEdit)return;
 #endif // _DEBUG
 
-	const std::string OBJECT_NAME = objectName;
+	const std::string OBJECT_NAME = pObject->GetObjectName();
 	// C++20のcontainsに置き換えできる
 	if (pRegisterObjects[objectType].find(OBJECT_NAME) != pRegisterObjects[objectType].end())
 	{
@@ -608,6 +615,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 		
 	}
 	GuiValueManager::GetInstance()->ChangeWindowName(pObject->GetObjectName(),OBJECT_NAME);
+	
 }
 
 void MelLib::SceneEditer::Initialize()
@@ -817,6 +825,7 @@ void MelLib::SceneEditer::Update()
 			// (登録したオブジェクトのコンストラクタにオブジェクトを追加する処理がある場合、追加されたオブジェクトが表示されるため)
 			GameObjectManager::GetInstance()->AllEraseObject();
 			addObjects.push_back(pObject);
+			addObjectNames.push_back(pEditSelectObject->GetObjectName());
 
 			// フラグセット
 			GuiValueManager::GetInstance()->SetTypingInputFlag(pObject->GetObjectName(),typingInputFlag);
@@ -857,6 +866,7 @@ void MelLib::SceneEditer::Update()
 			if (pSelectListObject == addObjects[i].get())
 			{
 				addObjects.erase(addObjects.begin() + i);
+				addObjectNames.erase(addObjectNames.begin() + i);
 				//GameObjectManager::GetInstance()->EraseObject(pSelectListObject);
 				pSelectListObject = nullptr;
 			}

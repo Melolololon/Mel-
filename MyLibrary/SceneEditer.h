@@ -105,6 +105,8 @@ namespace MelLib
 		std::vector<ObjectData>loadSelectRegisterObjectDatas;
 
 		std::vector<std::shared_ptr<GameObject>>addObjects;
+		std::vector<std::string>addObjectNames;
+
 
 		// 選択されているタイプ
 		int selectType = 0;
@@ -149,7 +151,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="object">オブジェクト</param>
 		/// <param name="objectType">オブジェクトの種類(ActorやStageObjectなど)</param>
-		void RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject,const std::string& objectType, const std::string& objectName);
+		void RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject,const std::string& objectType);
 		
 		void Initialize();
 		void Update();
