@@ -748,6 +748,11 @@ void MelLib::SceneEditer::Update()
 	//int sliderNum = 0;
 	//ImguiManager::GetInstance()->DrawSliderInt("Object", sliderNum, 0, refObjects.size() - 1);
 
+	if (registerObjectListNum >= registerObjectOrderDatas[registerObjectTypes[selectType]].size())
+	{
+		registerObjectListNum = registerObjectOrderDatas[registerObjectTypes[selectType]].size() - 1;
+	}
+
 	//// 選ばれたオブジェクトのポインタをpSelectObjectに代入
 	const std::string OBJECT_NAME = registerObjectOrderDatas[registerObjectTypes[selectType]][registerObjectListNum];
 
