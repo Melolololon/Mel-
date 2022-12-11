@@ -180,9 +180,9 @@ namespace MelLib
 #pragma region ê∂ê¨
 
 #pragma region ÉÇÉfÉãÇ≈ê∂ê¨
-		ModelObject(ModelData* pModelData, const std::string& objectName, ConstBufferData* userConstBufferData = nullptr);
-		static bool Create(ModelData* pModelData, const std::string& objectName, ConstBufferData* userConstBufferData, const std::string& name);
-		bool Create(ModelData* pModelData,const std::string& objectName, ConstBufferData* userConstBufferData = nullptr);
+		ModelObject(ModelData* pModelData, const std::string& objectName,  ConstBufferData* userConstBufferData = nullptr);
+		static bool Create(ModelData* pModelData, const std::string& objectName , ConstBufferData* userConstBufferData, const std::string& name);
+		bool Create(ModelData* pModelData,const std::string& objectName , ConstBufferData* userConstBufferData = nullptr);
 #pragma endregion ÉÇÉfÉãÇ≈ê∂ê¨
 
 
@@ -286,6 +286,7 @@ namespace MelLib
 
 #pragma endregion
 
+		void SetGUIValueData(const std::string& name);
 
 #pragma endregion
 

@@ -51,7 +51,7 @@ void GameObjectManager::Initialize()
 
 void MelLib::GameObjectManager::InitializeObject()
 {
-	for (auto& object : objects) 
+	for (auto& object : objects)
 	{
 		object->Initialize();
 	}
@@ -91,9 +91,9 @@ void GameObjectManager::Update()
 	// 既にある分だけ確認してあとから追加分処理を行えばいいのでは。今拡張forでやってるように
 	// Releaseだと拡張の方が遅い可能性あり
 	// 存在してるかチェックするときに2つ見ないといけなくてごちゃごちゃするから1つで済むようにする
-	
-	
-	for (int i = 0; i < PRE_OBJECT_SIZE;i++)
+
+
+	for (int i = 0; i < PRE_OBJECT_SIZE; i++)
 	{
 		objects[i]->SetPreDataPositions();
 		objects[i]->Update();
@@ -102,7 +102,7 @@ void GameObjectManager::Update()
 		// 仮にここに書いてる
 		objects[i]->SetPreDataPositions();
 	}
-	
+
 
 	const size_t OBJECT_SIZE = objects.size();
 	if (PRE_OBJECT_SIZE != OBJECT_SIZE)
@@ -1044,9 +1044,9 @@ void GameObjectManager::Update()
 
 								// 座標を補完
 								Value3< Vector3> pos1 = triangle.GetPosition();
-								Value3< Vector3> prePos1 = prePositions1[triangleData.first][colI];
+								Value3< Vector3> prePos1 = prePositions1[triangleData.first][colJ];
 								Vector3 pos2 = sphere1.GetPosition();
-								Vector3 prePos2 = prePositions2[sphereData.first][colJ];
+								Vector3 prePos2 = prePositions2[sphereData.first][colI];
 
 								if (pos1 == prePos1 && pos2 == prePos2)checkNum = 1;
 
@@ -2391,7 +2391,7 @@ void GameObjectManager::ReserveObjectArray(const int reserveNum)
 void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 {
 	if (!object)return;
-	
+
 	object->Initialize();
 
 	object->FalseEraseManager();
@@ -2411,8 +2411,8 @@ void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 	//	// オブジェクトが増えたため加算
 	//	objectAddNumber[OBJECT_NAME]++;
 	//}
-	
-	
+
+
 	//objectNames.emplace(object.get(),object->GetObjectName());
 
 	// ここで追加しないと1回目の追加でも上のチェックに引っかかるためここで追加している
@@ -2421,7 +2421,7 @@ void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
 
 	object->SetPreData();
 	object->SetPreDataPositions();
-	
+
 }
 
 void GameObjectManager::AddObject(const std::shared_ptr<GameObject2D>& object)
@@ -2446,15 +2446,15 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 	{
 	case OBJECT_SORT_XYZ_SUM:
 		std::sort(objects.begin(), objects.end(), [&orderType](const std::shared_ptr<GameObject>& obj1, const std::shared_ptr<GameObject>& obj2)
-		{
-			Vector3 pos1 = obj1->GetPosition();
-			Vector3 pos2 = obj2->GetPosition();
-			float posSum1 = pos1.x + pos1.y + pos1.z;
-			float posSum2 = pos2.x + pos2.y + pos2.z;
+			{
+				Vector3 pos1 = obj1->GetPosition();
+				Vector3 pos2 = obj2->GetPosition();
+				float posSum1 = pos1.x + pos1.y + pos1.z;
+				float posSum2 = pos2.x + pos2.y + pos2.z;
 
-			if (orderType)return posSum1 < posSum2;
-			return posSum1 > posSum2;
-		});
+				if (orderType)return posSum1 < posSum2;
+				return posSum1 > posSum2;
+			});
 		break;
 
 	case OBJECT_SORT_X:
@@ -2467,13 +2467,13 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
 			)
-		{
-			Vector3 pos1 = obj1->GetPosition();
-			Vector3 pos2 = obj2->GetPosition();
+			{
+				Vector3 pos1 = obj1->GetPosition();
+				Vector3 pos2 = obj2->GetPosition();
 
-			if (orderType)return pos1.x < pos2.x;
-			return pos1.x > pos2.x;
-		});
+				if (orderType)return pos1.x < pos2.x;
+				return pos1.x > pos2.x;
+			});
 		break;
 
 	case OBJECT_SORT_Y:
@@ -2486,13 +2486,13 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
 			)
-		{
-			Vector3 pos1 = obj1->GetPosition();
-			Vector3 pos2 = obj2->GetPosition();
+			{
+				Vector3 pos1 = obj1->GetPosition();
+				Vector3 pos2 = obj2->GetPosition();
 
-			if (orderType)return pos1.y < pos2.y;
-			return pos1.y > pos2.y;
-		});
+				if (orderType)return pos1.y < pos2.y;
+				return pos1.y > pos2.y;
+			});
 		break;
 
 	case OBJECT_SORT_Z:
@@ -2505,13 +2505,13 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
 			)
-		{
-			Vector3 pos1 = obj1->GetPosition();
-			Vector3 pos2 = obj2->GetPosition();
+			{
+				Vector3 pos1 = obj1->GetPosition();
+				Vector3 pos2 = obj2->GetPosition();
 
-			if (orderType)return pos1.z < pos2.z;
-			return pos1.z > pos2.z;
-		});
+				if (orderType)return pos1.z < pos2.z;
+				return pos1.z > pos2.z;
+			});
 		break;
 
 	case OBJECT_SORT_NEAR_DISTANCE:
@@ -2525,16 +2525,16 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
 			)
-		{
-			Vector3 pos1 = obj1->GetPosition();
-			Vector3 pos2 = obj2->GetPosition();
+			{
+				Vector3 pos1 = obj1->GetPosition();
+				Vector3 pos2 = obj2->GetPosition();
 
-			float dis1 = LibMath::CalcDistance3D(pos1, nearPos);
-			float dis2 = LibMath::CalcDistance3D(pos2, nearPos);
+				float dis1 = LibMath::CalcDistance3D(pos1, nearPos);
+				float dis2 = LibMath::CalcDistance3D(pos2, nearPos);
 
-			if (orderType)return dis1 < dis2;
-			return dis1 > dis2;
-		});
+				if (orderType)return dis1 < dis2;
+				return dis1 > dis2;
+			});
 		break;
 
 	case OBJECT_SORT_FAR_DISTANCE:
@@ -2548,16 +2548,16 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
 			)
-		{
-			Vector3 pos1 = obj1->GetPosition();
-			Vector3 pos2 = obj2->GetPosition();
+			{
+				Vector3 pos1 = obj1->GetPosition();
+				Vector3 pos2 = obj2->GetPosition();
 
-			float dis1 = LibMath::CalcDistance3D(pos1, farPos);
-			float dis2 = LibMath::CalcDistance3D(pos2, farPos);
+				float dis1 = LibMath::CalcDistance3D(pos1, farPos);
+				float dis2 = LibMath::CalcDistance3D(pos2, farPos);
 
-			if (orderType)return dis1 < dis2;
-			return dis1 > dis2;
-		});
+				if (orderType)return dis1 < dis2;
+				return dis1 > dis2;
+			});
 		break;
 
 	case OBJECT_SORT_SORT_NUMBER:
@@ -2570,12 +2570,12 @@ void GameObjectManager::ObjectSort(const ObjectSortType& sort, const bool& order
 			const std::shared_ptr<GameObject>& obj1,
 			const std::shared_ptr<GameObject>& obj2
 			)
-		{
-			short obj1Num = obj1->GetSortNumber();
-			short obj2Num = obj2->GetSortNumber();
-			if (orderType)return obj1Num < obj2Num;
-			return obj1Num > obj2Num;
-		});
+			{
+				short obj1Num = obj1->GetSortNumber();
+				short obj2Num = obj2->GetSortNumber();
+				if (orderType)return obj1Num < obj2Num;
+				return obj1Num > obj2Num;
+			});
 		break;
 	}
 }
@@ -2613,7 +2613,7 @@ void MelLib::GameObjectManager::GetObjectNames(std::vector<std::string>& refVect
 
 GameObject* MelLib::GameObjectManager::GetPGameObject(const std::string& name)const
 {
-	for (const auto& p : objects) 
+	for (const auto& p : objects)
 	{
 		if (p->GetObjectName() == name)return p.get();
 	}
@@ -2623,9 +2623,9 @@ GameObject* MelLib::GameObjectManager::GetPGameObject(const std::string& name)co
 void MelLib::GameObjectManager::EraseObject(GameObject* p)
 {
 	const size_t SIZE = objects.size();
-	for (size_t i = 0; i < SIZE; i++) 
+	for (size_t i = 0; i < SIZE; i++)
 	{
-		if (p == objects[i].get()) 
+		if (p == objects[i].get())
 		{
 			objects.erase(objects.begin() + i);
 			return;
