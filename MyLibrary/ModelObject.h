@@ -379,8 +379,7 @@ namespace MelLib
 		/// <summary>
 		/// モデルのポリゴンを当たり判定に使えるデータに変換して返します。
 		/// </summary>
-		/// <returns>モデルを元にセットした三角形の情報の配列</returns>
-		std::vector<std::vector<TriangleData>>GetModelTriangleData()const;
+		void GetModelTriangleData(std::vector<std::vector<TriangleData>>& vec)const;
 #pragma endregion
 
 		/// <summary>

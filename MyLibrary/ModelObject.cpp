@@ -2144,33 +2144,32 @@ std::vector<std::vector<Vector3>> MelLib::ModelObject::GetVerticesData(const boo
 
 }
 
-std::vector<std::vector<TriangleData>> MelLib::ModelObject::GetModelTriangleData() const
+void MelLib::ModelObject::GetModelTriangleData(std::vector<std::vector<TriangleData>>& vec) const
 {
 
 	std::vector<std::vector<Vector3>>vertPos = pModelData->GetVerticesPosition();
 	std::vector<std::vector<USHORT>>vertIndex = pModelData->GetIndices();
 
-	std::vector<std::vector<TriangleData>> result(vertIndex.size());
+	vec.resize(vertIndex.size());
 
 
 	for (int i = 0; i < objectNames.size(); i++)
 	{
 		std::string objectName = objectNames[i];
-		//result[i].resize(vertPos[i].size() / 3);
-		result[i].resize(vertIndex[i].size() / 3);
+		//vec[i].resize(vertPos[i].size() / 3);
+		vec[i].resize(vertIndex[i].size() / 3);
 
 		for (int j = 0, loopCount = 0; j < vertIndex[i].size(); j += 3, loopCount++)
 		{
 			Value3<Vector3>pos(vertPos[i][vertIndex[i][j]], vertPos[i][vertIndex[i][j + 1]], vertPos[i][vertIndex[i][j + 2]]);
 
-			result[i][loopCount].SetPosition(pos);
-			result[i][loopCount].SetScale(Vector3(modelConstDatas.at(objectName).scale.GetValue()));
-			result[i][loopCount].SetAngle(modelConstDatas.at(objectName).angle.GetValue());
-			result[i][loopCount].SetTranslationPosition(modelConstDatas.at(objectName).position.GetValue());
+			vec[i][loopCount].SetPosition(pos);
+			vec[i][loopCount].SetScale(Vector3(modelConstDatas.at(objectName).scale.GetValue()));
+			vec[i][loopCount].SetAngle(modelConstDatas.at(objectName).angle.GetValue());
+			vec[i][loopCount].SetTranslationPosition(modelConstDatas.at(objectName).position.GetValue());
 		}
 	}
 
-	return result;
 }
 
 Vector3 MelLib::ModelObject::CalcAnimationPosition
