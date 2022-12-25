@@ -71,7 +71,10 @@ void SceneManager::SetStartScene(Scene* startScene)
 void SceneManager::Update()
 {
 
-	if (!currentScene || SceneEditer::GetInstance()->GetIsEdit())return;
+	if (!currentScene 
+	|| SceneEditer::GetInstance()->GetIsEdit() 
+		&& SceneEditer::GetInstance()->GetReleaeEdit() 
+		&& SceneEditer::GetInstance()->GetEditerFlag())return;
 	
 	if (currentScene->GetIsEnd())Change();
 
