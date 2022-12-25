@@ -280,6 +280,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 		// オブジェクト名
 		std::string objectName;
 		LoadFileName(file, objectName);
+		addObjectNames.push_back(objectName);
 
 		// 登録名
 		std::string regName;
