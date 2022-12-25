@@ -183,8 +183,8 @@ void MelLib::SceneEditer::Load()
 
 void MelLib::SceneEditer::LoadRegisterSelectObject()
 {
+
 	if (!editorFlag || !ReleaseCheck())return;
-	
 	for (const auto& dirEntry : std::filesystem::directory_iterator("."))
 	{
 		const std::string FILE_NAME = dirEntry.path().string();
@@ -223,7 +223,6 @@ void MelLib::SceneEditer::LoadRegisterSelectObject()
 
 void MelLib::SceneEditer::LoadFileName(std::ifstream& stream, std::string& str)
 {
-	if (!editorFlag || !ReleaseCheck())return;
 	while (1)
 	{
 		char c;
@@ -254,7 +253,6 @@ void MelLib::SceneEditer::SelectEditData()
 
 void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 {
-	if (!editorFlag || !ReleaseCheck())return;
 	std::ifstream file(sceneName + EDIT_DATA_FORMAT, std::ios_base::binary);
 
 	// オブジェクトの削除
@@ -561,14 +559,8 @@ MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
 
 void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject , const std::string& objectType)
 {
-	if (!editorFlag || !ReleaseCheck())return;
 	if (!isEdit)return;
 
-#ifdef _DEBUG
-
-#else
-	if (!releaseEdit)return;
-#endif // _DEBUG
 
 	const std::string OBJECT_NAME = pObject->GetObjectName();
 	// C++20のcontainsに置き換えできる
@@ -640,7 +632,6 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 
 void MelLib::SceneEditer::Initialize()
 {
-	if (!editorFlag || !ReleaseCheck())return;
 
 	LoadRegisterSelectObject();
 
