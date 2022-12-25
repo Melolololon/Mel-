@@ -75,7 +75,6 @@ namespace MelLib
 		/// </summary>
 		void Reset();
 
-		std::string GetObjectType(const GameObject& object)const;
 
 		Camera* pEditerCamera = nullptr;
 	private:

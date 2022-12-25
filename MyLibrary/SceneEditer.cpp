@@ -539,17 +539,6 @@ void MelLib::SceneEditer::Reset()
 	if (!editorFlag || !releaseEdit)return;
 }
 
-std::string MelLib::SceneEditer::GetObjectType(const GameObject& object)const
-{
-	if (!editorFlag || !releaseEdit)return;
-	std::string objectType = typeid(object).name();
-
-	for (const auto& pObject : pRegisterObjects) 
-	{
-		if (pObject.first == objectType)return pObject.first;
-	}
-	return objectType;
-}
 
 
 MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
