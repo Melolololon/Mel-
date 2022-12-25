@@ -115,7 +115,10 @@ namespace MelLib
 		GameObject* pEditSelectObject = nullptr;
 
 		
+		// エディットモード中かどうか
 		bool isEdit = true;
+		// エディターのオンオフフラグ
+		bool editorFlag = true;
 		bool releaseEdit = false;
 
 		int selectListObjectNum = 0;
@@ -172,5 +175,6 @@ namespace MelLib
 		void SetReleaseEditFlag(const bool flag);
 
 	
+		void SetEditerFlag(const bool flag) { editorFlag = flag; }
 	};
 }
