@@ -559,7 +559,6 @@ MelLib::SceneEditer* MelLib::SceneEditer::GetInstance()
 
 void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject , const std::string& objectType)
 {
-	if (!isEdit)return;
 
 
 	const std::string OBJECT_NAME = pObject->GetObjectName();
