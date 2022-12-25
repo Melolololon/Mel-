@@ -160,6 +160,8 @@ namespace MelLib
 		void Draw();
 
 		bool GetIsEdit()const { return isEdit; }
+		bool GetReleaeEdit()const { return releaseEdit; }
+		bool GetEditerFlag()const { return editorFlag; }
 
 		/// <summary>
 		/// エディタのオンオフを設定します。リリースビルド時にエディタをオンにできるようにしてない場合はオンにできません。
