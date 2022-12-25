@@ -116,7 +116,7 @@ namespace MelLib
 
 		
 		// エディットモード中かどうか
-		bool isEdit = true;
+		bool isEdit = false;
 		// エディターのオンオフフラグ
 		bool editorFlag = true;
 		bool releaseEdit = false;

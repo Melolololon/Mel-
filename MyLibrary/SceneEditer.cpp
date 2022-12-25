@@ -633,6 +633,7 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 void MelLib::SceneEditer::Initialize()
 {
 
+	if (!editorFlag || !ReleaseCheck())return;
 	LoadRegisterSelectObject();
 
 	SaveEditData(TEST_START_EDIT_DATA_NAME);
@@ -643,6 +644,7 @@ void MelLib::SceneEditer::Initialize()
 
 	
 	OtherCameraGuiDrawFlagFalse();
+	isEdit = true;
 }
 
 void MelLib::SceneEditer::Update()
