@@ -108,7 +108,7 @@ void GameObjectManager::Update()
 	if (PRE_OBJECT_SIZE != OBJECT_SIZE)
 	{
 		if (addObjectSort != OBJECT_SORT_NONE)ObjectSort(addObjectSort, addObjectSortOrderType);
-		for (int i = OBJECT_SIZE - PRE_OBJECT_SIZE - 1; i < OBJECT_SIZE; i++)
+		for (int i = PRE_OBJECT_SIZE; i < OBJECT_SIZE; i++)
 		{
 			objects[i]->SetPreDataPositions();
 			objects[i]->Update();

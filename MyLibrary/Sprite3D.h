@@ -22,7 +22,7 @@ namespace MelLib
 
 
 	private:
-		void Billboard(DirectX::XMMATRIX& worldMat);
+		void Billboard(DirectX::XMMATRIX& worldMat,const Camera* pCamera);
 		void MatrixMap(const Camera* camera);
 
 	protected:

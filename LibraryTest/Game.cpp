@@ -58,16 +58,19 @@ void Game::Run()
 
 	Finalize();
 }
-
+MelLib::Sprite3D s;
 void Game::Initialize()
 {
+
 	MelLib::Library::Initialize(1920, 1080, MelLib::Color(30,30,160,255),L"MELLib");
 	MelLib::Library::SetFramesPerSecond60(true);
 
 	//カメラは各シーンに移動しました
 
 	Player::LoadRes();
-
+	s.Create(MelLib::Color(0,0,0,255));
+	s.SetScale(4);
+	s.SetBillboardFlag(false, true, false);
 #pragma region マネージャー初期化
 
 	/*CollisionFlag initFlag;
@@ -93,16 +96,16 @@ void Game::Initialize()
 
 
 
-	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 20, 0));
-	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
+	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(10, 0, -1));
+	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(0, -90, 0));
 	
 
 	// エディターオン
 	//MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
-	MelLib::SceneEditer::GetInstance()->Initialize();
+	//MelLib::SceneEditer::GetInstance()->Initialize();
 
 	// エディターに追加(Unityでいうプレハブ作成)
-	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
+	//MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
 
 }
 
@@ -117,10 +120,12 @@ void Game::Update()
 {
 
 	//MelLib::SceneManager::GetInstance()->Update();
-	MelLib::SceneEditer::GetInstance()->Update();
-	MelLib::GameObjectManager::GetInstance()->Update();
+	//MelLib::SceneEditer::GetInstance()->Update();
+	//MelLib::GameObjectManager::GetInstance()->Update();
 
-
+	if(MelLib::Input::KeyState(DIK_1))s.SetBillboardFlag(true, false, false);
+	if(MelLib::Input::KeyState(DIK_2))s.SetBillboardFlag(false, true, false);
+	if(MelLib::Input::KeyState(DIK_3))s.SetBillboardFlag(false, false, true);
 }
 
 void Game::Draw()
@@ -128,8 +133,9 @@ void Game::Draw()
 	
 
 	//MelLib::SceneManager::GetInstance()->Draw();
-	MelLib::SceneEditer::GetInstance()->Draw();
+	//MelLib::SceneEditer::GetInstance()->Draw();
 
-	MelLib::GameObjectManager::GetInstance()->Draw();
+	//MelLib::GameObjectManager::GetInstance()->Draw();
 
+	s.Draw();
 }

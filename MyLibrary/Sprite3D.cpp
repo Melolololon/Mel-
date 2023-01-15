@@ -174,7 +174,6 @@ void Sprite3D::MatrixMap(const Camera* camera)
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
 
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-	Billboard(matWorld);
 	matWorld *= DirectX::XMMatrixScaling
 	(
 		constData.scale.x,
@@ -184,6 +183,9 @@ void Sprite3D::MatrixMap(const Camera* camera)
 	matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(constData.angle.z));
 	matWorld *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(constData.angle.x));
 	matWorld *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(constData.angle.y));
+
+
+	Billboard(matWorld, camera);
 
 	matWorld *= DirectX::XMMatrixTranslation
 	(
@@ -206,15 +208,20 @@ void Sprite3D::SetBillboardFlag(const bool flagX, const bool flagY, const bool f
 	billboardZ = flagZ;
 }
 
-void Sprite3D::Billboard(DirectX::XMMATRIX& worldMat)
+void Sprite3D::Billboard(DirectX::XMMATRIX& worldMat, const Camera* pCamera)
 {
 	if (!billboardX && !billboardY && !billboardZ)return;
 
 	//âÒì]Ç≥ÇπÇΩç¿ïWÇÃéÊìæ
 
-	DirectX::XMVECTOR vCPos = DirectX::XMLoadFloat3(&cameraPosition);
-	DirectX::XMVECTOR vCTarget = DirectX::XMLoadFloat3(&cameraTargetPosition);
-	DirectX::XMVECTOR upVector = DirectX::XMLoadFloat3(&cameraUpVector);
+	DirectX::XMFLOAT3 cPos = pCamera->GetCameraPosition().ToXMFLOAT3();
+	DirectX::XMVECTOR vCPos = DirectX::XMLoadFloat3(&cPos);
+
+	DirectX::XMFLOAT3 cTarget = pCamera->GetTargetPosition().ToXMFLOAT3();
+	DirectX::XMVECTOR vCTarget = DirectX::XMLoadFloat3(&cTarget);
+
+	DirectX::XMFLOAT3 cUpVector = pCamera->GetUpVector().ToXMFLOAT3();
+	DirectX::XMVECTOR upVector = DirectX::XMLoadFloat3(&cUpVector);
 	//Zé≤ÇãÅÇﬂÇÈ
 	DirectX::XMVECTOR cameraAxisZ = DirectX::XMVectorSubtract(vCTarget, vCPos);
 
