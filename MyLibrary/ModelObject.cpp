@@ -159,9 +159,6 @@ void ModelObject::DrawCommonProcessing(const std::string& rtName)
 
 void ModelObject::MapConstData(const Camera* camera)
 {
-	
-
-
 	std::vector<DirectX::XMMATRIX>meshGlobalTransforms = pModelData->GetMeshGlobalTransforms();
 
 	ModelConstBufferData* constBufferData = nullptr;
@@ -174,6 +171,7 @@ void ModelObject::MapConstData(const Camera* camera)
 		constBufferData->addColor = modelConstDatas[objectName].addColor;
 		constBufferData->subColor = modelConstDatas[objectName].subColor;
 		constBufferData->mulColor = modelConstDatas[objectName].mulColor;
+		constBufferData->addUV = modelConstDatas[objectName].addUV;
 		constBufferData->par = modelConstDatas[objectName].par;
 		constBufferData->ex = modelConstDatas[objectName].pushPolygonNum;
 
@@ -1616,6 +1614,17 @@ void ModelObject::SetAngle(const Vector3& angle, const std::string& name)
 
 void MelLib::ModelObject::SetAddUV(const MelLib::Vector2& uv, const std::string& name)
 {
+	if (name == "")
+	{
+		for (auto& data : modelConstDatas)
+		{
+			data.second.addUV = uv.ToXMFLOAT2();
+		}
+	}
+	else
+	{
+		modelConstDatas[name].addUV = uv.ToXMFLOAT2();
+	}
 }
 
 
@@ -1896,7 +1905,7 @@ Vector3 MelLib::ModelObject::GetScale(const std::string& name) const
 
 MelLib::Vector2 MelLib::ModelObject::GetAddUV(const std::string& name) const
 {
-	return MelLib::Vector2();
+	return modelConstDatas.at(name).addUV;
 }
 
 

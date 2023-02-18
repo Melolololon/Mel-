@@ -13,7 +13,6 @@ struct VSInput
 	float3 normal : NORMAL;
 	uint4 boneIndices : BONEINDICES;
 	float4 boneWeights : BONEWEIGHTS;
-
 };
 
 
@@ -80,7 +79,8 @@ VSOutput main(VSInput input)
 
 	output.svpos = mul(mat, output.svpos);
 	output.normal = wnormal.xyz;
-	output.uv = input.uv;
+
+	output.uv = input.uv + addUV;
 
 
 

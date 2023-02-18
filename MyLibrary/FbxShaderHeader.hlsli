@@ -33,6 +33,7 @@ cbuffer cbuff0 : register(b0)
 	float4 mulColor;
 	float4 addColor;
 	float4 subColor;
+	float2 addUV;
 	float par;
 	float tex3DStart;
 	float tex3DEnd;

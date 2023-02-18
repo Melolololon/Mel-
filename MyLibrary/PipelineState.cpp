@@ -363,7 +363,7 @@ bool PipelineState::CreatePipeline
 					D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
 					0
 			};
-
+			
 
 			break;
 		case PipelineStateType::SPRITE:

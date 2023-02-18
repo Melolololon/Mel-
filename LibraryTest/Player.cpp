@@ -98,7 +98,7 @@ Player::Player()
 
 	modelObjects["main"].SetMaterial(&testMtl);
 	modelObjects["main"].SetPar(100.0f);
-
+	modelObjects["main"].SetAddUV({0.5,0.5});
 
 	hp.SetData(10, GetObjectName(), "HP", 0, 100);
 	power.SetData(10, GetObjectName(), "Power", 1, 100);
