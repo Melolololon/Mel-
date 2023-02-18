@@ -438,9 +438,9 @@ void MelLib::ModelData::Create
 
 bool ModelData::Load(const std::string& path, const bool batchDeletionFlag, const std::string& name)
 {
-	if (pModelDatas.find(name) != pModelDatas.end())return false;
+	if (pModelDatas[name])return false;
 
-	pModelDatas.emplace(name, std::make_unique<ModelData>());
+	pModelDatas[name] = std::make_unique<ModelData>();
 	bool result = pModelDatas[name]->LoadModel(path, name);
 
 	if(!result)
@@ -958,7 +958,7 @@ std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 			material[objectNames[i]] = nullptr;
 		}
 	}
-
+	// ここマテリアルあるオブジェクトとないオブジェクト混ざってると例外出る
 	std::vector<ADSAMaterial*>pMtls(size);
 	for (int i = 0; i < objectNames.size(); i++)
 	{

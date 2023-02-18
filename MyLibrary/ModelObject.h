@@ -45,7 +45,8 @@ namespace MelLib
 		std::unordered_map < std::string, Material*>materials;
 
 #pragma region ボーンとアニメーションの情報
-		static const UINT BONE_MAX = 128;
+		// ボーンの最大数
+		static const UINT BONE_MAX = 64 * 8;
 		struct SkinConstBufferData
 		{
 			DirectX::XMMATRIX bones[BONE_MAX];
@@ -218,7 +219,7 @@ namespace MelLib
 		void SetScale(const Vector3& scale, const std::string& name = "");
 		void SetAngle(const Vector3& angle, const std::string& name = "");
 
-
+		void SetAddUV(const MelLib::Vector2& uv, const std::string& name = "");
 
 #pragma endregion
 
@@ -323,6 +324,8 @@ namespace MelLib
 
 		Vector3 GetAngle(const std::string& name = "")const;
 		Vector3 GetScale(const std::string& name = "")const;
+
+	    MelLib::Vector2 GetAddUV( const std::string& name = "")const;
 #pragma endregion
 #pragma endregion
 

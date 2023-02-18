@@ -843,8 +843,8 @@ void MelLib::SceneEditer::Update()
 		}
 		else
 		{
-			std::string text = typeid(*pObject).name();
-			text += "のGetNewPtrがnullptrを返しました。オブジェクトが追加できません。\n";
+			std::string text;
+			text = "オブジェクト追加時にGetNewPtr()がnullptrを返しました。オブジェクトを追加できません。\n";
 			OutputDebugStringA(text.c_str());
 		}
 	}

@@ -48,9 +48,11 @@ cbuffer cbuff4 : register(b4)
 	float4 baseColor;
 }
 
+static const int MAX_BONE_NUM = 64 * 8;
 //スキニング
 cbuffer cbuff3 : register(b3)
 {
-	matrix matSkinning[128];
+	//matrix matSkinning[128];
+	matrix matSkinning[MAX_BONE_NUM];
 }
 

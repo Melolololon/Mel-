@@ -58,7 +58,7 @@ void Game::Run()
 
 	Finalize();
 }
-MelLib::Sprite3D s;
+
 void Game::Initialize()
 {
 
@@ -68,9 +68,6 @@ void Game::Initialize()
 	//カメラは各シーンに移動しました
 
 	Player::LoadRes();
-	s.Create(MelLib::Color(0,0,0,255));
-	s.SetScale(4);
-	s.SetBillboardFlag(false, true, false);
 #pragma region マネージャー初期化
 
 	/*CollisionFlag initFlag;
@@ -81,7 +78,7 @@ void Game::Initialize()
 	initFlag.ray = true;
 	initFlag.sphere = true;
 	GameObjectManager::GetInstance()->SetCollisionFlag3D(initFlag);*/
-	MelLib::GameObjectManager::GetInstance()->SetMouseCollisionFlag(false);
+	MelLib::GameObjectManager::GetInstance()->SetMouseCollisionFlag(true);
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
 	//for (int i = 0; i < 1; i++)MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
@@ -101,11 +98,11 @@ void Game::Initialize()
 	
 
 	// エディターオン
-	//MelLib::SceneEditer::GetInstance()->SetEditFlag(true);
-	//MelLib::SceneEditer::GetInstance()->Initialize();
+	MelLib::SceneEditer::GetInstance()->SetEditerFlag(true);
+	MelLib::SceneEditer::GetInstance()->Initialize();
 
 	// エディターに追加(Unityでいうプレハブ作成)
-	//MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
+	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
 
 }
 
@@ -120,12 +117,8 @@ void Game::Update()
 {
 
 	//MelLib::SceneManager::GetInstance()->Update();
-	//MelLib::SceneEditer::GetInstance()->Update();
+	MelLib::SceneEditer::GetInstance()->Update();
 	//MelLib::GameObjectManager::GetInstance()->Update();
-
-	if(MelLib::Input::KeyState(DIK_1))s.SetBillboardFlag(true, false, false);
-	if(MelLib::Input::KeyState(DIK_2))s.SetBillboardFlag(false, true, false);
-	if(MelLib::Input::KeyState(DIK_3))s.SetBillboardFlag(false, false, true);
 }
 
 void Game::Draw()
@@ -133,9 +126,8 @@ void Game::Draw()
 	
 
 	//MelLib::SceneManager::GetInstance()->Draw();
-	//MelLib::SceneEditer::GetInstance()->Draw();
+	MelLib::SceneEditer::GetInstance()->Draw();
 
 	//MelLib::GameObjectManager::GetInstance()->Draw();
 
-	s.Draw();
 }
