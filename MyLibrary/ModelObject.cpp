@@ -1905,6 +1905,10 @@ Vector3 MelLib::ModelObject::GetScale(const std::string& name) const
 
 MelLib::Vector2 MelLib::ModelObject::GetAddUV(const std::string& name) const
 {
+	if (name == "")
+	{
+		return modelConstDatas.at(objectNames[0]).addUV;
+	}
 	return modelConstDatas.at(name).addUV;
 }
 
