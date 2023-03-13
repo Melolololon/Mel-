@@ -71,25 +71,25 @@ namespace MelLib
 	struct ShaderData
 	{
 		const wchar_t* shaderPath = nullptr;
-		const char* entryPoint = nullptr;;
-		const char* ver = nullptr;;
+		const char* entryPoint = nullptr;
+		const char* ver = nullptr;
 	};
 
 	struct ShaderDataSet
 	{
 		//頂点シェーダー情報
-		ShaderData vShaderData;
+		ShaderData vShaderData = { L"../MyLibrary/FbxVertexShader.hlsl","main","vs_5_0" };
 
 		//ハルシェーダー情報
-		ShaderData hShaderData;
+		ShaderData hShaderData = { L"NULL","","" };
 
 		//ドメインシェーダー情報
-		ShaderData dShaderData;
+		ShaderData dShaderData = { L"NULL","","" };
 
 		//ジオメトリシェーダー情報
-		ShaderData gShaderData;
+		ShaderData gShaderData = { L"LIB","main","gs_5_0" };
 
 		//ピクセルシェーダー情報
-		ShaderData pShaderData;
+		ShaderData pShaderData = { L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" };
 	};
 }

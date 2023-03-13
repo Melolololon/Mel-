@@ -213,6 +213,7 @@
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="RouteSearch.cpp" />
     <ClCompile Include="SceneEditer.cpp" />
+    <ClCompile Include="ShaderData.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sound3D.cpp" />
     <ClCompile Include="Sound_Unused.cpp" />

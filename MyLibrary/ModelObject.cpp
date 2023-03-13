@@ -2347,5 +2347,9 @@ void MelLib::ModelObject::SetAnimation(const std::string& name)
 
 
 	//pModelData->SetFbxAnimStack(name);
+
+	// 終了フラグセット
+	if (fbxAnimationData.animationTimes.endTime == fbxAnimationData.currentTime)animationEnd = true;
+	else animationEnd = false;
 }
 

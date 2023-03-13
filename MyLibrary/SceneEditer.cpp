@@ -544,7 +544,7 @@ bool MelLib::SceneEditer::ReleaseCheck()
 #ifdef _DEBUG
 
 #else
-	return !releaseEdit
+	return !releaseEdit;
 #endif // _DEBUG
 
 	return true;
@@ -641,6 +641,7 @@ void MelLib::SceneEditer::Initialize()
 	Camera::Create(CAMERA_WINDOW_NAME);
 	pEditerCamera = Camera::Get(CAMERA_WINDOW_NAME);
 	RenderTarget::Get()->SetCamera(pEditerCamera);
+	pEditerCamera->SetFar(FLT_MAX);
 
 	
 	OtherCameraGuiDrawFlagFalse();

@@ -72,3 +72,24 @@ float Random::GetRandomNumberSetFloatNumber(const std::vector<float>& nums)
 {
 	return nums[GetRandomNumber(nums.size())];
 }
+
+
+Vector3 Random::GetRandomVector3Number(const float num, const int digits)
+{
+	return Vector3
+	(
+		GetRandomFloatNumber(num, digits),
+		GetRandomFloatNumber(num, digits),
+		GetRandomFloatNumber(num, digits)
+	);
+}
+
+Vector3 Random::GetRandomVector3NumberRangeSelect(const float start, const float end, const int digits)
+{
+	return Vector3
+	(
+		GetRandomFloatNumberRangeSelect(start,end, digits),
+		GetRandomFloatNumberRangeSelect(start,end, digits),
+		GetRandomFloatNumberRangeSelect(start,end, digits)
+	);
+}

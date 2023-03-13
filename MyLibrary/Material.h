@@ -142,6 +142,7 @@ namespace MelLib
 		static void Initialize(ID3D12Device* dev);
 		
 		virtual void Create(const DrawOption& drawData, const unsigned int textureNum){}
+		virtual void Create(const DrawOption& drawData, const unsigned int textureNum,const ShaderDataSet& shader){}
 
 		ID3D12DescriptorHeap* GetPTextureHeap() { return textureHeap.Get(); }
 		ID3D12Resource* GetPConstBuffer(const MaterialConstBufferType type)const;
@@ -163,7 +164,7 @@ namespace MelLib
 		bool SetTexture(Texture* pTex,const std::string& name = "Default");
 		//void SetTexture(const std::vector<Texture*>& pTex);
 		//void SetTexture(const std::vector<Texture*>& pTex);
-		void SetNormalMapTexture(Texture* pNormalMapTex);
+		//void SetNormalMapTexture(Texture* pNormalMapTex);
 		//void SetTexture3D(Texture3D* pTex);
 
 	
@@ -171,6 +172,18 @@ namespace MelLib
 		static unsigned int GetTextureNumMax() { return TEXTURE_MAX; }
 	};
 
+	//// 自由に設定できるマテリアル
+	//class OriginalMaterial :public Material
+	//{
+	//public:
+	//	OriginalMaterial() {}
+	//	OriginalMaterial(OriginalMaterial& mtl);
+	//	OriginalMaterial& operator=(OriginalMaterial& mtl);
+
+	//	void Create(const DrawOption& drawData, const unsigned int textureNum);
+
+
+	//};
 
 #pragma region ADSA
 
@@ -205,7 +218,7 @@ namespace MelLib
 		ADSAMaterial& operator=(ADSAMaterial& mtl);
 
 		void Create(const DrawOption& drawData, const unsigned int textureNum)override;
-
+		void Create(const DrawOption& drawData, const unsigned int textureNum, const ShaderDataSet& shader)override;
 #pragma region セット
 		void SetMaterialData(const ADSAMaterialData& data);
 #pragma endregion

@@ -172,27 +172,27 @@ bool MelLib::Material::SetTexture(Texture* pTex, const std::string& name)
 //	}
 //}
 
-void MelLib::Material::SetNormalMapTexture(Texture* pTex)
-{
-	
-	pNormalMapTexture = pTex; 
-	if (!pTex)
-	{
-		
-		return;
-	}
-	CreateBuffer::GetInstance()->CreateShaderResourceView
-	(
-		CD3DX12_CPU_DESCRIPTOR_HANDLE
-		(
-			textureHeap->GetCPUDescriptorHandleForHeapStart(),
-			NORMAL_MAP_HANDLE_NUM,
-			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
-		),
-		pTex->GetTextureBuffer()
-	);
-}
-//
+//void MelLib::Material::SetNormalMapTexture(Texture* pTex)
+//{
+//	
+//	pNormalMapTexture = pTex; 
+//	if (!pTex)
+//	{
+//		
+//		return;
+//	}
+//	CreateBuffer::GetInstance()->CreateShaderResourceView
+//	(
+//		CD3DX12_CPU_DESCRIPTOR_HANDLE
+//		(
+//			textureHeap->GetCPUDescriptorHandleForHeapStart(),
+//			NORMAL_MAP_HANDLE_NUM,
+//			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+//		),
+//		pTex->GetTextureBuffer()
+//	);
+//}
+////
 //void MelLib::Material::SetTexture3D(Texture3D* pTex)
 //{
 //
@@ -233,9 +233,6 @@ MelLib::ADSAMaterial& MelLib::ADSAMaterial::operator=(ADSAMaterial& mtl)
 
 void MelLib::ADSAMaterial::Create(const DrawOption& drawData, const unsigned int textureNum)
 {
-	CreateInitialize(sizeof(ADSAMaterialData), textureNum);
-	Map();
-
 	//パイプライン作成
 	ShaderDataSet set =
 	{
@@ -245,12 +242,20 @@ void MelLib::ADSAMaterial::Create(const DrawOption& drawData, const unsigned int
 		{ L"LIB","main","gs_5_0" },
 		{ L"../MyLibrary/FbxPixelShader.hlsl","main","ps_5_0" }
 	};
+	Create(drawData, textureNum, set);
+}
+
+void MelLib::ADSAMaterial::Create(const DrawOption& drawData, const unsigned int textureNum, const ShaderDataSet& shader)
+{
+	CreateInitialize(sizeof(ADSAMaterialData), textureNum);
+	Map();
+
 
 	pipelineState = std::make_unique<PipelineState>();
 	pipelineState->CreatePipeline
 	(
 		drawData,
-		set,
+		shader,
 		PipelineStateType::MODEL,
 		nullptr,
 		1

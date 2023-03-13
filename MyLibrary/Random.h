@@ -73,7 +73,20 @@ namespace MelLib
 	/// <returns></returns>
 		static float GetRandomNumberSetFloatNumber(const std::vector<float>& nums);
 
-	
+		/// <summary>
+		/// Vector3‚Ì—”‚ğæ“¾‚µ‚Ü‚·B
+		/// </summary>
+		/// <returns></returns>
+		static Vector3 GetRandomVector3Number(const float num, const int digits);
+
+		/// <summary>
+		/// w’è‚µ‚½”ÍˆÍ“à‚Ì”‚ğVector3‚ÉŠi”[‚µ‚Ü‚·B
+		/// </summary>
+		/// <param name="start"></param>
+		/// <param name="end"></param>
+		/// <param name="digits"></param>
+		/// <returns></returns>
+		static Vector3 GetRandomVector3NumberRangeSelect(const float start, const float end, const int digits);
 
 	};
 
