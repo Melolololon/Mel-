@@ -46,7 +46,7 @@ namespace MelLib
 
 #pragma region ボーンとアニメーションの情報
 		// ボーンの最大数
-		static const UINT BONE_MAX = 64 * 10;
+		static const UINT BONE_MAX = 64;
 		struct SkinConstBufferData
 		{
 			DirectX::XMMATRIX bones[BONE_MAX];

@@ -97,7 +97,7 @@ void Game::Initialize()
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(0, -90, 0));
 	
 
-	// エディターオン
+	//// エディターオン
 	MelLib::SceneEditer::GetInstance()->SetEditerFlag(true);
 	MelLib::SceneEditer::GetInstance()->Initialize();
 

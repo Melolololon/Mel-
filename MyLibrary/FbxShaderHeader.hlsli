@@ -49,7 +49,7 @@ cbuffer cbuff4 : register(b4)
 	float4 baseColor;
 }
 
-static const int MAX_BONE_NUM = 64 * 10;
+static const int MAX_BONE_NUM = 64;
 //スキニング
 cbuffer cbuff3 : register(b3)
 {

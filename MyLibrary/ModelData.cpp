@@ -524,9 +524,9 @@ std::vector<DirectX::XMMATRIX> MelLib::ModelData::GetMeshGlobalTransforms()
 
 const MelLib::ModelData::FbxBone& MelLib::ModelData::GetFbxBone(const std::string& name) const
 {
-	for (int i = 0; i < boneNum; i++)
+	for (int i = 0; i < boneNum.at(name); i++)
 	{
-		if (fbxData.bones[i].boneName == name)return fbxData.bones[i];
+		if (fbxData.bones.at(name)[i].boneName == name)return fbxData.bones.at(name)[i];
 	}
 	return FbxBone(name);
 }
@@ -611,13 +611,13 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 			&objBonePositions,
 			&objBoneNums
 		);
-		boneNum = objBonePositions.size();
+		boneNum[".objBones"] = objBonePositions.size();
 		modelFileObjectNum = vertices.size();
 
 		if (!result)return loadFalseEndProcess();
 
 
-		if (boneNum == 0)
+		if (boneNum.at(name) == 0)
 		{
 			//ボーンがなかったら0にしとく
 			for (auto& v : vertices)
@@ -812,7 +812,7 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 	{	
 		if (!FbxLoader::GetInstance()->LoadFbxModel(path, this))return loadFalseEndProcess();
 
-		boneNum = fbxData.bones.size();
+		
 		modelFormat = ModelFormat::MODEL_FORMAT_FBX;
 
 #pragma region アニメーション関係準備
@@ -946,6 +946,15 @@ void ModelData::BufferPreparationSetColor
 
 }
 
+
+UINT MelLib::ModelData::GetBoneNumber(const std::string& name) const
+{
+	if (name == "") 
+	{
+		return boneNum.at(objectNames[0]);
+	}
+	return boneNum.at(name);
+}
 
 std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 {

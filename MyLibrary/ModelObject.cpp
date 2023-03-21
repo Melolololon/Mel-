@@ -262,14 +262,9 @@ void ModelObject::MapConstData(const Camera* camera)
 
 #pragma region ボーンのマップ
 
-		int boneNum = pModelData->GetBoneNumber();
 
-		if (boneNum == 0
-			/*|| pModelData->GetModelFormat() != ModelData::ModelFormat::MODEL_FORMAT_OBJ*/
-			/*&& i != 0*/)
-		{
-			continue;
-		}
+		const int BONE_NUM = pModelData->GetBoneNumber(objectNames[i]);
+		if (BONE_NUM == 0)continue;
 
 
 		// モデルのオブジェクトごとに生成するようにする
@@ -293,7 +288,7 @@ void ModelObject::MapConstData(const Camera* camera)
 			DirectX::XMFLOAT3 bonePos = { 0,0,0 };
 
 
-			for (UINT j = 0; j < boneNum; j++)
+			for (UINT j = 0; j < BONE_NUM; j++)
 			{
 				boneMat = DirectX::XMMatrixIdentity();
 
@@ -463,16 +458,17 @@ void ModelObject::MapConstData(const Camera* camera)
 		{
 			pModelData->SetFbxAnimStack(fbxAnimationData.currentAnimationName);
 
-			std::vector<ModelData::FbxBone> bones = pModelData->GetFbxBone();
-
-			for (int j = 0; j < boneNum; j++)
+			for (int j = 0; j < BONE_NUM; j++)
 			{
-				if (boneNum >= BONE_MAX)
+				// ここ参照にしたほうが良い
+				std::vector<ModelData::FbxBone> bones = pModelData->GetFbxBones(objectNames[i]);
+				
+				if (BONE_NUM >= BONE_MAX)
 				{
 					std::string outputStr = pModelData->GetModelPath() + "のボーン数がボーン最大数" + std::to_string(BONE_MAX) + "を超えています。\n";
 					OutputDebugStringA(outputStr.c_str());
 
-					outputStr = "モデルのボーン数 : " + std::to_string(boneNum) + "\n";
+					outputStr = "モデルのボーン数 : " + std::to_string(BONE_NUM) + "\n";
 					OutputDebugStringA(outputStr.c_str());
 					break;
 				}
@@ -2076,7 +2072,7 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 	}
 	else
 	{
-		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL;
+		modelConstBufferData.bufferType = ConstBufferData::BufferType::BUFFER_TYPE_EACH_MODEL_OBJECT;
 	}
 	modelConstBufferData.bufferDataSize = sizeof(SkinConstBufferData);
 
