@@ -659,6 +659,5 @@
     <None Include="PBRHeader.hlsli" />
     <None Include="QuadTessellateHeader.hlsli" />
     <None Include="TriTessellateHeader.hlsli" />
-    <None Include="..\X-MEN_Team_Project\X-MEN_Team_Project.vcxproj" />
   </ItemGroup>
 </Project>

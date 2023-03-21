@@ -140,6 +140,12 @@ namespace MelLib
 			std::unordered_map<std::string, int>animStackNum;
 			// アニメーション情報を取得するための名前
 			std::unordered_map<std::string, std::string>animationDataGetName;
+
+			//// アニメーションでモデルが崩れるのを防ぐ為の変数
+			//// ボーンの名前,ボーンの本数
+			//std::unordered_map<std::string, unsigned int>boneNum;
+			//// メッシュが読み込まれたタイミング(何回目に読み込まれたか)を保存する変数
+			//std::unordered_map<std::string, unsigned int>meshLoadNum;
 		};
 
 

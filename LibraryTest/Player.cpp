@@ -46,9 +46,8 @@ void Player::Move()
 
 void Player::LoadRes()
 {
-	bool res = MelLib::Texture::Load("Resources/Texture/testTexture.png","test");
-	bool res2 = MelLib::Texture::Load("Resources/Texture/testTexture2.png","test2");
-	int x = 0;
+	bool res = MelLib::ModelData::Load("Resources/Player/Player.fbx", false,"test");
+
 }
 
 // 名前を指定するときにobjectNameを渡さないと番号が反映されない
@@ -64,7 +63,8 @@ Player::Player()
 
 	// MelLib;;ModelObjectの配列
 	// 四角形をセット
-	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX),GetObjectName());
+	modelObjects["main"].Create(MelLib::ModelData::Get("test"),GetObjectName());
+	modelObjects["main"].SetAnimation("No_Cont");
 
 	// 今読み込んだ値をモデルオブジェクトに反映できてないから
 	// 初期位置を0,0,5に
@@ -88,17 +88,7 @@ Player::Player()
 	// モデルの初期設定をセット
 	data.SetModelDefData();
 
-	// (設定構造体,テクスチャ数(ディスクリプタヒープのサイズ))
-	testMtl.Create(data, 2);
-
-	// (テクスチャ,名前(後々変更したりするときにこの名前で呼び出す))
-	// セットした順にレジスター0から使える
-	testMtl.SetTexture(MelLib::Texture::Get("test"),"main");
-	testMtl.SetTexture(MelLib::Texture::Get("test2"),"NormalMap");
-
-	modelObjects["main"].SetMaterial(&testMtl);
-	modelObjects["main"].SetPar(100.0f);
-	modelObjects["main"].SetAddUV({0.5,0.5});
+	
 
 	hp.SetData(10, GetObjectName(), "HP", 0, 100);
 	power.SetData(10, GetObjectName(), "Power", 1, 100);
@@ -109,10 +99,6 @@ void Player::Update()
 	Move();
 
 
-	modelObjects["main"].SetMulColor(MelLib::Color(255, 255, 255, 255));
-	modelObjects["main"].SetAngle(45);
-
-	collisionCheckDistance = 40.0f;
 }
 
 void Player::Draw()
@@ -130,20 +116,7 @@ void Player::Hit
 	const std::string& hitShapeName
 )
 {
-	if (typeid(object) == typeid(TestObject)) 
-	{
-		modelObjects["main"].SetMulColor(MelLib::Color(111, 111, 111, 255));
-		/*MelLib::Vector3 vec = GetSphereCalcResult().GetOBBHitSurfaceNormal();
-		AddPosition(vec * 0.3f);*/
-
-		//MelLib::Vector3 getPos = GetLerpPosition();
-		//MelLib::Vector3 movePos = GetLerpMovePosition();
-		//SetPosition(GetLerpExtrudePosition());
-
-		//MelLib::Vector3 myPos = GetPosition();
-		//int z = 90;
-	}
-
+	
 
 }
 
