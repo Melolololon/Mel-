@@ -64,7 +64,6 @@ Player::Player()
 	// MelLib;;ModelObjectの配列
 	// 四角形をセット
 	modelObjects["main"].Create(MelLib::ModelData::Get("test"),GetObjectName());
-	modelObjects["main"].SetAnimation("No_Cont");
 
 	// 今読み込んだ値をモデルオブジェクトに反映できてないから
 	// 初期位置を0,0,5に
@@ -82,11 +81,6 @@ Player::Player()
 
 	sphereFrameHitCheckNum = 1;
 
-
-	// 描画設定
-	MelLib::DrawOption data;
-	// モデルの初期設定をセット
-	data.SetModelDefData();
 
 	
 

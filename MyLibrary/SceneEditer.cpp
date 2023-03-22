@@ -294,7 +294,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 			{
 				GameObject* p = pRegisterObject.second.get();
 
-				if (regName == p->GetObjectName())
+				if (className == typeid(*p).name())
 				{
 					pObject = p->GetNewPtr();
 					break;

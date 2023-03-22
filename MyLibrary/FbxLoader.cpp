@@ -296,7 +296,9 @@ void FbxLoader::ParseMaterial(ModelData* fbxModel, FbxNode* fbxNode, const std::
 	if (materialCount == 0)return;
 
 	fbxModel->material[name] = std::make_unique<ADSAMaterial>();
-	fbxModel->material[name]->Create(PipelineState::GetDefaultDrawData(PipelineStateType::MODEL),1);
+	DrawOption dp;
+	dp.SetModelDefData();
+	fbxModel->material[name]->Create(dp,1);
 
 	fbxModel->pTexture[name] = std::make_unique<Texture>();
 

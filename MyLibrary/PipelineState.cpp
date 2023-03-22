@@ -674,6 +674,8 @@ DrawOption PipelineState::GetDefaultDrawData(const PipelineStateType type)
 
 
 	case PipelineStateType::SPRITE:
+
+		break;
 	case PipelineStateType::RENDER_TARGET:
 		data.drawMode = DrawMode::SOLID;
 		data.cullMode = CullMode::NONE;
