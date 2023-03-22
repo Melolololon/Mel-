@@ -91,6 +91,7 @@ namespace MelLib
 			//ƒ{[ƒ“î•ñ‚ð‚Ü‚Æ‚ß‚½‚à‚Ì
 			FbxCluster* fbxCluster;
 
+			FbxBone(){}
 			FbxBone(const std::string& name)
 			{
 				this->boneName = name;
@@ -442,7 +443,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		const FbxBone& GetFbxBone(const std::string& name)const;
+		void GetFbxBone(const std::string& name ,FbxBone& bone)const;
 
 		Node GetNode(const std::string& name) {return fbxData.nodes[name]; }
 

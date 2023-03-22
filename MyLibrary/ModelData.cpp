@@ -522,13 +522,14 @@ std::vector<DirectX::XMMATRIX> MelLib::ModelData::GetMeshGlobalTransforms()
 }
 
 
-const MelLib::ModelData::FbxBone& MelLib::ModelData::GetFbxBone(const std::string& name) const
+void MelLib::ModelData::GetFbxBone(const std::string& name, FbxBone& bone) const
 {
+	if (boneNum.size() == 0)return;
 	for (int i = 0; i < boneNum.at(name); i++)
 	{
-		if (fbxData.bones.at(name)[i].boneName == name)return fbxData.bones.at(name)[i];
+		if (fbxData.bones.at(name)[i].boneName == name)bone = fbxData.bones.at(name)[i];
 	}
-	return FbxBone(name);
+	
 }
 
 std::vector<std::vector<USHORT>> MelLib::ModelData::GetIndices() const
@@ -611,13 +612,12 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 			&objBonePositions,
 			&objBoneNums
 		);
-		boneNum[".objBones"] = objBonePositions.size();
 		modelFileObjectNum = vertices.size();
 
 		if (!result)return loadFalseEndProcess();
 
 
-		if (boneNum.at(name) == 0)
+		if (objBonePositions.size() == 0)
 		{
 			//É{Å[ÉìÇ™Ç»Ç©Ç¡ÇΩÇÁ0Ç…ÇµÇ∆Ç≠
 			for (auto& v : vertices)
@@ -949,7 +949,8 @@ void ModelData::BufferPreparationSetColor
 
 UINT MelLib::ModelData::GetBoneNumber(const std::string& name) const
 {
-	if (name == "") 
+	if (boneNum.size() == 0)return 0;
+	else if (name == "") 
 	{
 		return boneNum.at(objectNames[0]);
 	}
