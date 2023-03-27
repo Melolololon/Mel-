@@ -191,6 +191,8 @@ namespace MelLib
 		Vector3 GetAngle()const { return angle; }
 
 		std::string GetCameraName()const { return cameraName; }
+
+		float GetCameraToTargetDistance()const { return cameraToTargetDistance; }
 #pragma endregion
 	};
 }

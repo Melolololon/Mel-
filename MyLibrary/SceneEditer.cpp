@@ -636,7 +636,22 @@ void MelLib::SceneEditer::MouseInputCamera()
 	Camera* pCamera = Camera::Get(CAMERA_WINDOW_NAME);
 
 #pragma region 前後移動(ホイール)操作
+	
 
+	long wheelValue = Input::GetMouseWheelValue();
+
+	if (wheelValue != 0) 
+	{
+		// 1人称視点だと注視点が動くからこれじゃ駄目
+		//pCamera->SetCameraToTargetDistance(pCamera->GetCameraToTargetDistance() + wheelValue);
+		wheelValue /= 45;
+
+		Vector3 rotMoveVector =
+			LibMath::RotateZXYVector3(Vector3(0, 0, wheelValue), 
+				pCamera->GetAngle());
+
+		pCamera->SetRotateCriteriaPosition(pCamera->GetRotateCriteriaPosition() + rotMoveVector);
+	}
 #pragma endregion
 
 

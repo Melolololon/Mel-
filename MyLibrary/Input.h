@@ -279,7 +279,6 @@ namespace MelLib
 		);
 #pragma endregion
 
-
 #pragma region ボタン
 
 
@@ -306,6 +305,12 @@ namespace MelLib
 
 
 #pragma endregion
+
+#pragma region ホイール
+		static LONG GetMouseWheelValue() { return mouseState.lZ; }
+
+#pragma endregion
+
 
 #pragma endregion
 
