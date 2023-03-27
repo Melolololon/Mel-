@@ -2242,7 +2242,7 @@ Vector3 MelLib::ModelObject::CalcAnimationPosition
 
 
 	ModelData::FbxBone bone;
-	pModelData->GetFbxBone(boneName, bone);
+	pModelData->GetFbxBone(meshName, boneName, bone);
 
 	// Žæ“¾‚Æ•ÏŠ·
 	DirectX::XMMATRIX matCurrentPose;

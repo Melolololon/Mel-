@@ -522,12 +522,16 @@ std::vector<DirectX::XMMATRIX> MelLib::ModelData::GetMeshGlobalTransforms()
 }
 
 
-void MelLib::ModelData::GetFbxBone(const std::string& name, FbxBone& bone) const
+void MelLib::ModelData::GetFbxBone(const std::string& meshName, const std::string& boneName, FbxBone& bone) const
 {
 	if (boneNum.size() == 0)return;
-	for (int i = 0; i < boneNum.at(name); i++)
+	for (int i = 0; i < boneNum.at(meshName); i++)
 	{
-		if (fbxData.bones.at(name)[i].boneName == name)bone = fbxData.bones.at(name)[i];
+		if (fbxData.bones.at(meshName)[i].boneName == boneName)
+		{
+			bone = fbxData.bones.at(meshName)[i];
+			return;
+		}
 	}
 	
 }

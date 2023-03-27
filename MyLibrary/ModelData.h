@@ -443,7 +443,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		void GetFbxBone(const std::string& name ,FbxBone& bone)const;
+		void GetFbxBone(const std::string& meshName , const std::string& boneName,FbxBone& bone)const;
 
 		Node GetNode(const std::string& name) {return fbxData.nodes[name]; }
 
