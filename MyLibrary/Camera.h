@@ -180,6 +180,8 @@ namespace MelLib
 		/// <returns>注視点の座標</returns>
 		Vector3 GetTargetPosition()const { return targetPosition; }
 
+		Vector3 GetRotateCriteriaPosition()const;
+
 		/// <summary>
 		/// 上ベクトルを取得します。
 		/// </summary>

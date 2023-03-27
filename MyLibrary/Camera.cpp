@@ -166,3 +166,9 @@ DirectX::XMMATRIX Camera::GetViewAndProjectionMat()const
 {
 	return GetViewMatrix() * GetProjectionMatrix();
 }
+
+Vector3 MelLib::Camera::GetRotateCriteriaPosition() const
+{
+	if (rotatePoint == RotatePoint::ROTATE_POINT_CAMERA_POSITION)return cameraPosition;
+	return targetPosition;
+}

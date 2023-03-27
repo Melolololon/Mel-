@@ -5,6 +5,7 @@
 #include"SceneManager.h"
 #include"GuiValueManager.h"
 #include"Input.h"
+#include"LibMath.h"
 
 #include<fstream>
 #include<filesystem>
@@ -630,6 +631,47 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	
 }
 
+void MelLib::SceneEditer::MouseInputCamera()
+{
+	Camera* pCamera = Camera::Get(CAMERA_WINDOW_NAME);
+
+#pragma region 前後移動(ホイール)操作
+
+#pragma endregion
+
+
+	Vector2 mousePos = MelLib::Input::GetMousePosition();
+	Vector2 mousePosDifference = mousePos - preMousePos;
+	mousePosDifference /= 5;
+
+#pragma region 回転(右クリック)操作
+
+
+	if (Input::MouseButtonState(MouseButton::RIGHT)) 
+	{
+		pCamera->SetAngle(pCamera->GetAngle() + Vector3(mousePosDifference.y,mousePosDifference.x, 0));
+	}
+
+#pragma endregion
+
+#pragma region 上下左右移動(中ボタン)操作
+	
+	if (Input::MouseButtonState(MouseButton::CENTER)) 
+	{
+		Vector3 rotMoveVector = 
+			LibMath::RotateZXYVector3(Vector3(-mousePosDifference.x, mousePosDifference.y, 0),
+				pCamera->GetAngle());
+		pCamera->SetRotateCriteriaPosition(pCamera->GetRotateCriteriaPosition() + rotMoveVector);
+	}
+
+#pragma endregion
+
+
+	preMousePos = mousePos;
+
+}
+
+
 void MelLib::SceneEditer::Initialize()
 {
 
@@ -904,6 +946,7 @@ void MelLib::SceneEditer::Update()
 
 
 	UpdateCamera();
+	MouseInputCamera();
 }
 
 void MelLib::SceneEditer::Draw()

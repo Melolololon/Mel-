@@ -139,6 +139,11 @@ namespace MelLib
 
 		bool typingInputFlag = false;
 
+#pragma region マウスデータ
+		Vector2 preMousePos;
+#pragma endregion
+
+
 	public:
 
 		static SceneEditer* GetInstance();
@@ -156,6 +161,8 @@ namespace MelLib
 		/// <param name="objectType">オブジェクトの種類(ActorやStageObjectなど)</param>
 		void RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject,const std::string& objectType);
 		
+		void MouseInputCamera();
+
 		void Initialize();
 		void Update();
 		void Draw();
