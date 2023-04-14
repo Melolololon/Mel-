@@ -306,8 +306,13 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 			if (pObject)break;
 		}
 
-		// 管理クラスに追加
-		GameObjectManager::GetInstance()->AddObject(pObject);
+		// モデルオブジェクトはSetPosition時に元の座標に加算してしまうため、GUIからデータを読み込むとその値が加算されてしまうため、
+		// 位置がおかしくなる
+		
+		//2023_04_14
+		// オブジェクトの座標とモデルオブジェクトの座標を同じにしてるのにズレて保存されるのはおかしいのでは？
+		// それを解決すればよさそう
+
 		// 追加オブジェクト一覧に追加
 		addObjects.push_back(pObject);
 
@@ -322,9 +327,10 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 		file.read(reinterpret_cast<char*>(&scale), sizeof(Vector3));
 		pObject->SetScale(scale);
 
-		pObject->SetPreData();
-		pObject->SetGUIData();
-		pObject->SetPreDataPositions();
+
+
+		// 管理クラスに追加
+		GameObjectManager::GetInstance()->AddObject(pObject);
 
 		char c;
 		file.read(&c, 1);

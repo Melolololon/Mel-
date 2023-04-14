@@ -331,6 +331,17 @@ void MelLib::GameObject::SetPosition(const Vector3& pos)
 
 }
 
+void MelLib::GameObject::SetObjectAndModelPosition(const Vector3& pos)
+{
+	for (auto& m : modelObjects)
+	{
+		m.second.SetPosition(pos);
+	}
+	SetDataPosition(pos - position);
+
+	position = pos;
+}
+
 void MelLib::GameObject::SetAngle(const Vector3& angle)
 {
 	//if (this->angle == angle)return;

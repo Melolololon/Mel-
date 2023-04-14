@@ -406,6 +406,11 @@ namespace MelLib
 		/// </summary>
 		/// <param name="pos"></param>
 		virtual void SetPosition(const Vector3& pos);
+		
+		/// <summary>
+		/// モデルオブジェクトとオブジェクト自身の座標をセットします。当たり判定はセット前の座標との差だけ移動します。
+		/// </summary>
+		virtual void SetObjectAndModelPosition(const Vector3& pos);
 
 		/// <summary>
 		/// 角度をセットします。
