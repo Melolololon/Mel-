@@ -21,7 +21,7 @@ namespace MelLib
 	//マテリアル情報の定数バッファをマテリアルクラスに持たせる。
 	//そうすれば、モデルに複数のマテリアル情報持たせる必要がない。
 	//マテリアルの基底クラス作ってそこに定数バッファ持たせないといけない
-	
+
 	//ヒープはどこに持たせる?
 	//テクスチャバッファ以外に持たせるものありそうだったらモデルに
 
@@ -33,12 +33,12 @@ namespace MelLib
 	//ライブラリで定義されてるものだけ内部で管理する仕様にする?
 	//利用者が用意したマテリアルは自分で管理してもらう
 	//テンプレート無理そうだからわける
-	
+
 	//マテリアルの型に合わせてパイプライン生成時に使用するシェーダー変える?
 	//マテリアルにパイプライン持たせる?
 	//パイプラインにレンダリングの情報(カリングとかレンダーターゲット数)とかあって、
 	//マテリアルはあくまで見た目の情報を持つやつだからいらん。
-	
+
 	//マテリアルのクラス指定すると、そのマテリアルに適したシェーダーでパイプラインを作る機能はあってもいいかも
 	//マテリアルごとに定数バッファとテクスチャバッファの数変わるから、ルートシグネチャ持たせちゃう? 
 	//テンプレートのやつCreate呼べない。
@@ -55,7 +55,7 @@ namespace MelLib
 	class Material
 	{
 	public:
-		
+
 		enum class MaterialConstBufferType
 		{
 			MATERIAL_DATA,
@@ -75,7 +75,7 @@ namespace MelLib
 
 		//(マテリアルのカラー + AddColor + SubColor)*MulColor = 追加色
 		Color color = Color(255, 255, 255, 255);
-		
+
 		//テクスチャ追加したらデストラクタとかにLoad関数で読み込んだテクスチャの開放処理を書くこと
 		//書く場所は、デストラクタ、Set関数、Load関数の失敗時に入るif内の3箇所
 		//テクスチャをポインタとSetTextureTypeを持ったtupleにすれば忘れないかも
@@ -84,22 +84,22 @@ namespace MelLib
 		Texture* pTexture = nullptr;
 		// シェーダー側で受け取るときにmapの方が指定しやすそうなので、mapにする
 		std::map<std::string, Texture*>pTextures;
-		
+
 		static const UINT NORMAL_MAP_HANDLE_NUM = 1;
 		Texture* pNormalMapTexture = nullptr;
-		
+
 		/*static const UINT TEXTURE_3D_HANDLE_NUM = 2;
 		Texture3D* pTexture3D = nullptr;*/
 
 
 		//テクスチャクラスに持たせるため、コメントアウト
 		//ComPtr<ID3D12Resource>textureBuffer;
-		
+
 		//どこに持たせるのがベストかわからないため、保留
 		//とりあえずマテリアルに持たせる(モデルごとに用意するのはもったいない)
 		//UAVをテクスチャと同じヒープにまとめる必要が出てきたら、
 		//コンピュートシェーダーを使うオブジェクトのみ専用のヒープ作る?
-	    //ここに作ると複数のマテリアルのテクスチャをまとめられない
+		//ここに作ると複数のマテリアルのテクスチャをまとめられない
 		//ファイルに複数モデルあってもレンダリングするタイミングが違うからまとめなくても問題ない
 		ComPtr<ID3D12DescriptorHeap>textureHeap = nullptr;
 
@@ -130,28 +130,28 @@ namespace MelLib
 		/// <param name="mtlByte">構造体のバイト数</param>
 		void CreateInitialize(const size_t& mtlByte, const unsigned int textureNum);
 
-	
+
 		void MapMaterialData(void** pData);
 		void UnmapMaterialData();
 	public:
 
 		Material() {}
-		virtual ~Material(){}
-		
+		virtual ~Material() {}
+
 
 		static void Initialize(ID3D12Device* dev);
-		
-		virtual void Create(const DrawOption& drawData, const unsigned int textureNum){}
-		virtual void Create(const DrawOption& drawData, const unsigned int textureNum,const ShaderDataSet& shader){}
+
+		virtual void Create(const DrawOption& drawData, const unsigned int textureNum) {}
+		virtual void Create(const DrawOption& drawData, const unsigned int textureNum, const ShaderDataSet& shader) {}
 
 		ID3D12DescriptorHeap* GetPTextureHeap() { return textureHeap.Get(); }
 		ID3D12Resource* GetPConstBuffer(const MaterialConstBufferType type)const;
-		Texture* GetPTexture() { return pTexture; }
+		Texture* GetPTexture(const std::string& name = "");
 		void GetPTextures(std::vector<Texture*>& refTex) {};
 		Texture* GetPNormalTexture() { return pNormalMapTexture; }
 		//Texture3D* GetPTexture3D() { return pTexture3D; }
 		PipelineState* GetPPipelineState() { return pipelineState.get(); }
-	
+
 		const std::map<std::string, Texture*>& GetRefPTextures()const { return pTextures; }
 
 		void SetColor(const Color& color);
@@ -161,13 +161,13 @@ namespace MelLib
 		/// <param name="pTex">テクスチャ名</param>
 		/// <param name="name">登録名</param>
 		/// <returns></returns>
-		bool SetTexture(Texture* pTex,const std::string& name = "Default");
+		bool SetTexture(Texture* pTex, const std::string& name = "Default");
 		//void SetTexture(const std::vector<Texture*>& pTex);
 		//void SetTexture(const std::vector<Texture*>& pTex);
 		//void SetNormalMapTexture(Texture* pNormalMapTex);
 		//void SetTexture3D(Texture3D* pTex);
 
-	
+
 		unsigned int GetTextureNum()const { return textureNumMax; }
 		static unsigned int GetTextureNumMax() { return TEXTURE_MAX; }
 	};
@@ -208,12 +208,12 @@ namespace MelLib
 	{
 	private:
 		//static std::unordered_map<std::string, std::unique_ptr<ADSAMaterial>>pMaterials;
-		
+
 
 		ADSAMaterialData materialData;
 		void Map();
 	public:
-		ADSAMaterial(){}
+		ADSAMaterial() {}
 		ADSAMaterial(ADSAMaterial& mtl);
 		ADSAMaterial& operator=(ADSAMaterial& mtl);
 
@@ -246,14 +246,14 @@ namespace MelLib
 	};
 
 	//PBRマテリアル
-	class PBRMaterial:public Material
+	class PBRMaterial :public Material
 	{
 	private:
 		PBRMaterialData materialData;
 
 		void Map();
 	public:
-		PBRMaterial(){}
+		PBRMaterial() {}
 		PBRMaterial(PBRMaterial& mtl);
 		PBRMaterial operator=(PBRMaterial& mtl);
 

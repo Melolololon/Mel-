@@ -51,7 +51,7 @@ namespace MelLib
 	struct DrawOption
 	{
 		DrawMode drawMode = DrawMode::SOLID;
-		CullMode cullMode = CullMode::BACK;
+		CullMode cullMode = CullMode::NONE;
 		BlendMode blendMode = BlendMode::ADD;
 
 		bool depthTest = false;
@@ -60,7 +60,7 @@ namespace MelLib
 		void SetModelDefData()
 		{
 			drawMode = DrawMode::SOLID;
-			cullMode = CullMode::BACK;
+			cullMode = CullMode::NONE;
 			blendMode = BlendMode::ADD;
 			depthTest = true;
 			alphaWrite = true;

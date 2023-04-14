@@ -17,7 +17,7 @@ void MelLib::Material::MapColorBuffer(const Color& color)
 
 void MelLib::Material::SetOrLoadTextureProcess()
 {
-	
+
 
 
 }
@@ -41,7 +41,7 @@ void MelLib::Material::CreateInitialize(const size_t& mtlByte, const unsigned in
 		&colorBuffer
 	);
 	MapColorBuffer(color);
-	
+
 
 	//ディスクリプタヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc{};
@@ -76,11 +76,11 @@ void MelLib::Material::MapMaterialData(void** pData)
 void MelLib::Material::UnmapMaterialData()
 {
 	materialBuffer->Unmap(0, nullptr);
-	
+
 }
 
 void MelLib::Material::Initialize(ID3D12Device* dev)
-{ 
+{
 	device = dev;
 
 	CreateBuffer::GetInstance()->CreateOneColorTextureBuffer
@@ -105,28 +105,28 @@ ID3D12Resource* MelLib::Material::GetPConstBuffer(const MaterialConstBufferType 
 }
 
 void MelLib::Material::SetColor(const Color& color)
-{ 
-	this->color = color; 
+{
+	this->color = color;
 	MapColorBuffer(color);
 }
 
 bool MelLib::Material::SetTexture(Texture* pTex, const std::string& name)
-{ 
+{
 	//pTexture = pTex; 
 
 
 	//pTextures.emplace(pTex->GetTextureName(),pTex);
 
 	bool useTexture = pTextures.find(name) != pTextures.end();
-	if (!useTexture && pTextures.size() == textureNumMax) 
+	if (!useTexture && pTextures.size() == textureNumMax)
 	{
 		ErrorProcess::GetInstance()->StartErroeProcess
-		(L"マテリアルにテクスチャをセットできません。テクスチャ数の上限を超えています。",false);
+		(L"マテリアルにテクスチャをセットできません。テクスチャ数の上限を超えています。", false);
 		return false;
 	}
 
 
-	
+
 
 	if (pTex)
 	{
@@ -151,7 +151,7 @@ bool MelLib::Material::SetTexture(Texture* pTex, const std::string& name)
 			CD3DX12_CPU_DESCRIPTOR_HANDLE
 			(
 				textureHeap->GetCPUDescriptorHandleForHeapStart(),
-				0 ,
+				0,
 				device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			),
 			textureNoneTextureBuffer.Get()
@@ -215,12 +215,21 @@ bool MelLib::Material::SetTexture(Texture* pTex, const std::string& name)
 //	);
 //}
 
+MelLib::Texture* MelLib::Material::GetPTexture(const std::string& name)
+{
+	if (name == "" || pTextures.size() == 1)
+	{
+		for (auto& tex : pTextures)return tex.second;
+	}
+	return pTextures.at(name);
+
+}
 
 #pragma region ADSA
 
 MelLib::ADSAMaterial::ADSAMaterial(ADSAMaterial& mtl)
 {
-	Create(mtl.drawData,mtl.textureNumMax);
+	Create(mtl.drawData, mtl.textureNumMax);
 
 	// ここにtextureセット処理書く
 }
@@ -228,7 +237,7 @@ MelLib::ADSAMaterial::ADSAMaterial(ADSAMaterial& mtl)
 MelLib::ADSAMaterial& MelLib::ADSAMaterial::operator=(ADSAMaterial& mtl)
 {
 	Create(mtl.drawData, mtl.textureNumMax);
-	return * this;
+	return *this;
 }
 
 void MelLib::ADSAMaterial::Create(const DrawOption& drawData, const unsigned int textureNum)
@@ -274,7 +283,7 @@ void MelLib::ADSAMaterial::Map()
 }
 
 void MelLib::ADSAMaterial::SetMaterialData(const ADSAMaterialData& data)
-{ 
+{
 	materialData = data;
 	Map();
 }
