@@ -215,6 +215,15 @@ bool MelLib::Material::SetTexture(Texture* pTex, const std::string& name)
 //	);
 //}
 
+MelLib::Texture* MelLib::Material::GetPTexture(const std::string& name)
+{
+	if (name == "" || pTextures.size() == 1) 
+	{
+		for (auto& tex : pTextures)return tex.second;
+	}
+	return pTextures.at(name);
+
+}
 
 #pragma region ADSA
 

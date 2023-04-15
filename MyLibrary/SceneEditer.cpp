@@ -970,11 +970,6 @@ void MelLib::SceneEditer::Draw()
 
 	if (!isEdit)return;
 
-#ifdef _DEBUG
-
-#else
-	if (!releaseEdit)return;
-#endif // _DEBUG
 
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 

@@ -146,7 +146,7 @@ namespace MelLib
 
 		ID3D12DescriptorHeap* GetPTextureHeap() { return textureHeap.Get(); }
 		ID3D12Resource* GetPConstBuffer(const MaterialConstBufferType type)const;
-		Texture* GetPTexture() { return pTexture; }
+		Texture* GetPTexture(const std::string& name = "");
 		void GetPTextures(std::vector<Texture*>& refTex) {};
 		Texture* GetPNormalTexture() { return pNormalMapTexture; }
 		//Texture3D* GetPTexture3D() { return pTexture3D; }
