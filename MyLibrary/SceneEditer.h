@@ -77,6 +77,7 @@ namespace MelLib
 
 		bool ReleaseCheck();
 
+		void MouseInputCamera();
 		Camera* pEditerCamera = nullptr;
 	private:
 		static const std::string EDIT_DATA_FORMAT;
@@ -161,7 +162,6 @@ namespace MelLib
 		/// <param name="objectType">オブジェクトの種類(ActorやStageObjectなど)</param>
 		void RegisterObject(const std::shared_ptr<MelLib::GameObject>& pObject,const std::string& objectType);
 		
-		void MouseInputCamera();
 
 		void Initialize();
 		void Update();

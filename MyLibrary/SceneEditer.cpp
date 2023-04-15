@@ -256,6 +256,13 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 {
 	std::ifstream file(sceneName + EDIT_DATA_FORMAT, std::ios_base::binary);
 
+	// 無かったら閉じて終了
+	if (!file)
+	{
+		file.close();
+		return;
+	}
+
 	// オブジェクトの削除
 	addObjects.clear();
 	GameObjectManager::GetInstance()->AllEraseObject();
@@ -264,12 +271,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 	char c = 0;
 	file.read(&c,1);
 
-	// 無かったら閉じて終了
-	if (c == '0')
-	{
-		file.close();
-		return;
-	}
+
 
 	// 読み込み
 	while (1)
@@ -304,8 +306,13 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 			if (pObject)break;
 		}
 
-		// 管理クラスに追加
-		GameObjectManager::GetInstance()->AddObject(pObject);
+		// モデルオブジェクトはSetPosition時に元の座標に加算してしまうため、GUIからデータを読み込むとその値が加算されてしまうため、
+		// 位置がおかしくなる
+		
+		//2023_04_14
+		// オブジェクトの座標とモデルオブジェクトの座標を同じにしてるのにズレて保存されるのはおかしいのでは？
+		// それを解決すればよさそう
+
 		// 追加オブジェクト一覧に追加
 		addObjects.push_back(pObject);
 
@@ -320,9 +327,10 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 		file.read(reinterpret_cast<char*>(&scale), sizeof(Vector3));
 		pObject->SetScale(scale);
 
-		pObject->SetPreData();
-		pObject->SetGUIData();
-		pObject->SetPreDataPositions();
+
+
+		// 管理クラスに追加
+		GameObjectManager::GetInstance()->AddObject(pObject);
 
 		char c;
 		file.read(&c, 1);
@@ -657,14 +665,15 @@ void MelLib::SceneEditer::MouseInputCamera()
 
 	Vector2 mousePos = MelLib::Input::GetMousePosition();
 	Vector2 mousePosDifference = mousePos - preMousePos;
-	mousePosDifference /= 5;
+	
 
 #pragma region 回転(右クリック)操作
 
 
 	if (Input::MouseButtonState(MouseButton::RIGHT)) 
 	{
-		pCamera->SetAngle(pCamera->GetAngle() + Vector3(mousePosDifference.y,mousePosDifference.x, 0));
+		Vector2 movePos = mousePosDifference / 5;
+		pCamera->SetAngle(pCamera->GetAngle() + Vector3(movePos.y, movePos.x, 0));
 	}
 
 #pragma endregion
@@ -673,8 +682,9 @@ void MelLib::SceneEditer::MouseInputCamera()
 	
 	if (Input::MouseButtonState(MouseButton::CENTER)) 
 	{
+		Vector2 movePos = mousePosDifference / 2;
 		Vector3 rotMoveVector = 
-			LibMath::RotateZXYVector3(Vector3(-mousePosDifference.x, mousePosDifference.y, 0),
+			LibMath::RotateZXYVector3(Vector3(-movePos.x, movePos.y, 0),
 				pCamera->GetAngle());
 		pCamera->SetRotateCriteriaPosition(pCamera->GetRotateCriteriaPosition() + rotMoveVector);
 	}
