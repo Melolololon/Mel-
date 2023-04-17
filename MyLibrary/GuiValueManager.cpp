@@ -199,8 +199,6 @@ void MelLib::GuiValueManager::Load()
 				}
 
 				std::string param = lavel;
-				// ‚±‚êˆê’UÁ‚µ‚Ä‚é
-				//param += -1;
 
 				// İ’è‚µ‚½—”‚ğæ“¾
 				char randNum = 0;
