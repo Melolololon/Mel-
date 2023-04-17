@@ -588,18 +588,18 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	pObject->SetPreData();
 
 	registerObjectNames.clear();
-	
 	registerObjectTypes.clear();
 	registerObjectOrderDatas.clear();
 
 	for (const auto& m : pRegisterObjects) 
 	{
 		registerObjectTypes.push_back(m.first);
-		int i = 0;
+		
 
 		registerObjectOrderDatas.emplace(m.first, std::unordered_map<int, std::string>());
 		registerObjectNames.emplace(m.first, std::vector<std::string>());
-
+		
+		int i = 0;
 		for (const auto& object : m.second)
 		{
 			registerObjectOrderDatas[m.first].emplace(i, object.first);

@@ -11,7 +11,7 @@
 
 using namespace MelLib;
 
-
+std::unordered_map<std::string, int>ModelObject::createCount;
 std::unordered_map<std::string, std::unique_ptr<ModelObject>>ModelObject::pModelObjects;
 
 
@@ -2045,7 +2045,20 @@ void ModelObject::FbxAnimation()
 
 bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, ConstBufferData* userConstBufferData)
 {
+#pragma region –¼‘O
+
 	this->objectName = objectName;
+
+	if (createCount[objectName] >= 1) 
+	{
+		this->objectName += "_" + std::to_string(createCount[objectName]);
+	}
+
+	createCount[objectName]++;
+
+
+#pragma endregion
+
 	/*guiPosition.SetData(0, objectName,"ModelPosition",-10000,10000);
 	guiAngle.SetData(0, objectName,"ModelAngle",-10000,10000);
 	guiScale.SetData(1, objectName,"ModelScale",-10000,10000);*/
@@ -2090,9 +2103,9 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 	{
 		modelConstDatas.try_emplace(objName);
 
-		modelConstDatas[objName].position.SetData(0, objectName, objName +"_Position", -1000, 1000);
-		modelConstDatas[objName].angle.SetData(0, objectName, objName +"_Angle", -359, 359);
-		modelConstDatas[objName].scale.SetData(1, objectName, objName +"_Scale", -10, 10);
+		modelConstDatas[objName].position.SetData(0, this->objectName, objName +"_Position", -1000, 1000);
+		modelConstDatas[objName].angle.SetData(0, this->objectName, objName +"_Angle", -359, 359);
+		modelConstDatas[objName].scale.SetData(1, this->objectName, objName +"_Scale", -10, 10);
 	}
 #pragma endregion
 

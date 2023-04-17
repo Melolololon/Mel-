@@ -29,7 +29,8 @@ namespace MelLib
 	class ModelObject
 	{
 	private:
-
+		// –¼‘O,¶¬”
+		static std::unordered_map<std::string, int>createCount;
 
 	private:
 
