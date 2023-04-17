@@ -48,6 +48,9 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 	// -1は区切り、終端は-2
 	// 基本的に0～127に収まる文字しか使わないだろうから100以内の乱数加算しても-1-2にならないと思うから-1-2を区切りにしてる
 
+
+	// 乱数の部分で何か問題が起こって無限ループしちゃってる
+
 	// 書き出すもの
 	// 乱数を加算したラベル
 	// ラベルの終端文字
@@ -57,13 +60,12 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 	// 区切り(-1)または終端(-2)
 
 	std::string param;
-	//param += -1;
 
 	// 特定対策用乱数
 	char ran = static_cast<char>(Random::GetRandomNumber(100) + 1);
 
 	std::string addLavel = lavel;
-	for (auto& c : addLavel) c += ran;
+	//for (auto& c : addLavel) c += ran;
 	param += addLavel;
 	// 終端文字加算
 	param += -1;
@@ -204,12 +206,12 @@ void MelLib::GuiValueManager::Load()
 				std::string param = lavel;
 				param += -1;
 
-				// 設定した乱数を取得
-				char randNum = 0;
-				file.read(&randNum, 1);
-				// 減算してちゃんとした名前に戻す
-				for (auto& c : lavel)c -= randNum;
-				param += randNum;
+				//// 設定した乱数を取得
+				//char randNum = 0;
+				//file.read(&randNum, 1);
+				//// 減算してちゃんとした名前に戻す
+				//for (auto& c : lavel)c -= randNum;
+				//param += randNum;
 
 
 				// 型の取得
