@@ -306,6 +306,14 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 			if (pObject)break;
 		}
 
+		// pObjectがnullptrだったら(登録関数で登録されてなかった)スキップ
+		if (!pObject)
+		{
+			// ここにメッセージ
+			break;
+		}
+
+
 		// モデルオブジェクトはSetPosition時に元の座標に加算してしまうため、GUIからデータを読み込むとその値が加算されてしまうため、
 		// 位置がおかしくなる
 		

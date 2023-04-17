@@ -46,7 +46,7 @@ void Player::Move()
 
 void Player::LoadRes()
 {
-	//bool res = MelLib::ModelData::Load("Resources/Player/Player.fbx", false,"test");
+	bool res = MelLib::ModelData::Load("Resources/Player/Player.fbx", false,"test");
 
 }
 
