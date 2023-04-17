@@ -50,6 +50,7 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 
 	// 書き出すもの
 	// 乱数を加算したラベル
+	// ラベルの終端文字
 	// 特定対策用乱数
 	// 変数の型
 	// 数値データ
@@ -64,8 +65,10 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 	std::string addLavel = lavel;
 	for (auto& c : addLavel) c += ran;
 	param += addLavel;
-
+	// 終端文字加算
 	param += -1;
+
+	// 復元用乱数加算
 	param += ran;
 
 	if (type == typeid(int))param += DATA_FORMAT_STR.at("int");
@@ -199,6 +202,7 @@ void MelLib::GuiValueManager::Load()
 				}
 
 				std::string param = lavel;
+				param += -1;
 
 				// 設定した乱数を取得
 				char randNum = 0;
