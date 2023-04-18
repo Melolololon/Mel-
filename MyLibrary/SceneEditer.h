@@ -75,6 +75,11 @@ namespace MelLib
 		/// </summary>
 		void Reset();
 
+		/// <summary>
+		/// 配置したオブジェクトにGUIの数値を適応させる
+		/// </summary>
+		void SetAddObjectsGUIData();
+
 		bool ReleaseCheck();
 
 		void MouseInputCamera();
@@ -166,6 +171,8 @@ namespace MelLib
 		void Initialize();
 		void Update();
 		void Draw();
+
+
 
 		bool GetIsEdit()const { return isEdit; }
 		bool GetReleaeEdit()const { return releaseEdit; }

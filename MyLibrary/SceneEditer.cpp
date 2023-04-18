@@ -555,6 +555,17 @@ void MelLib::SceneEditer::Reset()
 	if (!editorFlag || !ReleaseCheck())return;
 }
 
+void MelLib::SceneEditer::SetAddObjectsGUIData()
+{
+	for (auto& object : addObjects)
+	{
+		object->SetPreData();
+		object->SetGUIData();
+		object->SetPreDataPositions();
+	}
+
+}
+
 bool MelLib::SceneEditer::ReleaseCheck()
 {
 
@@ -778,7 +789,8 @@ void MelLib::SceneEditer::Update()
 	}
 	if (!isEdit)return;
 
-
+	// XV
+	SetAddObjectsGUIData();
 
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
