@@ -306,6 +306,14 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 			if (pObject)break;
 		}
 
+		// pObjectがnullptrだったら(登録関数で登録されてなかった)スキップ
+		if (!pObject)
+		{
+			// ここにメッセージ
+			break;
+		}
+
+
 		// モデルオブジェクトはSetPosition時に元の座標に加算してしまうため、GUIからデータを読み込むとその値が加算されてしまうため、
 		// 位置がおかしくなる
 		
@@ -547,6 +555,17 @@ void MelLib::SceneEditer::Reset()
 	if (!editorFlag || !ReleaseCheck())return;
 }
 
+void MelLib::SceneEditer::SetAddObjectsGUIData()
+{
+	for (auto& object : addObjects)
+	{
+		object->SetPreData();
+		object->SetGUIData();
+		object->SetPreDataPositions();
+	}
+
+}
+
 bool MelLib::SceneEditer::ReleaseCheck()
 {
 
@@ -588,18 +607,18 @@ void MelLib::SceneEditer::RegisterObject(const std::shared_ptr<MelLib::GameObjec
 	pObject->SetPreData();
 
 	registerObjectNames.clear();
-	
 	registerObjectTypes.clear();
 	registerObjectOrderDatas.clear();
 
 	for (const auto& m : pRegisterObjects) 
 	{
 		registerObjectTypes.push_back(m.first);
-		int i = 0;
+		
 
 		registerObjectOrderDatas.emplace(m.first, std::unordered_map<int, std::string>());
 		registerObjectNames.emplace(m.first, std::vector<std::string>());
-
+		
+		int i = 0;
 		for (const auto& object : m.second)
 		{
 			registerObjectOrderDatas[m.first].emplace(i, object.first);
@@ -770,7 +789,8 @@ void MelLib::SceneEditer::Update()
 	}
 	if (!isEdit)return;
 
-
+	// 更新
+	SetAddObjectsGUIData();
 
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 

@@ -104,6 +104,7 @@ void Game::Initialize()
 	// エディターに追加(Unityでいうプレハブ作成)
 	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
 	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor");
+	//MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor2");
 
 	// シーン読み込みテスト
 	MelLib::SceneEditer::GetInstance()->LoadEditData("BoxParty");

@@ -40,87 +40,6 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 {
 	// 削除されたGuiのパラメータは書き出さないようにする
 
-#pragma region 旧
-
-
-	//bool fileOpen = true;
-	//std::fstream file(EXPORT_PATH,std::ios_base::binary|std::ios_base::in);
-	//if (!file)
-	//{
-	//	fileOpen = false;
-	//}
-
-
-	//std::string dataName = "[" + lavel + "]";
-
-	//size_t fileSize = 0;
-	//file.seekg(std::ios_base::end);
-	//fileSize = file.tellg();
-	//file.seekg(std::ios_base::beg);
-
-	//// 見つかった名前の末端位置(]の隣)
-	//size_t dataEndPos = 0;
-
-	//bool matchName = false;
-	//while (file)
-	//{
-	//	// 確認終了か末尾まで確認したら抜ける
-	//	size_t currentPos = file.tellg();
-	//	if (matchName || currentPos == fileSize)break;
-
-	//	std::string str;
-	//	char c = '_';
-	//	file.read(&c, 1);
-
-	//	// [を読み込んだら入る
-	//	if (c == '[') 
-	//	{
-
-	//		str += c;
-
-	//		// ]まで取得する。
-	//		while (1) 
-	//		{
-	//			file.read(&c, 1);
-	//			str += c;
-	//			if (str[str.size() - 1] == ']')
-	//			{
-	//				// 名前が一致したら二重ループを抜ける。
-	//				if (str == dataName)
-	//				{
-	//					matchName = true;
-	//					dataEndPos = file.tellg();
-	//				}
-	//				break;
-	//			}
-	//		}
-	//	}
-	//}
-	//file.close();
-
-	//std::fstream oFile(EXPORT_PATH,std::ios_base::binary | std::ios_base::out);
-	//// 存在したら上書き
-	//if (matchName) 
-	//{
-	//	// シークして書き込み
-	//	//oFile.seekg(0, dataEndPos);
-	//	oFile.write(data,dataSize);
-	//}
-	//else // 名前が無かったら
-	//{
-	//	// ファイルが存在していたら末尾にシーク
-	//	if(fileOpen)oFile.seekg(std::ios_base::end);
-
-	//	// 名前とデータを書き込み
-	//	oFile.write(dataName.c_str(), dataName.size());
-	//	oFile.write(data, dataSize);
-
-	//}
-
-	//oFile.close();
-
-#pragma endregion
-
 	// シークして一部だけ書き換えるには、常にファイルを開いておくしかない
 	// 開き直すと消えるから
 
@@ -129,17 +48,29 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 	// -1は区切り、終端は-2
 	// 基本的に0～127に収まる文字しか使わないだろうから100以内の乱数加算しても-1-2にならないと思うから-1-2を区切りにしてる
 
+
+	// 乱数の部分で何か問題が起こって無限ループしちゃってる
+
+	// 書き出すもの
+	// 乱数を加算したラベル
+	// ラベルの終端文字
+	// 特定対策用乱数
+	// 変数の型
+	// 数値データ
+	// 区切り(-1)または終端(-2)
+
 	std::string param;
-	//param += -1;
 
 	// 特定対策用乱数
 	char ran = static_cast<char>(Random::GetRandomNumber(100) + 1);
 
 	std::string addLavel = lavel;
-	for (auto& c : addLavel) c += ran;
+	//for (auto& c : addLavel) c += ran;
 	param += addLavel;
-
+	// 終端文字加算
 	param += -1;
+
+	// 復元用乱数加算
 	param += ran;
 
 	if (type == typeid(int))param += DATA_FORMAT_STR.at("int");
@@ -262,6 +193,7 @@ void MelLib::GuiValueManager::Load()
 			while (1)
 			{
 
+				// 区切りまでループして格納
 				std::string lavel;
 				char c = 0;
 				while (1)
@@ -274,12 +206,12 @@ void MelLib::GuiValueManager::Load()
 				std::string param = lavel;
 				param += -1;
 
-				// 設定した乱数を取得
-				char randNum = 0;
-				file.read(&randNum, 1);
-				// 減算してちゃんとした名前に戻す
-				for (auto& c : lavel)c -= randNum;
-				param += randNum;
+				//// 設定した乱数を取得
+				//char randNum = 0;
+				//file.read(&randNum, 1);
+				//// 減算してちゃんとした名前に戻す
+				//for (auto& c : lavel)c -= randNum;
+				//param += randNum;
 
 
 				// 型の取得
@@ -308,6 +240,7 @@ void MelLib::GuiValueManager::Load()
 					for (int i = 0; i < sizeof(Vector3); i++)param += value[i];
 				}
 
+				// 書き出しの時のために読み込んだものを格納して保存しておく
 				valueDatas[fileName][lavel] = param;
 
 				// 区切りの-1がなかったら抜ける

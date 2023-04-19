@@ -3,6 +3,7 @@
 #include<DirectXTex.h>
 #include<wrl.h>
 #include<unordered_map>
+#include<string>
 
 #include"Vector.h"
 #include"Color.h"
