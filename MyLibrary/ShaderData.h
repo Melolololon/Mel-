@@ -54,8 +54,8 @@ namespace MelLib
 		CullMode cullMode = CullMode::NONE;
 		BlendMode blendMode = BlendMode::ADD;
 
-		bool depthTest = false;
-		bool alphaWrite = false;
+		bool depthTest = true;
+		bool alphaWrite = true;
 
 		void SetModelDefData()
 		{
