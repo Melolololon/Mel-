@@ -8,12 +8,6 @@
 
 #include"GuiValue.h"
 
-// 起きたらやること 2022/09/28
-// 登録、読み込みした順番にWindowで表示されるようにする。valueDatasを使って確認。
-// GetGUIValueのキャスト処理をcastIntDataなどの関数に移動させてそれを呼び出すようにする。
-// guidがあったらAddValueDataを呼び出さないまたは行わないようにする。
-// 呼び出さなくすると現状AddValueDataに書かれているAddCreateWindowNameが呼び出されないため、
-// AddCreateWindowNameの処理をguidがあった場合のみGetGUIDataでも行うようにする。
 
 // valueDatasか各データのmapどちらかだけでいい
 // valueDatasと各データの中身は別物だから消すな
@@ -28,10 +22,10 @@ namespace MelLib
 	// 
 	// 内部(ラベル分存在)
 	// ラベル(HPなどのパラメーター名)
-	// 区切り-1
-	// 名前復元用乱数
+	// 区切り(char型の-1。文字列ではない)
+	// 名前復元用乱数(2023_04_19一旦廃止)
 	// 値の型
-	// 値
+	// 値データ
 	// 終了判別値(-1がまだ続く。-2が末尾)
 
 
