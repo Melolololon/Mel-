@@ -179,22 +179,22 @@ namespace MelLib
 		void Update();
 		void Draw(const std::string& rtName = RenderTarget::GetMainRenderTargetNama());
 
-#pragma region 生成
+#pragma region 
 
 #pragma region モデルで生成
 		ModelObject(ModelData* pModelData, const std::string& objectName,  ConstBufferData* userConstBufferData = nullptr);
 		static bool Create(ModelData* pModelData, const std::string& objectName , ConstBufferData* userConstBufferData, const std::string& name);
 		bool Create(ModelData* pModelData,const std::string& objectName , ConstBufferData* userConstBufferData = nullptr);
-#pragma endregion モデルで生成
+#pragma endregion 
 
 
 #pragma region プリミティブモデル生成
 	
 
-#pragma endregion プリミティブモデル生成
+#pragma endregion 
 
 
-#pragma endregion 生成
+#pragma endregion 
 
 #pragma region メッシュカット
 		/// <summary>
