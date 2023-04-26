@@ -190,7 +190,14 @@ namespace MelLib
 		void AllEraseObject2D();
 		void AllEraseObject3D();
 
+		/// <summary>
+		/// オブジェクトが追加されているかを確認します。
+		/// </summary>
+		/// <param name="name">オブジェクト名</param>
+		/// <returns></returns>
+		bool CheckAddObject(const std::string& name);
 
+		bool CheckAddClass(const std::string& className);
 	};
 
 }

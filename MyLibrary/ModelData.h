@@ -49,10 +49,10 @@ namespace MelLib
 		DirectX::XMVECTOR translation = { 1,1,1,0 };
 
 		// 上3つを組み安房得たやつ
-		DirectX::XMMATRIX transform;
+		DirectX::XMMATRIX transform = DirectX::XMMatrixIdentity();
 
 		// 親ノードの行列も乗算したやつ
-		DirectX::XMMATRIX globalTransform;
+		DirectX::XMMATRIX globalTransform = DirectX::XMMatrixIdentity();
 
 		Node* parentNode = nullptr;
 	};
@@ -84,12 +84,12 @@ namespace MelLib
 			//ボーン名
 			std::string boneName;
 			//初期姿勢の逆行列
-			DirectX::XMMATRIX invInitialPose;
+			DirectX::XMMATRIX invInitialPose = DirectX::XMMatrixIdentity();
 
 			FbxBone* parentBone = nullptr;
 
 			//ボーン情報をまとめたもの
-			FbxCluster* fbxCluster;
+			FbxCluster* fbxCluster = nullptr;
 
 			FbxBone(){}
 			FbxBone(const std::string& name)

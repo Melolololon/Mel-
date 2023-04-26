@@ -2648,3 +2648,27 @@ void MelLib::GameObjectManager::AllEraseObject3D()
 {
 	objects.clear();
 }
+
+bool MelLib::GameObjectManager::CheckAddObject(const std::string& name)
+{
+	for (auto& object : objects) 
+	{
+		if (object->GetObjectName() == name) 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool MelLib::GameObjectManager::CheckAddClass(const std::string& className)
+{
+	for (auto& object : objects)
+	{
+		if (typeid(object->GetObjectName()).name() == className)
+		{
+			return true;
+		}
+	}
+	return false;
+}

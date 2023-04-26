@@ -71,7 +71,7 @@ void MelLib::GuiValueManager::Save(const std::string& windowName, const std::str
 	param += -1;
 
 	// •œŒ³—p—”‰ÁZ
-	param += ran;
+	//param += ran;
 
 	if (type == typeid(int))param += DATA_FORMAT_STR.at("int");
 	else if (type == typeid(float))param += DATA_FORMAT_STR.at("float");
