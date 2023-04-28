@@ -114,13 +114,13 @@ void MelLib::ImguiManager::SetPosition(const Vector2& pos)
 {
     if (CheckReleaseDrawFlag())return;
 
-    ImGui::SetWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_::ImGuiCond_FirstUseEver);
+    ImGui::SetWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_::ImGuiCond_None);
 }
 
 void MelLib::ImguiManager::SetSize(const Vector2& size)
 {
     if (CheckReleaseDrawFlag())return;
-    ImGui::SetWindowSize(ImVec2(size.x, size.y), ImGuiCond_::ImGuiCond_FirstUseEver);
+    ImGui::SetWindowSize(ImVec2(size.x, size.y), ImGuiCond_::ImGuiCond_None);
 }
 
 void MelLib::ImguiManager::SameLine()

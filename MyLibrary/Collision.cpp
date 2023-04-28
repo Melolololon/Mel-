@@ -529,7 +529,13 @@ bool Collision::Segment3DAndSegment3D
 
 }
 
-bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2)
+bool Collision::CapsuleAndCapsule
+(
+	const CapsuleData& capsule1,
+	CapsuleCalcResult* capsuleResult1,
+	const CapsuleData& capsule2,
+	CapsuleCalcResult* capsuleResult2
+)
 {
 	//回転適応.
 	Value2<Vector3>capsule1LineSegmentPos = capsule1.GetSegment3DData().GetRotatePosition();
@@ -578,6 +584,18 @@ bool Collision::CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData
 	//相手カプセルに一番近い場所
 	Vector3 c1 = p1 + s * d1;
 	Vector3 c2 = p2 + t * d2;
+
+	if (capsuleResult1) 
+	{
+		capsuleResult1->segment3DCalcResult.thisCapsuleLineClosestPoint = c1;
+		capsuleResult1->segment3DCalcResult.otherCapsuleLineClosestPoint = c2;
+	}
+
+	if (capsuleResult2) 
+	{
+		capsuleResult2->segment3DCalcResult.thisCapsuleLineClosestPoint = c2;
+		capsuleResult2->segment3DCalcResult.otherCapsuleLineClosestPoint = c1;
+	}
 
 	return LibMath::CalcDistance3D(c1, c2) < capsule1.GetRadius() + capsule2.GetRadius();
 }
@@ -1060,7 +1078,7 @@ bool Collision::BoardAndSegment3D
 
 }
 
-bool MelLib::Collision::BoardAndCapsule(const BoardData& board, BoardCalcResult* boardCalcResult, const CapsuleData& capsule, Segment3DCalcResult* lineSegmentCalcResult)
+bool MelLib::Collision::BoardAndCapsule(const BoardData& board, BoardCalcResult* boardCalcResult, const CapsuleData& capsule, CapsuleCalcResult* capsuleCalcResult)
 {
 	//線分の判定が成立している、または、距離が半径以内
 	//後者が成立してるかを判断すればいい
@@ -1144,9 +1162,6 @@ bool MelLib::Collision::BoardAndCapsule(const BoardData& board, BoardCalcResult*
 		return false;
 	}
 
-
-	//起きたらやること
-	//範囲内か外かを調べて処理を行う
 
 
 }

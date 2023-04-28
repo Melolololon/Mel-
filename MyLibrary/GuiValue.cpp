@@ -10,7 +10,9 @@ MelLib::GuiInt::GuiInt(const int value,const std::string& windowName, const std:
 
 MelLib::GuiInt::~GuiInt() 
 {
-	GuiValueManager::GetInstance()->EraseGuiValue(typeid(int), windowName, lavel);
+	GuiValueManager* ins = GuiValueManager::GetInstance();
+
+	if(ins)ins->EraseGuiValue(typeid(int), windowName, lavel);
 }
 
 void MelLib::GuiInt::SetData(int value, const std::string& windowName, const std::string& lavel, int minNumber, int maxNumber)
@@ -44,7 +46,9 @@ MelLib::GuiFloat::GuiFloat(const float value, const std::string& windowName, con
 
 MelLib::GuiFloat::~GuiFloat()
 {
-	GuiValueManager::GetInstance()->EraseGuiValue(typeid(float), windowName, lavel);
+	GuiValueManager* ins = GuiValueManager::GetInstance();
+
+	if (ins)ins->EraseGuiValue(typeid(float), windowName, lavel);
 }
 
 void MelLib::GuiFloat::SetData(float value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
@@ -77,7 +81,9 @@ MelLib::GuiVector3::GuiVector3(const MelLib::Vector3& value, const std::string& 
 
 MelLib::GuiVector3::~GuiVector3()
 {
-	GuiValueManager::GetInstance()->EraseGuiValue(typeid(MelLib::Vector3), windowName, lavel);
+	GuiValueManager* ins = GuiValueManager::GetInstance();
+
+	if (ins)ins->EraseGuiValue(typeid(MelLib::Vector3), windowName, lavel);
 }
 
 void MelLib::GuiVector3::SetData(const MelLib::Vector3& value, const std::string& windowName, const std::string& lavel, float minNumber, float maxNumber)
@@ -110,7 +116,9 @@ MelLib::GuiBool::GuiBool(const bool value, const std::string& windowName, const 
 
 MelLib::GuiBool::~GuiBool()
 {
-	GuiValueManager::GetInstance()->EraseGuiValue(typeid(bool), windowName, lavel);
+	GuiValueManager* ins = GuiValueManager::GetInstance();
+
+	if (ins)ins->EraseGuiValue(typeid(bool), windowName, lavel);
 }
 
 void MelLib::GuiBool::SetData(bool value, const std::string& windowName, const std::string& lavel)

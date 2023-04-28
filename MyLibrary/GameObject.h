@@ -123,7 +123,7 @@ namespace MelLib
 		SphereCalcResult sphereCalcResult;
 		BoxCalcResult boxCalcResult;
 		Segment3DCalcResult segmentCalcResult;
-		Segment3DCalcResult capsuleCalcResult;
+		CapsuleCalcResult capsuleCalcResult;
 		RayCalcResult rayCalcResult;
 		BoardCalcResult boardCalcResult;
 		TriangleCalcResult triangleCalcResult;
@@ -340,15 +340,6 @@ namespace MelLib
 		//描画
 		virtual void Draw();
 
-		/*/// <summary>
-		/// 当たった時の処理
-		/// </summary>
-		/// <param name="object">相手オブジェトのポインタ</param>
-		/// <param name="collisionType">自分のどの判定に当たったか</param>
-		/// <param name="arrayNum">自分の何個目の判定に当たったか</param>
-		/// <param name="hitObjColType">相手のどの判定に当たったか</param>
-		/// <param name="hitObjArrayNum">相手の何個目の判定に当たったか</param>*/
-
 		/// <summary>
 		/// 衝突した時に呼び出される判定
 		/// </summary>
@@ -359,11 +350,6 @@ namespace MelLib
 		/// <param name="hitShapeName">相手の判定名</param>
 		virtual void Hit
 		(
-			/*const GameObject* const object,
-			const ShapeType3D& collisionType,
-			const int arrayNum,
-			const ShapeType3D& hitObjColType,
-			const int hitObjArrayNum*/
 			const GameObject& object,
 			const ShapeType3D shapeType,
 			const std::string& shapeName,
@@ -601,7 +587,7 @@ namespace MelLib
 		void SetBoxCalcResult(const BoxCalcResult& result) { boxCalcResult = result;}
 		void SetSegmentCalcResult(const Segment3DCalcResult& result) { segmentCalcResult = result;}
 		void SetBoardCalcResult(const BoardCalcResult& result) { boardCalcResult = result;}
-		void SetCapsuleCalcResult(const Segment3DCalcResult& result)
+		void SetCapsuleCalcResult(const CapsuleCalcResult& result)
 		{
 			capsuleCalcResult = result;
 		}
@@ -615,7 +601,7 @@ namespace MelLib
 		BoxCalcResult GetBoxCalcResult()const { return boxCalcResult; }
 		Segment3DCalcResult GetSegmentCalcResult()const { return segmentCalcResult; }
 		BoardCalcResult GetBoardCalcResult()const { return boardCalcResult; }
-		Segment3DCalcResult GetCapsuleCalcResult()const { return capsuleCalcResult; }
+		CapsuleCalcResult GetCapsuleCalcResult()const { return capsuleCalcResult; }
 		TriangleCalcResult GetTriangleCalcResult()const { return triangleCalcResult; }
 		RayCalcResult GetRayCalcResult()const { return rayCalcResult; }
 

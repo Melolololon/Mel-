@@ -134,8 +134,6 @@ namespace MelLib
 		void SetDrawWindowFlag(const std::string& windowName, bool flag) { drawWindowFlag[windowName] = flag; }
 		void ChangeDrawWindowFlag(const std::string& windowName) { drawWindowFlag[windowName] = !drawWindowFlag[windowName]; }
 
-		
-
 	};
 
 }

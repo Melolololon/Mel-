@@ -444,11 +444,16 @@ void GameObjectManager::Update()
 						{
 							for (int colJ = 0; colJ < capsuleDataVec2Size; colJ++)
 							{
-								if (Collision::CapsuleAndCapsule(capsuleDataVec1[colI], capsuleDataVec2[colJ]))
+								CapsuleCalcResult res1;
+								CapsuleCalcResult res2;
+
+								if (Collision::CapsuleAndCapsule(capsuleDataVec1[colI], &res1, capsuleDataVec2[colJ],&res2))
 								{
 									obj1->SetHitCapsuleData(capsuleDataVec2[colJ]);
 									obj2->SetHitCapsuleData(capsuleDataVec1[colI]);
 
+									obj1->SetCapsuleCalcResult(res1);
+									obj2->SetCapsuleCalcResult(res2);
 
 									//hit‚ðŒÄ‚Ño‚·
 									obj1->Hit
@@ -1359,7 +1364,7 @@ void GameObjectManager::Update()
 							for (int colJ = 0; colJ < capsuleDataSize; colJ++)
 							{
 								BoardCalcResult result1;
-								Segment3DCalcResult result2;
+								CapsuleCalcResult result2;
 
 								if (Collision::BoardAndCapsule(boardDataVec[colI], &result1, capsuleDataVec[colJ], &result2))
 								{
@@ -1416,7 +1421,7 @@ void GameObjectManager::Update()
 							for (int colJ = 0; colJ < capsuleDataSize; colJ++)
 							{
 								BoardCalcResult result1;
-								Segment3DCalcResult result2;
+								CapsuleCalcResult result2;
 
 								if (Collision::BoardAndCapsule(boardDataVec[colI], &result1, capsuleDataVec[colJ], &result2))
 								{

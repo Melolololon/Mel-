@@ -8,6 +8,7 @@
 #include"Values.h"
 #include"Collision.h"
 #include"DrawManager.h"
+#include"GuiValueManager.h"
 
 using namespace MelLib;
 
@@ -1864,6 +1865,31 @@ void MelLib::ModelObject::SetMaterial(Material* mtl, const std::string& name)
 
 }
 
+void MelLib::ModelObject::SetGUIParamDrawFlag(const bool flag, const std::string& name)
+{
+	auto changeDrawFlag = [&flag](ModelConstData& data)
+	{
+		data.position.SetDrawFlag(flag);
+		data.angle.SetDrawFlag(flag);
+		data.scale.SetDrawFlag(flag);
+	};
+
+	if (name == "")
+	{
+		for (auto& name : objectNames)
+		{
+			changeDrawFlag(modelConstDatas[name]);
+		}
+	}
+	else
+	{
+		changeDrawFlag(modelConstDatas[name]);
+	}
+}
+
+
+
+
 Material* MelLib::ModelObject::GetPMaterial(const std::string& name)
 {
 	if (name == "")
@@ -2106,6 +2132,11 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 		modelConstDatas[objName].position.SetData(0, this->objectName, objName +"_Position", -1000, 1000);
 		modelConstDatas[objName].angle.SetData(0, this->objectName, objName +"_Angle", -359, 359);
 		modelConstDatas[objName].scale.SetData(1, this->objectName, objName +"_Scale", -10, 10);
+
+
+		modelConstDatas[objName].position.SetDrawFlag(false);
+		modelConstDatas[objName].angle.SetDrawFlag(false);
+		modelConstDatas[objName].scale.SetDrawFlag(false);
 	}
 #pragma endregion
 

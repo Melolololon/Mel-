@@ -306,6 +306,7 @@ namespace MelLib
 
 
 
+		void SetGUIParamDrawFlag(const bool flag,const std::string& name = "");
 
 #pragma endregion
 

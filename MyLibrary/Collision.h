@@ -113,7 +113,13 @@ namespace MelLib
 		/// <param name="capsule1">カプセル</param>
 		/// <param name="capsule2">カプセル</param>
 		/// <returns>当たっていたらtrue</returns>
-		static bool CapsuleAndCapsule(const CapsuleData& capsule1, const CapsuleData& capsule2);
+		static bool CapsuleAndCapsule
+		(
+			const CapsuleData& capsule1, 
+			CapsuleCalcResult* capsuleResult1,
+			const CapsuleData& capsule2,
+			CapsuleCalcResult* capsuleResult2
+		);
 
 		/// <summary>
 		/// 球と箱が当たっているかを確認します。
@@ -158,7 +164,7 @@ namespace MelLib
 			const BoardData& board,
 			BoardCalcResult* boardCalcResult,
 			const CapsuleData& capsule,
-			Segment3DCalcResult* lineSegmentCalcResult
+			CapsuleCalcResult* capsuleCalcResult
 		);
 
 		static bool PointAndSphere

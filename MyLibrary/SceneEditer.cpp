@@ -237,6 +237,9 @@ void MelLib::SceneEditer::SelectEditData()
 {
 	if (!editorFlag || !ReleaseCheck())return;
 	ImguiManager::GetInstance()->BeginDrawWindow("SelectScene");
+
+
+
 	ImguiManager::GetInstance()->DrawList(selectEditDataNum, sceneFileNames);
 	ImguiManager::GetInstance()->EndDrawWindow();
 
@@ -428,6 +431,9 @@ void MelLib::SceneEditer::DrawObjectList()
 	if (OBJECT_SIZE == 0)return;
 	
 	ImguiManager::GetInstance()->BeginDrawWindow("ObjectList");
+	ImguiManager::GetInstance()->SetPosition(Vector2(0, 400));
+	ImguiManager::GetInstance()->SetSize(Vector2(250, 400));
+
 	ImguiManager::GetInstance()->DrawList(selectListObjectNum, objectNames);
 	selectListObjectName = objectNames[selectListObjectNum];
 	ImguiManager::GetInstance()->EndDrawWindow();
@@ -797,6 +803,8 @@ void MelLib::SceneEditer::Update()
 #pragma region 選択
 
 	ImguiManager::GetInstance()->BeginDrawWindow(EDIT_WINDOW_NAME);
+	ImguiManager::GetInstance()->SetPosition(Vector2(0, 0));
+	ImguiManager::GetInstance()->SetSize(Vector2(250, 400));
 
 	// スライダーとボックス切り替えられるようにする
 	bool pushChangeButton = ImguiManager::GetInstance()->DrawButton("ChangeSlider Box");

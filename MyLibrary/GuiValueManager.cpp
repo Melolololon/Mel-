@@ -408,25 +408,20 @@ void MelLib::GuiValueManager::Update()
 				// ƒ‰ƒxƒ‹–¼‚ª“¯‚¶‚¾‚Á‚½‚çˆ—
 				if (lavel == LAVEL)
 				{
+					// •`‰æ‚µ‚È‚¢Ý’è‚¾‚Á‚½‚çcontinue
+					if (!value.second->GetDrawFlag())continue;
+
 					lavelCheckEnd = true;
 
 					GuiInt& guiInt = *value.second;
 					int num = guiInt.GetValue();
-					//ImGuiInputTextFlags_CharsDecimal
+
 					if (guiInt.GetTypingInputValueFlag())
 					{
 						changeFlag = ImguiManager::GetInstance()->DrawInputIntBox(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
 					}
 					else changeFlag = ImguiManager::GetInstance()->DrawSliderInt(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
 					guiInt = num;
-				/*	if (changeFlag)
-					{
-						const char* data = reinterpret_cast<char*>(&num);
-						Save(WINDOW_NAME, LAVEL, data, typeid(num), sizeof(num), changeFlag);
-						guiInt = num;
-					}*/
-
-
 				}
 
 			}
@@ -442,6 +437,9 @@ void MelLib::GuiValueManager::Update()
 				// ƒ‰ƒxƒ‹–¼‚ª“¯‚¶‚¾‚Á‚½‚çˆ—
 				if (lavel == LAVEL)
 				{
+					// •`‰æ‚µ‚È‚¢Ý’è‚¾‚Á‚½‚çcontinue
+					if (!value.second->GetDrawFlag())continue;
+
 					lavelCheckEnd = true;
 
 					GuiFloat& guiFloat = *value.second;
@@ -474,6 +472,9 @@ void MelLib::GuiValueManager::Update()
 				// ƒ‰ƒxƒ‹–¼‚ª“¯‚¶‚¾‚Á‚½‚çˆ—
 				if (lavel == LAVEL)
 				{
+					// •`‰æ‚µ‚È‚¢Ý’è‚¾‚Á‚½‚çcontinue
+					if (!value.second->GetDrawFlag())continue;
+
 					lavelCheckEnd = true;
 
 					GuiVector3& guiVector3 = *value.second;
@@ -505,6 +506,9 @@ void MelLib::GuiValueManager::Update()
 				// ƒ‰ƒxƒ‹–¼‚ª“¯‚¶‚¾‚Á‚½‚çˆ—
 				if (lavel == LAVEL)
 				{
+					// •`‰æ‚µ‚È‚¢Ý’è‚¾‚Á‚½‚çcontinue
+					if (!value.second->GetDrawFlag())continue;
+
 					lavelCheckEnd = true;
 
 					GuiBool& guiBool = *value.second;

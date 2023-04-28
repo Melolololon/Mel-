@@ -228,19 +228,17 @@ GameObject::GameObject(const std::string& name)
 	}
 
 
-
-
 	guiPosition.SetData(0, objectName, "Position", -1000, 1000);
 	guiAngle.SetData(0, objectName, "Angle", -359, 359);
 	guiScale.SetData(1, objectName, "Scale", -10, 10);
 
 
-
-
-
 	SetPreData();
 	//SetGUIData();
 	//SetPreDataPositions();
+
+	// Ç‚ÇΩÇÁï\é¶Ç≥ÇÍÇÈÇÃÇñhÇÆÇΩÇﬂÅAfalseÇ…ê›íË
+	SetDrawGUIFlag(false);
 }
 
 
@@ -253,17 +251,13 @@ void MelLib::GameObject::Initialize()
 {
 }
 
-//void GameObject::Initialize()
-//{
-//}
-
 void GameObject::Update()
 {
 }
 
 void GameObject::Draw()
 {
-
+	AllDraw();
 }
 
 //void GameObject::Hit

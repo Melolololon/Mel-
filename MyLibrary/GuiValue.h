@@ -50,6 +50,8 @@ namespace MelLib
 		
 	
 		bool typingInput = false;
+
+		bool drawFlag = true;
 	public:
 		GuiInt() {}
 		/// <summary>
@@ -88,6 +90,7 @@ namespace MelLib
 		int& GetRefValue() { return value; }
 
 		bool GetTypingInputValueFlag()const { return typingInput; }
+		bool GetDrawFlag()const { return drawFlag; }
 
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
@@ -100,6 +103,7 @@ namespace MelLib
 
 		void SetTypingInputFlag(const bool flag) { typingInput = flag; }
 
+		void SetDrawFlag(const bool flag) { drawFlag = flag; }
 	};
 
 	class GuiFloat
@@ -113,6 +117,7 @@ namespace MelLib
 		std::string lavel;
 
 		bool typingInput = false;
+		bool drawFlag = true;
 	public:
 		GuiFloat(){}
 		/// <summary>
@@ -149,6 +154,7 @@ namespace MelLib
 
 		float& GetRefValue() { return value; }
 		bool GetTypingInputValueFlag()const { return typingInput; }
+		bool GetDrawFlag()const { return drawFlag; }
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
 		/// ライブラリの初期化処理が始まる前にコンストラクタが呼び出されてしまい、
@@ -157,6 +163,7 @@ namespace MelLib
 		void SetLoadData();
 		void SetValue(float value) { this->value = value; }
 		void SetTypingInputFlag(const bool flag) { typingInput = flag; }
+		void SetDrawFlag(const bool flag) { drawFlag = flag; }
 	};
 
 	
@@ -172,6 +179,7 @@ namespace MelLib
 		std::string lavel;
 
 		bool typingInput = false;
+		bool drawFlag = true;
 	public:
 		GuiVector3(){}
 		/// <summary>
@@ -216,6 +224,7 @@ namespace MelLib
 		float GetMaxValue() const { return valueMax; }
 		float GetMinValue()const { return valueMin; }
 		bool GetTypingInputValueFlag()const { return typingInput; }
+		bool GetDrawFlag()const { return drawFlag; }
 		
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
@@ -226,6 +235,7 @@ namespace MelLib
 
 		void SetValue(const Vector3& value) { this->value = value; }
 		void SetTypingInputFlag(const bool flag) { typingInput = flag; }
+		void SetDrawFlag(const bool flag) { drawFlag = flag; }
 	};
 
 	/*Vector3 operator+(const GuiVector3& value, const GuiVector3& value2) { return value + value2; }
@@ -245,6 +255,7 @@ namespace MelLib
 		std::string windowName;
 		std::string lavel;
 
+		bool drawFlag = true;
 	public:
 		GuiBool(){}
 		/// <summary>
@@ -276,6 +287,7 @@ namespace MelLib
 
 		bool GetValue()const { return value; }
 		bool& GetRefValue() { return value; }
+		bool GetDrawFlag()const { return drawFlag; }
 
 		/// <summary>
 		/// 読み込まれた値をセットします。読み込んだ値をセットしたい場合や
@@ -284,5 +296,6 @@ namespace MelLib
 		/// </summary>
 		void SetLoadData();
 		void SetValue(bool value) { this->value = value; }
+		void SetDrawFlag(const bool flag) { drawFlag = flag; }
 	};
 }
