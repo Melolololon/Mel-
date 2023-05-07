@@ -341,7 +341,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 
 
 		// 管理クラスに追加
-		GameObjectManager::GetInstance()->AddObject(pObject);
+		GameObjectManager::GetInstance()->AddObject(pObject,false);
 
 		char c;
 		file.read(&c, 1);
@@ -787,7 +787,7 @@ void MelLib::SceneEditer::Update()
 			// オブジェクト追加
 			for (auto& object : addObjects) 
 			{
-				GameObjectManager::GetInstance()->AddObject(object);
+				GameObjectManager::GetInstance()->AddObject(object, false);
 			}
 			
 		}
@@ -924,9 +924,6 @@ void MelLib::SceneEditer::Update()
 			// GUIのコピー
 			// これやるなら上のコピーいらないかも
 			GuiValueManager::GetInstance()->CopyGuiValue(pEditSelectObject->GetObjectName(), pObject->GetObjectName());
-
-			// 追加
-			//GameObjectManager::GetInstance()->AddObject(pObject);
 
 			// 全て削除
 			// (登録したオブジェクトのコンストラクタにオブジェクトを追加する処理がある場合、追加されたオブジェクトが表示されるため)

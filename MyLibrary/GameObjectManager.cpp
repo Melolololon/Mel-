@@ -2432,11 +2432,11 @@ void GameObjectManager::ReserveObjectArray(const int reserveNum)
 	objects.reserve(reserveNum);
 }
 
-void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object)
+void GameObjectManager::AddObject(const std::shared_ptr<GameObject>& object, bool callInit)
 {
 	if (!object)return;
 
-	object->Initialize();
+	if(callInit) object->Initialize();
 
 	object->FalseEraseManager();
 
