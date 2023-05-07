@@ -147,7 +147,7 @@ namespace MelLib
 		/// <param name="flag"></param>
 		void SetStopFlag(const bool flag) { isStop = flag; }
 
-		void SetStartFlag(const bool flag) { isStop != flag; }
+		void SetStartFlag(const bool flag) { isStop = !flag; }
 
 		/// <summary>
 		/// 最大または最小計測時間に達したときに、時間を自動的にリセットするかどうかのフラグをセットします。
