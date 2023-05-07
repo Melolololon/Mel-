@@ -211,12 +211,27 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 		constData.position.y + (height * constData.scale.y) + (vertices[0].pos.y - height) - (scalingPoint.y * (constData.scale.y - 1)),
 		0.0f
 	);*/
+
+	MelLib::Vector2 moveVec;
+	if (pTexture)
+	{
+		MelLib::Vector2 areaSize = drawRightDownPosition - drawLeftUpPosition;
+		moveVec = pTexture->GetTextureSize() - areaSize;
+	}
+	else
+	{
+		MelLib::Vector2 areaSize = drawRightDownPosition - drawLeftUpPosition;
+		moveVec = constData.scale - areaSize;
+	}
+
 	matWorld *= DirectX::XMMatrixTranslation
 	(
-		constData.position.x,
-		constData.position.y,
+		constData.position.x - moveVec.x / 2,
+		constData.position.y - moveVec.y / 2,
 		0.0f
 	);
+
+
 
 	//íÜêSäÓèÄägèk
 	/*matWorld *= DirectX::XMMatrixTranslation
