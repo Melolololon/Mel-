@@ -132,7 +132,7 @@ namespace MelLib
 		/// オブジェクトを追加します。
 		/// </summary>
 		/// <param name="object"></param>
-		void AddObject(const std::shared_ptr<GameObject>& object,bool callInit = true);
+		void AddObject(const std::shared_ptr<GameObject>& object);
 
 
 		/// <summary>

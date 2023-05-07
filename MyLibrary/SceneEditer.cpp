@@ -341,7 +341,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 
 
 		// 管理クラスに追加
-		GameObjectManager::GetInstance()->AddObject(pObject,false);
+		GameObjectManager::GetInstance()->AddObject(pObject);
 
 		char c;
 		file.read(&c, 1);
@@ -787,7 +787,7 @@ void MelLib::SceneEditer::Update()
 			// オブジェクト追加
 			for (auto& object : addObjects) 
 			{
-				GameObjectManager::GetInstance()->AddObject(object, false);
+				GameObjectManager::GetInstance()->AddObject(object);
 			}
 			
 		}
