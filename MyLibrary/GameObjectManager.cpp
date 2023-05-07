@@ -1322,8 +1322,8 @@ void GameObjectManager::Update()
 				}
 			}
 
-			if (collisionFlags[objI].board
-				&& collisionFlags[objJ].segment)
+			if (collisionFlags[objJ].board
+				&& collisionFlags[objI].segment)
 			{
 				std::unordered_map < std::string, std::vector<BoardData>>boardDatas = obj2->GetBoardDatas();
 				std::unordered_map < std::string, std::vector<Segment3DData>>segmentDatas = obj1->GetSegmentDatas();

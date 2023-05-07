@@ -502,7 +502,7 @@ namespace MelLib
 
 		std::vector<std::string>GetTags()const { return tags; }
 
-		void GetSkipCollisionCheckTags(std::vector<std::string>& vec)const { vec = skipCollisionCheckTags; }
+		std::vector<std::string>GetSkipCollisionCheckTags()const { return skipCollisionCheckTags; }
 
 		/// <summary>
 		/// ObjectManager‚©‚çíœ‚·‚éƒtƒ‰ƒO‚ğ•Ô‚µ‚Ü‚·B
