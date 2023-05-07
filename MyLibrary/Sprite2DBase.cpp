@@ -139,11 +139,25 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
 
+
+	Vector2 size;
+	if (texture)
+	{
+		//matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - textureSize.x / 2, rotationPoint.y - textureSize.y / 2, 0.0f);
+		size = texture->GetTextureSize();
+	}
+	else
+	{
+		size = constData.scale;
+		//matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - constData.scale.x / 2, rotationPoint.y - constData.scale.y / 2, 0.0f);
+	}
+
 	const Vector2 MOVE_VECTOR = Vector2
 	(
-		constData.position.x * (scalingPoint.x - 0.5f),
-		constData.position.y * (scalingPoint.y - 0.5f)
+		size.x * (scalingPoint.x - 0.5f),
+		size.y * (scalingPoint.y - 0.5f)
 	);
+
 	// ˆÚ“®
 	matWorld *= DirectX::XMMatrixTranslation
 	(
