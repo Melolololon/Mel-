@@ -34,7 +34,7 @@ bool Sprite2DBase::Initialize(const int winWidth, const int winHeight)
 	data.cullMode = CullMode::NONE;
 	data.depthTest = false;
 	data.drawMode = DrawMode::SOLID;
-	
+
 	ShaderDataSet set =
 	{
 		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },
@@ -43,7 +43,7 @@ bool Sprite2DBase::Initialize(const int winWidth, const int winHeight)
 		{ L"NULL","","" },
 		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" }
 	};
-	
+
 	auto result = defaultPipeline.CreatePipeline
 	(
 		data,
@@ -134,17 +134,20 @@ void Sprite2DBase::SpriteInitialize()
 void Sprite2DBase::MatrixMap(Texture* texture)
 {
 
-
 	SpriteConstBufferData* constBufferData;
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
 
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
 
+	const Vector2 MOVE_VECTOR = Vector2
+	(
+		constData.position.x + (constData.position.x * scalingPoint.x),
+		constData.position.y + (constData.position.y * scalingPoint.y)
+	);
 	// ˆÚ“®
 	matWorld *= DirectX::XMMatrixTranslation
 	(
-		constData.position.x + (constData.position.x * scalingPoint.x),
-		constData.position.y + (constData.position.y * scalingPoint.y),
+		MOVE_VECTOR.x, MOVE_VECTOR.y,
 		0.0f
 	);
 
@@ -159,8 +162,7 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 	// –ß‚·
 	matWorld *= DirectX::XMMatrixTranslation
 	(
-		constData.position.x - (constData.position.x * scalingPoint.x),
-		constData.position.y - (constData.position.y * scalingPoint.y),
+		-MOVE_VECTOR.x, -MOVE_VECTOR.y,
 		0.0f
 	);
 
