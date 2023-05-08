@@ -338,10 +338,7 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 		file.read(reinterpret_cast<char*>(&scale), sizeof(Vector3));
 		pObject->SetScale(scale);
 
-
-
-		// ŠÇ—ƒNƒ‰ƒX‚É’Ç‰Á
-		GameObjectManager::GetInstance()->AddObject(pObject);
+		if(!editorFlag && !releaseEdit)GameObjectManager::GetInstance()->AddObject(pObject);
 
 		char c;
 		file.read(&c, 1);
