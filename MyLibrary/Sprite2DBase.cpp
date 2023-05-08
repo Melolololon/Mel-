@@ -60,6 +60,15 @@ bool Sprite2DBase::Initialize(const int winWidth, const int winHeight)
 	return true;
 }
 
+void MelLib::Sprite2DBase::SetScale(const Vector2& scale, bool changeDrawArea)
+{
+	constData.scale = scale.ToXMFLOAT2();
+	if (!pTexture && changeDrawArea) 
+	{
+		drawRightDownPosition = scale;
+	}
+}
+
 //
 //void Sprite2DBase::Create(const Color& color)
 //{

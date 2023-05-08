@@ -55,7 +55,7 @@ namespace MelLib
 		/// <param name="point">‰ñ“]Šî€(0,0‚Å¶ã‚ğŠî€‚É‰ñ“])</param>
 		void SetRotationPoint(const Vector2& point) { rotationPoint = point.ToXMFLOAT2(); }
 
-		void SetScale(const Vector2& scale) { constData.scale = scale.ToXMFLOAT2(); }
+		void SetScale(const Vector2& scale,bool changeDrawArea = true);
 		
 		/// <summary>
 		/// Šgk‚·‚é‚Æ‚«‚ÌŠî€À•W‚ğİ’è‚µ‚Ü‚·B
