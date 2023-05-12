@@ -67,7 +67,7 @@ void Game::Initialize()
 
 	//カメラは各シーンに移動しました
 
-	Player::LoadRes();
+	//Player::LoadRes();
 #pragma region マネージャー初期化
 
 	/*CollisionFlag initFlag;
@@ -91,23 +91,23 @@ void Game::Initialize()
 	//MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	//MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,10,0));
 
-
+	MelLib::TextWrite::CreateFontData(L"Arial", 64.0f, "Arial");
 
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(10, 0, -1));
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(0, -90, 0));
 	
 
 	//// エディターオン
-	MelLib::SceneEditer::GetInstance()->SetEditerFlag(true);
-	MelLib::SceneEditer::GetInstance()->Initialize();
+	/*MelLib::SceneEditer::GetInstance()->SetEditerFlag(false);
+	MelLib::SceneEditer::GetInstance()->Initialize();*/
 
 	// エディターに追加(Unityでいうプレハブ作成)
-	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
-	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor");
+	/*MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
+	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor");*/
 	//MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor2");
 
 	// シーン読み込みテスト
-	MelLib::SceneEditer::GetInstance()->LoadEditData("BoxParty");
+	//MelLib::SceneEditer::GetInstance()->LoadEditData("BoxParty");
 }
 
 
@@ -115,14 +115,21 @@ void Game::Finalize()
 {
 	MelLib::Library::Finalize();//絶対に最後に書く
 }
-
+MelLib::Vector2 p(1920 / 2, 1080 / 2);
 
 void Game::Update()
 {
 
 	//MelLib::SceneManager::GetInstance()->Update();
-	MelLib::SceneEditer::GetInstance()->Update();
+	//MelLib::SceneEditer::GetInstance()->Update();
 	//MelLib::GameObjectManager::GetInstance()->Update();
+	if (MelLib::Input::KeyState(DIK_A))p.x -= 30;
+	if (MelLib::Input::KeyState(DIK_D))p.x += 30;
+	if (MelLib::Input::KeyState(DIK_W))p.y -= 30;
+	if (MelLib::Input::KeyState(DIK_S))p.y += 30;
+
+	MelLib::Vector2 pos = MelLib::Input::GetMouseVector(p);
+	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255, 255, 255), std::to_wstring(pos.x) + L"," + std::to_wstring(pos.y), "Arial");
 }
 
 void Game::Draw()
@@ -130,7 +137,7 @@ void Game::Draw()
 	
 
 	//MelLib::SceneManager::GetInstance()->Draw();
-	MelLib::SceneEditer::GetInstance()->Draw();
+	//MelLib::SceneEditer::GetInstance()->Draw();
 
 	//MelLib::GameObjectManager::GetInstance()->Draw();
 
