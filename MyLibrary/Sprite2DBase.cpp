@@ -34,7 +34,7 @@ bool Sprite2DBase::Initialize(const int winWidth, const int winHeight)
 	data.cullMode = CullMode::NONE;
 	data.depthTest = false;
 	data.drawMode = DrawMode::SOLID;
-	
+
 	ShaderDataSet set =
 	{
 		{ L"../MyLibrary/SpriteVertexShader.hlsl","VSmain","vs_5_0" },
@@ -43,7 +43,7 @@ bool Sprite2DBase::Initialize(const int winWidth, const int winHeight)
 		{ L"NULL","","" },
 		{ L"../MyLibrary/SpritePixelShader.hlsl","PSmain","ps_5_0" }
 	};
-	
+
 	auto result = defaultPipeline.CreatePipeline
 	(
 		data,
@@ -58,6 +58,15 @@ bool Sprite2DBase::Initialize(const int winWidth, const int winHeight)
 		return false;
 	}
 	return true;
+}
+
+void MelLib::Sprite2DBase::SetScale(const Vector2& scale, bool changeDrawArea)
+{
+	constData.scale = scale.ToXMFLOAT2();
+	if (!pTexture && changeDrawArea) 
+	{
+		drawRightDownPosition = scale;
+	}
 }
 
 //
@@ -138,7 +147,33 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 	constBuffer->Map(0, nullptr, (void**)&constBufferData);
 
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixIdentity();
-	
+
+
+	Vector2 size;
+	if (texture)
+	{
+		//matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - textureSize.x / 2, rotationPoint.y - textureSize.y / 2, 0.0f);
+		size = texture->GetTextureSize();
+	}
+	else
+	{
+		size = constData.scale;
+		//matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - constData.scale.x / 2, rotationPoint.y - constData.scale.y / 2, 0.0f);
+	}
+
+	const Vector2 MOVE_VECTOR = Vector2
+	(
+		size.x * (scalingPoint.x - 0.5f),
+		size.y * (scalingPoint.y - 0.5f)
+	);
+
+	// ˆÚ“®
+	matWorld *= DirectX::XMMatrixTranslation
+	(
+		-MOVE_VECTOR.x, -MOVE_VECTOR.y,
+		0.0f
+	);
+
 	// Šgk
 	matWorld *= DirectX::XMMatrixScaling
 	(
@@ -147,12 +182,19 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 		1
 	);
 
+	// –ß‚·
+	matWorld *= DirectX::XMMatrixTranslation
+	(
+		MOVE_VECTOR.x, MOVE_VECTOR.y,
+		0.0f
+	);
+
 	// ‰ñ“]‘O‚ÉˆÚ“®
 	Vector2 textureSize = 1.0f;
 	if (texture)textureSize = texture->GetTextureSize();
-	
+
 	// rotationPoint = 0‚ÌŽž‚É¶ã‰ñ“]‚É‚È‚é‚æ‚¤‚É“®‚©‚·
-	if (texture) 
+	if (texture)
 	{
 		matWorld *= DirectX::XMMatrixTranslation(-rotationPoint.x + textureSize.x / 2, -rotationPoint.y + textureSize.y / 2, 0.0f);
 	}
@@ -169,15 +211,35 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 	float width = textureSize.x;
 	float height = textureSize.y;
 	width /= 2;
-	height /= 2; 
+	height /= 2;
 
 	// À•W‚Ì”’l‚Ì•”•ª‚É¶ã‚ª—ˆ‚é‚æ‚¤‚ÉƒZƒbƒg‚µAscalingPoint•ª‚¸‚ç‚µ‚Ä‹^Ž—“I‚ÈŠgkˆÊ’u‚ð‚¸‚ç‚·ˆ—‚ðs‚¤
-	matWorld *= DirectX::XMMatrixTranslation
+	/*matWorld *= DirectX::XMMatrixTranslation
 	(
 		constData.position.x + (width * constData.scale.x) + (vertices[2].pos.x - width) - (scalingPoint.x * (constData.scale.x - 1)),
 		constData.position.y + (height * constData.scale.y) + (vertices[0].pos.y - height) - (scalingPoint.y * (constData.scale.y - 1)),
 		0.0f
+	);*/
+
+	MelLib::Vector2 moveVec;
+	if (pTexture)
+	{
+		MelLib::Vector2 areaSize = drawRightDownPosition - drawLeftUpPosition;
+		moveVec = pTexture->GetTextureSize() - areaSize;
+	}
+	else
+	{
+		MelLib::Vector2 areaSize = drawRightDownPosition - drawLeftUpPosition;
+		moveVec = constData.scale - areaSize;
+	}
+
+	matWorld *= DirectX::XMMatrixTranslation
+	(
+		constData.position.x - moveVec.x / 2,
+		constData.position.y - moveVec.y / 2,
+		0.0f
 	);
+
 
 
 	//’†SŠî€Šgk
@@ -188,15 +250,15 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 		0.0f
 	);*/
 
-	// –ß‚·
-	if (texture)
-	{
-		matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - textureSize.x / 2, rotationPoint.y - textureSize.y / 2, 0.0f);
-	}
-	else
-	{
-		matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - constData.scale.x / 2, rotationPoint.y - constData.scale.y / 2, 0.0f);
-	}
+	//// –ß‚·
+	//if (texture)
+	//{
+	//	matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - textureSize.x / 2, rotationPoint.y - textureSize.y / 2, 0.0f);
+	//}
+	//else
+	//{
+	//	matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - constData.scale.x / 2, rotationPoint.y - constData.scale.y / 2, 0.0f);
+	//}
 
 
 	constBufferData->mat = matWorld * cameraMatrix;

@@ -191,8 +191,10 @@ namespace MelLib
 		Vector3 lerpMovePosition;
 #pragma endregion
 
-		//継承したクラスを格納し、判定時に使う用
+		// 継承したクラスを格納し、判定時に使う用
 		std::vector<std::string>tags;
+		// 衝突確認をスキップするための配列。衝突した相手にここに含まれたタグが入ってるとスキップされる。
+		std::vector<std::string>skipCollisionCheckTags;
 
 		std::unordered_map<std::string, ModelObject>modelObjects;
 
@@ -499,6 +501,8 @@ namespace MelLib
 
 
 		std::vector<std::string>GetTags()const { return tags; }
+
+		std::vector<std::string>GetSkipCollisionCheckTags()const { return skipCollisionCheckTags; }
 
 		/// <summary>
 		/// ObjectManagerから削除するフラグを返します。

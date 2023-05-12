@@ -995,3 +995,11 @@ bool MelLib::GuiValueManager::GetGuiData(GuiVector3* pGuiValue, Vector3& refVect
 	return true;
 }
 
+void MelLib::GuiValueManager::SetDrawWindowFlagAll(bool flag)
+{
+	for (auto& drawFlag : drawWindowFlag) 
+	{
+		drawFlag.second = flag;
+	}
+}
+
