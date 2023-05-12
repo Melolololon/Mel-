@@ -416,6 +416,8 @@ namespace MelLib
 
 		Value3<Vector3> GetPosition()const { return position; }
 		
+		Vector3 GetScale()const { return scale; }
+
 		/// <summary>
 		/// ‰ñ“]Œã‚É•½sˆÚ“®‚·‚éˆÚ“®—Ê‚ğæ“¾‚µ‚Ü‚·B
 		/// </summary>
