@@ -59,6 +59,7 @@ void Game::Run()
 	Finalize();
 }
 
+std::shared_ptr<TestObject> t;
 void Game::Initialize()
 {
 
@@ -108,6 +109,8 @@ void Game::Initialize()
 
 	// シーン読み込みテスト
 	//MelLib::SceneEditer::GetInstance()->LoadEditData("BoxParty");
+	t = std::make_shared<TestObject>();
+	MelLib::GameObjectManager::GetInstance()->AddObject(t);
 }
 
 
@@ -115,7 +118,6 @@ void Game::Finalize()
 {
 	MelLib::Library::Finalize();//絶対に最後に書く
 }
-MelLib::Vector2 p(1920 / 2, 1080 / 2);
 
 void Game::Update()
 {
@@ -123,13 +125,8 @@ void Game::Update()
 	//MelLib::SceneManager::GetInstance()->Update();
 	//MelLib::SceneEditer::GetInstance()->Update();
 	//MelLib::GameObjectManager::GetInstance()->Update();
-	if (MelLib::Input::KeyState(DIK_A))p.x -= 30;
-	if (MelLib::Input::KeyState(DIK_D))p.x += 30;
-	if (MelLib::Input::KeyState(DIK_W))p.y -= 30;
-	if (MelLib::Input::KeyState(DIK_S))p.y += 30;
 
-	MelLib::Vector2 pos = MelLib::Input::GetMouseVector(p);
-	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255, 255, 255), std::to_wstring(pos.x) + L"," + std::to_wstring(pos.y), "Arial");
+	t->Update();
 }
 
 void Game::Draw()
@@ -141,4 +138,5 @@ void Game::Draw()
 
 	//MelLib::GameObjectManager::GetInstance()->Draw();
 
+	t->Draw();
 }

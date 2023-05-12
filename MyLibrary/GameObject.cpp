@@ -338,22 +338,16 @@ void MelLib::GameObject::SetObjectAndModelPosition(const Vector3& pos)
 
 void MelLib::GameObject::SetAngle(const Vector3& angle)
 {
-	//if (this->angle == angle)return;
-
+	SetModelAngle(angle - this->angle);
+	SetDataAngle(angle - this->angle);
 	this->angle = angle;
-
-	SetModelAngle(angle);
-	SetDataAngle(angle);
 }
 
 void MelLib::GameObject::SetScale(const Vector3& scale)
 {
-	//if (this->scale == scale)return;
-
+	SetModelScale(scale - this->scale);
+	SetDataScale(scale - this->scale);
 	this->scale = scale;
-
-	SetModelScale(scale);
-	SetDataScale(scale);
 }
 
 void MelLib::GameObject::SetAddColor(const Color& color)
