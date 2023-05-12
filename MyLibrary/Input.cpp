@@ -477,10 +477,15 @@ Vector2 Input::GetMousePosition()
 
 }
 
+Vector2 MelLib::Input::GetMouseVector(const Vector2& standardPos)
+{
+	return Vector2Normalize(GetMousePosition() - standardPos);
+}
+
 Vector2 Input::GetCenterToMouseVector()
 {
-	Vector2 point = { static_cast<float>(winWidth) / 2.0f, static_cast<float>(winHeight) / 2.0f };
-	return Vector2Normalize(GetMousePosition() - point);
+	Vector2 point = Vector2(static_cast<float>(winWidth) / 2.0f, static_cast<float>(winHeight) / 2.0f );
+	return GetMouseVector(point);
 }
 
 float Input::GetMouseAngle()

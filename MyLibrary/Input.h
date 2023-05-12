@@ -246,6 +246,13 @@ namespace MelLib
 		static Vector2 GetMousePosition();
 
 		/// <summary>
+		/// 指定した座標を基準としたカーソルのベクトルを取得します。
+		/// </summary>
+		/// <param name="standardPos">基準となる座標</param>
+		/// <returns></returns>
+		static Vector2 GetMouseVector(const Vector2& standardPos);
+
+		/// <summary>
 		/// ウィンドウの中心を基準としたカーソルのベクトルを取得します。
 		/// </summary>
 		/// <returns>ベクトル</returns>
@@ -264,6 +271,8 @@ namespace MelLib
 		/// <param name="nearPoint"></param>
 		/// <param name="farPoint"></param>
 		static void GetMouse3DLine(Vector3& nearPoint, Vector3& farPoint);
+
+		//static Vector3 Get3DSpaceMouseCursorPosition(const Camera* pCameta, );
 
 		/// <summary>
 		/// カメラの情報を元に、マウスカーソルを座標変換したときの最近点と最遠点を求めます。
