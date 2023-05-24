@@ -84,11 +84,11 @@ namespace MelLib
 		// ボーンごとのアニメーションデータ
 		std::vector<FbxAnimationData> fbxAnimationDatas;
 
-		FbxAnimationData fbxAnimationData;
+		//FbxAnimationData fbxAnimationData;
 		bool isAnimation = false;
-		bool animationEndStop = false;
-		bool animationReverse = false;
-		bool animationEnd = false;
+		//bool animationEndStop = false;
+		//bool animationReverse = false;
+		//bool animationEnd = false;
 #pragma endregion
 
 		//定数バッファ
@@ -262,7 +262,7 @@ namespace MelLib
 		/// アニメーションのフレームをセットします。
 		/// </summary>
 		/// <param name="fream"></param>
-		void SetCurrentFream(const UINT fream);
+		void SetCurrentFream(const UINT fream, const std::string& boneName = "");
 
 		/// <summary>
 		/// アニメーションの再生速度をセットします。

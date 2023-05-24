@@ -459,10 +459,13 @@ void ModelObject::MapConstData(const Camera* camera)
 		{
 			// こいつを変えてアニメーションを各ボーンに割り当てればいい？
 			// ということは、各ボーンにアニメーション名を割り当て、ボーンごとに名前をチェックし、この関数で切り替える？
-			pModelData->SetFbxAnimStack(fbxAnimationData.currentAnimationName);
+			//pModelData->SetFbxAnimStack(fbxAnimationData.currentAnimationName);
 
 			for (int j = 0; j < BONE_NUM; j++)
 			{
+				// アニメーション情報を取得
+				pModelData->SetFbxAnimStack(fbxAnimationDatas[i].currentAnimationName);
+
 				// ここ参照にしたほうが良い
 				std::vector<ModelData::FbxBone> bones = pModelData->GetFbxBones(objectNames[i]);
 				
@@ -481,7 +484,7 @@ void ModelObject::MapConstData(const Camera* camera)
 				//変換
 				DirectX::XMMATRIX matCurrentPose;
 				FbxAMatrix fbxCurrentPose =
-					bones[j].fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationData.currentTime);
+					bones[j].fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationDatas[i].currentTime);
 				FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 				//乗算
@@ -1964,7 +1967,7 @@ void ModelObject::Delete(const std::string& name)
 }
 
 
-void ModelObject::SetCurrentFream(const UINT fream)
+void ModelObject::SetCurrentFream(const UINT fream, const std::string& boneName)
 {
 	FbxTime setTime = fbxAnimationData.animationTimes.startTime * fream;
 
