@@ -457,6 +457,8 @@ void ModelObject::MapConstData(const Camera* camera)
 		}
 		else if (pModelData->GetModelFormat() == ModelData::ModelFormat::MODEL_FORMAT_FBX)
 		{
+			// こいつを変えてアニメーションを各ボーンに割り当てればいい？
+			// ということは、各ボーンにアニメーション名を割り当て、ボーンごとに名前をチェックし、この関数で切り替える？
 			pModelData->SetFbxAnimStack(fbxAnimationData.currentAnimationName);
 
 			for (int j = 0; j < BONE_NUM; j++)
