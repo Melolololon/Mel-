@@ -445,6 +445,11 @@ float Input::ArrowKeyAngle()
 
 #pragma region É}ÉEÉX
 
+void MelLib::Input::SetMouseFixedPosition(const Vector2& pos)
+{
+	SetCursorPos(pos.x, pos.y);
+}
+
 Vector2 Input::GetMousePosition()
 {
 	POINT p;
