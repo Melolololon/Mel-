@@ -68,6 +68,10 @@ namespace MelLib
 			FbxTime currentTime;
 			int timeMag = 1;
 			std::string currentAnimationName;
+
+			bool animationEndStop = false;
+			bool animationReverse = false;
+			bool animationEnd = false;
 		};
 
 
@@ -75,6 +79,10 @@ namespace MelLib
 		// これおそらくobj用
 		std::vector<BoneData>boneDatas;
 		std::vector<ParentBoneData> parentBoneDatas;//親ボーンと影響度
+
+		// こいつをボーン分リサイズする
+		// ボーンごとのアニメーションデータ
+		std::vector<FbxAnimationData> fbxAnimationDatas;
 
 		FbxAnimationData fbxAnimationData;
 		bool isAnimation = false;

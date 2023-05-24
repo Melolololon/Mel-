@@ -2180,9 +2180,15 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 		// 0番目のアニメーションの時間をセット
 		pModelData->GetAnimationTimeData(0, fbxAnimationData.animationTimes.startTime, fbxAnimationData.animationTimes.endTime);
 	}
+
+	// ボーン分データを作成し、初期化
+	fbxAnimationDatas.resize(pModelData->GetBoneNumber());
+	for (auto& data : fbxAnimationDatas) 
+	{
+		data.animationTimes.frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+		pModelData->GetAnimationTimeData(0, data.animationTimes.startTime, data.animationTimes.endTime);
+	}
 #pragma endregion
-
-
 
 	return true;
 }
