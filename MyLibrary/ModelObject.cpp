@@ -1969,13 +1969,26 @@ void ModelObject::Delete(const std::string& name)
 
 void ModelObject::SetCurrentFream(const UINT fream, const std::string& boneName)
 {
-	FbxTime setTime = fbxAnimationData.animationTimes.startTime * fream;
+	if (boneName == "") 
+	{
+		FbxTime setTime = fbxAnimationData.animationTimes.startTime * fream;
 
-	if (setTime > fbxAnimationData.animationTimes.endTime) {
-		setTime = fbxAnimationData.animationTimes.endTime;
+		if (setTime > fbxAnimationData.animationTimes.endTime) {
+			setTime = fbxAnimationData.animationTimes.endTime;
+		}
+
+		fbxAnimationData.currentTime = setTime;
 	}
+	else
+	{
+		FbxTime setTime = fbxAnimationDatas[].animationTimes.startTime * fream;
 
-	fbxAnimationData.currentTime = setTime;
+		if (setTime > fbxAnimationData.animationTimes.endTime) {
+			setTime = fbxAnimationData.animationTimes.endTime;
+		}
+
+		fbxAnimationData.currentTime = setTime;
+	}
 }
 
 
