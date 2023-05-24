@@ -60,6 +60,7 @@ void Game::Run()
 }
 
 std::shared_ptr<TestObject> t;
+std::shared_ptr<Player> p;
 void Game::Initialize()
 {
 
@@ -111,6 +112,8 @@ void Game::Initialize()
 	//MelLib::SceneEditer::GetInstance()->LoadEditData("BoxParty");
 	t = std::make_shared<TestObject>();
 	MelLib::GameObjectManager::GetInstance()->AddObject(t);
+	p = std::make_shared<Player>();
+	MelLib::GameObjectManager::GetInstance()->AddObject(p);
 }
 
 
@@ -124,9 +127,8 @@ void Game::Update()
 
 	//MelLib::SceneManager::GetInstance()->Update();
 	//MelLib::SceneEditer::GetInstance()->Update();
-	//MelLib::GameObjectManager::GetInstance()->Update();
+	MelLib::GameObjectManager::GetInstance()->Update();
 
-	t->Update();
 }
 
 void Game::Draw()
@@ -136,7 +138,6 @@ void Game::Draw()
 	//MelLib::SceneManager::GetInstance()->Draw();
 	//MelLib::SceneEditer::GetInstance()->Draw();
 
-	//MelLib::GameObjectManager::GetInstance()->Draw();
+	MelLib::GameObjectManager::GetInstance()->Draw();
 
-	t->Draw();
 }

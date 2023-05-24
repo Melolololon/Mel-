@@ -16,7 +16,10 @@ TestObject::TestObject() :GameObject("Test")
 
 	collisionCheckDistance = 1.0f;
 
-	modelObjects["main"].SetAngle(MelLib::Vector3(3, 0, 0));
+
+	sphereDatas["main"].resize(1);
+	sphereDatas["main"][0].SetPosition(0);
+	sphereDatas["main"][0].SetRadius(1.0f);
 }
 
 void TestObject::Update()
@@ -44,7 +47,6 @@ void TestObject::Hit
 	const std::string& hitShapeName
 )
 {
-
 }
 
 std::shared_ptr<MelLib::GameObject> TestObject::GetNewPtr()

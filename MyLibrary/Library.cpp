@@ -240,6 +240,20 @@ void Library::Finalize()
 	CoUninitialize();
 }
 
+Vector2 MelLib::Library::GetWindowPosition()
+{
+	RECT rect;
+	GetWindowRect(hwnd, &rect);
+	return Vector2(rect.left, rect.top);
+}
+
+Vector2 MelLib::Library::GetWindowSize()
+{
+	RECT rect;
+	GetWindowRect(hwnd, &rect);
+	return Vector2(rect.right - rect.left, rect.bottom - rect.top);
+}
+
 
 #pragma region ê›íË
 
