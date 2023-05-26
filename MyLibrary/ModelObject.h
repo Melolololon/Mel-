@@ -83,7 +83,7 @@ namespace MelLib
 
 		// こいつをボーン分リサイズする
 		// ボーンごとのアニメーションデータ
-		std::vector<FbxAnimationData> fbxAnimationDatas;
+		std::unordered_map<std::string,FbxAnimationData> fbxAnimationDatas;
 
 		//FbxAnimationData fbxAnimationData;
 		//bool isAnimation = false;
