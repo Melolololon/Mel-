@@ -72,6 +72,7 @@ namespace MelLib
 			bool animationEndStop = false;
 			bool animationReverse = false;
 			bool animationEnd = false;
+			bool isAnimation = false;
 		};
 
 
@@ -85,7 +86,7 @@ namespace MelLib
 		std::vector<FbxAnimationData> fbxAnimationDatas;
 
 		//FbxAnimationData fbxAnimationData;
-		bool isAnimation = false;
+		//bool isAnimation = false;
 		//bool animationEndStop = false;
 		//bool animationReverse = false;
 		//bool animationEnd = false;
@@ -248,7 +249,7 @@ namespace MelLib
 
 #pragma region アニメーション
 
-		void SetAnimationPlayFlag(const bool flag) { isAnimation = flag; }
+		void SetAnimationPlayFlag(const bool flag, const std::string& boneName = "");//{ isAnimation = flag; }
 
 		/// <summary>
 		/// アニメーションをリセットします。

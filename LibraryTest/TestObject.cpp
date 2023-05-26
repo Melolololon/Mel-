@@ -20,13 +20,14 @@ TestObject::TestObject() :GameObject("Test")
 	sphereDatas["main"].resize(1);
 	sphereDatas["main"][0].SetPosition(0);
 	sphereDatas["main"][0].SetRadius(1.0f);
+
+	
 }
 
 void TestObject::Update()
 {
-	Move();
-
-	if (MelLib::Input::KeyTrigger(DIK_Z))SetAngle(MelLib::Vector3(3, 0, 0));
+	//Move();
+	//if (MelLib::Input::KeyTrigger(DIK_Z))SetAngle(MelLib::Vector3(3, 0, 0));
 }
 
 void TestObject::Draw()

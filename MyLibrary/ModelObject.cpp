@@ -1694,6 +1694,24 @@ void MelLib::ModelObject::SetMulColor(const Color& color, const std::string& nam
 	}
 }
 
+void MelLib::ModelObject::SetAnimationPlayFlag(const bool flag, const std::string& boneName)
+{
+	if (boneName == "")
+	{
+		for (auto& data : fbxAnimationDatas)
+		{
+			data.isAnimation = flag;
+		}
+	}
+	else
+	{
+		if (!pModelData)return;
+
+		int num = pModelData->GetAnimStacNum(boneName);
+		fbxAnimationDatas.at(num).isAnimation = flag;
+	}
+}
+
 void MelLib::ModelObject::SetAnimationFrameStart(const std::string& boneName)
 {
 	if (boneName == "") 
@@ -2139,11 +2157,13 @@ void ModelObject::FbxAnimation(const std::string& boneName)
 {
 	// Ç±Ç¢Ç¬DrawÇ≈åƒÇŒÇ»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
 	if (!pModelData)return;
-	if (!isAnimation || pModelData->GetModelFormat() != ModelData::ModelFormat::MODEL_FORMAT_FBX)return;
+	if (pModelData->GetModelFormat() != ModelData::ModelFormat::MODEL_FORMAT_FBX)return;
 
 
 	FbxAnimationData animData;
 	GetFbxAnimationData(boneName, animData);
+
+	if (!animData.isAnimation)return;
 
 	//É^ÉCÉÄÇêiÇﬂÇÈ
 	if(animData.animationReverse)animData.currentTime += animData.animationTimes.frameTime * -animData.timeMag;
