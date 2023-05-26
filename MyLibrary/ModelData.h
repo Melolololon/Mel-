@@ -523,6 +523,8 @@ namespace MelLib
 		/// <returns>頂点座標</returns>
 		std::vector<std::vector<Vector3>>GetVerticesPosition()const;
 
+		int GetAnimStacNum(const std::string& boneName) { return fbxData.animStackNum.at(boneName); }
+
 #pragma endregion
 
 		//フレンドクラスは、privateの変数、関数にアクセスできる
