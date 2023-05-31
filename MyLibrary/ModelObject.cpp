@@ -461,15 +461,18 @@ void ModelObject::MapConstData(const Camera* camera)
 			// ということは、各ボーンにアニメーション名を割り当て、ボーンごとに名前をチェックし、この関数で切り替える？
 			//pModelData->SetFbxAnimStack(fbxAnimationData.currentAnimationName);
 
+
+			// ここ参照にしたほうが良い
+			std::vector<ModelData::FbxBone> bones = pModelData->GetFbxBones(objectNames[i]);
+
 			for (int j = 0; j < BONE_NUM; j++)
 			{
 				// アニメーション情報を取得
 				// アニメーションはmodelDataのanimStacのおかげで名前を渡しても数値で指定するデータを取得できる
-				pModelData->SetFbxAnimStack(fbxAnimationDatas[i].currentAnimationName);
-
-				// ここ参照にしたほうが良い
-				std::vector<ModelData::FbxBone> bones = pModelData->GetFbxBones(objectNames[i]);
 				
+				const FbxAnimationData& animData = fbxAnimationDatas[bones[j].boneName];
+				pModelData->SetFbxAnimStack(animData.currentAnimationName);
+
 				if (BONE_NUM >= BONE_MAX)
 				{
 					std::string outputStr = pModelData->GetModelPath() + "のボーン数がボーン最大数" + std::to_string(BONE_MAX) + "を超えています。\n";
@@ -485,7 +488,7 @@ void ModelObject::MapConstData(const Camera* camera)
 				//変換
 				DirectX::XMMATRIX matCurrentPose;
 				FbxAMatrix fbxCurrentPose =
-					bones[j].fbxCluster->GetLink()->EvaluateGlobalTransform(fbxAnimationDatas[i].currentTime);
+					bones[j].fbxCluster->GetLink()->EvaluateGlobalTransform(animData.currentTime);
 				FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 				//乗算
@@ -1696,19 +1699,17 @@ void MelLib::ModelObject::SetMulColor(const Color& color, const std::string& nam
 
 void MelLib::ModelObject::SetAnimationPlayFlag(const bool flag, const std::string& boneName)
 {
+	if (!pModelData)return;
 	if (boneName == "")
 	{
 		for (auto& data : fbxAnimationDatas)
 		{
-			data.isAnimation = flag;
+			data.second.isAnimation = flag;
 		}
 	}
 	else
 	{
-		if (!pModelData)return;
-
-		int num = pModelData->GetAnimStacNum(boneName);
-		fbxAnimationDatas.at(num).isAnimation = flag;
+		fbxAnimationDatas.at(boneName).isAnimation = flag;
 	}
 }
 
@@ -1718,15 +1719,14 @@ void MelLib::ModelObject::SetAnimationFrameStart(const std::string& boneName)
 	{
 		for (auto& data : fbxAnimationDatas) 
 		{
-			data.currentTime = 0;
+			data.second.currentTime = 0;
 		}
 	}
 	else 
 	{
 		if (!pModelData)return;
 
-		int num = pModelData->GetAnimStacNum(boneName);
-		fbxAnimationDatas.at(num).currentTime = 0;
+		fbxAnimationDatas.at(boneName).currentTime = 0;
 	}
 }
 
@@ -1736,15 +1736,13 @@ void MelLib::ModelObject::SetAnimationFrameEnd(const std::string& boneName)
 	{
 		for (auto& data : fbxAnimationDatas)
 		{
-			data.currentTime = data.animationEnd;
+			data.second.currentTime = data.second.animationEnd;
 		}
 	}
 	else
 	{
 		if (!pModelData)return;
-
-		int num = pModelData->GetAnimStacNum(boneName);
-		fbxAnimationDatas.at(num).currentTime = fbxAnimationDatas.at(num).animationEnd;
+		fbxAnimationDatas.at(boneName).currentTime = fbxAnimationDatas.at(boneName).animationEnd;
 	}
 }
 
@@ -2004,72 +2002,74 @@ MelLib::Vector2 MelLib::ModelObject::GetAddUV(const std::string& name) const
 
 std::string MelLib::ModelObject::GetCurrentAnimationName(const std::string& boneName) const
 {
+	if (!pModelData)return "";
+	else 
 	if (boneName == "")
 	{
-		return fbxAnimationDatas[0].currentAnimationName;
+		for (const auto& data : fbxAnimationDatas) 
+		{
+			return data.second.currentAnimationName;
+		}
 	}
 
-	if (!pModelData)return "";
-
-	int num = pModelData->GetAnimStacNum(boneName);
-
-	return fbxAnimationDatas.at(num).currentAnimationName;
+	return fbxAnimationDatas.at(boneName).currentAnimationName;
 }
 
 bool MelLib::ModelObject::GetAnimationReversePlayBack(const std::string& boneName) const
 {
+	if (!pModelData)return "";
+	else 
 	if (boneName == "")
 	{
-		return fbxAnimationDatas[0].animationReverse;
+		for (const auto& data : fbxAnimationDatas)
+		{
+			return data.second.animationReverse;
+		}
 	}
 
-	if (!pModelData)return "";
-
-	int num = pModelData->GetAnimStacNum(boneName);
-
-	return fbxAnimationDatas.at(num).animationReverse;
+	return fbxAnimationDatas.at(boneName).animationReverse;
 }
 
 bool MelLib::ModelObject::GetAnimationEndFlag(const std::string& boneName) const
 {
-	if (boneName == "")
+	if (!pModelData)return "";
+	else if (boneName == "")
 	{
-		return fbxAnimationDatas[0].animationEnd;
+		for (const auto& data : fbxAnimationDatas)
+		{
+			return data.second.animationEnd;
+		}
 	}
 
-	if (!pModelData)return "";
 
-	int num = pModelData->GetAnimStacNum(boneName);
-
-	return fbxAnimationDatas.at(num).animationEnd;
+	return fbxAnimationDatas.at(boneName).animationEnd;
 }
 
 unsigned int MelLib::ModelObject::GetAnimationFrame(const std::string& boneName) const
 {
-	if (boneName == "")
+	if (!pModelData)return 0;
+	else if (boneName == "")
 	{
-		return static_cast<unsigned int>(fbxAnimationDatas[0].currentTime.GetFrameCount(FbxTime::eFrames60));
+		for (const auto& data : fbxAnimationDatas)
+		{
+			return static_cast<unsigned int>(data.second.currentTime.GetFrameCount(FbxTime::eFrames60));
+		}
 	}
 
-	if (!pModelData)return 0;
-
-	int num = pModelData->GetAnimStacNum(boneName);
-
-	return static_cast<unsigned int>(fbxAnimationDatas[num].currentTime.GetFrameCount(FbxTime::eFrames60));
+	return static_cast<unsigned int>(fbxAnimationDatas.at(boneName).currentTime.GetFrameCount(FbxTime::eFrames60));
 }
 
 unsigned int MelLib::ModelObject::GetAnimationFrameCount(const std::string& boneName) const
 {
-	if (boneName == "")
-	{
-		return static_cast<unsigned int>(fbxAnimationDatas[0].animationTimes.endTime.GetFrameCount(FbxTime::eFrames60));
-	}
-
 	if (!pModelData)return 0;
-
-	int num = pModelData->GetAnimStacNum(boneName);
-
-	return static_cast<unsigned int>(fbxAnimationDatas[num].animationTimes.endTime.GetFrameCount(FbxTime::eFrames60));
+	else if (boneName == "")
+	{
+		for (const auto& data : fbxAnimationDatas)
+		{
+			return static_cast<unsigned int>(data.second.animationTimes.endTime.GetFrameCount(FbxTime::eFrames60));
+		}
+	}
+	return static_cast<unsigned int>(fbxAnimationDatas.at(boneName).animationTimes.endTime.GetFrameCount(FbxTime::eFrames60));
 }
 
 
@@ -2102,52 +2102,48 @@ void ModelObject::Delete(const std::string& name)
 
 void ModelObject::SetCurrentFream(const UINT fream, const std::string& boneName)
 {
+	if (!pModelData)return;
+
 	if (boneName == "") 
 	{
 		for (auto& data : fbxAnimationDatas)
 		{
-			FbxTime setTime = data.animationTimes.startTime * fream;
+			FbxTime setTime = data.second.animationTimes.startTime * fream;
 
-			if (setTime > data.animationTimes.endTime) {
-				setTime = data.animationTimes.endTime;
+			if (setTime > data.second.animationTimes.endTime) {
+				setTime = data.second.animationTimes.endTime;
 			}
 
-			data.currentTime = setTime;
+			data.second.currentTime = setTime;
 		}
 	}
 	else
 	{
-		if (!pModelData)return;
 
-		int num = pModelData->GetAnimStacNum(boneName);
+		FbxTime setTime = fbxAnimationDatas.at(boneName).animationTimes.startTime * fream;
 
-		FbxTime setTime = fbxAnimationDatas.at(num).animationTimes.startTime * fream;
-
-		if (setTime > fbxAnimationDatas.at(num).animationTimes.endTime)
+		if (setTime > fbxAnimationDatas.at(boneName).animationTimes.endTime)
 		{
-			setTime = fbxAnimationDatas.at(num).animationTimes.endTime;
+			setTime = fbxAnimationDatas.at(boneName).animationTimes.endTime;
 		}
 
-		fbxAnimationDatas.at(num).currentTime = setTime;
+		fbxAnimationDatas.at(boneName).currentTime = setTime;
 	}
 }
 
 void MelLib::ModelObject::SetAnimationSpeedMagnification(const unsigned int magnification, const std::string& boneName)
 {
+	if (!pModelData)return;
 	if (boneName == "")
 	{
 		for (auto& data : fbxAnimationDatas)
 		{
-			data.timeMag = magnification;
+			data.second.timeMag = magnification;
 		}
 	}
 	else
 	{
-		if (!pModelData)return;
-
-		int num = pModelData->GetAnimStacNum(boneName);
-
-		fbxAnimationDatas.at(num).timeMag = magnification;
+		fbxAnimationDatas.at(boneName).timeMag = magnification;
 	}
 }
 
@@ -2160,8 +2156,7 @@ void ModelObject::FbxAnimation(const std::string& boneName)
 	if (pModelData->GetModelFormat() != ModelData::ModelFormat::MODEL_FORMAT_FBX)return;
 
 
-	FbxAnimationData animData;
-	GetFbxAnimationData(boneName, animData);
+	FbxAnimationData& animData = fbxAnimationDatas[boneName];
 
 	if (!animData.isAnimation)return;
 
@@ -2260,7 +2255,7 @@ void MelLib::ModelObject::GetFbxAnimationData(const std::string& boneName, FbxAn
 	if (useModel) 
 	{
 		int num = pModelData->GetAnimStacNum(boneName);
-		data = fbxAnimationDatas.at(num);
+		data = fbxAnimationDatas.at(boneName);
 	}
 }
 
@@ -2371,11 +2366,19 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 	if (pModelData->GetBoneNumber() != 0 && pModelData->GetModelFormat() == MelLib::ModelData::ModelFormat::MODEL_FORMAT_FBX) 
 	{
 		// ボーン分データを作成し、初期化
-		fbxAnimationDatas.resize(pModelData->GetBoneNumber());
+		
+		fbxAnimationDatas.reserve(pModelData->GetBoneNumber());
+		std::vector<ModelData::FbxBone>bones = pModelData->GetFbxBones(objectNames[0]);
+
+		for (const auto& bone : bones) 
+		{
+			fbxAnimationDatas.emplace(bone.boneName, FbxAnimationData());
+		}
+
 		for (auto& data : fbxAnimationDatas)
 		{
-			data.animationTimes.frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
-			pModelData->GetAnimationTimeData(0, data.animationTimes.startTime, data.animationTimes.endTime);
+			data.second.animationTimes.frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+			pModelData->GetAnimationTimeData(0, data.second.animationTimes.startTime, data.second.animationTimes.endTime);
 		}
 	}
 
@@ -2455,10 +2458,9 @@ Vector3 MelLib::ModelObject::CalcAnimationPosition
 
 	if (!pModelData)return Vector3();
 
-	FbxAnimationData animData;
-	GetFbxAnimationData(boneName, animData);
+	const FbxAnimationData& ANIM_DATA = fbxAnimationDatas.at(boneName);
 
-	pModelData->SetFbxAnimStack(animData.currentAnimationName);
+	pModelData->SetFbxAnimStack(ANIM_DATA.currentAnimationName);
 
 	DirectX::XMMATRIX posMat = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 
@@ -2498,7 +2500,7 @@ Vector3 MelLib::ModelObject::CalcAnimationPosition
 	DirectX::XMMATRIX matCurrentPose;
 
 	FbxAMatrix fbxCurrentPose =
-		bone.fbxCluster->GetLink()->EvaluateGlobalTransform(animData.currentTime);
+		bone.fbxCluster->GetLink()->EvaluateGlobalTransform(ANIM_DATA.currentTime);
 	FbxLoader::GetInstance()->ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 
@@ -2571,30 +2573,29 @@ Vector3 MelLib::ModelObject::CalcAnimationPosition
 
 void MelLib::ModelObject::SetAnimationReversePlayBack(const bool flag, const std::string& boneName)
 {
+	if (!pModelData)return;
 	if (boneName == "") 
 	{
 		for (auto& data : fbxAnimationDatas) 
 		{
-			data.animationReverse = flag;
+			data.second.animationReverse = flag;
 
-			if (data.animationReverse)
+			if (data.second.animationReverse)
 			{
-				if (data.currentTime <= data.animationTimes.startTime)data.animationEnd = true;
-				else data.animationEnd = false;
+				if (data.second.currentTime <= data.second.animationTimes.startTime)data.second.animationEnd = true;
+				else data.second.animationEnd = false;
 			}
 			else
 			{
-				if (data.currentTime <= data.animationTimes.endTime)data.animationEnd = true;
-				else data.animationEnd = false;
+				if (data.second.currentTime <= data.second.animationTimes.endTime)data.second.animationEnd = true;
+				else data.second.animationEnd = false;
 			}
 		}
 	}
 	else
 	{
-		if (!pModelData)return;
 
-		int num = pModelData->GetAnimStacNum(boneName);
-		FbxAnimationData& animData = fbxAnimationDatas[num];
+		FbxAnimationData& animData = fbxAnimationDatas[boneName];
 		animData.animationReverse = flag;
 
 		if (animData.animationReverse)
@@ -2612,29 +2613,28 @@ void MelLib::ModelObject::SetAnimationReversePlayBack(const bool flag, const std
 
 void MelLib::ModelObject::SetAnimation(const std::string& animationName, const std::string& boneName)
 {
+	if (!pModelData)return;
 	if (boneName == "") 
 	{
 		for (auto& data : fbxAnimationDatas)
 		{
 
-			if (data.currentAnimationName == animationName)return;
-			data.currentAnimationName = animationName;
-			pModelData->GetAnimationTimeData(animationName, data.animationTimes.startTime, data.animationTimes.endTime);
+			if (data.second.currentAnimationName == animationName)return;
+			data.second.currentAnimationName = animationName;
+			pModelData->GetAnimationTimeData(animationName, data.second.animationTimes.startTime, data.second.animationTimes.endTime);
 
 
 			//pModelData->SetFbxAnimStack(name);
 
 			// 終了フラグセット
-			if (data.animationTimes.endTime == data.currentTime)data.animationEnd = true;
-			else data.animationEnd = false;
+			if (data.second.animationTimes.endTime == data.second.currentTime)data.second.animationEnd = true;
+			else data.second.animationEnd = false;
 		}
 	}
 	else
 	{
-		if (!pModelData)return;
 
-		FbxAnimationData animData;
-		GetFbxAnimationData(boneName, animData);
+		FbxAnimationData& animData = fbxAnimationDatas[boneName];
 
 		if (animData.currentAnimationName == animationName)return;
 		animData.currentAnimationName = animationName;
@@ -2656,14 +2656,13 @@ void MelLib::ModelObject::SetAnimationEndStopFlag(const bool flag, const std::st
 	{
 		for (auto& data : fbxAnimationDatas)
 		{
-			data.animationEndStop = flag;
+			data.second.animationEndStop = flag;
 		}
 	}
 	else
 	{
 
-		FbxAnimationData animData;
-		GetFbxAnimationData(boneName, animData);
+		FbxAnimationData& animData = fbxAnimationDatas[boneName];
 
 		animData.animationEndStop = flag;
 	}
@@ -2676,14 +2675,12 @@ void MelLib::ModelObject::SetAnimationFrame(const unsigned int frame, const std:
 	{
 		for (auto& data : fbxAnimationDatas)
 		{
-			data.currentTime.SetFrame(frame, FbxTime::eFrames60);
+			data.second.currentTime.SetFrame(frame, FbxTime::eFrames60);
 		}
 	}
 	else
 	{
-		FbxAnimationData animData;
-		GetFbxAnimationData(boneName, animData);
-
+		FbxAnimationData& animData = fbxAnimationDatas[boneName];
 		animData.currentTime.SetFrame(frame, FbxTime::eFrames60);
 	}
 }

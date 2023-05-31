@@ -83,7 +83,9 @@ namespace MelLib
 
 		// こいつをボーン分リサイズする
 		// ボーンごとのアニメーションデータ
-		std::unordered_map<std::string,FbxAnimationData> fbxAnimationDatas;
+		// ["オブジェクト名"]["ボーン名"]
+		// 一旦オブジェクト名で管理する配列無くした
+		std::unordered_map<std::string, FbxAnimationData> fbxAnimationDatas;
 
 		//FbxAnimationData fbxAnimationData;
 		//bool isAnimation = false;

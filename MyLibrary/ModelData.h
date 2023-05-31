@@ -523,6 +523,7 @@ namespace MelLib
 		/// <returns>頂点座標</returns>
 		std::vector<std::vector<Vector3>>GetVerticesPosition()const;
 
+		// アニメーションの番号を取得します
 		int GetAnimStacNum(const std::string& boneName) { return fbxData.animStackNum.at(boneName); }
 
 #pragma endregion
