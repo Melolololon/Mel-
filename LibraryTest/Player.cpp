@@ -46,6 +46,7 @@ void Player::Move()
 
 void Player::LoadRes()
 {
+	//bool res = MelLib::ModelData::Load("Resources/TeamPlayer/Player.fbx", false,"test");
 	bool res = MelLib::ModelData::Load("Resources/TeamPlayer/Player.fbx", false,"test");
 
 }
@@ -90,11 +91,21 @@ Player::Player()
 	SetAngle(MelLib::Vector3(0, -90, 0));
 	modelObjects["main"].SetAnimation("Dash");
 	modelObjects["main"].SetAnimationPlayFlag(true);
+
+	// 上半身に別アニメーションをセット
+	// バグってる。もしかしたら別のアニメーションを参照してるかも
+	// Rの方がバグってる
+	//modelObjects["main"].SetAnimation("_T","R_Arm_1");
+	//modelObjects["main"].SetAnimation("_T","R_Arm_2");
+	//modelObjects["main"].SetAnimation("_T","R_Arm_3");
+	modelObjects["main"].SetAnimation("_T","L_Arm_1");
+	modelObjects["main"].SetAnimation("_T","L_Arm_2");
+	modelObjects["main"].SetAnimation("_T","L_Arm_3");
 }
 
 void Player::Update()
 {
-
+	SetAngle(GetAngle() + MelLib::Vector3(0, 2, 0));
 	modelObjects["main"].Update();
 }
 
