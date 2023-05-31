@@ -13,7 +13,7 @@ private:
 
 	void Move();
 
-	MelLib::Sprite spr;
+	MelLib::Sprite2D spr;
 
 public:
 	Player();
