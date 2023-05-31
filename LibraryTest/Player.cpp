@@ -95,9 +95,10 @@ Player::Player()
 	// 上半身に別アニメーションをセット
 	// バグってる。もしかしたら別のアニメーションを参照してるかも
 	// Rの方がバグってる
-	//modelObjects["main"].SetAnimation("_T","R_Arm_1");
-	//modelObjects["main"].SetAnimation("_T","R_Arm_2");
-	//modelObjects["main"].SetAnimation("_T","R_Arm_3");
+	// モデルが悪かった
+	modelObjects["main"].SetAnimation("_T","R_Arm_1");
+	modelObjects["main"].SetAnimation("_T","R_Arm_2");
+	modelObjects["main"].SetAnimation("_T","R_Arm_3");
 	modelObjects["main"].SetAnimation("_T","L_Arm_1");
 	modelObjects["main"].SetAnimation("_T","L_Arm_2");
 	modelObjects["main"].SetAnimation("_T","L_Arm_3");
