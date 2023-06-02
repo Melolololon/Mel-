@@ -47,6 +47,7 @@ void Player::Move()
 void Player::LoadRes()
 {
 	bool res = MelLib::ModelData::Load("Resources/TeamPlayer/Player.fbx", false,"test");
+	//bool res = MelLib::ModelData::Load("Resources/cube/cube.fbx", false,"test");
 	//bool res = MelLib::ModelData::Load("Resources/TeamPlayer/Player.fbx", false,"test");
 	//bool res = MelLib::ModelData::Load("Resources/stage.obj", false,"test");
 
@@ -93,17 +94,18 @@ Player::Player()
 	//modelObjects["main"].SetAnimation("Dash");
 	//modelObjects["main"].SetAnimationPlayFlag(true);
 
-	//// 上半身に別アニメーションをセット
-	//// バグってる。もしかしたら別のアニメーションを参照してるかも
-	//// Rの方がバグってる
-	//// モデルが悪かった
-	modelObjects["main"].SetAnimation("_T","R_Arm_1");
-	modelObjects["main"].SetAnimation("_T","R_Arm_2");
-	modelObjects["main"].SetAnimation("_T","R_Arm_3");
-	modelObjects["main"].SetAnimation("_T","L_Arm_1");
-	modelObjects["main"].SetAnimation("_T","L_Arm_2");
-	modelObjects["main"].SetAnimation("_T","L_Arm_3");
+	////// 上半身に別アニメーションをセット
+	////// バグってる。もしかしたら別のアニメーションを参照してるかも
+	////// Rの方がバグってる
+	////// モデルが悪かった
+	//modelObjects["main"].SetAnimation("_T","R_Arm_1");
+	//modelObjects["main"].SetAnimation("_T","R_Arm_2");
+	//modelObjects["main"].SetAnimation("_T","R_Arm_3");
+	//modelObjects["main"].SetAnimation("_T","L_Arm_1");
+	//modelObjects["main"].SetAnimation("_T","L_Arm_2");
+	//modelObjects["main"].SetAnimation("_T","L_Arm_3");
 
+	SetScale(4);
 }
 
 void Player::Update()

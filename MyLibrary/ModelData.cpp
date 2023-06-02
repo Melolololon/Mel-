@@ -964,7 +964,8 @@ UINT MelLib::ModelData::GetBoneNumber(const std::string& name) const
 
 std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 {
-	size_t size = material.size();
+	// マージの時これが正しいからこれ選んでね
+	size_t size = objectNames.size();
 	if (size == 0)
 	{
 		size = objectNames.size();

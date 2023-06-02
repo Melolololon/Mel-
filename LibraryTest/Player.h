@@ -1,6 +1,8 @@
 #pragma once
 #include<GameObject.h>
 #include<GuiValue.h>
+#include<Sprite2D.h>
+
 class Player :
     public MelLib::GameObject
 {
