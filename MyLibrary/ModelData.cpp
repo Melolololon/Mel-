@@ -820,6 +820,16 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		
 		modelFormat = ModelFormat::MODEL_FORMAT_FBX;
 
+		//テクスチャ反転
+		for (auto& v : vertices)
+		{
+			for (auto& v2 : v.second)
+			{
+				v2.uv.y = (v2.uv.y - 1) * -1;
+			}
+		}
+
+
 #pragma region アニメーション関係準備
 		if (fbxData.bones.size() != 0)
 		{
