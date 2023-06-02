@@ -273,8 +273,7 @@ void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh, const std:
 				}
 			}
 
-			if (j < 3)
-				indices.push_back(index);
+			if (j < 3)indices.push_back(index);
 			else
 			{
 				int index2 = indices[indices.size() - 1];
