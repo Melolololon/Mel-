@@ -63,7 +63,7 @@ Player::Player()
 
 	// MelLib;;ModelObjectの配列
 	// 四角形をセット
-	modelObjects["main"].Create(MelLib::ModelData::Get("test"),GetObjectName());
+	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX),GetObjectName());
 
 	// 今読み込んだ値をモデルオブジェクトに反映できてないから
 	// 初期位置を0,0,5に
@@ -74,8 +74,8 @@ Player::Player()
 	// 当たり判定の作成(球)
 	// Playerの座標を取得し、それをセット
 	sphereDatas["main"].resize(1);
-	sphereDatas["main"][0].SetPosition(GetPosition());
-	sphereDatas["main"][0].SetRadius(0.5f);
+	sphereDatas["main"][0].SetPosition({2.5f,0,0});
+	sphereDatas["main"][0].SetRadius(1.0f);
 	//modelObjects["main"].SetPosition(GetPosition());
 	modelObjects["main"].SetScale(1);
 
@@ -110,7 +110,8 @@ void Player::Hit
 	const std::string& hitShapeName
 )
 {
-	
+
+	int z = 0;
 
 }
 

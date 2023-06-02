@@ -243,6 +243,13 @@ namespace MelLib
 		static void SetFar(float farNumber) { farNum = farNumber; }
 
 		/// <summary>
+		/// 指定した座標にマウスカーソルを固定します
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <returns></returns>
+		static void SetMouseFixedPosition(const Vector2& pos);
+
+		/// <summary>
 		/// クライアント座標に変換し、最初に設定したウィンドウサイズに応じて補正したマウスの座標を取得します
 		/// </summary>
 		/// <returns></returns>
@@ -274,6 +281,8 @@ namespace MelLib
 		/// <param name="nearPoint"></param>
 		/// <param name="farPoint"></param>
 		static void GetMouse3DLine(Vector3& nearPoint, Vector3& farPoint);
+
+		//static Vector3 Get3DSpaceMouseCursorPosition(const Camera* pCameta, );
 
 		/// <summary>
 		/// カメラの情報を元に、マウスカーソルを座標変換したときの最近点と最遠点を求めます。

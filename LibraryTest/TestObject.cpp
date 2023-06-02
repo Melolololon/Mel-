@@ -1,6 +1,8 @@
 #include "TestObject.h"
 
 #include"Random.h"
+#include<TextWrite.h>
+#include<Input.h>
 
 void TestObject::Move()
 {
@@ -15,22 +17,25 @@ TestObject::TestObject() :GameObject("Test")
 	collisionCheckDistance = 1.0f;
 
 
+	sphereDatas["main"].resize(1);
+	sphereDatas["main"][0].SetPosition(0);
+	sphereDatas["main"][0].SetRadius(1.0f);
 }
 
 void TestObject::Update()
 {
 	Move();
 
-
-	MelLib::Vector3 ang;
-	ang.y = 0;
-	SetAngle(ang);
+	if (MelLib::Input::KeyTrigger(DIK_Z))SetAngle(MelLib::Vector3(3, 0, 0));
 }
 
 void TestObject::Draw()
 {
 	// ModelObjects‚É’Ç‰Á‚³‚ê‚Ä‚¢‚éModelObject‚ð‚·‚×‚Ä•`‰æ
 	AllDraw();
+
+	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255, 255, 255), std::to_wstring(modelObjects["main"].GetAngle().x), "Arial");
+	MelLib::TextWrite::Draw(MelLib::Vector2(0,80), MelLib::Color(255, 255, 255, 255), std::to_wstring(GetAngle().x), "Arial");
 }
 
 void TestObject::Hit
@@ -42,7 +47,6 @@ void TestObject::Hit
 	const std::string& hitShapeName
 )
 {
-
 }
 
 std::shared_ptr<MelLib::GameObject> TestObject::GetNewPtr()

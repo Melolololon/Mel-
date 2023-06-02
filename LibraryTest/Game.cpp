@@ -59,6 +59,8 @@ void Game::Run()
 	Finalize();
 }
 
+std::shared_ptr<TestObject> t;
+std::shared_ptr<Player> p;
 void Game::Initialize()
 {
 
@@ -67,7 +69,7 @@ void Game::Initialize()
 
 	//カメラは各シーンに移動しました
 
-	Player::LoadRes();
+	//Player::LoadRes();
 #pragma region マネージャー初期化
 
 	/*CollisionFlag initFlag;
@@ -91,23 +93,27 @@ void Game::Initialize()
 	//MelLib::Camera::Get()->SetAngle(MelLib::Vector3(90, 0, 0));
 	//MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0,10,0));
 
-
+	MelLib::TextWrite::CreateFontData(L"Arial", 64.0f, "Arial");
 
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(10, 0, -1));
 	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(0, -90, 0));
 	
 
 	//// エディターオン
-	MelLib::SceneEditer::GetInstance()->SetEditerFlag(true);
-	MelLib::SceneEditer::GetInstance()->Initialize();
+	/*MelLib::SceneEditer::GetInstance()->SetEditerFlag(false);
+	MelLib::SceneEditer::GetInstance()->Initialize();*/
 
 	// エディターに追加(Unityでいうプレハブ作成)
-	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
-	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor");
+	/*MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
+	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor");*/
 	//MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor2");
 
 	// シーン読み込みテスト
-	MelLib::SceneEditer::GetInstance()->LoadEditData("BoxParty");
+	//MelLib::SceneEditer::GetInstance()->LoadEditData("BoxParty");
+	t = std::make_shared<TestObject>();
+	MelLib::GameObjectManager::GetInstance()->AddObject(t);
+	p = std::make_shared<Player>();
+	MelLib::GameObjectManager::GetInstance()->AddObject(p);
 }
 
 
@@ -116,14 +122,13 @@ void Game::Finalize()
 	MelLib::Library::Finalize();//絶対に最後に書く
 }
 
-
 void Game::Update()
 {
 
 	//MelLib::SceneManager::GetInstance()->Update();
-	MelLib::SceneEditer::GetInstance()->Update();
-	//MelLib::GameObjectManager::GetInstance()->Update();
-	if(MelLib::Input::KeyState(DIK_Q))MelLib::Input::SetMouseFixedPosition(MelLib::Vector2(800,800));
+	//MelLib::SceneEditer::GetInstance()->Update();
+	MelLib::GameObjectManager::GetInstance()->Update();
+
 }
 
 void Game::Draw()
@@ -131,8 +136,8 @@ void Game::Draw()
 	
 
 	//MelLib::SceneManager::GetInstance()->Draw();
-	MelLib::SceneEditer::GetInstance()->Draw();
+	//MelLib::SceneEditer::GetInstance()->Draw();
 
-	//MelLib::GameObjectManager::GetInstance()->Draw();
+	MelLib::GameObjectManager::GetInstance()->Draw();
 
 }

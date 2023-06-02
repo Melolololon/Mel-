@@ -96,7 +96,7 @@ void MelLib::GameObject::SetModelAngle(const Vector3& angle)
 
 	for (auto& m : modelObjects)
 	{
-		m.second.SetAngle(angle);
+		m.second.SetAngle(m.second.GetAngle() + angle);
 	}
 }
 
@@ -106,14 +106,14 @@ void MelLib::GameObject::SetDataAngle(const Vector3& angle)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.SetAngle(angle);
+			d2.SetAngle(d2.GetAngle() + angle);
 		}
 	}
 	for (auto& d : triangleDatas)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.SetAngle(angle);
+			d2.SetAngle(d2.GetAngle() + angle);
 		}
 	}
 
@@ -121,21 +121,21 @@ void MelLib::GameObject::SetDataAngle(const Vector3& angle)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.SetAngle(angle);
+			d2.SetAngle(d2.GetAngle() + angle);
 		}
 	}
 	for (auto& d : segment3DDatas)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.SetAngle(angle);
+			d2.SetAngle(d2.GetAngle() + angle);
 		}
 	}
 	for (auto& d : capsuleDatas)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.GetRefSegment3DData().SetAngle(angle);
+			d2.GetRefSegment3DData().SetAngle(d2.GetSegment3DData().GetAngle() + angle);
 		}
 	}
 }
@@ -144,7 +144,7 @@ void MelLib::GameObject::SetModelScale(const Vector3& scale)
 {
 	for (auto& m : modelObjects)
 	{
-		m.second.SetScale(scale);
+		m.second.SetScale(m.second.GetScale() + scale);
 	}
 }
 
@@ -154,9 +154,9 @@ void MelLib::GameObject::SetDataScale(const Vector3& scale)
 	{
 		for (auto& d2 : d.second)
 		{
-			float setRadius = scale.x;
-			if (setRadius < scale.y)setRadius = scale.y;
-			if (setRadius < scale.z)setRadius = scale.z;
+			float setRadius = scale.x + d2.GetRadius() * 2;
+			if (setRadius < scale.y)setRadius = scale.y + d2.GetRadius() * 2;
+			if (setRadius < scale.z)setRadius = scale.z + d2.GetRadius() * 2;
 
 			d2.SetRadius(setRadius / 2);
 		}
@@ -165,35 +165,35 @@ void MelLib::GameObject::SetDataScale(const Vector3& scale)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.SetSize(scale);
+			d2.SetSize(scale + d2.GetSize());
 		}
 	}
 	for (auto& d : obbDatas)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.SetSize(scale);
+			d2.SetSize(scale + d2.GetSize());
 		}
 	}
 	for (auto& d : boardDatas)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.SetSize(scale.ToVector2());
+			d2.SetSize(scale.ToVector2() + d2.GetSize());
 		}
 	}
 	for (auto& d : segment3DDatas)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.SetPosition(d2.GetPosition() * scale);
+			d2.SetPosition(d2.GetPosition() * scale + d2.GetPosition());
 		}
 	}
 	for (auto& d : capsuleDatas)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.GetRefSegment3DData().SetPosition(d2.GetSegment3DData().GetPosition() * scale);
+			d2.GetRefSegment3DData().SetPosition(d2.GetSegment3DData().GetPosition() * scale + d2.GetSegment3DData().GetPosition());
 		}
 	}
 
@@ -201,7 +201,7 @@ void MelLib::GameObject::SetDataScale(const Vector3& scale)
 	{
 		for (auto& d2 : d.second)
 		{
-			d2.SetScale(scale);
+			d2.SetScale(scale + d2.GetScale());
 		}
 	}
 }
@@ -338,22 +338,16 @@ void MelLib::GameObject::SetObjectAndModelPosition(const Vector3& pos)
 
 void MelLib::GameObject::SetAngle(const Vector3& angle)
 {
-	//if (this->angle == angle)return;
-
+	SetModelAngle(angle - this->angle);
+	SetDataAngle(angle - this->angle);
 	this->angle = angle;
-
-	SetModelAngle(angle);
-	SetDataAngle(angle);
 }
 
 void MelLib::GameObject::SetScale(const Vector3& scale)
 {
-	//if (this->scale == scale)return;
-
+	SetModelScale(scale - this->scale);
+	SetDataScale(scale - this->scale);
 	this->scale = scale;
-
-	SetModelScale(scale);
-	SetDataScale(scale);
 }
 
 void MelLib::GameObject::SetAddColor(const Color& color)

@@ -474,7 +474,7 @@ bool ModelLoader::LoadObjMaterial
 			lineStream >> materials[objectName].specular.v3;
 			
 		}
-		if (materialData == "map_Kd")
+		if (materialData == "map_Kd" || materialData == "map_kd")
 		{
 			lineStream >> texPath[objectName];
 			
