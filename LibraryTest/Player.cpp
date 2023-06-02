@@ -46,10 +46,8 @@ void Player::Move()
 
 void Player::LoadRes()
 {
-	bool res = MelLib::ModelData::Load("Resources/TeamPlayer/Player.fbx", false,"test");
-	//bool res = MelLib::ModelData::Load("Resources/cube/cube.fbx", false,"test");
-	//bool res = MelLib::ModelData::Load("Resources/TeamPlayer/Player.fbx", false,"test");
-	//bool res = MelLib::ModelData::Load("Resources/stage.obj", false,"test");
+	//bool res = MelLib::ModelData::Load("Resources/TeamPlayer/Player.obj", false,"test");
+    bool res = MelLib::ModelData::Load("Resources/TeamPlayer/Player.fbx", false,"test");
 
 }
 
@@ -105,7 +103,7 @@ Player::Player()
 	//modelObjects["main"].SetAnimation("_T","L_Arm_2");
 	//modelObjects["main"].SetAnimation("_T","L_Arm_3");
 
-	SetScale(4);
+	SetScale(3);
 }
 
 void Player::Update()
