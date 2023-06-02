@@ -88,9 +88,9 @@ Player::Player()
 	hp.SetData(10, GetObjectName(), "HP", 0, 100);
 	power.SetData(10, GetObjectName(), "Power", 1, 100);
 	//Move();
-	SetAngle(MelLib::Vector3(0, -90, 0));
+	SetAngle(MelLib::Vector3(0, -180, 0));
 	//modelObjects["main"].SetAnimation("Dash");
-	//modelObjects["main"].SetAnimationPlayFlag(true);
+	modelObjects["main"].SetAnimationPlayFlag(true);
 
 	////// 上半身に別アニメーションをセット
 	////// バグってる。もしかしたら別のアニメーションを参照してるかも
@@ -104,11 +104,13 @@ Player::Player()
 	//modelObjects["main"].SetAnimation("_T","L_Arm_3");
 
 	SetScale(3);
+
+	SetPosition(MelLib::Vector3(0,0,3));
 }
 
 void Player::Update()
 {
-	SetAngle(GetAngle() + MelLib::Vector3(0, 2, 0));
+	//SetAngle(GetAngle() + MelLib::Vector3(0, 2, 0));
 	//modelObjects["main"].Update();
 }
 

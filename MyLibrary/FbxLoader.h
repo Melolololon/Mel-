@@ -90,6 +90,12 @@ namespace MelLib
 			std::string* fileName
 		);
 
+		/// <summary>
+		/// uv、normalがバグるのを防ぐために頂点を再割り当てします。
+		/// </summary>
+		/// <param name="fbxModel"></param>
+		void TakeOutVertices(ModelData* fbxModel, FbxMesh* fbxMesh, const std::string& name);
+
 	public:
 		FbxLoader(const FbxLoader& model) = delete;
 		FbxLoader& operator =(const FbxLoader& model) = delete;

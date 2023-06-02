@@ -94,7 +94,7 @@ void Game::Initialize()
 	MelLib::TextWrite::CreateFontData(L"Arial", 64.0f, "Arial");
 
 	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(15, 0, -1));
-	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(0, -90, 0));
+	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(0, 0, 0));
 	
 
 	//// エディターオン
