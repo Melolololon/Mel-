@@ -441,6 +441,12 @@ float Input::ArrowKeyAngle()
 
 	return -1.0f;
 }
+
+void MelLib::Input::SetMouseFixedPosition(const MelLib::Vector2& pos)
+{
+	SetPhysicalCursorPos(pos.x, pos.y);
+}
+
 #pragma endregion
 
 #pragma region É}ÉEÉX
@@ -475,6 +481,11 @@ Vector2 Input::GetMousePosition()
 
 	return pos;
 
+}
+
+Vector2 MelLib::Input::GetMouseVector(const Vector2& standardPos)
+{
+	return Vector2Normalize(GetMousePosition() - standardPos);
 }
 
 Vector2 Input::GetCenterToMouseVector()

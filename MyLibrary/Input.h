@@ -232,7 +232,10 @@ namespace MelLib
 
 
 #pragma region カーソル
-
+		/// <summary>
+		/// マウスカーソルを指定した座標に固定します。
+		/// </summary>
+		static void SetMouseFixedPosition(const MelLib::Vector2& pos);
 
 		static void SetViewMatrix(const DirectX::XMMATRIX& viewMatrix) { viewMat = viewMatrix; }
 		static void SetProjectionMatrix(const DirectX::XMMATRIX& projectionMatrix) { projectionMat = projectionMatrix; }
@@ -244,6 +247,13 @@ namespace MelLib
 		/// </summary>
 		/// <returns></returns>
 		static Vector2 GetMousePosition();
+
+		/// <summary>
+		/// 指定した座標を基準としたカーソルのベクトルを取得します。
+		/// </summary>
+		/// <param name="standardPos">基準となる座標</param>
+		/// <returns></returns>
+		static Vector2 GetMouseVector(const Vector2& standardPos);
 
 		/// <summary>
 		/// ウィンドウの中心を基準としたカーソルのベクトルを取得します。

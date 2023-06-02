@@ -123,6 +123,7 @@ void Game::Update()
 	//MelLib::SceneManager::GetInstance()->Update();
 	MelLib::SceneEditer::GetInstance()->Update();
 	//MelLib::GameObjectManager::GetInstance()->Update();
+	if(MelLib::Input::KeyState(DIK_Q))MelLib::Input::SetMouseFixedPosition(MelLib::Vector2(800,800));
 }
 
 void Game::Draw()
