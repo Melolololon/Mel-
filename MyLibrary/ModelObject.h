@@ -256,12 +256,12 @@ namespace MelLib
 		/// <summary>
 		/// アニメーションをリセットします。
 		/// </summary>
-		void SetAnimationFrameStart(const std::string& boneName);//{fbxAnimationData.currentTime = 0;}
+		void SetAnimationFrameStart(const std::string& boneName = "");//{fbxAnimationData.currentTime = 0;}
 
 		/// <summary>
 		/// アニメーションの現在のフレームをアニメーション終了時のフレームにします。
 		/// </summary>
-		void SetAnimationFrameEnd(const std::string& boneName);//{ fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime; }
+		void SetAnimationFrameEnd(const std::string& boneName = "");//{ fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime; }
 
 		/// <summary>
 		/// アニメーションのフレームをセットします。

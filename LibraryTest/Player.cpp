@@ -128,7 +128,6 @@ void Player::Hit
 )
 {
 
-	int z = 0;
 
 }
 
