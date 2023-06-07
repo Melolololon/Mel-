@@ -183,6 +183,8 @@ void FbxLoader::ParseMesh(ModelData* fbxModel, FbxNode* node, Node* meshNode)
 	ParseMeshFaces(fbxModel, fbxMesh, objectName);
 	ParseMaterial(fbxModel, node, objectName);
 	ParseSkin(fbxModel, fbxMesh, node, objectName);
+
+	TakeOutVertices(fbxModel, fbxMesh, objectName);
 }
 
 void FbxLoader::ParseMeshVertices(ModelData* fbxModel, FbxMesh* fbxMesh, Node* meshNode, const std::string& name)
@@ -248,33 +250,32 @@ void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh, const std:
 			assert(index >= 0);
 
 
-			//法線読み込み
-			FbxVector4 normal;
+			////法線読み込み
+			//FbxVector4 normal;
 
-			//GetPolygonVertexNormal(面番号,面の何個目の頂点か)
-			if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
-			{
-				vertices[name][index].normal.x = (float)normal[0];
-				vertices[name][index].normal.y = (float)normal[1];
-				vertices[name][index].normal.z = (float)normal[2];
-			}
+			////GetPolygonVertexNormal(面番号,面の何個目の頂点か)
+			//if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
+			//{
+			//	vertices[name][index].normal.x = (float)normal[0];
+			//	vertices[name][index].normal.y = (float)normal[1];
+			//	vertices[name][index].normal.z = (float)normal[2];
+			//}
 
 
-			//UV読み込み
-			if (textureUVCount > 0)
-			{
-				FbxVector2 uvs;
-				bool lUnmappedUV;
+			////UV読み込み
+			//if (textureUVCount > 0)
+			//{
+			//	FbxVector2 uvs;
+			//	bool lUnmappedUV;
 
-				if (fbxMesh->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
-				{
-					vertices[name][index].uv.x = (float)uvs[0];
-					vertices[name][index].uv.y = (float)uvs[1];
-				}
-			}
+			//	if (fbxMesh->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
+			//	{
+			//		vertices[name][index].uv.x = (float)uvs[0];
+			//		vertices[name][index].uv.y = (float)uvs[1];
+			//	}
+			//}
 
-			if (j < 3)
-				indices.push_back(index);
+		/*	if (j < 3)indices.push_back(index);
 			else
 			{
 				int index2 = indices[indices.size() - 1];
@@ -283,7 +284,7 @@ void FbxLoader::ParseMeshFaces(ModelData* fbxModel, FbxMesh* fbxMesh, const std:
 				indices.push_back(index2);
 				indices.push_back(index3);
 				indices.push_back(index0);
-			}
+			}*/
 		}
 
 	}
@@ -641,4 +642,95 @@ std::string FbxLoader::ExtractFileName
 	}
 
 	return path;
+}
+
+void MelLib::FbxLoader::TakeOutVertices(ModelData* fbxModel, FbxMesh* fbxMesh, const std::string& name)
+{
+	// 参照を取得
+	const std::vector<FbxVertex> PRE_VERTICES = fbxModel->vertices[name];
+	std::vector<FbxVertex> newVertices;
+	
+
+	//面数
+	const int polygonCount = fbxMesh->GetPolygonCount();
+	const int textureUVCount = fbxMesh->GetTextureUVCount();
+	newVertices.reserve(polygonCount * 3);
+	//UV名のリスト
+	FbxStringList uvNames;
+	fbxMesh->GetUVSetNames(uvNames);
+
+	//面ごとの情報読み込み
+	for (int i = 0; i < polygonCount; i++)
+	{
+		//面のインデックス数
+		const int polygonSize = fbxMesh->GetPolygonSize(i);
+		assert(polygonSize <= 4);
+
+		for (int j = 0; j < polygonSize; j++)
+		{
+			FbxVertex vertex;
+
+			//verticesの添え字
+			int index = fbxMesh->GetPolygonVertex(i, j);
+			assert(index >= 0);
+
+#pragma region 頂点
+
+			vertex.pos = PRE_VERTICES[index].pos;
+			for (int i = 0; i < 4; i++) {
+				vertex.boneIndex[i] = PRE_VERTICES[index].boneIndex[i];
+				vertex.boneWeight[i] = PRE_VERTICES[index].boneWeight[i];
+			}
+
+#pragma endregion
+
+
+#pragma region 法線
+
+			//法線読み込み
+			FbxVector4 normal;
+			//GetPolygonVertexNormal(面番号,面の何個目の頂点か)
+			if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
+			{
+				vertex.normal.x = (float)normal[0];
+				vertex.normal.y = (float)normal[1];
+				vertex.normal.z = (float)normal[2];
+			}
+
+
+#pragma endregion
+
+
+#pragma region UV
+
+			//UV読み込み
+			if (textureUVCount > 0)
+			{
+				FbxVector2 uvs;
+				bool lUnmappedUV;
+
+				if (fbxMesh->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
+				{
+					vertex.uv.x = (float)uvs[0];
+					vertex.uv.y = (float)uvs[1];
+				}
+			}
+
+
+#pragma endregion
+
+			// 頂点追加
+			newVertices.push_back(vertex);
+
+			// インデックス追加
+			fbxModel->indices[name].push_back(fbxModel->indices[name].size());
+		}
+	}
+
+	// 無駄解放
+	newVertices.shrink_to_fit();
+	fbxModel->indices[name].shrink_to_fit();
+
+	// 移動
+	fbxModel->vertices[name] = newVertices;
 }

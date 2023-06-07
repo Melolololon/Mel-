@@ -820,6 +820,16 @@ bool ModelData::LoadModel(const std::string& path, const std::string& name)
 		
 		modelFormat = ModelFormat::MODEL_FORMAT_FBX;
 
+		//テクスチャ反転
+		for (auto& v : vertices)
+		{
+			for (auto& v2 : v.second)
+			{
+				v2.uv.y = (v2.uv.y - 1) * -1;
+			}
+		}
+
+
 #pragma region アニメーション関係準備
 		if (fbxData.bones.size() != 0)
 		{
@@ -964,7 +974,8 @@ UINT MelLib::ModelData::GetBoneNumber(const std::string& name) const
 
 std::vector<ADSAMaterial*> MelLib::ModelData::GetPMaterial()
 {
-	size_t size = material.size();
+	// マージの時これが正しいからこれ選んでね
+	size_t size = objectNames.size();
 	if (size == 0)
 	{
 		size = objectNames.size();

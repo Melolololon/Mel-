@@ -16,7 +16,7 @@ float4 GetTexColor(GSOutput input,Texture3D<float4> t)
 	//smoothstep‚Æ”ÍˆÍ‚ÅAw‚ğ‹‚ß‚é
 	float w = smoothstep(start, end, input.worldPos.z);
 
-	return t.Sample(smp, float3(input.uv, w)) + baseColor;
+	return t.Sample(smp, float3(input.uv, 0)) + baseColor;
 
 }
 
