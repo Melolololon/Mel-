@@ -969,7 +969,27 @@ void MelLib::SceneEditer::Update()
 				addObjects.erase(addObjects.begin() + i);
 				addObjectNames.erase(addObjectNames.begin() + i);
 				//GameObjectManager::GetInstance()->EraseObject(pSelectListObject);
-				pSelectListObject = nullptr;
+				
+				if (SIZE == 1) 
+				{
+					pSelectListObject = nullptr;
+					selectListObjectNum = 0;
+				}
+				else 
+				{
+					if (i == 0)
+					{
+						pSelectListObject = addObjects[0].get();
+						selectListObjectNum = 0;
+					}
+					else 
+					{
+						pSelectListObject = addObjects[i - 1].get();
+						selectListObjectNum = i - 1;
+					}
+				}
+				
+				break;
 			}
 		}
 	}
