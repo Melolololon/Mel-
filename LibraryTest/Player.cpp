@@ -46,7 +46,8 @@ void Player::Move()
 
 void Player::LoadRes()
 {
-	bool res = MelLib::ModelData::Load("Resources/Player/Player.fbx", false,"test");
+	//bool res = MelLib::ModelData::Load("Resources/TeamPlayer/Player.obj", false,"test");
+    bool res = MelLib::ModelData::Load("Resources/TeamPlayer/Player.fbx", false,"test");
 
 }
 
@@ -63,7 +64,7 @@ Player::Player()
 
 	// MelLib;;ModelObjectの配列
 	// 四角形をセット
-	modelObjects["main"].Create(MelLib::ModelData::Get(MelLib::ShapeType3D::BOX),GetObjectName());
+	modelObjects["main"].Create(MelLib::ModelData::Get("test"), GetObjectName());
 
 	// 今読み込んだ値をモデルオブジェクトに反映できてないから
 	// 初期位置を0,0,5に
@@ -86,13 +87,31 @@ Player::Player()
 
 	hp.SetData(10, GetObjectName(), "HP", 0, 100);
 	power.SetData(10, GetObjectName(), "Power", 1, 100);
+	//Move();
+	SetAngle(MelLib::Vector3(0, -180, 0));
+	//modelObjects["main"].SetAnimation("Dash");
+	modelObjects["main"].SetAnimationPlayFlag(true);
+
+	////// 上半身に別アニメーションをセット
+	////// バグってる。もしかしたら別のアニメーションを参照してるかも
+	////// Rの方がバグってる
+	////// モデルが悪かった
+	//modelObjects["main"].SetAnimation("_T","R_Arm_1");
+	//modelObjects["main"].SetAnimation("_T","R_Arm_2");
+	//modelObjects["main"].SetAnimation("_T","R_Arm_3");
+	//modelObjects["main"].SetAnimation("_T","L_Arm_1");
+	//modelObjects["main"].SetAnimation("_T","L_Arm_2");
+	//modelObjects["main"].SetAnimation("_T","L_Arm_3");
+
+	SetScale(3);
+
+	SetPosition(MelLib::Vector3(0,0,3));
 }
 
 void Player::Update()
 {
-	Move();
-
-
+	//SetAngle(GetAngle() + MelLib::Vector3(0, 2, 0));
+	//modelObjects["main"].Update();
 }
 
 void Player::Draw()
@@ -111,7 +130,6 @@ void Player::Hit
 )
 {
 
-	int z = 0;
 
 }
 

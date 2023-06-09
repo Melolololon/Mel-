@@ -59,8 +59,6 @@ void Game::Run()
 	Finalize();
 }
 
-std::shared_ptr<TestObject> t;
-std::shared_ptr<Player> p;
 void Game::Initialize()
 {
 
@@ -69,7 +67,7 @@ void Game::Initialize()
 
 	//カメラは各シーンに移動しました
 
-	//Player::LoadRes();
+	Player::LoadRes();
 #pragma region マネージャー初期化
 
 	/*CollisionFlag initFlag;
@@ -84,7 +82,7 @@ void Game::Initialize()
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
 	//for (int i = 0; i < 1; i++)MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
-    //MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
+    MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
     //MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
 	//MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
@@ -95,13 +93,13 @@ void Game::Initialize()
 
 	MelLib::TextWrite::CreateFontData(L"Arial", 64.0f, "Arial");
 
-	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(10, 0, -1));
-	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(0, -90, 0));
+	MelLib::Camera::Get()->SetRotateCriteriaPosition(MelLib::Vector3(0, 0, -5));
+	MelLib::Camera::Get()->SetAngle(MelLib::Vector3(0, 0, 0));
 	
 
 	//// エディターオン
-	/*MelLib::SceneEditer::GetInstance()->SetEditerFlag(false);
-	MelLib::SceneEditer::GetInstance()->Initialize();*/
+	MelLib::SceneEditer::GetInstance()->SetEditerFlag(false);
+	//MelLib::SceneEditer::GetInstance()->Initialize();
 
 	// エディターに追加(Unityでいうプレハブ作成)
 	/*MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
@@ -110,10 +108,6 @@ void Game::Initialize()
 
 	// シーン読み込みテスト
 	//MelLib::SceneEditer::GetInstance()->LoadEditData("BoxParty");
-	t = std::make_shared<TestObject>();
-	MelLib::GameObjectManager::GetInstance()->AddObject(t);
-	p = std::make_shared<Player>();
-	MelLib::GameObjectManager::GetInstance()->AddObject(p);
 }
 
 

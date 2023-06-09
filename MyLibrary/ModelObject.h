@@ -68,6 +68,11 @@ namespace MelLib
 			FbxTime currentTime;
 			int timeMag = 1;
 			std::string currentAnimationName;
+
+			bool animationEndStop = false;
+			bool animationReverse = false;
+			bool animationEnd = false;
+			bool isAnimation = false;
 		};
 
 
@@ -76,11 +81,17 @@ namespace MelLib
 		std::vector<BoneData>boneDatas;
 		std::vector<ParentBoneData> parentBoneDatas;//親ボーンと影響度
 
-		FbxAnimationData fbxAnimationData;
-		bool isAnimation = false;
-		bool animationEndStop = false;
-		bool animationReverse = false;
-		bool animationEnd = false;
+		// こいつをボーン分リサイズする
+		// ボーンごとのアニメーションデータ
+		// ["オブジェクト名"]["ボーン名"]
+		// 一旦オブジェクト名で管理する配列無くした
+		std::unordered_map<std::string, FbxAnimationData> fbxAnimationDatas;
+
+		//FbxAnimationData fbxAnimationData;
+		//bool isAnimation = false;
+		//bool animationEndStop = false;
+		//bool animationReverse = false;
+		//bool animationEnd = false;
 #pragma endregion
 
 		//定数バッファ
@@ -145,7 +156,9 @@ namespace MelLib
 		void MapConstData(const Camera* camera);
 		void SetCmdList();
 
-		void FbxAnimation();
+		void FbxAnimation(const std::string& boneName);
+
+		void GetFbxAnimationData(const std::string& boneName, FbxAnimationData& data)const;
 
 	public:
 
@@ -238,53 +251,53 @@ namespace MelLib
 
 #pragma region アニメーション
 
-		void SetAnimationPlayFlag(const bool flag) { isAnimation = flag; }
+		void SetAnimationPlayFlag(const bool flag, const std::string& boneName = "");//{ isAnimation = flag; }
 
 		/// <summary>
 		/// アニメーションをリセットします。
 		/// </summary>
-		void SetAnimationFrameStart() {fbxAnimationData.currentTime = 0;}
+		void SetAnimationFrameStart(const std::string& boneName = "");//{fbxAnimationData.currentTime = 0;}
 
 		/// <summary>
 		/// アニメーションの現在のフレームをアニメーション終了時のフレームにします。
 		/// </summary>
-		void SetAnimationFrameEnd() { fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime; }
+		void SetAnimationFrameEnd(const std::string& boneName = "");//{ fbxAnimationData.currentTime = fbxAnimationData.animationTimes.endTime; }
 
 		/// <summary>
 		/// アニメーションのフレームをセットします。
 		/// </summary>
 		/// <param name="fream"></param>
-		void SetCurrentFream(const UINT fream);
+		void SetCurrentFream(const UINT fream, const std::string& boneName = "");
 
 		/// <summary>
 		/// アニメーションの再生速度をセットします。
 		/// </summary>
 		/// <param name="magnification"></param>
-		void SetAnimationSpeedMagnification(const unsigned int magnification) { fbxAnimationData.timeMag = magnification; }
+		void SetAnimationSpeedMagnification(const unsigned int magnification, const std::string& boneName = "");// { fbxAnimationData.timeMag = magnification; }
 
 		/// <summary>
 		/// アニメーションを逆再生するかどうかを設定します。
 		/// </summary>
 		/// <param name="flag"></param>
-		void SetAnimationReversePlayBack(const bool flag);
+		void SetAnimationReversePlayBack(const bool flag, const std::string& boneName = "");
 
 		/// <summary>
 		/// アニメーションを指定します。
 		/// </summary>
 		/// <param name="name"></param>
-		void SetAnimation(const std::string& name);
+		void SetAnimation(const std::string& animationName, const std::string& boneName = "");
 
 		/// <summary>
 		/// アニメーション終了時に再生を終了するかを指定します。
 		/// </summary>
 		/// <param name="flag"></param>
-		void SetAnimationEndStopFlag(const bool flag) { animationEndStop = flag; }
+		void SetAnimationEndStopFlag(const bool flag, const std::string& boneName = "");//{ animationEndStop = flag; }
 
 		/// <summary>
 		/// アニメーションのフレームをセットします。
 		/// </summary>
 		/// <param name="frame"></param>
-		void SetAnimationFrame(const unsigned int frame) { fbxAnimationData.currentTime.SetFrame(frame, FbxTime::eFrames60); }
+		void SetAnimationFrame(const unsigned int frame, const std::string& boneName = "") ;//{ fbxAnimationData.currentTime.SetFrame(frame, FbxTime::eFrames60); }
 
 #pragma endregion
 
@@ -335,19 +348,19 @@ namespace MelLib
 #pragma region アニメーション
 
 
-		std::string GetCurrentAnimationName()const { return fbxAnimationData.currentAnimationName; }
+		std::string GetCurrentAnimationName(const std::string& boneName = "")const;//{ return fbxAnimationData.currentAnimationName; }
 
 		/// <summary>
 		/// アニメーションが逆生成中かどうかを取得します。
 		/// </summary>
 		/// <returns></returns>
-		bool GetAnimationReversePlayBack()const { return animationReverse; }
+		bool GetAnimationReversePlayBack(const std::string& boneName = "")const;//{ return animationReverse; }
 
 		/// <summary>
 		/// アニメーションが終了しているかどうかを取得します。
 		/// </summary>
 		/// <returns></returns>
-		bool GetAnimationEndFlag()const { return animationEnd; }
+		bool GetAnimationEndFlag(const std::string& boneName = "")const;//{ return animationEnd; }
 		//{ return fbxAnimationData.currentTime == fbxAnimationData.animationTimes.endTime; }
 
 
@@ -355,13 +368,13 @@ namespace MelLib
 		///	アニメーションの現在のフレームを取得します。
 		/// </summary>
 		/// <returns></returns>
-		unsigned int GetAnimationFrame()const { return static_cast<unsigned int>(fbxAnimationData.currentTime.GetFrameCount(FbxTime::eFrames60)); }
+		unsigned int GetAnimationFrame(const std::string& boneName = "")const;//{ return static_cast<unsigned int>(fbxAnimationData.currentTime.GetFrameCount(FbxTime::eFrames60)); }
 		
 		/// <summary>
 		/// アニメーションのフレーム数を取得します。
 		/// </summary>
 		/// <returns></returns>
-		unsigned int GetAnimationFrameCount()const { return static_cast<unsigned int>(fbxAnimationData.animationTimes.endTime.GetFrameCount(FbxTime::eFrames60)); }
+		unsigned int GetAnimationFrameCount(const std::string& boneName = "")const;//{ return static_cast<unsigned int>(fbxAnimationData.animationTimes.endTime.GetFrameCount(FbxTime::eFrames60)); }
 #pragma endregion
 
 		//コンピュートシェーダーで計算したほうがいい。
