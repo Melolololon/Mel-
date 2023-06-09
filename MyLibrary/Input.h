@@ -232,10 +232,6 @@ namespace MelLib
 
 
 #pragma region カーソル
-		/// <summary>
-		/// マウスカーソルを指定した座標に固定します。
-		/// </summary>
-		static void SetMouseFixedPosition(const MelLib::Vector2& pos);
 
 		static void SetViewMatrix(const DirectX::XMMATRIX& viewMatrix) { viewMat = viewMatrix; }
 		static void SetProjectionMatrix(const DirectX::XMMATRIX& projectionMatrix) { projectionMat = projectionMatrix; }

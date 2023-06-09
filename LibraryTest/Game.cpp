@@ -61,10 +61,10 @@ void Game::Run()
 
 void Game::Initialize()
 {
+	bool SET_EDITER_FLAG = true;
 
 	MelLib::Library::Initialize(1920, 1080, MelLib::Color(30,30,160,255),L"MELLib");
 	MelLib::Library::SetFramesPerSecond60(true);
-
 	//カメラは各シーンに移動しました
 
 	Player::LoadRes();
@@ -98,16 +98,20 @@ void Game::Initialize()
 	
 
 	//// エディターオン
-	MelLib::SceneEditer::GetInstance()->SetEditerFlag(false);
-	//MelLib::SceneEditer::GetInstance()->Initialize();
+	MelLib::SceneEditer::GetInstance()->SetEditerFlag(SET_EDITER_FLAG);
+	MelLib::SceneEditer::GetInstance()->SetReleaseEditFlag(SET_EDITER_FLAG);
+	MelLib::ImguiManager::GetInstance()->SetReleaseDrawFlag(SET_EDITER_FLAG);
+	MelLib::SceneEditer::GetInstance()->Initialize();
 
 	// エディターに追加(Unityでいうプレハブ作成)
-	/*MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
-	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor");*/
+	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
+	/*MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(), "TestActor"); */
 	//MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor2");
 
 	// シーン読み込みテスト
 	//MelLib::SceneEditer::GetInstance()->LoadEditData("BoxParty");
+
+
 }
 
 
@@ -120,7 +124,7 @@ void Game::Update()
 {
 
 	//MelLib::SceneManager::GetInstance()->Update();
-	//MelLib::SceneEditer::GetInstance()->Update();
+	MelLib::SceneEditer::GetInstance()->Update();
 	MelLib::GameObjectManager::GetInstance()->Update();
 
 }
@@ -130,7 +134,7 @@ void Game::Draw()
 	
 
 	//MelLib::SceneManager::GetInstance()->Draw();
-	//MelLib::SceneEditer::GetInstance()->Draw();
+	MelLib::SceneEditer::GetInstance()->Draw();
 
 	MelLib::GameObjectManager::GetInstance()->Draw();
 

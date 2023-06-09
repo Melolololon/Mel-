@@ -350,14 +350,14 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 
 void MelLib::SceneEditer::UpdateSelectObject()
 {
-	if (!editorFlag || !ReleaseCheck())return;
+	if (!editorFlag || ReleaseCheck())return;
 	if (!isEdit)return;
 
 
 #ifdef _DEBUG
 
 #else
-	if (!releaseEdit)return;
+	if (releaseEdit)return;
 #endif // _DEBUG
 
 

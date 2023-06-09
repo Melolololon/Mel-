@@ -442,10 +442,6 @@ float Input::ArrowKeyAngle()
 	return -1.0f;
 }
 
-void MelLib::Input::SetMouseFixedPosition(const MelLib::Vector2& pos)
-{
-	SetPhysicalCursorPos(pos.x, pos.y);
-}
 
 #pragma endregion
 
