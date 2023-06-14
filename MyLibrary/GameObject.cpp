@@ -677,6 +677,29 @@ unsigned int MelLib::GameObject::GetFrameHitCheckNumber(ShapeType3D type) const
 	return 1;
 }
 
+void MelLib::GameObject::SetModelTriangleDataAll(const std::string& modelObjectIndex, const std::string& triIndex)
+{
+	// ŽOŠpŒ`‚ðŽæ“¾
+	std::vector<std::vector<TriangleData>>tris;
+	modelObjects.at(modelObjectIndex).GetModelTriangleData(tris);
+
+	// ƒŠƒTƒCƒY
+	size_t trisSize = 0;
+	for (auto& triVec : tris)
+	{
+		trisSize += triVec.size();
+	}
+	triangleDatas.at(triIndex).resize(trisSize);
+
+	// Ši”[
+	for (auto& triVec : tris)
+	{
+		for (auto& tri : triVec)
+		{
+			triangleDatas.at(triIndex).push_back(tri);
+		}
+	}
+}
 
 #ifdef _DEBUG
 

@@ -645,6 +645,11 @@ namespace MelLib
 		void SetLerpMovePosition(const Vector3& pos) { lerpMovePosition = pos; }
 
 		/// <summary>
+		/// モデルオブジェクトから三角形の当たり判定を取得し格納し、同じ配列にすべて格納します。
+		/// </summary>
+		void SetModelTriangleDataAll(const std::string& modelObjectIndex,const std::string& triIndex);
+
+		/// <summary>
 		/// 衝突確認を1フレームで複数回行ったときに補間して衝突した時の座標を返します。
 		/// </summary>
 		/// <returns></returns>
