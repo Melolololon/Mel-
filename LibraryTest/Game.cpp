@@ -61,6 +61,9 @@ void Game::Run()
 
 void Game::Initialize()
 {
+	// ‚±‚êGuiValueManager‚ÖˆÚ‚µ‚Ä‚¢‚¢‚©‚à
+	MelLib::GuiOption::GetInstance()->SetGuiDataPath("GameData/GUID/");
+
 	bool SET_EDITER_FLAG = true;
 
 	MelLib::Library::Initialize(1920, 1080, MelLib::Color(30,30,160,255),L"MELLib");
