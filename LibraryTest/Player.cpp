@@ -91,7 +91,7 @@ void Player::Initialize()
 	hp.SetData(10, GetObjectName(), "HP", 0, 100);
 	power.SetData(10, GetObjectName(), "Power", 1, 100);
 	//Move();
-	//modelObjects["main"].SetAnimation("Dash");
+	modelObjects["main"].SetAnimation("Dash");
 	modelObjects["main"].SetAnimationPlayFlag(true);
 
 	////// 上半身に別アニメーションをセット
@@ -111,8 +111,8 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	//SetAngle(GetAngle() + MelLib::Vector3(0, 2, 0));
-	//modelObjects["main"].Update();
+	SetAngle(GetAngle() + MelLib::Vector3(0, 2, 0));
+	modelObjects["main"].Update();
 }
 
 void Player::Draw()

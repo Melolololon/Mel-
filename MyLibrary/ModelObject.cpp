@@ -655,6 +655,7 @@ void MelLib::ModelObject::Update()
 		{
 			FbxAnimation(bone.boneName);
 		}
+		return;
 	}
 }
 
@@ -1641,7 +1642,6 @@ void MelLib::ModelObject::SetAddUV(const MelLib::Vector2& uv, const std::string&
 	}
 }
 
-
 void MelLib::ModelObject::SetAddColor(const Color& color, const std::string& name)
 {
 
@@ -2165,7 +2165,6 @@ void ModelObject::FbxAnimation(const std::string& boneName)
 	else animData.currentTime += animData.animationTimes.frameTime * animData.timeMag;
 
 	animData.animationEnd = false;
-
 
 	/*if (animData.currentTime > animData.animationTimes.endTime) 
 	{
