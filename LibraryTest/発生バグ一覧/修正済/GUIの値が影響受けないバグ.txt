@@ -1,0 +1,1 @@
+1.おそらくGameObjectのSetGUIDataで適当にセットしてるせい
