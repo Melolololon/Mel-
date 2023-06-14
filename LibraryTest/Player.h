@@ -19,6 +19,8 @@ private:
 
 public:
 	Player();
+
+	void Initialize();
 	
 	// XV
     void Update()override;

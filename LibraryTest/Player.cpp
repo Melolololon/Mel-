@@ -66,7 +66,10 @@ Player::Player()
 	// 四角形をセット
 	modelObjects["main"].Create(MelLib::ModelData::Get("test"), GetObjectName());
 
-	// 今読み込んだ値をモデルオブジェクトに反映できてないから
+}
+
+void Player::Initialize()
+{// 今読み込んだ値をモデルオブジェクトに反映できてないから
 	// 初期位置を0,0,5に
 	//SetPosition(GetPosition());
 
@@ -75,7 +78,7 @@ Player::Player()
 	// 当たり判定の作成(球)
 	// Playerの座標を取得し、それをセット
 	sphereDatas["main"].resize(1);
-	sphereDatas["main"][0].SetPosition({2.5f,0,0});
+	sphereDatas["main"][0].SetPosition({ 2.5f,0,0 });
 	sphereDatas["main"][0].SetRadius(1.0f);
 	//modelObjects["main"].SetPosition(GetPosition());
 	modelObjects["main"].SetScale(1);
@@ -83,12 +86,11 @@ Player::Player()
 	sphereFrameHitCheckNum = 1;
 
 
-	
+
 
 	hp.SetData(10, GetObjectName(), "HP", 0, 100);
 	power.SetData(10, GetObjectName(), "Power", 1, 100);
 	//Move();
-	SetAngle(MelLib::Vector3(0, -180, 0));
 	//modelObjects["main"].SetAnimation("Dash");
 	modelObjects["main"].SetAnimationPlayFlag(true);
 
@@ -103,9 +105,8 @@ Player::Player()
 	//modelObjects["main"].SetAnimation("_T","L_Arm_2");
 	//modelObjects["main"].SetAnimation("_T","L_Arm_3");
 
-	SetScale(3);
 
-	SetPosition(MelLib::Vector3(0,0,3));
+	SetPosition(MelLib::Vector3(0, 0, 3));
 }
 
 void Player::Update()
@@ -116,6 +117,7 @@ void Player::Update()
 
 void Player::Draw()
 {
+	MelLib::Vector3 s = GetScale();
 	// ModelObjectsに追加されているModelObjectをすべて描画
 	AllDraw();
 }
