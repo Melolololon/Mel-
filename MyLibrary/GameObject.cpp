@@ -389,12 +389,6 @@ void MelLib::GameObject::SetPreData()
 
 void MelLib::GameObject::SetGUIData()
 {
-	if (position.x != prePosition.x) 
-	{
-
-		int x = 0;
-	}
-
 	SetModelPosition(position - prePosition);
 	SetDataPosition(position - prePosition);
 

@@ -82,11 +82,11 @@ void GameObjectManager::Update()
 	for (int i = 0; i < PRE_OBJECT_SIZE; i++)
 	{
 		objects[i]->SetPreDataPositions();
-		objects[i]->SetPreData();
 		objects[i]->Update();
-		//objects[i]->SetGUIData();
 		// 仮にここに書いてる
+		// 追加した手だとUpdate前と後に書く必要がある
 		objects[i]->SetPreDataPositions();
+		objects[i]->SetPreData();
 	}
 
 
@@ -101,6 +101,7 @@ void GameObjectManager::Update()
 			// 仮にここに書いてる
 			// 追加した手だとUpdate前と後に書く必要がある
 			objects[i]->SetPreDataPositions();
+			objects[i]->SetPreData();
 		}
 
 		/*for (auto& a : addObjects)
