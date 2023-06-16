@@ -133,7 +133,7 @@ namespace MelLib
 		/// <param name="leftUpPos"></param>
 		void SetDrawLeftUpPosition(const Vector2& leftUpPos)
 		{
-			drawLeftUpPosition = leftUpPos;
+			drawLeftUpPosition = leftUpPos * pTexture->GetTextureSize();
 		}
 
 		/// <summary>
@@ -142,7 +142,7 @@ namespace MelLib
 		/// <param name="rightDownPos">右下の座標</param>
 		void SetDrawRigthDownPosition(const Vector2& rightDownPos)
 		{
-			drawRightDownPosition = rightDownPos;
+			drawRightDownPosition = rightDownPos * pTexture->GetTextureSize();
 		}
 
 
@@ -152,8 +152,8 @@ namespace MelLib
 #pragma endregion
 
 #pragma region ゲット
-		Vector2 GetDrawLeftUpPosition()const { return drawLeftUpPosition; }
-		Vector2 GetDrawRigthDownPosition()const { return drawRightDownPosition; }
+		Vector2 GetDrawLeftUpPosition()const { return drawLeftUpPosition / pTexture->GetTextureSize(); }
+		Vector2 GetDrawRigthDownPosition()const { return drawRightDownPosition / pTexture->GetTextureSize(); }
 
 
 #pragma endregion

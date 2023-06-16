@@ -468,6 +468,13 @@ namespace MelLib
 		Vector3 GetScale()const { return scale; }
 
 		/// <summary>
+		/// 前フレームの座標を取得します。
+		/// </summary>
+		Vector3 GetPrePosition()const { return prePosition; }
+		Vector3 GetPreAngle()const { return preAngle; }
+		Vector3 GetPreScale()const { return preScale; }
+
+		/// <summary>
 		/// 速度を取得します。
 		/// </summary>
 		/// <returns></returns>
