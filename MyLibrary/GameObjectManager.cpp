@@ -61,20 +61,6 @@ void GameObjectManager::Update()
 {
 	const size_t PRE_OBJECT_SIZE = objects.size();
 
-
-	if (SceneEditer::GetInstance()->GetIsEdit())
-	{
-		for (int i = 0; i < PRE_OBJECT_SIZE; i++)
-		{
-
-
-			objects[i]->SetPreData();
-			objects[i]->SetGUIData();
-			objects[i]->SetPreDataPositions();
-
-		}
-		return;
-	}
 #pragma region オブジェクトのUpdate
 	//カーソルアップデート
 	if (cursor)
@@ -96,9 +82,9 @@ void GameObjectManager::Update()
 	for (int i = 0; i < PRE_OBJECT_SIZE; i++)
 	{
 		objects[i]->SetPreDataPositions();
-		objects[i]->Update();
 		objects[i]->SetPreData();
-		objects[i]->SetGUIData();
+		objects[i]->Update();
+		//objects[i]->SetGUIData();
 		// 仮にここに書いてる
 		objects[i]->SetPreDataPositions();
 	}

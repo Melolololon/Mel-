@@ -548,13 +548,9 @@ void MelLib::SceneEditer::Reset()
 
 void MelLib::SceneEditer::SetAddObjectsGUIData()
 {
-	for (auto& object : addObjects)
-	{
-		object->SetPreData();
-		object->SetGUIData();
-		object->SetPreDataPositions();
-	}
+	if (!pSelectListObject)return;
 
+	pSelectListObject->SetGUIData();
 }
 
 bool MelLib::SceneEditer::ReleaseCheck()
@@ -778,8 +774,6 @@ void MelLib::SceneEditer::Update()
 	}
 	if (!isEdit)return;
 
-	// 更新
-	SetAddObjectsGUIData();
 
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
@@ -857,6 +851,9 @@ void MelLib::SceneEditer::Update()
 	pEditSelectObject = refObjects[OBJECT_NAME].get();
 	pEditSelectObject->SetGUIData();
 
+	// 更新
+	SetAddObjectsGUIData();
+
 	// pEditSelectObjectのウィンドウ設定
 	for (const auto& p : pRegisterObjects)
 	{
@@ -889,9 +886,6 @@ void MelLib::SceneEditer::Update()
 		GuiValueManager::GetInstance()->ChangeTypingInputFlag(CAMERA_WINDOW_NAME);
 
 		if (pSelectListObject)GuiValueManager::GetInstance()->ChangeTypingInputFlag(pSelectListObject->GetObjectName());
-
-
-
 	}
 
 #pragma endregion
@@ -947,6 +941,8 @@ void MelLib::SceneEditer::Update()
 	// オブジェクト一覧の描画
 	DrawObjectList();
 
+	
+
 	// 削除
 	if (pushControl && Input::KeyTrigger(DIK_D) && pSelectListObject)
 	{
@@ -994,6 +990,7 @@ void MelLib::SceneEditer::Update()
 	}
 
 	pEditSelectObject->SetPreData();
+	if(pSelectListObject)pSelectListObject->SetPreData();
 
 
 	UpdateCamera();
