@@ -27,6 +27,7 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 	{
 		if (d.first == windowName)return;
 	}
+
 	drawWindowFlag.emplace(windowName, true);
 	typingInputFlag.emplace(windowName, false);
 }
@@ -382,6 +383,17 @@ void MelLib::GuiValueManager::Update()
 		if (!drawWindowFlag[WINDOW_NAME])continue;
 
 		ImguiManager::GetInstance()->BeginDrawWindow(WINDOW_NAME);
+
+		// 座標セット
+		if (windowPositionFixedFlags[WINDOW_NAME]) 
+		{
+			ImguiManager::GetInstance()->SetPosition(windowPositions[WINDOW_NAME]);
+		}
+		// サイズセット
+		if (windowSizeFixedFlags[WINDOW_NAME])
+		{
+			ImguiManager::GetInstance()->SetSize(windowSizes[WINDOW_NAME]);
+		}
 
 		// 切り替わったかどうか
 		bool changeFlag = false;
@@ -1002,4 +1014,5 @@ void MelLib::GuiValueManager::SetDrawWindowFlagAll(bool flag)
 		drawFlag.second = flag;
 	}
 }
+
 

@@ -64,7 +64,7 @@ void Game::Initialize()
 	// これGuiValueManagerへ移していいかも
 	MelLib::GuiOption::GetInstance()->SetGuiDataPath("GameData/GUID/");
 
-	bool SET_EDITER_FLAG = false;
+	bool SET_EDITER_FLAG = true;
 
 	MelLib::Library::Initialize(1920, 1080, MelLib::Color(30,30,160,255),L"MELLib");
 	MelLib::Library::SetFramesPerSecond60(true);
@@ -85,7 +85,7 @@ void Game::Initialize()
 	MelLib::GameObjectManager::GetInstance()->ReserveObjectArray(100);
 
 	//for (int i = 0; i < 1; i++)MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<TestObject>());
-    MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
+    //MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
     //MelLib::GameObjectManager::GetInstance()->AddObject(std::make_shared<Player>());
 	//MelLib::SceneManager::GetInstance()->SetStartScene(new Play());
 #pragma endregion
@@ -107,7 +107,7 @@ void Game::Initialize()
 	MelLib::SceneEditer::GetInstance()->Initialize();
 
 	// エディターに追加(Unityでいうプレハブ作成)
-	//MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
+	MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<Player>(),"Actor");
 	/*MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(), "TestActor"); */
 	//MelLib::SceneEditer::GetInstance()->RegisterObject(std::make_shared<TestObject>(),"TestActor2");
 
