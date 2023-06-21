@@ -130,12 +130,14 @@ void Game::Update()
 	MelLib::SceneEditer::GetInstance()->Update();
 	MelLib::GameObjectManager::GetInstance()->Update();
 
+	if (MelLib::Input::KeyTrigger(DIK_1)) 
+	{
+		MelLib::Input::SetDrawCursorFlag(!MelLib::Input::GetDrawCursorFlag());
+	}
 }
 
 void Game::Draw()
 {
-	
-
 	//MelLib::SceneManager::GetInstance()->Draw();
 	MelLib::SceneEditer::GetInstance()->Draw();
 
