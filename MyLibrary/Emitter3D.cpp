@@ -33,12 +33,12 @@ void MelLib::Emitter3D::ParticleUpdate()
 	{
 		if (!particleUpdateDrawFlag[i])return;
 
-		particles[i].Update();
+		particles[i]->Update();
 
-		if (particles[i].GetIsDead())
+		if (particles[i]->GetIsDead())
 		{
-			particles[i].ResetParametor();
-			particles[i].Initialize();
+			particles[i]->ResetParametor();
+			particles[i]->Initialize();
 
 			if (isStop)
 			{
@@ -54,13 +54,22 @@ MelLib::Emitter3D::Emitter3D(const Particle3D& pParticle, const unsigned int par
 	:GameObject(name)
 {
 	//pParticleを元にパーティクルを生成
-	particles.resize(particleNum, pParticle);
+	//particles.resize(particleNum, pParticle);
+
+	particles.resize(particleNum);
+	
+	for (auto& particle : particles)
+	{
+		particle = pParticle.GetNewPtr();
+		particle->Initialize();
+	}
 
 	particleUpdateDrawFlag.resize(particles.size(), false);
 	releaseTimer.SetMaxTime(releaseTime);
 
 	releaseTimer.SetStopFlag(false);
-
+	
+	
 }
 
 void MelLib::Emitter3D::Update()
@@ -74,6 +83,6 @@ void MelLib::Emitter3D::Draw()
 	for (int i = 0;i < particles.size(); i++)
 	{
 		if (!particleUpdateDrawFlag[i])return;
-		particles[i].Draw();
+		particles[i]->Draw();
 	}
 }

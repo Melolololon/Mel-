@@ -24,6 +24,9 @@
 #include"Collision.h"
 #include"LibMath.h"
 
+#include<Emitter3D.h>
+#include"TestParticle.h"
+
 Game::Game() {}
 
 Game::~Game() {}
@@ -58,6 +61,7 @@ void Game::Run()
 
 	Finalize();
 }
+
 
 void Game::Initialize()
 {
@@ -115,6 +119,11 @@ void Game::Initialize()
 	//MelLib::SceneEditer::GetInstance()->LoadEditData("BoxParty");
 
 
+
+	// パーティクルテスト
+	TestParticle testPar;
+	std::shared_ptr<MelLib::Emitter3D> emitterTest = std::make_shared<MelLib::Emitter3D>(testPar, 10, 10, 0, "Test");
+	MelLib::GameObjectManager::GetInstance()->AddObject(emitterTest);
 }
 
 

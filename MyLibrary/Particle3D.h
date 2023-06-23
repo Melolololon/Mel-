@@ -2,6 +2,12 @@
 #include"Sprite3D.h"
 #include"FrameTimer.h"
 
+// 使い方
+// 自分でパーティクルクラスを作る
+// 作ったパーティクルクラスに継承する
+// 自分の思い通りに更新処理を書く
+// コンストラクタに情報をセットする
+
 namespace MelLib
 {
 	// スプライト3Dを利用したパーティクルを作るときに継承する基底クラス
@@ -20,6 +26,7 @@ namespace MelLib
 		void TrueIsDeadFlag() { isDead = true; }
 
 	public:
+		Particle3D() {}
 		Particle3D(const Color& color);
 		Particle3D(Texture* pTexture);
 
@@ -39,6 +46,7 @@ namespace MelLib
 		virtual void Initialize();
 		virtual void Update();
 		void Draw();
+		virtual std::shared_ptr<Particle3D>GetNewPtr()const { return nullptr; }
 
 
 		/// <summary>

@@ -112,6 +112,7 @@ void MelLib::Sprite3D::Create()
 
 void Sprite3D::Create(const Color& color)
 {
+	this->color = color;
 	CreateBuffer();
 	InitializeVertices();
 	SetOneColorSpriteColor(color);

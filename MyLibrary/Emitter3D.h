@@ -2,11 +2,10 @@
 #include"GameObject.h"
 #include"Particle3D.h"
 
-
-// 生成頻度とか寿命も設定できるようにする
-// 寿命はパーティクルクラスでいいかも
-// こっちでも寿命指定できるようにしてもいいかも
-
+// 使い方
+// パーティクルクラスを作成する
+// コンストラクタにパーティクルと設定を渡す
+// GameObjectManagerに突っ込む
 
 namespace MelLib
 {
@@ -14,7 +13,7 @@ namespace MelLib
 	{
     private:
         //std::vector<std::shared_ptr<Particle3D>>particles;
-        std::vector<Particle3D>particles;
+        std::vector<std::shared_ptr<Particle3D>>particles;
 
         // Update、Drawを行うかどうかのフラグ
         std::vector<bool>particleUpdateDrawFlag;
@@ -36,6 +35,15 @@ namespace MelLib
 
     public:
        // Emitter3D(const std::vector<std::shared_ptr<Particle3D>>& pParticle, const Vector3& pos, unsigned int releaseTime);
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pParticle">パーティクルのインスタンス</param>
+        /// <param name="particleNum">生成数</param>
+        /// <param name="releaseTime">消えるまでの時間</param>
+        /// <param name="pos">初期位置</param>
+        /// <param name="name">ウィンドウの名前</param>
         Emitter3D(const Particle3D& pParticle, unsigned int particleNum, unsigned int releaseTime, const Vector3& pos,const std::string& name);
         ~Emitter3D() {}
 
