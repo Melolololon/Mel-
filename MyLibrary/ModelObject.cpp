@@ -503,8 +503,6 @@ void ModelObject::MapConstData(const Camera* camera)
 					bones[j].invInitialPose *
 					matCurrentPose *
 					invMeshGlobalTransform;
-
-
 			}
 		}
 
