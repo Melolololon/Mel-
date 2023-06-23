@@ -63,7 +63,7 @@ bool Sprite2DBase::Initialize(const int winWidth, const int winHeight)
 void MelLib::Sprite2DBase::SetScale(const Vector2& scale, bool changeDrawArea)
 {
 	constData.scale = scale.ToXMFLOAT2();
-	if (!pTexture && changeDrawArea)
+	if (!pTexture && changeDrawArea) 
 	{
 		drawRightDownPosition = scale;
 	}

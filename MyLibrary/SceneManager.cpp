@@ -30,24 +30,28 @@ void MelLib::SceneManager::Change()
 	//終了処理
 	currentScene->Finalize();
 
-	// 違うシーンに切り替える場合、リソースを消す
-	if (typeid(currentScene) != typeid(newScene))
+	// エディターでテストプレイしていたら繰り返す
+	// そうでなかったら新規シーンに切り替え
+	if (!SceneEditer::GetInstance()->GetEditerFlag())
 	{
-		//一括削除対象リソースを削除
-		currentScene->ResourceBatchDeletion();
+		// 違うシーンに切り替える場合、リソースを消す
+		if (typeid(currentScene) != typeid(newScene))
+		{
+			//一括削除対象リソースを削除
+			currentScene->ResourceBatchDeletion();
+		}
+
+		//シーン切り替え
+		//シーンを削除
+		delete currentScene;
+		//入れ替え
+		currentScene = newScene;
+
 	}
-
-	//シーン切り替え
-
-	//同じポインタセット防止
-	if (newScene == currentScene)assert(0);
-	//シーンを削除
-	delete currentScene;
-	//入れ替え
-	currentScene = newScene;
 
 	//初期化
 	currentScene->FalseIsEnd();
+	SceneEditer::GetInstance()->LoadTestPlaySaveData();
 	currentScene->Initialize();
 }
 
@@ -71,11 +75,11 @@ void SceneManager::SetStartScene(Scene* startScene)
 void SceneManager::Update()
 {
 
-	if (!currentScene 
-	|| SceneEditer::GetInstance()->GetIsEdit() 
-		&& SceneEditer::GetInstance()->GetReleaeEdit() 
+	if (!currentScene
+		|| SceneEditer::GetInstance()->GetIsEdit()
+		&& SceneEditer::GetInstance()->GetReleaeEdit()
 		&& SceneEditer::GetInstance()->GetEditerFlag())return;
-	
+
 	if (currentScene->GetIsEnd())Change();
 
 	currentScene->Update();
@@ -95,7 +99,7 @@ void SceneManager::Finalize()
 		currentScene->Finalize();
 		delete currentScene;
 	}
-	
+
 }
 
 Scene* SceneManager::GetCurrentScene()
