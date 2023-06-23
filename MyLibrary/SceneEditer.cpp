@@ -726,8 +726,6 @@ void MelLib::SceneEditer::Update()
 	if (!editorFlag || ReleaseCheck())return;
 
 
-	// マウスカーソル強制表示
-	Input::SetDrawCursorFlag(true);
 
 	// シーンの更新オンオフ処理
 	if (Input::KeyTrigger(DIK_F5) && addObjects.size() != 0)
@@ -790,6 +788,8 @@ void MelLib::SceneEditer::Update()
 	}
 	if (!isEdit)return;
 
+	// マウスカーソル強制表示
+	Input::SetDrawCursorFlag(true);
 
 	if (pRegisterObjects.size() == 0 || !ImguiManager::GetInstance()->GetReleaseDrawFrag())return;
 
