@@ -300,10 +300,20 @@ void MelLib::SceneEditer::LoadEditData(const std::string& sceneName)
 			{
 				GameObject* p = pRegisterObject.second.get();
 
-				if (className == typeid(*p).name())
+				// _番号を抜いたオブジェクト名で比較
+				std::string addObjectName = objectName;
+				// 末端のアンダーバーのインデックスを取得
+				int index = addObjectName.find_last_of("_");
+
+				if (index != -1)
 				{
-					pObject = p->GetNewPtr();
-					break;
+					addObjectName.erase(addObjectName.begin() + index, addObjectName.end());
+
+					if (pRegisterObject.second->GetObjectName() == addObjectName)
+					{
+						pObject = p->GetNewPtr();
+						break;
+					}
 				}
 			}
 			if (pObject)break;
