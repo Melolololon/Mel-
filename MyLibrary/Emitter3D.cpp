@@ -92,4 +92,9 @@ void MelLib::Emitter3D::SetPosition(const Vector3& pos)
 {
 	SetPositionDefault(pos);
 	// ここにパーティクルのStartPosを変更する処理を書く
+
+	for (auto& par : particles) 
+	{
+		par->SetStartPosition(pos);
+	}
 }

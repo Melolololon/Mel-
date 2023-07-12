@@ -394,6 +394,7 @@ namespace MelLib
 		/// GameOjectデフォルトの移動関数
 		/// </summary>
 		void SetPositionDefault(const Vector3& pos);
+
 		/// <summary>
 		/// 座標をセットします。モデルオブジェクトと当たり判定はセット前の座標との差だけ移動します。
 		/// </summary>
@@ -697,6 +698,11 @@ namespace MelLib
 
 
 #pragma endregion
+
+		/// <summary>
+		/// 開発者用関数。オブジェクトの数値をリセットします。
+		/// </summary>
+		static void ResetObjectNumbers();
 
 	};
 }

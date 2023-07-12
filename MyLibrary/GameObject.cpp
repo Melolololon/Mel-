@@ -946,3 +946,13 @@ void MelLib::GameObject::DrawCollisionCheckModel()
 }
 
 #endif // _DEBUG
+
+void MelLib::GameObject::ResetObjectNumbers()
+{
+	for (auto& num : objectCreateNumber) 
+	{
+		num.second = 1;
+	}
+}
+
+

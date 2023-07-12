@@ -49,7 +49,8 @@ void MelLib::SceneManager::Change()
 
 	}
 
-	//‰Šú‰»
+	// ‰Šú‰»
+	GameObject::ResetObjectNumbers();
 	currentScene->FalseIsEnd();
 	SceneEditer::GetInstance()->LoadTestPlaySaveData();
 	currentScene->Initialize();
@@ -122,4 +123,5 @@ void MelLib::SceneManager::ReLoadScene()
 	GameObjectManager::GetInstance()->AllEraseObject();
 	if (!currentScene)return;
 	currentScene->Initialize();
+	GameObject::ResetObjectNumbers();
 }

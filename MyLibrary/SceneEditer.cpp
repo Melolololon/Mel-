@@ -758,6 +758,7 @@ void MelLib::SceneEditer::Update()
 		{
 			// スコアなどをリセットするために読み込みなおす
 			SceneManager::GetInstance()->ReLoadScene();
+			GameObject::ResetObjectNumbers();
 			LoadEditData(TEST_START_EDIT_DATA_NAME);
 
 
