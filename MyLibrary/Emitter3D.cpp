@@ -62,6 +62,7 @@ MelLib::Emitter3D::Emitter3D(const Particle3D& pParticle, const unsigned int par
 	{
 		particle = pParticle.GetNewPtr();
 		particle->Initialize();
+		particle->SetStartPosition(GetPosition());
 	}
 
 	particleUpdateDrawFlag.resize(particles.size(), false);

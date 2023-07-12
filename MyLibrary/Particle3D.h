@@ -59,6 +59,6 @@ namespace MelLib
 		}
 
 		bool GetIsDead() { return isDead; }
-		
+		void SetStartPosition(const Vector3& pos) { startPosition = pos; }
 	};
 }
