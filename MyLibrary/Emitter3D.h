@@ -55,6 +55,9 @@ namespace MelLib
             isStop = flag; 
             releaseTimer.SetStopFlag(flag);
         }
+
+        void SetPosition(const Vector3& pos) override;
+       
         
        /* void SetPosition(const Vector3& pos) { SetPosition(pos); }
 

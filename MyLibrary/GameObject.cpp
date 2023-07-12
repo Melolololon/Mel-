@@ -206,6 +206,8 @@ void MelLib::GameObject::SetDataScale(const Vector3& scale)
 	}
 }
 
+
+
 GameObject::GameObject(const std::string& name)
 	:objectName(name)
 	,position(guiPosition.GetRefValue())
@@ -316,13 +318,17 @@ void MelLib::GameObject::AddPosition(const Vector3& vec)
 	position += vec;
 }
 
-void MelLib::GameObject::SetPosition(const Vector3& pos)
+void MelLib::GameObject::SetPositionDefault(const Vector3& pos)
 {
 	SetModelPosition(pos - position);
 	SetDataPosition(pos - position);
-	 
-	position = pos;
 
+	position = pos;
+}
+
+void MelLib::GameObject::SetPosition(const Vector3& pos)
+{
+	SetPositionDefault(pos);
 }
 
 void MelLib::GameObject::SetObjectAndModelPosition(const Vector3& pos)
