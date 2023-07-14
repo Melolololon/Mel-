@@ -23,7 +23,12 @@ namespace MelLib
         // 放出停止フラグ
         bool isStop = false;
 
-        
+        // 再放出フラグ
+        bool reShot = true;
+        // reShotがfalseにより放出しないようになっているかどうか
+        bool reShotStop = false;
+
+        bool allShotDead = false;
     private:
 
         void CheckChangeUpdateDrawFlag();
@@ -40,11 +45,12 @@ namespace MelLib
         /// 
         /// </summary>
         /// <param name="pParticle">パーティクルのインスタンス</param>
+        /// <param name="allSHotDead">全てのパーティクルのisDeadが呼ばれたらエミッターを削除するかどうか</param>
         /// <param name="particleNum">生成数</param>
-        /// <param name="releaseTime">消えるまでの時間</param>
+        /// <param name="releaseTime">パーティクルの発射頻度(フレームで指定)</param>
         /// <param name="pos">初期位置</param>
         /// <param name="name">ウィンドウの名前</param>
-        Emitter3D(const Particle3D& pParticle, unsigned int particleNum, unsigned int releaseTime, const Vector3& pos,const std::string& name);
+        Emitter3D(const Particle3D& pParticle,bool allShotDead, unsigned int particleNum, unsigned int releaseTime, const Vector3& pos,const std::string& name);
         ~Emitter3D() {}
 
         void Update()override;
@@ -58,7 +64,8 @@ namespace MelLib
 
         void SetPosition(const Vector3& pos) override;
        
-        
+        void SetReShotFlag(bool flag);
+        bool GetReShotFlag()const { return reShot; }
        /* void SetPosition(const Vector3& pos) { SetPosition(pos); }
 
         Vector3 GetPosition()const { return GetPosition(); }*/

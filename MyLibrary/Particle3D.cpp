@@ -39,3 +39,14 @@ void MelLib::Particle3D::Draw()
 	particleSprite.Draw();
 }
 
+void MelLib::Particle3D::SetStartPosition(const Vector3& pos)
+{
+	startPosition = pos;
+
+	// 更新描画中じゃなかったら座標を更新
+	if (!updateDrawFlag) 
+	{
+		particleSprite.SetPosition(startPosition);
+	}
+}
+

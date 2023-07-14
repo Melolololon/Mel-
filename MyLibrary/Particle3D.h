@@ -18,7 +18,7 @@ namespace MelLib
 
 		Vector3 startPosition;
 		bool isDead = false;
-
+		bool updateDrawFlag = false;
 	protected:
 		/// <summary>
 		/// パーティクルが消える(初期位置に戻す)かどうかのフラグをtrueにします。
@@ -59,6 +59,11 @@ namespace MelLib
 		}
 
 		bool GetIsDead() { return isDead; }
-		void SetStartPosition(const Vector3& pos) { startPosition = pos; }
+		void SetStartPosition(const Vector3& pos);
+
+
+
+		void SetUpdateDrawFlag(const bool flag) { updateDrawFlag = flag; }
+		bool GetUpdateDrawFlag()const { return updateDrawFlag; }
 	};
 }
