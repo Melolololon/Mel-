@@ -18,6 +18,7 @@ void TestParticle::Initialize()
 
 	moveVec = MelLib::Random::GetRandomVector3NumberRangeSelect(-1.0f, 1.0f, 1);
 	moveVec = moveVec.Normalize();
+	particleSprite.SetColor(MelLib::Color(255, 0, 0, 70));
 }
 
 void TestParticle::Update()
