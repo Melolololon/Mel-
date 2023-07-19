@@ -2,6 +2,7 @@
 
 #include<Random.h>
 
+// Particle3Dの引数で色またはテクスチャを指定
 TestParticle::TestParticle() : Particle3D(MelLib::Color(255, 255))
 {
 }
@@ -21,8 +22,10 @@ void TestParticle::Initialize()
 
 void TestParticle::Update()
 {
+	// ここに更新処理を追加
 	particleSprite.SetPosition(particleSprite.GetPosition() + moveVec * 0.2f);
 
+	// 時間で消す
 	if (timer.GetMaxOverFlag())isDead = true;
 }
 

@@ -2,6 +2,7 @@
 #include <Particle3D.h>
 #include<FrameTimer.h>
 
+// パーティクル例
 class TestParticle :
     public MelLib::Particle3D
 {

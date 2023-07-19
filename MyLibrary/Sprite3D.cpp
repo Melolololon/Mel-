@@ -202,6 +202,12 @@ void Sprite3D::MatrixMap(const Camera* camera)
 	constBuffer->Unmap(0, nullptr);
 }
 
+void Sprite3D::SetColor(const Color& color)
+{
+	this->color = color;
+	SetOneColorSpriteColor(color);
+}
+
 void Sprite3D::SetBillboardFlag(const bool flagX, const bool flagY, const bool flagZ)
 {
 	billboardX = flagX;

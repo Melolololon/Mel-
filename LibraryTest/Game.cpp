@@ -122,8 +122,7 @@ void Game::Initialize()
 
 	// パーティクルテスト
 	TestParticle testPar;
-	std::shared_ptr<MelLib::Emitter3D> emitterTest = std::make_shared<MelLib::Emitter3D>(testPar,true, 10, 0, 0, "Test");
-	emitterTest->SetPosition({ 4,0,0 });
+	std::shared_ptr<MelLib::Emitter3D> emitterTest = std::make_shared<MelLib::Emitter3D>(testPar,false, 10, 0, 0, "Test");
 	MelLib::GameObjectManager::GetInstance()->AddObject(emitterTest);
 }
 

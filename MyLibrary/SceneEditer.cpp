@@ -573,6 +573,10 @@ void MelLib::SceneEditer::SetAddObjectsGUIData()
 {
 	if (!pSelectListObject)return;
 
+	if (MelLib::Input::MouseButtonTrigger(MelLib::MouseButton::LEFT)) 
+	{
+		int r0iegfh = 0;
+	}
 	pSelectListObject->SetGUIData();
 }
 

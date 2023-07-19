@@ -500,8 +500,7 @@ void MelLib::GuiValueManager::Update()
 					/*if (changeFlag)
 					{
 						const char* data = reinterpret_cast<char*>(&num);
-						Save(WINDOW_NAME, LAVEL, data, typeid(num), sizeof(num), changeFlag);
-						guiVector3 = num;
+						
 					}*/
 				}
 
@@ -543,8 +542,9 @@ void MelLib::GuiValueManager::Update()
 
 
 	bool pushCtrl = Input::KeyState(DIK_LCONTROL) || Input::KeyState(DIK_RCONTROL);
+	
 	// ï€ë∂
-	if (pushCtrl && Input::KeyTrigger(DIK_S))Export();
+	if (pushCtrl && Input::KeyTrigger(DIK_S) || Input::KeyTrigger(DIK_F5))Export();
 
 	//// ì«çû
 	//if (pushCtrl && Input::KeyTrigger(DIK_L))

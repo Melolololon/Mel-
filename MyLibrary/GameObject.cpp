@@ -230,9 +230,9 @@ GameObject::GameObject(const std::string& name)
 	}
 
 
-	guiPosition.SetData(0, objectName, "Position", -1000, 1000);
-	guiAngle.SetData(0, objectName, "Angle", -359, 359);
-	guiScale.SetData(1, objectName, "Scale", -10, 10);
+	guiPosition.SetData(0, objectName, "GO_Position", -1000, 1000);
+	guiAngle.SetData(0, objectName, "GO_Angle", -359, 359);
+	guiScale.SetData(1, objectName, "GO_Scale", -10, 10);
 
 
 	SetPreData();
@@ -351,6 +351,7 @@ void MelLib::GameObject::SetAngle(const Vector3& angle)
 
 void MelLib::GameObject::SetScale(const Vector3& scale)
 {
+
 	SetModelScale(scale - this->scale);
 	SetDataScale(scale - this->scale);
 	this->scale = scale;
@@ -401,7 +402,7 @@ void MelLib::GameObject::SetGUIData()
 	SetModelAngle(angle - preAngle);
 	SetDataAngle(angle - preAngle);
 	SetModelScale(scale - preScale);
-	SetModelScale(scale - preScale);
+	SetDataScale(scale - preScale);
 }
 
 

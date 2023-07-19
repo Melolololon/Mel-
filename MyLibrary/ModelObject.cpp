@@ -2264,10 +2264,10 @@ bool ModelObject::Create(ModelData* pModelData, const std::string& objectName, C
 
 	this->objectName = objectName;
 
-	if (createCount[objectName] >= 1) 
+	/*if (createCount[objectName] >= 1) 
 	{
 		this->objectName += "_" + std::to_string(createCount[objectName]);
-	}
+	}*/
 
 	createCount[objectName]++;
 
