@@ -196,13 +196,22 @@ void MelLib::GuiValueManager::Load()
 
 				// ‹æØ‚è‚Ü‚Åƒ‹[ƒv‚µ‚ÄŠi”[
 				std::string lavel;
-				char c = 0;
+				char c = -2;
+
+				bool bre = false;
 				while (1)
 				{
 					file.read(&c, 1);
 					if (c == -1)break;
+					if (c == -2)
+					{
+						bre = true;
+						break;
+					}
 					lavel += c;
 				}
+
+				if (bre)break;
 
 				std::string param = lavel;
 				param += -1;
