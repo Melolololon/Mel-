@@ -69,7 +69,7 @@ namespace MelLib
 #pragma region ƒZƒbƒg
 
 
-		void SetColor(const Color& color) { this->color = color; }
+		void SetColor(const Color& color);
 		void SetTexture(Texture* pTexture) { this->pTexture = pTexture; }
 
 #pragma region ‘€ì

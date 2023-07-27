@@ -161,33 +161,38 @@ void Sprite2DBase::MatrixMap(Texture* texture)
 		//matWorld *= DirectX::XMMatrixTranslation(rotationPoint.x - constData.scale.x / 2, rotationPoint.y - constData.scale.y / 2, 0.0f);
 	}
 
-	const Vector2 MOVE_VECTOR = Vector2
-	(
-		size.x * (scalingPoint.x - 0.5f),
-		size.y * (scalingPoint.y - 0.5f)
-	);
 
-	// à⁄ìÆ
-	matWorld *= DirectX::XMMatrixTranslation
-	(
-		-MOVE_VECTOR.x, -MOVE_VECTOR.y,
-		0.0f
-	);
+	// ÉeÉNÉXÉ`ÉÉñ≥ÇµÇÕí∏ì_ÇíºÇ≈Ç¢Ç∂ÇÈÇΩÇﬂñ≥éã
+	if (pTexture) {
+		const Vector2 MOVE_VECTOR = Vector2
+		(
+			size.x * (scalingPoint.x - 0.5f),
+			size.y * (scalingPoint.y - 0.5f)
+		);
 
-	// ägèk
-	matWorld *= DirectX::XMMatrixScaling
-	(
-		constData.scale.x,
-		constData.scale.y,
-		1
-	);
 
-	// ñﬂÇ∑
-	matWorld *= DirectX::XMMatrixTranslation
-	(
-		MOVE_VECTOR.x, MOVE_VECTOR.y,
-		0.0f
-	);
+		// à⁄ìÆ
+		matWorld *= DirectX::XMMatrixTranslation
+		(
+			-MOVE_VECTOR.x, -MOVE_VECTOR.y,
+			0.0f
+		);
+
+		// ägèk
+		matWorld *= DirectX::XMMatrixScaling
+		(
+			constData.scale.x,
+			constData.scale.y,
+			1
+		);
+
+		// ñﬂÇ∑
+		matWorld *= DirectX::XMMatrixTranslation
+		(
+			MOVE_VECTOR.x, MOVE_VECTOR.y,
+			0.0f
+		);
+	}
 
 	// âÒì]ëOÇ…à⁄ìÆ
 	Vector2 textureSize = 1.0f;

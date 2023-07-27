@@ -206,6 +206,8 @@ void MelLib::GameObject::SetDataScale(const Vector3& scale)
 	}
 }
 
+
+
 GameObject::GameObject(const std::string& name)
 	:objectName(name)
 	,position(guiPosition.GetRefValue())
@@ -228,9 +230,9 @@ GameObject::GameObject(const std::string& name)
 	}
 
 
-	guiPosition.SetData(0, objectName, "Position", -1000, 1000);
-	guiAngle.SetData(0, objectName, "Angle", -359, 359);
-	guiScale.SetData(1, objectName, "Scale", -10, 10);
+	guiPosition.SetData(0, objectName, "GO_Position", -1000, 1000);
+	guiAngle.SetData(0, objectName, "GO_Angle", -359, 359);
+	guiScale.SetData(1, objectName, "GO_Scale", -10, 10);
 
 
 	SetPreData();
@@ -316,13 +318,17 @@ void MelLib::GameObject::AddPosition(const Vector3& vec)
 	position += vec;
 }
 
-void MelLib::GameObject::SetPosition(const Vector3& pos)
+void MelLib::GameObject::SetPositionDefault(const Vector3& pos)
 {
 	SetModelPosition(pos - position);
 	SetDataPosition(pos - position);
-	 
-	position = pos;
 
+	position = pos;
+}
+
+void MelLib::GameObject::SetPosition(const Vector3& pos)
+{
+	SetPositionDefault(pos);
 }
 
 void MelLib::GameObject::SetObjectAndModelPosition(const Vector3& pos)
@@ -345,6 +351,7 @@ void MelLib::GameObject::SetAngle(const Vector3& angle)
 
 void MelLib::GameObject::SetScale(const Vector3& scale)
 {
+
 	SetModelScale(scale - this->scale);
 	SetDataScale(scale - this->scale);
 	this->scale = scale;
@@ -392,8 +399,10 @@ void MelLib::GameObject::SetGUIData()
 	SetModelPosition(position - prePosition);
 	SetDataPosition(position - prePosition);
 
-	SetAngle(angle);
-	SetScale(scale);
+	SetModelAngle(angle - preAngle);
+	SetDataAngle(angle - preAngle);
+	SetModelScale(scale - preScale);
+	SetDataScale(scale - preScale);
 }
 
 
@@ -675,8 +684,34 @@ unsigned int MelLib::GameObject::GetFrameHitCheckNumber(ShapeType3D type) const
 	return 1;
 }
 
+void MelLib::GameObject::SetModelTriangleDataAll(const std::string& modelObjectIndex, const std::string& triIndex)
+{
+	// ŽOŠpŒ`‚ðŽæ“¾
+	std::vector<std::vector<TriangleData>>tris;
+	modelObjects.at(modelObjectIndex).GetModelTriangleData(tris);
+
+	// ƒŠƒTƒCƒY
+	size_t trisSize = 0;
+	for (auto& triVec : tris)
+	{
+		trisSize += triVec.size();
+	}
+	triangleDatas.at(triIndex).resize(trisSize);
+
+	// Ši”[
+	for (auto& triVec : tris)
+	{
+		for (auto& tri : triVec)
+		{
+			triangleDatas.at(triIndex).push_back(tri);
+		}
+	}
+}
+
 
 #ifdef _DEBUG
+
+
 
 
 
@@ -915,3 +950,13 @@ void MelLib::GameObject::DrawCollisionCheckModel()
 }
 
 #endif // _DEBUG
+
+void MelLib::GameObject::ResetObjectNumbers()
+{
+	for (auto& num : objectCreateNumber) 
+	{
+		num.second = 1;
+	}
+}
+
+

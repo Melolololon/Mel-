@@ -79,7 +79,10 @@ namespace MelLib
 		Vector3* castVector3Data(const std::string& data);
 		bool* castBoolData(const std::string& data);
 
-
+		std::unordered_map <std::string, MelLib::Vector2>windowPositions;
+		std::unordered_map <std::string, MelLib::Vector2>windowSizes;
+		std::unordered_map <std::string, bool>windowPositionFixedFlags;
+		std::unordered_map <std::string, bool>windowSizeFixedFlags;
 
 	public:
 		GuiValueManager(GuiValueManager& m) = delete;
@@ -135,6 +138,11 @@ namespace MelLib
 		void ChangeDrawWindowFlag(const std::string& windowName) { drawWindowFlag[windowName] = !drawWindowFlag[windowName]; }
 
 		void SetDrawWindowFlagAll(bool flag);
+
+		void SetPosition(const MelLib::Vector2& pos, const std::string& windowName) { windowPositions[windowName] = pos; }
+		void SetFixedPosition(const bool flag, const std::string& windowName) { windowPositionFixedFlags[windowName] = flag; }
+		void SetSize(const MelLib::Vector2& size, const std::string& windowName) { windowSizes[windowName] = size; }
+		void SetFixedSize(const bool flag, const std::string& windowName) { windowSizeFixedFlags[windowName] = flag; }
 	};
 
 }

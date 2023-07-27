@@ -27,6 +27,7 @@ void MelLib::GuiValueManager::AddCreateWindowName(const std::string& windowName)
 	{
 		if (d.first == windowName)return;
 	}
+
 	drawWindowFlag.emplace(windowName, true);
 	typingInputFlag.emplace(windowName, false);
 }
@@ -195,13 +196,22 @@ void MelLib::GuiValueManager::Load()
 
 				// 区切りまでループして格納
 				std::string lavel;
-				char c = 0;
+				char c = -2;
+
+				bool bre = false;
 				while (1)
 				{
 					file.read(&c, 1);
 					if (c == -1)break;
+					if (c == -2) 
+					{
+						bre = true;
+						break;
+					}
 					lavel += c;
 				}
+
+				if (bre)break;
 
 				std::string param = lavel;
 				param += -1;
@@ -383,6 +393,17 @@ void MelLib::GuiValueManager::Update()
 
 		ImguiManager::GetInstance()->BeginDrawWindow(WINDOW_NAME);
 
+		// 座標セット
+		if (windowPositionFixedFlags[WINDOW_NAME]) 
+		{
+			ImguiManager::GetInstance()->SetPosition(windowPositions[WINDOW_NAME]);
+		}
+		// サイズセット
+		if (windowSizeFixedFlags[WINDOW_NAME])
+		{
+			ImguiManager::GetInstance()->SetSize(windowSizes[WINDOW_NAME]);
+		}
+
 		// 切り替わったかどうか
 		bool changeFlag = false;
 
@@ -488,8 +509,7 @@ void MelLib::GuiValueManager::Update()
 					/*if (changeFlag)
 					{
 						const char* data = reinterpret_cast<char*>(&num);
-						Save(WINDOW_NAME, LAVEL, data, typeid(num), sizeof(num), changeFlag);
-						guiVector3 = num;
+						
 					}*/
 				}
 
@@ -531,8 +551,9 @@ void MelLib::GuiValueManager::Update()
 
 
 	bool pushCtrl = Input::KeyState(DIK_LCONTROL) || Input::KeyState(DIK_RCONTROL);
+	
 	// 保存
-	if (pushCtrl && Input::KeyTrigger(DIK_S))Export();
+	if (pushCtrl && Input::KeyTrigger(DIK_S) || Input::KeyTrigger(DIK_F5))Export();
 
 	//// 読込
 	//if (pushCtrl && Input::KeyTrigger(DIK_L))
@@ -1002,4 +1023,5 @@ void MelLib::GuiValueManager::SetDrawWindowFlagAll(bool flag)
 		drawFlag.second = flag;
 	}
 }
+
 

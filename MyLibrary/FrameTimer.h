@@ -136,7 +136,7 @@ namespace MelLib
 		/// </summary>
 		/// <param name="num">数値</param>
 		/// <returns></returns>
-		int GetSetByNumberFlag(const int num) const { return time % (num * 2) >= num; }
+		bool GetSetByNumberFlag(const int num) const { return time % (num * 2) >= num; }
 #pragma endregion
 
 #pragma region セット

@@ -112,6 +112,7 @@ void MelLib::Sprite3D::Create()
 
 void Sprite3D::Create(const Color& color)
 {
+	this->color = color;
 	CreateBuffer();
 	InitializeVertices();
 	SetOneColorSpriteColor(color);
@@ -199,6 +200,12 @@ void Sprite3D::MatrixMap(const Camera* camera)
 
 
 	constBuffer->Unmap(0, nullptr);
+}
+
+void Sprite3D::SetColor(const Color& color)
+{
+	this->color = color;
+	SetOneColorSpriteColor(color);
 }
 
 void Sprite3D::SetBillboardFlag(const bool flagX, const bool flagY, const bool flagZ)

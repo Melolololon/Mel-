@@ -61,20 +61,6 @@ void GameObjectManager::Update()
 {
 	const size_t PRE_OBJECT_SIZE = objects.size();
 
-
-	if (SceneEditer::GetInstance()->GetIsEdit())
-	{
-		for (int i = 0; i < PRE_OBJECT_SIZE; i++)
-		{
-
-
-			objects[i]->SetPreData();
-			objects[i]->SetGUIData();
-			objects[i]->SetPreDataPositions();
-
-		}
-		return;
-	}
 #pragma region オブジェクトのUpdate
 	//カーソルアップデート
 	if (cursor)
@@ -95,12 +81,15 @@ void GameObjectManager::Update()
 
 	for (int i = 0; i < PRE_OBJECT_SIZE; i++)
 	{
+
+		//objects[i]->SetGUIData();
+
 		objects[i]->SetPreDataPositions();
 		objects[i]->Update();
-		objects[i]->SetPreData();
-		objects[i]->SetGUIData();
 		// 仮にここに書いてる
+		// 追加したてだとUpdate前と後に書く必要がある
 		objects[i]->SetPreDataPositions();
+		objects[i]->SetPreData();
 	}
 
 
@@ -110,11 +99,15 @@ void GameObjectManager::Update()
 		if (addObjectSort != OBJECT_SORT_NONE)ObjectSort(addObjectSort, addObjectSortOrderType);
 		for (int i = PRE_OBJECT_SIZE; i < OBJECT_SIZE; i++)
 		{
+
+			//objects[i]->SetGUIData();
+
 			objects[i]->SetPreDataPositions();
 			objects[i]->Update();
 			// 仮にここに書いてる
 			// 追加した手だとUpdate前と後に書く必要がある
 			objects[i]->SetPreDataPositions();
+			objects[i]->SetPreData();
 		}
 
 		/*for (auto& a : addObjects)

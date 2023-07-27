@@ -345,20 +345,20 @@
     <ClCompile Include="DrawManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="GuiValueManager.cpp">
-      <Filter>ソース ファイル\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="GuiValue.cpp">
       <Filter>ソース ファイル\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneEditer.cpp">
-      <Filter>ソース ファイル\Editer</Filter>
     </ClCompile>
     <ClCompile Include="ImguiManager.cpp">
       <Filter>ソース ファイル\GUI</Filter>
     </ClCompile>
     <ClCompile Include="ShaderData.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneEditer.cpp">
+      <Filter>ソース ファイル\Editer</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiValueManager.cpp">
+      <Filter>ソース ファイル\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

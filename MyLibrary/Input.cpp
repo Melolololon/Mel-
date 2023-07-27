@@ -219,6 +219,7 @@ XINPUT_STATE Input::padState[4];
 XINPUT_STATE Input::padPrevious[4];
 bool Input::padConnected[4];
 
+bool Input::cursorDrawFlag = true;
 
 LRESULT Input::ParamChildWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -441,6 +442,8 @@ float Input::ArrowKeyAngle()
 
 	return -1.0f;
 }
+
+
 #pragma endregion
 
 #pragma region マウス
@@ -687,6 +690,17 @@ void MelLib::Input::GetMouse3DLine2(Camera* pCamera, Vector3* pNear, Vector3* pF
 	}
 
 #pragma endregion
+}
+
+void MelLib::Input::SetDrawCursorFlag(const bool flag)
+{
+	// 一致はreturn
+	// returnしないとフラグ変数に値が蓄積されて面倒なことになる
+	if (flag == cursorDrawFlag)return;
+
+	// 設定を切り替え戻り値を代入
+	// -1 or 0なので+1する
+	cursorDrawFlag = static_cast<bool>(ShowCursor(flag) + 1);
 }
 
 #pragma region ボタン

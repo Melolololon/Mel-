@@ -146,6 +146,7 @@ namespace MelLib
 		/// <returns></returns>
 		static bool PadCheck(UCHAR padNum);
 
+		static bool cursorDrawFlag;
 
 	public:
 		static void Initialize(HWND hwnd, int windowWidth, int windowHeight);
@@ -233,7 +234,6 @@ namespace MelLib
 
 #pragma region カーソル
 
-
 		static void SetViewMatrix(const DirectX::XMMATRIX& viewMatrix) { viewMat = viewMatrix; }
 		static void SetProjectionMatrix(const DirectX::XMMATRIX& projectionMatrix) { projectionMat = projectionMatrix; }
 		static void SetNear(float nearNumber) { nearNum = nearNumber; }
@@ -293,6 +293,14 @@ namespace MelLib
 			Vector3* pNear,
 			Vector3* pFar
 		);
+
+		/// <summary>
+		/// マウスの描画設定を行います。
+		/// ShowCursorと違いboolでフラグ管理を行っているため、連続でセットしても一回のセットで別のフラグに切り替わります。
+		/// </summary>
+		static void SetDrawCursorFlag(const bool flag);
+
+		static bool GetDrawCursorFlag() { return cursorDrawFlag; }
 #pragma endregion
 
 #pragma region ボタン

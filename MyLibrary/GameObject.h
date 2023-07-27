@@ -260,7 +260,7 @@ namespace MelLib
 
 		void SetDataScale(const Vector3& scale);
 
-
+		
 	protected:
 		/// <summary>
 		/// 全てのModelObjectを描画します。
@@ -389,6 +389,12 @@ namespace MelLib
 		/// <param name="acc"></param>
 		static void SetGravutationalAcceleration(const float acc) { gravutationalAcc = acc; };
 
+
+		/// <summary>
+		/// GameOjectデフォルトの移動関数
+		/// </summary>
+		void SetPositionDefault(const Vector3& pos);
+
 		/// <summary>
 		/// 座標をセットします。モデルオブジェクトと当たり判定はセット前の座標との差だけ移動します。
 		/// </summary>
@@ -466,6 +472,13 @@ namespace MelLib
 		
 		Vector3 GetAngle()const { return angle; }
 		Vector3 GetScale()const { return scale; }
+
+		/// <summary>
+		/// 前フレームの座標を取得します。
+		/// </summary>
+		Vector3 GetPrePosition()const { return prePosition; }
+		Vector3 GetPreAngle()const { return preAngle; }
+		Vector3 GetPreScale()const { return preScale; }
 
 		/// <summary>
 		/// 速度を取得します。
@@ -645,6 +658,11 @@ namespace MelLib
 		void SetLerpMovePosition(const Vector3& pos) { lerpMovePosition = pos; }
 
 		/// <summary>
+		/// モデルオブジェクトから三角形の当たり判定を取得し格納し、同じ配列にすべて格納します。
+		/// </summary>
+		void SetModelTriangleDataAll(const std::string& modelObjectIndex,const std::string& triIndex);
+
+		/// <summary>
 		/// 衝突確認を1フレームで複数回行ったときに補間して衝突した時の座標を返します。
 		/// </summary>
 		/// <returns></returns>
@@ -664,7 +682,6 @@ namespace MelLib
 
 		float GetCollisionCheckDistance()const { return collisionCheckDistance; }
 
-		// 開発者用
 #ifdef _DEBUG
 		static void CreateCollisionCheckModelPipelineState();
 
@@ -680,6 +697,11 @@ namespace MelLib
 
 
 #pragma endregion
+
+		/// <summary>
+		/// 開発者用関数。オブジェクトの数値をリセットします。
+		/// </summary>
+		static void ResetObjectNumbers();
 
 	};
 }

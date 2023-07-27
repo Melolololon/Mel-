@@ -24,6 +24,8 @@
 #include"Collision.h"
 #include"LibMath.h"
 
+#include"Easing.h"
+
 Game::Game() {}
 
 Game::~Game() {}
@@ -33,6 +35,7 @@ Game* Game::GetInstance()
 	return &game;
 }
 
+MelLib::Easing<float> easing;
 
 void Game::Run()
 {
@@ -57,10 +60,13 @@ void Game::Run()
 	}
 
 	Finalize();
+
 }
 
 void Game::Initialize()
 {
+	easing = MelLib::Easing<float>(-1.0, 1.0, 2.0f);
+
 
 	MelLib::Library::Initialize(1920, 1080, MelLib::Color(30,30,160,255),L"MELLib");
 	MelLib::Library::SetFramesPerSecond60(true);
@@ -118,6 +124,17 @@ void Game::Finalize()
 
 void Game::Update()
 {
+	easing.EaseInOut();
+	
+	float value = easing.GetValue();
+	if (easing.GetPar() >= 100.0f) 
+	{
+		easing.SetAddPar(-2.0f);
+	}
+	if (easing.GetPar() <= 0.0f)
+	{
+		easing.SetAddPar(2.0f);
+	}
 
 	//MelLib::SceneManager::GetInstance()->Update();
 	//MelLib::SceneEditer::GetInstance()->Update();
@@ -131,7 +148,7 @@ void Game::Draw()
 
 	//MelLib::SceneManager::GetInstance()->Draw();
 	//MelLib::SceneEditer::GetInstance()->Draw();
-
+ 
 	MelLib::GameObjectManager::GetInstance()->Draw();
-
+	MelLib::TextWrite::Draw(0, MelLib::Color(255, 255), std::to_wstring(easing.GetValue()), "Arial");
 }

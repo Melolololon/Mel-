@@ -160,6 +160,8 @@ namespace MelLib
 		/// <param name="sceneName"></param>
 		void LoadEditData(const std::string& sceneName);
 
+		void LoadTestPlaySaveData();
+
 		/// <summary>
 		/// オブジェクトをエディタに登録します。
 		/// </summary>
