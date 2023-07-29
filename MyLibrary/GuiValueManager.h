@@ -48,7 +48,7 @@ namespace MelLib
 		/// <param name="data">char*に変換したデータのポインタの参照</param>
 		/// <param name="dataSize">データサイズ</param>
 		void Save(const std::string& windowName, const std::string& lavel, const char*& data, const type_info& type,size_t dataSize);
-		void Export();
+		
 
 		void Load();
 		void AllSetLoadData();
@@ -99,6 +99,12 @@ namespace MelLib
 
 		void Initialize();
 		void Update();
+
+		/// <summary>
+		/// GUIのデータを出力します。
+		/// </summary>
+		/// <returns></returns>
+		void Export();
 
 		/// <summary>
 		/// Guiの値objectからobject2にコピーします。

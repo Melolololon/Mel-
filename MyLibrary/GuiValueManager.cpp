@@ -550,10 +550,10 @@ void MelLib::GuiValueManager::Update()
 	}
 
 
-	bool pushCtrl = Input::KeyState(DIK_LCONTROL) || Input::KeyState(DIK_RCONTROL);
+	//bool pushCtrl = Input::KeyState(DIK_LCONTROL) || Input::KeyState(DIK_RCONTROL);
 	
 	// ï€ë∂
-	if (pushCtrl && Input::KeyTrigger(DIK_S) || Input::KeyTrigger(DIK_F5))Export();
+	//if (pushCtrl && Input::KeyTrigger(DIK_S) || Input::KeyTrigger(DIK_F5))Export();
 
 	//// ì«çû
 	//if (pushCtrl && Input::KeyTrigger(DIK_L))
@@ -561,77 +561,6 @@ void MelLib::GuiValueManager::Update()
 	//	Load();
 	//	AllSetLoadData();
 	//}
-#pragma region ãå
-
-
-	//// int
-	//const std::unordered_map<std::string, GuiInt*>& refInts = intValues[windowName];
-	//for (auto& value : refInts) 
-	//{
-	//	const std::string& LAVEL = value.first;
-	//	GuiInt& guiInt = *value.second;
-	//	int num = guiInt.GetValue();
-	//	changeFlag = ImguiManager::GetInstance()->DrawSliderInt(LAVEL, num, guiInt.GetMinValue(), guiInt.GetMaxValue());
-	//	
-	//	if (changeFlag) 
-	//	{
-	//		const char* data = reinterpret_cast<char*>(&num);
-	//		Save(windowName, LAVEL, data, typeid(num),sizeof(num), changeFlag);
-	//		guiInt = num;
-	//	}
-	//}
-
-	//// float 
-	//const std::unordered_map<std::string, GuiFloat*>& refFloats = floatValues[windowName];
-	//for (auto& value : refFloats)
-	//{
-	//	const std::string& LAVEL = value.first;
-	//	GuiFloat& guiFloat = *value.second;
-	//	float num = guiFloat.GetValue();
-	//	changeFlag = ImguiManager::GetInstance()->DrawSliderFloat(LAVEL, num, guiFloat.GetMinValue(), guiFloat.GetMaxValue());
-	//	if (changeFlag)
-	//	{
-	//		const char* data = reinterpret_cast<char*>(&num);
-	//		Save(windowName, LAVEL, data, typeid(num), sizeof(num), changeFlag);
-	//		guiFloat = num;
-	//	}
-	//}
-
-	//// Vector3
-	//const std::unordered_map<std::string, GuiVector3*>& refVector3 = vector3Values[windowName];
-	//for (auto& value : refVector3)
-	//{
-	//	const std::string& LAVEL = value.first;
-	//	GuiVector3& guiVector3 = *value.second;
-	//	MelLib::Vector3 num = guiVector3.GetValue();
-	//	changeFlag = ImguiManager::GetInstance()->DrawSliderVector3(LAVEL, num, guiVector3.GetMinValue(), guiVector3.GetMaxValue());
-	//	if (changeFlag)
-	//	{
-	//		const char* data = reinterpret_cast<char*>(&num);
-	//		Save(windowName, LAVEL, data, typeid(num), sizeof(num), changeFlag);
-	//		guiVector3 = num;
-	//	}
-	//}
-
-	//// bool
-	//const std::unordered_map<std::string, GuiBool*>& refBool = boolValues[windowName];
-	//for (auto& value : refBool)
-	//{
-	//	const std::string& LAVEL = value.first;
-	//	GuiBool& guiBool = *value.second;
-	//	bool flag = guiBool.GetValue();
-	//	changeFlag = ImguiManager::GetInstance()->DrawCheckBox(LAVEL, flag);
-	//	if (changeFlag)
-	//	{
-	//		const char* data = reinterpret_cast<char*>(&flag);
-	//		Save(windowName, LAVEL, data, typeid(flag), sizeof(flag), changeFlag);
-	//		guiBool = flag;
-	//	}
-	//}
-
-	//ImguiManager::GetInstance()->EndDrawWindow();
-
-#pragma endregion
 }
 
 //void MelLib::GuiValueManager::CopyGuiValue(const GameObject& object, const GameObject& object2)
